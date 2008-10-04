@@ -26,7 +26,10 @@ enum ZR_ClassOptions
     Float:data_napalm_time,
     bool:data_nofalldamage,
     data_kill_bonus,
-    data_infect_health
+    data_infect_health,
+    data_alpha_spawn,
+    data_alpha_damaged,
+    data_alpha_damage
 }
 
 #define MAXCLASSES 20
@@ -104,6 +107,9 @@ LoadClassData()
         arrayClasses[classCount][data_nofalldamage] = bool:KvGetNum(kvClasses, "nofalldamage"), GetConVarBool(gCvars[CVAR_ZOMBIE_NOFALLDAMAGE]);
         arrayClasses[classCount][data_kill_bonus] = KvGetNum(kvClasses, "kill_bonus"), GetConVarInt(gCvars[CVAR_ZOMBIE_KILL_BONUS]);
         arrayClasses[classCount][data_infect_health] = KvGetNum(kvClasses, "infect_health"), GetConVarInt(gCvars[CVAR_ZOMBIE_INFECT_HEALTH]);
+        arrayClasses[classCount][data_alpha_spawn] = KvGetNum(kvClasses, "alpha_spawn");
+        arrayClasses[classCount][data_alpha_damaged] = KvGetNum(kvClasses, "alpha_damaged");
+        arrayClasses[classCount][data_alpha_damage] = KvGetNum(kvClasses, "alpha_damage");
 
         classCount++;
     } while (KvGotoNextKey(kvClasses));
@@ -178,7 +184,7 @@ Float:GetClassKnockback(classindex)
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
     {
-        return arrayClasses[classindex][data_knockback];
+        return arrayClasses[classindex][data_knockback] * GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
     }
     
     return GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
@@ -293,3 +299,34 @@ GetClassInfectHealth(classindex)
     
     return GetConVarInt(gCvars[CVAR_ZOMBIE_INFECT_HEALTH]);
 }
+
+GetClassAlphaSpawn(classindex)
+{
+    new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
+    if (classes) {
+        return arrayClasses[classindex][data_alpha_spawn];
+    }
+
+    return 255;
+}
+
+GetClassAlphaDamaged(classindex)
+{
+    new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
+    if (classes) {
+        return arrayClasses[classindex][data_alpha_damaged];
+    }
+
+    return 255;
+}
+
+GetClassAlphaDamage(classindex)
+{
+    new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
+    if (classes) {
+        return arrayClasses[classindex][data_alpha_damage];
+    }
+
+    return 0;
+}
+

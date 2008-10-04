@@ -1,0 +1,15 @@
+2008.09.21 - 2.5.1.1
+  * Added centered counter for spawn protection.
+  * Made chat commands visible to other players.
+  * Made unlimited ammo and hit sounds scripts part of the patch.
+  * Added public CVars zombie_enabled and zombie_version.
+  * IsClientConnected must always be before IsClientInGame, because IsClientInGame does not implicit call it.
+
+2008.09.20 - 2.5.1
+  * Fixed spawn protection not protecting against zombies.
+  * Made protected players invisible and move faster.
+  * Changed class knockback to be a multiplier of the default knockback.
+
+2008.09.17 - 2.5.1
+  * Added support for alpha values in classes.
+

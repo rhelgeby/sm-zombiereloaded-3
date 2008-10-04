@@ -28,43 +28,36 @@ public Action:SayCommand(client, argc)
     if (StrEqual(args, "!zmenu", false))
     {
         MainMenu(client);
-        return Plugin_Handled;
     }
     
     else if (StrEqual(args, "!zclass", false))
     {
         ZClass(client);
-        return Plugin_Handled;
     }
     
     else if (StrEqual(args, "!zmarket", false))
     {
         ZMarket(client);
-        return Plugin_Handled;
     }
     
     else if (StrEqual(args, "!zspawn", false))
     {
         ZSpawn(client);
-        return Plugin_Handled;
     }
     
     else if (StrEqual(args, "!ztele", false))
     {
         ZTele(client);
-        return Plugin_Handled;
     }
     
     else if (StrEqual(args, "!zstuck", false))
     {
         ZStuck(client);
-        return Plugin_Handled;
     }
     
     else if (StrEqual(args, "!zhp", false))
     {
         ZHP(client);
-        return Plugin_Handled;
     }
     
     return Plugin_Continue;

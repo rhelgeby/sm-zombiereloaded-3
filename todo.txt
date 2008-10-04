@@ -1,0 +1,31 @@
+
+ * Zombie dont have fall damage (damage by player 0 = server should always work) -> make it a CVAR, so for example zombies can't kill themselfs on same maps by going through lasers.
+
+---- CRITICAL/IMPORTANT ----
+
+* FIXED  --  fix spawn protection
+  players gets invisible, but not protected against zombies.
+  the array pProtect isn't used at all, just set to off and on.
+
+* DONE  --  classes.inc:GetClassKnockback
+  change class knockback to be a miltiplier of the default knockback (like the old ZR), not absolute values:
+  knockback = default * class knockback
+
+
+---- LOW PRIORITY ----
+
+* zombie.inc:KnockBack / cvars.inc
+  make cvar for shotgun/hegrenade knockback boost.
+
+* make a admin command for reloading class data. useful when fine tuning knockback.
+
+  and even better, if worth it:
+  make admin commands for getting and setting each class knockback, like:
+  SetClassKnockback(classindex, knockback)
+  GetClassKnockback(classindex) - already there, just need to hook a admin command too
+
+  cvars.inc:EnableHook
+  another solution:
+  zr_enable: disable: a "round draw" occour, then it's regular cs.
+             enable: a new "round draw" occour and it's back.
+  not sure if classes are reloaded. if LoadClassData can be executed twice there's no problem.

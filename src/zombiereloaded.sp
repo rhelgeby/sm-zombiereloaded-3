@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1"
+#define VERSION "2.5.1.1"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -79,6 +79,8 @@ public OnPluginStart()
     // ======================================================================
     
     CreateConVar("gs_zombiereloaded_version", VERSION, "[ZR] Current version of this plugin", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
+    CreateConVar("zombie_version", VERSION, "Zombie:Reloaded Version", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
+    CreateConVar("zombie_enabled", "1", "Not synced with zr_enable", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
     
     // ======================================================================
     
@@ -192,7 +194,7 @@ ZREnd()
     new maxplayers = GetMaxClients();
     for (new x = 1; x <= maxplayers; x++)
     {
-        if (!IsClientInGame(x))
+        if (!IsClientConnected(x) || !IsClientInGame(x))
         {
             continue;
         }

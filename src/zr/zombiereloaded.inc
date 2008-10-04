@@ -50,6 +50,7 @@ new pClass[MAXPLAYERS+1];
 new pNextClass[MAXPLAYERS+1];
 
 new teleCount[MAXPLAYERS+1];
+new protCount[MAXPLAYERS+1];
 new Float:spawnLoc[MAXPLAYERS+1][3];
 
 new Handle:tRound = INVALID_HANDLE;

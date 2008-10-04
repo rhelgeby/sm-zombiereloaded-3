@@ -214,6 +214,8 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         
             if (!StrEqual(respawnteam, "zombie", false))
             {
+                SetPlayerAlpha(index, 0);
+                SetPlayerSpeed(index, 600.0);
                 pProtect[index] = true;
                 
                 ZR_PrintToChat(index, "Spawn protection begin", protect);
@@ -224,10 +226,18 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
                     CloseHandle(tHandles[index][TPROTECT]);
                 }
                 
-                tHandles[index][TPROTECT] = CreateTimer(float(protect), EndProtect, index, TIMER_FLAG_NO_MAPCHANGE);
+                protCount[index] = protect;
+                PrintHintText(index, "%d", protCount[index]);
+                protCount[index]--;
+
+                tHandles[index][TPROTECT] = CreateTimer(1.0, EndProtect, index, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
             }
         }
     }
+    else
+    {
+		SetPlayerAlpha(index, 255);
+	}
     
     new bool:randomclass = GetConVarBool(gCvars[CVAR_CLASSES_RANDOM]);
     
@@ -278,7 +288,7 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     {
         if (IsPlayerHuman(index) && IsPlayerZombie(attacker))
         {
-            if (StrEqual(weapon, "knife"))
+            if (!pProtect[index] && StrEqual(weapon, "knife"))
             {
                 Zombify(index, attacker);
             }
@@ -346,6 +356,8 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
             tHandles[index][TREGEN] = CreateTimer(interval, Regenerate, index, TIMER_REPEAT);
         }
     }
+
+    UpdateAlphaDamaged(index);
 }
 
 FindExplodingGrenade(Float:heLoc[3])

@@ -24,8 +24,11 @@ new gHooks[MAXPLAYERS+1][ZRHooks];
 
 InitDmgControl()
 {
+    /* It's case sensitive! */
     RegConsoleCmd("kill", Attempt_Suicide);
+    RegConsoleCmd("KILL", Attempt_Suicide);        
     RegConsoleCmd("jointeam", Attempt_Suicide);
+    RegConsoleCmd("JOINTEAM", Attempt_Suicide);
     RegConsoleCmd("spectate", Attempt_Suicide);
 }
 
@@ -45,7 +48,7 @@ public TraceAttack(client, inflictor, attacker, damage, hitbox, hitgroup)
 {
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
 
-    if (!attacker || !IsClientInGame(attacker) || !enabled)
+    if (!attacker || !IsClientConnected(attacker) || !IsClientInGame(attacker) || !enabled)
     {
         return Hacks_Continue;
     }

@@ -178,6 +178,8 @@ Zombify_Mother(client)
     
     ApplyZombieModel(client);
     
+    ApplyZombieAlpha(client);
+
     InfectionEffects(client);
     
     ZR_PrintToChat(client, "You are a zombie");
@@ -255,6 +257,8 @@ Zombify(client, attacker)
     
     ApplyZombieModel(client);
     
+    ApplyZombieAlpha(client);
+
     if (bZVision[client])
     {
         StartZVision(client);
@@ -404,6 +408,12 @@ ApplyZombieFOV(client)
     SetPlayerFOV(client, fov);
 }
 
+ApplyZombieAlpha(client)
+{
+	new alpha = GetClassAlphaSpawn(pClass[client]);
+	SetPlayerAlpha(client, alpha);
+}
+
 KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:power, dmg, bool:boost)
 {
     if (!IsPlayerZombie(client))
@@ -443,7 +453,7 @@ JumpBoost(client, Float:distance, Float:height)
 
 PlayerLeft(client)
 {
-    if (!IsClientInGame(client))
+    if (!IsClientConnected(client) || !IsClientInGame(client))
     {
         return;
     }
@@ -788,6 +798,18 @@ UpdateHPDisplay(client)
     ZR_HudHint(client, "Display HP", health);
 }
 
+UpdateAlphaDamaged(client)
+{
+    new current_health = GetClientHealth(client);
+    new max_health = GetClassHealth(pClass[client]);
+    new max_damage = GetClassAlphaDamage(pClass[client]);
+    if (max_health - current_health > max_damage)
+    {
+        new alpha_damaged = GetClassAlphaDamaged(pClass[client]);
+        SetPlayerAlpha(client, alpha_damaged);
+    }
+}
+
 public Action:ZHPTimer(Handle:timer, any:index)
 {
     if (!IsClientInGame(index))
@@ -807,18 +829,29 @@ public Action:EndProtect(Handle:timer, any:index)
     if (!IsClientInGame(index))
     {
         tHandles[index][TPROTECT] = INVALID_HANDLE;
-        
-        return;
+        return Plugin_Stop;
     }
     
-    pProtect[index] = false;
+    if (protCount[index] > 0) {
+        PrintHintText(index, "%d", protCount[index]);
+        protCount[index]--;
+
+        return Plugin_Continue;
+    } else {
+        pProtect[index] = false;
     
-    if (IsPlayerHuman(index))
-    {
-        ZR_PrintCenterText(index, "Spawn protection end");
+        if (IsPlayerHuman(index))
+        {
+            ZR_PrintCenterText(index, "Spawn protection end");
+        }
+    
+        SetPlayerAlpha(index, 255);
+        SetPlayerSpeed(index, 300.0);
+
+        tHandles[index][TPROTECT] = INVALID_HANDLE;
+
+        return Plugin_Stop;
     }
-    
-    tHandles[index][TPROTECT] = INVALID_HANDLE;
 }
 
 RespawnPlayer(client)

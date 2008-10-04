@@ -17,6 +17,8 @@ new offsCollision;
 new offsMoney;
 new offsFOV;
 new offsBuyZone;
+new offsColor;
+new offsRender;
 
 new Handle:hGameConf = INVALID_HANDLE;
 new Handle:hRemoveAllItems = INVALID_HANDLE;
@@ -88,6 +90,16 @@ FindOffsets()
     if (offsBuyZone == -1)
     {
         SetFailState("Couldn't find \"m_bInBuyZone\"!");
+    }
+
+    offsColor = FindSendPropInfo("CAI_BaseNPC", "m_clrRender");
+    if(offsColor == -1) {
+        SetFailState("Couldn't find \"m_clrRender\"!");
+    }
+
+    offsRender = FindSendPropInfo("CBaseAnimating", "m_nRenderMode");
+    if(offsRender == -1) {
+        SetFailState("Couldn't find \"m_nRenderMode\"!");
     }
 }
 
@@ -188,3 +200,10 @@ SetPlayerModel(client, const String:model[])
     PrecacheModel(model);
     SetEntityModel(client, model);
 }
+
+SetPlayerAlpha(client, alpha)
+{
+    SetEntData(client, offsColor + 3, alpha, 1, true);
+    SetEntData(client, offsRender, 3, 1, true);
+}
+
