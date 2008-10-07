@@ -1,31 +1,42 @@
-
- * Zombie dont have fall damage (damage by player 0 = server should always work) -> make it a CVAR, so for example zombies can't kill themselfs on same maps by going through lasers.
+Section content is listed in order of importance. Some of these can be ideas too.
 
 ---- CRITICAL/IMPORTANT ----
+
+* When you turn off zvision it's remembered to next time you get zombified, but
+  not the nightvision. Make it remember the last nvgs state as zombie too.
+  Got some complains and it's a bit annoying too. Should be an easy fix.
 
 * FIXED  --  fix spawn protection
   players gets invisible, but not protected against zombies.
   the array pProtect isn't used at all, just set to off and on.
 
 * DONE  --  classes.inc:GetClassKnockback
-  change class knockback to be a miltiplier of the default knockback (like the old ZR), not absolute values:
+  change class knockback to be a miltiplier of the default knockback (like the
+  old ZR), not absolute values:
   knockback = default * class knockback
 
 
----- LOW PRIORITY ----
+---- NORMAL/GAMEPLAY ----
+
+* Make a gloval CVAR for setting default zombie. Must work with per-map configs.
+
+* Make it possible to disable certain classes on certain maps.
+
+* Make a global CVAR for both nightvision (and maybe zvision too) that works
+  with per map configs. On bright maps it's disabled, and enabled on darker maps.
+
+* Make a function for overriding class knockback (and maybe other settings too),
+  by directly modifying class data in the array after the classes are loaded.
+  To be used on per map configs.
+
+  SetClassKnockback(classname, data)
+  zr_class_knockback classname data
+  This one is a bit important because the maps can be better balanced by adjusting a single zombie class.
+
+* Zombie dont have fall damage (damage by player 0 = server should always work)
+  Make it a CVAR, so for example zombies can't kill themselfs on same maps by
+  going through lasers.
 
 * zombie.inc:KnockBack / cvars.inc
-  make cvar for shotgun/hegrenade knockback boost.
-
-* make a admin command for reloading class data. useful when fine tuning knockback.
-
-  and even better, if worth it:
-  make admin commands for getting and setting each class knockback, like:
-  SetClassKnockback(classindex, knockback)
-  GetClassKnockback(classindex) - already there, just need to hook a admin command too
-
-  cvars.inc:EnableHook
-  another solution:
-  zr_enable: disable: a "round draw" occour, then it's regular cs.
-             enable: a new "round draw" occour and it's back.
-  not sure if classes are reloaded. if LoadClassData can be executed twice there's no problem.
+  Make a CVAR for setting shotgun/hegrenade knockback boost. The zombies don't
+  fly away that much.
