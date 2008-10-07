@@ -22,9 +22,6 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 * Make it possible to disable certain classes on certain maps.
 
-* Make a global CVAR for both nightvision (and maybe zvision too) that works
-  with per map configs. On bright maps it's disabled, and enabled on darker maps.
-
 * Make a function for overriding class knockback (and maybe other settings too),
   by directly modifying class data in the array after the classes are loaded.
   To be used on per map configs.
