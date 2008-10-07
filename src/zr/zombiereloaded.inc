@@ -176,3 +176,15 @@ bool:IsPlayerInList(client)
     
     return false;
 }
+
+bool:IntToBool(intval)
+{
+    if (intval == 0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}

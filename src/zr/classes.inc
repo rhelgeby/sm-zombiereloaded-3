@@ -17,7 +17,7 @@ enum ZR_ClassOptions
     Float:data_jump_distance,
     Float:data_jump_height,
     Float:data_knockback,
-    bool:data_nvgs[8],
+    data_nvgs,
     data_fov,
     bool:data_regen,
     data_regen_health,
@@ -97,7 +97,7 @@ LoadClassData()
         arrayClasses[classCount][data_jump_distance] = KvGetFloat(kvClasses, "jump_distance"), GetConVarFloat(gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]);
         arrayClasses[classCount][data_jump_height] = KvGetFloat(kvClasses, "jump_height"), GetConVarFloat(gCvars[CVAR_ZOMBIE_JUMP_HEIGHT]);
         arrayClasses[classCount][data_knockback] = KvGetFloat(kvClasses, "knockback"), GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
-        arrayClasses[classCount][data_nvgs] = bool:KvGetNum(kvClasses, "nvgs"), GetConVarBool(gCvars[CVAR_ZOMBIE_NVGS]);
+        arrayClasses[classCount][data_nvgs] = KvGetNum(kvClasses, "nvgs"), GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]);
         arrayClasses[classCount][data_fov] = KvGetNum(kvClasses, "fov"), GetConVarInt(gCvars[CVAR_ZOMBIE_FOV]);
         arrayClasses[classCount][data_regen] = bool:KvGetNum(kvClasses, "regen"), GetConVarBool(gCvars[CVAR_ZOMBIE_REGEN]);
         arrayClasses[classCount][data_regen_health] = KvGetNum(kvClasses, "regen_health"), GetConVarInt(gCvars[CVAR_ZOMBIE_REGEN_HEALTH]);
@@ -193,12 +193,26 @@ Float:GetClassKnockback(classindex)
 bool:GetClassNVGs(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
+
     if (classes)
     {
-        return arrayClasses[classindex][data_nvgs];
+        // Check if the nvgs CVAR is negative. If not negative, use the CVAR instead of
+        // the class variable. Makes it possible to override nvgs in per-map configs.
+
+        new nvgs_override = GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]);
+        if (nvgs_override > -1)
+        {
+            return IntToBool(nvgs_override);
+        }
+        else
+        {
+            return IntToBool(arrayClasses[classindex][data_nvgs]);
+        }
     }
     
-    return GetConVarBool(gCvars[CVAR_ZOMBIE_NVGS]);
+    // Note to config: If classes are disabled, nvgs is disabled if it's non-zero.
+
+    return IntToBool(GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]));
 }
 
 GetClassFOV(classindex)
