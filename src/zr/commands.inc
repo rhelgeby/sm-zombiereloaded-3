@@ -13,6 +13,9 @@ CreateCommands()
     
     RegAdminCmd("zr_restrict", Command_Restrict, ADMFLAG_GENERIC, "Restrict a specified weapon");
     RegAdminCmd("zr_unrestrict", Command_UnRestrict, ADMFLAG_GENERIC, "Unrestrict a specified weapon");
+
+    RegAdminCmd("zr_set_class_knockback", Command_SetClassKnockback, ADMFLAG_GENERIC, "Sets the knockback to the specified class. Usage: zr_set_class_knockback classname value");
+    RegAdminCmd("zr_get_class_knockback", Command_GetClassKnockback, ADMFLAG_GENERIC, "Gets the knockback to the specified class. Usage: zr_get_class_knockback classname");
 }
 
 public Action:Command_Infect(client, argc)
@@ -114,5 +117,100 @@ public Action:Command_UnRestrict(client, argc)
         ZR_ReplyToCommand(client, "Weapon invalid", arg1);
     }
     
+    return Plugin_Handled;
+}
+
+public Action:Command_SetClassKnockback(client, argc)
+{
+    if (argc < 2)
+    {
+        if (client == 0)
+        {
+            PrintToServer("Sets the specified class knockback. Usage: zr_set_class_knockback classname value");
+            return Plugin_Handled;
+        }
+        else
+        {
+            PrintToConsole(client, "Sets the specified class knockback. Usage: zr_set_class_knockback classname value");
+            return Plugin_Handled;
+        }
+    }
+
+    decl String:classname[64];
+    decl String:knockback_arg[8];
+    new classindex;
+    new Float:knockback;
+
+    GetCmdArg(1, classname, sizeof(classname));
+    GetCmdArg(2, knockback_arg, sizeof(knockback_arg));
+    classindex = GetClassIndex(classname);
+    knockback = StringToFloat(knockback_arg);
+
+    if (classindex < 0)
+    {
+        if (client == 0)
+        {
+            PrintToServer("Could not find the class %s.", classname);
+            return Plugin_Handled;
+        }
+        else
+        {
+            PrintToConsole(client, "Could not find the class %s.", classname);
+            return Plugin_Handled;
+        }
+    }
+
+    arrayClasses[classindex][data_knockback] = knockback;
+    return Plugin_Handled;
+}
+
+public Action:Command_GetClassKnockback(client, argc)
+{
+    if (argc < 1)
+    {
+        if (client == 0)
+        {
+            PrintToServer("Gets the specified class knockback. Usage: zr_get_class_knockback classname");
+            return Plugin_Handled;
+        }
+        else
+        {
+            PrintToConsole(client, "Gets the specified class knockback. Usage: zr_get_class_knockback classname");
+            return Plugin_Handled;
+        }
+    }
+
+    decl String:classname[64];
+    new classindex;
+    new Float:knockback;
+
+    GetCmdArg(1, classname, sizeof(classname));
+    classindex = GetClassIndex(classname);
+
+    if (classindex < 0)
+    {
+        if (client == 0)
+        {
+            PrintToServer("Could not find the class %s.", classname);
+            return Plugin_Handled;
+        }
+        else
+        {
+            PrintToConsole(client, "Could not find the class %s.", classname);
+            return Plugin_Handled;
+        }
+    }
+
+    knockback = arrayClasses[classindex][data_knockback];
+
+    if (client == 0)
+    {
+        PrintToServer("Current knockback for %s: %f", classname, knockback);
+    }
+    else
+    {
+       PrintToConsole(client, "Current knockback for %s: %f", classname, knockback);
+    }
+
     return Plugin_Handled;
 }

@@ -1,3 +1,6 @@
+2008.10.08 - 2.5.1.3
+  * Made the console commands zr_set_class_knockback and zr_get_class_knockback.
+
 2008.10.07 - 2.5.1.2
   * Added support for overriding class nvgs with the CVAR.   -1: Disable override, 0/1: Off/On
 

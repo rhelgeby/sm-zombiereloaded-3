@@ -120,6 +120,25 @@ GetClassName(classindex, String:name[], maxlen)
     strcopy(name, maxlen, arrayClasses[classindex][data_name]);
 }
 
+GetClassIndex(String:name[])
+{
+    new i;
+    decl String:current_name[64];
+
+    // Search through all classes for the specified name.
+    for (i = 0; i < classCount; i++)
+    {
+        GetClassName(i, current_name, sizeof(current_name));
+        if (strcmp(name, current_name, false) == 0)
+        {
+            return i;
+        }
+    }
+
+    // Class not found.
+    return -1;
+}
+
 GetClassModel(classindex, String:model[], maxlen)
 {
     strcopy(model, maxlen, arrayClasses[classindex][data_model]);
