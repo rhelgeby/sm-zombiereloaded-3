@@ -22,14 +22,6 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 * Make it possible to disable certain classes on certain maps.
 
-* Make a function for overriding class knockback (and maybe other settings too),
-  by directly modifying class data in the array after the classes are loaded.
-  To be used on per map configs.
-
-  SetClassKnockback(classname, data)
-  zr_class_knockback classname data
-  This one is a bit important because the maps can be better balanced by adjusting a single zombie class.
-
 * Zombie dont have fall damage (damage by player 0 = server should always work)
   Make it a CVAR, so for example zombies can't kill themselfs on same maps by
   going through lasers.
