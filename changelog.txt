@@ -1,4 +1,4 @@
-2008.10.07 - 2.5.1.1
+2008.10.07 - 2.5.1.2
   * Added support for overriding class nvgs with the CVAR.   -1: Disable override, 0/1: Off/On
 
 2008.09.21 - 2.5.1.1
