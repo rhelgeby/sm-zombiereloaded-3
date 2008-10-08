@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.4"
+#define VERSION "2.5.1.5"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -110,6 +110,7 @@ public OnLibraryAdded(const String:name[])
 
 public OnMapStart()
 {
+    maxclients = GetMaxClients();
     MapChangeCleanup();
     
     LoadModelData();

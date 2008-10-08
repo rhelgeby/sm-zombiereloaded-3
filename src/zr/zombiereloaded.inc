@@ -53,6 +53,8 @@ new teleCount[MAXPLAYERS+1];
 new protCount[MAXPLAYERS+1];
 new Float:spawnLoc[MAXPLAYERS+1][3];
 
+new maxclients;
+
 new Handle:tRound = INVALID_HANDLE;
 new Handle:tInfect = INVALID_HANDLE;
 
@@ -186,5 +188,17 @@ bool:IntToBool(intval)
     else
     {
         return true;
+    }
+}
+
+bool:IsClientPlayer(client)
+{
+    if (client > 1 || client <= maxclients)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }

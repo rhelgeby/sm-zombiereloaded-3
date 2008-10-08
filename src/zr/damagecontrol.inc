@@ -48,7 +48,7 @@ public TraceAttack(client, inflictor, attacker, damage, hitbox, hitgroup)
 {
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
 
-    if (!attacker || !IsClientConnected(attacker) || !IsClientInGame(attacker) || !enabled)
+    if (!attacker || !IsClientPlayer(attacker) || !IsClientInGame(attacker) || !enabled)
     {
         return Hacks_Continue;
     }
@@ -99,7 +99,7 @@ public OnTakeDamage(client, inflictor, attacker, damage, damagetype, ammotype)
     
     if (damagetype & DMG_BLAST)
     {
-        if (!IsPlayerHuman(client) || !IsClientInGame(attacker))
+        if (!IsPlayerHuman(client) || !IsClientPlayer(attacker) || !IsClientInGame(attacker))
         {
             return Hacks_Continue;
         }
@@ -109,12 +109,12 @@ public OnTakeDamage(client, inflictor, attacker, damage, damagetype, ammotype)
     
     if (damagetype & DMG_BULLET)
     {
-        if (!client || !IsClientInGame(client))
+        if (!client || !IsClientPlayer(client) || !IsClientInGame(client))
         {
             return Hacks_Continue;
         }
         
-        if (!attacker || !IsClientInGame(attacker))
+        if (!attacker || !IsClientPlayer(attacker) || !IsClientInGame(attacker))
         {
             return Hacks_Continue;
         }
