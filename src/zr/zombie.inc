@@ -196,11 +196,14 @@ Zombify_Mother(client)
     }
     
     new Float:interval = GetConVarFloat(gCvars[CVAR_EMITSOUNDS]);
-    if (tHandles[client][TMOAN] != INVALID_HANDLE)
+    if (interval > 0.0)
     {
-        CloseHandle(tHandles[client][TMOAN]);
+        if (tHandles[client][TMOAN] != INVALID_HANDLE)
+        {
+            CloseHandle(tHandles[client][TMOAN]);
+        }
+        tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
-    tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     
     if (tHandles[client][TPROTECT] != INVALID_HANDLE)
     {
@@ -272,11 +275,14 @@ Zombify(client, attacker)
     CS_SwitchTeam(client, CS_TEAM_T);
     
     new Float:interval = GetConVarFloat(gCvars[CVAR_EMITSOUNDS]);
-    if (tHandles[client][TMOAN] != INVALID_HANDLE)
+    if (interval > 0.0)
     {
-        CloseHandle(tHandles[client][TMOAN]);
+        if (tHandles[client][TMOAN] != INVALID_HANDLE)
+        {
+            CloseHandle(tHandles[client][TMOAN]);
+        }
+        tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
-    tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     
     if (tHandles[client][TPROTECT] != INVALID_HANDLE)
     {
