@@ -125,7 +125,6 @@ GetClassIndex(String:name[])
     new i;
     decl String:current_name[64];
 
-    // Search through all classes for the specified name.
     for (i = 0; i < classCount; i++)
     {
         GetClassName(i, current_name, sizeof(current_name));
@@ -135,7 +134,6 @@ GetClassIndex(String:name[])
         }
     }
 
-    // Class not found.
     return -1;
 }
 
@@ -215,9 +213,6 @@ bool:GetClassNVGs(classindex)
 
     if (classes)
     {
-        // Check if the nvgs CVAR is negative. If not negative, use the CVAR instead of
-        // the class variable. Makes it possible to override nvgs in per-map configs.
-
         new nvgs_override = GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]);
         if (nvgs_override > -1)
         {
@@ -229,8 +224,6 @@ bool:GetClassNVGs(classindex)
         }
     }
     
-    // Note to config: If classes are disabled, nvgs is disabled if it's non-zero.
-
     return IntToBool(GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]));
 }
 
