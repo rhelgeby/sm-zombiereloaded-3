@@ -1,27 +1,33 @@
-2008.10.08 - 2.5.1.5
+2008.10.10 - 2.5.1.6 - Richard
+  * Fixed night vision state not remembered. If zomibes turn off zvision, nvgs
+    will be off next time too.
+
+2008.10.08 - 2.5.1.5 - Richard
   * Fixed invalid client index errors.
 
-2008.10.08 - 2.5.1.4
+2008.10.08 - 2.5.1.4 - Richard
   * Fixed zombie moans not looping when interval is 0 (disabled).
 
-2008.10.08 - 2.5.1.3
+2008.10.08 - 2.5.1.3 - Richard
   * Made the console commands zr_set_class_knockback and zr_get_class_knockback.
 
-2008.10.07 - 2.5.1.2
-  * Added support for overriding class nvgs with the CVAR.   -1: Disable override, 0/1: Off/On
+2008.10.07 - 2.5.1.2 - Richard
+  * Added support for overriding class nvgs with the CVAR.
+    -1: Disable override, 0/1: Off/On
 
-2008.09.21 - 2.5.1.1
+2008.09.21 - 2.5.1.1 - mbalex
   * Added centered counter for spawn protection.
   * Made chat commands visible to other players.
   * Made unlimited ammo and hit sounds scripts part of the patch.
   * Added public CVars zombie_enabled and zombie_version.
-  * IsClientConnected must always be before IsClientInGame, because IsClientInGame does not implicit call it.
+  * IsClientConnected must always be before IsClientInGame, because
+    IsClientInGame does not implicit call it.
 
-2008.09.20 - 2.5.1
-  * Fixed spawn protection not protecting against zombies.
-  * Made protected players invisible and move faster.
-  * Changed class knockback to be a multiplier of the default knockback.
+2008.09.20 - 2.5.1 
+  * Fixed spawn protection not protecting against zombies. (Richard)
+  * Made protected players invisible and move faster. (mbalex)
+  * Changed class knockback to be a multiplier of the default knockback. (Richard)
 
 2008.09.17 - 2.5.1
-  * Added support for alpha values in classes.
+  * Added support for alpha values in classes. (mbalex)
 

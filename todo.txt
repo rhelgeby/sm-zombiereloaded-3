@@ -38,3 +38,7 @@ Section content is listed in order of importance. Some of these can be ideas too
 * zombie.inc:KnockBack / cvars.inc
   Make a CVAR for setting shotgun/hegrenade knockback boost. The zombies don't
   fly away that much.
+
+* Fix some zombies not able to zombify some humans when using the infect command
+  before the first zombie. (make him a mother zombie, kill infect timer, set some
+  switches)

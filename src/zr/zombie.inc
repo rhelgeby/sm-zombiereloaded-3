@@ -405,7 +405,11 @@ ApplyZombieNightVision(client)
 {
     new bool:nvgs = GetClassNVGs(pClass[client]);
     NightVision(client, nvgs);
-    NightVisionOn(client, nvgs);
+
+    if (bZVision[client])
+    {
+        NightVisionOn(client, nvgs);
+    }
 }
 
 ApplyZombieFOV(client)
