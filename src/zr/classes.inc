@@ -137,6 +137,30 @@ GetClassIndex(String:name[])
     return -1;
 }
 
+GetDefaultClassIndex()
+{
+    new String:classname[64];
+    new classindex;
+    GetConVarString(gCvars[CVAR_CLASSES_DEFAULT], classname, sizeof(classname));
+    
+    if (strlen(classname) > 0)
+    {
+        classindex = GetClassIndex(classname);
+        if (classindex == -1)
+        {
+            return 0;
+        }
+        else
+        {
+            return classindex;
+        }
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 GetClassModel(classindex, String:model[], maxlen)
 {
     strcopy(model, maxlen, arrayClasses[classindex][data_model]);

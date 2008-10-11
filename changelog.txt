@@ -1,4 +1,7 @@
-2008.10.11 - 2.5.1.6 - Richard
+2008.10.11 - 2.5.1.8 - Richard
+  * Added CVAR for setting default class.
+
+2008.10.11 - 2.5.1.7 - Richard
   * Fixed bugs in IsClientPlayer
   * Made a zombie admin menu (zr_admin).
 

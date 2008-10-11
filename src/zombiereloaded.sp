@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.7"
+#define VERSION "2.5.1.8"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -141,7 +141,7 @@ public OnConfigsExecuted()
 
 public OnClientPutInServer(client)
 {
-    pClass[client] = 0;
+    pClass[client] = GetDefaultClassIndex();
     gBlockMotherInfect[client] = false;
     
     bZVision[client] = !IsFakeClient(client);

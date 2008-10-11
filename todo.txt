@@ -14,8 +14,6 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 ---- NORMAL/GAMEPLAY ----
 
-* Make a gloval CVAR for setting default zombie. Must work with per-map configs.
-
 * Make it possible to disable certain classes on certain maps.
 
 * Make a more advanced teleporter:
