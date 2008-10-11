@@ -2,10 +2,6 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 ---- CRITICAL/IMPORTANT ----
 
-* When you turn off zvision it's remembered to next time you get zombified, but
-  not the nightvision. Make it remember the last nvgs state as zombie too.
-  Got some complains and it's a bit annoying too. Should be an easy fix.
-
 * FIXED  --  fix spawn protection
   players gets invisible, but not protected against zombies.
   the array pProtect isn't used at all, just set to off and on.

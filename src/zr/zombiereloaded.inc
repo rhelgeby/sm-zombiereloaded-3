@@ -193,7 +193,7 @@ bool:IntToBool(intval)
 
 bool:IsClientPlayer(client)
 {
-    if (client > 1 && client <= maxclients)
+    if (client > 0 && client <= maxclients)
     {
         return true;
     }

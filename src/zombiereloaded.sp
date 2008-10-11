@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.6"
+#define VERSION "2.5.1.7"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -28,6 +28,7 @@
 #include "zr/overlays"
 #include "zr/zombie"
 #include "zr/menu"
+#include "zr/zradmin"
 #include "zr/sayhooks"
 #include "zr/weaponrestrict"
 #include "zr/damagecontrol"

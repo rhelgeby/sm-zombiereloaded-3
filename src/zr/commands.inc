@@ -14,8 +14,11 @@ CreateCommands()
     RegAdminCmd("zr_restrict", Command_Restrict, ADMFLAG_GENERIC, "Restrict a specified weapon");
     RegAdminCmd("zr_unrestrict", Command_UnRestrict, ADMFLAG_GENERIC, "Unrestrict a specified weapon");
 
-    RegAdminCmd("zr_set_class_knockback", Command_SetClassKnockback, ADMFLAG_GENERIC, "Sets the knockback to the specified class. Usage: zr_set_class_knockback classname value");
-    RegAdminCmd("zr_get_class_knockback", Command_GetClassKnockback, ADMFLAG_GENERIC, "Gets the knockback to the specified class. Usage: zr_get_class_knockback classname");
+    RegAdminCmd("zr_set_class_knockback", Command_SetClassKnockback, ADMFLAG_GENERIC, "Sets the knockback to the specified class. Usage: zr_set_class_knockback <class name> <value>");
+    RegAdminCmd("zr_get_class_knockback", Command_GetClassKnockback, ADMFLAG_GENERIC, "Gets the knockback to the specified class. Usage: zr_get_class_knockback <class name>");
+
+    RegAdminCmd("zr_admin", Command_AdminMenu, ADMFLAG_GENERIC, "Displays the admin menu for Zombie: Reloaded.");
+    RegAdminCmd("zr_knockback_m", Command_KnockbackMMenu, ADMFLAG_GENERIC, "Displays the knockback multiplier menu.");
 }
 
 public Action:Command_Infect(client, argc)
@@ -212,5 +215,33 @@ public Action:Command_GetClassKnockback(client, argc)
        PrintToConsole(client, "Current knockback for %s: %f", classname, knockback);
     }
 
+    return Plugin_Handled;
+}
+
+public Action:Command_AdminMenu(client, argc)
+{
+    if (IsClientPlayer(client))
+    {
+        ZRAdminMenu(client);
+    }
+    else
+    {
+        PrintToServer("This menu cannot be used in the console. Client: %d", client);
+        if (client > 0) PrintToConsole(client, "You cannot use this menu. Client: %d", client);
+    }
+    return Plugin_Handled;
+}
+
+public Action:Command_KnockbackMMenu(client, argc)
+{
+    if (IsClientPlayer(client))
+    {
+        ZRKnockbackMMenu(client);
+    }
+    else
+    {
+        PrintToServer("This menu cannot be used in the console. Client: %d", client);
+        if (client > 0) PrintToConsole(client, "You cannot use this menu. Client: %d", client);
+    }
     return Plugin_Handled;
 }
