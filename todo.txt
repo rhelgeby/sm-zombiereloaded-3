@@ -16,6 +16,9 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 * Make it possible to disable certain classes on certain maps.
 
+* Make a CVAR for setting class selection to be remembered on map change.
+  Set default to off, so default class will always be selected on each map.
+
 * Make a more advanced teleporter:
   - Admin command: zr_teleport <player>
   - Separate teleport limits for both teams
