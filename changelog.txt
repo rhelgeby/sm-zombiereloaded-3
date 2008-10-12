@@ -1,3 +1,7 @@
+2008.10.11 - 2.5.1.9 - Richard
+  * Added CVAR for saving class selection after map changes. Default: off.
+    If default classes are used, this one should be off.
+
 2008.10.11 - 2.5.1.8 - Richard
   * Added CVAR for setting default class.
 

@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.8"
+#define VERSION "2.5.1.9"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -116,6 +116,16 @@ public OnMapStart()
     
     LoadModelData();
     LoadDownloadData();
+    
+    /* Reset to default class if class selection saving is disabled. */
+    if (!GetConVarBool(gCvars[CVAR_CLASSES_SAVE]))
+    {
+        new i;
+        for (i = 1; i <= MAXPLAYERS; i++)
+        {
+            pClass[i] = GetDefaultClassIndex();
+        }
+    }
 }
 
 public OnConfigsExecuted()

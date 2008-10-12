@@ -19,6 +19,7 @@ enum ZRSettings
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
     Handle:CVAR_CLASSES_DEFAULT,
+    Handle:CVAR_CLASSES_SAVE,
     Handle:CVAR_ZOMBIE_HEALTH,
     Handle:CVAR_ZOMBIE_SPEED,
     Handle:CVAR_ZOMBIE_JUMP_DISTANCE,
@@ -88,6 +89,7 @@ CreateCvars()
     gCvars[CVAR_CLASSES_SPAWN]          =    CreateConVar("zr_classes_spawn", "0", "Classmenu is re-displayed every spawn (0: Disable)");
     gCvars[CVAR_CLASSES_RANDOM]         =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round (0: Disable)");
     gCvars[CVAR_CLASSES_DEFAULT]        =    CreateConVar("zr_classes_default", "classic", "Default class selected for all players. Usage zr_classes_default <class name>");
+    gCvars[CVAR_CLASSES_SAVE]           =    CreateConVar("zr_classes_save", "0", "Remember class selection when changing maps.");
     gCvars[CVAR_ZOMBIE_HEALTH]          =    CreateConVar("zr_zombie_health", "5000", "The default health of a zombie");
     gCvars[CVAR_ZOMBIE_SPEED]           =    CreateConVar("zr_zombie_speed", "350", "How fast zombies travel (300: Default speed,  600: Double speed)");
     gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]   =    CreateConVar("zr_zombie_jump_distance", "0.1", "How far the zombie jumps,  (0: Regular jump distance)");
