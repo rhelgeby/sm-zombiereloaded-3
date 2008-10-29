@@ -183,27 +183,37 @@ public Market_PostOnWeaponSelected(client, &bool:allowed)
 
 ZSpawn(client)
 {
+    if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Spawn request:");
     new bool:spawn = GetConVarBool(gCvars[CVAR_ZSPAWN]);
     if (!spawn)
     {
         ZR_PrintToChat(client, "Feature is disabled");
-        
+        if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Not enabled.");
         return;
     }
     
     new team = GetClientTeam(client);
     if (team != CS_TEAM_T && team != CS_TEAM_CT)
     {
+        if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Player is not a T or CT.");
         return;
     }
     
-    if (IsPlayerAlive(client) || IsPlayerInList(client))
+    if (IsPlayerAlive(client))
     {
+        if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Player appears to be alive.");
+        return;
+    }
+    
+    if (IsPlayerInList(client))
+    {
+        if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Player is already in the list (= maybe spawned, or bug).");
         return;
     }
 
+    if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Spawned player");
     RespawnPlayer(client);
-            
+    
     AddPlayerToList(client);
 }
 

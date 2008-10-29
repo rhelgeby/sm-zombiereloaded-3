@@ -14,8 +14,6 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 ---- NORMAL/GAMEPLAY ----
 
-* Fix class data not reloaded on map change. Custom class data from previous map is not reset.
-
 * Make it possible to disable certain classes on certain maps.
   Admin command: zr_class_enabled <class name> <0/1>
 

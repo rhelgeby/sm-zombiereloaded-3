@@ -73,9 +73,15 @@ public Action:Command_Respawn(client, argc)
         return Plugin_Handled;
     }
     
+    new team;
     for (new x = 0; x < tcount; x++)
     {
-        RespawnPlayer(targets[x]);
+        team = GetClientTeam(client);
+        if (team == CS_TEAM_T || team == CS_TEAM_CT)
+        {
+            ZR_DebugPrintToConsole(x, "ZSpawn: Spawned player");
+            RespawnPlayer(targets[x]);
+        }
     }
     
     return Plugin_Handled;

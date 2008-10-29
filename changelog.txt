@@ -1,3 +1,10 @@
+2008.10.29 - 2.5.1.10 - Richard
+  * Improved handling of invalid handle errors on OnClientDisconnect and PlayerDeath.
+    CloseHandle sometimes cause errors when destroying timers. Solution: KillTimer.
+  * Added debug switch and a function for printing/logging messages to client consoles or the server.
+  * Added debug messages on zspawn.
+  * Fixed zr_spawn not spawning spectactors (if @all is used).
+
 2008.10.11 - 2.5.1.9 - Richard
   * Added CVAR for saving class selection after map changes. Default: off.
     If default classes are used, this one should be off.

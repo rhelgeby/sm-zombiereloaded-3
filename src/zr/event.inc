@@ -439,7 +439,7 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
         {
             if (tHandles[index][x] != INVALID_HANDLE)
             {
-                CloseHandle(tHandles[index][x]);
+                KillTimer(tHandles[index][x]);
                 tHandles[index][x] = INVALID_HANDLE;
             }
         }

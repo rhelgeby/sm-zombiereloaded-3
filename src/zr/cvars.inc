@@ -9,6 +9,7 @@
 enum ZRSettings
 {
     Handle:CVAR_ENABLE,
+    Handle:CVAR_DEBUG,
     Handle:CVAR_ALLOW_PLAYER_TEAM,
     Handle:CVAR_AMBIENCE,
     Handle:CVAR_AMBIENCE_FILE,
@@ -79,6 +80,7 @@ new gCvars[ZRSettings];
 CreateCvars()
 {
     gCvars[CVAR_ENABLE]                 =    CreateConVar("zr_enable", "1", "Enable zombie gameplay (0: Disable)");
+    gCvars[CVAR_DEBUG]                  =    CreateConVar("zr_debug", "0", "Debug switch, for developers. Usually enables logging of messages and events to a console. (0: Disable)");
     gCvars[CVAR_ALLOW_PLAYER_TEAM]      =    CreateConVar("zr_allow_player_team", "0", "This will allow the player_team event to be fired on first team join, enable when using mani model menu (0: Disable)");
     gCvars[CVAR_AMBIENCE]               =    CreateConVar("zr_ambience", "1", "Enable creepy ambience to be played throughout the game (0: Disable)");
     gCvars[CVAR_AMBIENCE_FILE]          =    CreateConVar("zr_ambience_file", "ambient/zr/zr_ambience.mp3", "Path to ambient sound file that will be played throughout the game, when zr_ambience is 1");

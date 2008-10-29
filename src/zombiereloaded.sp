@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.9"
+#define VERSION "2.5.1.10"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -168,6 +168,8 @@ public OnClientPutInServer(client)
     {
         tHandles[client][x] = INVALID_HANDLE;
     }
+    
+    RefreshList();
 }
 
 public OnClientDisconnect(client)
@@ -181,10 +183,12 @@ public OnClientDisconnect(client)
     {
         if (tHandles[client][x] != INVALID_HANDLE)
         {
-            CloseHandle(tHandles[client][x]);
+            KillTimer(tHandles[client][x]);
             tHandles[client][x] = INVALID_HANDLE;
         }
     }
+    
+    RefreshList();
 }
 
 MapChangeCleanup()
@@ -194,6 +198,17 @@ MapChangeCleanup()
     tRound = INVALID_HANDLE;
     tInfect = INVALID_HANDLE;
     tAmbience = INVALID_HANDLE;
+    
+    for (new client = 1; client <= maxclients; client++)
+    {
+        for (new x = 0; x < MAXTIMERS; x++)
+        {
+            if (tHandles[client][x] != INVALID_HANDLE)
+            {
+                tHandles[client][x] = INVALID_HANDLE;
+            }
+        }
+    }
 }
 
 ZREnd()
@@ -215,7 +230,7 @@ ZREnd()
         {
             if (tHandles[x][y] != INVALID_HANDLE)
             {
-                CloseHandle(tHandles[x][y]);
+                KillTimer(tHandles[x][y]);
                 tHandles[x][y] = INVALID_HANDLE;
             }
         }

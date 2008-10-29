@@ -202,3 +202,17 @@ bool:IsClientPlayer(client)
         return false;
     }
 }
+
+ZR_DebugPrintToConsole(client, String:message[])
+{
+    if (client)
+    { /* Client console */
+        PrintToConsole(client, message);
+        LogMessage("Debug log (client %i) -- %s", client, message);
+    }
+    else
+    { /* Server console */
+        PrintToServer(message);
+        LogMessage("Debug log (client %i) -- %s", client, message);
+    }
+}
