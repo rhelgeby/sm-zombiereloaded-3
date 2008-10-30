@@ -76,7 +76,7 @@ public Action:Command_Respawn(client, argc)
     new team;
     for (new x = 0; x < tcount; x++)
     {
-        team = GetClientTeam(client);
+        team = GetClientTeam(x);
         if (team == CS_TEAM_T || team == CS_TEAM_CT)
         {
             ZR_DebugPrintToConsole(x, "ZSpawn: Spawned player");
