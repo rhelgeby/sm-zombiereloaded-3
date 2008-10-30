@@ -129,7 +129,7 @@ RefreshList()
     new maxplayers = GetMaxClients();
     for (new x = 1; x <= maxplayers; x++)
     {
-        if (IsClientInGame(x))
+        if (IsClientInGame(x) && IsPlayerAlive(x))
         {  
             new team = GetClientTeam(x);
             if (team == CS_TEAM_T || team == CS_TEAM_CT)

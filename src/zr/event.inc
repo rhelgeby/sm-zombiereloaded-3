@@ -50,7 +50,6 @@ public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
         tInfect = INVALID_HANDLE;
     }
     
-    
     ZR_PrintToChat(0, "Round objective");
 }
 
