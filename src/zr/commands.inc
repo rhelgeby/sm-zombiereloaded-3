@@ -76,10 +76,10 @@ public Action:Command_Respawn(client, argc)
     new team;
     for (new x = 0; x < tcount; x++)
     {
-        team = GetClientTeam(x);
+        team = GetClientTeam(targets[x]);
         if (team == CS_TEAM_T || team == CS_TEAM_CT)
         {
-            ZR_DebugPrintToConsole(x, "ZSpawn: Spawned player");
+            if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(targets[x], "ZSpawn: Spawned player");
             RespawnPlayer(targets[x]);
         }
     }
