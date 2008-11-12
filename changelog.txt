@@ -1,3 +1,7 @@
+2008.11.11 - 2.5.1.11 - Richard
+  * zspawn confirmed fixed.
+  * Added debug messages on OnPlayerDisconnect and PlayerDeath. (zr_debug must be 2, might spam the console).
+
 2008.10.29 - 2.5.1.10 - Richard
   * Improved handling of invalid handle errors on OnClientDisconnect and PlayerDeath.
     CloseHandle sometimes cause errors when destroying timers. Solution: KillTimer.

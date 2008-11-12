@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.10"
+#define VERSION "2.5.1.11"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -179,10 +179,18 @@ public OnClientDisconnect(client)
     
     PlayerLeft(client);
     
+    new debug_val = GetConVarInt(gCvars[CVAR_DEBUG]);
+    new String:debug_msg[64];
+    
     for (new x = 0; x < MAXTIMERS; x++)
     {
         if (tHandles[client][x] != INVALID_HANDLE)
         {
+            if (debug_val > 1)
+            {
+                Format(debug_msg, sizeof(debug_msg), "PlayerDeath - Killing timer %i with handle %x.", x, tHandles[client][x]);
+                ZR_DebugPrintToConsole(0, debug_msg);
+            }
             KillTimer(tHandles[client][x]);
             tHandles[client][x] = INVALID_HANDLE;
         }

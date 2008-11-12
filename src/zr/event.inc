@@ -434,10 +434,18 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
             }
         }
         
+        new debug_val = GetConVarInt(gCvars[CVAR_DEBUG]);
+        new String:debug_msg[64];
+        
         for (new x = 0; x < MAXTIMERS; x++)
         {
             if (tHandles[index][x] != INVALID_HANDLE)
             {
+                if (debug_val > 1)
+                {
+                    Format(debug_msg, sizeof(debug_msg), "PlayerDeath - Killing timer %i with handle %x.", x, tHandles[index][x]);
+                    ZR_DebugPrintToConsole(0, debug_msg);
+                }
                 KillTimer(tHandles[index][x]);
                 tHandles[index][x] = INVALID_HANDLE;
             }
