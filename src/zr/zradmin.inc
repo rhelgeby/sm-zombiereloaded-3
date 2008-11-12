@@ -19,7 +19,7 @@ ZRAdminMenu(client)
     decl String:zknockback[] = "Change class knockback";
     decl String:znvgs[] = "Change night vision settings";
     decl String:zinfect[] = "Infect a player";
-    decl String:zspawn[] = "Spawn a player";
+    decl String:zspawn[] = "Spawn all players";
     decl String:zrestrict[] = "Restrict a weapon";
     decl String:zunrestrict[] = "Unrestrict a weapon";
 
@@ -28,7 +28,7 @@ ZRAdminMenu(client)
     AddMenuItem(zr_admin_menu, "zknockback", zknockback);
     AddMenuItem(zr_admin_menu, "znvgs", znvgs);
     AddMenuItem(zr_admin_menu, "zinfect", zinfect);
-    AddMenuItem(zr_admin_menu, "zspawn", zspawn, ITEMDRAW_DISABLED);
+    AddMenuItem(zr_admin_menu, "zspawn", zspawn);
     AddMenuItem(zr_admin_menu, "zrestrict", zrestrict, ITEMDRAW_DISABLED);
     AddMenuItem(zr_admin_menu, "zunrestrict", zunrestrict, ITEMDRAW_DISABLED);
     
@@ -59,7 +59,7 @@ public ZRAdminMenuHandle(Handle:zr_admin_menu, MenuAction:action, client, slot)
             }
             case 4:
             {
-                // ZRSpawnMenu(client);
+                ZRSpawnAll(client);
             }
             case 5:
             {
@@ -351,57 +351,14 @@ public ZRInfectHandle(Handle:zr_infect_menu, MenuAction:action, client, slot)
     }
 }
 
-/*ZRSpawnMenu(client)
+ZRSpawnAll(client)
 {
-    new Handle:zr_spawn_menu = CreateMenu(ZRSpawnHandle);
-
-    SetMenuTitle(zr_spawn_menu, "Spawn a player:");
-
-    // Todo: List only dead players.
-
-    AddTargetsToMenu(zr_spawn_menu, client, true, true);
-    SetMenuExitBackButton(zr_spawn_menu, true);
-    DisplayMenu(zr_spawn_menu, client, MENU_TIME_FOREVER);
-}*/
-
-/*public ZRSpawnHandle(Handle:zr_spawn_menu, MenuAction:action, client, slot)
-{
-    if (action == MenuAction_Select)
+    for (new c = 1; c < maxclients; c++)
     {
-         decl String:info[32];
-         new userid, target;
-         
-         GetMenuItem(zr_spawn_menu, slot, info, sizeof(info));
-         userid = StringToInt(info);
-
-         if ((target = GetClientOfUserId(userid)) == 0)
-         {
-             ReplyToCommand(client, "[ZR] Player no longer available");
-         }
-         else if (!CanUserTarget(client, target))
-         {
-             ReplyToCommand(client, "[ZR] Unable to target player");
-         }
-         else
-         {
-             decl String:name[32];
-             GetClientName(target, name, sizeof(name));
-             // Todo: Do spawn.
-             ShowActivity2(client, "[ZR] Spawned %s", name);
-         }
+        ZSpawn(c);
     }
-    if (action == MenuAction_Cancel)
-    {
-        if (slot == MenuCancel_ExitBack)
-        {
-            ZRAdminMenu(client);
-        }
-    }
-    if (action == MenuAction_End)
-    {
-        CloseHandle(zr_spawn_menu);
-    }
-}*/
+    ZRAdminMenu(client);
+}
 
 AddToKnockbackMultiplier(Float:value)
 {
