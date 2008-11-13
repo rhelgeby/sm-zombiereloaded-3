@@ -892,8 +892,7 @@ public Action:RespawnTimer(Handle:timer, any:index)
     new team = GetClientTeam(index);
     if (!IsClientInGame(index) || IsPlayerAlive(index) || team != CS_TEAM_T && team != CS_TEAM_CT)
     {
-        tHandles[index][TZHP] = INVALID_HANDLE;
-        
+        tHandles[index][TRESPAWN] = INVALID_HANDLE;
         return;
     }
     

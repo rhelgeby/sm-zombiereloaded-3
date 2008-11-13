@@ -235,8 +235,8 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     }
     else
     {
-		SetPlayerAlpha(index, 255);
-	}
+        SetPlayerAlpha(index, 255);
+    }
     
     new bool:randomclass = GetConVarBool(gCvars[CVAR_CLASSES_RANDOM]);
     

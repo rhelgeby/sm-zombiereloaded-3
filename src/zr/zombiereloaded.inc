@@ -207,7 +207,7 @@ ZR_DebugPrintToConsole(client, String:message[])
 {
     if (client)
     { /* Client console */
-        PrintToConsole(client, message);
+        if (IsClientInGame(client)) PrintToConsole(client, message);
         LogMessage("Debug log (client %i) -- %s", client, message);
     }
     else

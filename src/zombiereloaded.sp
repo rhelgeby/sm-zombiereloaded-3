@@ -188,7 +188,7 @@ public OnClientDisconnect(client)
         {
             if (debug_val > 1)
             {
-                Format(debug_msg, sizeof(debug_msg), "PlayerDeath - Killing timer %i with handle %x.", x, tHandles[client][x]);
+                Format(debug_msg, sizeof(debug_msg), "OnClientDisconnect - Killing timer %i with handle %x.", x, tHandles[client][x]);
                 ZR_DebugPrintToConsole(0, debug_msg);
             }
             KillTimer(tHandles[client][x]);
