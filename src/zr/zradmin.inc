@@ -355,7 +355,10 @@ ZRSpawnAll(client)
 {
     for (new c = 1; c < maxclients; c++)
     {
-        ZSpawn(c);
+        if (IsClientConnected(c) && IsClientInGame(c))
+        {
+            ZSpawn(c);
+        }
     }
     ZRAdminMenu(client);
 }
