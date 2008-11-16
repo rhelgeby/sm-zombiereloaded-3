@@ -1,3 +1,6 @@
+2008.11.16 - 2.5.1.12 - Richard
+  * Applied game rules not available fix from Grey Echo.
+
 2008.11.13 - 2.5.1.11 - Richard
   * ZSpawn fix confirmed.
   * Added debug messages on OnPlayerDisconnect and PlayerDeath. (zr_debug must be 2, might spam the console).

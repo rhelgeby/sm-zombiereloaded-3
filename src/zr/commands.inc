@@ -135,12 +135,12 @@ public Action:Command_SetClassKnockback(client, argc)
     {
         if (client == 0)
         {
-            PrintToServer("Sets the specified class knockback. Usage: zr_set_class_knockback classname value");
+            PrintToServer("Sets the specified class knockback. Usage: zr_set_class_knockback <classname> <knockback>");
             return Plugin_Handled;
         }
         else
         {
-            PrintToConsole(client, "Sets the specified class knockback. Usage: zr_set_class_knockback classname value");
+            PrintToConsole(client, "Sets the specified class knockback. Usage: zr_set_class_knockback <classname> <knockback>");
             return Plugin_Handled;
         }
     }
@@ -179,12 +179,12 @@ public Action:Command_GetClassKnockback(client, argc)
     {
         if (client == 0)
         {
-            PrintToServer("Gets the specified class knockback. Usage: zr_get_class_knockback classname");
+            PrintToServer("Gets the specified class knockback. Usage: zr_get_class_knockback <classname>");
             return Plugin_Handled;
         }
         else
         {
-            PrintToConsole(client, "Gets the specified class knockback. Usage: zr_get_class_knockback classname");
+            PrintToConsole(client, "Gets the specified class knockback. Usage: zr_get_class_knockback <classname>");
             return Plugin_Handled;
         }
     }

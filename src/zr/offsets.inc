@@ -20,9 +20,9 @@ new offsBuyZone;
 new offsColor;
 new offsRender;
 
-new Handle:hGameConf = INVALID_HANDLE;
-new Handle:hRemoveAllItems = INVALID_HANDLE;
-new Handle:hTerminateRound = INVALID_HANDLE;
+new Handle:g_hGameConf = INVALID_HANDLE;
+new Handle:g_hRemoveAllItems = INVALID_HANDLE;
+new Handle:g_hTerminateRound = INVALID_HANDLE;
 
 FindOffsets()
 {
@@ -105,17 +105,17 @@ FindOffsets()
 
 SetupGameData()
 {
-    hGameConf = LoadGameConfigFile("plugin.zombiereloaded");
+    g_hGameConf = LoadGameConfigFile("plugin.zombiereloaded");
     
     StartPrepSDKCall(SDKCall_Player);
-    PrepSDKCall_SetFromConf(hGameConf, SDKConf_Virtual, "RemoveAllItems");
-    hRemoveAllItems = EndPrepSDKCall();
+    PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "RemoveAllItems");
+    g_hRemoveAllItems = EndPrepSDKCall();
     
     StartPrepSDKCall(SDKCall_GameRules);
-    PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "TerminateRound");
+    PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Signature, "TerminateRound");
     PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
     PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-    hTerminateRound = EndPrepSDKCall();
+    g_hTerminateRound = EndPrepSDKCall();
 }
 
 SetPlayerVelocity(client, const Float:vec[3])
@@ -187,12 +187,13 @@ AddPlayerDeath(client, amount)
 
 RemoveAllPlayersWeapons(client)
 {
-    SDKCall(hRemoveAllItems, client);
+    SDKCall(g_hRemoveAllItems, client);
 }
 
 TerminateRound(Float:delay, reason)
 {
-    SDKCall(hTerminateRound, delay, reason);
+    if (g_hTerminateRound == INVALID_HANDLE) return;
+    SDKCall(g_hTerminateRound, delay, reason);
 }
 
 SetPlayerModel(client, const String:model[])
