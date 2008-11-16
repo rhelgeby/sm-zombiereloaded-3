@@ -2,20 +2,15 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 ---- CRITICAL/IMPORTANT ----
 
-* FIXED  --  fix spawn protection
-  players gets invisible, but not protected against zombies.
-  the array pProtect isn't used at all, just set to off and on.
-
-* DONE  --  classes.inc:GetClassKnockback
-  change class knockback to be a multiplier of the default knockback (like the
-  old ZR), not absolute values:
-  knockback = default * class knockback
-
 
 ---- NORMAL/GAMEPLAY ----
 
-* Make it possible to disable certain classes on certain maps.
-  Admin command: zr_class_enabled <class name> <0/1>
+* Make it possible to disable certain classes on certain maps. Only specify the
+  class name to read the value:
+  zr_class_enabled <classname>[ <0/1>]
+
+* Make a admin command to read and write settings to a spesific class,
+  using key/value. Integrate it with the zr_admin menu.
 
 * Make a more advanced teleporter:
   - Admin command: zr_teleport <player>
@@ -26,17 +21,19 @@ Section content is listed in order of importance. Some of these can be ideas too
   - Maybe some teleportation effects, like sound, glow or smoke.
   (make a separate inc-file for the teleporter)
 
-* Make a admin command to read and write settings to a spesific class, using key/value.
-  Integrate it with the zr_admin menu.
-
 * Zombie dont have fall damage (damage by player 0 = server should always work)
   Make it a CVAR, so for example zombies can't kill themselfs on some maps by
   going through lasers.
+
+* Knockback presets (integrated into zombie admin menu).
+  Temporary do many changes on the zombies (by executing configs). Useful
+  settings or fun settings. SourceMod already has a execute config menu, but it
+  would be better if this was integrated in ZR.
 
 * zombie.inc:KnockBack / cvars.inc
   Make a CVAR for setting shotgun/hegrenade knockback boost. The zombies don't
   fly away that much.
 
-* Fix some zombies not able to zombify some humans when using the infect command
-  before the first zombie. (make him a mother zombie, kill infect timer, set some
-  switches)
+* Fix some zombies not able to zombify some humans when using the infect
+  command before the first zombie. (make him a mother zombie, kill infect timer,
+  set some switches)
