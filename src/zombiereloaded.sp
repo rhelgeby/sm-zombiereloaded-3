@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.12"
+#define VERSION "2.5.1.13"
 
 #include "zr/zombiereloaded"
 #include "zr/global"

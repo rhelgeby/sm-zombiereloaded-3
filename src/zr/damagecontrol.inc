@@ -176,6 +176,17 @@ public Action:Attempt_Suicide(client, argc)
     }
     
     ZR_ReplyToCommand(client, "Suicide text");
-        
+    ZR_PrintToChat(client, "Suicide text");
+    
+    decl String:clientname[64];
+    decl String:buffer[192];
+
+    if (GetConVarBool(gCvars[CVAR_SUICIDE_ECHO]))
+    {
+        GetClientName(client, clientname, sizeof(clientname));
+        Format(buffer, sizeof(buffer), "Player '%s' attempted suicide.", clientname);
+        ZR_PrintToAdminChat(buffer);
+    }
+    
     return Plugin_Handled;
 }

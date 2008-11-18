@@ -116,3 +116,16 @@ stock ZR_ReplyToCommand(client, any:...)
     
     ReplyToCommand(client, phrase);
 }
+
+stock ZR_PrintToAdminChat(String:message[])
+{
+    decl String:buffer[192];
+    Format(buffer, sizeof(buffer), "[ZR] %s", message);
+    for (new client = 1; client < maxclients; client++)
+    {
+        if (IsClientConnected(client) && IsClientInGame(client) && GetUserAdmin(client) != INVALID_ADMIN_ID)
+        {
+            PrintToChat(client, buffer);
+        }
+    }
+}

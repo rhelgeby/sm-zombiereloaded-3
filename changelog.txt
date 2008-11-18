@@ -1,3 +1,7 @@
+2008.11.17 - 2.5.1.13 - Richard
+  * Made a switch for printing suicide attempts to admin chat.
+  * Added suicide response to client chat too, not just the console.
+
 2008.11.16 - 2.5.1.12 - Richard
   * Applied game rules not available fix from Grey Echo.
 
