@@ -60,6 +60,7 @@ enum ZRSettings
     Handle:CVAR_ZSPAWN,
     Handle:CVAR_ZTELE,
     Handle:CVAR_ZTELE_LIMIT,
+    Handle:CVAR_ZTELE_HUMANS,
     Handle:CVAR_ZSTUCK,
     Handle:CVAR_ZHP,
     Handle:CVAR_ZHP_DEFAULT,
@@ -132,6 +133,7 @@ CreateCvars()
     gCvars[CVAR_ZSPAWN]                 =    CreateConVar("zr_zspawn", "1", "Allow players to spawn if they just joined the game (0: Disable)");
     gCvars[CVAR_ZTELE]                  =    CreateConVar("zr_ztele", "1", "Allows zombies who get stuck to teleport back to spawn (0: Disable)");
     gCvars[CVAR_ZTELE_LIMIT]            =    CreateConVar("zr_ztele_limit", "1", "Max amount of teleports per round when zr_ztele is 1 (0: Unlimited)");
+    gCvars[CVAR_ZTELE_HUMANS]           =    CreateConVar("zr_ztele_humans", "1", "Allow humans to use the teleporter (0: Disabled)");
     gCvars[CVAR_ZSTUCK]                 =    CreateConVar("zr_zstuck", "1", "Allow players that are stuck together to get unstuck (0: Disable)");
     gCvars[CVAR_ZHP]                    =    CreateConVar("zr_zhp", "1", "Allows clients to enable/disable zombie health display (1: On,  0: Off)");
     gCvars[CVAR_ZHP_DEFAULT]            =    CreateConVar("zr_zhp_default", "1", "The default value of zombie health display to new clients (1: On,  0: Off)");

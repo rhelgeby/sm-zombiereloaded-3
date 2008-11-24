@@ -227,7 +227,8 @@ ZTele(client)
         return;
     }
     
-    if (!IsPlayerZombie(client) && zombieSpawned)
+    new bool:tele_humans = GetConVarBool(gCvars[CVAR_ZTELE_HUMANS]);
+    if (!IsPlayerZombie(client) && !tele_humans && zombieSpawned)
     {
         ZR_PrintToChat(client, "!ztele humans restricted");
         
