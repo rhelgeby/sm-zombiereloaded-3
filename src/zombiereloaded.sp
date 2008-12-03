@@ -121,9 +121,10 @@ public OnMapStart()
     if (!GetConVarBool(gCvars[CVAR_CLASSES_SAVE]))
     {
         new i;
+        new classindex = GetDefaultClassIndex();
         for (i = 1; i <= MAXPLAYERS; i++)
         {
-            pClass[i] = GetDefaultClassIndex();
+            pClass[i] = classindex;
         }
     }
 }
