@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.14"
+#define VERSION "2.5.1.15"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -86,11 +86,6 @@ public OnPluginStart()
     // ======================================================================
     
     ZR_PrintToServer("Plugin loaded");
-}
-
-public OnPluginEnd()
-{
-    ZREnd();
 }
 
 public OnLibraryRemoved(const String:name[])

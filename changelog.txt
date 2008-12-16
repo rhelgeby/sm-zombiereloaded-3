@@ -1,3 +1,6 @@
+2008.12.16 - 2.5.1.15 - Richard
+  * Removed unnecessary function call in OnPluginEnd causeing the periodical GameRules not available error.
+
 2008.11.24 - 2.5.1.14 - Richard
   * Made zr_ztele_humans cvar for allowing or disallowing humans to use the teleporter. Defaults to allow.
 
