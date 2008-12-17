@@ -2,6 +2,7 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 ---- CRITICAL/IMPORTANT ----
 
+* Logging of infections by admins. For monitoring.
 
 ---- NORMAL/GAMEPLAY ----
 
@@ -32,6 +33,8 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 * zombie.inc:KnockBack / cvars.inc
   Make a CVAR for adjusting shotgun/hegrenade knockback boost.
+
+* Validate ALL configs and cvars while loading the plugin. Log messages and unload ZR (or use default) if invalid data is found.
 
 * Make a jetpack feature.
 
