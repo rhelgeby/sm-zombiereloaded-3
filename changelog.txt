@@ -1,3 +1,6 @@
+2008.12.20 - 2.5.1.16
+  * Improved the teleporter. Startup delay, cooldown, separate team delays and limits. Admin commands made, but not coded yet.
+
 2008.12.16 - 2.5.1.15 - Richard
   * Removed unnecessary function call in OnPluginEnd causeing the periodical GameRules not available error.
 

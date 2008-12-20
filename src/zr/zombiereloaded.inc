@@ -49,9 +49,17 @@ new bool:pProtect[MAXPLAYERS+1];
 new pClass[MAXPLAYERS+1];
 new pNextClass[MAXPLAYERS+1];
 
-new teleCount[MAXPLAYERS+1];
 new protCount[MAXPLAYERS+1];
-new Float:spawnLoc[MAXPLAYERS+1][3];
+
+new Float:spawnLoc[MAXPLAYERS + 1][3];
+new Float:bufferLoc[3];
+new bool:ztele_spawned[MAXPLAYERS + 1] = {false, ...};
+new ztele_countdown[MAXPLAYERS + 1] = {-1, ...};
+new ztele_count[MAXPLAYERS + 1];
+new bool:ztele_online = false;
+new Handle:ztele_startup_timer = INVALID_HANDLE;
+new Handle:ztele_countdown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
+new Handle:ztele_cooldown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 
 new maxclients;
 

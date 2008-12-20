@@ -13,15 +13,6 @@ Section content is listed in order of importance. Some of these can be ideas too
 * Make a admin command to read and write settings to a spesific class,
   using key/value. Integrate it with the zr_admin menu.
 
-* Make a more advanced teleporter:
-  - Admin command: zr_teleport <player>
-  - Separate teleport limits for both teams
-  - Separate delays for both teams
-  - Startup time
-  - Separate cooldown for both teams
-  - Maybe some teleportation effects, like sound, glow or smoke.
-  (make a separate inc-file for the teleporter)
-
 * Zombie dont have fall damage (damage by player 0 = server should always work)
   Make it a CVAR, so for example zombies can't kill themselfs on some maps by
   going through lasers.

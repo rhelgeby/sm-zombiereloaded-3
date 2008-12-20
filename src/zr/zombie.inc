@@ -182,6 +182,9 @@ Zombify_Mother(client)
 
     InfectionEffects(client);
     
+    ztele_count[client] = 0;
+    AbortTeleport(client);
+    
     ZR_PrintToChat(client, "You are a zombie");
     
     if (bZVision[client])
@@ -268,6 +271,9 @@ Zombify(client, attacker)
     }
     
     InfectionEffects(client);
+    
+    ztele_count[client] = 0;
+    AbortTeleport(client);
     
     new ZTeam:team = IsRoundOver();
     RoundWin(team);

@@ -45,9 +45,12 @@ public Action:SayCommand(client, argc)
         ZSpawn(client);
     }
     
-    else if (StrEqual(args, "!ztele", false))
+    else if (StrEqual(args, "!tp", false) ||
+             StrEqual(args, "!ztele", false) ||
+             StrEqual(args, "!tele", false) ||
+             StrEqual(args, "!teleport", false))
     {
-        ZTele(client);
+        ZTeleClientCheck(client);
     }
     
     else if (StrEqual(args, "!zstuck", false))
@@ -58,6 +61,12 @@ public Action:SayCommand(client, argc)
     else if (StrEqual(args, "!zhp", false))
     {
         ZHP(client);
+    }
+    else if (StrContains(args, "teleport", false) != -1
+             || StrContains(args, "stuck", false) != -1
+             || StrContains(args, "help", false) != -1)
+    {
+        ZR_PrintToChat(client, "!ztele stuck");
     }
     
     return Plugin_Continue;
@@ -217,6 +226,7 @@ ZSpawn(client)
     AddPlayerToList(client);
 }
 
+/*
 ZTele(client)
 {
     new bool:tele = GetConVarBool(gCvars[CVAR_ZTELE]);
@@ -269,6 +279,7 @@ public Action:Teleport(Handle:timer, any:index)
     
     tHandles[index][TTELE] = INVALID_HANDLE;
 }
+*/
 
 ZStuck(client)
 {

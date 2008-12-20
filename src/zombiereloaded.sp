@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.15"
+#define VERSION "2.5.1.16"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -26,6 +26,7 @@
 #include "zr/classes"
 #include "zr/models"
 #include "zr/overlays"
+#include "zr/teleport"
 #include "zr/zombie"
 #include "zr/menu"
 #include "zr/sayhooks"
@@ -174,6 +175,7 @@ public OnClientDisconnect(client)
     ClientUnHookAttack(client);
     
     PlayerLeft(client);
+    ZTeleResetClient(client);
     
     new debug_val = GetConVarInt(gCvars[CVAR_DEBUG]);
     new String:debug_msg[64];

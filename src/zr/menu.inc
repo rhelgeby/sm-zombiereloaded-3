@@ -77,7 +77,7 @@ public MainMenuHandle(Handle:menu_main, MenuAction:action, client, slot)
             }
             case 4:
             {
-                ZTele(client);
+                ZTeleClientCheck(client);
                 MainMenu(client);
             }
             case 5:

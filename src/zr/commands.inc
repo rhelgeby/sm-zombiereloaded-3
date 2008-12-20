@@ -10,7 +10,9 @@ CreateCommands()
 {
     RegAdminCmd("zr_infect", Command_Infect, ADMFLAG_GENERIC, "Infects the specified player");
     RegAdminCmd("zr_spawn", Command_Respawn, ADMFLAG_GENERIC, "Respawns the specified player following auto-respawning rules");
-    
+    RegAdminCmd("zr_teleport", Command_Teleport, ADMFLAG_GENERIC, "Teleports one or more players to spawn. Usage: zr_teleport <target>");
+    RegAdminCmd("zr_tele_saveloc", Command_TeleSaveLocation, ADMFLAG_GENERIC, "Saves your or a players location to a buffer. Usage: zr_tele_saveloc [#userid|name]");
+    RegAdminCmd("zr_tele_loc", Command_TeleportToLocation, ADMFLAG_GENERIC, "Teleports you or a player to the saved location. Usage: zr_tele_loc [#userid|name]");
     RegAdminCmd("zr_restrict", Command_Restrict, ADMFLAG_GENERIC, "Restrict a specified weapon");
     RegAdminCmd("zr_unrestrict", Command_UnRestrict, ADMFLAG_GENERIC, "Unrestrict a specified weapon");
 

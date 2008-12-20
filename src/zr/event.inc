@@ -74,6 +74,9 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
     new Float:max = GetConVarFloat(gCvars[CVAR_SPAWN_MAX]);
     new Float:randlen = GetRandomFloat(min, max);
     tInfect = CreateTimer(randlen, MotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
+    
+    ZTeleEnable();
+
 }
 
 public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
@@ -118,6 +121,8 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
     {
         ShowOverlays(5.0, Zombie);
     }
+
+    ZTeleReset();
 }
 
 public Action:PlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
@@ -177,10 +182,9 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         new cash = GetConVarInt(gCvars[CVAR_CASHAMOUNT]);
         SetPlayerMoney(index, cash);
     }
-  
-    teleCount[index] = 0;
-    GetClientAbsOrigin(index, spawnLoc[index]);
-  
+    
+    ZTeleClientSpawned(index);
+    
     NightVisionOn(index, false);
     NightVision(index, false);
   

@@ -94,14 +94,15 @@
 	"!ztele amount"
 	{
 		"#format"	"{1:d}"
-		"en"		"You have @green{1}@default teleports left this round. (Teleport in 3 seconds)"
-		"ru"		"У вас осталось @green{1}@default телепортов в этом раунде. (Телепортация через 3 секунды)"
+		"en"		"You have @green{1}@default teleports left this round."
+		"ru"		"У вас осталось @green{1}@default телепортов в этом раунде."
 	}
 
-	"!ztele amount unlimited"
+	"!ztele time left"
 	{
-		"en"		"You will be teleported in 3 seconds."
-		"ru"		"Вы будете телепортированы через 3 секунды."
+		"#format"	"{1:d}"
+		"en"		"You will be teleported in {1} seconds."
+		"ru"		"Вы будете телепортированы через {1} секунды."
 	}
 
 	"!ztele limit reached"
@@ -112,8 +113,43 @@
 
 	"!ztele humans restricted"
 	{
-		"en"		"Once a player has been infected, only zombies can use !ztele"
+		"en"		"Once a player has been infected, only zombies can use !ztele."
 		"ru"		"После инфицирования кого-либо, только зомби могут использовать !ztele"
+	}
+
+	"!ztele zombies restricted"
+	{
+		"en"		"The teleporter is disabled for zombies."
+	}
+
+	"!ztele stuck"
+	{
+		"en"		"Tip: Use !tp to teleport away if you are stuck."
+	}
+
+	"!ztele not spawned"
+	{
+		"en"		"You cannot use the teleporter before you've spawned."
+	}
+
+	"!ztele offline"
+	{
+		"en"		"The teleporter is not online yet."
+	}
+
+	"!ztele cooldown"
+	{
+		"en"		"Your teleporter is still on a cooldown."
+	}
+
+	"!ztele in progress"
+	{
+		"en"		"You already have a teleportation in progress."
+	}
+
+	"!ztele successful"
+	{
+		"en"		"Teleport successful."
 	}
 
 	"!zhp enabled"
