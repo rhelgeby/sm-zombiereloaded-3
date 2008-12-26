@@ -1,3 +1,7 @@
+2008.12.26 - 2.5.1.17
+  * Finished teleporter admin commands; zr_teleport, zr_tele_saveloc, zr_tele_loc, zr_tele_abort.
+  * Teleport admin menu made, but not coded.
+
 2008.12.20 - 2.5.1.16
   * Improved the teleporter. Startup delay, cooldown, separate team delays and limits. Admin commands made, but not coded yet.
 

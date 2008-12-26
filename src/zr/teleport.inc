@@ -2,7 +2,7 @@
  * ====================
  *   Zombie:Reloaded
  *   File: teleport.inc
- *   Authors: Richard Helgeby / Cpt.Moore
+ *   Authors: Richard Helgeby, Cpt.Moore
  * ==================== 
  */
 
@@ -138,31 +138,175 @@ public Action:Event_TeleportCooldown(Handle:Timer, any:client)
 
 public Action:Command_Teleport(client, argc)
 {
-    // Check (on all specified clients) if a teleport/cooldown is in progress.
-    // If so, kill those timers.
-
-    // No cooldown when using this command.
+    new String:arg1[MAX_TARGET_LENGTH];
+    new String:target_name[MAX_TARGET_LENGTH];
+    new bool:tn_is_ml;
+    
+    if (argc >= 1)
+    {
+        GetCmdArg(1, arg1, sizeof(arg1));
+        new target_list[MAXPLAYERS];
+        new target_count;
+        
+        if ((target_count = ProcessTargetString(
+                arg1,
+                client,
+                target_list,
+                MAXPLAYERS,
+                COMMAND_FILTER_ALIVE,
+                target_name,
+                sizeof(target_name),
+                tn_is_ml)) <= 0)
+        {
+            ReplyToTargetError(client, target_count);
+            return Plugin_Handled;
+        }
+        
+        for (new i = 0; i < target_count; i++)
+        {
+            AbortTeleport(target_list[i]);
+            TeleportClient(target_list[i], true, true);
+            LogAction(client, target_list[i], "\"%L\" teleported \"%L\" to spawn", client, target_list[i]);
+        }
+    }
+    else
+    {
+        AbortTeleport(client);
+        TeleportClient(client, true, true);
+        
+        GetClientName(client, target_name, sizeof(target_name));
+        LogAction(client, client, "[ZR] Player %s teleported  %s to spawn.", target_name, target_name);
+    }
+    
+    if (tn_is_ml)
+    {
+        ShowActivity2(client, "[ZR] ", "%t teleported to spawn.", target_name);
+    }
+    else
+    {
+        ShowActivity2(client, "[ZR] ", "%s teleported to spawn.", target_name);
+    }
+    
     return Plugin_Handled;
 }
 
 public Action:Command_TeleSaveLocation(client, argc)
 {
+    new String:target_name[MAX_TARGET_LENGTH];
+    new String:target_client;
+    
+    if (argc >= 1)
+    {
+        GetCmdArg(1, target_name, sizeof(target_name));
+        target_client = FindTarget(client, target_name);
+    }
+    else
+    {
+        target_client = client;
+    }
+    
+    if (target_client > 0 && target_client <= MAXPLAYERS)
+    {
+        GetClientAbsOrigin(target_client, bufferLoc);
+        bufferLocSaved = true;
+        GetClientName(target_client, target_name, sizeof(target_name));
+        ReplyToCommand(client, "Saved location to %s (%d, %d, %d).", target_name, bufferLoc[0], bufferLoc[1], bufferLoc[2]);
+    }
+    else
+    {
+        ReplyToCommand(client, "Unable to target %s", target_name);
+    }
+    
     return Plugin_Handled;
 }
 
 public Action:Command_TeleportToLocation(client, argc)
 {
+    new String:target_name[MAX_TARGET_LENGTH];
+    new target_client;
+    new Float:empty_vector[3] = {0.0, 0.0, 0.0};
+    
     // Don't teleport if a location isn't saved yet.
-    // To do: Find or make a function to check if a vector array is a null vector.
-    /*if (bufferLoc[] != NULL_VECTOR)
+    if (bufferLocSaved)
     {
-        return Plugin_Handled;
+        if (argc >= 1)
+        {
+            GetCmdArg(1, target_name, sizeof(target_name));
+            target_client = FindTarget(client, target_name);
+        }
+        else
+        {
+            target_client = client;
+        }
+        if (target_client > 0 && target_client <= MAXPLAYERS)
+        {
+            AbortTeleport(target_client);
+            TeleportEntity(target_client, bufferLoc, NULL_VECTOR, empty_vector);
+            ZR_PrintToChat(client, "!ztele successful");
+            if (target_client != client) ZR_PrintToChat(target_client, "!ztele successful");
+        }
+        else
+        {
+            ReplyToCommand(client, "Unable to target %s", target_name);
+        }
     }
     else
     {
-        ZR_PrintToChat(client, "!ztele location not set");
-        return Plugin_Handled;
-    }*/
+        ReplyToCommand(client, "Location not set.");
+    }
+    
+    return Plugin_Handled;
+}
+
+public Action:Command_TeleportAbort(client, argc)
+{
+    new String:arg1[MAX_TARGET_LENGTH];
+    new String:target_name[MAX_TARGET_LENGTH];
+    new bool:tn_is_ml;
+    
+    if (argc >= 1)
+    {
+        GetCmdArg(1, arg1, sizeof(arg1));
+        new target_list[MAXPLAYERS];
+        new target_count;
+        
+        if ((target_count = ProcessTargetString(
+                arg1,
+                client,
+                target_list,
+                MAXPLAYERS,
+                COMMAND_FILTER_ALIVE,
+                target_name,
+                sizeof(target_name),
+                tn_is_ml)) <= 0)
+        {
+            ReplyToTargetError(client, target_count);
+            return Plugin_Handled;
+        }
+        
+        for (new i = 0; i < target_count; i++)
+        {
+            AbortTeleport(target_list[i]);
+            LogAction(client, target_list[i], "\"%L\" aborted teleport on \"%L\".", client, target_list[i]);
+        }
+    }
+    else
+    {
+        AbortTeleport(client);
+        GetClientName(client, target_name, sizeof(target_name));
+        LogAction(client, client, "[ZR] Player %s teleported  %s to spawn.", target_name);
+    }
+    
+    if (tn_is_ml)
+    {
+        ShowActivity2(client, "[ZR] ", "Aborted teleport and cooldown on %t.", target_name);
+    }
+    else
+    {
+        ShowActivity2(client, "[ZR] ", "Aborted teleport and cooldown on %s.", target_name);
+    }
+    
+    return Plugin_Handled;
 }
 
 ZTeleClientCheck(client)
@@ -171,6 +315,13 @@ ZTeleClientCheck(client)
     if (!tele)
     {
         ZR_PrintToChat(client, "Feature is disabled");
+        return;
+    }
+    
+    new team = GetClientTeam(client);
+    if (team != CS_TEAM_T && team != CS_TEAM_CT)
+    {
+        ZR_PrintToChat(client, "Must be alive");
         return;
     }
     
@@ -249,11 +400,15 @@ ZTeleClientCheck(client)
     TeleportClient(client);
 }
 
-TeleportClient(client, bool:no_delay = false)
+/*
+ *  Note: free_tele only works if no_delay is true.
+ */
+TeleportClient(client, bool:no_delay = false, bool:free_tele = false)
 {
     new teleports_left;
     new bool:teleports_unlimited = false;
-    
+    new Float:empty_vector[3] = {0.0, 0.0, 0.0};
+
     if (IsPlayerHuman(client))
     {
         new human_delay = GetConVarInt(gCvars[CVAR_ZTELE_HUMAN_DELAY]);
@@ -302,10 +457,12 @@ TeleportClient(client, bool:no_delay = false)
     if (no_delay)
     {
         ztele_countdown[client] = -1;
-        ztele_count[client]++;
-        TeleportEntity(client, spawnLoc[client], NULL_VECTOR, NULL_VECTOR);
+        if (!free_tele) ztele_count[client]++;
+        
+        TeleportEntity(client, spawnLoc[client], NULL_VECTOR, empty_vector);
+        
         ZR_PrintToChat(client, "!ztele successful");
-        if (!teleports_unlimited)
+        if (!teleports_unlimited && !free_tele)
         {
             ZR_PrintToChat(client, "!ztele amount", teleports_left);
         }

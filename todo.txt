@@ -10,6 +10,8 @@ Section content is listed in order of importance. Some of these can be ideas too
   class name to read the value:
   zr_class_enabled <classname>[ <0/1>]
 
+* Zombies that dies from anything else than a human attack (+ grenades) will respawn as zombies.
+
 * Make a admin command to read and write settings to a spesific class,
   using key/value. Integrate it with the zr_admin menu.
 

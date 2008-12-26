@@ -10,9 +10,12 @@ CreateCommands()
 {
     RegAdminCmd("zr_infect", Command_Infect, ADMFLAG_GENERIC, "Infects the specified player");
     RegAdminCmd("zr_spawn", Command_Respawn, ADMFLAG_GENERIC, "Respawns the specified player following auto-respawning rules");
+
     RegAdminCmd("zr_teleport", Command_Teleport, ADMFLAG_GENERIC, "Teleports one or more players to spawn. Usage: zr_teleport <target>");
     RegAdminCmd("zr_tele_saveloc", Command_TeleSaveLocation, ADMFLAG_GENERIC, "Saves your or a players location to a buffer. Usage: zr_tele_saveloc [#userid|name]");
     RegAdminCmd("zr_tele_loc", Command_TeleportToLocation, ADMFLAG_GENERIC, "Teleports you or a player to the saved location. Usage: zr_tele_loc [#userid|name]");
+    RegAdminCmd("zr_tele_abort", Command_TeleportAbort, ADMFLAG_GENERIC, "Aborts a teleportation or cooldown on a client. Usage: zr_tele_abort <target>");
+
     RegAdminCmd("zr_restrict", Command_Restrict, ADMFLAG_GENERIC, "Restrict a specified weapon");
     RegAdminCmd("zr_unrestrict", Command_UnRestrict, ADMFLAG_GENERIC, "Unrestrict a specified weapon");
 
@@ -21,6 +24,7 @@ CreateCommands()
 
     RegAdminCmd("zr_admin", Command_AdminMenu, ADMFLAG_GENERIC, "Displays the admin menu for Zombie: Reloaded.");
     RegAdminCmd("zr_knockback_m", Command_KnockbackMMenu, ADMFLAG_GENERIC, "Displays the knockback multiplier menu.");
+    RegAdminCmd("zr_teleadmin", Command_TeleMenu, ADMFLAG_GENERIC, "Displays the teleport admin menu for Zombie: Reloaded.");
 }
 
 public Action:Command_Infect(client, argc)
@@ -245,6 +249,20 @@ public Action:Command_KnockbackMMenu(client, argc)
     if (IsClientPlayer(client))
     {
         ZRKnockbackMMenu(client);
+    }
+    else
+    {
+        PrintToServer("This menu cannot be used in the console. Client: %d", client);
+        if (client > 0) PrintToConsole(client, "You cannot use this menu. Client: %d", client);
+    }
+    return Plugin_Handled;
+}
+
+public Action:Command_TeleMenu(client, argc)
+{
+    if (IsClientPlayer(client))
+    {
+        ZRTeleMenu(client);
     }
     else
     {

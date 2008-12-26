@@ -20,15 +20,16 @@ ZRAdminMenu(client)
     decl String:znvgs[] = "Change night vision settings";
     decl String:zinfect[] = "Infect a player";
     decl String:zspawn[] = "Spawn all players";
+    decl String:ztele[] = "Teleporter commands";
     decl String:zrestrict[] = "Restrict a weapon";
     decl String:zunrestrict[] = "Unrestrict a weapon";
-
     
     AddMenuItem(zr_admin_menu, "zknockbackm", zknockbackm);
     AddMenuItem(zr_admin_menu, "zknockback", zknockback);
     AddMenuItem(zr_admin_menu, "znvgs", znvgs);
     AddMenuItem(zr_admin_menu, "zinfect", zinfect);
     AddMenuItem(zr_admin_menu, "zspawn", zspawn);
+    AddMenuItem(zr_admin_menu, "ztele", ztele);
     AddMenuItem(zr_admin_menu, "zrestrict", zrestrict, ITEMDRAW_DISABLED);
     AddMenuItem(zr_admin_menu, "zunrestrict", zunrestrict, ITEMDRAW_DISABLED);
     
@@ -63,9 +64,13 @@ public ZRAdminMenuHandle(Handle:zr_admin_menu, MenuAction:action, client, slot)
             }
             case 5:
             {
-                // restrict
+                ZRTeleMenu(client);
             }
             case 6:
+            {
+                // restrict
+            }
+            case 7:
             {
                 // unrestrict
             }
@@ -361,6 +366,62 @@ ZRSpawnAll(client)
         }
     }
     ZRAdminMenu(client);
+}
+
+ZRTeleMenu(client)
+{
+    new Handle:zr_tele_menu = CreateMenu(ZRTeleHandle);
+    
+    decl String:ztele_player[] = "Teleport players";
+    decl String:ztele_abort[] = "Abort teleport on players";
+    decl String:ztele_save[] = "Save player location";
+    decl String:ztele_teleloc[] = "Teleport player to saved location";
+    
+    SetMenuTitle(zr_tele_menu, "Teleport menu");
+    AddMenuItem(zr_tele_menu, "ztele_player", ztele_player);
+    AddMenuItem(zr_tele_menu, "ztele_abort", ztele_abort);
+    AddMenuItem(zr_tele_menu, "ztele_save", ztele_save);
+    AddMenuItem(zr_tele_menu, "ztele_teleloc", ztele_teleloc);
+    
+    SetMenuExitBackButton(zr_tele_menu, true);
+    DisplayMenu(zr_tele_menu, client, MENU_TIME_FOREVER);
+}
+
+public ZRTeleHandle(Handle:zr_tele_menu , MenuAction:action, client, slot)
+{
+    if (action == MenuAction_Select)
+    {
+        switch(slot)
+        {
+            case 0:
+            {
+                // Teleport player.
+            }
+            case 1:
+            {
+                // Abort teleport.
+            }
+            case 2:
+            {
+                // Save location.
+            }
+            case 3:
+            {
+                // Teleport to location.
+            }
+        }
+    }
+    if (action == MenuAction_Cancel)
+    {
+        if (slot == MenuCancel_ExitBack)
+        {
+            ZRAdminMenu(client);
+        }
+    }
+    if (action == MenuAction_End)
+    {
+        CloseHandle(zr_tele_menu);
+    }
 }
 
 AddToKnockbackMultiplier(Float:value)
