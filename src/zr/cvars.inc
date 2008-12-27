@@ -49,6 +49,7 @@ enum ZRSettings
     Handle:CVAR_RESPAWN_DELAY,
     Handle:CVAR_SUICIDE,
     Handle:CVAR_SUICIDE_ECHO,
+    Handle:CVAR_SUICIDE_WORLD_DAMAGE,
     Handle:CVAR_SPAWN_MIN,
     Handle:CVAR_SPAWN_MAX,
     Handle:CVAR_PROTECT,
@@ -126,6 +127,7 @@ CreateCvars()
     gCvars[CVAR_RESPAWN_DELAY]          =    CreateConVar("zr_respawn_delay", "1", "How long to wait after death to respawn,  in seconds");
     gCvars[CVAR_SUICIDE]                =    CreateConVar("zr_suicide", "1", "Stops players from suiciding");
     gCvars[CVAR_SUICIDE_ECHO]           =    CreateConVar("zr_suicide_echo", "0", "Log suicide attempts to admin chat.");
+    gCvars[CVAR_SUICIDE_WORLD_DAMAGE]   =    CreateConVar("zr_suicide_world_damage", "1", "Respawn zombies as zombies if they was killed by the world, like elevators, doors and lasers.");
     gCvars[CVAR_SPAWN_MIN]              =    CreateConVar("zr_spawn_min", "30", "Minimum time a player is picked to be zombie after the round starts,  in seconds");
     gCvars[CVAR_SPAWN_MAX]              =    CreateConVar("zr_spawn_max", "50", "Maximum time a player is picked to be zombie after the round starts,  in seconds");
     gCvars[CVAR_PROTECT]                =    CreateConVar("zr_protect", "10", "Players that join late will be protected for this long, in seconds (0: Disable)");

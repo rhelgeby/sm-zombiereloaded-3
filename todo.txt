@@ -15,10 +15,6 @@ Section content is listed in order of importance. Some of these can be ideas too
 * Make a admin command to read and write settings to a spesific class,
   using key/value. Integrate it with the zr_admin menu.
 
-* Zombie dont have fall damage (damage by player 0 = server should always work)
-  Make it a CVAR, so for example zombies can't kill themselfs on some maps by
-  going through lasers.
-
 * Knockback presets (integrated into zombie admin menu).
   Temporary do many changes on the zombies (by executing configs). Useful
   settings or fun settings. SourceMod already has a execute config menu, but it

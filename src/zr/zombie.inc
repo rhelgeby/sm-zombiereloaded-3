@@ -872,6 +872,7 @@ public Action:EndProtect(Handle:timer, any:index)
 
 RespawnPlayer(client)
 {
+    
     if (!IsClientInGame(client))
     {
         return;
@@ -886,10 +887,17 @@ RespawnPlayer(client)
     
     decl String:team[32];
     GetConVarString(gCvars[CVAR_RESPAWN_TEAM], team, sizeof(team));
-
+    
     if (StrEqual(team, "zombie", false))
     {
         Zombify(client, 0);
+        return;
+    }
+    
+    if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
+    {
+        Zombify(client, 0);
+        gKilledByWorld[client] = false;
     }
 }
 

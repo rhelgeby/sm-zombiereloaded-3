@@ -1,3 +1,6 @@
+2008.12.27 - 2.5.1.18
+  * Made zr_suicide_world_damage CVAR for respawning as zombie if a zombie was killed by the world.
+
 2008.12.26 - 2.5.1.17
   * Finished teleporter admin commands; zr_teleport, zr_tele_saveloc, zr_tele_loc, zr_tele_abort.
   * Teleport admin menu made, but not coded.
