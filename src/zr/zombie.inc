@@ -870,9 +870,27 @@ public Action:EndProtect(Handle:timer, any:index)
     }
 }
 
+ProtectionAbort(client)
+{
+    if (tHandles[client][TPROTECT] != INVALID_HANDLE)
+    {
+        KillTimer(tHandles[client][TPROTECT]);
+        tHandles[client][TPROTECT] = INVALID_HANDLE;
+    }
+    
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+    
+    pProtect[client] = false;
+    
+    SetPlayerAlpha(client, 255);
+    SetPlayerSpeed(client, 300.0);
+}
+
 RespawnPlayer(client)
 {
-    
     if (!IsClientInGame(client))
     {
         return;
@@ -896,6 +914,7 @@ RespawnPlayer(client)
     
     if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
     {
+        ProtectionAbort(client);
         Zombify(client, 0);
         gKilledByWorld[client] = false;
     }
