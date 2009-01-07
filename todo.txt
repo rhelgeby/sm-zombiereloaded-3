@@ -10,7 +10,9 @@ Section content is listed in order of importance. Some of these can be ideas too
   class name to read the value:
   zr_class_enabled <classname>[ <0/1>]
 
-* Zombies that dies from anything else than a human attack (+ grenades) will respawn as zombies.
+* Super features for both zombies and humans:
+  - Humans: No fall damage for X seconds. X limits per round.
+  - Zombies: No knockback/damage for X seconds. X limits per round.
 
 * Make a admin command to read and write settings to a spesific class,
   using key/value. Integrate it with the zr_admin menu.
