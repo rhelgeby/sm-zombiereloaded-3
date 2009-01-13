@@ -40,6 +40,8 @@ ZTeleReset()
         ztele_spawned[client] = false;
         ztele_countdown[client] = -1;
         ztele_count[client] = 0;
+        bufferLoc[client] = NULL_VECTOR;
+        bufferLocSaved[client] = false;
         
         // Stop any cooldown or teleportation in progress.
         if (ztele_countdown_timer[client] != INVALID_HANDLE)
@@ -110,14 +112,6 @@ public Action:Event_TeleportCountdown(Handle:timer, any:client)
         
         // Do teleport.
         TeleportClient(client, true);
-        
-        // Create cooldown timer if enabled.
-        new cooldown = GetConVarInt(gCvars[CVAR_ZTELE_COOLDOWN]);
-        if (cooldown)
-        {
-            ztele_countdown[client] = cooldown;
-            ztele_cooldown_timer[client] = CreateTimer(1.0, Event_TeleportCooldown, client, TIMER_REPEAT);
-        }
     }
     else if ((ztele_countdown[client] % 3) == 0)
     {
@@ -164,18 +158,23 @@ public Action:Command_Teleport(client, argc)
         
         for (new i = 0; i < target_count; i++)
         {
-            AbortTeleport(target_list[i]);
-            TeleportClient(target_list[i], true, true);
-            LogAction(client, target_list[i], "\"%L\" teleported \"%L\" to spawn", client, target_list[i]);
+            if (IsPlayerAlive(client))
+            {
+                AbortTeleport(target_list[i]);
+                TeleportClient(target_list[i], true, true);
+                LogAction(client, target_list[i], "\"%L\" teleported \"%L\" to spawn", client, target_list[i]);
+            }
         }
     }
     else
     {
-        AbortTeleport(client);
-        TeleportClient(client, true, true);
-        
-        GetClientName(client, target_name, sizeof(target_name));
-        LogAction(client, client, "[ZR] Player %s teleported  %s to spawn.", target_name, target_name);
+        if (IsPlayerAlive(client))
+        {
+            AbortTeleport(client);
+            TeleportClient(client, true, true);
+            GetClientName(client, target_name, sizeof(target_name));
+            LogAction(client, client, "[ZR] Player %s teleported  %s to spawn.", target_name, target_name);
+        }
     }
     
     if (tn_is_ml)
@@ -207,10 +206,10 @@ public Action:Command_TeleSaveLocation(client, argc)
     
     if (target_client > 0 && target_client <= MAXPLAYERS)
     {
-        GetClientAbsOrigin(target_client, bufferLoc);
-        bufferLocSaved = true;
+        GetClientAbsOrigin(target_client, bufferLoc[client]);
+        bufferLocSaved[client] = true;
         GetClientName(target_client, target_name, sizeof(target_name));
-        ReplyToCommand(client, "Saved location to %s (%d, %d, %d).", target_name, bufferLoc[0], bufferLoc[1], bufferLoc[2]);
+        ReplyToCommand(client, "Saved location to %s (%d, %d, %d).", target_name, bufferLoc[client][0], bufferLoc[client][1], bufferLoc[client][2]);
     }
     else
     {
@@ -227,7 +226,7 @@ public Action:Command_TeleportToLocation(client, argc)
     new Float:empty_vector[3] = {0.0, 0.0, 0.0};
     
     // Don't teleport if a location isn't saved yet.
-    if (bufferLocSaved)
+    if (bufferLocSaved[client])
     {
         if (argc >= 1)
         {
@@ -240,10 +239,14 @@ public Action:Command_TeleportToLocation(client, argc)
         }
         if (target_client > 0 && target_client <= MAXPLAYERS)
         {
-            AbortTeleport(target_client);
-            TeleportEntity(target_client, bufferLoc, NULL_VECTOR, empty_vector);
-            ZR_PrintToChat(client, "!ztele successful");
-            if (target_client != client) ZR_PrintToChat(target_client, "!ztele successful");
+            if (IsPlayerAlive(client))
+            {
+
+                AbortTeleport(target_client);
+                TeleportEntity(target_client, bufferLoc[client], NULL_VECTOR, empty_vector);
+                ZR_PrintToChat(client, "!ztele successful");
+                if (target_client != client) ZR_PrintToChat(target_client, "!ztele successful");
+            }
         }
         else
         {
@@ -311,6 +314,7 @@ public Action:Command_TeleportAbort(client, argc)
 
 ZTeleClientCheck(client)
 {
+    // Check if the teleporter is disabled.
     new bool:tele = GetConVarBool(gCvars[CVAR_ZTELE]);
     if (!tele)
     {
@@ -318,16 +322,18 @@ ZTeleClientCheck(client)
         return;
     }
     
-    new team = GetClientTeam(client);
-    if (team != CS_TEAM_T && team != CS_TEAM_CT)
-    {
-        ZR_PrintToChat(client, "Must be alive");
-        return;
-    }
-    
+    // Check if the teleporter is online.
     if (!ztele_online)
     {
         ZR_PrintToChat(client, "!ztele offline");
+        return;
+    }
+    
+    // Check if the player is alive and is not a spectactor.
+    new team = GetClientTeam(client);
+    if (!IsPlayerAlive(client) || (team != CS_TEAM_T && team != CS_TEAM_CT))
+    {
+        ZR_PrintToChat(client, "Must be alive");
         return;
     }
     
@@ -403,7 +409,7 @@ ZTeleClientCheck(client)
 /*
  *  Note: free_tele only works if no_delay is true.
  */
-TeleportClient(client, bool:no_delay = false, bool:free_tele = false)
+TeleportClient(client, bool:no_delay = false, bool:free_tele = false, bool:no_cooldown = false)
 {
     new teleports_left;
     new bool:teleports_unlimited = false;
@@ -461,6 +467,14 @@ TeleportClient(client, bool:no_delay = false, bool:free_tele = false)
         
         TeleportEntity(client, spawnLoc[client], NULL_VECTOR, empty_vector);
         
+        // Create cooldown timer if enabled.
+        new cooldown = GetConVarInt(gCvars[CVAR_ZTELE_COOLDOWN]);
+        if (!no_cooldown && cooldown)
+        {
+            ztele_countdown[client] = cooldown;
+            ztele_cooldown_timer[client] = CreateTimer(1.0, Event_TeleportCooldown, client, TIMER_REPEAT);
+        }
+
         ZR_PrintToChat(client, "!ztele successful");
         if (!teleports_unlimited && !free_tele)
         {
@@ -477,7 +491,7 @@ TeleportClient(client, bool:no_delay = false, bool:free_tele = false)
     }
 }
 
-AbortTeleport(client)
+AbortTeleport(client, bool:abort_cooldown = true)
 {
     ztele_countdown[client] = -1;
     
@@ -487,7 +501,7 @@ AbortTeleport(client)
         KillTimer(ztele_countdown_timer[client]);
         ztele_countdown_timer[client] = INVALID_HANDLE;
     }
-    if (ztele_cooldown_timer[client] != INVALID_HANDLE)
+    if (abort_cooldown && ztele_cooldown_timer[client] != INVALID_HANDLE)
     {
         KillTimer(ztele_cooldown_timer[client]);
         ztele_cooldown_timer[client] = INVALID_HANDLE;

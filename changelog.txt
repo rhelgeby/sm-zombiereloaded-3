@@ -1,3 +1,10 @@
+2009.01.13 - 2.5.1.19
+  * Added per-client teleport buffers instead of one common (still only for admins).
+  * Made zr_tele_reset_buffers CVAR for resetting custom saved locations on round start. Abuse protection.
+  * Fixed spectactors able to teleport, using admin commands.
+  * Added !teleabort chat trigger. Doesn't abort cooldown.
+  * Changed ztele to tele in CVAR names.
+
 2008.12.27 - 2.5.1.18
   * Made zr_suicide_world_damage CVAR for respawning as zombie if a zombie was killed by the world.
   * Removed spawn protection on respawned zombies.

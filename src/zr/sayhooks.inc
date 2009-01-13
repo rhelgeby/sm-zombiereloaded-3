@@ -53,6 +53,11 @@ public Action:SayCommand(client, argc)
         ZTeleClientCheck(client);
     }
     
+    else if (StrEqual(args, "!teleabort", false))
+    {
+        AbortTeleport(client, false);
+    }
+    
     else if (StrEqual(args, "!zstuck", false))
     {
         ZStuck(client);

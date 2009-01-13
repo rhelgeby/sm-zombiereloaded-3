@@ -53,9 +53,9 @@ new pNextClass[MAXPLAYERS+1];
 new protCount[MAXPLAYERS+1];
 
 new Float:spawnLoc[MAXPLAYERS + 1][3];
-new Float:bufferLoc[3];
+new Float:bufferLoc[MAXPLAYERS + 1][3];
 new bool:ztele_spawned[MAXPLAYERS + 1] = {false, ...};
-new bool:bufferLocSaved = false;
+new bool:bufferLocSaved[MAXPLAYERS + 1] = {false, ...};
 new ztele_countdown[MAXPLAYERS + 1] = {-1, ...};
 new ztele_count[MAXPLAYERS + 1];
 new bool:ztele_online = false;
