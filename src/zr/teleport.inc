@@ -239,13 +239,16 @@ public Action:Command_TeleportToLocation(client, argc)
         }
         if (target_client > 0 && target_client <= MAXPLAYERS)
         {
-            if (IsPlayerAlive(client))
+            if (IsPlayerAlive(target_client))
             {
-
                 AbortTeleport(target_client);
                 TeleportEntity(target_client, bufferLoc[client], NULL_VECTOR, empty_vector);
                 ZR_PrintToChat(client, "!ztele successful");
                 if (target_client != client) ZR_PrintToChat(target_client, "!ztele successful");
+            }
+            else
+            {
+                ReplyToCommand(client, "Player %s is dead. Only alive players can be teleported.", target_name);
             }
         }
         else
