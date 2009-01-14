@@ -197,98 +197,37 @@ public Market_PostOnWeaponSelected(client, &bool:allowed)
 
 ZSpawn(client)
 {
-    if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Spawn request:");
     new bool:spawn = GetConVarBool(gCvars[CVAR_ZSPAWN]);
     if (!spawn)
     {
         ZR_PrintToChat(client, "Feature is disabled");
-        if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Not enabled.");
         return;
     }
     
     new team = GetClientTeam(client);
     if (team != CS_TEAM_T && team != CS_TEAM_CT)
     {
-        if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Player is not a T or CT.");
         return;
     }
     
     if (IsPlayerAlive(client))
     {
-        if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Player appears to be alive.");
         return;
     }
     
     if (IsPlayerInList(client))
     {
-        if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Player is already in the list (= maybe spawned, or bug).");
         return;
     }
 
-    if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(client, "ZSpawn: Spawned player");
     RespawnPlayer(client);
     
     AddPlayerToList(client);
 }
 
-/*
-ZTele(client)
-{
-    new bool:tele = GetConVarBool(gCvars[CVAR_ZTELE]);
-    if (!tele)
-    {
-        ZR_PrintToChat(client, "Feature is disabled");
-        
-        return;
-    }
-    
-    new bool:tele_humans = GetConVarBool(gCvars[CVAR_ZTELE_HUMANS]);
-    if (!IsPlayerZombie(client) && !tele_humans && zombieSpawned)
-    {
-        ZR_PrintToChat(client, "!ztele humans restricted");
-        
-        return;
-    }
-    
-    if (!IsPlayerAlive(client) || tHandles[client][TTELE] != INVALID_HANDLE)
-    {
-        return;
-    }
-            
-    new count = teleCount[client];
-    new limit = GetConVarInt(gCvars[CVAR_ZTELE_LIMIT]);
-    
-    if (limit > 0)
-    {
-        if (count < limit)
-        {
-            tHandles[client][TTELE] = CreateTimer(3.0, Teleport, client, TIMER_FLAG_NO_MAPCHANGE);
-            teleCount[client]++;
-            ZR_PrintToChat(client, "!ztele amount", limit - teleCount[client]);
-        }
-        else
-        {
-            ZR_PrintToChat(client, "!ztele limit reached");
-        }
-    }
-    else
-    {
-        tHandles[client][TTELE] = CreateTimer(3.0, Teleport, client, TIMER_FLAG_NO_MAPCHANGE);
-        ZR_PrintToChat(client, "!ztele amount unlimited");
-    }
-}
-
-public Action:Teleport(Handle:timer, any:index)
-{
-    TeleportEntity(index, spawnLoc[index], NULL_VECTOR, NULL_VECTOR);
-    
-    tHandles[index][TTELE] = INVALID_HANDLE;
-}
-*/
-
 ZStuck(client)
 {
-    new bool:stuck = GetConVarBool(gCvars[CVAR_ZTELE]);
+    new bool:stuck = GetConVarBool(gCvars[CVAR_ZSTUCK]);
     if (!stuck)
     {
         ZR_PrintToChat(client, "Feature is disabled");
