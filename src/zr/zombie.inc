@@ -657,6 +657,12 @@ AntiStick(attacker, client)
         return;
     }
     
+    new Float:force = GetConVarFloat(gCvars[CVAR_INFECT_ANTISTICK_FORCE]);
+    if (force == 0.0)
+    {
+        return;
+    }
+    
     new Float:vector[3];
     
     new Float:attackerloc[3];
@@ -668,7 +674,7 @@ AntiStick(attacker, client)
     MakeVectorFromPoints(attackerloc, clientloc, vector);
     
     NormalizeVector(vector, vector);
-    ScaleVector(vector, -160.0);
+    ScaleVector(vector, force);
     
     TeleportEntity(attacker, NULL_VECTOR, NULL_VECTOR, vector);
 }

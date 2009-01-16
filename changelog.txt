@@ -1,3 +1,6 @@
+2009.01.16 - 2.5.1.22
+  * Changed hardcoded antistick force into a CVAR.
+
 2009.01.14 - 2.5.1.21
   * Fixed spectactor admins not able to teleport players to their custom location.
 
