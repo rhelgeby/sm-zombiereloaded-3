@@ -209,7 +209,7 @@ public Action:Command_TeleSaveLocation(client, argc)
         GetClientAbsOrigin(target_client, bufferLoc[client]);
         bufferLocSaved[client] = true;
         GetClientName(target_client, target_name, sizeof(target_name));
-        ReplyToCommand(client, "Saved location to %s (%d, %d, %d).", target_name, bufferLoc[client][0], bufferLoc[client][1], bufferLoc[client][2]);
+        ReplyToCommand(client, "Saved location to %s (x:%f, y:%f, z:%f).", target_name, bufferLoc[client][0], bufferLoc[client][1], bufferLoc[client][2]);
     }
     else
     {

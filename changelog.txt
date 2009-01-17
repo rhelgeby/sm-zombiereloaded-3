@@ -1,3 +1,6 @@
+2009.01.17 - 2.5.1.23
+  * Fixed teleport location text to display as float values instead of decimal.
+
 2009.01.16 - 2.5.1.22
   * Changed hardcoded antistick force into a CVAR.
 
