@@ -25,6 +25,10 @@ CreateCommands()
     RegAdminCmd("zr_admin", Command_AdminMenu, ADMFLAG_GENERIC, "Displays the admin menu for Zombie: Reloaded.");
     RegAdminCmd("zr_knockback_m", Command_KnockbackMMenu, ADMFLAG_GENERIC, "Displays the knockback multiplier menu.");
     RegAdminCmd("zr_teleadmin", Command_TeleMenu, ADMFLAG_GENERIC, "Displays the teleport admin menu for Zombie: Reloaded.");
+    
+    RegAdminCmd("zr_anticamp_create_volume", Command_AnticampCreateVolume, ADMFLAG_GENERIC, "Creates a rectangular hurt volume between two points. Usage: ht_create_volume <damage> <interval> <x1> <y1> <z1> <x2> <y2> <z2>");
+    RegAdminCmd("zr_anticamp_remove_volume", Command_AnticampRemoveVolume, ADMFLAG_GENERIC, "Removes a volume. Use zr_anticamp_list to list volumes. Usage: zr_anticamp_remove_volume <volume index>");
+    RegAdminCmd("zr_anticamp_list", Command_AnticampList, ADMFLAG_GENERIC, "List current volumes.");
 }
 
 public Action:Command_Infect(client, argc)

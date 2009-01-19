@@ -224,6 +224,17 @@
 		"en"		"Nice try n00b!"
 		"ru"		"Неплохая попытка n00b!"
 	}
+	
+	"Unfair camping"
+	{
+		"en"		"This area is marked as unfair. Move, go through or die..."
+	}
+	
+	"Unfair camper slayed"
+	{
+		"#format"   "{1:s},{2:d}"
+		"en"		"Killed %s due to camping in a unfair area (id: %d)."
+	}
 
 	"DX90 not supported"
 	{

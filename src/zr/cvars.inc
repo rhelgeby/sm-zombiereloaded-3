@@ -81,7 +81,10 @@ enum ZRSettings
     Handle:CVAR_INFECT_SHAKE_AMP,
     Handle:CVAR_INFECT_SHAKE_FREQUENCY,
     Handle:CVAR_INFECT_SHAKE_DURATION,
-    Handle:CVAR_INFECT_ANTISTICK_FORCE
+    Handle:CVAR_INFECT_ANTISTICK_FORCE,
+    Handle:CVAR_ANTICAMP,
+    Handle:CVAR_ANTICAMP_UPDATE_INTERVAL,
+    Handle:CVAR_ANTICAMP_ECHO
 }
 
 new gCvars[ZRSettings];
@@ -162,8 +165,13 @@ CreateCvars()
     gCvars[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "Frequency of the shake, when zr_infect_shake is 1");
     gCvars[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", "Duration of the shake, when zr_infect_shake is 1");
     gCvars[CVAR_INFECT_ANTISTICK_FORCE]    =    CreateConVar("zr_infect_antistick_force", "-160.0", "Force to push away players from eachother on infection. Negative values push away, positive values pull. (0: Disable)");
+    gCvars[CVAR_ANTICAMP]                  =    CreateConVar("zr_anticamp", "1", "Enables or disables hurt volumes for preventing unfair camping. (0: Disable)");
+    gCvars[CVAR_ANTICAMP_UPDATE_INTERVAL]  =    CreateConVar("zr_anticamp_update_interval", "1", "How often to update player locations (in seconds).");
+    gCvars[CVAR_ANTICAMP_ECHO]             =    CreateConVar("zr_anticamp_echo", "1", "Log kills done by anticamp to admin chat.");
     
     HookConVarChange(gCvars[CVAR_ENABLE], EnableHook);
+    HookConVarChange(gCvars[CVAR_ANTICAMP], AnticampHook);
+    HookConVarChange(gCvars[CVAR_ANTICAMP_UPDATE_INTERVAL], UpdateIntervalHook);
     
     AutoExecConfig(true, "zombiereloaded", "sourcemod/zombiereloaded");
 }

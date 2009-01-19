@@ -1,60 +1,108 @@
-Behaviour changes from version 2.5.1
-=====================================
+Changes from Zombie: Reloaded 2.5.1
+====================================
 
-* Support for alpha values in classes. New values in classes.txt (per class):
+Alpha values (transparency)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Support for alpha values in classes. New values in classes.txt (per class):
+
+  Key:           Value:    Default:    Description:
+  alpha_spawn    <0-255>   255         initial alpha value (0 = transparent)
+  alpha_damaged  <0-255>   255         alpha value when damaged
+  alpha_damage   <damage>  0           how much damage to do before
+                                       alpha_damaged take effect
+
+Knockback multiplier
+~~~~~~~~~~~~~~~~~~~~~
+
+If classes are enabled the zr_zombie_knockback cvar is used as a multiplier.
+Makes it possible to set custom knockback on maps using per-map configs.
+
+Set zr_zombie_knockback to 1 if you use classes and want it the way it was
+before.
+
+  knockback = zr_zombie_knockback * class knockback
+
+Full spawn protection
+~~~~~~~~~~~~~~~~~~~~~~
+
+Spawn protection makes the players invisible and move faster, and cannot be
+infected during protection time.
+
+A centered counter shows the time remaining.
+
+Overriding class night vision
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Support for overrriding class nvgs with the zr_zombie_nvgs cvar. Generally,
+any non-zero value is considered as on.
+
+  Value:    Description:
+  -1        no override (use value in classes.txt) / nvgs on
+  0         never give nvgs
+  1         always give nvgs
+
+Anticamp feature
+~~~~~~~~~~~~~~~~~
+
+Define hurt volumes in maps that gives x damage at a custom interval.
+
+When creating volumes they should start a little bit _below_ the floor, so it
+covers the players feet.
+
+The volume is rectangular and you only need two locations in the map to create
+it; a top corner, and the bottom corner at the oposite side.
+
+  zr_anticamp_create_volume <damage> <interval> <x1> <y1> <z1> <x2> <y2> <z2>
+    - Create a rectangular volume between the specified locations.
   
-    Key:           Value:    Default:    Description:
-    alpha_spawn    <0-255>   255         initial alpha value (0 = transparent)
-    alpha_damaged  <0-255>   255         alpha value when damaged
-    alpha_damage   <damage>  0           how much damage to do before
-                                         alpha_damaged take effect
-
-* If classes are enabled the zr_zombie_knockback cvar is used as a multiplier.
-  Makes it possible to set custom knockback on maps using per-map configs. Set
-  zr_zombie_knockback to 1 if you use classes and want it the way it was before.
+  zr_anticamp_remove_volume <volume id>
+    - Remove a volume.
   
-    knockback = zr_zombie_knockback * class knockback
+  zr_anticamp_list
+    - List existing volumes.
 
-* Spawn protection makes the players invisible and move faster, and cannot be
-  infected during protecting time. A centered counter shows the time remaining.
+Set default classes
+~~~~~~~~~~~~~~~~~~~~
 
-* Support for overrriding class nvgs with the zr_zombie_nvgs cvar:
-  Generally, any non-zero value is considered as on.
+Setting the default class with a cvar. Works with per-map configs.
   
-    Value:    Description:
-    -1        no override (use value in classes.txt) / nvgs on
-    0         never give nvgs
-    1         always give nvgs
+  zr_classes_default <classname>
 
-* Setting default class with a cvar. Works with per-map configs.
+Zombie admin menu
+~~~~~~~~~~~~~~~~~~
+
+Basic zombie admin commands like adjusting knockback, nvgs, infecting players
+and spawn everyone.
+
+Knockback changes are applied instantly, useful for tuning knockback in-game.
+
+Note that the changes are not saved. They will reset on map change. In a
+future version this menu might save the changes.
+
+  Knockback multiplier
+    - Fine tune the knockback multiplier.
   
-    zr_classes_default <classname>
-
-* Zombie admin menu. Basic zombie admin commands like adjusting knockback, nvgs,
-  infecting players and spawn everyone. Knockback changes are applied instantly,
-  useful for fine tuning live. Note that the changes are not saved. They will be
-  reset on map change. In the future this menu might save the changes.
+  Class knockback
+    - Fine tune a class knockback value.
   
-    Knockback multiplier
-      - Fine tune the knockback multiplier.
-    
-    Class knockback
-      - Fine tune a class knockback value.
-    
-    Night vision settings
-      - Override night vision settings (explained earlier).
-    
-    Infect
-      - Infect a player. Lists all players, but could be changed to only list
-        humans.
-    
-    Spawn players
-      - Spawns all dead players (except spectactors).
-    
-    (more zombie admin stuff might come...)
+  Night vision settings
+    - Override night vision settings (explained earlier).
+  
+  Infect
+    - Infect a player. Lists all players, but could be changed to only list
+      humans.
+  
+  Spawn players
+    - Spawns all dead players (except spectactors).
+  
+  (more zombie admin stuff might come...)
 
-* Console commands zr_set_class_knockback and zr_get_class_knockback. Changes
-  are not saved. They will be reset on map change.
+Set (and get) class knockback
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Set or get knockback from a class. Changes are not saved. They will be reset on
+map change.
   
   zr_set_class_knockback <classname> <knockback>
     - Sets knockback to a specified class. Useful when using per-map configs to
@@ -64,4 +112,7 @@ Behaviour changes from version 2.5.1
     - Prints the current knockback of a class to the client/server console.
       Using the zombie admin menu to read a knockback value is easier sometimes.
 
-* Other minior and major bug fixes. See changelog.txt.
+More stuff
+~~~~~~~~~~~
+
+Other minior and major bug fixes. See changelog.txt.

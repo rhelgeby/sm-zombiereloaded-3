@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.23"
+#define VERSION "2.5.1.24"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -26,6 +26,7 @@
 #include "zr/classes"
 #include "zr/models"
 #include "zr/overlays"
+#include "zr/anticamp"
 #include "zr/teleport"
 #include "zr/zombie"
 #include "zr/menu"
@@ -123,6 +124,13 @@ public OnMapStart()
             pClass[i] = classindex;
         }
     }
+    
+    Anticamp_Startup();
+}
+
+public OnMapEnd()
+{
+    Anticamp_Disable();
 }
 
 public OnConfigsExecuted()
