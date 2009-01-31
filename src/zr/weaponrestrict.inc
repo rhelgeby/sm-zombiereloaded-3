@@ -118,7 +118,7 @@ RestrictWeaponGroup(const String:group[])
         PushArrayString(restrictedWeapons, "ak47");
         PushArrayString(restrictedWeapons, "m4a1");
         PushArrayString(restrictedWeapons, "sg552");
-        PushArrayString(restrictedWeapons, "bullpup");
+        PushArrayString(restrictedWeapons, "aug");
     }
     else if (StrEqual(group, "snipers", false))
     {
@@ -185,7 +185,7 @@ UnRestrictWeaponGroup(const String:group[])
         UnRestrictWeapon("ak47");
         UnRestrictWeapon("m4a1");
         UnRestrictWeapon("sg552");
-        UnRestrictWeapon("bullpup");
+        UnRestrictWeapon("aug");
     }
     else if (StrEqual(group, "snipers", false))
     {

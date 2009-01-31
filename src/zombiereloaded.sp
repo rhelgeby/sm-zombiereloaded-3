@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.24"
+#define VERSION "2.5.1.25"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -151,6 +151,7 @@ public OnConfigsExecuted()
     if (FileExists(path))
     {
         ServerCommand("exec %s", mapconfig);
+        LogMessage("Executed map config file: %s", mapconfig);
     }
 }
 
@@ -184,18 +185,17 @@ public OnClientDisconnect(client)
     
     PlayerLeft(client);
     ZTeleResetClient(client);
-    
-    new debug_val = GetConVarInt(gCvars[CVAR_DEBUG]);
-    new String:debug_msg[64];
+
+    decl String:debug_msg[64];
     
     for (new x = 0; x < MAXTIMERS; x++)
     {
         if (tHandles[client][x] != INVALID_HANDLE)
         {
-            if (debug_val > 1)
+            if (LogHasFlag(LOG_DEBUG_MAX_DETAIL))
             {
-                Format(debug_msg, sizeof(debug_msg), "OnClientDisconnect - Killing timer %i with handle %x.", x, tHandles[client][x]);
-                ZR_DebugPrintToConsole(0, debug_msg);
+                Format(debug_msg, sizeof(debug_msg), "Killing timer %i with handle %x.", x, tHandles[client][x]);
+                ZR_LogMessageFormatted(client, "OnClientDisconnect", "Killing timers", debug_msg, true);
             }
             KillTimer(tHandles[client][x]);
             tHandles[client][x] = INVALID_HANDLE;

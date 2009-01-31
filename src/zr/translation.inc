@@ -105,6 +105,34 @@ stock ZR_LogMessage(any:...)
     LogMessage(phrase);
 }
 
+stock ZR_LogMessageFormatted(client, const String:function[], const String:block[], const String:message[], bool:full = false, any:...)
+{
+    decl String:buffer[2048];
+    decl String:text[2048];
+    
+    if (full)
+    {
+        VFormat(buffer, sizeof(buffer), message, 6);
+        Format(text, sizeof(text), "Log -- Module: %s, Function/Block: %s -- %s", function, block, buffer);
+    }
+    else
+    {
+        VFormat(buffer, sizeof(buffer), message, 6);
+        Format(text, sizeof(text), "Log -- %s", message);
+    }
+
+    if (LogHasFlag(LOG_TO_ADMINS))
+    {
+        ZR_PrintToAdminChat(text);
+    }
+    if (LogHasFlag(LOG_TO_CLIENT) && IsClientConnected(client) && IsClientInGame(client))
+    {
+        PrintToConsole(client, "[ZR] %s", text);
+    }
+    
+    LogMessage(text);
+}
+
 stock ZR_ReplyToCommand(client, any:...)
 {
     decl String:phrase[192];
@@ -119,7 +147,7 @@ stock ZR_ReplyToCommand(client, any:...)
 
 stock ZR_PrintToAdminChat(String:message[])
 {
-    decl String:buffer[192];
+    decl String:buffer[256];
     Format(buffer, sizeof(buffer), "[ZR] %s", message);
     for (new client = 1; client < maxclients; client++)
     {

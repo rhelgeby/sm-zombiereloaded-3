@@ -29,6 +29,8 @@ CreateCommands()
     RegAdminCmd("zr_anticamp_create_volume", Command_AnticampCreateVolume, ADMFLAG_GENERIC, "Creates a rectangular hurt volume between two points. Usage: ht_create_volume <damage> <interval> <x1> <y1> <z1> <x2> <y2> <z2>");
     RegAdminCmd("zr_anticamp_remove_volume", Command_AnticampRemoveVolume, ADMFLAG_GENERIC, "Removes a volume. Use zr_anticamp_list to list volumes. Usage: zr_anticamp_remove_volume <volume index>");
     RegAdminCmd("zr_anticamp_list", Command_AnticampList, ADMFLAG_GENERIC, "List current volumes.");
+    
+    RegConsoleCmd("zr_log_flags", Command_LogFlags, "List available logging flags.");
 }
 
 public Action:Command_Infect(client, argc)
@@ -89,7 +91,7 @@ public Action:Command_Respawn(client, argc)
         team = GetClientTeam(targets[x]);
         if (team == CS_TEAM_T || team == CS_TEAM_CT)
         {
-            if (GetConVarBool(gCvars[CVAR_DEBUG])) ZR_DebugPrintToConsole(targets[x], "ZSpawn: Spawned player");
+            if (LogHasFlag(LOG_GAME_EVENTS)) ZR_LogMessageFormatted(targets[x], "Commands", "Command_Respawn", "ZSpawn spawned player %d.", true, targets[x]);
             RespawnPlayer(targets[x]);
         }
     }
@@ -274,4 +276,20 @@ public Action:Command_TeleMenu(client, argc)
         if (client > 0) PrintToConsole(client, "You cannot use this menu. Client: %d", client);
     }
     return Plugin_Handled;
+}
+
+public Action:Command_LogFlags(client, argc)
+{
+    decl String:message[2048];
+    
+    StrCat(message, sizeof(message), "LOG_FLAG_CORE_EVENTS (1)        - Log core events like executing files, restricting weapons, etc.\n");
+    StrCat(message, sizeof(message), "LOG_FLAG_GAME_EVENTS (2)        - Log infections.\n");
+    StrCat(message, sizeof(message), "LOG_FLAG_PLAYER_COMMANDS (4)    - Log zspawn, teleports, class change, etc.\n");
+    StrCat(message, sizeof(message), "LOG_FLAG_DEBUG (8)              - Enable debug messages (if they exist).\n");
+    StrCat(message, sizeof(message), "LOG_FLAG_DEBUG (16)             - Detailed debug messages. May cause spam.\n");
+    StrCat(message, sizeof(message), "LOG_FLAG_DEBUG_MAX_DETAIL (32)  - Low level detailed debug messages. Causes spam! Only enable right before and after testing.\n");
+    StrCat(message, sizeof(message), "LOG_FLAG_LOG_TO_ADMINS (64)     - Display log messages to admin chat.\n");
+    StrCat(message, sizeof(message), "LOG_FLAG_LOG_TO_CLIENT (128)    - Display log messages to the client that executed the event/command.\n");
+    
+    ReplyToCommand(client, message);
 }

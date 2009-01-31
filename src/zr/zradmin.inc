@@ -23,6 +23,7 @@ ZRAdminMenu(client)
     decl String:ztele[] = "Teleporter commands";
     decl String:zrestrict[] = "Restrict a weapon";
     decl String:zunrestrict[] = "Unrestrict a weapon";
+    decl String:zlogflags[] = "Logging flags";
     
     AddMenuItem(zr_admin_menu, "zknockbackm", zknockbackm);
     AddMenuItem(zr_admin_menu, "zknockback", zknockback);
@@ -32,6 +33,7 @@ ZRAdminMenu(client)
     AddMenuItem(zr_admin_menu, "ztele", ztele);
     AddMenuItem(zr_admin_menu, "zrestrict", zrestrict, ITEMDRAW_DISABLED);
     AddMenuItem(zr_admin_menu, "zunrestrict", zunrestrict, ITEMDRAW_DISABLED);
+    AddMenuItem(zr_admin_menu, "zlogflags", zlogflags);
     
     DisplayMenu(zr_admin_menu, client, MENU_TIME_FOREVER);
 }
@@ -73,6 +75,10 @@ public ZRAdminMenuHandle(Handle:zr_admin_menu, MenuAction:action, client, slot)
             case 7:
             {
                 // unrestrict
+            }
+            case 8:
+            {
+                ZRLogFlagsMenu(client);
             }
         }
     }
@@ -424,6 +430,103 @@ public ZRTeleHandle(Handle:zr_tele_menu , MenuAction:action, client, slot)
     }
 }
 
+ZRLogFlagsMenu(client)
+{
+    new Handle:zr_log_flags_menu = CreateMenu(ZRLogFlagsMenuHandle);
+    
+    decl String:z_log_core[64];
+    decl String:z_log_game[64];
+    decl String:z_log_player[64];
+    decl String:z_log_debug[64];
+    decl String:z_log_debug_detail[64];
+    decl String:z_log_debug_max[64];
+    decl String:z_log_admins[64];
+    decl String:z_log_client[64];
+
+    Format(z_log_core, sizeof(z_log_core), "Log core events (%d)", LogHasFlag(LOG_CORE_EVENTS));
+    Format(z_log_game, sizeof(z_log_game), "Log game events (%d)", LogHasFlag(LOG_GAME_EVENTS));
+    Format(z_log_player, sizeof(z_log_player), "Log player commands (%d)", LogHasFlag(LOG_PLAYER_COMMANDS));
+    Format(z_log_debug, sizeof(z_log_debug), "Log debug messages (%d)", LogHasFlag(LOG_DEBUG));
+    Format(z_log_debug_detail, sizeof(z_log_debug_detail), "Log detailed debug messages (%d)", LogHasFlag(LOG_DEBUG_DETAIL));
+    Format(z_log_debug_max, sizeof(z_log_debug_max), "Log low level debug messages (%d)", LogHasFlag(LOG_DEBUG_MAX_DETAIL));
+    Format(z_log_admins, sizeof(z_log_admins), "Also log to admin chat (%d)", LogHasFlag(LOG_TO_ADMINS));
+    Format(z_log_client, sizeof(z_log_client), "Also log to client console (%d)", LogHasFlag(LOG_TO_CLIENT));
+    
+    SetMenuTitle(zr_log_flags_menu, "Toggle logging flags");
+    AddMenuItem(zr_log_flags_menu, z_log_core, z_log_core);
+    AddMenuItem(zr_log_flags_menu, z_log_game, z_log_game);
+    AddMenuItem(zr_log_flags_menu, z_log_player, z_log_player);
+    AddMenuItem(zr_log_flags_menu, z_log_debug, z_log_debug);
+    AddMenuItem(zr_log_flags_menu, z_log_debug_detail, z_log_debug_detail);
+    AddMenuItem(zr_log_flags_menu, z_log_debug_max, z_log_debug_max);
+    AddMenuItem(zr_log_flags_menu, z_log_admins, z_log_admins);
+    AddMenuItem(zr_log_flags_menu, z_log_client, z_log_client);
+    
+    SetMenuExitBackButton(zr_log_flags_menu, true);
+    DisplayMenu(zr_log_flags_menu, client, MENU_TIME_FOREVER);
+}
+
+public ZRLogFlagsMenuHandle(Handle:zr_log_flags_menu , MenuAction:action, client, slot)
+{
+    if (action == MenuAction_Select)
+    {
+        switch(slot)
+        {
+            case 0:
+            {
+                ToggleLogFlag(LOG_CORE_EVENTS);
+                ZRLogFlagsMenu(client);
+            }
+            case 1:
+            {
+                ToggleLogFlag(LOG_GAME_EVENTS);
+                ZRLogFlagsMenu(client);
+            }
+            case 2:
+            {
+                ToggleLogFlag(LOG_PLAYER_COMMANDS);
+                ZRLogFlagsMenu(client);
+            }
+            case 3:
+            {
+                ToggleLogFlag(LOG_DEBUG);
+                ZRLogFlagsMenu(client);
+            }
+            case 4:
+            {
+                ToggleLogFlag(LOG_DEBUG_DETAIL);
+                ZRLogFlagsMenu(client);
+            }
+            case 5:
+            {
+                ToggleLogFlag(LOG_DEBUG_MAX_DETAIL);
+                ZRLogFlagsMenu(client);
+            }
+            case 6:
+            {
+                ToggleLogFlag(LOG_TO_ADMINS);
+                ZRLogFlagsMenu(client);
+            }
+            case 7:
+            {
+                ToggleLogFlag(LOG_TO_CLIENT);
+                ZRLogFlagsMenu(client);
+            }
+        }
+    }
+    if (action == MenuAction_Cancel)
+    {
+        if (slot == MenuCancel_ExitBack)
+        {
+            ZRAdminMenu(client);
+        }
+    }
+    if (action == MenuAction_End)
+    {
+        CloseHandle(zr_log_flags_menu );
+    }
+}
+
 AddToKnockbackMultiplier(Float:value)
 {
     new Float:current_val = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
@@ -433,4 +536,19 @@ AddToKnockbackMultiplier(Float:value)
 AddToClassKnockback(classindex, Float:value)
 {
     arrayClasses[classindex][data_knockback] = arrayClasses[classindex][data_knockback] + value;
+}
+
+ToggleLogFlag(flag)
+{
+    new log_flags;
+    log_flags = GetConVarInt(gCvars[CVAR_LOG]);
+    if (log_flags & flag)
+    {
+        log_flags = log_flags - flag;
+    }
+    else
+    {
+        log_flags = log_flags + flag;
+    }
+    SetConVarInt(gCvars[CVAR_LOG], log_flags);
 }

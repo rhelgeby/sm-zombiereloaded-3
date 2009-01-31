@@ -9,7 +9,7 @@
 enum ZRSettings
 {
     Handle:CVAR_ENABLE,
-    Handle:CVAR_DEBUG,
+    Handle:CVAR_LOG,
     Handle:CVAR_ALLOW_PLAYER_TEAM,
     Handle:CVAR_AMBIENCE,
     Handle:CVAR_AMBIENCE_FILE,
@@ -92,7 +92,7 @@ new gCvars[ZRSettings];
 CreateCvars()
 {
     gCvars[CVAR_ENABLE]                    =    CreateConVar("zr_enable", "1", "Enable zombie gameplay (0: Disable)");
-    gCvars[CVAR_DEBUG]                     =    CreateConVar("zr_debug", "0", "Debug switch, for developers. Usually enables logging of messages and events to a console. (0: Disable)");
+    gCvars[CVAR_LOG]                       =    CreateConVar("zr_log", "65", "Logging flags. Log messages to sourcemod logs, server console or client console. Use zr_log_flags to see a list of flags. (0: Disable)");
     gCvars[CVAR_ALLOW_PLAYER_TEAM]         =    CreateConVar("zr_allow_player_team", "0", "This will allow the player_team event to be fired on first team join, enable when using mani model menu (0: Disable)");
     gCvars[CVAR_AMBIENCE]                  =    CreateConVar("zr_ambience", "1", "Enable creepy ambience to be played throughout the game (0: Disable)");
     gCvars[CVAR_AMBIENCE_FILE]             =    CreateConVar("zr_ambience_file", "ambient/zr/zr_ambience.mp3", "Path to ambient sound file that will be played throughout the game, when zr_ambience is 1");
@@ -220,4 +220,16 @@ public AutoTeamBalanceHook(Handle:convar, const String:oldValue[], const String:
 public LimitTeamsHook(Handle:convar, const String:oldValue[], const String:newValue[])
 {
     SetConVarInt(FindConVar("mp_limitteams"), 0);
+}
+
+LogHasFlag(flag)
+{
+    if (GetConVarInt(gCvars[CVAR_LOG]) & flag)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }

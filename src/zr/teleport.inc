@@ -132,10 +132,14 @@ public Action:Event_TeleportCooldown(Handle:Timer, any:client)
 
 public Action:Command_Teleport(client, argc)
 {
-    new String:arg1[MAX_TARGET_LENGTH];
-    new String:target_name[MAX_TARGET_LENGTH];
+    decl String:arg1[MAX_TARGET_LENGTH];
+    decl String:target_name_list[192];
+    decl String:target_name[192];
+    decl String:client_name[192];
     new bool:tn_is_ml;
     
+    GetClientName(client, client_name, sizeof(client_name));
+
     if (argc >= 1)
     {
         GetCmdArg(1, arg1, sizeof(arg1));
@@ -148,8 +152,8 @@ public Action:Command_Teleport(client, argc)
                 target_list,
                 MAXPLAYERS,
                 COMMAND_FILTER_ALIVE,
-                target_name,
-                sizeof(target_name),
+                target_name_list,
+                sizeof(target_name_list),
                 tn_is_ml)) <= 0)
         {
             ReplyToTargetError(client, target_count);
@@ -162,7 +166,8 @@ public Action:Command_Teleport(client, argc)
             {
                 AbortTeleport(target_list[i]);
                 TeleportClient(target_list[i], true, true);
-                LogAction(client, target_list[i], "\"%L\" teleported \"%L\" to spawn", client, target_list[i]);
+                GetClientName(target_list[i], target_name, sizeof(target_name));
+                if (LogHasFlag(LOG_GAME_EVENTS)) ZR_LogMessageFormatted(client, "Teleport", "Manual teleport", "Admin \"%s\" teleported \"%s\" to spawn.", true, client_name, target_name);
             }
         }
     }
@@ -172,14 +177,13 @@ public Action:Command_Teleport(client, argc)
         {
             AbortTeleport(client);
             TeleportClient(client, true, true);
-            GetClientName(client, target_name, sizeof(target_name));
-            LogAction(client, client, "[ZR] Player %s teleported  %s to spawn.", target_name, target_name);
+            if (LogHasFlag(LOG_GAME_EVENTS)) ZR_LogMessageFormatted(client, "Teleport", "Manual teleport", "Admin \"%s\" self-teleported to spawn.", true, client_name);
         }
     }
     
     if (tn_is_ml)
     {
-        ShowActivity2(client, "[ZR] ", "%t teleported to spawn.", target_name);
+        ShowActivity2(client, "[ZR] ", "%t teleported to spawn.", target_name_list);
     }
     else
     {
@@ -210,6 +214,7 @@ public Action:Command_TeleSaveLocation(client, argc)
         bufferLocSaved[client] = true;
         GetClientName(target_client, target_name, sizeof(target_name));
         ReplyToCommand(client, "Saved location to %s (x:%f, y:%f, z:%f).", target_name, bufferLoc[client][0], bufferLoc[client][1], bufferLoc[client][2]);
+
     }
     else
     {
@@ -221,7 +226,8 @@ public Action:Command_TeleSaveLocation(client, argc)
 
 public Action:Command_TeleportToLocation(client, argc)
 {
-    new String:target_name[MAX_TARGET_LENGTH];
+    decl String:client_name[192];
+    decl String:target_name[192];
     new target_client;
     new Float:empty_vector[3] = {0.0, 0.0, 0.0};
     
@@ -237,6 +243,10 @@ public Action:Command_TeleportToLocation(client, argc)
         {
             target_client = client;
         }
+
+        GetClientName(client, client_name, sizeof(client_name));
+        GetClientName(target_client, target_name, sizeof(target_name));
+        
         if (target_client > 0 && target_client <= MAXPLAYERS)
         {
             if (IsPlayerAlive(target_client))
@@ -245,15 +255,16 @@ public Action:Command_TeleportToLocation(client, argc)
                 TeleportEntity(target_client, bufferLoc[client], NULL_VECTOR, empty_vector);
                 ZR_PrintToChat(client, "!ztele successful");
                 if (target_client != client) ZR_PrintToChat(target_client, "!ztele successful");
+                if (LogHasFlag(LOG_GAME_EVENTS)) ZR_LogMessageFormatted(client, "Teleport", "Custom teleport", "Admin \"%s\" teleported \"%s\".", true, client_name, target_name);
             }
             else
             {
-                ReplyToCommand(client, "Player %s is dead. Only alive players can be teleported.", target_name);
+                ReplyToCommand(client, "Player \"%s\" is dead. Only alive players can be teleported.", target_name);
             }
         }
         else
         {
-            ReplyToCommand(client, "Unable to target %s", target_name);
+            ReplyToCommand(client, "Unable to target \"%s\"", target_name);
         }
     }
     else
@@ -293,7 +304,7 @@ public Action:Command_TeleportAbort(client, argc)
         for (new i = 0; i < target_count; i++)
         {
             AbortTeleport(target_list[i]);
-            LogAction(client, target_list[i], "\"%L\" aborted teleport on \"%L\".", client, target_list[i]);
+            LogAction(client, target_list[i], "%L aborted teleport on %L.", client, target_list[i]);
         }
     }
     else

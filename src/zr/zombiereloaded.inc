@@ -31,11 +31,18 @@ enum ZTeam
 #define Game_Commencing							16		// Game Commencing!
 
 #define DXLEVEL_MIN 90
-
 #define DEFAULT_FOV 90
 
-new bool:market;
+#define LOG_CORE_EVENTS 1
+#define LOG_GAME_EVENTS 2
+#define LOG_PLAYER_COMMANDS 4
+#define LOG_DEBUG 8
+#define LOG_DEBUG_DETAIL 16
+#define LOG_DEBUG_MAX_DETAIL 32
+#define LOG_TO_ADMINS 64
+#define LOG_TO_CLIENT 128
 
+new bool:market;
 new dxLevel[MAXPLAYERS+1];
 
 new bool:zombieSpawned;
@@ -210,19 +217,5 @@ bool:IsClientPlayer(client)
     else
     {
         return false;
-    }
-}
-
-ZR_DebugPrintToConsole(client, String:message[])
-{
-    if (client)
-    { /* Client console */
-        if (IsClientInGame(client)) PrintToConsole(client, message);
-        LogMessage("Debug log (client %i) -- %s", client, message);
-    }
-    else
-    { /* Server console */
-        PrintToServer(message);
-        LogMessage("Debug log (client %i) -- %s", client, message);
     }
 }
