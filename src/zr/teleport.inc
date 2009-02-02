@@ -226,8 +226,8 @@ public Action:Command_TeleSaveLocation(client, argc)
 
 public Action:Command_TeleportToLocation(client, argc)
 {
-    decl String:client_name[192];
-    decl String:target_name[192];
+    decl String:client_name[64];
+    decl String:target_name[64];
     new target_client;
     new Float:empty_vector[3] = {0.0, 0.0, 0.0};
     
@@ -243,12 +243,19 @@ public Action:Command_TeleportToLocation(client, argc)
         {
             target_client = client;
         }
-
-        GetClientName(client, client_name, sizeof(client_name));
-        GetClientName(target_client, target_name, sizeof(target_name));
         
         if (target_client > 0 && target_client <= MAXPLAYERS)
         {
+            if (client > 0)
+            {
+                GetClientName(client, client_name, sizeof(client_name));
+            }
+            else
+            {
+                client_name = "Console\0";
+            }
+            GetClientName(target_client, target_name, sizeof(target_name));
+            
             if (IsPlayerAlive(target_client))
             {
                 AbortTeleport(target_client);

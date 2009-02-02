@@ -105,7 +105,7 @@ stock ZR_LogMessage(any:...)
     LogMessage(phrase);
 }
 
-stock ZR_LogMessageFormatted(client, const String:function[], const String:block[], const String:message[], bool:full = false, any:...)
+stock ZR_LogMessageFormatted(client, const String:module[], const String:block[], const String:message[], bool:full = false, any:...)
 {
     decl String:buffer[2048];
     decl String:text[2048];
@@ -113,7 +113,7 @@ stock ZR_LogMessageFormatted(client, const String:function[], const String:block
     if (full)
     {
         VFormat(buffer, sizeof(buffer), message, 6);
-        Format(text, sizeof(text), "Log -- Module: %s, Function/Block: %s -- %s", function, block, buffer);
+        Format(text, sizeof(text), "Log -- Module: %s, Function/Block: %s -- %s", module, block, buffer);
     }
     else
     {

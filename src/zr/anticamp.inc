@@ -274,9 +274,8 @@ public Action:Command_AnticampRemoveVolume(client, argc)
         volumes[vol_index][volume_in_use] = false;
         ReplyToCommand(client, "Removed volume %d.", vol_index);
         
-        if (LogHasFlag(LOG_CORE_EVENTS))
+        if (LogHasFlag(LOG_GAME_EVENTS))
         {
-            //GetClientName(client, client_name, sizeof(client_name));
             ZR_LogMessageFormatted(client, "Anticamp", "Remove volume", "Admin %L removed volume %d.", true, client, vol_index);
         }
     }
@@ -389,7 +388,7 @@ bool:IsPlayerInVolume(client, volume_index)
             if (log) ZR_LogMessageFormatted(client, "Anticamp", "IsPlayerInVolume", "Client %d matches Y values.", true, client);
             if ((player_loc_z >= volumes[volume_index][z_min]) && (player_loc_z <= volumes[volume_index][z_max]))
             {
-                if (log) ZR_LogMessageFormatted(client, "Anticamp", "IsPlayerInVolume", "Client %d matches X values.", true, client);
+                if (log) ZR_LogMessageFormatted(client, "Anticamp", "IsPlayerInVolume", "Client %d matches Z values.", true, client);
                 return true;
             }
         }

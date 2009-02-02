@@ -44,20 +44,36 @@ public Action:Command_Infect(client, argc)
     decl String:arg1[32];
     GetCmdArg(1, arg1, sizeof(arg1));
     
-    decl String:target_name[MAX_TARGET_LENGTH];
+    decl String:target_name_list[MAX_TARGET_LENGTH];
+    decl String:target_name[64];
+    decl String:client_name[64];
     new targets[MAXPLAYERS];
     new bool:tn_is_ml;
     
-    new tcount = ProcessTargetString(arg1, client, targets, MAXPLAYERS, COMMAND_FILTER_ALIVE, target_name, sizeof(target_name), tn_is_ml);
+    new tcount = ProcessTargetString(arg1, client, targets, MAXPLAYERS, COMMAND_FILTER_ALIVE, target_name_list, sizeof(target_name), tn_is_ml);
     if (tcount <= 0)
     {
         ReplyToTargetError(client, tcount);
         return Plugin_Handled;
     }
     
+    if (client > 0)
+    {
+        GetClientName(client, client_name, sizeof(client_name));
+    }
+    else
+    {
+        client_name = "Console\0";
+    }
+
     for (new x = 0; x < tcount; x++)
     {
         Zombify(targets[x], 0);
+        if (LogHasFlag(LOG_GAME_EVENTS))
+        {
+            GetClientName(targets[x], target_name, sizeof(target_name));
+            ZR_LogMessageFormatted(client, "Commands", "Manual infect", "Admin \"%s\" infected \"%s\".", true, client_name, target_name);
+        }
     }
     
     return Plugin_Handled;
@@ -66,6 +82,8 @@ public Action:Command_Infect(client, argc)
 public Action:Command_Respawn(client, argc)
 {
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    decl String:client_name[64];
+    decl String:target_name[64];
     if (argc < 1 || !enabled)
     {
         return Plugin_Handled;
@@ -74,15 +92,24 @@ public Action:Command_Respawn(client, argc)
     decl String:arg1[32];
     GetCmdArg(1, arg1, sizeof(arg1));
     
-    decl String:target_name[MAX_TARGET_LENGTH];
+    decl String:target_name_list[MAX_TARGET_LENGTH];
     new targets[MAXPLAYERS];
     new bool:tn_is_ml;
     
-    new tcount = ProcessTargetString(arg1, client, targets, MAXPLAYERS, COMMAND_FILTER_DEAD, target_name, sizeof(target_name), tn_is_ml);
+    new tcount = ProcessTargetString(arg1, client, targets, MAXPLAYERS, COMMAND_FILTER_DEAD, target_name_list, sizeof(target_name), tn_is_ml);
     if (tcount <= 0)
     {
         ReplyToTargetError(client, tcount);
         return Plugin_Handled;
+    }
+    
+    if (client > 0)
+    {
+        GetClientName(client, client_name, sizeof(client_name));
+    }
+    else
+    {
+        client_name = "Console\0";
     }
     
     new team;
@@ -91,7 +118,11 @@ public Action:Command_Respawn(client, argc)
         team = GetClientTeam(targets[x]);
         if (team == CS_TEAM_T || team == CS_TEAM_CT)
         {
-            if (LogHasFlag(LOG_GAME_EVENTS)) ZR_LogMessageFormatted(targets[x], "Commands", "Command_Respawn", "ZSpawn spawned player %d.", true, targets[x]);
+            if (LogHasFlag(LOG_GAME_EVENTS))
+            {
+                GetClientName(targets[x], target_name, sizeof(target_name));
+                ZR_LogMessageFormatted(targets[x], "Commands", "Manual spawn", "Admin \"%s\" spawned player \"%s\".", true, client_name, target_name);
+            }
             RespawnPlayer(targets[x]);
         }
     }
@@ -102,6 +133,7 @@ public Action:Command_Respawn(client, argc)
 public Action:Command_Restrict(client, argc)
 {
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    decl String:client_name[64];
     if (argc < 1 || !enabled)
     {
         return Plugin_Handled;
@@ -116,6 +148,21 @@ public Action:Command_Restrict(client, argc)
     {
         ZR_ReplyToCommand(client, "Weapon already restricted", arg1);
     }
+    else
+    {
+        if (LogHasFlag(LOG_GAME_EVENTS))
+        {
+            if (client > 0)
+            {
+                GetClientName(client, client_name, sizeof(client_name));
+            }
+            else
+            {
+                client_name = "Console\0";
+            }
+            ZR_LogMessageFormatted(client, "Commands", "Weapon restictions", "Admin \"%s\" restricted weapon \"%s\".", true, client_name, arg1);
+        }
+    }
     
     return Plugin_Handled;
 }
@@ -123,6 +170,7 @@ public Action:Command_Restrict(client, argc)
 public Action:Command_UnRestrict(client, argc)
 {
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    decl String:client_name[64];
     if (argc < 1 || !enabled)
     {
         return Plugin_Handled;
@@ -136,6 +184,21 @@ public Action:Command_UnRestrict(client, argc)
     if (output == Invalid)
     {
         ZR_ReplyToCommand(client, "Weapon invalid", arg1);
+    }
+    else
+    {
+        if (LogHasFlag(LOG_GAME_EVENTS))
+        {
+            if (client > 0)
+            {
+                GetClientName(client, client_name, sizeof(client_name));
+            }
+            else
+            {
+                client_name = "Console\0";
+            }
+            ZR_LogMessageFormatted(client, "Commands", "Weapon restictions", "Admin \"%s\" removed weapon restriction on \"%s\".", true, client_name, arg1);
+        }
     }
     
     return Plugin_Handled;
@@ -282,14 +345,14 @@ public Action:Command_LogFlags(client, argc)
 {
     decl String:message[2048];
     
-    StrCat(message, sizeof(message), "LOG_FLAG_CORE_EVENTS (1)        - Log core events like executing files, restricting weapons, etc.\n");
-    StrCat(message, sizeof(message), "LOG_FLAG_GAME_EVENTS (2)        - Log infections.\n");
-    StrCat(message, sizeof(message), "LOG_FLAG_PLAYER_COMMANDS (4)    - Log zspawn, teleports, class change, etc.\n");
-    StrCat(message, sizeof(message), "LOG_FLAG_DEBUG (8)              - Enable debug messages (if they exist).\n");
-    StrCat(message, sizeof(message), "LOG_FLAG_DEBUG (16)             - Detailed debug messages. May cause spam.\n");
-    StrCat(message, sizeof(message), "LOG_FLAG_DEBUG_MAX_DETAIL (32)  - Low level detailed debug messages. Causes spam! Only enable right before and after testing.\n");
-    StrCat(message, sizeof(message), "LOG_FLAG_LOG_TO_ADMINS (64)     - Display log messages to admin chat.\n");
-    StrCat(message, sizeof(message), "LOG_FLAG_LOG_TO_CLIENT (128)    - Display log messages to the client that executed the event/command.\n");
+    StrCat(message, sizeof(message), "LOG_CORE_EVENTS        (1) - Log core events like executing files, restricting weapons, etc.\n");
+    StrCat(message, sizeof(message), "LOG_GAME_EVENTS        (2) - Log game events like admin commands, suicide prevention and anticamp kills.\n");
+    StrCat(message, sizeof(message), "LOG_PLAYER_COMMANDS    (4) - Log commands made by the player.\n");
+    StrCat(message, sizeof(message), "LOG_DEBUG              (8) - Enable debug messages (if they exist).\n");
+    StrCat(message, sizeof(message), "LOG_DEBUG_DETAIL      (16) - Detailed debug messages. May cause spam.\n");
+    StrCat(message, sizeof(message), "LOG_DEBUG_MAX_DETAIL  (32) - Low level detailed debug messages. Causes spam! Only enable right before and after testing.\n");
+    StrCat(message, sizeof(message), "LOG_LOG_TO_ADMINS     (64) - Display log messages to admin chat.\n");
+    StrCat(message, sizeof(message), "LOG_LOG_TO_CLIENT    (128) - Display log messages to the client that executed the event/command.\n");
     
     ReplyToCommand(client, message);
 }

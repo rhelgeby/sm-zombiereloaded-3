@@ -182,7 +182,7 @@ public Action:Attempt_Suicide(client, argc)
     decl String:buffer[192];
 
     GetClientName(client, clientname, sizeof(clientname));
-    if (LogHasFlag(LOG_CORE_EVENTS))
+    if (LogHasFlag(LOG_GAME_EVENTS))
     {
         ZR_LogMessageFormatted(client, "Damage control", "Suicide", "Player \"%s\" attempted suicide.", true, clientname);
     }

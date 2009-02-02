@@ -1,3 +1,8 @@
+2009.02.02 - 2.5.1.26
+  * Fixed message typo.
+  * Added debug messages when applying models.
+  * Added log messages on manual infecions and weapon restrictions.
+
 2009.01.31 - 2.5.1.25
   * Fixed incorrect weapon name used in group weapon restrictions (bullpup => aug).
   * Improved logging system. CVAR zr_debug renamed to zr_log. Using bit flags instead of on/off CVAR. Added flag configurations to zombie admin menu.
