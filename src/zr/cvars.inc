@@ -104,7 +104,7 @@ CreateCvars()
     gCvars[CVAR_EMITSOUNDS]                =    CreateConVar("zr_emitsounds", "50", "How often a zombie emits a sound,  in seconds (0: Disable)");
     gCvars[CVAR_CLASSES]                   =    CreateConVar("zr_classes", "1", "Enable zombie classes");
     gCvars[CVAR_CLASSES_SPAWN]             =    CreateConVar("zr_classes_spawn", "0", "Classmenu is re-displayed every spawn (0: Disable)");
-    gCvars[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round (0: Disable)");
+    gCvars[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round. Overrides zr_classes_spawn. (0: Disable)");
     gCvars[CVAR_CLASSES_DEFAULT]           =    CreateConVar("zr_classes_default", "classic", "Default class selected for all players when they connect, or \"random\" to select a random class. Usage zr_classes_default <class name|\"random\">");
     gCvars[CVAR_ZOMBIE_HEALTH]             =    CreateConVar("zr_zombie_health", "5000", "The default health of a zombie");
     gCvars[CVAR_ZOMBIE_SPEED]              =    CreateConVar("zr_zombie_speed", "350", "How fast zombies travel (300: Default speed,  600: Double speed)");
