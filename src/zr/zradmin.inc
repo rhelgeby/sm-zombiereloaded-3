@@ -433,7 +433,9 @@ public ZRTeleHandle(Handle:zr_tele_menu , MenuAction:action, client, slot)
 ZRLogFlagsMenu(client)
 {
     new Handle:zr_log_flags_menu = CreateMenu(ZRLogFlagsMenuHandle);
-    
+    new client_flags = GetUserFlagBits(client);
+    new item_disabled = (client_flags & ADMFLAG_ROOT) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+
     decl String:z_log_core[64];
     decl String:z_log_game[64];
     decl String:z_log_player[64];
@@ -442,6 +444,19 @@ ZRLogFlagsMenu(client)
     decl String:z_log_debug_max[64];
     decl String:z_log_admins[64];
     decl String:z_log_client[64];
+    decl String:z_log_ignore_console[64];
+    decl String:z_log_modules_enabled[64];
+    decl String:z_log_module_zombie[64];
+    decl String:z_log_module_ambience[64];
+    decl String:z_log_module_overlays[64];
+    decl String:z_log_module_saytriggers[64];
+    decl String:z_log_module_teleport[64];
+    decl String:z_log_module_classes[64];
+    decl String:z_log_module_weaponrestrict[64];
+    decl String:z_log_module_commands[64];
+    decl String:z_log_module_anticamp[64];
+    decl String:z_log_module_damagecontrol[64];
+    decl String:z_log_module_offsets[64];
 
     Format(z_log_core, sizeof(z_log_core), "Log core events (%d)", LogHasFlag(LOG_CORE_EVENTS));
     Format(z_log_game, sizeof(z_log_game), "Log game events (%d)", LogHasFlag(LOG_GAME_EVENTS));
@@ -451,16 +466,42 @@ ZRLogFlagsMenu(client)
     Format(z_log_debug_max, sizeof(z_log_debug_max), "Log low level debug messages (%d)", LogHasFlag(LOG_DEBUG_MAX_DETAIL));
     Format(z_log_admins, sizeof(z_log_admins), "Also log to admin chat (%d)", LogHasFlag(LOG_TO_ADMINS));
     Format(z_log_client, sizeof(z_log_client), "Also log to client console (%d)", LogHasFlag(LOG_TO_CLIENT));
+    Format(z_log_ignore_console, sizeof(z_log_ignore_console), "Don't log from messages the console (%d)", LogHasFlag(LOG_IGNORE_CONSOLE));
+    Format(z_log_modules_enabled, sizeof(z_log_modules_enabled), "Module based log control (%d)", LogHasFlag(LOG_MODULES_ENABLED));
+    Format(z_log_module_zombie, sizeof(z_log_module_zombie), "Zombie (%d)", LogHasFlag(LOG_MODULE_ZOMBIE));
+    Format(z_log_module_ambience, sizeof(z_log_module_ambience), "Ambience (%d)", LogHasFlag(LOG_MODULE_AMBIENCE));
+    Format(z_log_module_overlays, sizeof(z_log_module_overlays), "Overlays (%d)", LogHasFlag(LOG_MODULE_OVERLAYS));
+    Format(z_log_module_saytriggers, sizeof(z_log_module_saytriggers), "Chat commands (%d)", LogHasFlag(LOG_MODULE_SAYTRIGGERS));
+    Format(z_log_module_teleport, sizeof(z_log_module_teleport), "Teleporter (%d)", LogHasFlag(LOG_MODULE_TELEPORT));
+    Format(z_log_module_classes, sizeof(z_log_module_classes), "Classes (%d)", LogHasFlag(LOG_MODULE_CLASSES));
+    Format(z_log_module_weaponrestrict, sizeof(z_log_module_weaponrestrict), "Weapon restrictions (%d)", LogHasFlag(LOG_MODULE_WEAPONRESTICT));
+    Format(z_log_module_commands, sizeof(z_log_module_commands), "Admin commands (%d)", LogHasFlag(LOG_MODULE_COMMANDS));
+    Format(z_log_module_anticamp, sizeof(z_log_module_anticamp), "Anticamp (%d)", LogHasFlag(LOG_MODULE_ANTICAMP));
+    Format(z_log_module_damagecontrol, sizeof(z_log_module_damagecontrol), "Damage control (suicides) (%d)", LogHasFlag(LOG_MODULE_DAMAGECONTROL));
+    Format(z_log_module_offsets, sizeof(z_log_module_offsets), "Offsets (properties) (%d)", LogHasFlag(LOG_MODULE_OFFSETS));
     
     SetMenuTitle(zr_log_flags_menu, "Toggle logging flags");
-    AddMenuItem(zr_log_flags_menu, z_log_core, z_log_core);
-    AddMenuItem(zr_log_flags_menu, z_log_game, z_log_game);
-    AddMenuItem(zr_log_flags_menu, z_log_player, z_log_player);
-    AddMenuItem(zr_log_flags_menu, z_log_debug, z_log_debug);
-    AddMenuItem(zr_log_flags_menu, z_log_debug_detail, z_log_debug_detail);
-    AddMenuItem(zr_log_flags_menu, z_log_debug_max, z_log_debug_max);
+    AddMenuItem(zr_log_flags_menu, z_log_core, z_log_core, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_game, z_log_game, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_player, z_log_player, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_debug, z_log_debug, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_debug_detail, z_log_debug_detail, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_debug_max, z_log_debug_max, item_disabled);
     AddMenuItem(zr_log_flags_menu, z_log_admins, z_log_admins);
     AddMenuItem(zr_log_flags_menu, z_log_client, z_log_client);
+    AddMenuItem(zr_log_flags_menu, z_log_ignore_console, z_log_ignore_console, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_modules_enabled, z_log_modules_enabled, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_zombie, z_log_module_zombie, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_ambience, z_log_module_ambience, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_overlays, z_log_module_overlays, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_saytriggers, z_log_module_saytriggers, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_teleport, z_log_module_teleport, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_classes, z_log_module_classes, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_weaponrestrict, z_log_module_weaponrestrict, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_commands, z_log_module_commands, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_anticamp, z_log_module_anticamp, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_damagecontrol, z_log_module_damagecontrol, item_disabled);
+    AddMenuItem(zr_log_flags_menu, z_log_module_offsets, z_log_module_offsets, item_disabled);
     
     SetMenuExitBackButton(zr_log_flags_menu, true);
     DisplayMenu(zr_log_flags_menu, client, MENU_TIME_FOREVER);
@@ -510,6 +551,71 @@ public ZRLogFlagsMenuHandle(Handle:zr_log_flags_menu , MenuAction:action, client
             case 7:
             {
                 ToggleLogFlag(LOG_TO_CLIENT);
+                ZRLogFlagsMenu(client);
+            }
+            case 8:
+            {
+                ToggleLogFlag(LOG_IGNORE_CONSOLE);
+                ZRLogFlagsMenu(client);
+            }
+            case 9:
+            {
+                ToggleLogFlag(LOG_MODULES_ENABLED);
+                ZRLogFlagsMenu(client);
+            }
+            case 10:
+            {
+                ToggleLogFlag(LOG_MODULE_ZOMBIE);
+                ZRLogFlagsMenu(client);
+            }
+            case 11:
+            {
+                ToggleLogFlag(LOG_MODULE_AMBIENCE);
+                ZRLogFlagsMenu(client);
+            }
+            case 12:
+            {
+                ToggleLogFlag(LOG_MODULE_OVERLAYS);
+                ZRLogFlagsMenu(client);
+            }
+            case 13:
+            {
+                ToggleLogFlag(LOG_MODULE_SAYTRIGGERS);
+                ZRLogFlagsMenu(client);
+            }
+            case 14:
+            {
+                ToggleLogFlag(LOG_MODULE_TELEPORT);
+                ZRLogFlagsMenu(client);
+            }
+            case 15:
+            {
+                ToggleLogFlag(LOG_MODULE_CLASSES);
+                ZRLogFlagsMenu(client);
+            }
+            case 16:
+            {
+                ToggleLogFlag(LOG_MODULE_WEAPONRESTICT);
+                ZRLogFlagsMenu(client);
+            }
+            case 17:
+            {
+                ToggleLogFlag(LOG_MODULE_COMMANDS);
+                ZRLogFlagsMenu(client);
+            }
+            case 18:
+            {
+                ToggleLogFlag(LOG_MODULE_ANTICAMP);
+                ZRLogFlagsMenu(client);
+            }
+            case 19:
+            {
+                ToggleLogFlag(LOG_MODULE_DAMAGECONTROL);
+                ZRLogFlagsMenu(client);
+            }
+            case 20:
+            {
+                ToggleLogFlag(LOG_MODULE_OFFSETS);
                 ZRLogFlagsMenu(client);
             }
         }

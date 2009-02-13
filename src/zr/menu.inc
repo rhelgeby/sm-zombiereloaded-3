@@ -73,12 +73,10 @@ public MainMenuHandle(Handle:menu_main, MenuAction:action, client, slot)
             case 3:
             {
                 ZSpawn(client);
-                MainMenu(client);
             }
             case 4:
             {
-                ZTeleClientCheck(client);
-                MainMenu(client);
+                if (!ZTeleClientCheck(client)) MainMenu(client);
             }
             case 5:
             {

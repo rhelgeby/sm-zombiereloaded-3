@@ -1,3 +1,15 @@
+2009.02.13 - 2.5.1.27
+  * Fixed bug in formatted log messages when client is negative or 0 (console).
+  * Simplified log formatting style.
+  * Blocked non-root admins from changing log flags (except print to chat flags).
+  * Fixed unknown command error on zr_anticamp_list command.
+  * Simplified some messages by using ReplyToCommand.
+  * Added module based log flags.
+  * Made CVARs for alpha values (transparency).
+  * Changed CVAR zr_classes_default to select a random class on map load, if "random" is used.
+  * Removed CVAR zr_classes_save. This feature can be replaced later with client cookies from SourceMod 1.1.0.
+  * Fixed zmenu not closing when teleporting or spawning.
+
 2009.02.02 - 2.5.1.26
   * Fixed message typo.
   * Added debug messages when applying models.

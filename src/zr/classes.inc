@@ -145,14 +145,22 @@ GetDefaultClassIndex()
     
     if (strlen(classname) > 0)
     {
-        classindex = GetClassIndex(classname);
-        if (classindex == -1)
+        if (classCount > 1 && (strcmp(classname, "random", false) == 0))
         {
-            return 0;
+            classindex = GetRandomInt(0, classCount - 1);
+            return classindex;
         }
         else
         {
-            return classindex;
+            classindex = GetClassIndex(classname);
+            if (classindex == -1)
+            {
+                return 0;
+            }
+            else
+            {
+                return classindex;
+            }
         }
     }
     else
@@ -353,30 +361,33 @@ GetClassInfectHealth(classindex)
 GetClassAlphaSpawn(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
-    if (classes) {
+    if (classes)
+    {
         return arrayClasses[classindex][data_alpha_spawn];
     }
 
-    return 255;
+    return GetConVarInt(gCvars[CVAR_ZOMBIE_ALPHA_SPAWN]);
 }
 
 GetClassAlphaDamaged(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
-    if (classes) {
+    if (classes)
+    {
         return arrayClasses[classindex][data_alpha_damaged];
     }
 
-    return 255;
+    return GetConVarInt(gCvars[CVAR_ZOMBIE_ALPHA_DAMAGED]);
 }
 
 GetClassAlphaDamage(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
-    if (classes) {
+    if (classes)
+    {
         return arrayClasses[classindex][data_alpha_damage];
     }
 
-    return 0;
+    return GetConVarInt(gCvars[CVAR_ZOMBIE_ALPHA_DAMAGE]);
 }
 

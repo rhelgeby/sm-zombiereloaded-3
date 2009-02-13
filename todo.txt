@@ -2,9 +2,14 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 ---- CRITICAL/IMPORTANT ----
 
-* Logging of infections by admins. For monitoring.
 
 ---- NORMAL/GAMEPLAY ----
+
+* Fix ambience not always playing: separate timers for each player.
+
+* Make admin commands to get or set classes:
+  zr_classes_set <classname> <target>
+  zr_classes_get <#userid|name>
 
 * Make it possible to disable certain classes on certain maps. Only specify the
   class name to read the value:

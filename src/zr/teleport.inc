@@ -167,7 +167,7 @@ public Action:Command_Teleport(client, argc)
                 AbortTeleport(target_list[i]);
                 TeleportClient(target_list[i], true, true);
                 GetClientName(target_list[i], target_name, sizeof(target_name));
-                if (LogHasFlag(LOG_GAME_EVENTS)) ZR_LogMessageFormatted(client, "Teleport", "Manual teleport", "Admin \"%s\" teleported \"%s\" to spawn.", true, client_name, target_name);
+                if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) ZR_LogMessageFormatted(client, "teleport", "manual teleport", "\"%s\" teleported \"%s\" to spawn.", true, client_name, target_name);
             }
         }
     }
@@ -177,7 +177,7 @@ public Action:Command_Teleport(client, argc)
         {
             AbortTeleport(client);
             TeleportClient(client, true, true);
-            if (LogHasFlag(LOG_GAME_EVENTS)) ZR_LogMessageFormatted(client, "Teleport", "Manual teleport", "Admin \"%s\" self-teleported to spawn.", true, client_name);
+            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) ZR_LogMessageFormatted(client, "teleport", "manual teleport", "\"%s\" self-teleported to spawn.", true, client_name);
         }
     }
     
@@ -262,7 +262,7 @@ public Action:Command_TeleportToLocation(client, argc)
                 TeleportEntity(target_client, bufferLoc[client], NULL_VECTOR, empty_vector);
                 ZR_PrintToChat(client, "!ztele successful");
                 if (target_client != client) ZR_PrintToChat(target_client, "!ztele successful");
-                if (LogHasFlag(LOG_GAME_EVENTS)) ZR_LogMessageFormatted(client, "Teleport", "Custom teleport", "Admin \"%s\" teleported \"%s\".", true, client_name, target_name);
+                if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) ZR_LogMessageFormatted(client, "teleport", "custom teleport", "\"%s\" teleported \"%s\".", true, client_name, target_name);
             }
             else
             {
@@ -333,21 +333,21 @@ public Action:Command_TeleportAbort(client, argc)
     return Plugin_Handled;
 }
 
-ZTeleClientCheck(client)
+bool:ZTeleClientCheck(client)
 {
     // Check if the teleporter is disabled.
     new bool:tele = GetConVarBool(gCvars[CVAR_ZTELE]);
     if (!tele)
     {
         ZR_PrintToChat(client, "Feature is disabled");
-        return;
+        return false;
     }
     
     // Check if the teleporter is online.
     if (!ztele_online)
     {
         ZR_PrintToChat(client, "!ztele offline");
-        return;
+        return false;
     }
     
     // Check if the player is alive and is not a spectactor.
@@ -355,21 +355,21 @@ ZTeleClientCheck(client)
     if (!IsPlayerAlive(client) || (team != CS_TEAM_T && team != CS_TEAM_CT))
     {
         ZR_PrintToChat(client, "Must be alive");
-        return;
+        return false;
     }
     
     // Check if there's already a teleport in process.
     if (ztele_countdown_timer[client] != INVALID_HANDLE)
     {
         ZR_PrintToChat(client, "!ztele in progress");
-        return;
+        return false;
     }
 
     // Check if the cooldown isn't done yet.
     if (ztele_cooldown_timer[client] != INVALID_HANDLE)
     {
         ZR_PrintToChat(client, "!ztele cooldown");
-        return;
+        return false;
     }
 
     // Check limits.
@@ -389,13 +389,13 @@ ZTeleClientCheck(client)
         if (!tele_humans && zombieSpawned)
         {
             ZR_PrintToChat(client, "!ztele humans restricted");
-            return;
+            return false;
         }
         
         if (human_limit > 0 && (ztele_count[client] >= human_limit))
         {
             ZR_PrintToChat(client, "!ztele limit reached");
-            return;         
+            return false;    
         }
     }
     else
@@ -414,17 +414,18 @@ ZTeleClientCheck(client)
         if (!tele_zombies)
         {
             ZR_PrintToChat(client, "!ztele zombies restricted");
-            return;
+            return false;
         }
         
         if (zombie_limit > 0 && (ztele_count[client] >= zombie_limit))
         {
             ZR_PrintToChat(client, "!ztele limit reached");
-            return;         
+            return false;
         }
     }
     
     TeleportClient(client);
+    return true;
 }
 
 /*

@@ -198,12 +198,13 @@ TerminateRound(Float:delay, reason)
 
 SetPlayerModel(client, const String:model[])
 {
-    if (LogHasFlag(LOG_DEBUG)) ZR_LogMessageFormatted(-1, "Offsets", "Models", "Precaching model \"%s\".", true, model);
+    new log_debug = LogFlagCheck(LOG_DEBUG_DETAIL, LOG_MODULE_OFFSETS);
+    if (log_debug) ZR_LogMessageFormatted(-1, "offsets", "models", "Precaching model (\"%s\").", true, model);
     PrecacheModel(model);
-    if (LogHasFlag(LOG_DEBUG)) ZR_LogMessageFormatted(-1, "Offsets", "Models", "Model cached (\"%s\").", true, model);
-    if (LogHasFlag(LOG_DEBUG)) ZR_LogMessageFormatted(-1, "Offsets", "Models", "Applying model \"%s\" on client %d.", true, model, client);
+    if (log_debug) ZR_LogMessageFormatted(-1, "offsets", "models", "Model cached.", true, model);
+    if (log_debug) ZR_LogMessageFormatted(-1, "offsets", "models", "Applying model (\"%s\") on client %d.", true, model, client);
     SetEntityModel(client, model);
-    if (LogHasFlag(LOG_DEBUG)) ZR_LogMessageFormatted(-1, "Offsets", "Models", "Model applied (\"%s\") on client %d.", true, model, client);
+    if (log_debug) ZR_LogMessageFormatted(-1, "offsets", "models", "Model applied on client %d.", true, model, client);
 }
 
 SetPlayerAlpha(client, alpha)

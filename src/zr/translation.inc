@@ -109,11 +109,16 @@ stock ZR_LogMessageFormatted(client, const String:module[], const String:block[]
 {
     decl String:buffer[2048];
     decl String:text[2048];
+
+    if (client == 0 && LogHasFlag(LOG_IGNORE_CONSOLE))
+    {
+        return;
+    }
     
     if (full)
     {
         VFormat(buffer, sizeof(buffer), message, 6);
-        Format(text, sizeof(text), "Log -- Module: %s, Function/Block: %s -- %s", module, block, buffer);
+        Format(text, sizeof(text), "Log (%s : %s) -- %s", module, block, buffer);
     }
     else
     {
@@ -125,11 +130,11 @@ stock ZR_LogMessageFormatted(client, const String:module[], const String:block[]
     {
         ZR_PrintToAdminChat(text);
     }
-    if (LogHasFlag(LOG_TO_CLIENT) && IsClientConnected(client) && IsClientInGame(client))
+    if (client > 0 && LogHasFlag(LOG_TO_CLIENT) && IsClientConnected(client) && IsClientInGame(client))
     {
         PrintToConsole(client, "[ZR] %s", text);
     }
-    
+
     LogMessage(text);
 }
 

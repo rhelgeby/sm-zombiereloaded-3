@@ -69,10 +69,10 @@ public Action:Command_Infect(client, argc)
     for (new x = 0; x < tcount; x++)
     {
         Zombify(targets[x], 0);
-        if (LogHasFlag(LOG_GAME_EVENTS))
+        if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
         {
             GetClientName(targets[x], target_name, sizeof(target_name));
-            ZR_LogMessageFormatted(client, "Commands", "Manual infect", "Admin \"%s\" infected \"%s\".", true, client_name, target_name);
+            ZR_LogMessageFormatted(client, "admin commands", "infect", "\"%s\" infected \"%s\".", true, client_name, target_name);
         }
     }
     
@@ -118,10 +118,10 @@ public Action:Command_Respawn(client, argc)
         team = GetClientTeam(targets[x]);
         if (team == CS_TEAM_T || team == CS_TEAM_CT)
         {
-            if (LogHasFlag(LOG_GAME_EVENTS))
+            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
             {
                 GetClientName(targets[x], target_name, sizeof(target_name));
-                ZR_LogMessageFormatted(targets[x], "Commands", "Manual spawn", "Admin \"%s\" spawned player \"%s\".", true, client_name, target_name);
+                ZR_LogMessageFormatted(targets[x], "admin commands", "spawn", "\"%s\" spawned player \"%s\".", true, client_name, target_name);
             }
             RespawnPlayer(targets[x]);
         }
@@ -150,7 +150,7 @@ public Action:Command_Restrict(client, argc)
     }
     else
     {
-        if (LogHasFlag(LOG_GAME_EVENTS))
+        if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
         {
             if (client > 0)
             {
@@ -160,7 +160,7 @@ public Action:Command_Restrict(client, argc)
             {
                 client_name = "Console\0";
             }
-            ZR_LogMessageFormatted(client, "Commands", "Weapon restictions", "Admin \"%s\" restricted weapon \"%s\".", true, client_name, arg1);
+            ZR_LogMessageFormatted(client, "admin commands", "weapon restict", "\"%s\" restricted weapon \"%s\".", true, client_name, arg1);
         }
     }
     
@@ -187,7 +187,7 @@ public Action:Command_UnRestrict(client, argc)
     }
     else
     {
-        if (LogHasFlag(LOG_GAME_EVENTS))
+        if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
         {
             if (client > 0)
             {
@@ -197,7 +197,7 @@ public Action:Command_UnRestrict(client, argc)
             {
                 client_name = "Console\0";
             }
-            ZR_LogMessageFormatted(client, "Commands", "Weapon restictions", "Admin \"%s\" removed weapon restriction on \"%s\".", true, client_name, arg1);
+            ZR_LogMessageFormatted(client, "admin commands", "weapon restictions", "\"%s\" removed weapon restriction on \"%s\".", true, client_name, arg1);
         }
     }
     
@@ -208,16 +208,8 @@ public Action:Command_SetClassKnockback(client, argc)
 {
     if (argc < 2)
     {
-        if (client == 0)
-        {
-            PrintToServer("Sets the specified class knockback. Usage: zr_set_class_knockback <classname> <knockback>");
-            return Plugin_Handled;
-        }
-        else
-        {
-            PrintToConsole(client, "Sets the specified class knockback. Usage: zr_set_class_knockback <classname> <knockback>");
-            return Plugin_Handled;
-        }
+        ReplyToCommand(client, "Sets the specified class knockback. Usage: zr_set_class_knockback <classname> <knockback>");
+        return Plugin_Handled;
     }
 
     decl String:classname[64];
@@ -232,16 +224,8 @@ public Action:Command_SetClassKnockback(client, argc)
 
     if (classindex < 0)
     {
-        if (client == 0)
-        {
-            PrintToServer("Could not find the class %s.", classname);
-            return Plugin_Handled;
-        }
-        else
-        {
-            PrintToConsole(client, "Could not find the class %s.", classname);
-            return Plugin_Handled;
-        }
+        ReplyToCommand(client, "Could not find the class %s.", classname);
+        return Plugin_Handled;
     }
 
     arrayClasses[classindex][data_knockback] = knockback;
@@ -252,16 +236,8 @@ public Action:Command_GetClassKnockback(client, argc)
 {
     if (argc < 1)
     {
-        if (client == 0)
-        {
-            PrintToServer("Gets the specified class knockback. Usage: zr_get_class_knockback <classname>");
-            return Plugin_Handled;
-        }
-        else
-        {
-            PrintToConsole(client, "Gets the specified class knockback. Usage: zr_get_class_knockback <classname>");
-            return Plugin_Handled;
-        }
+        ReplyToCommand(client, "Gets the specified class knockback. Usage: zr_get_class_knockback <classname>");
+        return Plugin_Handled;
     }
 
     decl String:classname[64];
@@ -273,29 +249,13 @@ public Action:Command_GetClassKnockback(client, argc)
 
     if (classindex < 0)
     {
-        if (client == 0)
-        {
-            PrintToServer("Could not find the class %s.", classname);
-            return Plugin_Handled;
-        }
-        else
-        {
-            PrintToConsole(client, "Could not find the class %s.", classname);
-            return Plugin_Handled;
-        }
+        ReplyToCommand(client, "Could not find the class %s.", classname);
+        return Plugin_Handled;
     }
 
     knockback = arrayClasses[classindex][data_knockback];
-
-    if (client == 0)
-    {
-        PrintToServer("Current knockback for %s: %f", classname, knockback);
-    }
-    else
-    {
-       PrintToConsole(client, "Current knockback for %s: %f", classname, knockback);
-    }
-
+    ReplyToCommand(client, "Current knockback for %s: %f", classname, knockback);
+    
     return Plugin_Handled;
 }
 
@@ -307,8 +267,7 @@ public Action:Command_AdminMenu(client, argc)
     }
     else
     {
-        PrintToServer("This menu cannot be used in the console. Client: %d", client);
-        if (client > 0) PrintToConsole(client, "You cannot use this menu. Client: %d", client);
+        ReplyToCommand(client, "This menu cannot be used from the console.");
     }
     return Plugin_Handled;
 }
@@ -321,8 +280,7 @@ public Action:Command_KnockbackMMenu(client, argc)
     }
     else
     {
-        PrintToServer("This menu cannot be used in the console. Client: %d", client);
-        if (client > 0) PrintToConsole(client, "You cannot use this menu. Client: %d", client);
+        ReplyToCommand(client, "This menu cannot be used from the console.");
     }
     return Plugin_Handled;
 }
@@ -335,8 +293,7 @@ public Action:Command_TeleMenu(client, argc)
     }
     else
     {
-        PrintToServer("This menu cannot be used in the console. Client: %d", client);
-        if (client > 0) PrintToConsole(client, "You cannot use this menu. Client: %d", client);
+        ReplyToCommand(client, "This menu cannot be used from the console.");
     }
     return Plugin_Handled;
 }
@@ -344,15 +301,34 @@ public Action:Command_TeleMenu(client, argc)
 public Action:Command_LogFlags(client, argc)
 {
     decl String:message[2048];
+    message[0] = 0;
     
-    StrCat(message, sizeof(message), "LOG_CORE_EVENTS        (1) - Log core events like executing files, restricting weapons, etc.\n");
-    StrCat(message, sizeof(message), "LOG_GAME_EVENTS        (2) - Log game events like admin commands, suicide prevention and anticamp kills.\n");
-    StrCat(message, sizeof(message), "LOG_PLAYER_COMMANDS    (4) - Log commands made by the player.\n");
-    StrCat(message, sizeof(message), "LOG_DEBUG              (8) - Enable debug messages (if they exist).\n");
-    StrCat(message, sizeof(message), "LOG_DEBUG_DETAIL      (16) - Detailed debug messages. May cause spam.\n");
-    StrCat(message, sizeof(message), "LOG_DEBUG_MAX_DETAIL  (32) - Low level detailed debug messages. Causes spam! Only enable right before and after testing.\n");
-    StrCat(message, sizeof(message), "LOG_LOG_TO_ADMINS     (64) - Display log messages to admin chat.\n");
-    StrCat(message, sizeof(message), "LOG_LOG_TO_CLIENT    (128) - Display log messages to the client that executed the event/command.\n");
+    StrCat(message, sizeof(message), "LOG_CORE_EVENTS            (1)      - Log core events like executing files, error messages, etc.\n");
+    StrCat(message, sizeof(message), "LOG_GAME_EVENTS            (2)      - Log game events like admin commands, suicide prevention and anticamp kills.\n");
+    StrCat(message, sizeof(message), "LOG_PLAYER_COMMANDS        (4)      - Log commands made by the player.\n");
+    StrCat(message, sizeof(message), "LOG_DEBUG                  (8)      - Enable debug messages (if they exist).\n");
+    StrCat(message, sizeof(message), "LOG_DEBUG_DETAIL           (16)     - Detailed debug messages. May cause spam.\n");
+    StrCat(message, sizeof(message), "LOG_DEBUG_MAX_DETAIL       (32)     - Low level detailed debug messages. Causes spam! Only enable right before and after testing.\n");
+    StrCat(message, sizeof(message), "LOG_LOG_TO_ADMINS          (64)     - Display log messages to admin chat.\n");
+    StrCat(message, sizeof(message), "LOG_LOG_TO_CLIENT          (128)    - Display log messages to the client that executed the event/command.\n");
+    StrCat(message, sizeof(message), "LOG_IGNORE_CONSOLE         (256)    - Don't log messages from client 0 (console).\n");
+    StrCat(message, sizeof(message), "LOG_MODULES_ENABLED        (512)    - Enable detailed log control for developers. Module logs overrides previous flags.\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_ZOMBIE          (1024)   - zombie.inc");
+
+    ReplyToCommand(client, message);
+    message[0] = 0;
+
+    StrCat(message, sizeof(message), "LOG_MODULE_AMBIENCE        (2048)   - ambience.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_OVERLAYS        (4096)   - overlays.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_SAYTRIGGERS     (8192)   - sayhooks.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_TELEPORT        (16384)  - teleport.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_CLASSES         (32768)  - classes.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_WEAPONRESTICT   (65536)  - weaponrestrict.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_COMMANDS        (131072) - commands.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_ANTICAMP        (262144) - anticamp.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_DAMAGECONTROL   (524288) - damagecontrol.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_OFFSETS         (524288) - offsets.inc");
     
     ReplyToCommand(client, message);
+    return Plugin_Handled;
 }

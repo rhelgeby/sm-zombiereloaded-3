@@ -243,7 +243,6 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     }
     
     new bool:randomclass = GetConVarBool(gCvars[CVAR_CLASSES_RANDOM]);
-    
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
     {

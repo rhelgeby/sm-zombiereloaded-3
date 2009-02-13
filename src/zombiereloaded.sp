@@ -15,7 +15,7 @@
 #undef REQUIRE_PLUGIN
 #include <market>
 
-#define VERSION "2.5.1.26"
+#define VERSION "2.5.1.27"
 
 #include "zr/zombiereloaded"
 #include "zr/global"
@@ -114,15 +114,11 @@ public OnMapStart()
     LoadModelData();
     LoadDownloadData();
     
-    /* Reset to default class if class selection saving is disabled. */
-    if (!GetConVarBool(gCvars[CVAR_CLASSES_SAVE]))
+    new i;
+    new classindex = GetDefaultClassIndex();
+    for (i = 1; i <= MAXPLAYERS; i++)
     {
-        new i;
-        new classindex = GetDefaultClassIndex();
-        for (i = 1; i <= MAXPLAYERS; i++)
-        {
-            pClass[i] = classindex;
-        }
+        pClass[i] = classindex;
     }
     
     Anticamp_Startup();
@@ -185,18 +181,11 @@ public OnClientDisconnect(client)
     
     PlayerLeft(client);
     ZTeleResetClient(client);
-
-    decl String:debug_msg[64];
     
     for (new x = 0; x < MAXTIMERS; x++)
     {
         if (tHandles[client][x] != INVALID_HANDLE)
         {
-            if (LogHasFlag(LOG_DEBUG_MAX_DETAIL))
-            {
-                Format(debug_msg, sizeof(debug_msg), "Killing timer %i with handle %x.", x, tHandles[client][x]);
-                ZR_LogMessageFormatted(client, "OnClientDisconnect", "Killing timers", debug_msg, true);
-            }
             KillTimer(tHandles[client][x]);
             tHandles[client][x] = INVALID_HANDLE;
         }

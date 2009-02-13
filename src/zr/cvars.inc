@@ -37,6 +37,9 @@ enum ZRSettings
     Handle:CVAR_ZOMBIE_KILL_BONUS,
     Handle:CVAR_ZOMBIE_INFECT_HEALTH,
     Handle:CVAR_ZOMBIE_ZVISION,
+    Handle:CVAR_ZOMBIE_ALPHA_SPAWN,
+    Handle:CVAR_ZOMBIE_ALPHA_DAMAGED,
+    Handle:CVAR_ZOMBIE_ALPHA_DAMAGE,
     Handle:CVAR_ZVISION_REDISPLAY,
     Handle:CVAR_ZVISION_ALLOW_DISABLE,
     Handle:CVAR_DARK,
@@ -102,8 +105,7 @@ CreateCvars()
     gCvars[CVAR_CLASSES]                   =    CreateConVar("zr_classes", "1", "Enable zombie classes");
     gCvars[CVAR_CLASSES_SPAWN]             =    CreateConVar("zr_classes_spawn", "0", "Classmenu is re-displayed every spawn (0: Disable)");
     gCvars[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round (0: Disable)");
-    gCvars[CVAR_CLASSES_DEFAULT]           =    CreateConVar("zr_classes_default", "classic", "Default class selected for all players. Usage zr_classes_default <class name>");
-    gCvars[CVAR_CLASSES_SAVE]              =    CreateConVar("zr_classes_save", "0", "Remember class selection when changing maps.");
+    gCvars[CVAR_CLASSES_DEFAULT]           =    CreateConVar("zr_classes_default", "classic", "Default class selected for all players when they connect, or \"random\" to select a random class. Usage zr_classes_default <class name|\"random\">");
     gCvars[CVAR_ZOMBIE_HEALTH]             =    CreateConVar("zr_zombie_health", "5000", "The default health of a zombie");
     gCvars[CVAR_ZOMBIE_SPEED]              =    CreateConVar("zr_zombie_speed", "350", "How fast zombies travel (300: Default speed,  600: Double speed)");
     gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]      =    CreateConVar("zr_zombie_jump_distance", "0.1", "How far the zombie jumps,  (0: Regular jump distance)");
@@ -120,6 +122,9 @@ CreateCvars()
     gCvars[CVAR_ZOMBIE_KILL_BONUS]         =    CreateConVar("zr_zombie_kill_bonus", "2", "How many additional kills are rewarded to the killer of the zombie");
     gCvars[CVAR_ZOMBIE_INFECT_HEALTH]      =    CreateConVar("zr_zombie_infect_health", "100", "How much health a zombie gains when infecting a human (0: Disable)");
     gCvars[CVAR_ZOMBIE_ZVISION]            =    CreateConVar("zr_zombie_zvision", "overlays/zr/zvision", "Overlay to be shown on all zombies' screen on infection (Leave empty to disable)");
+    gCvars[CVAR_ZOMBIE_ALPHA_SPAWN]        =    CreateConVar("zr_zombie_alpha_spawn", "255", "Initial transparency (0: Invisible. 255: Fully visible)");
+    gCvars[CVAR_ZOMBIE_ALPHA_DAMAGED]      =    CreateConVar("zr_zombie_alpha_damaged", "255", "Transparency when damaged (0: Invisible. 255: Fully visible)");
+    gCvars[CVAR_ZOMBIE_ALPHA_DAMAGE]       =    CreateConVar("zr_zombie_alpha_damage", "0", "How much damage to do before changing transparency.");
     gCvars[CVAR_ZVISION_REDISPLAY]         =    CreateConVar("zr_zvision_redisplay", "0.2", "Frequency, in seconds, to display zvision on the client's screen (Never go below 0.1, 0.2 seems safe)");
     gCvars[CVAR_ZVISION_ALLOW_DISABLE]     =    CreateConVar("zr_zvision_allow_disable", "1", "Allow users to disable ZVision with their nightvision key (0: Disable)");
     gCvars[CVAR_DARK]                      =    CreateConVar("zr_dark", "0", "Default value for darkening maps,  most dislike this feature (0: Disable)");
@@ -231,5 +236,26 @@ LogHasFlag(flag)
     else
     {
         return 0;
+    }
+}
+
+// Check if a log message should be written depending on log flags. Also
+// takes care of module log overrides.
+LogFlagCheck(flag, module = 0)
+{
+    if (module && (flag & LOG_MODULES_ENABLED))
+    {
+        if (flag & module)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        return LogHasFlag(flag);
     }
 }
