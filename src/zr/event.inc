@@ -33,9 +33,7 @@ UnhookEvents()
 public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {   
     ChangeLightStyle();
-    
-    RestartAmbience();
-    
+    AmbienceRestartAll();
     RefreshList();
     
     if (tRound != INVALID_HANDLE)

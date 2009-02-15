@@ -172,6 +172,7 @@ public OnClientPutInServer(client)
     }
     
     RefreshList();
+    if (!IsFakeClient(client)) AmbienceStart(client);
 }
 
 public OnClientDisconnect(client)
@@ -181,6 +182,7 @@ public OnClientDisconnect(client)
     
     PlayerLeft(client);
     ZTeleResetClient(client);
+    AmbienceStop(client);
     
     for (new x = 0; x < MAXTIMERS; x++)
     {
@@ -200,7 +202,7 @@ MapChangeCleanup()
     
     tRound = INVALID_HANDLE;
     tInfect = INVALID_HANDLE;
-    tAmbience = INVALID_HANDLE;
+    AmbienceStopAll();
     
     for (new client = 1; client <= maxclients; client++)
     {

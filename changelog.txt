@@ -1,3 +1,7 @@
+2009.02.15 - 2.5.1.x
+  * Fixed ambience sound not always playing. Changed ambience module to play a ambience sound per client, when they connect.
+  * Improved logging function.
+
 2009.02.13 - 2.5.1.27
   * Fixed bug in formatted log messages when client is negative or 0 (console).
   * Simplified log formatting style.

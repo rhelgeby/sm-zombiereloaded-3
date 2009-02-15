@@ -6,6 +6,10 @@
  * ==================== 
  */
 
+#define LOG_FORMAT_TYPE_SIMPLE     0      // Simple log message, no module or block info.
+#define LOG_FORMAT_TYPE_FULL       1      // Full log message, with module and block info.
+#define LOG_FORMAT_TYPE_ERROR      2      // Full log message, but log to error log instead.
+
 FormatTextString(String:text[], maxlen)
 {
     Format(text, maxlen, "@green[%t] @default%s", "ZR", text);
@@ -105,7 +109,13 @@ stock ZR_LogMessage(any:...)
     LogMessage(phrase);
 }
 
-stock ZR_LogMessageFormatted(client, const String:module[], const String:block[], const String:message[], bool:full = false, any:...)
+stock ZR_TranslateMessage(String:buffer[], maxlen, any:...)
+{
+    SetGlobalTransTarget(LANG_SERVER);
+    VFormat(buffer, maxlen, "%t", 3);
+}
+
+stock ZR_LogMessageFormatted(client, const String:module[], const String:block[], const String:message[], type = LOG_FORMAT_TYPE_FULL, any:...)
 {
     decl String:buffer[2048];
     decl String:text[2048];
@@ -115,15 +125,26 @@ stock ZR_LogMessageFormatted(client, const String:module[], const String:block[]
         return;
     }
     
-    if (full)
+    switch (type)
     {
-        VFormat(buffer, sizeof(buffer), message, 6);
-        Format(text, sizeof(text), "Log (%s : %s) -- %s", module, block, buffer);
-    }
-    else
-    {
-        VFormat(buffer, sizeof(buffer), message, 6);
-        Format(text, sizeof(text), "Log -- %s", message);
+        case LOG_FORMAT_TYPE_SIMPLE:
+        {
+            VFormat(buffer, sizeof(buffer), message, 6);
+            Format(text, sizeof(text), "Log -- %s", message);
+            LogMessage(text);
+        }
+        case LOG_FORMAT_TYPE_FULL:
+        {
+            VFormat(buffer, sizeof(buffer), message, 6);
+            Format(text, sizeof(text), "Log (%s : %s) -- %s", module, block, buffer);
+            LogMessage(text);
+        }
+        case LOG_FORMAT_TYPE_ERROR:
+        {
+            VFormat(buffer, sizeof(buffer), message, 6);
+            Format(text, sizeof(text), "Log (%s : %s) -- %s", module, block, buffer);
+            LogError(text);
+        }
     }
 
     if (LogHasFlag(LOG_TO_ADMINS))
@@ -134,8 +155,6 @@ stock ZR_LogMessageFormatted(client, const String:module[], const String:block[]
     {
         PrintToConsole(client, "[ZR] %s", text);
     }
-
-    LogMessage(text);
 }
 
 stock ZR_ReplyToCommand(client, any:...)
