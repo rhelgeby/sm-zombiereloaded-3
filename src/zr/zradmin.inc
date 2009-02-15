@@ -466,7 +466,7 @@ ZRLogFlagsMenu(client)
     Format(z_log_debug_max, sizeof(z_log_debug_max), "Log low level debug messages (%d)", LogHasFlag(LOG_DEBUG_MAX_DETAIL));
     Format(z_log_admins, sizeof(z_log_admins), "Also log to admin chat (%d)", LogHasFlag(LOG_TO_ADMINS));
     Format(z_log_client, sizeof(z_log_client), "Also log to client console (%d)", LogHasFlag(LOG_TO_CLIENT));
-    Format(z_log_ignore_console, sizeof(z_log_ignore_console), "Don't log from messages the console (%d)", LogHasFlag(LOG_IGNORE_CONSOLE));
+    Format(z_log_ignore_console, sizeof(z_log_ignore_console), "Don't log messages from the console (%d)", LogHasFlag(LOG_IGNORE_CONSOLE));
     Format(z_log_modules_enabled, sizeof(z_log_modules_enabled), "Module based log control (%d)", LogHasFlag(LOG_MODULES_ENABLED));
     Format(z_log_module_zombie, sizeof(z_log_module_zombie), "Zombie (%d)", LogHasFlag(LOG_MODULE_ZOMBIE));
     Format(z_log_module_ambience, sizeof(z_log_module_ambience), "Ambience (%d)", LogHasFlag(LOG_MODULE_AMBIENCE));
