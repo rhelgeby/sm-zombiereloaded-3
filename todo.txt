@@ -18,6 +18,13 @@ Section content is listed in order of importance. Some of these can be ideas too
   class name to read the value:
   zr_class_enabled <classname>[ <0/1>]
 
+* Per-weapon clip sizes.
+
+* Remove dead bodies to improve performance (CVAR).
+
+* More grenades for humans (probably with a buy-command or something). It's on
+  the edge to become a RPG-like feature.
+
 * Super features for both zombies and humans:
   - Humans: No fall damage for X seconds. X limits per round.
   - Zombies: No knockback/damage for X seconds. X limits per round.
