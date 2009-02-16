@@ -5,8 +5,6 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 ---- NORMAL/GAMEPLAY ----
 
-* Fix ambience not always playing: separate timers for each player.
-
 * Fix zvision not displayed if classes are disabled.
 
 * Make admin commands to get or set classes:
