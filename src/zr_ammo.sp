@@ -10,7 +10,7 @@ public Plugin:myinfo = {
 	author = "[SG-10]Cpt.Moore",
 	description = "",
 	version = "1.0",
-	url = "http://zombie.swissquake.ch/"
+	url = "http://jupiter.swissquake.ch/zombie/page"
 };
 
 new activeOffset = -1;
