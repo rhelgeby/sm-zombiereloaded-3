@@ -1,6 +1,7 @@
-2009.02.15 - 2.5.1.x
+2009.02.16 - 2.5.1.x
   * Fixed ambience sound not always playing. Changed ambience module to play a ambience sound per client, when they connect.
   * Improved logging function.
+  * Fixed zvision not disabled if the setting is empty in classes.txt. Disabled zvision timer (not really needed?).
 
 2009.02.13 - 2.5.1.27
   * Fixed bug in formatted log messages when client is negative or 0 (console).

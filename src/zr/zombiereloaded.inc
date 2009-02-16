@@ -63,6 +63,8 @@ new bool:motherZombie[MAXPLAYERS+1];
 new bool:gZombie[MAXPLAYERS+1];
 new bool:gBlockMotherInfect[MAXPLAYERS+1];
 new bool:bZVision[MAXPLAYERS+1];
+new bool:bZVisionOn[MAXPLAYERS+1];
+new String:ZVisionOverlay[MAXPLAYERS+1][PLATFORM_MAX_PATH];
 new bool:dispHP[MAXPLAYERS+1];
 new bool:pProtect[MAXPLAYERS+1];
 new bool:gKilledByWorld[MAXPLAYERS+1] = {false, ...};

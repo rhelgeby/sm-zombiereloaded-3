@@ -46,15 +46,15 @@ public Action:Command_NightVision(client, argc)
         return;
     }
     
-    bZVision[client] = !bZVision[client];
+    bZVisionOn[client] = !bZVisionOn[client];
     
-    if (bZVision[client])
+    if (bZVisionOn[client])
     {
-        StartZVision(client);
+        ZVisionPreCheck(client);
     }
     else
     {
-        StopZVision(client);
+        ZVisionStop(client);
     }
 }
 
@@ -173,6 +173,8 @@ Zombify_Mother(client)
     GivePlayerItem(client, "weapon_knife");
     
     ApplyZombieNightVision(client);
+
+    ZVisionPreCheck(client);
     
     ApplyZombieFOV(client);
     
@@ -186,11 +188,6 @@ Zombify_Mother(client)
     AbortTeleport(client);
     
     ZR_PrintToChat(client, "You are a zombie");
-    
-    if (bZVision[client])
-    {
-        StartZVision(client);
-    }
     
     new bool:mother_zombie_respawn = GetConVarBool(gCvars[CVAR_MOTHER_ZOMBIE_RESPAWN]);
     if (mother_zombie_respawn)
@@ -259,16 +256,13 @@ Zombify(client, attacker)
     
     ApplyZombieNightVision(client);
     
+    ZVisionPreCheck(client);
+    
     ApplyZombieFOV(client);
     
     ApplyZombieModel(client);
     
     ApplyZombieAlpha(client);
-
-    if (bZVision[client])
-    {
-        StartZVision(client);
-    }
     
     InfectionEffects(client);
     
@@ -412,7 +406,7 @@ ApplyZombieNightVision(client)
     new bool:nvgs = GetClassNVGs(pClass[client]);
     NightVision(client, nvgs);
 
-    if (bZVision[client])
+    if (nvgs)
     {
         NightVisionOn(client, nvgs);
     }
@@ -679,65 +673,67 @@ AntiStick(attacker, client)
     TeleportEntity(attacker, NULL_VECTOR, NULL_VECTOR, vector);
 }
 
-StartZVision(client)
+ZVisionPreCheck(client)
 {
-    if (tHandles[client][TZVISION] != INVALID_HANDLE)
+    if (IsFakeClient(client))
     {
-        CloseHandle(tHandles[client][TZVISION]);
+        return;
     }
     
-    new bool:zvision = ZVision(client);
-    if (zvision)
+    decl String:zvision[128];
+    GetClassZVision(pClass[client], zvision, sizeof(zvision));
+    
+    if (strlen(zvision) == 0)
     {
-        new Float:redisplay = GetConVarFloat(gCvars[CVAR_ZVISION_REDISPLAY]);
-        tHandles[client][TZVISION] = CreateTimer(redisplay, ZVisionTimer, client, TIMER_REPEAT);
+        bZVision[client] = false;
+    }
+    else
+    {
+        bZVision[client] = true;
+        strcopy(ZVisionOverlay[client], PLATFORM_MAX_PATH, zvision);
+        
+        ZVisionStart(client);
     }
 }
 
-StopZVision(client)
+ZVisionStart(client)
+{
+    /*if (tHandles[client][TZVISION] != INVALID_HANDLE)
+    {
+        KillTimer(tHandles[client][TZVISION]);
+        tHandles[client][TZVISION] = INVALID_HANDLE;
+    }*/
+    
+    DisplayClientOverlay(client, ZVisionOverlay[client]);
+    bZVisionOn[client] = true;
+    
+    //new Float:redisplay = GetConVarFloat(gCvars[CVAR_ZVISION_REDISPLAY]);
+    //tHandles[client][TZVISION] = CreateTimer(redisplay, ZVisionTimer, client, TIMER_REPEAT);
+}
+
+ZVisionStop(client)
 {
     if (tHandles[client][TZVISION] != INVALID_HANDLE)
     {
-        CloseHandle(tHandles[client][TZVISION]);
+        KillTimer(tHandles[client][TZVISION]);
         tHandles[client][TZVISION] = INVALID_HANDLE;
     }
     
     ClientCommand(client, "r_screenoverlay \"\"");
+    bZVisionOn[client] = false;
 }
 
-bool:ZVision(client)
+/*public Action:ZVisionTimer(Handle:timer, any:client)
 {
-    if (IsFakeClient(client))
+    if (!IsClientInGame(client) || !IsPlayerZombie(client))
     {
-        return false;
-    }
-    
-    decl String:zvision[64];
-    GetClassZVision(pClass[client], zvision, sizeof(zvision));
-    
-    if (zvision[0])
-    {
-        DisplayClientOverlay(client, zvision);
-        
-        return true;
-    }
-    
-    return false;
-}
-
-public Action:ZVisionTimer(Handle:timer, any:index)
-{
-    if (!IsClientInGame(index) || !IsPlayerZombie(index))
-    {
-        tHandles[index][TZVISION] = INVALID_HANDLE;
-        
+        tHandles[client][TZVISION] = INVALID_HANDLE;
         return Plugin_Stop;
     }
     
-    ZVision(index);
-        
+    DisplayClientOverlay(client, ZVisionOverlay[client]);
     return Plugin_Continue;
-}
+}*/
 
 ZombieMoan(client)
 {
