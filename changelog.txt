@@ -1,3 +1,6 @@
+2009.02.21 - 2.5.1.29
+  * Moved model precache to startup. This will probably fix the freeze on infection problem.
+
 2009.02.16 - 2.5.1.28
   * Fixed ambience sound not always playing. Changed ambience module to play a ambience sound per client, when they connect.
   * Improved logging function.

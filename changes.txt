@@ -65,7 +65,9 @@ it; a top corner, and the bottom corner at the oposite side.
 Set default classes
 ~~~~~~~~~~~~~~~~~~~~
 
-Setting the default class with a cvar. Works with per-map configs.
+Setting the default class with a cvar. Works with per-map configs. Use "random"
+as classname to set random classes on all players when the map loads or they
+connect.
   
   zr_classes_default <classname>
 

@@ -7,15 +7,15 @@ Section content is listed in order of importance. Some of these can be ideas too
 
 * Fix zvision not displayed if classes are disabled.
 
-* Make admin commands to get or set classes:
+* Make admin commands to get or set player classes:
   zr_classes_set <classname> <target>
   zr_classes_get <#userid|name>
 
 * Make it possible to disable certain classes on certain maps. Only specify the
   class name to read the value:
-  zr_class_enabled <classname>[ <0/1>]
+  zr_class_enabled <classname> [<0/1>]
 
-* Per-weapon clip sizes.
+* Per-weapon clip sizes. A new module with detailed control of ammo (modes, limits, timers).
 
 * Remove dead bodies to improve performance (CVAR).
 
