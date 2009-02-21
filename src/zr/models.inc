@@ -71,6 +71,7 @@ LoadModelData()
             Format(modelpath, sizeof(modelpath), "%s%s", model, modelSuffix[y]);
             if (FileExists(modelpath))
             {
+                PrecacheModel(modelpath);
                 AddFileToDownloadsTable(modelpath);
             }
         }
@@ -136,4 +137,3 @@ ApplyZombieModel(client)
     
     SetPlayerModel(client, modelpath);
 }
-
