@@ -1,4 +1,4 @@
-﻿"Phrases"
+"Phrases"
 {
 	// ===========================
 	// Chat Messages
@@ -41,6 +41,12 @@
 		"ru"		"Данная функция отключена."
 	}
 
+	"Must be admin"
+	{
+		"en"		"Can only be used by admins."
+		"ru"		"Может быть использовано только, когда жив."
+	}
+
 	"Must be alive"
 	{
 		"en"		"Can only be used when alive."
@@ -81,7 +87,7 @@
 
 	"Spawn protection end"
 	{
-		"en"		"You are now susceptible the zombie infection."
+		"en"		"You are now susceptible to zombie infection."
 		"ru"		"Теперь вы восприимчивы к зомби инфекции."
 	}
 
@@ -227,13 +233,13 @@
 	
 	"Unfair camping"
 	{
-		"en"		"This area is marked as unfair. Move, go through or die..."
+		"en"		"An admin has marked this area as unfair, please move along, or die."
 	}
 	
 	"Unfair camper slayed"
 	{
-		"#format"   "{1:s},{2:d}"
-		"en"		"Killed %s due to camping in a unfair area (id: %d)."
+		"#format"	"{1:s},{2:d}"
+		"en"		"Player {1} has been slayed for camping in a restricted area. (ID: {2})"
 	}
 
 	"DX90 not supported"
@@ -257,6 +263,11 @@
 	{
 		"en"		"ZMenu (!zmenu) - Display all ZR commands"
 		"ru"		"ZMenu (!zmenu) - Показывает все ZR команды"
+	}
+
+	"!zmenu admin"
+	{
+		"en"		"ZAdmin (!zadmin) - View Admin Menu"
 	}
 
 	"!zmenu class"
@@ -312,7 +323,158 @@
 		"en"		"Rebuy"
 		"ru"		"Купить снова"
 	}
-		
+
+	// ===========================
+	// ZAdmin Menu
+	// ===========================
+
+	"!zadmin main title"
+	{
+		"en"		"ZAdmin Menu:"
+	}
+
+	"!zadmin main knockbackm"
+	{
+		"en"		"Modify Knockback Multiplier"
+	}
+
+	"!zadmin main knockback"
+	{
+		"en"		"Modify Class Knockback"
+	}
+
+	"!zadmin main nvgs"
+	{
+		"en"		"Modify Nightvision Options"
+	}
+
+	"!zadmin main infect"
+	{
+		"en"		"Infect a Player"
+	}
+	
+	"!zadmin main spawn"
+	{
+		"en"		"Spawn All Players"
+	}
+	
+	"!zadmin main tele"
+	{
+		"en"		"ZTele Commands"
+	}
+	
+	"!zadmin main restrict"
+	{
+		"en"		"Restrict Weapon"
+	}
+	
+	"!zadmin main unrestrict"
+	{
+		"en"		"Unrestrict Weapon"
+	}
+	
+	"!zadmin main logflags"
+	{
+		"en"		"Logging Flags"
+	}
+
+	"!zadmin class title"
+	{
+		"en"		"Select Class to Modify:"
+	}
+
+	"!zadmin knockbackm title"
+	{
+		"#format"	"{1:f}"
+		"en"		"Modify Knockback Multiplier\nCurrent Knockback: {1}"
+	}
+
+	"!zadmin knockbackm increase"
+	{
+		"en"		"Increase Knockback Multiplier"
+	}
+
+	"!zadmin knockbackm decrease"
+	{
+		"en"		"Decrease Knockback Multiplier"
+	}
+
+	"!zadmin knockback title"
+	{
+		"#format"	"{1:s},{2:f}"
+		"en"		"Modify Knockback\nClass: {1}\nCurrent Knockback: {2}"
+	}
+
+	"!zadmin knockback increase"
+	{
+		"en"		"Increase Knockback"
+	}
+
+	"!zadmin knockback decrease"
+	{
+		"en"		"Decrease Knockback"
+	}
+
+	"!zadmin nvgs title"
+	{
+		"#format"	"{1:d}"
+		"en"		"Override NVG Cvar\nCurrent Setting: {1}"
+	}
+
+	"!zadmin nvgs decrease"
+	{
+		"en"		"Decrease Knockback"
+	}
+
+	"!zadmin nvgs no override"
+	{
+		"en"		"No Override/Class Specific"
+	}
+
+	"!zadmin nvgs disable"
+	{
+		"en"		"Disable NVGs"
+	}
+
+	"!zadmin nvgs enable"
+	{
+		"en"		"Enable NVGs"
+	}
+
+	"!zadmin infect title"
+	{
+		"en"		"Choose a Player to Infect:"
+	}
+
+	"!zadmin ztele title"
+	{
+		"en"		"ZTele Admin Menu:"
+	}
+
+	"!zadmin ztele spawn tele"
+	{
+		"en"		"Teleport a Player to Spawn"
+	}
+
+	"!zadmin ztele abort"
+	{
+		"en"		"Abort Teleport on a Player"
+	}
+
+	"!zadmin ztele save"
+	{
+		"en"		"Save Teleport Location"
+	}
+
+	"!zadmin ztele tele"
+	{
+		"en"		"Teleport Player to Saved Location"
+	}
+
+	"!zadmin log flags title"
+	{
+		"en"		"Toggle Logging Flags:"
+	}
 
 	// ===========================
 	// HudHints
@@ -323,6 +485,12 @@
 		"#format"	"{1:d}"
 		"en"		"HP: {1}"
 		"ru"		"Здоровье: {1}"
+	}
+
+	"Spawn Protect"
+	{
+		"#format"	"{1:d}"
+		"en"		"Zombie protection ends in: {1} seconds."
 	}
 
 	// ===========================
