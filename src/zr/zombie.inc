@@ -207,7 +207,9 @@ Zombify_Mother(client)
     
     if (tHandles[client][TPROTECT] != INVALID_HANDLE)
     {
-        TriggerTimer(tHandles[client][TPROTECT]);
+        pProtect[client] = false;
+        
+        CloseHandle(tHandles[client][TPROTECT]);
         tHandles[client][TPROTECT] = INVALID_HANDLE;
     }
     
@@ -286,7 +288,9 @@ Zombify(client, attacker)
     
     if (tHandles[client][TPROTECT] != INVALID_HANDLE)
     {
-        TriggerTimer(tHandles[client][TPROTECT]);
+        pProtect[client] = false;
+        
+        CloseHandle(tHandles[client][TPROTECT]);
         tHandles[client][TPROTECT] = INVALID_HANDLE;
     }
     
@@ -842,7 +846,7 @@ public Action:ZHPTimer(Handle:timer, any:index)
     return Plugin_Continue;
 }
 
-public Action:EndProtect(Handle:timer, any:index)
+public Action:ProtectTimer(Handle:timer, any:index)
 {
     if (!IsClientInGame(index))
     {
@@ -850,45 +854,26 @@ public Action:EndProtect(Handle:timer, any:index)
         return Plugin_Stop;
     }
     
-    if (protCount[index] > 0) {
-        PrintHintText(index, "%d", protCount[index]);
-        protCount[index]--;
-
-        return Plugin_Continue;
-    } else {
+    pTimeLeft[index]--;
+    ZR_HudHint(index, "Spawn Protect", pTimeLeft[index]);
+    
+    if (pTimeLeft[index] <= 0)
+    {
         pProtect[index] = false;
     
         if (IsPlayerHuman(index))
         {
-            ZR_PrintCenterText(index, "Spawn protection end");
+            ZR_HudHint(index, "Spawn protection end");
+            SetPlayerAlpha(index, 255);
+            SetPlayerSpeed(index, 300.0);
         }
-    
-        SetPlayerAlpha(index, 255);
-        SetPlayerSpeed(index, 300.0);
 
         tHandles[index][TPROTECT] = INVALID_HANDLE;
 
         return Plugin_Stop;
     }
-}
-
-ProtectionAbort(client)
-{
-    if (tHandles[client][TPROTECT] != INVALID_HANDLE)
-    {
-        KillTimer(tHandles[client][TPROTECT]);
-        tHandles[client][TPROTECT] = INVALID_HANDLE;
-    }
     
-    if (!IsClientInGame(client))
-    {
-        return;
-    }
-    
-    pProtect[client] = false;
-    
-    SetPlayerAlpha(client, 255);
-    SetPlayerSpeed(client, 300.0);
+    return Plugin_Continue;
 }
 
 RespawnPlayer(client)
@@ -916,7 +901,6 @@ RespawnPlayer(client)
     
     if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
     {
-        ProtectionAbort(client);
         Zombify(client, 0);
         gKilledByWorld[client] = false;
     }
