@@ -38,13 +38,13 @@ public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
     
     if (tRound != INVALID_HANDLE)
     {
-        CloseHandle(tRound);
+        KillTimer(tRound);
         tRound = INVALID_HANDLE;
     }
     
     if (tInfect != INVALID_HANDLE)
     {
-        CloseHandle(tInfect);
+        KillTimer(tInfect);
         tInfect = INVALID_HANDLE;
     }
     
@@ -57,7 +57,7 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
     
     if (tRound != INVALID_HANDLE)
     {
-        CloseHandle(tRound);
+        KillTimer(tRound);
     }
     
     new Float:roundlen = GetConVarFloat(FindConVar("mp_roundtime")) * 60.0;
@@ -65,7 +65,7 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
     
     if (tInfect != INVALID_HANDLE)
     {
-        CloseHandle(tInfect);
+        KillTimer(tInfect);
     }
     
     new Float:min = GetConVarFloat(gCvars[CVAR_SPAWN_MIN]);
@@ -81,13 +81,13 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
     if (tRound != INVALID_HANDLE)
     {
-        CloseHandle(tRound);
+        KillTimer(tRound);
         tRound = INVALID_HANDLE;
     }
     
     if (tInfect != INVALID_HANDLE)
     {
-        CloseHandle(tInfect);
+        KillTimer(tInfect);
         tInfect = INVALID_HANDLE;
     }
 
@@ -156,7 +156,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         
         if (tHandles[index][x] != INVALID_HANDLE)
         {
-            CloseHandle(tHandles[index][x]);
+            KillTimer(tHandles[index][x]);
             tHandles[index][x] = INVALID_HANDLE;
         }
     }
@@ -224,7 +224,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
                 
                 if (tHandles[index][TPROTECT] != INVALID_HANDLE)
                 {
-                    CloseHandle(tHandles[index][TPROTECT]);
+                    KillTimer(tHandles[index][TPROTECT]);
                 }
                 
                 pTimeLeft[index] = protect;

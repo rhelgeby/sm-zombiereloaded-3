@@ -200,7 +200,7 @@ Zombify_Mother(client)
     {
         if (tHandles[client][TMOAN] != INVALID_HANDLE)
         {
-            CloseHandle(tHandles[client][TMOAN]);
+            KillTimer(tHandles[client][TMOAN]);
         }
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
@@ -209,13 +209,13 @@ Zombify_Mother(client)
     {
         pProtect[client] = false;
         
-        CloseHandle(tHandles[client][TPROTECT]);
+        KillTimer(tHandles[client][TPROTECT]);
         tHandles[client][TPROTECT] = INVALID_HANDLE;
     }
     
     if (tHandles[client][TZHP] != INVALID_HANDLE)
     {
-        CloseHandle(tHandles[client][TZHP]);
+        KillTimer(tHandles[client][TZHP]);
         tHandles[client][TZHP] = INVALID_HANDLE;
     }
     
@@ -281,7 +281,7 @@ Zombify(client, attacker)
     {
         if (tHandles[client][TMOAN] != INVALID_HANDLE)
         {
-            CloseHandle(tHandles[client][TMOAN]);
+            KillTimer(tHandles[client][TMOAN]);
         }
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
@@ -290,13 +290,13 @@ Zombify(client, attacker)
     {
         pProtect[client] = false;
         
-        CloseHandle(tHandles[client][TPROTECT]);
+        KillTimer(tHandles[client][TPROTECT]);
         tHandles[client][TPROTECT] = INVALID_HANDLE;
     }
     
     if (tHandles[client][TZHP] != INVALID_HANDLE)
     {
-        CloseHandle(tHandles[client][TZHP]);
+        KillTimer(tHandles[client][TZHP]);
         tHandles[client][TZHP] = INVALID_HANDLE;
     }
     
