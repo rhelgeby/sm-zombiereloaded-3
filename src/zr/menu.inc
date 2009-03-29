@@ -15,6 +15,7 @@ MainMenu(client)
     SetMenuTitle(menu_main, "%t\n ", "!zmenu title");
     
     decl String:zmenu[128];
+    decl String:zadmin[128];
     decl String:zclass[128];
     decl String:zmarket[128];
     decl String:zspawn[128];
@@ -23,6 +24,7 @@ MainMenu(client)
     decl String:zhp[128];
     
     Format(zmenu, sizeof(zmenu), "%t", "!zmenu menu");
+    Format(zadmin, sizeof(zadmin), "%t", "!zmenu admin");
     Format(zclass, sizeof(zclass), "%t", "!zmenu class");
     Format(zmarket, sizeof(zmarket), "%t", "!zmenu market");
     Format(zspawn, sizeof(zspawn), "%t", "!zmenu spawn");
@@ -31,6 +33,16 @@ MainMenu(client)
     Format(zhp, sizeof(zhp), "%t (%d HP)", "!zmenu hp", GetClientHealth(client));
     
     AddMenuItem(menu_main, "zmenu", zmenu, ITEMDRAW_DISABLED);
+    
+    if (GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    {
+        AddMenuItem(menu_main, "zadmin", zadmin);
+    }
+    else
+    {
+        AddMenuItem(menu_main, "zadmin", zadmin, ITEMDRAW_DISABLED);
+    }
+    
     AddMenuItem(menu_main, "zclass", zclass);
     
     if (market)
@@ -58,32 +70,42 @@ public MainMenuHandle(Handle:menu_main, MenuAction:action, client, slot)
         {
             case 1:
             {
-                if (!ZClass(client))
+                if (!ZRAdminMenu(client))
                 {
                     MainMenu(client);
                 }
             }
             case 2:
             {
-                if (!ZMarket(client))
+                if (!ZClass(client))
                 {
                     MainMenu(client);
                 }
             }
             case 3:
             {
-                ZSpawn(client);
+                if (!ZMarket(client))
+                {
+                    MainMenu(client);
+                }
             }
             case 4:
             {
-                if (!ZTeleClientCheck(client)) MainMenu(client);
+                ZSpawn(client);
             }
             case 5:
+            {
+                if (!ZTele(client))
+                {
+                    MainMenu(client);
+                }
+            }
+            case 6:
             {
                 ZStuck(client);
                 MainMenu(client);
             }
-            case 6:
+            case 7:
             {
                 ZHP(client);
                 MainMenu(client);

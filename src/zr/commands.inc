@@ -289,7 +289,7 @@ public Action:Command_TeleMenu(client, argc)
 {
     if (IsClientPlayer(client))
     {
-        ZRTeleMenu(client);
+        ZRZTeleMenu(client);
     }
     else
     {

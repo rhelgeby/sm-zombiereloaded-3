@@ -7,38 +7,61 @@
  */
 
 #include "include/adminmenu.inc"
-new SelectedClassIndex[MAXPLAYERS];
+new curMenuClass[MAXPLAYERS+1];
 
-ZRAdminMenu(client)
+bool:ZRAdminMenu(client)
 {
-    new Handle:zr_admin_menu = CreateMenu(ZRAdminMenuHandle);
+    if (!GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    {
+        ZR_PrintToChat(client, "Must be admin");
+        
+        return false;
+    }
     
-    SetMenuTitle(zr_admin_menu, "ZR admin menu");
+    new Handle:menu_admin = CreateMenu(ZRAdminMenuHandle);
     
-    decl String:zknockbackm[] = "Change knockback multiplier";
-    decl String:zknockback[] = "Change class knockback";
-    decl String:znvgs[] = "Change night vision settings";
-    decl String:zinfect[] = "Infect a player";
-    decl String:zspawn[] = "Spawn all players";
-    decl String:ztele[] = "Teleporter commands";
-    decl String:zrestrict[] = "Restrict a weapon";
-    decl String:zunrestrict[] = "Unrestrict a weapon";
-    decl String:zlogflags[] = "Logging flags";
+    SetGlobalTransTarget(client);
     
-    AddMenuItem(zr_admin_menu, "zknockbackm", zknockbackm);
-    AddMenuItem(zr_admin_menu, "zknockback", zknockback);
-    AddMenuItem(zr_admin_menu, "znvgs", znvgs);
-    AddMenuItem(zr_admin_menu, "zinfect", zinfect);
-    AddMenuItem(zr_admin_menu, "zspawn", zspawn);
-    AddMenuItem(zr_admin_menu, "ztele", ztele);
-    AddMenuItem(zr_admin_menu, "zrestrict", zrestrict, ITEMDRAW_DISABLED);
-    AddMenuItem(zr_admin_menu, "zunrestrict", zunrestrict, ITEMDRAW_DISABLED);
-    AddMenuItem(zr_admin_menu, "zlogflags", zlogflags);
+    SetMenuTitle(menu_admin, "%t\n ", "!zadmin main title");
     
-    DisplayMenu(zr_admin_menu, client, MENU_TIME_FOREVER);
+    decl String:knockbackm[64];
+    decl String:knockback[64];
+    decl String:nvgs[64];
+    decl String:infect[64];
+    decl String:zspawn[64];
+    decl String:ztele[64];
+    decl String:restrict[64];
+    decl String:unrestrict[64];
+    decl String:logflags[64];
+    
+    Format(knockbackm, sizeof(knockbackm), "%t", "!zadmin main knockbackm");
+    Format(knockback, sizeof(knockback), "%t", "!zadmin main knockback");
+    Format(nvgs, sizeof(nvgs), "%t", "!zadmin main nvgs");
+    Format(infect, sizeof(infect), "%t", "!zadmin main infect");
+    Format(zspawn, sizeof(zspawn), "%t", "!zadmin main spawn");
+    Format(ztele, sizeof(ztele), "%t", "!zadmin main tele");
+    Format(restrict, sizeof(restrict), "%t", "!zadmin main restrict");
+    Format(unrestrict, sizeof(unrestrict), "%t", "!zadmin main unrestrict");
+    Format(logflags, sizeof(logflags), "%t", "!zadmin main logflags");
+    
+    AddMenuItem(menu_admin, "knockbackm", knockbackm);
+    AddMenuItem(menu_admin, "knockback", knockback);
+    AddMenuItem(menu_admin, "nvgs", nvgs);
+    AddMenuItem(menu_admin, "infect", infect);
+    AddMenuItem(menu_admin, "zspawn", zspawn);
+    AddMenuItem(menu_admin, "ztele", ztele);
+    AddMenuItem(menu_admin, "restrict", restrict, ITEMDRAW_DISABLED);
+    AddMenuItem(menu_admin, "unrestrict", unrestrict, ITEMDRAW_DISABLED);
+    AddMenuItem(menu_admin, "logflags", logflags);
+    
+    SetMenuExitBackButton(menu_admin, true);
+    
+    DisplayMenu(menu_admin, client, MENU_TIME_FOREVER);
+    
+    return true;
 }
 
-public ZRAdminMenuHandle(Handle:zr_admin_menu, MenuAction:action, client, slot)
+public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
@@ -66,7 +89,7 @@ public ZRAdminMenuHandle(Handle:zr_admin_menu, MenuAction:action, client, slot)
             }
             case 5:
             {
-                ZRTeleMenu(client);
+                ZRZTeleMenu(client);
             }
             case 6:
             {
@@ -82,35 +105,44 @@ public ZRAdminMenuHandle(Handle:zr_admin_menu, MenuAction:action, client, slot)
             }
         }
     }
-    if (action == MenuAction_End)
+    
+    if (action == MenuAction_Cancel)
     {
-        CloseHandle(zr_admin_menu);
+        if (slot == MenuCancel_ExitBack)
+        {
+            MainMenu(client);
+        }
+    }
+    else if (action == MenuAction_End)
+    {
+        CloseHandle(menu_admin);
     }
 }
 
 ZRKnockbackMMenu(client)
 {
-    new Handle:zr_knockbackm_menu = CreateMenu(ZRKnockbackMHandle);
-    new Float:current_knockback = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
-
-    SetMenuTitle(zr_knockbackm_menu, "Change knockback multiplier\nCurrent value: %f\n\n", current_knockback);
+    new Handle:menu_knockbackm = CreateMenu(ZRKnockbackMHandle);
+    new Float:curknockback = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
     
-    decl String:zincreasehalf[] = "Increase by 0.5";
-    decl String:zincreasedeca[] = "Increase by 0.1";
-    decl String:zdecreasedeci[] = "Decrease by 0.1";
-    decl String:zdecreasehalf[] = "Decrease by 0.5";
+    SetGlobalTransTarget(client);
     
-    AddMenuItem(zr_knockbackm_menu, "zincreasehalf", zincreasehalf);
-    AddMenuItem(zr_knockbackm_menu, "zincreasedeca", zincreasedeca);
-    AddMenuItem(zr_knockbackm_menu, "zdecreasedeci", zdecreasedeci);
-    AddMenuItem(zr_knockbackm_menu, "zdecreasehalf", zdecreasehalf);
+    SetMenuTitle(menu_knockbackm, "%t\n ", "!zadmin knockbackm title", curknockback);
     
-    SetMenuExitBackButton(zr_knockbackm_menu, true);
+    decl String:knockbackmincrease[64];
+    decl String:knockbackmdecrease[64];
     
-    DisplayMenu(zr_knockbackm_menu, client, MENU_TIME_FOREVER);
+    Format(knockbackmincrease, sizeof(knockbackmincrease), "%t", "!zadmin knockbackm increase");
+    Format(knockbackmdecrease, sizeof(knockbackmdecrease), "%t", "!zadmin knockbackm decrease");
+    
+    AddMenuItem(menu_knockbackm, "knockbackmincrease", knockbackmincrease);
+    AddMenuItem(menu_knockbackm, "knockbackmdecrease", knockbackmdecrease);
+    
+    SetMenuExitBackButton(menu_knockbackm, true);
+    
+    DisplayMenu(menu_knockbackm, client, MENU_TIME_FOREVER);
 }
 
-public ZRKnockbackMHandle(Handle:zr_knockbackm_menu, MenuAction:action, client, slot)
+public ZRKnockbackMHandle(Handle:menu_knockbackm, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
@@ -118,22 +150,12 @@ public ZRKnockbackMHandle(Handle:zr_knockbackm_menu, MenuAction:action, client, 
         {
             case 0:
             {
-                AddToKnockbackMultiplier(0.5);
+                AddToKnockbackMultiplier(0.1);
                 ZRKnockbackMMenu(client);
             }
             case 1:
             {
-                AddToKnockbackMultiplier(0.1);
-                ZRKnockbackMMenu(client);
-            }
-            case 2:
-            {
                 AddToKnockbackMultiplier(-0.1);
-                ZRKnockbackMMenu(client);
-            }
-            case 3:
-            {
-                AddToKnockbackMultiplier(-0.5);
                 ZRKnockbackMMenu(client);
             }
         }
@@ -147,31 +169,33 @@ public ZRKnockbackMHandle(Handle:zr_knockbackm_menu, MenuAction:action, client, 
     }
     if (action == MenuAction_End)
     {
-        CloseHandle(zr_knockbackm_menu);
+        CloseHandle(menu_knockbackm);
     }
 }
 
 ZRClassSelectMenu(client)
 {
-    new Handle:zr_class_select_menu = CreateMenu(ZRClassSelectHandle);
-    new classindex;
+    new Handle:menu_class = CreateMenu(ZRClassSelectHandle);
     
-    SetMenuTitle(zr_class_select_menu, "Select class to change:\n");
+    SetGlobalTransTarget(client);
     
-    for (classindex = 0; classindex < classCount; classindex++)
+    SetMenuTitle(menu_class, "%t\n ", "!zadmin class title");
+    
+    // x = index of class
+    for (new x = 0; x < classCount; x++)
     {
-        AddMenuItem(zr_class_select_menu, arrayClasses[classindex][data_name], arrayClasses[classindex][data_name]);
+        AddMenuItem(menu_class, arrayClasses[x][data_name], arrayClasses[x][data_name]);
     }
     
-    SetMenuExitBackButton(zr_class_select_menu, true);
-    DisplayMenu(zr_class_select_menu, client, MENU_TIME_FOREVER);
+    SetMenuExitBackButton(menu_class, true);
+    DisplayMenu(menu_class, client, MENU_TIME_FOREVER);
 }
 
-public ZRClassSelectHandle(Handle:zr_class_select_menu, MenuAction:action, client, slot)
+public ZRClassSelectHandle(Handle:menu_class, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
-        SelectedClassIndex[client] = slot;
+        curMenuClass[client] = slot;
         ZRClassKnockbackMenu(client, slot);
     }
     if (action == MenuAction_Cancel)
@@ -183,35 +207,38 @@ public ZRClassSelectHandle(Handle:zr_class_select_menu, MenuAction:action, clien
     }
     if (action == MenuAction_End)
     {
-        CloseHandle(zr_class_select_menu);
+        CloseHandle(menu_class);
     }
 }
 
 ZRClassKnockbackMenu(client, classindex)
 {
-    new Handle:zr_knockback_menu = CreateMenu(ZRClassKnockbackHandle);
-    new Float:current_knockback = arrayClasses[classindex][data_knockback];
+    new Handle:menu_knockback = CreateMenu(ZRClassKnockbackHandle);
+    
+    new Float:curknockback = arrayClasses[classindex][data_knockback];
+    
     new String:classname[64];
     GetClassName(classindex, classname, sizeof(classname));
-
-    SetMenuTitle(zr_knockback_menu, "Change %s knockback\nCurrent value: %f\n\n", classname, current_knockback);
     
-    decl String:zincreasehalf[] = "Increase by 0.5";
-    decl String:zincreasedeca[] = "Increase by 0.1";
-    decl String:zdecreasedeci[] = "Decrease by 0.1";
-    decl String:zdecreasehalf[] = "Decrease by 0.5";
+    SetGlobalTransTarget(client);
     
-    AddMenuItem(zr_knockback_menu, "zincreasehalf", zincreasehalf);
-    AddMenuItem(zr_knockback_menu, "zincreasedeca", zincreasedeca);
-    AddMenuItem(zr_knockback_menu, "zdecreasedeci", zdecreasedeci);
-    AddMenuItem(zr_knockback_menu, "zdecreasehalf", zdecreasehalf);
+    SetMenuTitle(menu_knockback, "%t\n ", "!zadmin knockback title", classname, curknockback);
     
-    SetMenuExitBackButton(zr_knockback_menu, true);
+    decl String:knockbackincrease[64];
+    decl String:knockbackdecrease[64];
     
-    DisplayMenu(zr_knockback_menu, client, MENU_TIME_FOREVER);
+    Format(knockbackincrease, sizeof(knockbackincrease), "%t", "!zadmin knockback increase");
+    Format(knockbackdecrease, sizeof(knockbackdecrease), "%t", "!zadmin knockback decrease");
+    
+    AddMenuItem(menu_knockback, "knockbackincrease", knockbackincrease);
+    AddMenuItem(menu_knockback, "knockbackdecrease", knockbackdecrease);
+    
+    SetMenuExitBackButton(menu_knockback, true);
+    
+    DisplayMenu(menu_knockback, client, MENU_TIME_FOREVER);
 }
 
-public ZRClassKnockbackHandle(Handle:zr_knockback_menu, MenuAction:action, client, slot)
+public ZRClassKnockbackHandle(Handle:menu_knockback, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
@@ -219,25 +246,15 @@ public ZRClassKnockbackHandle(Handle:zr_knockback_menu, MenuAction:action, clien
         {
             case 0:
             {
-                AddToClassKnockback(SelectedClassIndex[client], 0.5);
-                ZRClassKnockbackMenu(client, SelectedClassIndex[client]);
+                AddToClassKnockback(curMenuClass[client], 0.1);
             }
             case 1:
             {
-                AddToClassKnockback(SelectedClassIndex[client], 0.1);
-                ZRClassKnockbackMenu(client, SelectedClassIndex[client]);
-            }
-            case 2:
-            {
-                AddToClassKnockback(SelectedClassIndex[client], -0.1);
-                ZRClassKnockbackMenu(client, SelectedClassIndex[client]);
-            }
-            case 3:
-            {
-                AddToClassKnockback(SelectedClassIndex[client], -0.5);
-                ZRClassKnockbackMenu(client, SelectedClassIndex[client]);
+                AddToClassKnockback(curMenuClass[client], -0.1);
             }
         }
+        
+        ZRClassKnockbackMenu(client, curMenuClass[client]);
     }
     if (action == MenuAction_Cancel)
     {
@@ -248,31 +265,37 @@ public ZRClassKnockbackHandle(Handle:zr_knockback_menu, MenuAction:action, clien
     }
     if (action == MenuAction_End)
     {
-        CloseHandle(zr_knockback_menu);
+        CloseHandle(menu_knockback);
     }
 }
 
 ZRNVGSMenu(client)
 {
-    new Handle:zr_nvgs_menu = CreateMenu(ZRNVGSHandle);
-    new current_nvgs = GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]);
+    new Handle:menu_nvgs = CreateMenu(ZRNVGSHandle);
+    new curnvgs = GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]);
 
-    SetMenuTitle(zr_nvgs_menu, "Change night vision settings\nCurrent value: %i\n", current_nvgs);
+    SetGlobalTransTarget(client);
     
-    decl String:znooverride[] = "-1: No override/Default";
-    decl String:zoff[] = "0: Never give nvgs";
-    decl String:zon[] = "1: Always give nvgs";
+    SetMenuTitle(menu_nvgs, "%t\n ", "!zadmin nvgs title", curnvgs);
     
-    AddMenuItem(zr_nvgs_menu, "znooverride", znooverride);
-    AddMenuItem(zr_nvgs_menu, "zoff", zoff);
-    AddMenuItem(zr_nvgs_menu, "zon", zon);
+    decl String:nooverride[64];
+    decl String:disable[64];
+    decl String:enable[64];
     
-    SetMenuExitBackButton(zr_nvgs_menu, true);
+    Format(nooverride, sizeof(nooverride), "%t", "!zadmin nvgs no override");
+    Format(disable, sizeof(disable), "%t", "!zadmin nvgs disable");
+    Format(enable, sizeof(enable), "%t", "!zadmin nvgs enable");
     
-    DisplayMenu(zr_nvgs_menu, client, MENU_TIME_FOREVER);
+    AddMenuItem(menu_nvgs, "nooverride", nooverride);
+    AddMenuItem(menu_nvgs, "disable", disable);
+    AddMenuItem(menu_nvgs, "enable", enable);
+    
+    SetMenuExitBackButton(menu_nvgs, true);
+    
+    DisplayMenu(menu_nvgs, client, MENU_TIME_FOREVER);
 }
 
-public ZRNVGSHandle(Handle:zr_nvgs_menu, MenuAction:action, client, slot)
+public ZRNVGSHandle(Handle:menu_nvgs, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
@@ -304,28 +327,33 @@ public ZRNVGSHandle(Handle:zr_nvgs_menu, MenuAction:action, client, slot)
     }
     if (action == MenuAction_End)
     {
-        CloseHandle(zr_nvgs_menu);
+        CloseHandle(menu_nvgs);
     }
 }
 
 ZRInfectMenu(client)
 {
-    new Handle:zr_infect_menu = CreateMenu(ZRInfectHandle);
-
-    SetMenuTitle(zr_infect_menu, "Infect a player:");
-    AddTargetsToMenu(zr_infect_menu, client, true, true);
-    SetMenuExitBackButton(zr_infect_menu, true);
-    DisplayMenu(zr_infect_menu, client, MENU_TIME_FOREVER);
+    new Handle:menu_infect = CreateMenu(ZRInfectHandle);
+    
+    SetGlobalTransTarget(client);
+    
+    SetMenuTitle(menu_infect, "%t\n ", "!zadmin infect title");
+    
+    AddTargetsToMenu(menu_infect, client, true, true);
+    
+    SetMenuExitBackButton(menu_infect, true);
+    
+    DisplayMenu(menu_infect, client, MENU_TIME_FOREVER);
 }
 
-public ZRInfectHandle(Handle:zr_infect_menu, MenuAction:action, client, slot)
+public ZRInfectHandle(Handle:menu_infect, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
          decl String:info[32];
          new userid, target;
          
-         GetMenuItem(zr_infect_menu, slot, info, sizeof(info));
+         GetMenuItem(menu_infect, slot, info, sizeof(info));
          userid = StringToInt(info);
 
          if ((target = GetClientOfUserId(userid)) == 0)
@@ -358,42 +386,50 @@ public ZRInfectHandle(Handle:zr_infect_menu, MenuAction:action, client, slot)
     }
     if (action == MenuAction_End)
     {
-        CloseHandle(zr_infect_menu);
+        CloseHandle(menu_infect);
     }
 }
 
 ZRSpawnAll(client)
 {
-    for (new c = 1; c < maxclients; c++)
+    for (new x = 1; x < maxclients; x++)
     {
-        if (IsClientConnected(c) && IsClientInGame(c))
+        if (IsClientInGame(x))
         {
-            ZSpawn(c);
+            ZSpawn(x);
         }
     }
     ZRAdminMenu(client);
 }
 
-ZRTeleMenu(client)
+ZRZTeleMenu(client)
 {
-    new Handle:zr_tele_menu = CreateMenu(ZRTeleHandle);
+    new Handle:menu_ztele = CreateMenu(ZRTeleHandle);
     
-    decl String:ztele_player[] = "Teleport players";
-    decl String:ztele_abort[] = "Abort teleport on players";
-    decl String:ztele_save[] = "Save player location";
-    decl String:ztele_teleloc[] = "Teleport player to saved location";
+    SetGlobalTransTarget(client);
     
-    SetMenuTitle(zr_tele_menu, "Teleport menu");
-    AddMenuItem(zr_tele_menu, "ztele_player", ztele_player);
-    AddMenuItem(zr_tele_menu, "ztele_abort", ztele_abort);
-    AddMenuItem(zr_tele_menu, "ztele_save", ztele_save);
-    AddMenuItem(zr_tele_menu, "ztele_teleloc", ztele_teleloc);
+    SetMenuTitle(menu_ztele, "%t\n ", "!zadmin ztele title");
     
-    SetMenuExitBackButton(zr_tele_menu, true);
-    DisplayMenu(zr_tele_menu, client, MENU_TIME_FOREVER);
+    decl String:ztele_spawntele[64];
+    decl String:ztele_abort[64];
+    decl String:ztele_save[64];
+    decl String:ztele_tele[64];
+    
+    Format(ztele_spawntele, sizeof(ztele_spawntele), "%t", "!zadmin ztele spawn tele");
+    Format(ztele_abort, sizeof(ztele_abort), "%t", "!zadmin ztele abort");
+    Format(ztele_save, sizeof(ztele_save), "%t", "!zadmin ztele save");
+    Format(ztele_tele, sizeof(ztele_tele), "%t", "!zadmin ztele tele");
+    
+    AddMenuItem(menu_ztele, "ztele_spawntele", ztele_spawntele);
+    AddMenuItem(menu_ztele, "ztele_abort", ztele_abort);
+    AddMenuItem(menu_ztele, "ztele_save", ztele_save);
+    AddMenuItem(menu_ztele, "ztele_tele", ztele_tele);
+    
+    SetMenuExitBackButton(menu_ztele, true);
+    DisplayMenu(menu_ztele, client, MENU_TIME_FOREVER);
 }
 
-public ZRTeleHandle(Handle:zr_tele_menu , MenuAction:action, client, slot)
+public ZRTeleHandle(Handle:menu_ztele , MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
@@ -426,13 +462,18 @@ public ZRTeleHandle(Handle:zr_tele_menu , MenuAction:action, client, slot)
     }
     if (action == MenuAction_End)
     {
-        CloseHandle(zr_tele_menu);
+        CloseHandle(menu_ztele);
     }
 }
 
 ZRLogFlagsMenu(client)
 {
-    new Handle:zr_log_flags_menu = CreateMenu(ZRLogFlagsMenuHandle);
+    new Handle:menu_log_flags = CreateMenu(ZRLogFlagsMenuHandle);
+    
+    SetGlobalTransTarget(client);
+    
+    SetMenuTitle(menu_log_flags, "%t\n ", "!zadmin log flags title");
+    
     new client_flags = GetUserFlagBits(client);
     new item_disabled = (client_flags & ADMFLAG_ROOT) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
 
@@ -480,34 +521,33 @@ ZRLogFlagsMenu(client)
     Format(z_log_module_damagecontrol, sizeof(z_log_module_damagecontrol), "Damage control (suicides) (%d)", LogHasFlag(LOG_MODULE_DAMAGECONTROL));
     Format(z_log_module_offsets, sizeof(z_log_module_offsets), "Offsets (properties) (%d)", LogHasFlag(LOG_MODULE_OFFSETS));
     
-    SetMenuTitle(zr_log_flags_menu, "Toggle logging flags");
-    AddMenuItem(zr_log_flags_menu, z_log_core, z_log_core, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_game, z_log_game, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_player, z_log_player, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_debug, z_log_debug, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_debug_detail, z_log_debug_detail, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_debug_max, z_log_debug_max, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_admins, z_log_admins);
-    AddMenuItem(zr_log_flags_menu, z_log_client, z_log_client);
-    AddMenuItem(zr_log_flags_menu, z_log_ignore_console, z_log_ignore_console, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_modules_enabled, z_log_modules_enabled, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_zombie, z_log_module_zombie, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_ambience, z_log_module_ambience, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_overlays, z_log_module_overlays, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_saytriggers, z_log_module_saytriggers, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_teleport, z_log_module_teleport, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_classes, z_log_module_classes, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_weaponrestrict, z_log_module_weaponrestrict, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_commands, z_log_module_commands, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_anticamp, z_log_module_anticamp, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_damagecontrol, z_log_module_damagecontrol, item_disabled);
-    AddMenuItem(zr_log_flags_menu, z_log_module_offsets, z_log_module_offsets, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_core, z_log_core, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_game, z_log_game, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_player, z_log_player, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_debug, z_log_debug, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_debug_detail, z_log_debug_detail, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_debug_max, z_log_debug_max, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_admins, z_log_admins);
+    AddMenuItem(menu_log_flags, z_log_client, z_log_client);
+    AddMenuItem(menu_log_flags, z_log_ignore_console, z_log_ignore_console, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_modules_enabled, z_log_modules_enabled, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_zombie, z_log_module_zombie, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_ambience, z_log_module_ambience, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_overlays, z_log_module_overlays, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_saytriggers, z_log_module_saytriggers, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_teleport, z_log_module_teleport, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_classes, z_log_module_classes, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_weaponrestrict, z_log_module_weaponrestrict, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_commands, z_log_module_commands, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_anticamp, z_log_module_anticamp, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_damagecontrol, z_log_module_damagecontrol, item_disabled);
+    AddMenuItem(menu_log_flags, z_log_module_offsets, z_log_module_offsets, item_disabled);
     
-    SetMenuExitBackButton(zr_log_flags_menu, true);
-    DisplayMenu(zr_log_flags_menu, client, MENU_TIME_FOREVER);
+    SetMenuExitBackButton(menu_log_flags, true);
+    DisplayMenu(menu_log_flags, client, MENU_TIME_FOREVER);
 }
 
-public ZRLogFlagsMenuHandle(Handle:zr_log_flags_menu , MenuAction:action, client, slot)
+public ZRLogFlagsMenuHandle(Handle:menu_log_flags , MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
@@ -629,7 +669,7 @@ public ZRLogFlagsMenuHandle(Handle:zr_log_flags_menu , MenuAction:action, client
     }
     if (action == MenuAction_End)
     {
-        CloseHandle(zr_log_flags_menu );
+        CloseHandle(menu_log_flags );
     }
 }
 
@@ -648,6 +688,7 @@ ToggleLogFlag(flag)
 {
     new log_flags;
     log_flags = GetConVarInt(gCvars[CVAR_LOG]);
+    
     if (log_flags & flag)
     {
         log_flags = log_flags - flag;
@@ -656,5 +697,6 @@ ToggleLogFlag(flag)
     {
         log_flags = log_flags + flag;
     }
+    
     SetConVarInt(gCvars[CVAR_LOG], log_flags);
 }
