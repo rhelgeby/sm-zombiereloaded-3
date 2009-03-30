@@ -304,18 +304,21 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
             
             if (!StrEqual(weapon, "hegrenade"))
             {
-                GetClientAbsOrigin(attacker, attackerloc);
+                GetPlayerEyePosition(attacker, attackerloc);
                 
-                new bool:shotgun = (StrEqual(weapon, "m3") || StrEqual(weapon, "xm1014"));
+                new Float:attackerang[3];
+                GetPlayerEyeAngles(attacker, attackerang);
                 
-                KnockBack(index, clientloc, attackerloc, knockback, dmg, shotgun);
+                TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, TraceRayFilter);
+                TR_GetEndPosition(clientloc);
+                
+                KnockBack(index, clientloc, attackerloc, knockback, dmg, false);
             }
             else
             {
-                new Float:heLoc[3];
-                FindExplodingGrenade(heLoc);
+                FindExplodingGrenade(attackerloc);
                 
-                KnockBack(index, clientloc, heLoc, knockback, dmg, true);
+                KnockBack(index, clientloc, attackerloc, knockback, dmg, true);
             }
         }
     }
@@ -358,6 +361,16 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     }
 
     UpdateAlphaDamaged(index);
+}
+
+public bool:TraceRayFilter(entity, contentsMask)
+{
+    if (entity > 0 && entity < MAXPLAYERS)
+    {
+        return false;
+    }
+    
+    return true;
 }
 
 FindExplodingGrenade(Float:heLoc[3])

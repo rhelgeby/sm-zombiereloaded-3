@@ -26,6 +26,7 @@ enum ZRSettings
     Handle:CVAR_ZOMBIE_JUMP_DISTANCE,
     Handle:CVAR_ZOMBIE_JUMP_HEIGHT,
     Handle:CVAR_ZOMBIE_KNOCKBACK,
+    Handle:CVAR_ZOMBIE_KNOCKBACK_GRENADE,
     Handle:CVAR_ZOMBIE_NVGS,
     Handle:CVAR_ZOMBIE_FOV,
     Handle:CVAR_ZOMBIE_REGEN,
@@ -111,6 +112,7 @@ CreateCvars()
     gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]      =    CreateConVar("zr_zombie_jump_distance", "0.1", "How far the zombie jumps,  (0: Regular jump distance)");
     gCvars[CVAR_ZOMBIE_JUMP_HEIGHT]        =    CreateConVar("zr_zombie_jump_height", "10.0", "How high a zombie jumps (0: Regular jump height)");
     gCvars[CVAR_ZOMBIE_KNOCKBACK]          =    CreateConVar("zr_zombie_knockback", "1", "How far zombies are pushed back when shot. If classes are enabled: This one is a multiplier for class knockback values (1: Default)");
+    gCvars[CVAR_ZOMBIE_KNOCKBACK_GRENADE]  =    CreateConVar("zr_zombie_knockback_grenade", "4.0", "Knockback multiplier when a grenade inflicts damage on a zombie. (4.0: Default)");
     gCvars[CVAR_ZOMBIE_NVGS]               =    CreateConVar("zr_zombie_nvgs", "-1", "Zombies will be equipped with nightvision. Also used to override class nvgs if non-negative. (-1: No override, uses class setting,  0: No nvgs,  1: Nvgs on)");
     gCvars[CVAR_ZOMBIE_FOV]                =    CreateConVar("zr_zombie_fov", "110", "The field of vision of zombies (90: Default vision)");
     gCvars[CVAR_ZOMBIE_REGEN]              =    CreateConVar("zr_zombie_regen", "0", "Zombies will regenerate health");

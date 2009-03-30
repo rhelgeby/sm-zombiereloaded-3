@@ -6,7 +6,6 @@
  * ==================== 
  */
 
-new offsBaseVelocity;
 new offsGetVelocity0;
 new offsGetVelocity1;
 new offsGetVelocity2;
@@ -23,15 +22,11 @@ new offsRender;
 new Handle:g_hGameConf = INVALID_HANDLE;
 new Handle:g_hRemoveAllItems = INVALID_HANDLE;
 new Handle:g_hTerminateRound = INVALID_HANDLE;
+new Handle:g_hEyePosition = INVALID_HANDLE;
+new Handle:g_hEyeAngles = INVALID_HANDLE;
 
 FindOffsets()
 {
-    offsBaseVelocity = FindSendPropInfo("CBasePlayer", "m_vecBaseVelocity");
-    if (offsBaseVelocity == -1)
-    {
-        SetFailState("Couldn't find \"m_vecBaseVelocity\"!");
-    }
-    
     offsGetVelocity0 = FindSendPropInfo("CBasePlayer", "m_vecVelocity[0]");
     if (offsGetVelocity0 == -1)
     {
@@ -111,6 +106,16 @@ SetupGameData()
     PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "RemoveAllItems");
     g_hRemoveAllItems = EndPrepSDKCall();
     
+    StartPrepSDKCall(SDKCall_Player);
+    PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "EyePosition");
+    PrepSDKCall_SetReturnInfo(SDKType_QAngle, SDKPass_ByValue);
+    g_hEyePosition = EndPrepSDKCall();
+    
+    StartPrepSDKCall(SDKCall_Player);
+    PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "EyeAngles");
+    PrepSDKCall_SetReturnInfo(SDKType_QAngle, SDKPass_ByValue);
+    g_hEyeAngles = EndPrepSDKCall();
+    
     StartPrepSDKCall(SDKCall_GameRules);
     PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Signature, "TerminateRound");
     PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
@@ -118,9 +123,21 @@ SetupGameData()
     g_hTerminateRound = EndPrepSDKCall();
 }
 
-SetPlayerVelocity(client, const Float:vec[3])
+SetPlayerVelocity(client, const Float:vec[3], bool:reset)
 {
-    SetEntDataVector(client, offsBaseVelocity, vec, true);
+    if (reset)
+    {
+        TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vec);
+    }
+    else
+    {
+        new Float:fVelocity[3];
+        GetPlayerVelocity(client, fVelocity);
+        
+        AddVectors(vec, fVelocity, fVelocity);
+        
+        TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fVelocity);
+    }
 }
 
 GetPlayerVelocity(client, Float:vel[3])
@@ -188,6 +205,16 @@ AddPlayerDeath(client, amount)
 RemoveAllPlayersWeapons(client)
 {
     SDKCall(g_hRemoveAllItems, client);
+}
+
+GetPlayerEyePosition(client, Float:vec[3])
+{
+    SDKCall(g_hEyePosition, client, vec);
+}
+
+GetPlayerEyeAngles(client, Float:ang[3])
+{
+    SDKCall(g_hEyeAngles, client, ang);
 }
 
 TerminateRound(Float:delay, reason)

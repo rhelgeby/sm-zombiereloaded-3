@@ -428,7 +428,7 @@ ApplyZombieAlpha(client)
 	SetPlayerAlpha(client, alpha);
 }
 
-KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:power, dmg, bool:boost)
+KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:power, dmg, bool:grenade)
 {
     if (!IsPlayerZombie(client))
     {
@@ -438,18 +438,20 @@ KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:po
     new Float:vector[3];
     
     MakeVectorFromPoints(attackerloc, clientloc, vector);
+    
     NormalizeVector(vector, vector);
     
     vector[0] *= power * (float(dmg) * 1.5);
     vector[1] *= power * (float(dmg) * 1.5);
     vector[2] *= power * (float(dmg) * 1.5);
     
-    if (boost)
+    if (grenade)
     {
-        ScaleVector(vector, 4.0);
+        new Float:knockback_grenade = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK_GRENADE]);
+        ScaleVector(vector, knockback_grenade);
     }
     
-    SetPlayerVelocity(client, vector);
+    SetPlayerVelocity(client, vector, false);
 }
 
 JumpBoost(client, Float:distance, Float:height)
@@ -462,7 +464,7 @@ JumpBoost(client, Float:distance, Float:height)
     vel[1] *= distance;
     vel[2] = height;
     
-    SetPlayerVelocity(client, vel);
+    SetPlayerVelocity(client, vel, false);
 }
 
 PlayerLeft(client)
