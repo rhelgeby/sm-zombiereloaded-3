@@ -26,6 +26,7 @@
 #include "zr/classes"
 #include "zr/models"
 #include "zr/overlays"
+#include "zr/playerclasses"
 #include "zr/anticamp"
 #include "zr/teleport"
 #include "zr/zombie"

@@ -48,7 +48,7 @@ enum ZTeam
 #define LOG_MODULE_OVERLAYS        4096          // overlays.inc
 #define LOG_MODULE_SAYTRIGGERS     8192          // sayhooks.inc
 #define LOG_MODULE_TELEPORT        16384         // teleport.inc
-#define LOG_MODULE_CLASSES         32768         // classes.inc
+#define LOG_MODULE_CLASSES         32768         // playerclasses.inc
 #define LOG_MODULE_WEAPONRESTICT   65536         // weaponrestrict.inc
 #define LOG_MODULE_COMMANDS        131072        // commands.inc
 #define LOG_MODULE_ANTICAMP        262144        // anticamp.inc
