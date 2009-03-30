@@ -128,14 +128,20 @@ ZRKnockbackMMenu(client)
     
     SetMenuTitle(menu_knockbackm, "%t\n ", "!zadmin knockbackm title", curknockback);
     
-    decl String:knockbackmincrease[64];
-    decl String:knockbackmdecrease[64];
+    decl String:knockbackmincrease1[64];
+    decl String:knockbackmdecrease1[64];
+    decl String:knockbackmincrease2[64];
+    decl String:knockbackmdecrease2[64];
     
-    Format(knockbackmincrease, sizeof(knockbackmincrease), "%t", "!zadmin knockbackm increase");
-    Format(knockbackmdecrease, sizeof(knockbackmdecrease), "%t", "!zadmin knockbackm decrease");
+    Format(knockbackmincrease1, sizeof(knockbackmincrease1), "%t", "!zadmin knockbackm increase", "0.1");
+    Format(knockbackmdecrease1, sizeof(knockbackmdecrease1), "%t", "!zadmin knockbackm decrease", "0.1");
+    Format(knockbackmincrease2, sizeof(knockbackmincrease2), "%t", "!zadmin knockbackm increase", "0.5");
+    Format(knockbackmdecrease2, sizeof(knockbackmdecrease2), "%t", "!zadmin knockbackm decrease", "0.5");
     
-    AddMenuItem(menu_knockbackm, "knockbackmincrease", knockbackmincrease);
-    AddMenuItem(menu_knockbackm, "knockbackmdecrease", knockbackmdecrease);
+    AddMenuItem(menu_knockbackm, "knockbackmincrease1", knockbackmincrease1);
+    AddMenuItem(menu_knockbackm, "knockbackmdecrease1", knockbackmdecrease1);
+    AddMenuItem(menu_knockbackm, "knockbackmincrease2", knockbackmincrease2);
+    AddMenuItem(menu_knockbackm, "knockbackmdecrease2", knockbackmdecrease2);
     
     SetMenuExitBackButton(menu_knockbackm, true);
     
@@ -156,6 +162,16 @@ public ZRKnockbackMHandle(Handle:menu_knockbackm, MenuAction:action, client, slo
             case 1:
             {
                 AddToKnockbackMultiplier(-0.1);
+                ZRKnockbackMMenu(client);
+            }
+            case 2:
+            {
+                AddToKnockbackMultiplier(0.5);
+                ZRKnockbackMMenu(client);
+            }
+            case 3:
+            {
+                AddToKnockbackMultiplier(-0.5);
                 ZRKnockbackMMenu(client);
             }
         }
@@ -224,14 +240,20 @@ ZRClassKnockbackMenu(client, classindex)
     
     SetMenuTitle(menu_knockback, "%t\n ", "!zadmin knockback title", classname, curknockback);
     
-    decl String:knockbackincrease[64];
-    decl String:knockbackdecrease[64];
+    decl String:knockbackincrease1[64];
+    decl String:knockbackdecrease1[64];
+    decl String:knockbackincrease2[64];
+    decl String:knockbackdecrease2[64];
     
-    Format(knockbackincrease, sizeof(knockbackincrease), "%t", "!zadmin knockback increase");
-    Format(knockbackdecrease, sizeof(knockbackdecrease), "%t", "!zadmin knockback decrease");
+    Format(knockbackincrease1, sizeof(knockbackincrease1), "%t", "!zadmin knockback increase", "0.1");
+    Format(knockbackdecrease1, sizeof(knockbackdecrease1), "%t", "!zadmin knockback decrease", "0.1");
+    Format(knockbackincrease2, sizeof(knockbackincrease2), "%t", "!zadmin knockback increase", "0.5");
+    Format(knockbackdecrease2, sizeof(knockbackdecrease2), "%t", "!zadmin knockback decrease", "0.5");
     
-    AddMenuItem(menu_knockback, "knockbackincrease", knockbackincrease);
-    AddMenuItem(menu_knockback, "knockbackdecrease", knockbackdecrease);
+    AddMenuItem(menu_knockback, "knockbackincrease1", knockbackincrease1);
+    AddMenuItem(menu_knockback, "knockbackdecrease1", knockbackdecrease1);
+    AddMenuItem(menu_knockback, "knockbackincrease2", knockbackincrease2);
+    AddMenuItem(menu_knockback, "knockbackdecrease2", knockbackdecrease2);
     
     SetMenuExitBackButton(menu_knockback, true);
     
@@ -251,6 +273,14 @@ public ZRClassKnockbackHandle(Handle:menu_knockback, MenuAction:action, client, 
             case 1:
             {
                 AddToClassKnockback(curMenuClass[client], -0.1);
+            }
+            case 2:
+            {
+                AddToClassKnockback(curMenuClass[client], 0.5);
+            }
+            case 3:
+            {
+                AddToClassKnockback(curMenuClass[client], -0.5);
             }
         }
         

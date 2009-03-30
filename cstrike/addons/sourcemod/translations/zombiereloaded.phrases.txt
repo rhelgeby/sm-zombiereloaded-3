@@ -391,12 +391,14 @@
 
 	"!zadmin knockbackm increase"
 	{
-		"en"		"Increase Knockback Multiplier"
+		"#format"	"{1:s}"
+		"en"		"Increase Knockback Multiplier (+{1})"
 	}
 
 	"!zadmin knockbackm decrease"
 	{
-		"en"		"Decrease Knockback Multiplier"
+		"#format"	"{1:s}"
+		"en"		"Decrease Knockback Multiplier (-{1})"
 	}
 
 	"!zadmin knockback title"
@@ -407,12 +409,14 @@
 
 	"!zadmin knockback increase"
 	{
-		"en"		"Increase Knockback"
+		"#format"	"{1:s}"
+		"en"		"Increase Knockback (+{1})"
 	}
 
 	"!zadmin knockback decrease"
 	{
-		"en"		"Decrease Knockback"
+		"#format"	"{1:s}"
+		"en"		"Decrease Knockback (-{1})"
 	}
 
 	"!zadmin nvgs title"
