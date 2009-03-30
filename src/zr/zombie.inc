@@ -200,20 +200,22 @@ Zombify_Mother(client)
     {
         if (tHandles[client][TMOAN] != INVALID_HANDLE)
         {
-            CloseHandle(tHandles[client][TMOAN]);
+            KillTimer(tHandles[client][TMOAN]);
         }
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
     
     if (tHandles[client][TPROTECT] != INVALID_HANDLE)
     {
-        TriggerTimer(tHandles[client][TPROTECT]);
+        pProtect[client] = false;
+        
+        KillTimer(tHandles[client][TPROTECT]);
         tHandles[client][TPROTECT] = INVALID_HANDLE;
     }
     
     if (tHandles[client][TZHP] != INVALID_HANDLE)
     {
-        CloseHandle(tHandles[client][TZHP]);
+        KillTimer(tHandles[client][TZHP]);
         tHandles[client][TZHP] = INVALID_HANDLE;
     }
     
@@ -279,20 +281,22 @@ Zombify(client, attacker)
     {
         if (tHandles[client][TMOAN] != INVALID_HANDLE)
         {
-            CloseHandle(tHandles[client][TMOAN]);
+            KillTimer(tHandles[client][TMOAN]);
         }
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
     
     if (tHandles[client][TPROTECT] != INVALID_HANDLE)
     {
-        TriggerTimer(tHandles[client][TPROTECT]);
+        pProtect[client] = false;
+        
+        KillTimer(tHandles[client][TPROTECT]);
         tHandles[client][TPROTECT] = INVALID_HANDLE;
     }
     
     if (tHandles[client][TZHP] != INVALID_HANDLE)
     {
-        CloseHandle(tHandles[client][TZHP]);
+        KillTimer(tHandles[client][TZHP]);
         tHandles[client][TZHP] = INVALID_HANDLE;
     }
     
@@ -424,7 +428,7 @@ ApplyZombieAlpha(client)
 	SetPlayerAlpha(client, alpha);
 }
 
-KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:power, dmg, bool:boost)
+KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:power, dmg, bool:grenade)
 {
     if (!IsPlayerZombie(client))
     {
@@ -434,18 +438,20 @@ KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:po
     new Float:vector[3];
     
     MakeVectorFromPoints(attackerloc, clientloc, vector);
+    
     NormalizeVector(vector, vector);
     
     vector[0] *= power * (float(dmg) * 1.5);
     vector[1] *= power * (float(dmg) * 1.5);
     vector[2] *= power * (float(dmg) * 1.5);
     
-    if (boost)
+    if (grenade)
     {
-        ScaleVector(vector, 4.0);
+        new Float:knockback_grenade = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK_GRENADE]);
+        ScaleVector(vector, knockback_grenade);
     }
     
-    SetPlayerVelocity(client, vector);
+    SetPlayerVelocity(client, vector, false);
 }
 
 JumpBoost(client, Float:distance, Float:height)
@@ -458,7 +464,7 @@ JumpBoost(client, Float:distance, Float:height)
     vel[1] *= distance;
     vel[2] = height;
     
-    SetPlayerVelocity(client, vel);
+    SetPlayerVelocity(client, vel, false);
 }
 
 PlayerLeft(client)
@@ -842,7 +848,7 @@ public Action:ZHPTimer(Handle:timer, any:index)
     return Plugin_Continue;
 }
 
-public Action:EndProtect(Handle:timer, any:index)
+public Action:ProtectTimer(Handle:timer, any:index)
 {
     if (!IsClientInGame(index))
     {
@@ -850,45 +856,26 @@ public Action:EndProtect(Handle:timer, any:index)
         return Plugin_Stop;
     }
     
-    if (protCount[index] > 0) {
-        PrintHintText(index, "%d", protCount[index]);
-        protCount[index]--;
-
-        return Plugin_Continue;
-    } else {
+    pTimeLeft[index]--;
+    ZR_HudHint(index, "Spawn Protect", pTimeLeft[index]);
+    
+    if (pTimeLeft[index] <= 0)
+    {
         pProtect[index] = false;
     
         if (IsPlayerHuman(index))
         {
-            ZR_PrintCenterText(index, "Spawn protection end");
+            ZR_HudHint(index, "Spawn protection end");
+            SetPlayerAlpha(index, 255);
+            SetPlayerSpeed(index, 300.0);
         }
-    
-        SetPlayerAlpha(index, 255);
-        SetPlayerSpeed(index, 300.0);
 
         tHandles[index][TPROTECT] = INVALID_HANDLE;
 
         return Plugin_Stop;
     }
-}
-
-ProtectionAbort(client)
-{
-    if (tHandles[client][TPROTECT] != INVALID_HANDLE)
-    {
-        KillTimer(tHandles[client][TPROTECT]);
-        tHandles[client][TPROTECT] = INVALID_HANDLE;
-    }
     
-    if (!IsClientInGame(client))
-    {
-        return;
-    }
-    
-    pProtect[client] = false;
-    
-    SetPlayerAlpha(client, 255);
-    SetPlayerSpeed(client, 300.0);
+    return Plugin_Continue;
 }
 
 RespawnPlayer(client)
@@ -916,7 +903,6 @@ RespawnPlayer(client)
     
     if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
     {
-        ProtectionAbort(client);
         Zombify(client, 0);
         gKilledByWorld[client] = false;
     }

@@ -30,6 +30,11 @@ public Action:SayCommand(client, argc)
         MainMenu(client);
     }
     
+    if (StrEqual(args, "!zadmin", false))
+    {
+        ZRAdminMenu(client);
+    }
+    
     else if (StrEqual(args, "!zclass", false))
     {
         ZClass(client);
@@ -50,7 +55,7 @@ public Action:SayCommand(client, argc)
              StrEqual(args, "!tele", false) ||
              StrEqual(args, "!teleport", false))
     {
-        ZTeleClientCheck(client);
+        ZTele(client);
     }
     
     else if (StrEqual(args, "!teleabort", false))
@@ -268,7 +273,7 @@ ZStuck(client)
     nudge[0] = x;
     nudge[1] = y;
     
-    SetPlayerVelocity(client, nudge);
+    SetPlayerVelocity(client, nudge, true);
 }
 
 public Action:CollisionOn(Handle:timer, any:index)

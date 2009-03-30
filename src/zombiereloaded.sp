@@ -32,7 +32,7 @@
 #include "zr/zombie"
 #include "zr/menu"
 #include "zr/sayhooks"
-#include "zr/zradmin"
+#include "zr/zadmin"
 #include "zr/weaponrestrict"
 #include "zr/damagecontrol"
 #include "zr/commands"
@@ -156,6 +156,7 @@ public OnClientPutInServer(client)
 {
     pClass[client] = GetDefaultClassIndex();
     gBlockMotherInfect[client] = false;
+    gKilledByWorld[client] = false; 
     
     bZVision[client] = !IsFakeClient(client);
     

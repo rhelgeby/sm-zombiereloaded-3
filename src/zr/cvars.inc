@@ -26,6 +26,7 @@ enum ZRSettings
     Handle:CVAR_ZOMBIE_JUMP_DISTANCE,
     Handle:CVAR_ZOMBIE_JUMP_HEIGHT,
     Handle:CVAR_ZOMBIE_KNOCKBACK,
+    Handle:CVAR_ZOMBIE_KNOCKBACK_GRENADE,
     Handle:CVAR_ZOMBIE_NVGS,
     Handle:CVAR_ZOMBIE_FOV,
     Handle:CVAR_ZOMBIE_REGEN,
@@ -111,7 +112,8 @@ CreateCvars()
     gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]      =    CreateConVar("zr_zombie_jump_distance", "0.1", "How far the zombie jumps,  (0: Regular jump distance)");
     gCvars[CVAR_ZOMBIE_JUMP_HEIGHT]        =    CreateConVar("zr_zombie_jump_height", "10.0", "How high a zombie jumps (0: Regular jump height)");
     gCvars[CVAR_ZOMBIE_KNOCKBACK]          =    CreateConVar("zr_zombie_knockback", "1", "How far zombies are pushed back when shot. If classes are enabled: This one is a multiplier for class knockback values (1: Default)");
-    gCvars[CVAR_ZOMBIE_NVGS]               =    CreateConVar("zr_zombie_nvgs", "-1", "Zombies will be equipped with nightvision. Also used to override class nvgs if non-negative. (-1: No override/Nvgs on,  0: No nvgs,  1: Nvgs on)");
+    gCvars[CVAR_ZOMBIE_KNOCKBACK_GRENADE]  =    CreateConVar("zr_zombie_knockback_grenade", "4.0", "Knockback multiplier when a grenade inflicts damage on a zombie. (4.0: Default)");
+    gCvars[CVAR_ZOMBIE_NVGS]               =    CreateConVar("zr_zombie_nvgs", "-1", "Zombies will be equipped with nightvision. Also used to override class nvgs if non-negative. (-1: No override, uses class setting,  0: No nvgs,  1: Nvgs on)");
     gCvars[CVAR_ZOMBIE_FOV]                =    CreateConVar("zr_zombie_fov", "110", "The field of vision of zombies (90: Default vision)");
     gCvars[CVAR_ZOMBIE_REGEN]              =    CreateConVar("zr_zombie_regen", "0", "Zombies will regenerate health");
     gCvars[CVAR_ZOMBIE_REGEN_HEALTH]       =    CreateConVar("zr_zombie_regen_health", "1", "How much health is regenerated when zr_zombie_regen is 1");
@@ -137,7 +139,7 @@ CreateCvars()
     gCvars[CVAR_RESPAWN_DELAY]             =    CreateConVar("zr_respawn_delay", "1", "How long to wait after death to respawn,  in seconds");
     gCvars[CVAR_SUICIDE]                   =    CreateConVar("zr_suicide", "1", "Stops players from suiciding");
     gCvars[CVAR_SUICIDE_ECHO]              =    CreateConVar("zr_suicide_echo", "0", "Log suicide attempts to admin chat.");
-    gCvars[CVAR_SUICIDE_WORLD_DAMAGE]      =    CreateConVar("zr_suicide_world_damage", "1", "Respawn zombies as zombies if they was killed by the world, like elevators, doors and lasers.");
+    gCvars[CVAR_SUICIDE_WORLD_DAMAGE]      =    CreateConVar("zr_suicide_world_damage", "1", "Respawn zombies as zombies if they were killed by the world, like elevators, doors and lasers. (0: Disable)");
     gCvars[CVAR_SPAWN_MIN]                 =    CreateConVar("zr_spawn_min", "30", "Minimum time a player is picked to be zombie after the round starts,  in seconds");
     gCvars[CVAR_SPAWN_MAX]                 =    CreateConVar("zr_spawn_max", "50", "Maximum time a player is picked to be zombie after the round starts,  in seconds");
     gCvars[CVAR_PROTECT]                   =    CreateConVar("zr_protect", "10", "Players that join late will be protected for this long, in seconds (0: Disable)");

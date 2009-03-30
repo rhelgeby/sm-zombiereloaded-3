@@ -38,13 +38,13 @@ public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
     
     if (tRound != INVALID_HANDLE)
     {
-        CloseHandle(tRound);
+        KillTimer(tRound);
         tRound = INVALID_HANDLE;
     }
     
     if (tInfect != INVALID_HANDLE)
     {
-        CloseHandle(tInfect);
+        KillTimer(tInfect);
         tInfect = INVALID_HANDLE;
     }
     
@@ -57,7 +57,7 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
     
     if (tRound != INVALID_HANDLE)
     {
-        CloseHandle(tRound);
+        KillTimer(tRound);
     }
     
     new Float:roundlen = GetConVarFloat(FindConVar("mp_roundtime")) * 60.0;
@@ -65,7 +65,7 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
     
     if (tInfect != INVALID_HANDLE)
     {
-        CloseHandle(tInfect);
+        KillTimer(tInfect);
     }
     
     new Float:min = GetConVarFloat(gCvars[CVAR_SPAWN_MIN]);
@@ -81,13 +81,13 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
     if (tRound != INVALID_HANDLE)
     {
-        CloseHandle(tRound);
+        KillTimer(tRound);
         tRound = INVALID_HANDLE;
     }
     
     if (tInfect != INVALID_HANDLE)
     {
-        CloseHandle(tInfect);
+        KillTimer(tInfect);
         tInfect = INVALID_HANDLE;
     }
 
@@ -156,7 +156,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         
         if (tHandles[index][x] != INVALID_HANDLE)
         {
-            CloseHandle(tHandles[index][x]);
+            KillTimer(tHandles[index][x]);
             tHandles[index][x] = INVALID_HANDLE;
         }
     }
@@ -212,8 +212,8 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         {
             decl String:respawnteam[32];
             GetConVarString(gCvars[CVAR_RESPAWN_TEAM], respawnteam, sizeof(respawnteam));
-        
-            if (!StrEqual(respawnteam, "zombie", false))
+            
+            if (!StrEqual(respawnteam, "zombie", false) && !(GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[index]))
             {
                 SetPlayerAlpha(index, 0);
                 SetPlayerSpeed(index, 600.0);
@@ -224,14 +224,14 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
                 
                 if (tHandles[index][TPROTECT] != INVALID_HANDLE)
                 {
-                    CloseHandle(tHandles[index][TPROTECT]);
+                    KillTimer(tHandles[index][TPROTECT]);
                 }
                 
-                protCount[index] = protect;
-                PrintHintText(index, "%d", protCount[index]);
-                protCount[index]--;
+                pTimeLeft[index] = protect;
+                
+                PrintHintText(index, "%d", pTimeLeft[index]);
 
-                tHandles[index][TPROTECT] = CreateTimer(1.0, EndProtect, index, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+                tHandles[index][TPROTECT] = CreateTimer(1.0, ProtectTimer, index, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
             }
         }
     }
@@ -304,18 +304,21 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
             
             if (!StrEqual(weapon, "hegrenade"))
             {
-                GetClientAbsOrigin(attacker, attackerloc);
+                GetPlayerEyePosition(attacker, attackerloc);
                 
-                new bool:shotgun = (StrEqual(weapon, "m3") || StrEqual(weapon, "xm1014"));
+                new Float:attackerang[3];
+                GetPlayerEyeAngles(attacker, attackerang);
                 
-                KnockBack(index, clientloc, attackerloc, knockback, dmg, shotgun);
+                TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, TraceRayFilter);
+                TR_GetEndPosition(clientloc);
+                
+                KnockBack(index, clientloc, attackerloc, knockback, dmg, false);
             }
             else
             {
-                new Float:heLoc[3];
-                FindExplodingGrenade(heLoc);
+                FindExplodingGrenade(attackerloc);
                 
-                KnockBack(index, clientloc, heLoc, knockback, dmg, true);
+                KnockBack(index, clientloc, attackerloc, knockback, dmg, true);
             }
         }
     }
@@ -358,6 +361,16 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     }
 
     UpdateAlphaDamaged(index);
+}
+
+public bool:TraceRayFilter(entity, contentsMask)
+{
+    if (entity > 0 && entity < MAXPLAYERS)
+    {
+        return false;
+    }
+    
+    return true;
 }
 
 FindExplodingGrenade(Float:heLoc[3])

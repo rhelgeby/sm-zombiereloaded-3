@@ -333,7 +333,7 @@ public Action:Command_TeleportAbort(client, argc)
     return Plugin_Handled;
 }
 
-bool:ZTeleClientCheck(client)
+bool:ZTele(client)
 {
     // Check if the teleporter is disabled.
     new bool:tele = GetConVarBool(gCvars[CVAR_ZTELE]);

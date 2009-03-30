@@ -175,7 +175,7 @@ stock ZR_PrintToAdminChat(String:message[])
     Format(buffer, sizeof(buffer), "[ZR] %s", message);
     for (new client = 1; client < maxclients; client++)
     {
-        if (IsClientConnected(client) && IsClientInGame(client) && GetUserAdmin(client) != INVALID_ADMIN_ID)
+        if (IsClientConnected(client) && IsClientInGame(client) && GetAdminFlag(GetUserAdmin(client), Admin_Generic))
         {
             PrintToChat(client, buffer);
         }
