@@ -151,7 +151,9 @@ public Action:Attempt_Suicide(client, argc)
         return Plugin_Continue;
     }
     
-    new bool:suicide = GetConVarBool(gCvars[CVAR_SUICIDE]);
+    
+    
+    new bool:suicide = IsPlayerZombie(client) ? GetConVarBool(gCvars[CVAR_SUICIDE_ZOMBIE]) : GetConVarBool(gCvars[CVAR_SUICIDE_HUMAN]);
     if (!suicide)
     {
         return Plugin_Continue;
@@ -159,16 +161,6 @@ public Action:Attempt_Suicide(client, argc)
     
     decl String:cmd[16];
     GetCmdArg(0, cmd, sizeof(cmd));
-    
-    if (!IsPlayerZombie(client) && StrEqual(cmd, "spectate", false))
-    {
-        return Plugin_Continue;
-    }
-    
-    if (!IsPlayerZombie(client) && !GetConVarBool(gCvars[CVAR_RESPAWN]))
-    {
-        return Plugin_Continue;
-    }
     
     if (!IsPlayerAlive(client))
     {

@@ -51,7 +51,8 @@ enum ZRSettings
     Handle:CVAR_RESPAWN,
     Handle:CVAR_RESPAWN_TEAM,
     Handle:CVAR_RESPAWN_DELAY,
-    Handle:CVAR_SUICIDE,
+    Handle:CVAR_SUICIDE_ZOMBIE,
+    Handle:CVAR_SUICIDE_HUMAN,
     Handle:CVAR_SUICIDE_ECHO,
     Handle:CVAR_SUICIDE_WORLD_DAMAGE,
     Handle:CVAR_SPAWN_MIN,
@@ -137,7 +138,8 @@ CreateCvars()
     gCvars[CVAR_RESPAWN]                   =    CreateConVar("zr_respawn", "0", "When player is killed,  player will respawn");
     gCvars[CVAR_RESPAWN_TEAM]              =    CreateConVar("zr_respawn_team", "zombie", "Which team to respawn player as (Choices: zombie, human)");
     gCvars[CVAR_RESPAWN_DELAY]             =    CreateConVar("zr_respawn_delay", "1", "How long to wait after death to respawn,  in seconds");
-    gCvars[CVAR_SUICIDE]                   =    CreateConVar("zr_suicide", "1", "Stops players from suiciding");
+    gCvars[CVAR_SUICIDE_ZOMBIE]            =    CreateConVar("zr_suicide_zombie", "1", "Stops zombies from suiciding");
+    gCvars[CVAR_SUICIDE_HUMAN]             =    CreateConVar("zr_suicide_human", "1", "Stops humans from suiciding");
     gCvars[CVAR_SUICIDE_ECHO]              =    CreateConVar("zr_suicide_echo", "0", "Log suicide attempts to admin chat.");
     gCvars[CVAR_SUICIDE_WORLD_DAMAGE]      =    CreateConVar("zr_suicide_world_damage", "1", "Respawn zombies as zombies if they were killed by the world, like elevators, doors and lasers. (0: Disable)");
     gCvars[CVAR_SPAWN_MIN]                 =    CreateConVar("zr_spawn_min", "30", "Minimum time a player is picked to be zombie after the round starts,  in seconds");
