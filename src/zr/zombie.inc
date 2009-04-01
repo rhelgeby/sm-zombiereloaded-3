@@ -901,7 +901,7 @@ RespawnPlayer(client)
         return;
     }
     
-    if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
+    if (zombieSpawned && GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
     {
         Zombify(client, 0);
         gKilledByWorld[client] = false;
