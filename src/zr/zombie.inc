@@ -650,35 +650,6 @@ RemoveObjectives()
     }
 }
 
-AntiStick(attacker, client)
-{
-    if (!attacker || !IsClientInGame(attacker))
-    {
-        return;
-    }
-    
-    new Float:force = GetConVarFloat(gCvars[CVAR_INFECT_ANTISTICK_FORCE]);
-    if (force == 0.0)
-    {
-        return;
-    }
-    
-    new Float:vector[3];
-    
-    new Float:attackerloc[3];
-    new Float:clientloc[3];
-    
-    GetClientAbsOrigin(attacker, attackerloc);
-    GetClientAbsOrigin(client, clientloc);
-    
-    MakeVectorFromPoints(attackerloc, clientloc, vector);
-    
-    NormalizeVector(vector, vector);
-    ScaleVector(vector, force);
-    
-    TeleportEntity(attacker, NULL_VECTOR, NULL_VECTOR, vector);
-}
-
 ZVisionPreCheck(client)
 {
     if (IsFakeClient(client))
@@ -901,7 +872,7 @@ RespawnPlayer(client)
         return;
     }
     
-    if (zombieSpawned && GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
+    if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
     {
         Zombify(client, 0);
         gKilledByWorld[client] = false;

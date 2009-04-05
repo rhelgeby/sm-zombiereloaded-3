@@ -63,11 +63,6 @@ public Action:SayCommand(client, argc)
         AbortTeleport(client, false);
     }
     
-    else if (StrEqual(args, "!zstuck", false))
-    {
-        ZStuck(client);
-    }
-    
     else if (StrEqual(args, "!zhp", false))
     {
         ZHP(client);
@@ -228,52 +223,6 @@ ZSpawn(client)
     RespawnPlayer(client);
     
     AddPlayerToList(client);
-}
-
-ZStuck(client)
-{
-    new bool:stuck = GetConVarBool(gCvars[CVAR_ZSTUCK]);
-    if (!stuck)
-    {
-        ZR_PrintToChat(client, "Feature is disabled");
-        
-        return;
-    }
-    
-    if (!IsPlayerAlive(client))
-    {
-        return;
-    }
-    
-    new Float:clientloc[3];
-    new Float:stuckloc[3];
-    
-    GetClientAbsOrigin(client, clientloc);
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
-    {
-        if (!IsClientInGame(x) || !IsPlayerAlive(x))
-        {
-            continue;
-        }
-        
-        GetClientAbsOrigin(x, stuckloc);
-        if (GetVectorDistance(clientloc, stuckloc) <= 60)
-        {
-            NoCollide(x, true);
-            CreateTimer(0.5, CollisionOn, x, TIMER_FLAG_NO_MAPCHANGE);
-        }
-    }
-    
-    new Float:x = GetRandomFloat(-150.0, 150.0);
-    new Float:y = GetRandomFloat(-150.0, 150.0);
-    
-    new Float:nudge[3];
-    
-    nudge[0] = x;
-    nudge[1] = y;
-    
-    SetPlayerVelocity(client, nudge, true);
 }
 
 public Action:CollisionOn(Handle:timer, any:index)

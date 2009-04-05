@@ -34,6 +34,7 @@ public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {   
     ChangeLightStyle();
     AmbienceRestartAll();
+    AntiStickRestart();
     RefreshList();
     
     if (tRound != INVALID_HANDLE)

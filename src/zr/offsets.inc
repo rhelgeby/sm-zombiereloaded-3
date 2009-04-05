@@ -175,6 +175,18 @@ NoCollide(client, bool:nocollide)
     }
 }
 
+bool:CanCollide(client)
+{
+    new collisionstate = GetEntData(client, offsCollision, 1);
+    
+    if (collisionstate == 2)
+    {
+        return false;
+    }
+    
+    return true;
+}
+    
 SetPlayerMoney(client, amount)
 {
     SetEntData(client, offsMoney, amount, 4, true);

@@ -20,7 +20,6 @@ MainMenu(client)
     decl String:zmarket[128];
     decl String:zspawn[128];
     decl String:ztele[128];
-    decl String:zstuck[128];
     decl String:zhp[128];
     
     Format(zmenu, sizeof(zmenu), "%t", "!zmenu menu");
@@ -29,7 +28,6 @@ MainMenu(client)
     Format(zmarket, sizeof(zmarket), "%t", "!zmenu market");
     Format(zspawn, sizeof(zspawn), "%t", "!zmenu spawn");
     Format(ztele, sizeof(ztele), "%t", "!zmenu tele");
-    Format(zstuck, sizeof(zstuck), "%t", "!zmenu stuck");
     Format(zhp, sizeof(zhp), "%t (%d HP)", "!zmenu hp", GetClientHealth(client));
     
     AddMenuItem(menu_main, "zmenu", zmenu, ITEMDRAW_DISABLED);
@@ -56,7 +54,6 @@ MainMenu(client)
     
     AddMenuItem(menu_main, "zspawn", zspawn);
     AddMenuItem(menu_main, "ztele", ztele);
-    AddMenuItem(menu_main, "zstuck", zstuck);
     AddMenuItem(menu_main, "zhp", zhp);
     
     DisplayMenu(menu_main, client, MENU_TIME_FOREVER);
@@ -101,11 +98,6 @@ public MainMenuHandle(Handle:menu_main, MenuAction:action, client, slot)
                 }
             }
             case 6:
-            {
-                ZStuck(client);
-                MainMenu(client);
-            }
-            case 7:
             {
                 ZHP(client);
                 MainMenu(client);

@@ -57,6 +57,8 @@ enum ZRSettings
     Handle:CVAR_SUICIDE_WORLD_DAMAGE,
     Handle:CVAR_SPAWN_MIN,
     Handle:CVAR_SPAWN_MAX,
+    Handle:CVAR_ANTISTICK,
+    Handle:CVAR_ANTISTICK_INTERVAL,
     Handle:CVAR_PROTECT,
     Handle:CVAR_CONSECUTIVE_INFECT,
     Handle:CVAR_OVERLAYS,
@@ -72,7 +74,6 @@ enum ZRSettings
     Handle:CVAR_ZTELE_ZOMBIE_DELAY,
     Handle:CVAR_ZTELE_ZOMBIE_LIMIT,
     Handle:CVAR_ZTELE_RESET_BUFFERS,
-    Handle:CVAR_ZSTUCK,
     Handle:CVAR_ZHP,
     Handle:CVAR_ZHP_DEFAULT,
     Handle:CVAR_CASHFILL,
@@ -144,6 +145,8 @@ CreateCvars()
     gCvars[CVAR_SUICIDE_WORLD_DAMAGE]      =    CreateConVar("zr_suicide_world_damage", "1", "Respawn zombies as zombies if they were killed by the world, like elevators, doors and lasers. (0: Disable)");
     gCvars[CVAR_SPAWN_MIN]                 =    CreateConVar("zr_spawn_min", "30", "Minimum time a player is picked to be zombie after the round starts,  in seconds");
     gCvars[CVAR_SPAWN_MAX]                 =    CreateConVar("zr_spawn_max", "50", "Maximum time a player is picked to be zombie after the round starts,  in seconds");
+    gCvars[CVAR_ANTISTICK]                 =    CreateConVar("zr_antistick", "1", "Enable the anti-stick module, which will automatically unstick players stuck within each other. (0:Disable)");
+    gCvars[CVAR_ANTISTICK_INTERVAL]        =    CreateConVar("zr_antistick_interval", "1.0", "How often, in seconds, the anti-stick module checks each player for being stuck. (1.0: Default)");
     gCvars[CVAR_PROTECT]                   =    CreateConVar("zr_protect", "10", "Players that join late will be protected for this long, in seconds (0: Disable)");
     gCvars[CVAR_CONSECUTIVE_INFECT]        =    CreateConVar("zr_consecutive_infect", "0", "Allow player to be randomly chosen twice in a row to be a mother zombie (0: Disable)");
     gCvars[CVAR_OVERLAYS]                  =    CreateConVar("zr_overlays", "1", "Will show overlays that tell who the winner of the round was (0: Disable)");
@@ -159,7 +162,6 @@ CreateCvars()
     gCvars[CVAR_ZTELE_ZOMBIE_DELAY]        =    CreateConVar("zr_tele_zombie_delay", "0", "Teleport delay for zombies. (0: No delay)");
     gCvars[CVAR_ZTELE_ZOMBIE_LIMIT]        =    CreateConVar("zr_tele_zombie_limit", "8", "Maximum number of teleports zombies can do. (0: Zombies can't use the teleporter. -1: Unlimited)");
     gCvars[CVAR_ZTELE_RESET_BUFFERS]       =    CreateConVar("zr_tele_reset_buffers", "1", "Reset custom saved teleport locations on each round start. (0: Disable)");
-    gCvars[CVAR_ZSTUCK]                    =    CreateConVar("zr_zstuck", "1", "Allow players that are stuck together to get unstuck (0: Disable)");
     gCvars[CVAR_ZHP]                       =    CreateConVar("zr_zhp", "1", "Allows clients to enable/disable zombie health display (1: On,  0: Off)");
     gCvars[CVAR_ZHP_DEFAULT]               =    CreateConVar("zr_zhp_default", "1", "The default value of zombie health display to new clients (1: On,  0: Off)");
     gCvars[CVAR_CASHFILL]                  =    CreateConVar("zr_cashfill", "1", "Enable the mod to set the players cash to zr_cashamount (0: Disabled)");

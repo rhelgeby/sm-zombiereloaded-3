@@ -27,6 +27,7 @@
 #include "zr/models"
 #include "zr/overlays"
 #include "zr/playerclasses"
+#include "zr/antistick"
 #include "zr/anticamp"
 #include "zr/teleport"
 #include "zr/zombie"
@@ -205,6 +206,7 @@ MapChangeCleanup()
     tRound = INVALID_HANDLE;
     tInfect = INVALID_HANDLE;
     AmbienceStopAll();
+    AntiStickReset();
     
     for (new client = 1; client <= maxclients; client++)
     {
