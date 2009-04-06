@@ -26,7 +26,7 @@
 #include "zr/classes"
 #include "zr/models"
 #include "zr/overlays"
-#include "zr/playerclasses"
+#include "zr/playerclasses/playerclasses"
 #include "zr/antistick"
 #include "zr/anticamp"
 #include "zr/teleport"
@@ -136,6 +136,7 @@ public OnConfigsExecuted()
     FindMapSky();
     
     LoadClassData();
+    ClassLoad();
     LoadAmbienceData();
     
     decl String:mapconfig[PLATFORM_MAX_PATH];
