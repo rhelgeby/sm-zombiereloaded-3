@@ -130,6 +130,34 @@
  */
 
 /**
+ * @section Error flags for invalid class attributes.
+ */
+#define ZR_CLASS_ATTRIB_ERR_OK                      0
+#define ZR_CLASS_ATTRIB_ERR_NAME                    1
+#define ZR_CLASS_ATTRIB_ERR_DESCRIPTION             2
+#define ZR_CLASS_ATTRIB_ERR_MODEL_PATH              4
+#define ZR_CLASS_ATTRIB_ERR_ALPHA_INITIAL           8
+#define ZR_CLASS_ATTRIB_ERR_ALPHA_DAMAGED           16
+#define ZR_CLASS_ATTRIB_ERR_ALPHA_DAMAGE            32
+#define ZR_CLASS_ATTRIB_ERR_OVERLAY_PATH            64
+#define ZR_CLASS_ATTRIB_ERR_FOV                     128
+#define ZR_CLASS_ATTRIB_ERR_NAPALM_TIME             256
+#define ZR_CLASS_ATTRIB_ERR_IMMUNITY_MODE           512
+#define ZR_CLASS_ATTRIB_ERR_IMMUNITY_AMOUNT         1024
+#define ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_INTERVAL   2048
+#define ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_AMOUNT     4096
+#define ZR_CLASS_ATTRIB_ERR_INFECT_GAIN             8192
+#define ZR_CLASS_ATTRIB_ERR_KILL_BONUS              16384
+#define ZR_CLASS_ATTRIB_ERR_SPEED                   32768
+#define ZR_CLASS_ATTRIB_ERR_KNOCKBACK               65536
+#define ZR_CLASS_ATTRIB_ERR_JUMP_HEIGHT             131072
+#define ZR_CLASS_ATTRIB_ERR_JUMP_DISTANCE           262144
+/**
+ * @endsection
+ */
+
+
+/**
  * Generic player attributes.
  */
 enum ClassAttributes
@@ -249,6 +277,7 @@ ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
     decl String:overlay_path[256];
     
     ClassCount = 0;
+    new ClassErrorFlags;
     
     // Loop through all classes and store attributes in the ClassData array.
     do
@@ -313,17 +342,20 @@ ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
         ClassData[ClassCount][class_jump_distance] = KvGetFloat(kvClassData, "jump_distance", ZR_CLASS_DEFAULT_JUMP_DISTANCE);
         
         // Validate the class attributes.
-        if (!ClassValidateAttributes(ClassCount))
+        ClassErrorFlags = ClassValidateAttributes(ClassCount);
+        if (ClassErrorFlags > 0)
         {
-            // TODO: There's an invalid class, what do we do?
-            // Skip it (clearing data too), disable it and give a log warning,
-            // or set the plugin in a failed state?
+            // There's one or more invalid class attributes. Disable the class
+            // and log an error message.
+            ClassData[ClassCount][class_enabled] = false;
+            if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+            {
+                ZR_LogMessageFormatted(-1, "classes", "load", "Invalid class at index %d. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
+            }
         }
-        else
-        {
-            // The class is valid. Update the counter.
-            ClassCount++;
-        }
+
+        // Update the counter.
+        ClassCount++;
     } while (KvGotoNextKey(kvClassData));
     
     // Validate team requirements.

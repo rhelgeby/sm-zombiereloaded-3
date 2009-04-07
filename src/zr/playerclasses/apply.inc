@@ -74,6 +74,8 @@ bool:ClassApplyModel(client, classindex, cachetpye = ZR_CLASS_CACHE_PLAYER)
         Format(modelpath, sizeof(modelpath), "%s.mdl", modelpath);
     }
     
+    // TODO: Add support for keeping the default cs model ("default").
+    
     SetPlayerModel(client, modelpath);
     return true;
 }

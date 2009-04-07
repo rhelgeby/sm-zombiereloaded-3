@@ -45,15 +45,138 @@ bool:ClassValidateTeamRequirements(cachetype = ZR_CLASS_CACHE_ORIGINAL)
 
 /**
  * Validates all the class attributes in the original class data array, to
- * check if they have invalid values.
+ * check if they have invalid values. Boolean settings are not validated.
  *
  * @param classindex    The index of the class to validate.
- * @return              True if validation was successful, false otherwise.
+ * @return              A value with attribute error flags.
  */
-bool:ClassValidateAttributes(classindex)
+ClassValidateAttributes(classindex)
 {
-    return true;
-    // TODO: Manually check each attribute (hard coded). Better solutions?
+    // TODO: Validate immunity mode and amount.
+    // TODO: Validate jump values.
+    
+    new flags;
+    
+    // Name.
+    if (strlen(ClassData[classindex][class_name]) == 0)
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_NAME;
+    }
+    
+    // Description.
+    if (strlen(ClassData[classindex][class_description]) == 0)
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_DESCRIPTION;
+    }
+    
+    // Model path.
+    decl String:model_path[256];
+    if (strcopy(model_path, sizeof(model_path), ClassData[classindex][class_model_path]) == 0)
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_MODEL_PATH;
+    }
+    else
+    {
+        // Check if default or random model is specified.
+        if (strcmp(model_path, "random", false) != 0 && strcmp(model_path, "default", false) != 0)
+        {
+            // Check if the file exists.
+            if (!FileExists(model_path))
+            {
+                flags += ZR_CLASS_ATTRIB_ERR_MODEL_PATH;
+            }
+        }        
+    }
+    
+    // Alpha, initial.
+    new alpha_initial = ClassData[classindex][class_alpha_initial];
+    if (!(alpha_initial >= 0 && alpha_initial <= 255))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_ALPHA_INITIAL;
+    }
+    
+    // Alpha, damaged.
+    new alpha_damaged = ClassData[classindex][class_alpha_damaged];
+    if (!(alpha_damaged >= 0 && alpha_damaged <= 255))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_ALPHA_DAMAGED;
+    }
+    
+    // Alpha, damage.
+    new alpha_damage = ClassData[classindex][class_alpha_damage];
+    if (!(alpha_damage >= 0 && alpha_damage <= 65536))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_ALPHA_DAMAGE;
+    }
+    
+    // Overlay path.
+    decl String:overlay_path[256];
+    if (strcopy(overlay_path, sizeof(overlay_path), ClassData[classindex][class_overlay_path]) != 0)
+    {
+        // Check if the file exists.
+        if (!FileExists(overlay_path))
+        {
+            flags += ZR_CLASS_ATTRIB_ERR_OVERLAY_PATH;
+        }
+    }
+    
+    // Field of view.
+    new fov = ClassData[classindex][class_fov];
+    if (!(fov > 15 && fov < 180))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_FOV;
+    }
+    
+    // Napalm time.
+    new Float:napalm_time = ClassData[classindex][class_napalm_time];
+    if (!(napalm_time >= 0.0 && napalm_time <= 900.0))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_NAPALM_TIME;
+    }
+    
+    // Health regen interval.
+    new Float:regen_interval = ClassData[classindex][class_health_regen_interval];
+    if (!(regen_interval >= 0.0 && regen_interval <= 900.0))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_INTERVAL;
+    }
+    
+    // Health regen amount.
+    new regen_amount = ClassData[classindex][class_health_regen_amount];
+    if (!(regen_amount > 0 && regen_amount <= 65536))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_AMOUNT;
+    }
+    
+    // Health infect gain.
+    new infect_gain = ClassData[classindex][class_health_infect_gain];
+    if (!(infect_gain >= 0 && infect_gain <= 65536))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_INFECT_GAIN;
+    }
+    
+    // Kill bonus.
+    new kill_bonus = ClassData[classindex][class_kill_bonus];
+    if (!(kill_bonus >= 0 && kill_bonus <= 128))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_KILL_BONUS;
+    }
+    
+    // Speed.
+    new Float:speed = ClassData[classindex][class_speed];
+    if (!(speed >= 0.0 && speed <= 1024.0))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_SPEED;
+    }
+    
+    // Knockback.
+    new Float:knockback = ClassData[classindex][class_knockback];
+    if (!(knockback >= -10.0 && knockback <= 50.0))
+    {
+        flags += ZR_CLASS_ATTRIB_ERR_KNOCKBACK;
+    }
+    
+    return flags;
 }
 
 /**
@@ -65,12 +188,7 @@ bool:ClassValidateAttributes(classindex)
  */
 bool:ClassValidateIndex(classindex)
 {
-    if (ClassCount == 0)
-    {
-        return false;
-    }
-    
-    if (classindex >= 0 && classid < ClassCount)
+    if (classindex >= 0 && classindex < ClassCount)
     {
         return true;
     }
