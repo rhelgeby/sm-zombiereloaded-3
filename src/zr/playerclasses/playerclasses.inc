@@ -208,6 +208,7 @@ new ClassActive[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT - 1];
 #include "zr/playerclasses/attributes"
 #include "zr/playerclasses/apply"
 #include "zr/playerclasses/clientoverlays"
+#include "zr/playerclasses/healthregen"
 
 /**
  * Loads class attributes from playerclasses.txt into the ClassData array. If

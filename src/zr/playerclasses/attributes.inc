@@ -384,7 +384,7 @@ ClassGetOverlayPath(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_P
  *                  is used, index will be used as a client index.
  * @return  The night vision setting from the specified class. False on error.
  */
-bool:ClassGetNVGs(index, cachetype = ZR_CLASS_CACHE_PLAYER)
+bool:ClassGetNvgs(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     switch (cachetype)
     {
