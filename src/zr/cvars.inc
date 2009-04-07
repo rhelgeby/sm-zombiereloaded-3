@@ -41,7 +41,7 @@ enum ZRSettings
     Handle:CVAR_ZOMBIE_ALPHA_SPAWN,
     Handle:CVAR_ZOMBIE_ALPHA_DAMAGED,
     Handle:CVAR_ZOMBIE_ALPHA_DAMAGE,
-    Handle:CVAR_ZVISION_REDISPLAY,
+    Handle:CVAR_OVERLAY_REDISPLAY,
     Handle:CVAR_ZVISION_ALLOW_DISABLE,
     Handle:CVAR_DARK,
     Handle:CVAR_DARK_LEVEL,
@@ -129,7 +129,7 @@ CreateCvars()
     gCvars[CVAR_ZOMBIE_ALPHA_SPAWN]        =    CreateConVar("zr_zombie_alpha_spawn", "255", "Initial transparency (0: Invisible. 255: Fully visible)");
     gCvars[CVAR_ZOMBIE_ALPHA_DAMAGED]      =    CreateConVar("zr_zombie_alpha_damaged", "255", "Transparency when damaged (0: Invisible. 255: Fully visible)");
     gCvars[CVAR_ZOMBIE_ALPHA_DAMAGE]       =    CreateConVar("zr_zombie_alpha_damage", "0", "How much damage to do before changing transparency.");
-    gCvars[CVAR_ZVISION_REDISPLAY]         =    CreateConVar("zr_zvision_redisplay", "0.2", "Frequency, in seconds, to display zvision on the client's screen (Never go below 0.1, 0.2 seems safe)");
+    gCvars[CVAR_OVERLAY_REDISPLAY]         =    CreateConVar("zr_overlay_redisplay", "3", "Frequency, in seconds, to display overlay on the client's screen (Never go below 0.1, 0.2 seems safe)");
     gCvars[CVAR_ZVISION_ALLOW_DISABLE]     =    CreateConVar("zr_zvision_allow_disable", "1", "Allow users to disable ZVision with their nightvision key (0: Disable)");
     gCvars[CVAR_DARK]                      =    CreateConVar("zr_dark", "0", "Default value for darkening maps,  most dislike this feature (0: Disable)");
     gCvars[CVAR_DARK_LEVEL]                =    CreateConVar("zr_dark_level", "a", "The darkness of the map,  a being the darkest,  z being extremely bright when zr_dark is 1 (n: Default)");

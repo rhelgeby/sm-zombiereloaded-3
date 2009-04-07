@@ -1,0 +1,32 @@
+// ====================
+//   Zombie:Reloaded
+//   File: downloads.txt
+//   Author: Greyscale
+// ====================
+//
+// Add files you want clients to download here
+
+// ** DEFAULTS **
+
+materials/models/player/zh/Zombie_Classic_sheet.vmt
+materials/models/player/zh/corpse1.vmt
+materials/models/player/zh/Charple1_sheet.vmt
+
+// hellknight
+materials/models/player/ics/hellknight_red/estuche.vmt
+materials/models/player/ics/hellknight_red/estuche.vtf
+materials/models/player/ics/hellknight_red/hellknight.vmt
+materials/models/player/ics/hellknight_red/hellknight.vtf
+materials/models/player/ics/hellknight_red/hellknight_normal.vtf
+
+// team win overlays
+materials/overlays/zr/zombies_win.vtf
+materials/overlays/zr/zombies_win.vmt
+materials/overlays/zr/humans_win.vtf
+materials/overlays/zr/humans_win.vmt
+
+// zvision
+materials/overlays/zr/zvision.vtf
+materials/overlays/zr/zvision.vmt
+
+// ** END DEFAULTS **

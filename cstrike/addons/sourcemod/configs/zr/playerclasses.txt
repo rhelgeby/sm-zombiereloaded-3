@@ -1,0 +1,259 @@
+// ============================================================================
+//
+//                              ZOMBIE:RELOADED
+//                           Class configurations
+//
+// Check the class configuration section in the manual for detailed info.
+//
+// ============================================================================
+//
+// SHORT DESCRIPTIONS
+//
+// Attribute:               Values:     Description:
+// ----------------------------------------------------------------------------
+// enabled                  0/1         Enables or disables a class.
+// team                     number      Specifies what type of class it is:
+//                                      0 - Zombies
+//                                      1 - Humans
+//                                      2 - Admins only (incomplete feature!)
+// team_default             0/1         Marks the class as the default class in the team.
+// name                     text        The class name used in class menu.
+// description              text        The class description used in class menu.
+// model_path               text        Path to model to use. Relative to cstrike folder.
+// alpha_spawn              number      Initial transparency setting.
+// alpha_damaged            number      Transparency when damaged.
+// alpha_damage             number      How much damage to do before switching alpha.
+// overlay_path             text        Overlay displayed at the player.
+// nvgs                     0/1         Give night vision.
+// fov                      number      Field of view value. 90 is default.
+// immunity_mode            number      Sets the immunity mode.
+// immunity_amount          decimal     Sets the immunity value.
+// no_fall_damage           0/1         Disables fall damage.
+// health                   number      How many health points to give.
+// health_regen_interval    decimal     Sets the regeneration interval. 0 to disable.
+// health_regen_amount      number      How much HP to give per interval.
+// health_infect_gain       number      How much HP to give when the player infects someone. Zombies only.
+// kill_bonus               number      How many points to give per kill. Humans only.
+// speed                    decimal     The player speed.
+// knockback                decimal     Force of the knockback when shot at. Zombies only.
+// jump_height              decimal     Extra upwards jump boost.
+// jump_distance            decimal     Extra forwards jump boost.
+
+"classes"
+{
+    // ------------------------------------------
+    //
+    // Zombie classes
+    //
+    // ------------------------------------------
+    "classic"
+    {
+        // General
+        "enabled"               "1"
+        "team"                  "0"
+        "team_default"          "1"
+        
+        "name"                  "Classic"
+        "description"           "Need brains!!! Arrrrggghh!"
+        
+        // Model
+        "model_path"            "models/player/zh/zh_charple001.mdl"
+        "alpha_spawn"           "255"
+        "alpha_damaged"         "255"
+        "alpha_damage"          "0"
+        
+        // Hud
+        "overlay_path"          "overlays/zr/zvision"
+        "nvgs"                  "1"
+        "fov"                   "90"
+        
+        // Effects
+        "napalm_time"           "10.0"
+        
+        // Player behaviour
+        "immunity_mode"         "0"
+        "immunity_amount"       "0.0"
+        "no_fall_damage"        "1"
+        
+        "health"                "5000"
+        "health_regen_interval" "0.0"
+        "health_regen_amount"   "0"
+        "health_infect_gain"    "800"
+        "kill_bonus"            "2"
+        
+        "speed"                 "350"
+        "knockback"             "2.5"
+        "jump_height"           "10.0"
+        "jump_distance"         "0.1"
+    }
+    
+    "fast"
+    {
+        // General
+        "enabled"               "1"
+        "team"                  "0"
+        "team_default"          "0"
+        
+        "name"                  "Fast"
+        "description"           "-HP | +Speed | +Jump | +Knockback"
+        
+        // Model
+        "model_path"            "models/player/zh/zh_corpse002.mdl"
+        "alpha_spawn"           "255"
+        "alpha_damaged"         "255"
+        "alpha_damage"          "0"
+        
+        // Hud
+        "overlay_path"          "overlays/zr/zvision"
+        "nvgs"                  "1"
+        "fov"                   "90"
+        
+        // Effects
+        "napalm_time"           "5.0"
+        
+        // Player behaviour
+        "immunity_mode"         "0"
+        "immunity_amount"       "0.0"
+        "no_fall_damage"        "1"
+        
+        "health"                "3000"
+        "health_regen_interval" "0.0"
+        "health_regen_amount"   "0"
+        "health_infect_gain"    "500"
+        "kill_bonus"            "2"
+        
+        "speed"                 "380"
+        "knockback"             "3.5"
+        "jump_height"           "13.0"
+        "jump_distance"         "0.2"
+    }
+    
+    "mutated"
+    {
+        // General
+        "enabled"               "1"
+        "team"                  "0"
+        "team_default"          "0"
+        
+        "name"                  "Mutated"
+        "description"           "+HP | -Speed | +Jump | +Knockback"
+        
+        // Model
+        "model_path"            "models/player/zh/zh_zombie003.mdl"
+        "alpha_spawn"           "255"
+        "alpha_damaged"         "255"
+        "alpha_damage"          "0"
+        
+        // Hud
+        "overlay_path"          "overlays/zr/zvision"
+        "nvgs"                  "1"
+        "fov"                   "90"
+        
+        // Effects
+        "napalm_time"           "15.0"
+        
+        // Player behaviour
+        "immunity_mode"         "0"
+        "immunity_amount"       "0.0"
+        "no_fall_damage"        "1"
+        
+        "health"                "7000"
+        "health_regen_interval" "0.0"
+        "health_regen_amount"   "0"
+        "health_infect_gain"    "1200"
+        "kill_bonus"            "2"
+        
+        "speed"                 "275"
+        "knockback"             "3"
+        "jump_height"           "15.0"
+        "jump_distance"         "0.3"
+    }
+    
+    "heavy"
+    {
+        // General
+        "enabled"               "1"
+        "team"                  "0"
+        "team_default"          "0"
+        
+        "name"                  "Heavy"
+        "description"           "+HP | -Speed | -Jump | -Knockback"
+        
+        // Model
+        "model_path"            "models/player/ics/hellknight_red/t_guerilla.mdl"
+        "alpha_spawn"           "255"
+        "alpha_damaged"         "255"
+        "alpha_damage"          "0"
+        
+        // Hud
+        "overlay_path"          "overlays/zr/zvision"
+        "nvgs"                  "1"
+        "fov"                   "90"
+        
+        // Effects
+        "napalm_time"           "20.0"
+        
+        // Player behaviour
+        "immunity_mode"         "0"
+        "immunity_amount"       "0.0"
+        "no_fall_damage"        "1"
+        
+        "health"                "7000"
+        "health_regen_interval" "0.0"
+        "health_regen_amount"   "0"
+        "health_infect_gain"    "1200"
+        "kill_bonus"            "2"
+        
+        "speed"                 "290"
+        "knockback"             "2"
+        "jump_height"           "0.0"
+        "jump_distance"         "0.0"
+    }
+    
+    // ------------------------------------------
+    //
+    // Human classes
+    //
+    // ------------------------------------------
+    
+    "ct"
+    {
+        // General
+        "enabled"               "1"
+        "team"                  "1"
+        "team_default"          "1"
+        
+        "name"                  "Counter Terrorist"
+        "description"           "Normal CT"
+        
+        // Model
+        "model_path"            "models/player/ct_gign.mdl"
+        "alpha_spawn"           "255"
+        "alpha_damaged"         "255"
+        "alpha_damage"          "0"
+        
+        // Hud
+        "overlay_path"          ""
+        "nvgs"                  "1"
+        "fov"                   "90"
+        
+        // Effects
+        "napalm_time"           "0.0"
+        
+        // Player behaviour
+        "immunity_mode"         "0"
+        "immunity_amount"       "0.0"
+        "no_fall_damage"        "0"
+        
+        "health"                "100"
+        "health_regen_interval" "0.0"
+        "health_regen_amount"   "0"
+        "health_infect_gain"    "0"
+        "kill_bonus"            "2"
+        
+        "speed"                 "300"
+        "knockback"             "0"
+        "jump_height"           "0.0"
+        "jump_distance"         "0.0"
+    }
+}
