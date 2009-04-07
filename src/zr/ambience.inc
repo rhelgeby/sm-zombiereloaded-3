@@ -6,6 +6,8 @@
  * ==================== 
  */
 
+// TODO: Move skybox and lightning functions into this file.
+
 new bool:AmbienceLoaded = false;
 new String:AmbienceSound[64];
 new Float:AmbienceVolume;
