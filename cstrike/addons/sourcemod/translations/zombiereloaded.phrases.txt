@@ -170,32 +170,36 @@
 		"ru"		"Отображение здоровья включено."
 	}
 
-	"Weapon has been restricted"
+	// ===========================
+	// Weapon Restrict
+	// ===========================
+
+	"Restrict weapon"
 	{
 		"#format"	"{1:s}"
 		"en"		"Weapon @green\"{1}\" @defaulthas been restricted."
 		"ru"		"Оружие @green\"{1}\" было запрещено."
 	}
 
-	"Weapon group has been restricted"
-	{
-		"#format"	"{1:s}"
-		"en"		"Weapon group @green\"{1}\" @defaulthas been restricted."
-		"ru"		"Группа оружия @green\"{1}\" была запрещена."
-	}
-
-	"Weapon has been unrestricted"
+	"Unrestrict weapon"
 	{
 		"#format"	"{1:s}"
 		"en"		"Weapon @green\"{1}\" @defaulthas been unrestricted."
 		"ru"		"Оружие @green\"{1}\" было разрешено."
 	}
 
-	"Weapon group has been unrestricted"
+	"Restrict custom weapon group"
 	{
-		"#format"	"{1:s}"
-		"en"		"Weapon group @green\"{1}\" @defaulthas been restricted."
-		"ru"		"Группа оружия @green\"{1}\" была разрешена."
+		"#format"	"{1:s},{2:s}"
+		"en"		"Weapon group @green\"{1}\" ({2}) @defaulthas been restricted."
+		"ru"		"Группа оружия @green\"{1}\" ({2}) была запрещена."
+	}
+
+	"Unrestrict custom weapon group"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Weapon group @green\"{1}\" ({2}) @defaulthas been unrestricted."
+		"ru"		"Группа оружия @green\"{1}\" ({2}) была разрешена."
 	}
 
 	"Weapon is restricted"
@@ -205,18 +209,10 @@
 		"ru"		"Оружие @green{1} @default запрещено."
 	}
 
-	"Weapon already restricted"
-	{
-		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaultis already restricted."
-		"ru"		"Оружие @green\"{1}\" @default уже запрещено. "
-	}
-
 	"Weapon invalid"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaultis invalid or not currently restricted."
-		"ru"		"Оружие @green\"{1}\" @default указано неверно или в данный момент не запрещено."
+		"en"		"Weapon @green\"{1}\" @defaultis not currently restricted."
 	}
 
 	"Zombie cant use weapon"
@@ -224,6 +220,8 @@
 		"en"		"Zombies can't use weapons!"
 		"ru"		"Зомби не могут использовать оружие!"
 	}
+
+
 
 	"Suicide text"
 	{
@@ -292,12 +290,6 @@
 	{
 		"en"		"ZTele (!ztele) - Teleport to your spawnpoint"
 		"ru"		"ZTele (!ztele) - Телепорт на место появления"
-	}
-
-	"!zmenu stuck"
-	{
-		"en"		"ZStuck (!zstuck) - Unsticks you from another player"
-		"ru"		"ZStuck (!zstuck) - Разлепляет вас с другим игроком"
 	}
 
 	"!zmenu hp"

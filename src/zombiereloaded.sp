@@ -34,7 +34,11 @@
 #include "zr/menu"
 #include "zr/sayhooks"
 #include "zr/zadmin"
+
+// Weapons
 #include "zr/weapons/restrict"
+#include "zr/weapons/markethandler"
+
 #include "zr/damagecontrol"
 #include "zr/commands"
 #include "zr/event"

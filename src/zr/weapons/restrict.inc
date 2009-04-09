@@ -7,12 +7,12 @@
  */
 
 /**
- * Array to store restricted weapon names
+ * Array to store restricted weapon names.
 */
 new Handle:gRestrictedWeapons = INVALID_HANDLE;
 
 /**
- * Array to store keyvalue data
+ * Array to store keyvalue data.
 */
 new Handle:kvWeaponGroups = INVALID_HANDLE;
 
@@ -22,17 +22,17 @@ new Handle:kvWeaponGroups = INVALID_HANDLE;
 new gCanUseHookID[MAXPLAYERS+1];
 
 /**
- * Query results returned when (un)restricting a weapon
+ * Query results returned when (un)restricting a weapon.
 */
 enum WpnRestrictQuery
 {
-    Successful_Weapon,  /** Weapon (un)restrict query was successful */
-    Successful_Group,  /** Group (un)restrict query was successful */
+    Successful_Weapon,  /** Weapon (un)restrict query was successful. */
+    Successful_Group,  /** Group (un)restrict query was successful. */
     Invalid,  /** Weapon/Group invalid */
 }
 
 /**
- * Initialize data and hook commands
+ * Initialize data and hook commands.
 */
 WeaponRestrictInit()
 {
@@ -44,7 +44,7 @@ WeaponRestrictInit()
 }
 
 /**
- * Loads weapon data from file
+ * Loads weapon data from file.
 */
 WeaponRestrictMapStart()
 {
@@ -69,7 +69,7 @@ WeaponRestrictMapStart()
 }
 
 /**
- * Clears restricted weapon array
+ * Clears restricted weapon array.
 */
 RestrictWeaponUnrestrictAll()
 {
@@ -77,9 +77,9 @@ RestrictWeaponUnrestrictAll()
 }
 
 /**
- * Hook Weapon_CanUse function on a client
+ * Hook Weapon_CanUse function on a client.
  * 
- * @param client    The client index
+ * @param client    The client index.
 */
 WeaponRestrictClientInit(client)
 {
@@ -87,9 +87,9 @@ WeaponRestrictClientInit(client)
 }
 
 /**
- * Unhook Weapon_CanUse function on a client
+ * Unhook Weapon_CanUse function on a client.
  * 
- * @param client    The client index
+ * @param client    The client index.
 */
 WeaponRestrictClientDisconnect(client)
 {
@@ -98,10 +98,10 @@ WeaponRestrictClientDisconnect(client)
 
 /**
  * Command callback function for the "buy" command
- * Used to block use of this command under certain conditions
+ * Used to block use of this command under certain conditions.
  * 
  * @param client    The client index.
- * @param argc      Argument count
+ * @param argc      Argument count.
 */
 public Action:WeaponRestrictBuyHook(client, argc)
 {
@@ -141,12 +141,12 @@ public Action:WeaponRestrictBuyHook(client, argc)
 }
 
 /**
- * Restricts a weapon
+ * Restricts a weapon.
  * 
  * @param weapon    The weapon/group name.
  * @return          Successful_Weapon: The call successfully restricted a weapon.
  *                  Successful_Group: The call successfully restricted a weapon group.
- *                  Invalid: The call was unsuccessful due to invalid weapon.   
+ *                  Invalid: The call was unsuccessful due to invalid weapon.
 */
 WpnRestrictQuery:WeaponRestrictRestrict(const String:weapon[])
 {
@@ -183,7 +183,7 @@ WpnRestrictQuery:WeaponRestrictRestrict(const String:weapon[])
 }
 
 /**
- * Unrestricts a weapon
+ * Unrestricts a weapon.
  * 
  * @param weapon    The weapon/group name.
  * @return          Successful_Weapon: The call successfully restricted a weapon.
