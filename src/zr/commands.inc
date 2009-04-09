@@ -10,18 +10,19 @@ CreateCommands()
 {
     RegAdminCmd("zr_infect", Command_Infect, ADMFLAG_GENERIC, "Infects the specified player");
     RegAdminCmd("zr_spawn", Command_Respawn, ADMFLAG_GENERIC, "Respawns the specified player following auto-respawning rules");
-
+    
     RegAdminCmd("zr_teleport", Command_Teleport, ADMFLAG_GENERIC, "Teleports one or more players to spawn. Usage: zr_teleport <target>");
     RegAdminCmd("zr_tele_saveloc", Command_TeleSaveLocation, ADMFLAG_GENERIC, "Saves your or a players location to a buffer. Usage: zr_tele_saveloc [#userid|name]");
     RegAdminCmd("zr_tele_loc", Command_TeleportToLocation, ADMFLAG_GENERIC, "Teleports you or a player to the saved location. Usage: zr_tele_loc [#userid|name]");
     RegAdminCmd("zr_tele_abort", Command_TeleportAbort, ADMFLAG_GENERIC, "Aborts a teleportation or cooldown on a client. Usage: zr_tele_abort <target>");
-
+    
+    // Weapon restrict commands
     RegAdminCmd("zr_restrict", Command_Restrict, ADMFLAG_GENERIC, "Restrict a specified weapon");
-    RegAdminCmd("zr_unrestrict", Command_UnRestrict, ADMFLAG_GENERIC, "Unrestrict a specified weapon");
-
+    RegAdminCmd("zr_unrestrict", Command_Unrestrict, ADMFLAG_GENERIC, "Unrestrict a specified weapon");
+    
     RegAdminCmd("zr_set_class_knockback", Command_SetClassKnockback, ADMFLAG_GENERIC, "Sets the knockback to the specified class. Usage: zr_set_class_knockback <class name> <value>");
     RegAdminCmd("zr_get_class_knockback", Command_GetClassKnockback, ADMFLAG_GENERIC, "Gets the knockback to the specified class. Usage: zr_get_class_knockback <class name>");
-
+    
     RegAdminCmd("zr_admin", Command_AdminMenu, ADMFLAG_GENERIC, "Displays the admin menu for Zombie: Reloaded.");
     RegAdminCmd("zr_knockback_m", Command_KnockbackMMenu, ADMFLAG_GENERIC, "Displays the knockback multiplier menu.");
     RegAdminCmd("zr_teleadmin", Command_TeleMenu, ADMFLAG_GENERIC, "Displays the teleport admin menu for Zombie: Reloaded.");
@@ -45,17 +46,18 @@ public Action:Command_Infect(client, argc)
     GetCmdArg(1, arg1, sizeof(arg1));
     
     decl String:target_name_list[MAX_TARGET_LENGTH];
-    decl String:target_name[64];
-    decl String:client_name[64];
     new targets[MAXPLAYERS];
     new bool:tn_is_ml;
     
-    new tcount = ProcessTargetString(arg1, client, targets, MAXPLAYERS, COMMAND_FILTER_ALIVE, target_name_list, sizeof(target_name), tn_is_ml);
+    new tcount = ProcessTargetString(arg1, client, targets, MAXPLAYERS, COMMAND_FILTER_ALIVE, target_name_list, sizeof(target_name_list), tn_is_ml);
     if (tcount <= 0)
     {
         ReplyToTargetError(client, tcount);
         return Plugin_Handled;
     }
+    
+    decl String:target_name[64];
+    decl String:client_name[64];
     
     if (client > 0)
     {
@@ -82,8 +84,6 @@ public Action:Command_Infect(client, argc)
 public Action:Command_Respawn(client, argc)
 {
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
-    decl String:client_name[64];
-    decl String:target_name[64];
     if (argc < 1 || !enabled)
     {
         return Plugin_Handled;
@@ -96,12 +96,15 @@ public Action:Command_Respawn(client, argc)
     new targets[MAXPLAYERS];
     new bool:tn_is_ml;
     
-    new tcount = ProcessTargetString(arg1, client, targets, MAXPLAYERS, COMMAND_FILTER_DEAD, target_name_list, sizeof(target_name), tn_is_ml);
+    new tcount = ProcessTargetString(arg1, client, targets, MAXPLAYERS, COMMAND_FILTER_DEAD, target_name_list, sizeof(target_name_list), tn_is_ml);
     if (tcount <= 0)
     {
         ReplyToTargetError(client, tcount);
         return Plugin_Handled;
     }
+    
+    decl String:client_name[64];
+    decl String:target_name[64];
     
     if (client > 0)
     {
@@ -123,6 +126,7 @@ public Action:Command_Respawn(client, argc)
                 GetClientName(targets[x], target_name, sizeof(target_name));
                 ZR_LogMessageFormatted(targets[x], "admin commands", "spawn", "\"%s\" spawned player \"%s\".", true, client_name, target_name);
             }
+            
             RespawnPlayer(targets[x]);
         }
     }
@@ -130,75 +134,119 @@ public Action:Command_Respawn(client, argc)
     return Plugin_Handled;
 }
 
+/**
+ * @param client    The client index.
+ * @param argc      Argument count.
+*/ 
 public Action:Command_Restrict(client, argc)
 {
+    // If plugin is disabled then stop
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
-    decl String:client_name[64];
     if (argc < 1 || !enabled)
     {
         return Plugin_Handled;
     }
     
+    // arg1 = weapon being restricted
     decl String:arg1[32];
     GetCmdArg(1, arg1, sizeof(arg1));
     
-    new WepRestrictQuery:output = RestrictWeapon(arg1);
+    // Strip "weapon_" from entity name
+    ReplaceString(arg1, sizeof(arg1), "weapon_", "");
     
-    if (output == Existing)
+    new WpnRestrictQuery:output = WeaponRestrictRestrict(arg1);
+    
+    switch(output)
     {
-        ZR_ReplyToCommand(client, "Weapon already restricted", arg1);
-    }
-    else
-    {
-        if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
+        case Successful_Weapon:
         {
-            if (client > 0)
-            {
-                GetClientName(client, client_name, sizeof(client_name));
-            }
-            else
-            {
-                client_name = "Console\0";
-            }
-            ZR_LogMessageFormatted(client, "admin commands", "weapon restict", "\"%s\" restricted weapon \"%s\".", true, client_name, arg1);
+            ZR_ReplyToCommand(client, "Restrict weapon", arg1);
         }
+        case Successful_Group:
+        {
+            decl String:weaponlist[128];
+            WeaponRestrictGetWeaponList(arg1, weaponlist, sizeof(weaponlist), ", ");
+            
+            ZR_ReplyToCommand(client, "Restrict custom weapon group", arg1, weaponlist);
+        }
+        case Invalid:
+        {
+            ZR_ReplyToCommand(client, "Weapon invalid", arg1);
+            
+            return Plugin_Handled;
+        }
+    }
+    
+    if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
+    {
+        decl String:client_name[64];
+        
+        if (client > 0)
+        {
+            GetClientName(client, client_name, sizeof(client_name));
+        }
+        else
+        {
+            client_name = "Console\0";
+        }
+        ZR_LogMessageFormatted(client, "admin commands", "weapon restict", "\"%s\" restricted weapon (group): \"%s\".", true, client_name, arg1);
     }
     
     return Plugin_Handled;
 }
 
-public Action:Command_UnRestrict(client, argc)
+public Action:Command_Unrestrict(client, argc)
 {
+    // If plugin is disabled then stop
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
-    decl String:client_name[64];
     if (argc < 1 || !enabled)
     {
         return Plugin_Handled;
     }
     
+    // arg1 = weapon being restricted
     decl String:arg1[32];
     GetCmdArg(1, arg1, sizeof(arg1));
     
-    new WepRestrictQuery:output = UnRestrictWeapon(arg1);
+    // Strip "weapon_" from entity name
+    ReplaceString(arg1, sizeof(arg1), "weapon_", "");
     
-    if (output == Invalid)
+    new WpnRestrictQuery:output = WeaponRestrictUnrestrict(arg1);
+    
+    switch(output)
     {
-        ZR_ReplyToCommand(client, "Weapon invalid", arg1);
-    }
-    else
-    {
-        if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
+        case Successful_Weapon:
         {
-            if (client > 0)
-            {
-                GetClientName(client, client_name, sizeof(client_name));
-            }
-            else
-            {
-                client_name = "Console\0";
-            }
-            ZR_LogMessageFormatted(client, "admin commands", "weapon restictions", "\"%s\" removed weapon restriction on \"%s\".", true, client_name, arg1);
+            ZR_ReplyToCommand(client, "Unrestrict weapon", arg1);
         }
+        case Successful_Group:
+        {
+            decl String:weaponlist[128];
+            WeaponRestrictGetWeaponList(arg1, weaponlist, sizeof(weaponlist), ", ");
+            
+            ZR_ReplyToCommand(client, "Unrestrict custom weapon group", arg1, weaponlist);
+        }
+        case Invalid:
+        {
+            ZR_ReplyToCommand(client, "Weapon invalid", arg1);
+            
+            return Plugin_Handled;
+        }
+    }
+    
+    if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
+    {
+        decl String:client_name[64];
+        
+        if (client > 0)
+        {
+            GetClientName(client, client_name, sizeof(client_name));
+        }
+        else
+        {
+            client_name = "Console\0";
+        }
+        ZR_LogMessageFormatted(client, "admin commands", "weapon restict", "\"%s\" unrestricted weapon (group): \"%s\".", true, client_name, arg1);
     }
     
     return Plugin_Handled;

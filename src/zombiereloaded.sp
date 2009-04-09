@@ -34,7 +34,7 @@
 #include "zr/menu"
 #include "zr/sayhooks"
 #include "zr/zadmin"
-#include "zr/weaponrestrict"
+#include "zr/weapons/restrict"
 #include "zr/damagecontrol"
 #include "zr/commands"
 #include "zr/event"
@@ -74,7 +74,7 @@ public OnPluginStart()
     HookCommands();
     FindOffsets();
     SetupGameData();
-    InitWeaponRestrict();
+    WeaponRestrictInit();
     InitDmgControl();
     
     // ======================================================================
@@ -116,6 +116,9 @@ public OnMapStart()
     LoadModelData();
     LoadDownloadData();
     
+    // Weapon restrict
+    WeaponRestrictMapStart();
+    
     new i;
     new classindex = GetDefaultClassIndex();
     for (i = 1; i <= MAXPLAYERS; i++)
@@ -136,7 +139,6 @@ public OnConfigsExecuted()
     FindMapSky();
     
     LoadClassData();
-    ClassLoad();
     LoadAmbienceData();
     
     decl String:mapconfig[PLATFORM_MAX_PATH];
@@ -165,7 +167,9 @@ public OnClientPutInServer(client)
     new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP_DEFAULT]);
     dispHP[client] = zhp;
     
-    ClientHookUse(client);
+    // Weapon restrict
+    WeaponRestrictClientInit(client);
+    
     ClientHookAttack(client);
     
     FindClientDXLevel(client);
@@ -181,7 +185,9 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect(client)
 {
-    ClientUnHookUse(client);
+    // Weapon restrict
+    WeaponRestrictClientDisconnect(client);
+    
     ClientUnHookAttack(client);
     
     PlayerLeft(client);
@@ -202,8 +208,6 @@ public OnClientDisconnect(client)
 
 MapChangeCleanup()
 {
-    ClearArray(restrictedWeapons);
-    
     tRound = INVALID_HANDLE;
     tInfect = INVALID_HANDLE;
     AmbienceStopAll();

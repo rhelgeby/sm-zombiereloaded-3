@@ -167,7 +167,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     
     ReplaceString(weapon, sizeof(weapon), "weapon_", "");
     
-    if (IsWeaponRestricted(weapon))
+    if (WeaponRestrictIsRestricted(weapon))
     {
         ZR_PrintToChat(client, "Weapon is restricted", weapon);
         
