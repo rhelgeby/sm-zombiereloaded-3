@@ -137,64 +137,6 @@ bool:ZMarket(client)
     return true;
 }
 
-public bool:Market_OnWeaponSelected(client, String:weaponid[])
-{
-    if (!weaponid[0] || !IsPlayerAlive(client))
-    {
-        return false;
-    }
-    
-    if (IsPlayerZombie(client))
-    {
-        ZR_PrintToChat(client, "Zombie cant use weapon");
-        
-        return false;
-    }
-    
-    if (StrEqual(weaponid, "rebuy"))
-    {
-        return true;
-    }
-    
-    decl String:display[64];
-    decl String:weapon[32];
-    new price;
-    
-    if (!Market_GetWeaponIDInfo(weaponid, display, weapon, price))
-    {
-        return false;
-    }
-    
-    ReplaceString(weapon, sizeof(weapon), "weapon_", "");
-    
-    if (WeaponRestrictIsRestricted(weapon))
-    {
-        ZR_PrintToChat(client, "Weapon is restricted", weapon);
-        
-        return false;
-    }
-    
-    new bool:buyzone = GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]); 
-    if (!IsClientInBuyZone(client) && buyzone)
-    {
-        ZR_PrintCenterText(client, "Market out of buyzone");
-        
-        return false;
-    }
-    
-    return true;
-}
-
-public Market_PostOnWeaponSelected(client, &bool:allowed)
-{
-    if (!allowed)
-    {
-        return;
-    }
-    
-    ZMarket(client);
-}
-
 ZSpawn(client)
 {
     new bool:spawn = GetConVarBool(gCvars[CVAR_ZSPAWN]);
@@ -223,16 +165,6 @@ ZSpawn(client)
     RespawnPlayer(client);
     
     AddPlayerToList(client);
-}
-
-public Action:CollisionOn(Handle:timer, any:index)
-{
-    if (!IsClientInGame(index))
-    {
-        return;
-    }
-    
-    NoCollide(index, false);
 }
 
 ZHP(client)

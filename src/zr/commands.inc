@@ -160,14 +160,14 @@ public Action:Command_Restrict(client, argc)
     {
         case Successful_Weapon:
         {
-            ZR_ReplyToCommand(client, "Restrict weapon", arg1);
+            ZR_PrintToChat(0, "Restrict weapon", arg1);
         }
         case Successful_Group:
         {
             decl String:weaponlist[128];
             WeaponRestrictGetWeaponList(arg1, weaponlist, sizeof(weaponlist), ", ");
             
-            ZR_ReplyToCommand(client, "Restrict custom weapon group", arg1, weaponlist);
+            ZR_PrintToChat(0, "Restrict custom weapon group", arg1, weaponlist);
         }
         case Invalid:
         {
@@ -217,14 +217,14 @@ public Action:Command_Unrestrict(client, argc)
     {
         case Successful_Weapon:
         {
-            ZR_ReplyToCommand(client, "Unrestrict weapon", arg1);
+            ZR_PrintToChat(0, "Unrestrict weapon", arg1);
         }
         case Successful_Group:
         {
             decl String:weaponlist[128];
             WeaponRestrictGetWeaponList(arg1, weaponlist, sizeof(weaponlist), ", ");
             
-            ZR_ReplyToCommand(client, "Unrestrict custom weapon group", arg1, weaponlist);
+            ZR_PrintToChat(0, "Unrestrict custom weapon group", arg1, weaponlist);
         }
         case Invalid:
         {
