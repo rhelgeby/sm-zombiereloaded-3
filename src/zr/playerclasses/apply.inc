@@ -37,6 +37,8 @@ bool:ClassApplyAttributes(client, bool:improved = false)
     ClassApplyHealth(client, classindex, improved);
     ClassApplyHealthRegen(client, classindex);
     ClassApplySpeed(client, classindex);
+    
+    return true;
 }
 
 /**
@@ -51,18 +53,18 @@ bool:ClassApplyAttributes(client, bool:improved = false)
  *                      ZR_CLASS_CACHE_PLAYER (default) - Player cache.
  * @return  True on success, false otherwise.
  */
-bool:ClassApplyModel(client, classindex, cachetpye = ZR_CLASS_CACHE_PLAYER)
+bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     decl String:modelpath[256];
     
     // Get the model path from the specified cache.
     if (cachetype == ZR_CLASS_CACHE_PLAYER)
     {
-        ClassGetModelPath(client, modelpath, sizeof(modelpath), cachetype)
+        ClassGetModelPath(client, modelpath, sizeof(modelpath), cachetype);
     }
     else
     {
-        ClassGetModelPath(classindex, modelpath, sizeof(modelpath), cachetype)
+        ClassGetModelPath(classindex, modelpath, sizeof(modelpath), cachetype);
     }
     
     // Check if the user specified a random model.
@@ -94,16 +96,16 @@ bool:ClassApplyModel(client, classindex, cachetpye = ZR_CLASS_CACHE_PLAYER)
  */
 bool:ClassApplyAlpha(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
-	new alpha;
-	
-	// Get the alpha value from the specified cache.
+    new alpha;
+    
+    // Get the alpha value from the specified cache.
     if (cachetype == ZR_CLASS_CACHE_PLAYER)
     {
-        alpha = ClassGetAlphaSpawn(client, cachetype);
+        alpha = ClassGetAlphaInitial(client, cachetype);
     }
     else
     {
-        alpha = ClassGetAlphaSpawn(classindex, cachetype);
+        alpha = ClassGetAlphaInitial(classindex, cachetype);
     }
     
     if (alpha < 0)
@@ -111,8 +113,8 @@ bool:ClassApplyAlpha(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
         return false;
     }
     
-	SetPlayerAlpha(client, alpha);
-	return true;
+    SetPlayerAlpha(client, alpha);
+    return true;
 }
 
 /**
@@ -313,7 +315,7 @@ bool:ClassApplyHealthRegen(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER
  */
 bool:ClassApplySpeed(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
-    new speed;
+    new Float:speed;
     
     // Get the health points from the specified cache.
     if (cachetype == ZR_CLASS_CACHE_PLAYER)

@@ -169,22 +169,22 @@ GetDefaultClassIndex()
     }
 }
 
-GetClassModel(classindex, String:model[], maxlen)
+/*GetClassModel(classindex, String:model[], maxlen)
 {
     strcopy(model, maxlen, arrayClasses[classindex][data_model]);
-}
+}*/
 
 GetClassMenuDescription(classindex, String:menudescription[], maxlen)
 {
     strcopy(menudescription, maxlen, arrayClasses[classindex][data_menu_description]);
 }
 
-GetClassZVision(classindex, String:zvision[], maxlen)
+/*GetClassZVision(classindex, String:zvision[], maxlen)
 {
     strcopy(zvision, maxlen, arrayClasses[classindex][data_zvision]);
-}
+}*/
 
-GetClassHealth(classindex)
+/*GetClassHealth(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -193,9 +193,9 @@ GetClassHealth(classindex)
     }
     
     return GetConVarInt(gCvars[CVAR_ZOMBIE_HEALTH]);
-}
+}*/
 
-Float:GetClassSpeed(classindex)
+/*Float:GetClassSpeed(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -204,9 +204,9 @@ Float:GetClassSpeed(classindex)
     }
     
     return GetConVarFloat(gCvars[CVAR_ZOMBIE_SPEED]);
-}
+}*/
 
-Float:GetClassJumpDistance(classindex)
+/*Float:GetClassJumpDistance(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -215,9 +215,9 @@ Float:GetClassJumpDistance(classindex)
     }
     
     return GetConVarFloat(gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]);
-}
+}*/
 
-Float:GetClassJumpHeight(classindex)
+/*Float:GetClassJumpHeight(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -226,9 +226,9 @@ Float:GetClassJumpHeight(classindex)
     }
     
     return GetConVarFloat(gCvars[CVAR_ZOMBIE_JUMP_HEIGHT]);
-}
+}*/
 
-Float:GetClassKnockback(classindex)
+/*Float:GetClassKnockback(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -237,9 +237,9 @@ Float:GetClassKnockback(classindex)
     }
     
     return GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
-}
+}*/
 
-bool:GetClassNVGs(classindex)
+/*bool:GetClassNVGs(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
 
@@ -257,9 +257,9 @@ bool:GetClassNVGs(classindex)
     }
     
     return IntToBool(GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]));
-}
+}*/
 
-GetClassFOV(classindex)
+/*GetClassFOV(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -268,9 +268,9 @@ GetClassFOV(classindex)
     }
     
     return GetConVarInt(gCvars[CVAR_ZOMBIE_FOV]);
-}
+}*/
 
-bool:GetClassRegen(classindex)
+/*bool:GetClassRegen(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -279,9 +279,9 @@ bool:GetClassRegen(classindex)
     }
     
     return GetConVarBool(gCvars[CVAR_ZOMBIE_REGEN]);
-}
+}*/
 
-GetClassRegenHealth(classindex)
+/*GetClassRegenHealth(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -290,9 +290,9 @@ GetClassRegenHealth(classindex)
     }
     
     return GetConVarInt(gCvars[CVAR_ZOMBIE_REGEN_HEALTH]);
-}
+}*/
 
-Float:GetClassRegenInterval(classindex)
+/*Float:GetClassRegenInterval(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -301,9 +301,9 @@ Float:GetClassRegenInterval(classindex)
     }
     
     return GetConVarFloat(gCvars[CVAR_ZOMBIE_REGEN_INTERVAL]);
-}
+}*/
 
-bool:GetClassNapalm(classindex)
+/*bool:GetClassNapalm(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -312,9 +312,9 @@ bool:GetClassNapalm(classindex)
     }
     
     return GetConVarBool(gCvars[CVAR_ZOMBIE_NAPALM]);
-}
+}*/
 
-Float:GetClassNapalmTime(classindex)
+/*Float:GetClassNapalmTime(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -323,9 +323,9 @@ Float:GetClassNapalmTime(classindex)
     }
     
     return GetConVarFloat(gCvars[CVAR_ZOMBIE_NAPALM_TIME]);
-}
+}*/
 
-bool:GetClassNoFallDamage(classindex)
+/*bool:GetClassNoFallDamage(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -334,9 +334,9 @@ bool:GetClassNoFallDamage(classindex)
     }
     
     return GetConVarBool(gCvars[CVAR_ZOMBIE_NOFALLDAMAGE]);
-}
+}*/
 
-GetClassKillBonus(classindex)
+/*GetClassKillBonus(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -345,9 +345,9 @@ GetClassKillBonus(classindex)
     }
     
     return GetConVarInt(gCvars[CVAR_ZOMBIE_KILL_BONUS]);
-}
+}*/
 
-GetClassInfectHealth(classindex)
+/*GetClassInfectHealth(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -356,9 +356,9 @@ GetClassInfectHealth(classindex)
     }
     
     return GetConVarInt(gCvars[CVAR_ZOMBIE_INFECT_HEALTH]);
-}
+}*/
 
-GetClassAlphaSpawn(classindex)
+/*GetClassAlphaSpawn(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -367,9 +367,9 @@ GetClassAlphaSpawn(classindex)
     }
 
     return GetConVarInt(gCvars[CVAR_ZOMBIE_ALPHA_SPAWN]);
-}
+}*/
 
-GetClassAlphaDamaged(classindex)
+/*GetClassAlphaDamaged(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -378,9 +378,9 @@ GetClassAlphaDamaged(classindex)
     }
 
     return GetConVarInt(gCvars[CVAR_ZOMBIE_ALPHA_DAMAGED]);
-}
+}*/
 
-GetClassAlphaDamage(classindex)
+/*GetClassAlphaDamage(classindex)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (classes)
@@ -389,5 +389,4 @@ GetClassAlphaDamage(classindex)
     }
 
     return GetConVarInt(gCvars[CVAR_ZOMBIE_ALPHA_DAMAGE]);
-}
-
+}*/

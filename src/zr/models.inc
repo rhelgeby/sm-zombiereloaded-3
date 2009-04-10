@@ -116,7 +116,7 @@ LoadDownloadData()
     CloseHandle(arrayDownloads);
 }
 
-ApplyZombieModel(client)
+/*ApplyZombieModel(client)
 {
     decl String:modelpath[256];
     
@@ -136,4 +136,4 @@ ApplyZombieModel(client)
     Format(modelpath, sizeof(modelpath), "%s.mdl", modelpath);
     
     SetPlayerModel(client, modelpath);
-}
+}*/

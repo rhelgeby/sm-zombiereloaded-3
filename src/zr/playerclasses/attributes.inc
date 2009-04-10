@@ -107,7 +107,7 @@ bool:ClassGetTeamDefault(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCached[index][class_team_default];
+            return ClassDataCache[index][class_team_default];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {

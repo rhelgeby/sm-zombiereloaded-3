@@ -13,7 +13,7 @@
 /**
  * Validates the team requirements in a class cache and check that theres at
  * least one class for each team. Minium team requirements are zombies and
- * humans. The admin team is optinal.
+ * humans. The admin team is optinal and not validated.
  *
  * @param cachetype Optional. Specifies what class cache to validate. Options:
  *                  ZR_CLASS_CACHE_ORIGINAL (default, unchanged class data),
@@ -35,12 +35,47 @@ bool:ClassValidateTeamRequirements(cachetype = ZR_CLASS_CACHE_ORIGINAL)
     zombieindex = ClassGetFirstClass(ZR_CLASS_TEAM_ZOMBIES, _, cachetype);
     humanindex = ClassGetFirstClass(ZR_CLASS_TEAM_HUMANS, _, cachetype);
     
-    if (zombieindex > -1 && humanindex > -1)
+    // Validate indexes.
+    if (ClassValidateIndex(zombieindex) && ClassValidateIndex(humanindex))
     {
         return true;
     }
     
     return false;
+}
+
+/**
+ * Validates that there's a class marked as team default for each team.
+ *
+ * @param cachetype Optional. Specifies what class cache to validate. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL (default, unchanged class data),
+ *                  ZR_CLASS_CACHE_MODIFIED (modified class data).
+ * @return          True if validation was successful, false otherwise.
+ */
+bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
+{
+    new zombieindex;
+    new humanindex;
+    
+    // Check if there are no classes.
+    if (ClassCount == 0)
+    {
+        return false;
+    }
+    
+    // Test if a default zombie and human class was found.
+    zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, _, cachetype);
+    humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, _, cachetype);
+    
+    // Validate indexes.
+    if (ClassValidateIndex(zombieindex) && ClassValidateIndex(humanindex))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /**
@@ -111,10 +146,12 @@ ClassValidateAttributes(classindex)
     
     // Overlay path.
     decl String:overlay_path[256];
-    if (strcopy(overlay_path, sizeof(overlay_path), ClassData[classindex][class_overlay_path]) != 0)
+    decl String:overlay[256];
+    if (strcopy(overlay_path, sizeof(overlay_path), ClassData[classindex][class_overlay_path]) > 0)
     {
         // Check if the file exists.
-        if (!FileExists(overlay_path))
+        Format(overlay, sizeof(overlay), "materials/%s.vmt", overlay_path);
+        if (!FileExists(overlay))
         {
             flags += ZR_CLASS_ATTRIB_ERR_OVERLAY_PATH;
         }
@@ -139,13 +176,13 @@ ClassValidateAttributes(classindex)
     if (!(regen_interval >= 0.0 && regen_interval <= 900.0))
     {
         flags += ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_INTERVAL;
-    }
-    
-    // Health regen amount.
-    new regen_amount = ClassData[classindex][class_health_regen_amount];
-    if (!(regen_amount > 0 && regen_amount <= 65536))
-    {
-        flags += ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_AMOUNT;
+        
+        // Health regen amount. Only validating if interval is set.
+        new regen_amount = ClassData[classindex][class_health_regen_amount];
+        if (!(regen_amount > 0 && regen_amount <= 65536))
+        {
+            flags += ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_AMOUNT;
+        }
     }
     
     // Health infect gain.
@@ -267,7 +304,7 @@ ClassGetIndex(const String:name[], cachetype = ZR_CLASS_CACHE_MODIFIED)
     for (new classindex = 0; classindex < ClassCount; classindex++)
     {
         // Get its name and compare it with the specified class name.
-        ClassesGetName(classindex, current_name, sizeof(current_name), cachetype);
+        ClassGetName(classindex, current_name, sizeof(current_name), cachetype);
         if (strcmp(name, current_name, false) == 0)
         {
             return classindex;
@@ -289,7 +326,7 @@ ClassGetActiveIndex(client)
 {
     new teamid = GetClientTeam(client);
     
-    if (teamid == CS_TEAM_SPECTACTOR || teamid == CS_TEAM_NONE)
+    if (teamid == CS_TEAM_SPECTATOR || teamid == CS_TEAM_NONE)
     {
         // No active team.
         return -1;
@@ -297,17 +334,17 @@ ClassGetActiveIndex(client)
     
     if (IsPlayerHuman(client))
     {
-        teamid = ZR_TEAM_HUMANS;
+        teamid = ZR_CLASS_TEAM_HUMANS;
     }
     else
     {
-        teamid = ZR_TEAM_ZOMBIES;
+        teamid = ZR_CLASS_TEAM_ZOMBIES;
     }
     
     // TODO: How to detect that virtual admin team?
     
     // Return the active class for the current team.
-    return ClassActive[client][teamid];
+    return ClassSelected[client][teamid];
 }
 
 /**
@@ -477,6 +514,52 @@ ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_C
 }
 
 /**
+ * Gets the first class marked as default for the specified team.
+ *
+ * @param teamid        The team ID.
+ * @param ignoreEnabled Optional. Ignore the class's enabled attribute. Default
+ *                      is false.
+ * @param cachetype     Optional. Specifies what class cache to read from.
+ *                      Options:
+ *                      ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                      ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
+ *                      class data.
+ * @return  The first default class index. -1 on error.
+ */
+ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+{
+    new Handle:classarray;
+    new arraycount;
+    new classindex;
+    
+    classarray = CreateArray();
+    
+    // Get all classes from the specified team.
+    if (!ClassAddToArray(classarray, teamid, ignoreEnabled, cachetype))
+    {
+        // Failed to get classes.
+        return -1;
+    }
+    
+    // Loop through all classes and return the first class marked as team default.
+    arraycount = GetArraySize(classarray);
+    for (new i = 0; i < arraycount; i++)
+    {
+        // Get class index from the array.
+        classindex = GetArrayCell(classarray, i);
+        
+        // Check if the current class is marked as team default.
+        if (ClassGetTeamDefault(classindex, cachetype))
+        {
+            // Default class found.
+            return classindex;
+        }
+    }
+    
+    return -1;
+}
+
+/**
  * Gets the default class index for the specified team configured to be used
  * when players join the server.
  *
@@ -493,8 +576,6 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     decl String:classname[64];
     new classindex;
-    new Handle:classarray;
-    new arraycount;
     
     // Get the default class name from the correct CVAR depending on teamid.
     switch (teamid)
@@ -519,13 +600,13 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
     }
     
     // Check if the class name isn't empty.
-    if (strlen(class_name) > 0)
+    if (strlen(classname) > 0)
     {
         // Check if the user set "random" as default class.
         if (strcmp(classname, "random", false) == 0)
         {
             // Get a list of all classes with the specified team ID.
-            classindex = ClassGetRandomClass(teamid, cachetype);
+            classindex = ClassGetRandomClass(teamid, _, cachetype);
             
             // Validate the result, in case there were errors.
             if (ClassValidateIndex(classindex))
@@ -545,7 +626,7 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
             // The user set a spesific class.
             
             // Try to get the class index with the specified class name.
-            classindex = ClassGetClassIndex(classname, cachetype);
+            classindex = ClassGetIndex(classname, cachetype);
             
             // Validate the class index and check if the team IDs match.
             if (ClassValidateIndex(classindex) && (teamid == ClassGetTeamID(classindex, cachetype)))
@@ -557,11 +638,11 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                 // The class index is invalid or the team IDs didn't match.
                 // Because it's user input, we'll fall back to the first class
                 // in the specified team, and log a warning.
-                classindex = ClassGetFirstClass(teamid, cachetype);
+                classindex = ClassGetFirstClass(teamid, _, cachetype);
                 
                 if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
                 {
-                    ZR_LogMessageFormatted(-1, "classes", "default spawn class", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", _, classname, teamid);
+                    ZR_LogMessageFormatted(-1, "Classes", "DefaultSpawnClass", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", _, classname, teamid);
                 }
                 
                 // Validate the new index.
@@ -570,7 +651,7 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                     // Log a warning.
                     if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
                     {
-                        ZR_LogMessageFormatted(-1, "classes", "default spawn class", "Warning: The default class name \"%s\" does not exist or matches the team ID.", _, classname);
+                        ZR_LogMessageFormatted(-1, "Classes", "DefaultSpawnClass", "Warning: The default class name \"%s\" does not exist or matches the team ID.", _, classname);
                     }
                     
                     return classindex;
@@ -585,7 +666,7 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
     }
     else
     {
-        // Blank class name, return a error code.
-        return -1;
+        // Blank class name, get the default class and return the index.
+        return ClassGetDefaultClass(teamid, _, cachetype);
     }
 }

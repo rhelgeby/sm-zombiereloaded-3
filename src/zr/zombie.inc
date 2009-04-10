@@ -46,15 +46,22 @@ public Action:Command_NightVision(client, argc)
         return;
     }
     
-    bZVisionOn[client] = !bZVisionOn[client];
+    //bZVisionOn[client] = !bZVisionOn[client];
+    bClientOverlayOn[client] = !bClientOverlayOn[client];
     
-    if (bZVisionOn[client])
+    decl String:overlay[256];
+    ClassGetOverlayPath(client, overlay, sizeof(overlay));
+    
+    if (strlen(overlay) > 0)
     {
-        ZVisionPreCheck(client);
-    }
-    else
-    {
-        ZVisionStop(client);
+        if (bClientOverlayOn[client])
+        {
+            ClassOverlayInitialize(client, overlay);
+        }
+        else
+        {
+            ClassOverlayStop(client);
+        }
     }
 }
 
@@ -163,25 +170,26 @@ Zombify_Mother(client)
     gZombie[client] = true;
     motherZombie[client] = true;
     
-    ApplyZombieHealth(client,true);
+    //ApplyZombieHealth(client,true);
     
-    ApplyZombieSpeed(client);
+    //ApplyZombieSpeed(client);
     
     CS_SwitchTeam(client, CS_TEAM_T);
     
     RemoveAllPlayersWeapons(client);
     GivePlayerItem(client, "weapon_knife");
     
-    ApplyZombieNightVision(client);
-
-    ZVisionPreCheck(client);
+    //ApplyZombieNightVision(client);
     
-    ApplyZombieFOV(client);
+    //ZVisionPreCheck(client);
     
-    ApplyZombieModel(client);
+    //ApplyZombieFOV(client);
     
-    ApplyZombieAlpha(client);
-
+    //ApplyZombieModel(client);
+    
+    //ApplyZombieAlpha(client);
+    
+    ClassOnClientInfected(client, true);
     InfectionEffects(client);
     
     ztele_count[client] = 0;
@@ -249,23 +257,24 @@ Zombify(client, attacker)
     
     gZombie[client] = true;
     
-    ApplyZombieHealth(client, false);
+    //ApplyZombieHealth(client, false);
     
-    ApplyZombieSpeed(client);
+    //ApplyZombieSpeed(client);
     
     RemoveAllPlayersWeapons(client);
     GivePlayerItem(client, "weapon_knife");
     
-    ApplyZombieNightVision(client);
+    //ApplyZombieNightVision(client);
     
-    ZVisionPreCheck(client);
+    //ZVisionPreCheck(client);
     
-    ApplyZombieFOV(client);
+    //ApplyZombieFOV(client);
     
-    ApplyZombieModel(client);
+    //ApplyZombieModel(client);
     
-    ApplyZombieAlpha(client);
+    //ApplyZombieAlpha(client);
     
+    ClassOnClientInfected(client);
     InfectionEffects(client);
     
     ztele_count[client] = 0;
@@ -387,7 +396,7 @@ InfectionEffects(client)
     }
 }
 
-ApplyZombieHealth(client, bool:mother)
+/*ApplyZombieHealth(client, bool:mother)
 {
     new health = GetClassHealth(pClass[client]);
     
@@ -397,15 +406,15 @@ ApplyZombieHealth(client, bool:mother)
     }
     
     SetEntityHealth(client, health);
-}
+}*/
 
-ApplyZombieSpeed(client)
+/*ApplyZombieSpeed(client)
 {
     new Float:speed = GetClassSpeed(pClass[client]);
     SetPlayerSpeed(client, speed);
-}
+}*/
 
-ApplyZombieNightVision(client)
+/*ApplyZombieNightVision(client)
 {
     new bool:nvgs = GetClassNVGs(pClass[client]);
     NightVision(client, nvgs);
@@ -414,19 +423,19 @@ ApplyZombieNightVision(client)
     {
         NightVisionOn(client, nvgs);
     }
-}
+}*/
 
-ApplyZombieFOV(client)
+/*ApplyZombieFOV(client)
 {
     new fov = GetClassFOV(pClass[client]);
     SetPlayerFOV(client, fov);
-}
+}*/
 
-ApplyZombieAlpha(client)
+/*ApplyZombieAlpha(client)
 {
 	new alpha = GetClassAlphaSpawn(pClass[client]);
 	SetPlayerAlpha(client, alpha);
-}
+}*/
 
 KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:power, dmg, bool:grenade)
 {
@@ -650,7 +659,7 @@ RemoveObjectives()
     }
 }
 
-ZVisionPreCheck(client)
+/*ZVisionPreCheck(client)
 {
     if (IsFakeClient(client))
     {
@@ -671,24 +680,24 @@ ZVisionPreCheck(client)
         
         ZVisionStart(client);
     }
-}
+}*/
 
-ZVisionStart(client)
+/*ZVisionStart(client)
 {
-    /*if (tHandles[client][TZVISION] != INVALID_HANDLE)
-    {
-        KillTimer(tHandles[client][TZVISION]);
-        tHandles[client][TZVISION] = INVALID_HANDLE;
-    }*/
+    //if (tHandles[client][TZVISION] != INVALID_HANDLE)
+    //{
+    //    KillTimer(tHandles[client][TZVISION]);
+    //    tHandles[client][TZVISION] = INVALID_HANDLE;
+    //}
     
     DisplayClientOverlay(client, ZVisionOverlay[client]);
     bZVisionOn[client] = true;
     
     //new Float:redisplay = GetConVarFloat(gCvars[CVAR_ZVISION_REDISPLAY]);
     //tHandles[client][TZVISION] = CreateTimer(redisplay, ZVisionTimer, client, TIMER_REPEAT);
-}
+}*/
 
-ZVisionStop(client)
+/*ZVisionStop(client)
 {
     if (tHandles[client][TZVISION] != INVALID_HANDLE)
     {
@@ -698,7 +707,7 @@ ZVisionStop(client)
     
     ClientCommand(client, "r_screenoverlay \"\"");
     bZVisionOn[client] = false;
-}
+}*/
 
 /*public Action:ZVisionTimer(Handle:timer, any:client)
 {
@@ -737,7 +746,7 @@ public Action:ZombieMoanTimer(Handle:timer, any:index)
     return Plugin_Continue;
 }
 
-public Action:Regenerate(Handle:timer, any:index)
+/*public Action:Regenerate(Handle:timer, any:index)
 {
     if (!IsClientInGame(index) || !IsPlayerZombie(index))
     {
@@ -769,7 +778,7 @@ public Action:Regenerate(Handle:timer, any:index)
     UpdateHPDisplay(index);
     
     return Plugin_Continue;
-}
+}*/
 
 UpdateHPDisplay(client)
 {
@@ -791,18 +800,6 @@ UpdateHPDisplay(client)
     }
     
     ZR_HudHint(client, "Display HP", health);
-}
-
-UpdateAlphaDamaged(client)
-{
-    new current_health = GetClientHealth(client);
-    new max_health = GetClassHealth(pClass[client]);
-    new max_damage = GetClassAlphaDamage(pClass[client]);
-    if (max_health - current_health > max_damage)
-    {
-        new alpha_damaged = GetClassAlphaDamaged(pClass[client]);
-        SetPlayerAlpha(client, alpha_damaged);
-    }
 }
 
 public Action:ZHPTimer(Handle:timer, any:index)

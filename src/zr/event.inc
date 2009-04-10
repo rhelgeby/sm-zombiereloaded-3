@@ -129,7 +129,7 @@ public Action:PlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new team = GetEventInt(event, "team");
     
-    if (team == 1)
+    if (team == CS_TEAM_SPECTATOR)
     {
         gZombie[index] = false;
         motherZombie[index] = false;
@@ -165,8 +165,8 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     gZombie[index] = false;
     motherZombie[index] = false;
     
+    // Reset FOV and overlay.
     SetPlayerFOV(index, 90);
-    
     ClientCommand(index, "r_screenoverlay \"\"");
     
     new team = GetClientTeam(index);
@@ -182,8 +182,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         SetPlayerMoney(index, cash);
     }
     
-    ZTeleClientSpawned(index);
-    
+    // Remove night vision.
     NightVisionOn(index, false);
     NightVision(index, false);
   
@@ -241,38 +240,11 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         SetPlayerAlpha(index, 255);
     }
     
-    new bool:randomclass = GetConVarBool(gCvars[CVAR_CLASSES_RANDOM]);
-    new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
-    if (classes)
-    {
-        new bool:showmenu = GetConVarBool(gCvars[CVAR_CLASSES_SPAWN]);
-        if (showmenu && !randomclass)
-        {
-            ClassMenu(index);
-        }
-    }
+    // Forward event to modules.
+    ClassOnClientSpawn(index);
+    ZTeleClientSpawned(index);
     
     ZR_PrintToChat(index, "!zmenu reminder");
-    
-    decl String:steamid[16];
-    GetClientAuthString(index, steamid, sizeof(steamid));
-    if (StrEqual(steamid, "BOT") || randomclass)
-    {
-        new class = GetRandomInt(0, classCount - 1);
-    
-        Call_StartForward(hOnZClassChanged);
-        Call_PushCell(index);
-        Call_PushCell(pClass[index]);
-        Call_PushCell(class);
-        Call_Finish();
-    
-        pClass[index] = class;
-        
-        decl String:classname[32];
-        GetClassName(class, classname, sizeof(classname));
-        
-        ZR_PrintToChat(index, "Auto-assign", classname);
-    }
 }
 
 public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
@@ -285,50 +257,63 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
+    // Check if the attacker is a player.
     if (attacker != 0)
     {
+        // Check if a zombie attacks a human.
         if (IsPlayerHuman(index) && IsPlayerZombie(attacker))
         {
+            // Check if spawn protection is disabled and the weapon is a knife.
             if (!pProtect[index] && StrEqual(weapon, "knife"))
             {
                 Zombify(index, attacker);
             }
         }
-        else if (IsPlayerHuman(attacker))
+        
+        // Check if a human attacks a zombie.
+        if (IsPlayerZombie(index) && IsPlayerHuman(attacker))
         {
-            new Float:knockback = GetClassKnockback(pClass[index]);
+            // Get zombie knockback value.
+            new Float:knockback = ClassGetKnockback(index);
             
             new Float:clientloc[3];
             new Float:attackerloc[3];
             
             GetClientAbsOrigin(index, clientloc);
             
-            if (!StrEqual(weapon, "hegrenade"))
+            // Check if a grenade was thrown.
+            if (StrEqual(weapon, "hegrenade"))
+            {
+                // Get the location of the grenade.
+                FindExplodingGrenade(attackerloc);
+                
+                // Give knockback on the victim.
+                KnockBack(index, clientloc, attackerloc, knockback, dmg, true);
+            }
+            else
             {
                 GetPlayerEyePosition(attacker, attackerloc);
                 
                 new Float:attackerang[3];
                 GetPlayerEyeAngles(attacker, attackerang);
                 
+                // Calculate victim location.
                 TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, TraceRayFilter);
                 TR_GetEndPosition(clientloc);
                 
                 KnockBack(index, clientloc, attackerloc, knockback, dmg, false);
             }
-            else
-            {
-                FindExplodingGrenade(attackerloc);
-                
-                KnockBack(index, clientloc, attackerloc, knockback, dmg, true);
-            }
         }
     }
-            
-    if (!IsPlayerZombie(index))
+    
+    // Check if the player is a human.
+    if (IsPlayerHuman(index))
     {
+        // We're done now. Nothing more to do on humans.
         return;
     }
     
+    // Play a random zombie hurt sound.
     if (GetRandomInt(1, 5) == 1)
     {
         decl String:sound[64];
@@ -340,28 +325,16 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
         EmitSoundToAll(sound, index);
     }
     
-    new bool:napalm = GetClassNapalm(pClass[index]);
-    if (napalm)
+    // Napalm effect.
+    new Float:napalm_time = ClassGetNapalmTime(index);
+    if (StrEqual(weapon, "hegrenade", false) && napalm_time > 0.0)
     {
-        if (StrEqual(weapon, "hegrenade", false))
-        {
-            new Float:napalm_time = GetClassNapalmTime(pClass[index]);
-            IgniteEntity(index, napalm_time);
-        }
+        IgniteEntity(index, napalm_time);
     }
     
+    // Forward event to modules.
+    ClassAlphaUpdate(index);
     UpdateHPDisplay(index);
-    
-    if (GetClassRegen(pClass[index]))
-    {
-        if (tHandles[index][TREGEN] == INVALID_HANDLE)
-        {
-            new Float:interval = GetClassRegenInterval(pClass[index]);
-            tHandles[index][TREGEN] = CreateTimer(interval, Regenerate, index, TIMER_REPEAT);
-        }
-    }
-
-    UpdateAlphaDamaged(index);
 }
 
 public bool:TraceRayFilter(entity, contentsMask)
@@ -403,26 +376,30 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    decl String:weapon[32];
 
+    // Reset field of view and extinguish fire.
     SetPlayerFOV(index, DEFAULT_FOV);
-    
     ExtinguishEntity(index);
     
-    decl String:weapon[32];
-    
+    // Get the weapon name.
     GetEventString(event, "weapon", weapon, sizeof(weapon));
+    
+    // Check if the player was infected.
     if (StrEqual(weapon, "zombie_claws_of_death", false))
     {
+        // Add a death count to the players score.
         if (index)
         {
             AddPlayerDeath(index, 1);
         }
         
+        // Give a point to the attacker.
         if (attacker)
         {
             AddPlayerScore(attacker, 1);
             
-            new healthgain = GetClassInfectHealth(pClass[attacker]);
+            new healthgain = ClassGetHealthInfectGain(attacker);
             new health = GetClientHealth(attacker);
             
             SetEntityHealth(attacker, health + healthgain);
@@ -442,12 +419,14 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
             PrecacheSound(sound);
             EmitSoundToAll(sound, index);
             
+            // Give kill bonus.
             if (attacker)
             {
-                new bonus = GetClassKillBonus(pClass[index]);
+                new bonus = ClassGetKillBonus(attacker);
                 AddPlayerScore(attacker, bonus);
             }
             
+            // Check if the player was killed by world damage.
             if (!IsClientPlayer(attacker))
             {
                 gKilledByWorld[index] = true;
@@ -458,6 +437,7 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
             }
         }
         
+        // Kill various timers.
         for (new x = 0; x < MAXTIMERS; x++)
         {
             if (tHandles[index][x] != INVALID_HANDLE)
@@ -467,6 +447,7 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
             }
         }
         
+        // Create respawn timer if enabled.
         new bool:respawn = GetConVarBool(gCvars[CVAR_RESPAWN]);
         if (respawn)
         {   
@@ -475,26 +456,18 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
         }
     }
     
-    new ZTeam:team = IsRoundOver();
-    if (team == Neither)
-    {
-        ClientCommand(index, "r_screenoverlay \"\"");
-        
-        return;
-    }
+    // Forward event to modules.
+    ClassOnClientDeath(index);
     
+    new ZTeam:team = IsRoundOver();    
     RoundWin(team);
 }
 
 public Action:PlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    
-    if (IsPlayerZombie(index))
-    {
-        new Float:distance = GetClassJumpDistance(pClass[index]);
-        new Float:height = GetClassJumpHeight(pClass[index]);
+    new client = GetClientOfUserId(GetEventInt(event, "userid"));    
+    new Float:distance = ClassGetJumpDistance(client);
+    new Float:height = ClassGetJumpHeight(client);
         
-        JumpBoost(index, distance, height);
-    }
+    JumpBoost(client, distance, height);
 }

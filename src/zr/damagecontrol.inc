@@ -88,7 +88,7 @@ public OnTakeDamage(client, inflictor, attacker, damage, damagetype, ammotype)
             return Hacks_Continue;
         }
         
-        new bool:blockfalldamage = GetClassNoFallDamage(pClass[client]);
+        new bool:blockfalldamage = ClassGetNoFallDamage(client);
         if (!blockfalldamage)
         {
             return Hacks_Continue;

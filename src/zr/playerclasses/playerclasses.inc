@@ -57,7 +57,7 @@
  * Total number of classes that can be stored in each cache. A total of 32
  * classes should be enough. Too many classes will comfuse players.
  */
-#define ZR_CLASS_MAX 31
+#define ZR_CLASS_MAX 32
 
 /**
  * @section Class cache types. Specifies what data array to use.
@@ -223,24 +223,26 @@ new ClassDataCache[ZR_CLASS_MAX][ClassAttributes];
 new ClassPlayerCache[MAXPLAYERS + 1][ClassAttributes];
 
 /**
- * Number of classes successfully loaded.
+ * Number of classes loaded.
  */
 new ClassCount;
 
 /**
  * Stores what class that the player have selected, for each team.
  */
-new ClassActive[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT - 1];
+new ClassSelected[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
 
 #include "zr/playerclasses/filtertools"
 #include "zr/playerclasses/attributes"
 #include "zr/playerclasses/apply"
 #include "zr/playerclasses/clientoverlays"
+#include "zr/playerclasses/clientalpha"
 #include "zr/playerclasses/healthregen"
+#include "zr/playerclasses/classevents"
 
 /**
  * Loads class attributes from playerclasses.txt into the ClassData array. If
- * any error occour, the plugin load will fail.
+ * any error occour the plugin load will fail.
  *
  * @param classfile     Optional. Specifies what file to read from. Valves key/
  *                      values format. The path is relative to the sourcemod
@@ -296,6 +298,7 @@ ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
         /* General */
         ClassData[ClassCount][class_enabled] = bool:KvGetNum(kvClassData, "enabled", ZR_CLASS_DEFAULT_ENABLED);
         ClassData[ClassCount][class_team] = KvGetNum(kvClassData, "team", ZR_CLASS_DEFAULT_TEAM);
+        ClassData[ClassCount][class_team_default] = bool:KvGetNum(kvClassData, "team_default", ZR_CLASS_DEFAULT_TEAM_DEFAULT);
         
         KvGetString(kvClassData, "name", name, sizeof(name), ZR_CLASS_DEFAULT_NAME);
         strcopy(ClassData[ClassCount][class_name], 64, name);
@@ -353,7 +356,7 @@ ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
                 ZR_LogMessageFormatted(-1, "classes", "load", "Invalid class at index %d. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
             }
         }
-
+        
         // Update the counter.
         ClassCount++;
     } while (KvGotoNextKey(kvClassData));
@@ -363,6 +366,15 @@ ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
     {
         SetFailState("The class configuration doesn't match the team requirements.");
     }
+    
+    // Validate team default requirements.
+    if (!ClassValidateTeamDefaults())
+    {
+        SetFailState("Couldn't find a default class for one or more teams. At least one class per team must be marked as default.");
+    }
+    
+    // Cache class data.
+    ClassReloadDataCache();
 }
 
 /**
@@ -384,7 +396,7 @@ bool:ClassReloadDataCache()
         return false;
     }
     
-    for (new classindex = 0; classindex < ClassCount; clasindex++)
+    for (new classindex = 0; classindex < ClassCount; classindex++)
     {
         /* General */
         ClassDataCache[classindex][class_enabled] = ClassData[classindex][class_enabled];
@@ -529,4 +541,94 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
     }
     
     return true;
+}
+
+/**
+ * Sets default class indexes for each team on all players, or a single player
+ * if specified.
+ *
+ * @param client    Optional. The client index.
+ */
+ClassClientSetDefaultIndexes(client = -1)
+{
+    new classindex = GetDefaultClassIndex();    // Old class system. Not removed for backwards compatibility.
+    
+    // Get indexes.
+    new zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES);
+    new humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS);
+    new adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS);
+    
+    // Validate zombie class index.
+    if (!ClassValidateIndex(zombieindex))
+    {
+        // Invalid class index. Fall back to default class in class config and
+        // log a warning.
+        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+        {
+            ZR_LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default zombie class, falling back to default class. Check spelling in \"zr_classes_default_zombie\".", LOG_FORMAT_TYPE_ERROR);
+        }
+        
+        // Use default class.
+        zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES);
+    }
+    
+    // Validate human class index.
+    if (!ClassValidateIndex(humanindex))
+    {
+        // Invalid class index. Fall back to default class in class config and
+        // log a warning.
+        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+        {
+            ZR_LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default human class, falling back to default class. Check spelling in \"zr_classes_default_human\".", LOG_FORMAT_TYPE_ERROR);
+        }
+        
+        // Use default class.
+        humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS);
+    }
+    
+    // Validate admin class index.
+    if (!ClassValidateIndex(adminindex))
+    {
+        // Invalid class index. Fall back to default class in class config and
+        // log a warning.
+        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+        {
+            ZR_LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default admin class, falling back to default class. Check spelling in \"zr_classes_default_admin\".", LOG_FORMAT_TYPE_ERROR);
+        }
+        
+        // Use default class.
+        adminindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ADMINS);
+    }
+    
+    // Check if a client is specified.
+    if (client > 0)
+    {
+        // Set the old array for backwards compatibility while introducing the
+        // new class system.
+        pClass[client] = classindex;
+        
+        ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
+        ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
+        ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
+        
+        // Copy human class data to player cache.
+        ClassReloadPlayerCache(client, humanindex);
+    }
+    else
+    {
+        // No client specified. Loop through all players.
+        for (new clientindex = 1; clientindex <= MAXPLAYERS; clientindex++)
+        {
+            // Set the old array for backwards compatibility while introducing the
+            // new class system.
+            pClass[clientindex] = classindex;
+            
+            ClassSelected[clientindex][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
+            ClassSelected[clientindex][ZR_CLASS_TEAM_HUMANS] = humanindex;
+            ClassSelected[clientindex][ZR_CLASS_TEAM_ADMINS] = adminindex;
+            
+            // Copy human class data to player cache.
+            ClassReloadPlayerCache(client, humanindex);
+        }
+    }
 }

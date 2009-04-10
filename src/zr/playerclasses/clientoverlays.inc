@@ -35,7 +35,7 @@ bool:ClientHasOverlay(client)
     return bClientHasOverlay[client];
 }
 
-ClassOverlayInitialize(client, const String:overlay)
+ClassOverlayInitialize(client, const String:overlay[])
 {
     if (IsFakeClient(client))
     {
@@ -64,7 +64,7 @@ ClassOverlayStart(client)
         tOverlay[client] = INVALID_HANDLE;
     }
     
-    ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
+    ClientCommand(client, "r_screenoverlay \"%s\"", ActiveOverlay[client]);
     bClientOverlayOn[client] = true;
     
     new Float:redisplay = GetConVarFloat(gCvars[CVAR_OVERLAY_REDISPLAY]);
