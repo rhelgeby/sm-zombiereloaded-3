@@ -18,11 +18,11 @@ bool:ZRAdminMenu(client)
         return false;
     }
     
-    new Handle:menu_admin = CreateMenu(ZRAdminMenuHandle);
+    new Handle:menu_zadmin = CreateMenu(ZRAdminMenuHandle);
     
     SetGlobalTransTarget(client);
     
-    SetMenuTitle(menu_admin, "%t\n ", "!zadmin main title");
+    SetMenuTitle(menu_zadmin, "%t\n ", "!zadmin main title");
     
     decl String:knockbackm[64];
     decl String:knockback[64];
@@ -30,8 +30,7 @@ bool:ZRAdminMenu(client)
     decl String:infect[64];
     decl String:zspawn[64];
     decl String:ztele[64];
-    decl String:restrict[64];
-    decl String:unrestrict[64];
+    decl String:weapons[64];
     decl String:logflags[64];
     
     Format(knockbackm, sizeof(knockbackm), "%t", "!zadmin main knockbackm");
@@ -40,23 +39,21 @@ bool:ZRAdminMenu(client)
     Format(infect, sizeof(infect), "%t", "!zadmin main infect");
     Format(zspawn, sizeof(zspawn), "%t", "!zadmin main spawn");
     Format(ztele, sizeof(ztele), "%t", "!zadmin main tele");
-    Format(restrict, sizeof(restrict), "%t", "!zadmin main restrict");
-    Format(unrestrict, sizeof(unrestrict), "%t", "!zadmin main unrestrict");
+    Format(weapons, sizeof(weapons), "%t", "!zadmin main weapons");
     Format(logflags, sizeof(logflags), "%t", "!zadmin main logflags");
     
-    AddMenuItem(menu_admin, "knockbackm", knockbackm);
-    AddMenuItem(menu_admin, "knockback", knockback);
-    AddMenuItem(menu_admin, "nvgs", nvgs);
-    AddMenuItem(menu_admin, "infect", infect);
-    AddMenuItem(menu_admin, "zspawn", zspawn);
-    AddMenuItem(menu_admin, "ztele", ztele);
-    AddMenuItem(menu_admin, "restrict", restrict, ITEMDRAW_DISABLED);
-    AddMenuItem(menu_admin, "unrestrict", unrestrict, ITEMDRAW_DISABLED);
-    AddMenuItem(menu_admin, "logflags", logflags);
+    AddMenuItem(menu_zadmin, "knockbackm", knockbackm);
+    AddMenuItem(menu_zadmin, "knockback", knockback);
+    AddMenuItem(menu_zadmin, "nvgs", nvgs);
+    AddMenuItem(menu_zadmin, "infect", infect);
+    AddMenuItem(menu_zadmin, "zspawn", zspawn);
+    AddMenuItem(menu_zadmin, "ztele", ztele);
+    AddMenuItem(menu_zadmin, "weapons", weapons);
+    AddMenuItem(menu_zadmin, "logflags", logflags);
     
-    SetMenuExitBackButton(menu_admin, true);
+    SetMenuExitBackButton(menu_zadmin, true);
     
-    DisplayMenu(menu_admin, client, MENU_TIME_FOREVER);
+    DisplayMenu(menu_zadmin, client, MENU_TIME_FOREVER);
     
     return true;
 }
@@ -93,13 +90,9 @@ public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
             }
             case 6:
             {
-                // restrict
+                WeaponsMenuMain(client);
             }
             case 7:
-            {
-                // unrestrict
-            }
-            case 8:
             {
                 ZRLogFlagsMenu(client);
             }

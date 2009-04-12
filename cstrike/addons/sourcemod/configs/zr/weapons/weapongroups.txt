@@ -1,0 +1,58 @@
+// Weapon Groups
+// (See list of weapons in weapons.txt)
+
+// Format
+//
+//
+// "weapon group name" (how it appears in chat messages)
+// {
+// 	"weaponname" {} <-- To satisfy the standard format of a keyvalues file,
+//                          without these brackets the weapon will be skipped.
+//                          Invalid weapons are logged and skipped.
+// }
+
+"weapongroups"
+{
+	"Pistols"
+	{
+		"Glock" {}
+		"USP" {}
+		"P228" {}
+		"Deagle" {}
+		"Elite" {}
+		"Fiveseven" {}
+	}
+
+	"Shotguns"
+	{
+		"M3" {}
+		"XM1014" {}
+	}
+
+	"SMGs"
+	{
+		"Mac10" {}
+		"TMP" {}
+		"MP5Navy" {}
+		"UMP45" {}
+		"P90" {}
+	}
+
+	"Rifles"
+	{
+		"Galil" {}
+		"Famas" {}
+		"AK47" {}
+		"M4A1" {}
+		"SG552" {}
+		"AUG" {}
+	}
+
+	"Snipers"
+	{
+		"Scout" {}
+		"SG550" {}
+		"G2SG1" {}
+		"AWP" {}
+	}
+}

@@ -12,7 +12,7 @@
  * @param client    The client index.
  * @param weaponid  The unique weapon ID used for market natives.
  * @return          True to allow market to take over, false to block purchase. 
-*/
+ */
 public bool:Market_OnWeaponSelected(client, String:weaponid[])
 {
     // If player is dead or weaponid is invalid, then stop
@@ -36,7 +36,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     }
     
     decl String:display[64];
-    decl String:weapon[32];
+    decl String:weapon[WEAPONS_MAX_LENGTH];
     new price;
     
     // If the market plugin can't find info about the weapon, then stop
@@ -73,7 +73,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
  * 
  * @param client    The client index.
  * @param allowed   True when the weapon was purchased successfully, false otherwise.
-*/
+ */
 public Market_PostOnWeaponSelected(client, &bool:allowed)
 {
     // If the purchase wasn't allowed, then stop

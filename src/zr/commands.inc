@@ -169,6 +169,12 @@ public Action:Command_Restrict(client, argc)
             
             ZR_PrintToChat(0, "Restrict custom weapon group", arg1, weaponlist);
         }
+        case Failed_Weapon:
+        {
+            ZR_ReplyToCommand(client, "Restrict weapon failed", arg1);
+            
+            return Plugin_Handled;
+        }
         case Invalid:
         {
             ZR_ReplyToCommand(client, "Weapon invalid", arg1);
@@ -225,6 +231,12 @@ public Action:Command_Unrestrict(client, argc)
             WeaponRestrictGetWeaponList(arg1, weaponlist, sizeof(weaponlist), ", ");
             
             ZR_PrintToChat(0, "Unrestrict custom weapon group", arg1, weaponlist);
+        }
+        case Failed_Weapon:
+        {
+            ZR_ReplyToCommand(client, "Unrestrict weapon failed", arg1);
+            
+            return Plugin_Handled;
         }
         case Invalid:
         {

@@ -90,12 +90,6 @@
 		"en"		"You are now susceptible to zombie infection."
 		"ru"		"Теперь вы восприимчивы к зомби инфекции."
 	}
-
-	"Market out of buyzone"
-	{
-		"en"		"You are not in a buyzone."
-		"ru"		"Вы вне зоны покупки."
-	}
 	
 	"!ztele amount"
 	{
@@ -171,35 +165,67 @@
 	}
 
 	// ===========================
-	// Weapon Restrict
+	// Weapons
 	// ===========================
+
+	// General
+
+	"Zombie cant use weapon"
+	{
+		"en"		"Zombies can't use weapons!"
+		"ru"		"Зомби не могут использовать оружие!"
+	}
+
+	// Market
+
+	"Market out of buyzone"
+	{
+		"en"		"You are not in a buyzone."
+		"ru"		"Вы вне зоны покупки."
+	}
+
+	// Restrict
 
 	"Restrict weapon"
 	{
 		"#format"	"{1:s}"
 		"en"		"Weapon @green\"{1}\" @defaulthas been restricted."
-		"ru"		"Оружие @green\"{1}\" было запрещено."
 	}
 
 	"Unrestrict weapon"
 	{
 		"#format"	"{1:s}"
 		"en"		"Weapon @green\"{1}\" @defaulthas been unrestricted."
-		"ru"		"Оружие @green\"{1}\" было разрешено."
+	}
+
+	"Restrict weapon failed"
+	{
+		"#format"	"{1:s}"
+		"en"		"Weapon @green\"{1}\" @defaultis already restricted."
+	}
+
+	"Unrestrict weapon failed"
+	{
+		"#format"	"{1:s}"
+		"en"		"Weapon @green\"{1}\" @default has no restrictions set."
 	}
 
 	"Restrict custom weapon group"
 	{
 		"#format"	"{1:s},{2:s}"
 		"en"		"Weapon group @green\"{1}\" ({2}) @defaulthas been restricted."
-		"ru"		"Группа оружия @green\"{1}\" ({2}) была запрещена."
 	}
 
 	"Unrestrict custom weapon group"
 	{
 		"#format"	"{1:s},{2:s}"
 		"en"		"Weapon group @green\"{1}\" ({2}) @defaulthas been unrestricted."
-		"ru"		"Группа оружия @green\"{1}\" ({2}) была разрешена."
+	}
+
+	"Weapon invalid"
+	{
+		"#format"	"{1:s}"
+		"en"		"Weapon @green\"{1}\" @defaultis an invalid weapon name."
 	}
 
 	"Weapon is restricted"
@@ -209,19 +235,42 @@
 		"ru"		"Оружие @green{1} @default запрещено."
 	}
 
-	"Weapon invalid"
+	// Menu
+
+	"Weapons menu main title"
 	{
-		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaultis not currently restricted."
+		"en"		"Weapons Management"
 	}
 
-	"Zombie cant use weapon"
+	"Weapons menu main restrict weapon"
 	{
-		"en"		"Zombies can't use weapons!"
-		"ru"		"Зомби не могут использовать оружие!"
+		"en"		"Restrict a Weapon"
 	}
 
+	"Weapons menu main unrestrict weapon"
+	{
+		"en"		"Unrestrict a Weapon"
+	}
 
+	"Weapons menu main restrict weapon group"
+	{
+		"en"		"Restrict a Weapon Group"
+	}
+
+	"Weapons menu main unrestrict weapon group"
+	{
+		"en"		"Unrestrict a Weapon Group"
+	}
+
+	"Weapons menu main market" // Option disabled if ZMarket isn't installed
+	{
+		"en"		"ZMarket Options"
+	}
+
+	"Weapons menu weapons title"
+	{
+		"en"		"Toggle Restrictions:"
+	}
 
 	"Suicide text"
 	{
@@ -344,27 +393,22 @@
 	{
 		"en"		"Infect a Player"
 	}
-	
+
 	"!zadmin main spawn"
 	{
 		"en"		"Spawn All Players"
 	}
-	
+
 	"!zadmin main tele"
 	{
 		"en"		"ZTele Commands"
 	}
-	
-	"!zadmin main restrict"
+
+	"!zadmin main weapons"
 	{
-		"en"		"Restrict Weapon"
+		"en"		"Weapon Management"
 	}
-	
-	"!zadmin main unrestrict"
-	{
-		"en"		"Unrestrict Weapon"
-	}
-	
+
 	"!zadmin main logflags"
 	{
 		"en"		"Logging Flags"

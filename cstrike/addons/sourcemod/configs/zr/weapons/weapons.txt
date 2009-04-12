@@ -1,0 +1,154 @@
+// Weapons
+//
+// Format
+//
+// "weaponname" // Name of the weapon (without weapon_ prefix)
+// {
+// 	"restrict"		"no" (default) // Restricts the weapon on each map start
+//	"menu"			"yes" (default) // Allows admins to toggle restriction with the menu
+// }
+//
+// Duplicate weapon entries will show up separately in restrict menu, but
+// only the first one's options are used.
+
+"weapons" // Counter-Strike: Source weapons
+{
+	"Glock"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"USP"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"P228"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"Deagle"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"Elite"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"Fiveseven"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"M3"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"XM1014"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"Mac10"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"TMP"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"MP5Navy"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"UMP45"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"P90"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"Galil"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"Famas"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"AK47"
+	{
+		"restrict"	"no"
+		"menu"		"no"
+	}
+
+	"M4A1"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"SG552"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"AUG"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"Scout"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"SG550"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"GSG1"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"AWP"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+}

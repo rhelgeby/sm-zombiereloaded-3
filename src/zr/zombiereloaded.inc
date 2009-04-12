@@ -63,8 +63,8 @@ new bool:motherZombie[MAXPLAYERS+1];
 new bool:gZombie[MAXPLAYERS+1];
 new bool:gBlockMotherInfect[MAXPLAYERS+1];
 new bool:bZVision[MAXPLAYERS+1];
-//new bool:bZVisionOn[MAXPLAYERS+1];
-//new String:ZVisionOverlay[MAXPLAYERS+1][PLATFORM_MAX_PATH];
+new bool:bZVisionOn[MAXPLAYERS+1];
+new String:ZVisionOverlay[MAXPLAYERS+1][PLATFORM_MAX_PATH];
 new bool:dispHP[MAXPLAYERS+1];
 new bool:pProtect[MAXPLAYERS+1];
 new bool:gKilledByWorld[MAXPLAYERS+1] = {false, ...};
@@ -105,6 +105,16 @@ new Handle:pList = INVALID_HANDLE;
 new Handle:tHandles[MAXPLAYERS+1][MAXTIMERS];
 
 new QueryCookie:mat_dxlevel;
+
+bool:ConfigOptionToBool(const String:option[])
+{
+    if (StrEqual(option, "yes", false))
+    {
+        return true;
+    }
+    
+    return false;
+}
 
 FindClientDXLevel(client)
 {
@@ -209,6 +219,18 @@ bool:IsPlayerInList(client)
     }
     
     return false;
+}
+
+bool:IntToBool(intval)
+{
+    if (intval == 0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 bool:IsClientPlayer(client)
