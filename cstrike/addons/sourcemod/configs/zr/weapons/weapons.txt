@@ -139,7 +139,7 @@
 		"menu"		"yes"
 	}
 
-	"GSG1"
+	"G3SG1"
 	{
 		"restrict"	"no"
 		"menu"		"yes"
