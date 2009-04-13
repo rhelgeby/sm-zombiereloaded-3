@@ -123,6 +123,18 @@ bool:ConfigOptionToBool(const String:option[])
     return false;
 }
 
+BoolToConfigOption(bool:bOption, String:option[], maxlen)
+{
+    if (bOption)
+    {
+        strcopy(option, maxlen, "yes");
+    }
+    else
+    {
+        strcopy(option, maxlen, "no");
+    }
+}
+
 FindClientDXLevel(client)
 {
     if (IsFakeClient(client))

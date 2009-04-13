@@ -285,6 +285,17 @@
 		"en"		"Modify Restrictions:\n Current Weapon Group: {1}\n * = restricted"
 	}
 
+	"Weapons menu market title"
+	{
+		"en"		"Toggle Market Settings:"
+	}
+
+	"Weapons menu market toggle buyzone"
+	{
+		"#format"	"{1:s}"
+		"en"		"Buyzone Only (Current: {1})"
+	}
+
 	"Weapons menu weapon group restrict all"
 	{
 		"en"		"Restrict All Group Weapons"

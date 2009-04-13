@@ -40,7 +40,6 @@ WeaponsMenuMain(client)
     
     decl String:toggleweaponrestriction[64];
     decl String:togglewgrouprestriction[64];
-    
     decl String:zmarket[64];
     
     Format(toggleweaponrestriction, sizeof(toggleweaponrestriction), "%t", "Weapons menu main toggle weapon restrict");
@@ -91,7 +90,7 @@ public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client
             }
             case 2:
             {
-                //WeaponsMenuMarket(client);
+                WeaponsMenuMarket(client);
             }
         }
     }
@@ -142,8 +141,6 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
             {
                 GetArrayString(arrayWeapons, x, weapon, sizeof(weapon));
                 
-                new bool:menu = WeaponsIsWeaponMenu(weapon);
-                
                 strcopy(display, sizeof(display), weapon);
                 
                 if (RestrictIsWeaponRestricted(weapon))
@@ -152,6 +149,8 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
                 }
                 
                 // If weapon restriction is blocked for the menu, disable option
+                new bool:menu = WeaponsIsWeaponMenu(weapon);
+                
                 if (menu)
                 {
                     AddMenuItem(menu_weapons_weapons, weapon, display);
@@ -386,5 +385,80 @@ public WeaponsMenuWeaponGroupHandle(Handle:menu_weapons_groupweapon, MenuAction:
     else if (action == MenuAction_End)
     {
         CloseHandle(menu_weapons_groupweapon);
+    }
+}
+
+/**
+ * Sends market options menu to client.
+ * @param client    The client index.
+ */  
+WeaponsMenuMarket(client)
+{
+    // Create menu handle
+    new Handle:menu_weapons_market = CreateMenu(WeaponsMenuMarketHandle);
+    
+    SetGlobalTransTarget(client);
+    
+    SetMenuTitle(menu_weapons_market, "%t\n ", "Weapons menu market title");
+    
+    decl String:togglebuyzone[64];
+    
+    decl String:curSetting[8];
+    BoolToConfigOption(GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
+    
+    Format(togglebuyzone, sizeof(togglebuyzone), "%t", "Weapons menu market toggle buyzone", curSetting);
+    
+    AddMenuItem(menu_weapons_market, "togglebuyzone", togglebuyzone);
+    
+    // Create a "Back" button to the weapons main menu
+    SetMenuExitBackButton(menu_weapons_market, true);
+    
+    // Send menu
+    DisplayMenu(menu_weapons_market, client, MENU_TIME_FOREVER);
+}
+
+/**
+ * Called when client selects option in the weapons main menu, and handles it.
+ * @param menu_weapons_main     Handle of the menu being used.
+ * @param action                The action done on the menu (see menus.inc, enum MenuAction).
+ * @param client                The client index.
+ * @param slot                  The slot index selected (starting from 0).
+ */ 
+public WeaponsMenuMarketHandle(Handle:menu_weapons_market, MenuAction:action, client, slot)
+{
+    // Client selected an option
+    if (action == MenuAction_Select)
+    {
+        switch(slot)
+        {
+            case 0:
+            {
+                if (GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]))
+                {
+                    SetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE], false);
+                }
+                else
+                {
+                    SetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE], true);
+                }
+            }
+        }
+        
+        // Resend menu
+        WeaponsMenuMarket(client);
+    }
+    // Client closed the menu
+    if (action == MenuAction_Cancel)
+    {
+        // Client hit "Back" button
+        if (slot == MenuCancel_ExitBack)
+        {
+            WeaponsMenuMain(client);
+        }
+    }
+    // Client hit "Exit" button
+    else if (action == MenuAction_End)
+    {
+        CloseHandle(menu_weapons_market);
     }
 }

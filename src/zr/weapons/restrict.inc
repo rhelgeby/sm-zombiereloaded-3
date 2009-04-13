@@ -70,9 +70,39 @@ RestrictOnMapStart()
         SetFailState("\"%s\" missing from server", path);
     }
     
+    RestrictDefaultRestrictions();
     RestrictValidateWeaponGroups();
 }
 
+/**
+ * Restrict default restrictions (set in weapons.txt)
+ */
+RestrictDefaultRestrictions()
+{
+    KvRewind(kvWeapons);
+    
+    if (KvGotoFirstSubKey(kvWeapons))
+    {
+        decl String:weapon[WEAPONS_MAX_LENGTH];
+        decl String:display[WEAPONS_MAX_LENGTH + 1];
+        
+        do
+        {
+            KvGetSectionName(kvWeapons, weapon, sizeof(weapon));
+            
+            // If weapon is defaulted to restricted, then restrict weapon
+            if (WeaponsIsRestrict(weapon))
+            {
+                new WpnRestrictQuery:output = RestrictRestrict(weapon, display);
+                RestrictPrintRestrictOutput(0, output, display, true);
+            }
+        } while (KvGotoNextKey(kvWeapons));
+    }
+}
+
+/**
+ * Validate weapon group options
+ */ 
 RestrictValidateWeaponGroups()
 {
     KvRewind(kvWeaponGroups);
@@ -319,7 +349,7 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[] = ""
  * @param weapon    The weapon client is trying to restrict.
  * @param cmd       True if printing output in reply to a client command.
  */ 
-RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon[], bool:cmd)
+RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon[], bool:reply)
 {
     switch(output)
     {
@@ -336,7 +366,7 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
         }
         case Failed_Weapon:
         {
-            if (cmd)
+            if (reply)
             {
                 ZR_ReplyToCommand(client, "Restrict weapon failed", weapon);
             }
@@ -350,7 +380,7 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
             decl String:weaponlist[128];
             RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
             
-            if (cmd)
+            if (reply)
             {
                 ZR_ReplyToCommand(client, "Restrict custom weapon group failed", weapon, weaponlist);
             }
@@ -361,7 +391,7 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
         }
         case Invalid:
         {
-            if (cmd)
+            if (reply)
             {
                 ZR_ReplyToCommand(client, "Weapon invalid", weapon);
             }
@@ -380,7 +410,7 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
  * @param weapon    The weapon client is trying to unrestrict.
  * @param cmd       True if printing output in reply to a client command.
  */ 
-RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weapon[], bool:cmd)
+RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weapon[], bool:reply)
 {
     switch(output)
     {
@@ -397,7 +427,7 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
         }
         case Failed_Weapon:
         {
-            if (cmd)
+            if (reply)
             {
                 ZR_ReplyToCommand(client, "Unrestrict weapon failed", weapon);
             }
@@ -411,7 +441,7 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
             decl String:weaponlist[128];
             RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
             
-            if (cmd)
+            if (reply)
             {
                 ZR_ReplyToCommand(client, "Unrestrict custom weapon group failed", weapon, weaponlist);
             }
@@ -422,7 +452,7 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
         }
         case Invalid:
         {
-            if (cmd)
+            if (reply)
             {
                 ZR_ReplyToCommand(client, "Weapon invalid", weapon);
             }

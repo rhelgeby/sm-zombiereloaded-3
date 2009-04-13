@@ -191,7 +191,7 @@ bool:WeaponsIsRestrict(const String:weapon[])
             
             if (StrEqual(validweapon, weapon, false))
             {
-                KvGetString(kvWeapons, validweapon, restrict, sizeof(restrict), "no");
+                KvGetString(kvWeapons, "restrict", restrict, sizeof(restrict), "no");
                 
                 return ConfigOptionToBool(restrict);
             }
@@ -220,7 +220,7 @@ bool:WeaponsIsWeaponMenu(const String:weapon[])
             
             if (StrEqual(validweapon, weapon, false))
             {
-                KvGetString(kvWeapons, validweapon, menu, sizeof(menu), "yes");
+                KvGetString(kvWeapons, "menu", menu, sizeof(menu), "yes");
                 
                 return ConfigOptionToBool(menu);
             }
