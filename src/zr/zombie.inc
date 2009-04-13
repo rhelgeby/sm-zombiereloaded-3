@@ -170,24 +170,10 @@ Zombify_Mother(client)
     gZombie[client] = true;
     motherZombie[client] = true;
     
-    //ApplyZombieHealth(client,true);
-    
-    //ApplyZombieSpeed(client);
-    
     CS_SwitchTeam(client, CS_TEAM_T);
     
     RemoveAllPlayersWeapons(client);
     GivePlayerItem(client, "weapon_knife");
-    
-    //ApplyZombieNightVision(client);
-    
-    //ZVisionPreCheck(client);
-    
-    //ApplyZombieFOV(client);
-    
-    //ApplyZombieModel(client);
-    
-    //ApplyZombieAlpha(client);
     
     ClassOnClientInfected(client, true);
     InfectionEffects(client);
@@ -236,10 +222,20 @@ Zombify_Mother(client)
     }
 }
 
-Zombify(client, attacker)
+/**
+ * Zombifies a player. Execute events, sets attributes and flags that indicate
+ * that the player is a zombie.
+ *
+ * @param client        The player to infect.
+ * @param attacker      Optional. The attacker who did the infect.
+ * @param motherinfect  Optional. Indicates a mother zombie infect.
+ */
+Zombify(client, attacker = -1, bool:motherinfect = false)
 {
-    if (attacker != 0)
+    // Check if the attacker was specified.
+    if (attacker > 0)
     {
+        // Fire death event and set weapon info.
         new Handle:event = CreateEvent("player_death");
         if (event != INVALID_HANDLE)
         {
@@ -250,44 +246,34 @@ Zombify(client, attacker)
         }
     }
     
+    // Forward global event.
     Call_StartForward(hZombify);
     Call_PushCell(client);
     Call_PushCell(false);
     Call_Finish();
     
+    // Set player status.
     gZombie[client] = true;
+    motherZombie[client] = motherinfect;
     
-    //ApplyZombieHealth(client, false);
-    
-    //ApplyZombieSpeed(client);
-    
+    // Remove all weapons and give a knife.
     RemoveAllPlayersWeapons(client);
     GivePlayerItem(client, "weapon_knife");
     
-    //ApplyZombieNightVision(client);
+    ztele_count[client] = 0;    // In use?
     
-    //ZVisionPreCheck(client);
-    
-    //ApplyZombieFOV(client);
-    
-    //ApplyZombieModel(client);
-    
-    //ApplyZombieAlpha(client);
-    
-    ClassOnClientInfected(client);
-    InfectionEffects(client);
-    
-    ztele_count[client] = 0;
-    AbortTeleport(client);
-    
+    // Terminate the round if the last player was infected.
     new ZTeam:team = IsRoundOver();
     RoundWin(team);
     
+    // Switch the player to terrorists.
     CS_SwitchTeam(client, CS_TEAM_T);
     
+    // Check if random zombie sounds are enabled.
     new Float:interval = GetConVarFloat(gCvars[CVAR_EMITSOUNDS]);
     if (interval > 0.0)
     {
+        // Create timer.
         if (tHandles[client][TMOAN] != INVALID_HANDLE)
         {
             KillTimer(tHandles[client][TMOAN]);
@@ -295,6 +281,7 @@ Zombify(client, attacker)
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
     
+    // Kill spawn protection timer.
     if (tHandles[client][TPROTECT] != INVALID_HANDLE)
     {
         pProtect[client] = false;
@@ -303,21 +290,28 @@ Zombify(client, attacker)
         tHandles[client][TPROTECT] = INVALID_HANDLE;
     }
     
+    // Kill HP display timer.
     if (tHandles[client][TZHP] != INVALID_HANDLE)
     {
         KillTimer(tHandles[client][TZHP]);
         tHandles[client][TZHP] = INVALID_HANDLE;
     }
     
+    // Start HP display if enabled.
     new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
     if (zhp)
     {
         UpdateHPDisplay(client);
-        
         tHandles[client][TZHP] = CreateTimer(5.0, ZHPTimer, client, TIMER_REPEAT);
     }
     
+    // Forward event to modules.
+    ClassOnClientInfected(client);
+    AbortTeleport(client);
     AntiStick(attacker, client);
+    
+    // Apply effects.
+    InfectionEffects(client);
 }
 
 InfectionEffects(client)
@@ -396,47 +390,6 @@ InfectionEffects(client)
     }
 }
 
-/*ApplyZombieHealth(client, bool:mother)
-{
-    new health = GetClassHealth(pClass[client]);
-    
-    if (mother)
-    {
-        health *= 2;
-    }
-    
-    SetEntityHealth(client, health);
-}*/
-
-/*ApplyZombieSpeed(client)
-{
-    new Float:speed = GetClassSpeed(pClass[client]);
-    SetPlayerSpeed(client, speed);
-}*/
-
-/*ApplyZombieNightVision(client)
-{
-    new bool:nvgs = GetClassNVGs(pClass[client]);
-    NightVision(client, nvgs);
-
-    if (nvgs)
-    {
-        NightVisionOn(client, nvgs);
-    }
-}*/
-
-/*ApplyZombieFOV(client)
-{
-    new fov = GetClassFOV(pClass[client]);
-    SetPlayerFOV(client, fov);
-}*/
-
-/*ApplyZombieAlpha(client)
-{
-	new alpha = GetClassAlphaSpawn(pClass[client]);
-	SetPlayerAlpha(client, alpha);
-}*/
-
 KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:power, dmg, bool:grenade)
 {
     if (!IsPlayerZombie(client))
@@ -471,7 +424,7 @@ JumpBoost(client, Float:distance, Float:height)
     
     vel[0] *= distance;
     vel[1] *= distance;
-    vel[2] = height;
+    vel[2] *= height;
     
     SetPlayerVelocity(client, vel, false);
 }
@@ -659,68 +612,6 @@ RemoveObjectives()
     }
 }
 
-/*ZVisionPreCheck(client)
-{
-    if (IsFakeClient(client))
-    {
-        return;
-    }
-    
-    decl String:zvision[128];
-    GetClassZVision(pClass[client], zvision, sizeof(zvision));
-    
-    if (strlen(zvision) == 0)
-    {
-        bZVision[client] = false;
-    }
-    else
-    {
-        bZVision[client] = true;
-        strcopy(ZVisionOverlay[client], PLATFORM_MAX_PATH, zvision);
-        
-        ZVisionStart(client);
-    }
-}*/
-
-/*ZVisionStart(client)
-{
-    //if (tHandles[client][TZVISION] != INVALID_HANDLE)
-    //{
-    //    KillTimer(tHandles[client][TZVISION]);
-    //    tHandles[client][TZVISION] = INVALID_HANDLE;
-    //}
-    
-    DisplayClientOverlay(client, ZVisionOverlay[client]);
-    bZVisionOn[client] = true;
-    
-    //new Float:redisplay = GetConVarFloat(gCvars[CVAR_ZVISION_REDISPLAY]);
-    //tHandles[client][TZVISION] = CreateTimer(redisplay, ZVisionTimer, client, TIMER_REPEAT);
-}*/
-
-/*ZVisionStop(client)
-{
-    if (tHandles[client][TZVISION] != INVALID_HANDLE)
-    {
-        KillTimer(tHandles[client][TZVISION]);
-        tHandles[client][TZVISION] = INVALID_HANDLE;
-    }
-    
-    ClientCommand(client, "r_screenoverlay \"\"");
-    bZVisionOn[client] = false;
-}*/
-
-/*public Action:ZVisionTimer(Handle:timer, any:client)
-{
-    if (!IsClientInGame(client) || !IsPlayerZombie(client))
-    {
-        tHandles[client][TZVISION] = INVALID_HANDLE;
-        return Plugin_Stop;
-    }
-    
-    DisplayClientOverlay(client, ZVisionOverlay[client]);
-    return Plugin_Continue;
-}*/
-
 ZombieMoan(client)
 {
     decl String:sound[64];
@@ -745,40 +636,6 @@ public Action:ZombieMoanTimer(Handle:timer, any:index)
         
     return Plugin_Continue;
 }
-
-/*public Action:Regenerate(Handle:timer, any:index)
-{
-    if (!IsClientInGame(index) || !IsPlayerZombie(index))
-    {
-        tHandles[index][TREGEN] = INVALID_HANDLE;
-        
-        return Plugin_Stop;
-    }
-    
-    new health = GetClassRegenHealth(pClass[index]);
-    new maxhealth = GetClassHealth(pClass[index]);
-    
-    if (motherZombie[index])
-    {
-        maxhealth *= 2;
-    }
-    
-    new newhealth = GetClientHealth(index) + health;
-    if (newhealth > maxhealth)
-    {
-        newhealth = maxhealth;
-        
-        tHandles[index][TREGEN] = INVALID_HANDLE;
-        
-        return Plugin_Stop;
-    }
-    
-    SetEntityHealth(index, newhealth);
-    
-    UpdateHPDisplay(index);
-    
-    return Plugin_Continue;
-}*/
 
 UpdateHPDisplay(client)
 {

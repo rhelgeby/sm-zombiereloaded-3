@@ -119,8 +119,6 @@ public OnMapStart()
     LoadModelData();
     LoadDownloadData();
     
-    // Weapons
-    WeaponsOnMapStart();
     
     new i;
     new classindex = GetDefaultClassIndex();
@@ -129,6 +127,8 @@ public OnMapStart()
         pClass[i] = classindex;
     }
     
+    // Forward event to modules.
+    WeaponsOnMapStart();
     Anticamp_Startup();
 }
 
@@ -139,10 +139,7 @@ public OnMapEnd()
 
 public OnConfigsExecuted()
 {
-    FindMapSky();
     
-    LoadClassData();
-    LoadAmbienceData();
     
     decl String:mapconfig[PLATFORM_MAX_PATH];
     
@@ -155,8 +152,17 @@ public OnConfigsExecuted()
     if (FileExists(path))
     {
         ServerCommand("exec %s", mapconfig);
-        LogMessage("Executed map config file: %s", mapconfig);
+        if (LogFlagCheck(LOG_CORE_EVENTS))
+        {
+            LogMessage("Executed map config file: %s", mapconfig);
+        }
     }
+    
+    FindMapSky();
+    ClassLoad();
+    LoadClassData();
+    LoadAmbienceData();
+    
 }
 
 public OnClientPutInServer(client)
@@ -170,11 +176,12 @@ public OnClientPutInServer(client)
     new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP_DEFAULT]);
     dispHP[client] = zhp;
     
-    // Weapon restrict
+    // Forward event to modules.
     WeaponRestrictClientInit(client);
+    ClassClientInit(client);
+    if (!IsFakeClient(client)) AmbienceStart(client);
     
     ClientHookAttack(client);
-    
     FindClientDXLevel(client);
     
     for (new x = 0; x < MAXTIMERS; x++)
@@ -183,17 +190,17 @@ public OnClientPutInServer(client)
     }
     
     RefreshList();
-    if (!IsFakeClient(client)) AmbienceStart(client);
 }
 
 public OnClientDisconnect(client)
 {
-    // Weapon restrict
-    WeaponRestrictClientDisconnect(client);
-    
     ClientUnHookAttack(client);
     
     PlayerLeft(client);
+    
+    // Forward event to modules.
+    WeaponRestrictClientDisconnect(client);
+    ClassOnClientDisconnect(client);
     ZTeleResetClient(client);
     AmbienceStop(client);
     
@@ -234,6 +241,8 @@ ZREnd()
         
     UnhookCvars();
     UnhookEvents();
+    
+    // TODO: Disable all modules! Teleport, ambience, overlays, antistick, etc.
     
     new maxplayers = GetMaxClients();
     for (new x = 1; x <= maxplayers; x++)
