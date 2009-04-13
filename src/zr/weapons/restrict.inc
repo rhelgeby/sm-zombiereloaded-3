@@ -19,7 +19,7 @@ new Handle:kvWeaponGroups = INVALID_HANDLE;
 /**
  * Array that stores the "HookID" to be later unhooked on player disconnect.
  */
-new gCanUseHookID[MAXPLAYERS+1];
+new gCanUseHookID[MAXPLAYERS + 1];
 
 /**
  * Query results returned when (un)restricting a weapon.

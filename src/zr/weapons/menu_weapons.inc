@@ -20,7 +20,7 @@ enum WeaponsMenu
 /**
  * Array to store the client's current weapon menu
  */
-new WeaponsMenu:curMenuWeapons[MAXPLAYERS+1];
+new WeaponsMenu:curMenuWeapons[MAXPLAYERS + 1];
 
 /**
  * Sends main weapon menu to client.

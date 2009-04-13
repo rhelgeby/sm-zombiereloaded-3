@@ -20,7 +20,7 @@ enum ZRHooks
     Hook_OnTakeDamage
 }
 
-new gHooks[MAXPLAYERS+1][ZRHooks];
+new gHooks[MAXPLAYERS + 1][ZRHooks];
 
 InitDmgControl()
 {

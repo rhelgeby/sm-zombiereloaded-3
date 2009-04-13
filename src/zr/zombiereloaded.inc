@@ -64,34 +64,34 @@ enum ZTeam
  */
 
 new bool:market;
-new dxLevel[MAXPLAYERS+1];
+new dxLevel[MAXPLAYERS + 1];
 
 new bool:zombieSpawned;
-new bool:motherZombie[MAXPLAYERS+1];
-new bool:gZombie[MAXPLAYERS+1];
-new bool:gBlockMotherInfect[MAXPLAYERS+1];
-new bool:bZVision[MAXPLAYERS+1];
-//new bool:bZVisionOn[MAXPLAYERS+1];
-//new String:ZVisionOverlay[MAXPLAYERS+1][PLATFORM_MAX_PATH];
-new bool:dispHP[MAXPLAYERS+1];
-new bool:pProtect[MAXPLAYERS+1];
-new bool:gKilledByWorld[MAXPLAYERS+1] = {false, ...};
+new bool:motherZombie[MAXPLAYERS + 1];
+new bool:gZombie[MAXPLAYERS + 1];
+new bool:gBlockMotherInfect[MAXPLAYERS + 1];
+new bool:bZVision[MAXPLAYERS + 1];
+//new bool:bZVisionOn[MAXPLAYERS + 1];
+//new String:ZVisionOverlay[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
+new bool:dispHP[MAXPLAYERS + 1];
+new bool:pProtect[MAXPLAYERS + 1];
+new bool:gKilledByWorld[MAXPLAYERS + 1] = {false, ...};
 
-new pClass[MAXPLAYERS+1];
-new pNextClass[MAXPLAYERS+1];
+new pClass[MAXPLAYERS + 1];
+new pNextClass[MAXPLAYERS + 1];
 
-new pTimeLeft[MAXPLAYERS+1];
+new pTimeLeft[MAXPLAYERS + 1];
 
-new Float:spawnLoc[MAXPLAYERS+1][3];
-new Float:bufferLoc[MAXPLAYERS+1][3];
-new bool:ztele_spawned[MAXPLAYERS+1] = {false, ...};
-new bool:bufferLocSaved[MAXPLAYERS+1] = {false, ...};
-new ztele_countdown[MAXPLAYERS+1] = {-1, ...};
-new ztele_count[MAXPLAYERS+1];
+new Float:spawnLoc[MAXPLAYERS + 1][3];
+new Float:bufferLoc[MAXPLAYERS + 1][3];
+new bool:ztele_spawned[MAXPLAYERS + 1] = {false, ...};
+new bool:bufferLocSaved[MAXPLAYERS + 1] = {false, ...};
+new ztele_countdown[MAXPLAYERS + 1] = {-1, ...};
+new ztele_count[MAXPLAYERS + 1];
 new bool:ztele_online = false;
 new Handle:ztele_startup_timer = INVALID_HANDLE;
-new Handle:ztele_countdown_timer[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-new Handle:ztele_cooldown_timer[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+new Handle:ztele_countdown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
+new Handle:ztele_cooldown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 
 new maxclients;
 
@@ -110,7 +110,7 @@ new Handle:pList = INVALID_HANDLE;
 #define TRESPAWN 5
 #define TZVISION 6
 
-new Handle:tHandles[MAXPLAYERS+1][MAXTIMERS];
+new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
 
 new QueryCookie:mat_dxlevel;
 
