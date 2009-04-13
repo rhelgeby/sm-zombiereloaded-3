@@ -115,6 +115,20 @@ stock ZR_TranslateMessage(String:buffer[], maxlen, any:...)
     VFormat(buffer, maxlen, "%t", 3);
 }
 
+/**
+ * Logs a formatted message with module and block info depending, on the type.
+ *
+ * @param client    Specifies the client who triggered the event/command. Use
+ *                  -1 for core events like validation, etc.
+ * @param module    what module the log event belongs to.
+ * @param block     What function or code block the log is triggered from.
+ * @param message   Log message. Formatted string.
+ * @param type      Optional. What logging type or style to use. Options:
+ *                  LOG_FORMAT_TYPE_SIMPLE - Simple, no module or block info.
+ *                  LOG_FORMAT_TYPE_FULL - Full, with module and block info.
+ *                  LOG_FORMAT_TYPE_ERROR - Full, but log to error log instead.
+ * @param any...    Formatting parameters.
+ */
 stock ZR_LogMessageFormatted(client, const String:module[], const String:block[], const String:message[], type = LOG_FORMAT_TYPE_FULL, any:...)
 {
     decl String:buffer[2048];
