@@ -263,7 +263,7 @@ LogFlagCheck(logtype, modulefilter = 0)
 {
     if (modulefilter && (logtype & LOG_MODULES_ENABLED))
     {
-        if (type & modulefilter)
+        if (logtype & modulefilter)
         {
             return 1;
         }

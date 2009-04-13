@@ -48,17 +48,16 @@ enum ZTeam
 #define LOG_MODULES_ENABLED         512         /** Enable module based log control. Module logs overrides previous flags, including debug flags. */
 #define LOG_MODULE_CORE             1024        /** The core of the plugin (startup, loading configs, etc.). Not really a module. */
 #define LOG_MODULE_COMMANDS         2048        /** commands.inc */
-#define LOG_MODULE_CLASSES          4096        /** Class system - playerclasses/*.inc */
+#define LOG_MODULE_CLASSES          4096        /** Class system - playerclasses/ *.inc */
 #define LOG_MODULE_ZOMBIE           8192        /** zombie.inc */
 #define LOG_MODULE_SAYTRIGGERS      16384       /** sayhooks.inc */
 #define LOG_MODULE_AMBIENCE         32768       /** ambience.inc */
 #define LOG_MODULE_OVERLAYS         65536       /** overlays.inc */
 #define LOG_MODULE_TELEPORT         131072      /** teleport.inc */
-#define LOG_MODULE_WEAPONS          262144      /** Weapons module - weapons/*.inc */
-#define LOG_MODULE_COMMANDS         524288      /** commands.inc */
-#define LOG_MODULE_ANTICAMP         1048576     /** anticamp.inc */
-#define LOG_MODULE_DAMAGECONTROL    2097152     /** damagecontrol.inc */
-#define LOG_MODULE_OFFSETS          4194304     /** offsets.inc */
+#define LOG_MODULE_WEAPONS          262144      /** Weapons module - weapons/ *.inc */
+#define LOG_MODULE_ANTICAMP         524288      /** anticamp.inc */
+#define LOG_MODULE_DAMAGECONTROL    1048576     /** damagecontrol.inc */
+#define LOG_MODULE_OFFSETS          2097152     /** offsets.inc */
 /*
  * @endsection
  */

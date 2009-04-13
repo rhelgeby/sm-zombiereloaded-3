@@ -222,6 +222,8 @@ WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[])
         return Successful_Group;
     }
     
+    WeaponGetDisplayName(weapon, display);
+    
     if (!WeaponsIsValidWeapon(weapon))
     {
         return Invalid;
@@ -231,8 +233,6 @@ WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[])
     {
         return Failed_Weapon;
     }
-    
-    WeaponGetDisplayName(weapon, display);
     
     PushArrayString(gRestrictedWeapons, display);
     
@@ -286,6 +286,8 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[])
         return Successful_Group;
     }
     
+    WeaponGetDisplayName(weapon, display);
+    
     if (!WeaponsIsValidWeapon(weapon))
     {
         return Invalid;
@@ -295,8 +297,6 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[])
     {
         return Failed_Weapon;
     }
-    
-    WeaponGetDisplayName(weapon, display);
     
     new weaponindex = RestrictGetIndex(display);
     if (weaponindex > -1)
@@ -330,7 +330,7 @@ bool:RestrictIsWeaponRestricted(const String:weapon[])
 }
 
 /**
- * Checks if a weapon group is restricted.
+ * Checks if a weapon group is completely restricted.
  * 
  * @param weapongroup    The weapon group name.
  */
@@ -355,6 +355,44 @@ bool:RestrictIsGroupRestricted(const String:weapongroup[])
     }
     
     return false;
+}
+
+/**
+ * Checks if a weapon group is completely unrestricted.
+ * 
+ * @param weapongroup    The weapon group name.
+ */
+bool:RestrictIsGroupUnrestricted(const String:weapongroup[])
+{
+    KvRewind(kvWeaponGroups);
+    if (KvJumpToKey(kvWeaponGroups, weapongroup))
+    {
+        decl String:groupweapon[WEAPONS_MAX_LENGTH];
+        
+        do
+        {
+            KvGetSectionName(kvWeaponGroups, groupweapon, WEAPONS_MAX_LENGTH);
+            
+            if (RestrictIsWeaponRestricted(groupweapon))
+            {
+                return false;
+            }
+        } while (KvGotoNextKey(kvWeaponGroups));
+        
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Checks if a weapon group is partially restricted.
+ * 
+ * @param weapongroup    The weapon group name.
+ */
+bool:RestrictIsPartialRestricted(const String:weapongroup[])
+{
+    return (!RestrictIsGroupRestricted(weapongroup) && !RestrictIsGroupUnrestricted(weapongroup));
 }
 
 /**

@@ -43,7 +43,7 @@ WeaponsMenuMain(client)
     Format(zmarket, sizeof(zmarket), "%t", "Weapons menu main market");
     
     AddMenuItem(menu_weapons_main, "toggleweaponrestriction", toggleweaponrestriction);
-    AddMenuItem(menu_weapons_main, "togglewgrouprestriction", togglewgrouprestriction);
+    AddMenuItem(menu_weapons_main, "togglewgrouprestriction", togglewgrouprestriction, ITEMDRAW_DISABLED);
     
     // Disable market option if market isn't installed
     if (market)
@@ -120,65 +120,75 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
     
     SetGlobalTransTarget(client);
     
-    SetMenuTitle(menu_weapons_weapons, "%t\n ", "Weapons menu weapons title");
-    
     // If client wants to perform an action on a single weapon, show weapon list
-    if (curMenuWeapons[client] == Weapon)
+    switch(curMenuWeapons[client])
     {
-        decl String:weapon[WEAPONS_MAX_LENGTH];
-        new Handle:arrayWeapons = INVALID_HANDLE;
-        new size = WeaponsCreateWeaponArray(arrayWeapons);
-        
-        // x = Array index
-        for (new x = 0; x < size; x++)
+        case Weapon:
         {
-            GetArrayString(arrayWeapons, x, weapon, sizeof(weapon));
+            SetMenuTitle(menu_weapons_weapons, "%t\n ", "Weapons menu weapons weapon title");
             
-            new bool:menu = WeaponsIsWeaponMenu(weapon);
+            decl String:weapon[WEAPONS_MAX_LENGTH];
+            decl String:display[WEAPONS_MAX_LENGTH + 1];
+            new Handle:arrayWeapons = INVALID_HANDLE;
+            new size = WeaponsCreateWeaponArray(arrayWeapons);
             
-            if (RestrictIsWeaponRestricted(weapon))
+            // x = Array index
+            for (new x = 0; x < size; x++)
             {
-                Format(weapon, sizeof(weapon), "%s*", weapon);
+                GetArrayString(arrayWeapons, x, weapon, sizeof(weapon));
+                
+                new bool:menu = WeaponsIsWeaponMenu(weapon);
+                
+                strcopy(display, sizeof(display), weapon);
+                
+                if (RestrictIsWeaponRestricted(weapon))
+                {
+                    Format(display, sizeof(display), "%s*", weapon);
+                }
+                
+                // If weapon restriction is blocked for the menu, disable option
+                if (menu)
+                {
+                    AddMenuItem(menu_weapons_weapons, weapon, display);
+                }
+                else
+                {
+                    AddMenuItem(menu_weapons_weapons, weapon, display, ITEMDRAW_DISABLED);
+                }
             }
             
-            // If weapon restriction is blocked for the menu, disable option
-            if (menu)
-            {
-                AddMenuItem(menu_weapons_weapons, weapon, weapon);
-            }
-            else
-            {
-                AddMenuItem(menu_weapons_weapons, weapon, weapon, ITEMDRAW_DISABLED);
-            }
+            // Kill the array handle
+            CloseHandle(arrayWeapons);
         }
-        
-        // Kill the array handle
-        CloseHandle(arrayWeapons);
-    }
-    // If client wants to perform an action on a weapon group, show custom group list
-    else if (curMenuWeapons[client] == WeaponGroup)
-    {
-        decl String:weapongroup[WEAPONS_MAX_LENGTH];
-        new Handle:arrayWeaponGroups = INVALID_HANDLE;
-        new size = RestrictCreateGroupArray(arrayWeaponGroups);
-        
-        // x = Array index
-        for (new x = 0; x < size; x++)
+        // If client wants to perform an action on a weapon group, show custom group list
+        case WeaponGroup:
         {
-            GetArrayString(arrayWeaponGroups, x, weapongroup, sizeof(weapongroup));
+            SetMenuTitle(menu_weapons_weapons, "%t\n ", "Weapons menu weapons group title");
             
-            if (RestrictIsWeaponRestricted(weapongroup))
+            decl String:weapongroup[WEAPONS_MAX_LENGTH];
+            decl String:display[WEAPONS_MAX_LENGTH + 1];
+            new Handle:arrayWeaponGroups = INVALID_HANDLE;
+            new size = RestrictCreateGroupArray(arrayWeaponGroups);
+            
+            // x = Array index
+            for (new x = 0; x < size; x++)
             {
-                Format(weapongroup, sizeof(weapongroup), "%s*", weapongroup);
+                GetArrayString(arrayWeaponGroups, x, weapongroup, sizeof(weapongroup));
+                
+                strcopy(display, sizeof(display), weapongroup);
+                
+                if (RestrictIsGroupRestricted(weapongroup))
+                {
+                    Format(display, sizeof(display), "%s*", weapongroup);
+                }
+                
+                AddMenuItem(menu_weapons_weapons, weapongroup, display);
             }
             
-            AddMenuItem(menu_weapons_weapons, weapongroup, weapongroup);
+            // Kill the array handle
+            CloseHandle(arrayWeaponGroups);
         }
-        
-        // Kill the array handle
-        CloseHandle(arrayWeaponGroups);
     }
-    
     SetMenuExitBackButton(menu_weapons_weapons, true);
         
     DisplayMenu(menu_weapons_weapons, client, MENU_TIME_FOREVER);
@@ -212,7 +222,7 @@ public WeaponsMenuWeaponsHandle(Handle:menu_weapons_weapons, MenuAction:action, 
             restrict = RestrictIsWeaponRestricted(weapon);
         }
         
-        if (restrict)
+        if (!restrict)
         {
             decl String:display[WEAPONS_MAX_LENGTH];
             
@@ -222,29 +232,29 @@ public WeaponsMenuWeaponsHandle(Handle:menu_weapons_weapons, MenuAction:action, 
             {
                 case Successful_Weapon:
                 {
-                    ZR_PrintToChat(0, "Restrict weapon", display);
+                    ZR_PrintToChat(0, "Restrict weapon", weapon);
                 }
                 case Successful_Group:
                 {
                     decl String:weaponlist[128];
-                    RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
+                    RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
                     
-                    ZR_PrintToChat(0, "Restrict custom weapon group", display, weaponlist);
+                    ZR_PrintToChat(0, "Restrict custom weapon group", weapon, weaponlist);
                 }
                 case Failed_Weapon:
                 {
-                    ZR_PrintToChat(client, "Restrict weapon failed", display);
+                    ZR_PrintToChat(client, "Restrict weapon failed", weapon);
                 }
                 case Failed_Group:
                 {
                     decl String:weaponlist[128];
-                    RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
+                    RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
                     
-                    ZR_PrintToChat(client, "Restrict custom weapon group failed", display, weaponlist);
+                    ZR_PrintToChat(client, "Restrict custom weapon group failed", weapon, weaponlist);
                 }
                 case Invalid:
                 {
-                    ZR_PrintToChat(client, "Weapon invalid", display);
+                    ZR_PrintToChat(client, "Weapon invalid", weapon);
                 }
             }
         }
@@ -258,22 +268,22 @@ public WeaponsMenuWeaponsHandle(Handle:menu_weapons_weapons, MenuAction:action, 
             {
                 case Successful_Weapon:
                 {
-                    ZR_PrintToChat(0, "Unrestrict weapon", display);
+                    ZR_PrintToChat(0, "Unrestrict weapon", weapon);
                 }
                 case Successful_Group:
                 {
                     decl String:weaponlist[128];
-                    RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
+                    RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
                     
-                    ZR_PrintToChat(0, "Unrestrict custom weapon group", display, weaponlist);
+                    ZR_PrintToChat(0, "Unrestrict custom weapon group", weapon, weaponlist);
                 }
                 case Failed_Weapon:
                 {
-                    ZR_PrintToChat(client, "Unrestrict weapon failed", display);
+                    ZR_PrintToChat(client, "Unrestrict weapon failed", weapon);
                 }
                 case Invalid:
                 {
-                    ZR_PrintToChat(client, "Weapon invalid", display);
+                    ZR_PrintToChat(client, "Weapon invalid", weapon);
                 }
             }
         }
