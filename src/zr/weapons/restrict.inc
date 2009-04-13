@@ -36,19 +36,19 @@ enum WpnRestrictQuery
 /**
  * Initialize data and hook commands.
  */
-WeaponRestrictInit()
+RestrictInit()
 {
     // Initialize weapon restrict array
     gRestrictedWeapons = CreateArray(32, 0);
     
     // Hook buy command
-    RegConsoleCmd("buy", WeaponRestrictBuyHook);
+    RegConsoleCmd("buy", RestrictBuyHook);
 }
 
 /**
  * Loads weapon data from file.
  */
-WeaponRestrictOnMapStart()
+RestrictOnMapStart()
 {
     // Clear restricted weapons
     RestrictWeaponUnrestrictAll();
@@ -70,6 +70,11 @@ WeaponRestrictOnMapStart()
         SetFailState("\"%s\" missing from server", path);
     }
     
+    RestrictValidateWeaponGroups();
+}
+
+RestrictValidateWeaponGroups()
+{
     KvRewind(kvWeaponGroups);
     
     if (KvGotoFirstSubKey(kvWeaponGroups))
@@ -78,7 +83,7 @@ WeaponRestrictOnMapStart()
         {
             if (KvGotoFirstSubKey(kvWeaponGroups))
             {
-                decl String:groupweapon[32];
+                decl String:groupweapon[WEAPONS_MAX_LENGTH];
                 
                 do
                 {
@@ -87,7 +92,7 @@ WeaponRestrictOnMapStart()
                     
                     if (!WeaponsIsValidWeapon(groupweapon))
                     {
-                        // TODO: LOG INVALID WEAPON
+                        // VALIDATE
                     }
                 } while (KvGotoNextKey(kvWeaponGroups));
                 
@@ -110,9 +115,9 @@ RestrictWeaponUnrestrictAll()
  * 
  * @param client    The client index.
  */
-WeaponRestrictClientInit(client)
+RestrictClientInit(client)
 {
-    gCanUseHookID[client] = Hacks_Hook(client, HACKS_HTYPE_WEAPON_CANUSE, WeaponRestrictCanUse, false);
+    gCanUseHookID[client] = Hacks_Hook(client, HACKS_HTYPE_WEAPON_CANUSE, RestrictCanUse, false);
 }
 
 /**
@@ -120,7 +125,7 @@ WeaponRestrictClientInit(client)
  * 
  * @param client    The client index.
  */
-WeaponRestrictClientDisconnect(client)
+RestrictOnClientDisconnect(client)
 {
     Hacks_Unhook(gCanUseHookID[client]);
 }
@@ -132,7 +137,7 @@ WeaponRestrictClientDisconnect(client)
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action:WeaponRestrictBuyHook(client, argc)
+public Action:RestrictBuyHook(client, argc)
 {
     // If plugin is disabled then stop
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
@@ -157,7 +162,7 @@ public Action:WeaponRestrictBuyHook(client, argc)
     ReplaceString(weapon, sizeof(weapon), "weapon_", "");
     
     // Check if the weapon is restricted, if so then block command
-    if (WeaponRestrictIsRestricted(weapon))
+    if (RestrictIsWeaponRestricted(weapon))
     {
         ZR_PrintToChat(client, "Weapon is restricted", weapon);
         
@@ -179,69 +184,19 @@ public Action:WeaponRestrictBuyHook(client, argc)
  *                  Failed_Group: The call failed to restrict a weapon group.
  *                  Invalid: The call was unsuccessful due to invalid weapon.
  */
-WpnRestrictQuery:WeaponRestrictRestrict(const String:weapon[])
+WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[])
 {
-    if (WeaponRestrictIsCustomGroup(weapon))
+    if (RestrictIsWeaponGroup(weapon))
     {
-        KvRewind(kvWeaponGroups);
-        KvJumpToKey(kvWeaponGroups, weapon);
-        
-        if (KvGotoFirstSubKey(kvWeaponGroups))
+        if (RestrictIsGroupRestricted(weapon))
         {
-            decl String:groupweapon[32];
-            
-            do
-            {
-                
-                KvGetSectionName(kvWeaponGroups, groupweapon, sizeof(groupweapon));
-                
-                // If weapon is invalid, then skip
-                if (!WeaponsIsValidWeapon(groupweapon))
-                {
-                    continue;
-                }
-                
-                if (!WeaponRestrictIsRestricted(groupweapon))
-                {
-                    PushArrayString(gRestrictedWeapons, groupweapon);
-                }
-            } while (KvGotoNextKey(kvWeaponGroups));
+            return Failed_Group;
         }
         
-        return Successful_Group;
-    }
-    
-    if (!WeaponsIsValidWeapon(weapon))
-    {
-        return Invalid;
-    }
-    
-    if (WeaponRestrictIsRestricted(weapon))
-    {
-        return Failed_Weapon;
-    }
-    
-    PushArrayString(gRestrictedWeapons, weapon);
-    
-    return Successful_Weapon;
-}
-
-/**
- * Unrestricts a weapon.
- * 
- * @param weapon    The weapon/group name.
- * @return          Successful_Weapon: The call successfully restricted a weapon.
- *                  Successful_Group: The call successfully restricted a weapon group.
- *                  Failed_Weapon: The call failed to restrict a weapon.
- *                  Failed_Group: The call failed to restrict a weapon group. 
- *                  Invalid: The call was unsuccessful due to invalid weapon.
- */
-WpnRestrictQuery:WeaponRestrictUnrestrict(const String:weapon[])
-{
-    if (WeaponRestrictIsCustomGroup(weapon))
-    {
         KvRewind(kvWeaponGroups);
         KvJumpToKey(kvWeaponGroups, weapon);
+        
+        KvGetSectionName(kvWeaponGroups, display, WEAPONS_MAX_LENGTH);
         
         if (KvGotoFirstSubKey(kvWeaponGroups))
         {
@@ -257,9 +212,69 @@ WpnRestrictQuery:WeaponRestrictUnrestrict(const String:weapon[])
                     continue;
                 }
                 
-                if (WeaponRestrictIsRestricted(groupweapon))
+                if (!RestrictIsWeaponRestricted(groupweapon))
                 {
-                    new weaponindex = WeaponRestrictGetIndex(groupweapon);
+                    PushArrayString(gRestrictedWeapons, groupweapon);
+                }
+            } while (KvGotoNextKey(kvWeaponGroups));
+        }
+        
+        return Successful_Group;
+    }
+    
+    if (!WeaponsIsValidWeapon(weapon))
+    {
+        return Invalid;
+    }
+    
+    if (RestrictIsWeaponRestricted(weapon))
+    {
+        return Failed_Weapon;
+    }
+    
+    WeaponGetDisplayName(weapon, display);
+    
+    PushArrayString(gRestrictedWeapons, display);
+    
+    return Successful_Weapon;
+}
+
+/**
+ * Unrestricts a weapon.
+ * 
+ * @param weapon    The weapon/group name.
+ * @return          Successful_Weapon: The call successfully restricted a weapon.
+ *                  Successful_Group: The call successfully restricted a weapon group.
+ *                  Failed_Weapon: The call failed to restrict a weapon.
+ *                  Failed_Group: The call failed to restrict a weapon group. 
+ *                  Invalid: The call was unsuccessful due to invalid weapon.
+ */
+WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[])
+{
+    if (RestrictIsWeaponGroup(weapon))
+    {
+        KvRewind(kvWeaponGroups);
+        KvJumpToKey(kvWeaponGroups, weapon);
+        
+        KvGetSectionName(kvWeaponGroups, display, WEAPONS_MAX_LENGTH);
+        
+        if (KvGotoFirstSubKey(kvWeaponGroups))
+        {
+            decl String:groupweapon[WEAPONS_MAX_LENGTH];
+            
+            do
+            {
+                KvGetSectionName(kvWeaponGroups, groupweapon, sizeof(groupweapon));
+                
+                // If weapon is invalid, then skip
+                if (!WeaponsIsValidWeapon(groupweapon))
+                {
+                    continue;
+                }
+                
+                if (RestrictIsWeaponRestricted(groupweapon))
+                {
+                    new weaponindex = RestrictGetIndex(groupweapon);
                     if (weaponindex > -1)
                     {
                         RemoveFromArray(gRestrictedWeapons, weaponindex);
@@ -276,12 +291,14 @@ WpnRestrictQuery:WeaponRestrictUnrestrict(const String:weapon[])
         return Invalid;
     }
     
-    if (!WeaponRestrictIsRestricted(weapon))
+    if (!RestrictIsWeaponRestricted(weapon))
     {
         return Failed_Weapon;
     }
     
-    new weaponindex = WeaponRestrictGetIndex(weapon);
+    WeaponGetDisplayName(weapon, display);
+    
+    new weaponindex = RestrictGetIndex(display);
     if (weaponindex > -1)
     {
         RemoveFromArray(gRestrictedWeapons, weaponindex);
@@ -295,7 +312,7 @@ WpnRestrictQuery:WeaponRestrictUnrestrict(const String:weapon[])
  * 
  * @param weapon    The weapon name.
  */
-bool:WeaponRestrictIsRestricted(const String:weapon[])
+bool:RestrictIsWeaponRestricted(const String:weapon[])
 {
     new size = GetArraySize(gRestrictedWeapons);
     for (new x = 0; x < size; x++)
@@ -313,11 +330,39 @@ bool:WeaponRestrictIsRestricted(const String:weapon[])
 }
 
 /**
+ * Checks if a weapon group is restricted.
+ * 
+ * @param weapongroup    The weapon group name.
+ */
+bool:RestrictIsGroupRestricted(const String:weapongroup[])
+{
+    KvRewind(kvWeaponGroups);
+    if (KvJumpToKey(kvWeaponGroups, weapongroup))
+    {
+        decl String:groupweapon[WEAPONS_MAX_LENGTH];
+        
+        do
+        {
+            KvGetSectionName(kvWeaponGroups, groupweapon, WEAPONS_MAX_LENGTH);
+            
+            if (!RestrictIsWeaponRestricted(groupweapon))
+            {
+                return false;
+            }
+        } while (KvGotoNextKey(kvWeaponGroups));
+        
+        return true;
+    }
+    
+    return false;
+}
+
+/**
  * Returns the array index of the restricted weapon.
  * 
  * @param weapon    The weapon name.
  */
-WeaponRestrictGetIndex(const String:weapon[])
+RestrictGetIndex(const String:weapon[])
 {
     new size = GetArraySize(gRestrictedWeapons);
     for (new x = 0; x < size; x++)
@@ -340,13 +385,41 @@ WeaponRestrictGetIndex(const String:weapon[])
  * @param groupname     Name of the group to check.
  * @return              True if it's a group, false if not.
  */
-bool:WeaponRestrictIsCustomGroup(const String:groupname[])
+bool:RestrictIsWeaponGroup(const String:groupname[])
 {
     // Reset the traversal stack
     KvRewind(kvWeaponGroups);
     
     // Returns true if groupname is listed in the custom groups file
     return KvJumpToKey(kvWeaponGroups, groupname);
+}
+
+/**
+ * Creates an array of all listed weapon groups in weapongroups.txt.
+ * @param arrayWeaponGroups  The handle of the array, don't forget to call CloseHandle
+ *                           on it when finished!
+ * @return                   The size of the array.
+ */
+RestrictCreateGroupArray(&Handle:arrayWeaponGroups, maxlen = WEAPONS_MAX_LENGTH)
+{
+    arrayWeaponGroups = CreateArray(maxlen);
+    new count = 0;
+    
+    KvRewind(kvWeaponGroups);
+    if (KvGotoFirstSubKey(kvWeaponGroups))
+    {
+        decl String:weapongroup[maxlen];
+        
+        do
+        {
+            KvGetSectionName(kvWeaponGroups, weapongroup, maxlen);
+            
+            PushArrayString(arrayWeaponGroups, weapongroup);
+            count++;
+        } while (KvGotoNextKey(kvWeaponGroups));
+    }
+    
+    return count;
 }
 
 /**
@@ -358,7 +431,7 @@ bool:WeaponRestrictIsCustomGroup(const String:groupname[])
  * @param maxlen        Maximum length of the weapon list, the rest is truncated.
  * @param separator     Separator character between weapon names. 
  */
-WeaponRestrictGetWeaponList(const String:groupname[], String:weaponlist[], maxlen, const String:separator[])
+RestrictGetGroupWeapons(const String:groupname[], String:weaponlist[], maxlen, const String:separator[])
 {
     KvRewind(kvWeaponGroups);
     KvJumpToKey(kvWeaponGroups, groupname);
@@ -397,7 +470,7 @@ WeaponRestrictGetWeaponList(const String:groupname[], String:weaponlist[], maxle
  * @param weapon    The weapon index.
  * @return          0 to block weapon pickup, Hacks_Continue to allow.
  */
-public WeaponRestrictCanUse(client, weapon, dummy1, dummy2, dummy3, dummy4)
+public RestrictCanUse(client, weapon, dummy1, dummy2, dummy3, dummy4)
 {
     // If plugin is disabled then stop
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
@@ -413,7 +486,7 @@ public WeaponRestrictCanUse(client, weapon, dummy1, dummy2, dummy3, dummy4)
     ReplaceString(weaponname, sizeof(weaponname), "weapon_", "");
     
     // If the weapon is restricted then prevent pickup
-    if (WeaponRestrictIsRestricted(weaponname))
+    if (RestrictIsWeaponRestricted(weaponname))
     {
         return 0;
     }

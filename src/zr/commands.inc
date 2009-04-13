@@ -154,30 +154,41 @@ public Action:Command_Restrict(client, argc)
     // Strip "weapon_" from entity name
     ReplaceString(arg1, sizeof(arg1), "weapon_", "");
     
-    new WpnRestrictQuery:output = WeaponRestrictRestrict(arg1);
+    decl String:display[WEAPONS_MAX_LENGTH];
+    
+    new WpnRestrictQuery:output = RestrictRestrict(arg1, display);
     
     switch(output)
     {
         case Successful_Weapon:
         {
-            ZR_PrintToChat(0, "Restrict weapon", arg1);
+            ZR_PrintToChat(0, "Restrict weapon", display);
         }
         case Successful_Group:
         {
             decl String:weaponlist[128];
-            WeaponRestrictGetWeaponList(arg1, weaponlist, sizeof(weaponlist), ", ");
+            RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
             
-            ZR_PrintToChat(0, "Restrict custom weapon group", arg1, weaponlist);
+            ZR_PrintToChat(0, "Restrict custom weapon group", display, weaponlist);
         }
         case Failed_Weapon:
         {
-            ZR_ReplyToCommand(client, "Restrict weapon failed", arg1);
+            ZR_ReplyToCommand(client, "Restrict weapon failed", display);
+            
+            return Plugin_Handled;
+        }
+        case Failed_Group:
+        {
+            decl String:weaponlist[128];
+            RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
+            
+            ZR_ReplyToCommand(client, "Restrict custom weapon group failed", display, weaponlist);
             
             return Plugin_Handled;
         }
         case Invalid:
         {
-            ZR_ReplyToCommand(client, "Weapon invalid", arg1);
+            ZR_ReplyToCommand(client, "Weapon invalid", display);
             
             return Plugin_Handled;
         }
@@ -217,30 +228,32 @@ public Action:Command_Unrestrict(client, argc)
     // Strip "weapon_" from entity name
     ReplaceString(arg1, sizeof(arg1), "weapon_", "");
     
-    new WpnRestrictQuery:output = WeaponRestrictUnrestrict(arg1);
+    decl String:display[WEAPONS_MAX_LENGTH];
+    
+    new WpnRestrictQuery:output = RestrictUnrestrict(arg1, display);
     
     switch(output)
     {
         case Successful_Weapon:
         {
-            ZR_PrintToChat(0, "Unrestrict weapon", arg1);
+            ZR_PrintToChat(0, "Unrestrict weapon", display);
         }
         case Successful_Group:
         {
             decl String:weaponlist[128];
-            WeaponRestrictGetWeaponList(arg1, weaponlist, sizeof(weaponlist), ", ");
+            RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
             
-            ZR_PrintToChat(0, "Unrestrict custom weapon group", arg1, weaponlist);
+            ZR_PrintToChat(0, "Unrestrict custom weapon group", display, weaponlist);
         }
         case Failed_Weapon:
         {
-            ZR_ReplyToCommand(client, "Unrestrict weapon failed", arg1);
+            ZR_ReplyToCommand(client, "Unrestrict weapon failed", display);
             
             return Plugin_Handled;
         }
         case Invalid:
         {
-            ZR_ReplyToCommand(client, "Weapon invalid", arg1);
+            ZR_ReplyToCommand(client, "Weapon invalid", display);
             
             return Plugin_Handled;
         }

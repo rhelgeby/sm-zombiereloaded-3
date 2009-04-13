@@ -106,7 +106,7 @@
 	"AK47"
 	{
 		"restrict"	"no"
-		"menu"		"no"
+		"menu"		"yes"
 	}
 
 	"M4A1"
@@ -151,4 +151,33 @@
 		"menu"		"yes"
 	}
 
+	"M249"
+	{
+		"restrict"	"yes"
+		"menu"		"yes"
+	}
+
+	"hegrenade"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"flashbang"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"smokegrenade"
+	{
+		"restrict"	"no"
+		"menu"		"yes"
+	}
+
+	"NVGs"
+	{
+		"restrict"	"yes"
+		"menu"		"no"
+	}
 }

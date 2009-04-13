@@ -222,6 +222,12 @@
 		"en"		"Weapon group @green\"{1}\" ({2}) @defaulthas been unrestricted."
 	}
 
+	"Restrict custom weapon group failed"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Weapon group @green\"{1}\" ({2}) @defaultis already restricted."
+	}
+
 	"Weapon invalid"
 	{
 		"#format"	"{1:s}"
@@ -242,24 +248,14 @@
 		"en"		"Weapons Management"
 	}
 
-	"Weapons menu main restrict weapon"
+	"Weapons menu main toggle weapon restrict"
 	{
-		"en"		"Restrict a Weapon"
+		"en"		"Toggle Weapon Restriction"
 	}
 
-	"Weapons menu main unrestrict weapon"
+	"Weapons menu main toggle weapon group restrict"
 	{
-		"en"		"Unrestrict a Weapon"
-	}
-
-	"Weapons menu main restrict weapon group"
-	{
-		"en"		"Restrict a Weapon Group"
-	}
-
-	"Weapons menu main unrestrict weapon group"
-	{
-		"en"		"Unrestrict a Weapon Group"
+		"en"		"Toggle Weapon Group Restriction"
 	}
 
 	"Weapons menu main market" // Option disabled if ZMarket isn't installed
@@ -269,7 +265,7 @@
 
 	"Weapons menu weapons title"
 	{
-		"en"		"Toggle Restrictions:"
+		"en"		"Toggle Restrictions:\n * = restricted"
 	}
 
 	"Suicide text"

@@ -55,4 +55,11 @@
 		"G2SG1" {}
 		"AWP" {}
 	}
+
+	"Grenades"
+	{
+		"hegrenade" {}
+		"flashbang" {}
+		"smokegrenade" {}
+	}
 }

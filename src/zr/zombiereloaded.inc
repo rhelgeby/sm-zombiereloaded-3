@@ -33,27 +33,35 @@ enum ZTeam
 #define DXLEVEL_MIN 90
 #define DEFAULT_FOV 90
 
-#define LOG_CORE_EVENTS            1             // Executing config files, error messages, etc.
-#define LOG_GAME_EVENTS            2             // Admin commands, suicide prevention, anticamp kills.
-#define LOG_PLAYER_COMMANDS        4             // Commands executed by non-admins: zspawn, teleport, class change.
-#define LOG_DEBUG                  8             // Debug messages.
-#define LOG_DEBUG_DETAIL           16            // Debug messages with more detail. May cause spam.
-#define LOG_DEBUG_MAX_DETAIL       32            // Low level debug messages. Causes spam! Only enable for a limited period right before and after testing.
-#define LOG_TO_ADMINS              64            // Write all kinds of log messages to admin chat.
-#define LOG_TO_CLIENT              128           // Write all log messages related to a player, to the players console.
-#define LOG_IGNORE_CONSOLE         256           // Don't log messages from client 0 (console).
-#define LOG_MODULES_ENABLED        512           // Enable detailed log control for developers. Module logs overrides previous flags.
-#define LOG_MODULE_ZOMBIE          1024          // zombie.inc
-#define LOG_MODULE_AMBIENCE        2048          // ambience.inc
-#define LOG_MODULE_OVERLAYS        4096          // overlays.inc
-#define LOG_MODULE_SAYTRIGGERS     8192          // sayhooks.inc
-#define LOG_MODULE_TELEPORT        16384         // teleport.inc
-#define LOG_MODULE_CLASSES         32768         // playerclasses/*
-#define LOG_MODULE_WEAPONRESTICT   65536         // weaponrestrict.inc
-#define LOG_MODULE_COMMANDS        131072        // commands.inc
-#define LOG_MODULE_ANTICAMP        262144        // anticamp.inc
-#define LOG_MODULE_DAMAGECONTROL   524288        // damagecontrol.inc
-#define LOG_MODULE_OFFSETS         1048576       // offsets.inc
+/**
+ * @section Logging flags.
+ */
+#define LOG_CORE_EVENTS             1           /** Executing config files, error messages, etc. */
+#define LOG_GAME_EVENTS             2           /** Admin commands, suicide prevention, anticamp kills. */
+#define LOG_PLAYER_COMMANDS         4           /** Commands executed by non-admins: zspawn, teleport, class change. */
+#define LOG_DEBUG                   8           /** Debug messages. */
+#define LOG_DEBUG_DETAIL            16          /** Debug messages with more detail. May cause spam. */
+#define LOG_DEBUG_MAX_DETAIL        32          /** Low level debug messages. Causes spam! Only enable for a limited period right before and after testing. */
+#define LOG_TO_ADMINS               64          /** Copy kinds of log events to admin chat. */
+#define LOG_TO_CLIENT               128         /** Copy all log events related to a player, to the players console. */
+#define LOG_IGNORE_CONSOLE          256         /** Don't log messages from the console (client 0). */
+#define LOG_MODULES_ENABLED         512         /** Enable module based log control. Module logs overrides previous flags, including debug flags. */
+#define LOG_MODULE_CORE             1024        /** The core of the plugin (startup, loading configs, etc.). Not really a module. */
+#define LOG_MODULE_COMMANDS         2048        /** commands.inc */
+#define LOG_MODULE_CLASSES          4096        /** Class system - playerclasses/*.inc */
+#define LOG_MODULE_ZOMBIE           8192        /** zombie.inc */
+#define LOG_MODULE_SAYTRIGGERS      16384       /** sayhooks.inc */
+#define LOG_MODULE_AMBIENCE         32768       /** ambience.inc */
+#define LOG_MODULE_OVERLAYS         65536       /** overlays.inc */
+#define LOG_MODULE_TELEPORT         131072      /** teleport.inc */
+#define LOG_MODULE_WEAPONS          262144      /** Weapons module - weapons/*.inc */
+#define LOG_MODULE_COMMANDS         524288      /** commands.inc */
+#define LOG_MODULE_ANTICAMP         1048576     /** anticamp.inc */
+#define LOG_MODULE_DAMAGECONTROL    2097152     /** damagecontrol.inc */
+#define LOG_MODULE_OFFSETS          4194304     /** offsets.inc */
+/*
+ * @endsection
+ */
 
 new bool:market;
 new dxLevel[MAXPLAYERS + 1];

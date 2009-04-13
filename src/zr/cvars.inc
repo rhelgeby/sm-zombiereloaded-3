@@ -250,13 +250,20 @@ LogHasFlag(flag)
     }
 }
 
-// Check if a log message should be written depending on log flags. Also
-// takes care of module log overrides.
-LogFlagCheck(flag, module = 0)
+/**
+ * Check if a log message should be written depending on log flags. If module
+ * overrides are enalbed only logs with it's module flag set will be logged.
+ *
+ * @param logtype   Log type flag.
+ * @param module    Specifies what module the log event belongs to.
+ *
+ * @return  True if the event should be logged, false otherwise.
+ */
+LogFlagCheck(logtype, modulefilter = 0)
 {
-    if (module && (flag & LOG_MODULES_ENABLED))
+    if (modulefilter && (logtype & LOG_MODULES_ENABLED))
     {
-        if (flag & module)
+        if (type & modulefilter)
         {
             return 1;
         }
@@ -267,6 +274,6 @@ LogFlagCheck(flag, module = 0)
     }
     else
     {
-        return LogHasFlag(flag);
+        return LogHasFlag(logtype);
     }
 }

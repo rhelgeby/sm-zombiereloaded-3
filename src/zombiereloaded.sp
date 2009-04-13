@@ -77,7 +77,10 @@ public OnPluginStart()
     HookCommands();
     FindOffsets();
     SetupGameData();
-    WeaponRestrictInit();
+    
+    // Weapons
+    WeaponsInit();
+    
     InitDmgControl();
     
     // ======================================================================
@@ -139,8 +142,6 @@ public OnMapEnd()
 
 public OnConfigsExecuted()
 {
-    
-    
     decl String:mapconfig[PLATFORM_MAX_PATH];
     
     GetCurrentMap(mapconfig, sizeof(mapconfig));
@@ -177,7 +178,7 @@ public OnClientPutInServer(client)
     dispHP[client] = zhp;
     
     // Forward event to modules.
-    WeaponRestrictClientInit(client);
+    WeaponsClientInit(client);
     ClassClientInit(client);
     if (!IsFakeClient(client)) AmbienceStart(client);
     
@@ -199,7 +200,7 @@ public OnClientDisconnect(client)
     PlayerLeft(client);
     
     // Forward event to modules.
-    WeaponRestrictClientDisconnect(client);
+    WeaponsOnClientDisconnect(client);
     ClassOnClientDisconnect(client);
     ZTeleResetClient(client);
     AmbienceStop(client);
