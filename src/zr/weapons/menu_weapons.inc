@@ -21,6 +21,11 @@ enum WeaponsMenu
 new WeaponsMenu:curMenuWeapons[MAXPLAYERS + 1];
 
 /**
+ * Array to store the client's current weapon group menu
+ */ 
+new String:curMenuGroup[WEAPONS_MAX_LENGTH][MAXPLAYERS + 1];
+
+/**
  * Sends main weapon menu to client.
  * @param client    The client index.
  */  
@@ -43,7 +48,7 @@ WeaponsMenuMain(client)
     Format(zmarket, sizeof(zmarket), "%t", "Weapons menu main market");
     
     AddMenuItem(menu_weapons_main, "toggleweaponrestriction", toggleweaponrestriction);
-    AddMenuItem(menu_weapons_main, "togglewgrouprestriction", togglewgrouprestriction, ITEMDRAW_DISABLED);
+    AddMenuItem(menu_weapons_main, "togglewgrouprestriction", togglewgrouprestriction);
     
     // Disable market option if market isn't installed
     if (market)
@@ -86,7 +91,7 @@ public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client
             }
             case 2:
             {
-                // WeaponsMenuMarket(client);
+                //WeaponsMenuMarket(client);
             }
         }
     }
@@ -177,9 +182,13 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
                 
                 strcopy(display, sizeof(display), weapongroup);
                 
-                if (RestrictIsGroupRestricted(weapongroup))
+                if (RestrictIsPartialRestricted(weapongroup))
                 {
                     Format(display, sizeof(display), "%s*", weapongroup);
+                }
+                else if (RestrictIsGroupRestricted(weapongroup))
+                {
+                    Format(display, sizeof(display), "%s**", weapongroup);
                 }
                 
                 AddMenuItem(menu_weapons_weapons, weapongroup, display);
@@ -189,6 +198,7 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
             CloseHandle(arrayWeaponGroups);
         }
     }
+    
     SetMenuExitBackButton(menu_weapons_weapons, true);
         
     DisplayMenu(menu_weapons_weapons, client, MENU_TIME_FOREVER);
@@ -209,87 +219,34 @@ public WeaponsMenuWeaponsHandle(Handle:menu_weapons_weapons, MenuAction:action, 
         decl String:weapon[WEAPONS_MAX_LENGTH];
         GetMenuItem(menu_weapons_weapons, slot, weapon, sizeof(weapon));
         
-        new WpnRestrictQuery:output;
-        
-        // Set restrict to true if were restricting a weapon/group, false if not
-        new bool:restrict;
-        if (RestrictIsWeaponGroup(weapon))
+        switch(curMenuWeapons[client])
         {
-            restrict = RestrictIsGroupRestricted(weapon);
-        }
-        else
-        {
-            restrict = RestrictIsWeaponRestricted(weapon);
-        }
-        
-        if (!restrict)
-        {
-            decl String:display[WEAPONS_MAX_LENGTH];
-            
-            output = RestrictRestrict(weapon, display);
-            
-            switch(output)
+            // Client is restricting a single weapon
+            case Weapon:
             {
-                case Successful_Weapon:
+                new WpnRestrictQuery:output;
+                
+                if (!RestrictIsWeaponRestricted(weapon))
                 {
-                    ZR_PrintToChat(0, "Restrict weapon", weapon);
+                    output = RestrictRestrict(weapon);
+                    RestrictPrintRestrictOutput(client, output, weapon, false);
                 }
-                case Successful_Group:
+                else
                 {
-                    decl String:weaponlist[128];
-                    RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
-                    
-                    ZR_PrintToChat(0, "Restrict custom weapon group", weapon, weaponlist);
+                    output = RestrictUnrestrict(weapon);
+                    RestrictPrintUnrestrictOutput(client, output, weapon, false);
                 }
-                case Failed_Weapon:
-                {
-                    ZR_PrintToChat(client, "Restrict weapon failed", weapon);
-                }
-                case Failed_Group:
-                {
-                    decl String:weaponlist[128];
-                    RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
-                    
-                    ZR_PrintToChat(client, "Restrict custom weapon group failed", weapon, weaponlist);
-                }
-                case Invalid:
-                {
-                    ZR_PrintToChat(client, "Weapon invalid", weapon);
-                }
+                
+                // Resend menu
+                WeaponsMenuWeapons(client, curMenuWeapons[client]);
+            }
+            // Client is accessing a weapon group
+            case WeaponGroup:
+            {
+                // Send weapon group menu
+                WeaponsMenuWeaponGroup(client, weapon);
             }
         }
-        else
-        {
-            decl String:display[WEAPONS_MAX_LENGTH];
-            
-            output = RestrictUnrestrict(weapon, display);
-            
-            switch(output)
-            {
-                case Successful_Weapon:
-                {
-                    ZR_PrintToChat(0, "Unrestrict weapon", weapon);
-                }
-                case Successful_Group:
-                {
-                    decl String:weaponlist[128];
-                    RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
-                    
-                    ZR_PrintToChat(0, "Unrestrict custom weapon group", weapon, weaponlist);
-                }
-                case Failed_Weapon:
-                {
-                    ZR_PrintToChat(client, "Unrestrict weapon failed", weapon);
-                }
-                case Invalid:
-                {
-                    ZR_PrintToChat(client, "Weapon invalid", weapon);
-                }
-            }
-        }
-        
-        // Resend menu
-        WeaponsMenuWeapons(client, curMenuWeapons[client]);
     }
     // Client closed the menu
     if (action == MenuAction_Cancel)
@@ -304,5 +261,130 @@ public WeaponsMenuWeaponsHandle(Handle:menu_weapons_weapons, MenuAction:action, 
     else if (action == MenuAction_End)
     {
         CloseHandle(menu_weapons_weapons);
+    }
+}
+
+WeaponsMenuWeaponGroup(client, const String:weapongroup[])
+{
+    strcopy(curMenuGroup[client], WEAPONS_MAX_LENGTH, weapongroup);
+    
+    // Create menu handle
+    new Handle:menu_weapons_groupweapon = CreateMenu(WeaponsMenuWeaponGroupHandle);
+    
+    SetMenuTitle(menu_weapons_groupweapon, "%t\n ", "Weapons menu weapon group title", weapongroup);
+    
+    decl String:restrictall[64];
+    decl String:unrestrictall[64];
+    
+    Format(restrictall, sizeof(restrictall), "%t", "Weapons menu weapon group restrict all");
+    Format(unrestrictall, sizeof(unrestrictall), "%t", "Weapons menu weapon group unrestrict all");
+    
+    if (RestrictIsGroupRestricted(weapongroup))
+    {
+        AddMenuItem(menu_weapons_groupweapon, "restrictall", restrictall, ITEMDRAW_DISABLED);
+    }
+    else
+    {
+        AddMenuItem(menu_weapons_groupweapon, "restrictall", restrictall);
+    }
+    
+    if (RestrictIsGroupUnrestricted(weapongroup))
+    {
+        AddMenuItem(menu_weapons_groupweapon, "unrestrictall", unrestrictall, ITEMDRAW_DISABLED);
+    }
+    else
+    {
+        AddMenuItem(menu_weapons_groupweapon, "unrestrictall", unrestrictall);
+    }
+    
+    decl String:groupweapon[WEAPONS_MAX_LENGTH];
+    decl String:display[WEAPONS_MAX_LENGTH + 1];
+    new Handle:arrayGroupWeapons = INVALID_HANDLE;
+    new size = RestrictCreateGroupWeaponsArray(arrayGroupWeapons, weapongroup);
+    
+    // x = Array index
+    for (new x = 0; x < size; x++)
+    {
+        GetArrayString(arrayGroupWeapons, x, groupweapon, sizeof(groupweapon));
+        
+        strcopy(display, sizeof(display), groupweapon);
+        
+        if (RestrictIsWeaponRestricted(groupweapon))
+        {
+            Format(display, sizeof(display), "%s*", groupweapon);
+        }
+        
+        AddMenuItem(menu_weapons_groupweapon, groupweapon, display);
+    }
+    
+    // Kill the array handle
+    CloseHandle(arrayGroupWeapons);
+    
+    SetMenuExitBackButton(menu_weapons_groupweapon, true);
+        
+    DisplayMenu(menu_weapons_groupweapon, client, MENU_TIME_FOREVER);
+}
+
+/**
+ * Called when client selects option in the weapon group menu, and handles it.
+ * @param menu_weapons_main     Handle of the menu being used.
+ * @param action                The action done on the menu (see menus.inc, enum MenuAction).
+ * @param client                The client index.
+ * @param slot                  The slot index selected (starting from 0).
+ */ 
+public WeaponsMenuWeaponGroupHandle(Handle:menu_weapons_groupweapon, MenuAction:action, client, slot)
+{
+    // Client selected an option
+    if (action == MenuAction_Select)
+    {
+        switch(slot)
+        {   
+            case 0:
+            {
+                new WpnRestrictQuery:output = RestrictRestrict(curMenuGroup[client]);
+                RestrictPrintRestrictOutput(client, output, curMenuGroup[client], false);
+            }
+            case 1:
+            {
+                new WpnRestrictQuery:output = RestrictUnrestrict(curMenuGroup[client]);
+                RestrictPrintUnrestrictOutput(client, output, curMenuGroup[client], false);
+            }
+            
+            default:
+            {
+                new WpnRestrictQuery:output;
+                
+                decl String:groupweapon[WEAPONS_MAX_LENGTH];
+                GetMenuItem(menu_weapons_groupweapon, slot, groupweapon, sizeof(groupweapon));
+                
+                if (!RestrictIsWeaponRestricted(groupweapon))
+                {
+                    output = RestrictRestrict(groupweapon);
+                    RestrictPrintRestrictOutput(client, output, groupweapon, false);
+                }
+                else
+                {
+                    output = RestrictUnrestrict(groupweapon);
+                    RestrictPrintUnrestrictOutput(client, output, groupweapon, false);
+                }
+            }
+        }
+        
+        // Resend menu
+        WeaponsMenuWeaponGroup(client, curMenuGroup[client]);
+    }
+    // Client closed the menu
+    if (action == MenuAction_Cancel)
+    {
+        // Client hit "Back" button
+        if (slot == MenuCancel_ExitBack)
+        {
+            WeaponsMenuWeapons(client, curMenuWeapons[client]);
+        }
+    }
+    // Client hit "Exit" button
+    else if (action == MenuAction_End)
+    {
+        CloseHandle(menu_weapons_groupweapon);
     }
 }

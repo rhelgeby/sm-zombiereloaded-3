@@ -184,7 +184,7 @@ public Action:RestrictBuyHook(client, argc)
  *                  Failed_Group: The call failed to restrict a weapon group.
  *                  Invalid: The call was unsuccessful due to invalid weapon.
  */
-WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[])
+WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[] = "")
 {
     if (RestrictIsWeaponGroup(weapon))
     {
@@ -249,10 +249,15 @@ WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[])
  *                  Failed_Group: The call failed to restrict a weapon group. 
  *                  Invalid: The call was unsuccessful due to invalid weapon.
  */
-WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[])
+WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[] = "")
 {
     if (RestrictIsWeaponGroup(weapon))
     {
+        if (RestrictIsGroupUnrestricted(weapon))
+        {
+            return Failed_Group;
+        }
+        
         KvRewind(kvWeaponGroups);
         KvJumpToKey(kvWeaponGroups, weapon);
         
@@ -308,6 +313,128 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[])
 }
 
 /**
+ * Prints text to server or client based off the output it RestrictRestrict().
+ * @param client    The client index.
+ * @param output    The output of RestrictRestrict().
+ * @param weapon    The weapon client is trying to restrict.
+ * @param cmd       True if printing output in reply to a client command.
+ */ 
+RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon[], bool:cmd)
+{
+    switch(output)
+    {
+        case Successful_Weapon:
+        {
+            ZR_PrintToChat(0, "Restrict weapon", weapon);
+        }
+        case Successful_Group:
+        {
+            decl String:weaponlist[128];
+            RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
+            
+            ZR_PrintToChat(0, "Restrict custom weapon group", weapon, weaponlist);
+        }
+        case Failed_Weapon:
+        {
+            if (cmd)
+            {
+                ZR_ReplyToCommand(client, "Restrict weapon failed", weapon);
+            }
+            else
+            {
+                ZR_PrintToChat(client, "Restrict weapon failed", weapon);
+            }
+        }
+        case Failed_Group:
+        {
+            decl String:weaponlist[128];
+            RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
+            
+            if (cmd)
+            {
+                ZR_ReplyToCommand(client, "Restrict custom weapon group failed", weapon, weaponlist);
+            }
+            else
+            {
+                ZR_PrintToChat(client, "Restrict custom weapon group failed", weapon, weaponlist);
+            }
+        }
+        case Invalid:
+        {
+            if (cmd)
+            {
+                ZR_ReplyToCommand(client, "Weapon invalid", weapon);
+            }
+            else
+            {
+                ZR_PrintToChat(client, "Weapon invalid", weapon);
+            }
+        }
+    }
+}
+
+/**
+ * Prints text to server or client based off the output it RestrictUnrestrict().
+ * @param client    The client index.
+ * @param output    The output of RestrictUnrestrict().
+ * @param weapon    The weapon client is trying to unrestrict.
+ * @param cmd       True if printing output in reply to a client command.
+ */ 
+RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weapon[], bool:cmd)
+{
+    switch(output)
+    {
+        case Successful_Weapon:
+        {
+            ZR_PrintToChat(0, "Unrestrict weapon", weapon);
+        }
+        case Successful_Group:
+        {
+            decl String:weaponlist[128];
+            RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
+            
+            ZR_PrintToChat(0, "Unrestrict custom weapon group", weapon, weaponlist);
+        }
+        case Failed_Weapon:
+        {
+            if (cmd)
+            {
+                ZR_ReplyToCommand(client, "Unrestrict weapon failed", weapon);
+            }
+            else
+            {
+                ZR_PrintToChat(client, "Unrestrict weapon failed", weapon);
+            }
+        }
+        case Failed_Group:
+        {
+            decl String:weaponlist[128];
+            RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
+            
+            if (cmd)
+            {
+                ZR_ReplyToCommand(client, "Unrestrict custom weapon group failed", weapon, weaponlist);
+            }
+            else
+            {
+                ZR_PrintToChat(client, "Unrestrict custom weapon group failed", weapon, weaponlist);
+            }
+        }
+        case Invalid:
+        {
+            if (cmd)
+            {
+                ZR_ReplyToCommand(client, "Weapon invalid", weapon);
+            }
+            else
+            {
+                ZR_PrintToChat(client, "Weapon invalid", weapon);
+            }
+        }
+    }
+}
+
+/**
  * Checks if a weapon is restricted.
  * 
  * @param weapon    The weapon name.
@@ -341,17 +468,21 @@ bool:RestrictIsGroupRestricted(const String:weapongroup[])
     {
         decl String:groupweapon[WEAPONS_MAX_LENGTH];
         
-        do
+        if (KvGotoFirstSubKey(kvWeaponGroups))
         {
-            KvGetSectionName(kvWeaponGroups, groupweapon, WEAPONS_MAX_LENGTH);
-            
-            if (!RestrictIsWeaponRestricted(groupweapon))
+            do
             {
-                return false;
-            }
-        } while (KvGotoNextKey(kvWeaponGroups));
-        
-        return true;
+                KvGetSectionName(kvWeaponGroups, groupweapon, WEAPONS_MAX_LENGTH);
+                
+                // Return false is a weapon isn't restricted, but only if the weapon is valid (we ignore invalid ones)
+                if (WeaponsIsValidWeapon(groupweapon) && !RestrictIsWeaponRestricted(groupweapon))
+                {
+                    return false;
+                }
+            } while (KvGotoNextKey(kvWeaponGroups));
+            
+            return true;
+        }
     }
     
     return false;
@@ -369,17 +500,21 @@ bool:RestrictIsGroupUnrestricted(const String:weapongroup[])
     {
         decl String:groupweapon[WEAPONS_MAX_LENGTH];
         
-        do
+        if (KvGotoFirstSubKey(kvWeaponGroups))
         {
-            KvGetSectionName(kvWeaponGroups, groupweapon, WEAPONS_MAX_LENGTH);
-            
-            if (RestrictIsWeaponRestricted(groupweapon))
+            do
             {
-                return false;
-            }
-        } while (KvGotoNextKey(kvWeaponGroups));
-        
-        return true;
+                KvGetSectionName(kvWeaponGroups, groupweapon, WEAPONS_MAX_LENGTH);
+                
+                // Return false if a weapon is restricted
+                if (RestrictIsWeaponRestricted(groupweapon))
+                {
+                    return false;
+                }
+            } while (KvGotoNextKey(kvWeaponGroups));
+            
+            return true;
+        }
     }
     
     return false;
@@ -455,6 +590,43 @@ RestrictCreateGroupArray(&Handle:arrayWeaponGroups, maxlen = WEAPONS_MAX_LENGTH)
             PushArrayString(arrayWeaponGroups, weapongroup);
             count++;
         } while (KvGotoNextKey(kvWeaponGroups));
+    }
+    
+    return count;
+}
+
+/**
+ * Creates an array of all weapons listed in a custom weapon group.
+ * @param arrayWeaponGroups  The handle of the array, don't forget to call CloseHandle
+ *                           on it when finished!
+ * @return                   The size of the array.
+ */
+RestrictCreateGroupWeaponsArray(&Handle:arrayGroupWeapons, const String:weapongroup[], maxlen = WEAPONS_MAX_LENGTH)
+{
+    arrayGroupWeapons = CreateArray(maxlen);
+    new count = 0;
+    
+    KvRewind(kvWeaponGroups);
+    if (KvJumpToKey(kvWeaponGroups, weapongroup))
+    {
+        decl String:groupweapon[maxlen];
+        
+        if (KvGotoFirstSubKey(kvWeaponGroups))
+        {
+            do
+            {
+                KvGetSectionName(kvWeaponGroups, groupweapon, maxlen);
+                
+                // If the weapon is invalid, then stop
+                if (!WeaponsIsValidWeapon(groupweapon))
+                {
+                    continue;
+                }
+                
+                PushArrayString(arrayGroupWeapons, groupweapon);
+                count++;
+            } while (KvGotoNextKey(kvWeaponGroups));
+        }
     }
     
     return count;

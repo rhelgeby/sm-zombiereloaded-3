@@ -157,42 +157,7 @@ public Action:Command_Restrict(client, argc)
     decl String:display[WEAPONS_MAX_LENGTH];
     
     new WpnRestrictQuery:output = RestrictRestrict(arg1, display);
-    
-    switch(output)
-    {
-        case Successful_Weapon:
-        {
-            ZR_PrintToChat(0, "Restrict weapon", display);
-        }
-        case Successful_Group:
-        {
-            decl String:weaponlist[128];
-            RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
-            
-            ZR_PrintToChat(0, "Restrict custom weapon group", display, weaponlist);
-        }
-        case Failed_Weapon:
-        {
-            ZR_ReplyToCommand(client, "Restrict weapon failed", display);
-            
-            return Plugin_Handled;
-        }
-        case Failed_Group:
-        {
-            decl String:weaponlist[128];
-            RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
-            
-            ZR_ReplyToCommand(client, "Restrict custom weapon group failed", display, weaponlist);
-            
-            return Plugin_Handled;
-        }
-        case Invalid:
-        {
-            ZR_ReplyToCommand(client, "Weapon invalid", display);
-            
-            return Plugin_Handled;
-        }
-    }
+    RestrictPrintRestrictOutput(client, output, display, true);
     
     if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
     {
@@ -231,33 +196,7 @@ public Action:Command_Unrestrict(client, argc)
     decl String:display[WEAPONS_MAX_LENGTH];
     
     new WpnRestrictQuery:output = RestrictUnrestrict(arg1, display);
-    
-    switch(output)
-    {
-        case Successful_Weapon:
-        {
-            ZR_PrintToChat(0, "Unrestrict weapon", display);
-        }
-        case Successful_Group:
-        {
-            decl String:weaponlist[128];
-            RestrictGetGroupWeapons(display, weaponlist, sizeof(weaponlist), ", ");
-            
-            ZR_PrintToChat(0, "Unrestrict custom weapon group", display, weaponlist);
-        }
-        case Failed_Weapon:
-        {
-            ZR_ReplyToCommand(client, "Unrestrict weapon failed", display);
-            
-            return Plugin_Handled;
-        }
-        case Invalid:
-        {
-            ZR_ReplyToCommand(client, "Weapon invalid", display);
-            
-            return Plugin_Handled;
-        }
-    }
+    RestrictPrintUnrestrictOutput(client, output, display, true);
     
     if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
     {
