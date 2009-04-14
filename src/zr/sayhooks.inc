@@ -35,10 +35,10 @@ public Action:SayCommand(client, argc)
         ZRAdminMenu(client);
     }
     
-    else if (StrEqual(args, "!zclass", false))
+    /*else if (StrEqual(args, "!zclass", false))
     {
         ZClass(client);
-    }
+    }*/
     
     else if (StrEqual(args, "!zmarket", false))
     {
@@ -77,7 +77,7 @@ public Action:SayCommand(client, argc)
     return Plugin_Continue;
 }
 
-bool:ZClass(client)
+/*bool:ZClass(client)
 {
     new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
     if (!classes)
@@ -98,7 +98,7 @@ bool:ZClass(client)
     ClassMenu(client);
     
     return true;
-}
+}*/
 
 bool:ZMarket(client)
 {

@@ -41,12 +41,12 @@ bool:ZRAdminMenu(client)
     Format(weapons, sizeof(weapons), "%t", "!zadmin main weapons");
     Format(logflags, sizeof(logflags), "%t", "!zadmin main logflags");
     
-    AddMenuItem(menu_zadmin, "knockbackm", knockbackm);
-    AddMenuItem(menu_zadmin, "knockback", knockback);
-    AddMenuItem(menu_zadmin, "nvgs", nvgs);
+    AddMenuItem(menu_zadmin, "knockbackm", knockbackm, ITEMDRAW_DISABLED);
+    AddMenuItem(menu_zadmin, "knockback", knockback, ITEMDRAW_DISABLED);
+    AddMenuItem(menu_zadmin, "nvgs", nvgs, ITEMDRAW_DISABLED);
     AddMenuItem(menu_zadmin, "infect", infect);
     AddMenuItem(menu_zadmin, "zspawn", zspawn);
-    AddMenuItem(menu_zadmin, "ztele", ztele);
+    AddMenuItem(menu_zadmin, "ztele", ztele, ITEMDRAW_DISABLED);
     AddMenuItem(menu_zadmin, "weapons", weapons);
     AddMenuItem(menu_zadmin, "logflags", logflags);
     
@@ -65,15 +65,15 @@ public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
         {
             case 0:
             {
-                ZRKnockbackMMenu(client);
+                //ZRKnockbackMMenu(client);
             }
             case 1:
             {
-                ZRClassSelectMenu(client);
+                //ZRClassSelectMenu(client);
             }
             case 2:
             {
-                ZRNVGSMenu(client);
+                //ZRNVGSMenu(client);
             }
             case 3:
             {
@@ -111,7 +111,10 @@ public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
     }
 }
 
-ZRKnockbackMMenu(client)
+/**
+ * Needs to be recoded to support new modules.
+ */ 
+/*ZRKnockbackMMenu(client)
 {
     new Handle:menu_knockbackm = CreateMenu(ZRKnockbackMHandle);
     new Float:curknockback = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
@@ -351,7 +354,7 @@ public ZRNVGSHandle(Handle:menu_nvgs, MenuAction:action, client, slot)
     {
         CloseHandle(menu_nvgs);
     }
-}
+}*/
 
 ZRInfectMenu(client)
 {

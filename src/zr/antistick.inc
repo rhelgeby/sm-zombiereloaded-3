@@ -48,44 +48,6 @@ AntiStickReset()
 }
 
 /**
- * Pushes a player away from another to prevent sticking. (Used on infect)
- *
- * @param attacker    The player to push away.
- * @param client      The client to push player away from.
-*/
-AntiStick(attacker, client)
-{
-    // Validate player is valid client and in-game
-    if (!attacker || !IsClientInGame(attacker))
-    {
-        return;
-    }
-    
-    // Retrieve cvar value for force of the push, if 0 is returned, stop function
-    new Float:force = GetConVarFloat(gCvars[CVAR_INFECT_ANTISTICK_FORCE]);
-    if (force == 0.0)
-    {
-        return;
-    }
-    
-    new Float:vector[3];
-    
-    new Float:attackerloc[3];
-    new Float:clientloc[3];
-    
-    GetClientAbsOrigin(attacker, attackerloc);
-    GetClientAbsOrigin(client, clientloc);
-    
-    MakeVectorFromPoints(attackerloc, clientloc, vector);
-    
-    NormalizeVector(vector, vector);
-    ScaleVector(vector, force);
-    
-    // Push player
-    TeleportEntity(attacker, NULL_VECTOR, NULL_VECTOR, vector);
-}
-
-/**
  * Checks if a player is currently stuck within another player
  *
  * @param client    The client index.

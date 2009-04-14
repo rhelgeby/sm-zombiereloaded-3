@@ -24,7 +24,7 @@ MainMenu(client)
     
     Format(zmenu, sizeof(zmenu), "%t", "!zmenu menu");
     Format(zadmin, sizeof(zadmin), "%t", "!zmenu admin");
-    Format(zclass, sizeof(zclass), "%t", "!zmenu class");
+    Format(zclass, sizeof(zclass), "%t", "!zmenu class", ITEMDRAW_DISABLED);
     Format(zmarket, sizeof(zmarket), "%t", "!zmenu market");
     Format(zspawn, sizeof(zspawn), "%t", "!zmenu spawn");
     Format(ztele, sizeof(ztele), "%t", "!zmenu tele");
@@ -74,10 +74,10 @@ public MainMenuHandle(Handle:menu_main, MenuAction:action, client, slot)
             }
             case 2:
             {
-                if (!ZClass(client))
+                /*if (!ZClass(client))
                 {
                     MainMenu(client);
-                }
+                }*/
             }
             case 3:
             {
@@ -110,7 +110,7 @@ public MainMenuHandle(Handle:menu_main, MenuAction:action, client, slot)
     }
 }
 
-ClassMenu(client)
+/**ClassMenu(client)
 {
     new Handle:menu_classes = CreateMenu(ClassMenuHandle);
     
@@ -184,4 +184,4 @@ public ClassMenuHandle(Handle:menu_classes, MenuAction:action, client, slot)
     {
         CloseHandle(menu_classes);
     }
-}
+}*/

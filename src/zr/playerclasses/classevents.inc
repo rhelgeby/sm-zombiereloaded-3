@@ -45,35 +45,27 @@ ClassOnClientSpawn(client)
     
     if (showmenu && !randomclass)
     {
-        ClassMenu(client);
+        //ClassMenu(client);
     }
     
     // Assign random classes if enabled.
     GetClientAuthString(client, steamid, sizeof(steamid));
     if (StrEqual(steamid, "BOT") || randomclass)
     {
-        // Old class system.
-        new classindex = GetRandomInt(0, classCount - 1);
-        
-        Call_StartForward(hOnZClassChanged);
-        Call_PushCell(client);
-        Call_PushCell(pClass[client]);
-        Call_PushCell(classindex);
-        Call_Finish();
-    
-        pClass[client] = classindex;
-        
-        // New class system.
+        // Get player's team
         new teamid = GetClientTeam(client);
+        
+        // If the first zombie spawned, and the player is on the terrorist team, then
+        // find a random zombie class, otherwise find a human class.
         if (zombieSpawned && teamid == CS_TEAM_T)
         {
-            classindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES);
+            new classindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES);
             ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = classindex;
             ClassGetName(client, classname, sizeof(classname));
         }
         else
         {
-            classindex = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS);
+            new classindex = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS);
             ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = classindex;
             ClassGetName(client, classname, sizeof(classname));
         }
