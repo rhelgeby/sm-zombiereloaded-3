@@ -11,10 +11,9 @@ new curMenuClass[MAXPLAYERS + 1];
 
 bool:ZRAdminMenu(client)
 {
-    if (!GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    if (!IsClientAdmin(client))
     {
         ZR_PrintToChat(client, "Must be admin");
-        
         return false;
     }
     

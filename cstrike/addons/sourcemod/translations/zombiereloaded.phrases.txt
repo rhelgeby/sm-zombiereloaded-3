@@ -392,12 +392,6 @@
 		"ru"		"ZHP (!zhp) - Показ здоровья зомби"
 	}
 
-	"!zclass title"
-	{
-		"en"		"Zombie Class Selection:"
-		"ru"		"Выбор Класса Зомби:"
-	}
-
 	"Market title"
 	{
 		"en"		"Available Guns:"
@@ -408,6 +402,40 @@
 	{
 		"en"		"Rebuy"
 		"ru"		"Купить снова"
+	}
+	
+	// ===========================
+	// Class menu
+	// ===========================
+	
+	"!zclass title"
+	{
+		"en"		"Class Selection:"
+	}
+	
+	"!zclass zombie"
+	{
+		"en"		"Select Zombie Class"
+	}
+	
+	"!zclass human"
+	{
+		"en"		"Select Human Class"
+	}
+	
+	"!zclass admin"
+	{
+		"en"		"Select Admin Class"
+	}
+	
+	"!zclass admin mode enabled"
+	{
+		"en"		"Admin mode is enabled!"
+	}
+	
+	"!zclass admin mode toggle"
+	{
+		"en"		"Toggle Admin Mode"
 	}
 
 	// ===========================

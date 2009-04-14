@@ -251,3 +251,21 @@ bool:IsClientPlayer(client)
         return false;
     }
 }
+
+/**
+ * Returns whether a player is a generic admin or not.
+ *
+ * @param client    The client index.
+ * @return          True if generic admin, false otherwise.
+ */
+bool:IsClientAdmin(client)
+{
+    if (GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
