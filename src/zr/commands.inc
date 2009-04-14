@@ -135,6 +135,7 @@ public Action:Command_Respawn(client, argc)
 }
 
 /**
+ * Command callback for client command "zr_restrict"
  * @param client    The client index.
  * @param argc      Argument count.
 */ 
@@ -159,24 +160,14 @@ public Action:Command_Restrict(client, argc)
     new WpnRestrictQuery:output = RestrictRestrict(arg1, display);
     RestrictPrintRestrictOutput(client, output, display, true);
     
-    if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
-    {
-        decl String:client_name[64];
-        
-        if (client > 0)
-        {
-            GetClientName(client, client_name, sizeof(client_name));
-        }
-        else
-        {
-            client_name = "Console\0";
-        }
-        ZR_LogMessageFormatted(client, "admin commands", "weapon restict", "\"%s\" restricted weapon (group): \"%s\".", true, client_name, arg1);
-    }
-    
     return Plugin_Handled;
 }
 
+/**
+ * Command callback for client command "zr_unrestrict"
+ * @param client    The client index.
+ * @param argc      Argument count.
+*/ 
 public Action:Command_Unrestrict(client, argc)
 {
     // If plugin is disabled then stop
@@ -197,21 +188,6 @@ public Action:Command_Unrestrict(client, argc)
     
     new WpnRestrictQuery:output = RestrictUnrestrict(arg1, display);
     RestrictPrintUnrestrictOutput(client, output, display, true);
-    
-    if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
-    {
-        decl String:client_name[64];
-        
-        if (client > 0)
-        {
-            GetClientName(client, client_name, sizeof(client_name));
-        }
-        else
-        {
-            client_name = "Console\0";
-        }
-        ZR_LogMessageFormatted(client, "admin commands", "weapon restict", "\"%s\" unrestricted weapon (group): \"%s\".", true, client_name, arg1);
-    }
     
     return Plugin_Handled;
 }

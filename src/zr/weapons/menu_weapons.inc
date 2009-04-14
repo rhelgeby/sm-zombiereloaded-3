@@ -161,6 +161,15 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
                 }
             }
             
+            // If there are no weapons, add an "(Empty)" line
+            if (size == 0)
+            {
+                decl String:empty[64];
+                Format(empty, sizeof(empty), "%t", "Menu empty");
+                
+                AddMenuItem(menu_weapons_weapons, "empty", empty, ITEMDRAW_DISABLED);
+            }
+            
             // Kill the array handle
             CloseHandle(arrayWeapons);
         }
@@ -170,7 +179,7 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
             SetMenuTitle(menu_weapons_weapons, "%t\n ", "Weapons menu weapons group title");
             
             decl String:weapongroup[WEAPONS_MAX_LENGTH];
-            decl String:display[WEAPONS_MAX_LENGTH + 1];
+            decl String:display[WEAPONS_MAX_LENGTH + 2];
             new Handle:arrayWeaponGroups = INVALID_HANDLE;
             new size = RestrictCreateGroupArray(arrayWeaponGroups);
             
@@ -191,6 +200,15 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
                 }
                 
                 AddMenuItem(menu_weapons_weapons, weapongroup, display);
+            }
+            
+            // If there are no weapons, add an "(Empty)" line
+            if (size == 0)
+            {
+                decl String:empty[64];
+                Format(empty, sizeof(empty), "%t", "Menu empty");
+                
+                AddMenuItem(menu_weapons_weapons, "empty", empty, ITEMDRAW_DISABLED);
             }
             
             // Kill the array handle
@@ -404,7 +422,7 @@ WeaponsMenuMarket(client)
     decl String:togglebuyzone[64];
     
     decl String:curSetting[8];
-    BoolToConfigOption(GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
+    BoolToConfigSetting(GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
     
     Format(togglebuyzone, sizeof(togglebuyzone), "%t", "Weapons menu market toggle buyzone", curSetting);
     

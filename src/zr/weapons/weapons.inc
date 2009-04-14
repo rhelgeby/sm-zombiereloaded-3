@@ -24,6 +24,9 @@ new Handle:kvWeapons = INVALID_HANDLE;
 #include "zr/weapons/markethandler"
 #include "zr/weapons/menu_weapons"
 
+/**
+ * Weapons module init function
+ */ 
 WeaponsInit()
 {
     // Forward event to sub-module
@@ -31,9 +34,9 @@ WeaponsInit()
 }
 
 /**
- * Loads weapon data from file.
+ * Clears weapon data
  */
-WeaponsOnMapStart()
+WeaponsClearData()
 {
     // Load weapon data
     if (kvWeapons != INVALID_HANDLE)
@@ -42,6 +45,18 @@ WeaponsOnMapStart()
     }
     
     kvWeapons = CreateKeyValues("weapons");
+}
+
+/**
+ * Loads weapon data from file.
+ */
+WeaponsOnMapStart()
+{
+    // Clear weapon data
+    WeaponsClearData();
+    
+    // Clear weapon restrict data
+    RestrictClearData();
     
     decl String:path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/zr/weapons/weapons.txt");
@@ -49,7 +64,12 @@ WeaponsOnMapStart()
     // If file isn't found, stop plugin
     if (!FileToKeyValues(kvWeapons, path))
     {
-        SetFailState("\"%s\" missing from server", path);
+        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
+        {
+            ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapons.txt, disabling weapons-based modules.", LOG_FORMAT_TYPE_FULL);
+        }
+        
+        return;
     }
     
     // Validate weapons config
@@ -61,22 +81,16 @@ WeaponsOnMapStart()
 
 WeaponsValidateWeaponsConfig()
 {
-    KvRewind(kvWeapons);
-    if (KvGotoFirstSubKey(kvWeapons))
+    // If log flag check fails, don't log
+    if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
     {
-        decl String:weapon[WEAPONS_MAX_LENGTH];
-        decl String:restrict[8];
-        decl String:menu[8];
-        
-        do
-        {
-            KvGetSectionName(kvWeapons, weapon, sizeof(weapon));
-            KvGetString(kvWeapons, "restrict", restrict, sizeof(restrict), "no");
-            KvGetString(kvWeapons, "menu", menu, sizeof(menu), "yes");
-            
-            // VALIDATE
-            
-        } while (KvGotoNextKey(kvWeapons));
+        return;
+    }
+    
+    KvRewind(kvWeapons);
+    if (!KvGotoFirstSubKey(kvWeapons))
+    {
+        ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "No weapons listed in weapons.txt, disabling weapons-based modules.", LOG_FORMAT_TYPE_FULL);
     }
 }
 
@@ -171,35 +185,6 @@ WeaponGetDisplayName(const String:weapon[], String:display[])
         } while (KvGotoNextKey(kvWeapons));
     }
 }
-    
-/**
- * Checks if a weapon is restricted by default.
- * @param weapon    The weapon name.
- * @return          Returns true if restricted, false it not.
- */
-bool:WeaponsIsRestrict(const String:weapon[])
-{
-    KvRewind(kvWeapons);
-    if (KvGotoFirstSubKey(kvWeapons))
-    {
-        decl String:validweapon[WEAPONS_MAX_LENGTH];
-        decl String:restrict[8];
-        
-        do
-        {
-            KvGetSectionName(kvWeapons, validweapon, sizeof(validweapon));
-            
-            if (StrEqual(validweapon, weapon, false))
-            {
-                KvGetString(kvWeapons, "restrict", restrict, sizeof(restrict), "no");
-                
-                return ConfigOptionToBool(restrict);
-            }
-        } while (KvGotoNextKey(kvWeapons));
-    }
-    
-    return false;
-}
 
 /**
  * Checks if a weapon restriction can be toggled by the admin menu.
@@ -222,7 +207,7 @@ bool:WeaponsIsWeaponMenu(const String:weapon[])
             {
                 KvGetString(kvWeapons, "menu", menu, sizeof(menu), "yes");
                 
-                return ConfigOptionToBool(menu);
+                return ConfigSettingToBool(menu);
             }
         } while (KvGotoNextKey(kvWeapons));
     }

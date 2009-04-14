@@ -113,7 +113,7 @@ new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
 
 new QueryCookie:mat_dxlevel;
 
-bool:ConfigOptionToBool(const String:option[])
+bool:ConfigSettingToBool(const String:option[])
 {
     if (StrEqual(option, "yes", false))
     {
@@ -123,7 +123,7 @@ bool:ConfigOptionToBool(const String:option[])
     return false;
 }
 
-BoolToConfigOption(bool:bOption, String:option[], maxlen)
+BoolToConfigSetting(bool:bOption, String:option[], maxlen)
 {
     if (bOption)
     {

@@ -46,9 +46,9 @@ RestrictInit()
 }
 
 /**
- * Loads weapon data from file.
- */
-RestrictOnMapStart()
+ * Clears weapon restrict data
+ */ 
+RestrictClearData()
 {
     // Clear restricted weapons
     RestrictWeaponUnrestrictAll();
@@ -60,6 +60,15 @@ RestrictOnMapStart()
     }
     
     kvWeaponGroups = CreateKeyValues("weapongroups");
+}
+
+/**
+ * Loads weapon data from file.
+ */
+RestrictOnMapStart()
+{
+    // Restrict default restrictions (set in weapons.txt)
+    RestrictDefaultRestrictions();
     
     decl String:path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/zr/weapons/weapongroups.txt");
@@ -67,10 +76,14 @@ RestrictOnMapStart()
     // If file isn't found, stop plugin
     if (!FileToKeyValues(kvWeaponGroups, path))
     {
-        SetFailState("\"%s\" missing from server", path);
+        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
+        {
+            ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapongroups.txt.", LOG_FORMAT_TYPE_FULL);
+        }
+        
+        return;
     }
     
-    RestrictDefaultRestrictions();
     RestrictValidateWeaponGroups();
 }
 
@@ -84,17 +97,25 @@ RestrictDefaultRestrictions()
     if (KvGotoFirstSubKey(kvWeapons))
     {
         decl String:weapon[WEAPONS_MAX_LENGTH];
-        decl String:display[WEAPONS_MAX_LENGTH + 1];
+        decl String:display[WEAPONS_MAX_LENGTH];
         
         do
         {
             KvGetSectionName(kvWeapons, weapon, sizeof(weapon));
             
             // If weapon is defaulted to restricted, then restrict weapon
-            if (WeaponsIsRestrict(weapon))
+            decl String:restrict[8];
+            KvGetString(kvWeapons, "restrict", restrict, sizeof(restrict), "no");
+            
+            if (ConfigSettingToBool(restrict))
             {
                 new WpnRestrictQuery:output = RestrictRestrict(weapon, display);
                 RestrictPrintRestrictOutput(0, output, display, true);
+                
+                // Function calls above screwed with the keyvalue stack, so we have to set it back
+                // to where it was before those calls
+                KvRewind(kvWeapons);
+                KvJumpToKey(kvWeapons, weapon);
             }
         } while (KvGotoNextKey(kvWeapons));
     }
@@ -105,28 +126,40 @@ RestrictDefaultRestrictions()
  */ 
 RestrictValidateWeaponGroups()
 {
+    // If log flag check fails, don't log
+    if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
+    {
+        return;
+    }
+    
     KvRewind(kvWeaponGroups);
     
     if (KvGotoFirstSubKey(kvWeaponGroups))
     {
+        decl String:weapongroup[WEAPONS_MAX_LENGTH];
+        decl String:groupweapon[WEAPONS_MAX_LENGTH];
+        
         do
         {
+            KvGetSectionName(kvWeaponGroups, weapongroup, sizeof(weapongroup));
+            
             if (KvGotoFirstSubKey(kvWeaponGroups))
             {
-                decl String:groupweapon[WEAPONS_MAX_LENGTH];
-                
                 do
                 {
-                    
                     KvGetSectionName(kvWeaponGroups, groupweapon, sizeof(groupweapon));
                     
                     if (!WeaponsIsValidWeapon(groupweapon))
                     {
-                        // VALIDATE
+                        ZR_LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "Invalid weapon \"%s\" in group \"%s\" configured in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, groupweapon, weapongroup);
                     }
                 } while (KvGotoNextKey(kvWeaponGroups));
                 
                 KvGoBack(kvWeaponGroups);
+            }
+            else
+            {
+                ZR_LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "No weapons listed in weapon group \"%s\" in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, weapongroup);
             }
         } while (KvGotoNextKey(kvWeaponGroups));
     }
@@ -208,6 +241,8 @@ public Action:RestrictBuyHook(client, argc)
  * Restricts a weapon.
  * 
  * @param weapon    The weapon/group name.
+ * @param display   String set to the name set in weapons.txt
+ *                  Set to the value of 'weapon' if invalid
  * @return          Successful_Weapon: The call successfully restricted a weapon.
  *                  Successful_Group: The call successfully restricted a weapon group.
  *                  Failed_Weapon: The call failed to restrict a weapon.
@@ -252,12 +287,14 @@ WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[] = "")
         return Successful_Group;
     }
     
-    WeaponGetDisplayName(weapon, display);
-    
     if (!WeaponsIsValidWeapon(weapon))
     {
+        strcopy(display, WEAPONS_MAX_LENGTH, weapon);
+        
         return Invalid;
     }
+    
+    WeaponGetDisplayName(weapon, display);
     
     if (RestrictIsWeaponRestricted(weapon))
     {
@@ -273,6 +310,8 @@ WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[] = "")
  * Unrestricts a weapon.
  * 
  * @param weapon    The weapon/group name.
+ * @param display   String set to the name set in weapons.txt
+ *                  Set to the value of 'weapon' if invalid
  * @return          Successful_Weapon: The call successfully restricted a weapon.
  *                  Successful_Group: The call successfully restricted a weapon group.
  *                  Failed_Weapon: The call failed to restrict a weapon.
@@ -321,12 +360,14 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[] = ""
         return Successful_Group;
     }
     
-    WeaponGetDisplayName(weapon, display);
-    
     if (!WeaponsIsValidWeapon(weapon))
     {
+        strcopy(display, WEAPONS_MAX_LENGTH, weapon);
+        
         return Invalid;
     }
+    
+    WeaponGetDisplayName(weapon, display);
     
     if (!RestrictIsWeaponRestricted(weapon))
     {
@@ -352,10 +393,15 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[] = ""
 RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon[], bool:reply)
 {
     switch(output)
-    {
+    {   
         case Successful_Weapon:
         {
             ZR_PrintToChat(0, "Restrict weapon", weapon);
+            
+            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
+            {
+                ZR_LogMessageFormatted(client, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
+            }
         }
         case Successful_Group:
         {
@@ -363,6 +409,11 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
             RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
             
             ZR_PrintToChat(0, "Restrict custom weapon group", weapon, weaponlist);
+            
+            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
+            {
+                ZR_LogMessageFormatted(client, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon group: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
+            }
         }
         case Failed_Weapon:
         {
@@ -417,6 +468,11 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
         case Successful_Weapon:
         {
             ZR_PrintToChat(0, "Unrestrict weapon", weapon);
+            
+            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
+            {
+                ZR_LogMessageFormatted(client, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
+            }
         }
         case Successful_Group:
         {
@@ -424,6 +480,11 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
             RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
             
             ZR_PrintToChat(0, "Unrestrict custom weapon group", weapon, weaponlist);
+            
+            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
+            {
+                ZR_LogMessageFormatted(client, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon group: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
+            }
         }
         case Failed_Weapon:
         {
@@ -471,10 +532,11 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
  */
 bool:RestrictIsWeaponRestricted(const String:weapon[])
 {
+    decl String:restrictedweapon[WEAPONS_MAX_LENGTH];
+    
     new size = GetArraySize(gRestrictedWeapons);
     for (new x = 0; x < size; x++)
     {
-        decl String:restrictedweapon[WEAPONS_MAX_LENGTH];
         GetArrayString(gRestrictedWeapons, x, restrictedweapon, sizeof(restrictedweapon));
         
         if (StrEqual(weapon, restrictedweapon, false))
@@ -567,10 +629,11 @@ bool:RestrictIsPartialRestricted(const String:weapongroup[])
  */
 RestrictGetIndex(const String:weapon[])
 {
+    decl String:restrictedweapon[WEAPONS_MAX_LENGTH];
+    
     new size = GetArraySize(gRestrictedWeapons);
     for (new x = 0; x < size; x++)
     {
-        decl String:restrictedweapon[WEAPONS_MAX_LENGTH];
         GetArrayString(gRestrictedWeapons, x, restrictedweapon, sizeof(restrictedweapon));
         
         if (StrEqual(weapon, restrictedweapon, false))

@@ -8,6 +8,15 @@
 //	"menu"			"yes" (default) // Allows admins to toggle restriction with the menu
 // }
 //
+// Notes:
+//
+// This is a list of valid weapons for your server, unlisted weapons will
+// be seen as invalid by the weapon restrict module.
+//
+// A config setting set to something other than "yes" or "no" will be assumed as "no."
+//
+// A missing config setting will be assumed to be its default value (documented above).
+//
 // Duplicate weapon entries will show up separately in restrict menu, but
 // only the first one's options are used.
 
@@ -15,20 +24,20 @@
 {
 	"Glock"
 	{
-		"restrict"	"no"
+		//"restrict"	"no"
 		"menu"		"yes"
 	}
 
 	"USP"
 	{
 		"restrict"	"no"
-		"menu"		"yes"
+		//"menu"		"yes"
 	}
 
 	"P228"
 	{
-		"restrict"	"no"
-		"menu"		"yes"
+		//"restrict"	"no"
+		//"menu"		"yes"
 	}
 
 	"Deagle"
@@ -135,19 +144,19 @@
 
 	"SG550"
 	{
-		"restrict"	"no"
+		"restrict"	"yes"
 		"menu"		"yes"
 	}
 
 	"G3SG1"
 	{
-		"restrict"	"no"
+		"restrict"	"yes"
 		"menu"		"yes"
 	}
 
 	"AWP"
 	{
-		"restrict"	"no"
+		"restrict"	"yes"
 		"menu"		"yes"
 	}
 
@@ -165,14 +174,14 @@
 
 	"flashbang"
 	{
-		"restrict"	"no"
-		"menu"		"yes"
+		"restrict"	"yes"
+		"menu"		"no"
 	}
 
 	"smokegrenade"
 	{
-		"restrict"	"no"
-		"menu"		"yes"
+		"restrict"	"yes"
+		"menu"		"no"
 	}
 
 	"NVGs"

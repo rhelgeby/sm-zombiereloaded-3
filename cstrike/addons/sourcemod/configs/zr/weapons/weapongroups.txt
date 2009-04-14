@@ -10,6 +10,10 @@
 //                          without these brackets the weapon will be skipped.
 //                          Invalid weapons are logged and skipped.
 // }
+//
+// Notes:
+//
+// Invalid weapons (not in weapons.txt) will be logged in the error logs and ignored in-game
 
 "weapongroups"
 {
