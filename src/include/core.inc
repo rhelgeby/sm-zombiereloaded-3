@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: core.inc 2243 2008-06-02 05:04:02Z dvander $
+ * Version: $Id$
  */
 
 #if defined _core_included
@@ -37,7 +37,9 @@
 
 #include <version>
 
-#define SOURCEMOD_PLUGINAPI_VERSION		3
+/** If this gets changed, you need to update Core's check. */
+#define SOURCEMOD_PLUGINAPI_VERSION		5
+
 struct PlVers
 {
 	version,
@@ -135,6 +137,25 @@ struct SharedPlugin
 
 public Float:NULL_VECTOR[3];		/**< Pass this into certain functions to act as a C++ NULL */
 public const String:NULL_STRING[1];	/**< pass this into certain functions to act as a C++ NULL */
+
+/**
+ * Horrible compatibility shim.
+ */
+public Extension:__ext_core = 
+{
+	name = "Core",
+	file = "core",
+	autoload = 0,
+	required = 0,
+};
+
+native VerifyCoreVersion();
+
+public __ext_core_SetNTVOptional()
+{
+	VerifyCoreVersion();
+}
+
 
 #define AUTOLOAD_EXTENSIONS
 #define REQUIRE_EXTENSIONS

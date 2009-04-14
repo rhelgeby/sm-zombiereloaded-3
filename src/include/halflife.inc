@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: halflife.inc 1921 2008-03-02 23:54:38Z dvander $
+ * Version: $Id$
  */
 
 #if defined _halflife_included
@@ -37,8 +37,10 @@
 
 #define SOURCE_SDK_UNKNOWN			0		/**< Could not determine the engine version */
 #define SOURCE_SDK_ORIGINAL			10		/**< Original Source engine (still used by "The Ship") */
+#define SOURCE_SDK_DARKMESSIAH		15		/**< Modified version of original engine used by Dark Messiah (no SDK) */
 #define SOURCE_SDK_EPISODE1			20		/**< SDK+Engine released after Episode 1 */
-#define SOURCE_SDK_EPISODE2			30		/**< Engine released after Episode 2 (no SDK yet) */
+#define SOURCE_SDK_EPISODE2			30		/**< SDK+Engine released after Episode 2/Orange Box */
+#define SOURCE_SDK_LEFT4DEAD		40		/**< Engine released after Left 4 Dead (no SDK yet) */
 
 #define MOTDPANEL_TYPE_TEXT		0	/**< Treat msg as plain text */
 #define MOTDPANEL_TYPE_INDEX	1	/**< Msg is auto determined by the engine */
@@ -51,7 +53,7 @@ enum DialogType
 	DialogType_Menu, 		/**< an options menu */
 	DialogType_Text, 		/**< a richtext dialog */
 	DialogType_Entry, 		/**< an entry box */
-	DialogType_AskConnect		/**< ask the client to connect to a specified IP */
+	DialogType_AskConnect	/**< ask the client to connect to a specified IP */
 };
 
 /**

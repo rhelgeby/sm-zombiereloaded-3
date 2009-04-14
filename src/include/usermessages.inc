@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: usermessages.inc 1943 2008-03-16 23:16:34Z dvander $
+ * Version: $Id$
  */
  
 #if defined _eventsmsgs_included
@@ -83,7 +83,8 @@ native bool:GetUserMessageName(UserMsg:msg_id, String:msg[], maxlength);
  * @param flags			Optional flags to set.
  * @return				A handle to a bf_write bit packing structure, or
  *						INVALID_HANDLE on failure.
- * @error				Invalid message name or unable to start a message.
+ * @error				Invalid message name, unable to start a message, invalid client,
+ *						or client not connected.
  */
 native Handle:StartMessage(String:msgname[], clients[], numClients, flags=0);
 
@@ -98,7 +99,8 @@ native Handle:StartMessage(String:msgname[], clients[], numClients, flags=0);
  * @param flags			Optional flags to set.
  * @return				A handle to a bf_write bit packing structure, or
  *						INVALID_HANDLE on failure.
- * @error				Invalid message name or unable to start a message.
+ * @error				Invalid message name, unable to start a message, invalid client,
+ *						or client not connected.
  */
 native Handle:StartMessageEx(UserMsg:msg, clients[], numClients, flags=0);
 
@@ -122,14 +124,15 @@ native EndMessage();
  *						blocks the message from being sent, and Plugin_Continue 
  *						resumes normal functionality.
  */
-functag MsgHook Action:public(UserMsg:msg_id, Handle:bf, const players[], playersNum, bool:reliable, bool:init);
+functag public Action:MsgHook(UserMsg:msg_id, Handle:bf, const players[], playersNum, bool:reliable, bool:init);
 
 /**
- * Called when a message is finished sending.
+ * Called when a message hook has completed.
  *
  * @param msg_id		Message index.
+ * @param sent			True if message was sent, false if blocked.
  */
-functag MsgSentNotify public(UserMsg:msg_id);
+functag public MsgPostHook(UserMsg:msg_id, bool:sent);
 
 /**
  * Hooks a user message.
@@ -143,7 +146,7 @@ functag MsgSentNotify public(UserMsg:msg_id);
  * @noreturn
  * @error				Invalid message index.
  */
-native HookUserMessage(UserMsg:msg_id, MsgHook:hook, bool:intercept=false, MsgSentNotify:notify=MsgSentNotify:-1);
+native HookUserMessage(UserMsg:msg_id, MsgHook:hook, bool:intercept=false, MsgPostHook:post=MsgPostHook:-1);
 
 /**
  * Removes one usermessage hook.

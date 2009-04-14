@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: entity.inc 1890 2008-02-22 16:51:15Z dvander $
+ * Version: $Id$
  */
  
 #if defined _entity_included
@@ -273,10 +273,11 @@ native SetEntDataFloat(entity, offset, Float:value, bool:changeState=false);
  * @return				Entity index at the given location, or 0 if none.
  * @error				Invalid entity or offset out of reasonable bounds.
  */
+#pragma deprecated Use GetEntDataEnt2() instead.
 native GetEntDataEnt(entity, offset);
 
 /**
- * This function is deprecated.   Use GetEntDataEnt2 instead, for 
+ * This function is deprecated.   Use SetEntDataEnt2 instead, for 
  * reasons explained in the notes.
  *
  * Note: This function uses 0 as an indicator to unset data, but 
@@ -290,6 +291,7 @@ native GetEntDataEnt(entity, offset);
  * @noreturn
  * @error				Invalid entity or offset out of reasonable bounds.
  */
+#pragma deprecated Use SetEntDataEnt2() instead.
 native SetEntDataEnt(entity, offset, other, bool:changeState=false);
 
 /**
@@ -479,8 +481,7 @@ stock GetEntSendPropOffs(ent, const String:prop[], bool:actual=false)
  * Retrieves an integer value from an entity's property.
  *
  * This function is considered safer and more robust over GetEntData, 
- * because it performs strict offset checking and typing rules.  There is a 
- * very minor performance hit from this.
+ * because it performs strict offset checking and typing rules.
  * 
  * @param entity		Entity/edict index.
  * @param type			Property type.
@@ -497,8 +498,7 @@ native GetEntProp(entity, PropType:type, const String:prop[], size=4);
  * Sets an integer value in an entity's property.
  *
  * This function is considered safer and more robust over SetEntData, 
- * because it performs strict offset checking and typing rules.  There is a 
- * very minor performance hit from this.
+ * because it performs strict offset checking and typing rules.
  * 
  * @param entity		Entity/edict index.
  * @param type			Property type.
@@ -515,8 +515,7 @@ native SetEntProp(entity, PropType:type, const String:prop[], any:value, size=4)
  * Retrieves a float value from an entity's property.
  *
  * This function is considered safer and more robust over GetEntDataFloat, 
- * because it performs strict offset checking and typing rules.  There is a 
- * very minor performance hit from this.
+ * because it performs strict offset checking and typing rules.
  * 
  * @param entity		Entity/edict index.
  * @param type			Property type.
@@ -530,8 +529,7 @@ native Float:GetEntPropFloat(entity, PropType:type, const String:prop[]);
  * Sets a float value in an entity's property.
  *
  * This function is considered safer and more robust over SetEntDataFloat, 
- * because it performs strict offset checking and typing rules.  There is a 
- * very minor performance hit from this.
+ * because it performs strict offset checking and typing rules.
  * 
  * @param entity		Entity/edict index.
  * @param type			Property type.
@@ -546,8 +544,7 @@ native SetEntPropFloat(entity, PropType:type, const String:prop[], Float:value);
  * Retrieves an entity index from an entity's property.
  *
  * This function is considered safer and more robust over GetEntDataEnt*, 
- * because it performs strict offset checking and typing rules.  There is a 
- * very minor performance hit from this.
+ * because it performs strict offset checking and typing rules.
  * 
  * @param entity		Entity/edict index.
  * @param type			Property type.
@@ -563,8 +560,7 @@ native GetEntPropEnt(entity, PropType:type, const String:prop[]);
  * Sets an entity index in an entity's property.
  *
  * This function is considered safer and more robust over SetEntDataEnt*, 
- * because it performs strict offset checking and typing rules.  There is a 
- * very minor performance hit from this.
+ * because it performs strict offset checking and typing rules.
  * 
  * @param entity		Entity/edict index.
  * @param type			Property type.
@@ -579,8 +575,7 @@ native SetEntPropEnt(entity, PropType:type, const String:prop[], other);
  * Retrieves a vector of floats from an entity, given a named network property.
  *
  * This function is considered safer and more robust over GetEntDataVector, 
- * because it performs strict offset checking and typing rules.  There is a 
- * very minor performance hit from this.
+ * because it performs strict offset checking and typing rules.
  * 
  * @param entity		Entity/edict index.
  * @param type			Property type.
@@ -596,8 +591,7 @@ native GetEntPropVector(entity, PropType:type, const String:prop[], Float:vec[3]
  * Sets a vector of floats in an entity, given a named network property.
  *
  * This function is considered safer and more robust over SetEntDataVector, 
- * because it performs strict offset checking and typing rules.  There is a 
- * very minor performance hit from this.
+ * because it performs strict offset checking and typing rules.
  * 
  * @param entity		Entity/edict index.
  * @param type			Property type.

@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: commandfilters.inc 2080 2008-04-19 00:44:11Z dvander $
+ * Version: $Id$
  */
  
 #if defined _commandfilters_included

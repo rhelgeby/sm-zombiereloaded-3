@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: logging.inc 1920 2008-03-02 19:08:27Z dvander $
+ * Version: $Id$
  */
  
 #if defined _sm_logging_included
@@ -134,7 +134,7 @@ forward Action:OnLogAction(Handle:source,
  * @return				Plugin_Handled or Plugin_Stop will prevent the message 
  * 						from being written to the log file.
  */
-functag GameLogHook Action:public(const String:message[]);
+functag public Action:GameLogHook(const String:message[]);
 
 /**
  * Adds a game log hook.

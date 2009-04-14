@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: version.inc 2534 2008-09-14 05:13:21Z dvander $
+ * Version: $Id$
  */
  
 #if defined _version_included
@@ -36,7 +36,7 @@
 #define _version_included
 
 #define SOURCEMOD_V_MAJOR		1				/**< SourceMod Major version */
-#define SOURCEMOD_V_MINOR		0				/**< SourceMod Minor version */
-#define SOURCEMOD_V_RELEASE		4				/**< SourceMod Release version */
+#define SOURCEMOD_V_MINOR		2				/**< SourceMod Minor version */
+#define SOURCEMOD_V_RELEASE		0				/**< SourceMod Release version */
 
-#define SOURCEMOD_VERSION	"1.0.4"	/**< SourceMod version string (major.minor.release.build) */
+#define SOURCEMOD_VERSION	"1.2.0"	/**< SourceMod version string (major.minor.release.build) */

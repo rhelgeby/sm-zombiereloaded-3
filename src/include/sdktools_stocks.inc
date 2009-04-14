@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: sdktools_stocks.inc 1622 2007-10-21 00:16:46Z dvander $
+ * Version: $Id$
  */
 
 #if defined _sdktools_stocks_included
@@ -52,13 +52,13 @@ stock FindTeamByName(const String:name[])
 	new name_len = strlen(name);
 	new num_teams = GetTeamCount();
 	decl String:team_name[32];
-	new found_team = -1
+	new found_team = -1;
 
 	for (new i = 0; i < num_teams; i++)
 	{
 		GetTeamName(i, team_name, sizeof(team_name));
 
-		if (strncmp(team_name, name, name_len) == 0)
+		if (strncmp(team_name, name, name_len, false) == 0)
 		{
 			if (found_team >= 0)
 			{

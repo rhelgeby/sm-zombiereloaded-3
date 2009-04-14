@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: console.inc 2482 2008-09-02 03:58:23Z dvander $
+ * Version: $Id$
  */
  
 #if defined _console_included
@@ -287,13 +287,31 @@ native ShowActivity(client, const String:format[], any:...);
 native ShowActivityEx(client, const String:tag[], const String:format[], any:...);
 
 /**
+ * Given an originating client and a target client, returns the string 
+ * that describes the originating client according to the sm_show_activity cvar.
+ *
+ * For example, "ADMIN", "PLAYER", or a player's name could be placed in this buffer.
+ *
+ * @param client        Originating client; may be 0 for server console.
+ * @param target        Targeted client.
+ * @param namebuf       Name buffer.
+ * @param maxlength     Maximum size of the name buffer.
+ * @return              True if activity should be shown.  False otherwise.  In either 
+ *                      case, the name buffer is filled.  The return value can be used 
+ *                      to broadcast a "safe" name to all players regardless of the 
+ *                      sm_show_activity filters.
+ * @error               Invalid client index or client not connected.
+ */
+native FormatActivitySource(client, target, const String:namebuf[], maxlength);
+
+/**
  * Called when a server-only command is invoked.  
  *
  * @params args			Number of arguments that were in the argument string.
  * @return				An Action value.  Not handling the command
  *						means that Source will report it as "not found."
  */
-functag SrvCmd Action:public(args);
+functag public Action:SrvCmd(args);
 
 /**
  * Creates a server-only console command, or hooks an already existing one.  
@@ -317,7 +335,7 @@ native RegServerCmd(const String:cmd[], SrvCmd:callback, const String:descriptio
  * @return				An Action value.  Not handling the command
  *						means that Source will report it as "not found."
  */
-functag ConCmd Action:public(client, args);
+functag public Action:ConCmd(client, args);
 
 /**
  * Creates a console command, or hooks an already existing one.
@@ -421,7 +439,7 @@ native Handle:FindConVar(const String:name[]);
  * @param newValue		String containing the new value of the convar.
  * @noreturn
  */
-functag ConVarChanged public(Handle:convar, const String:oldValue[], const String:newValue[]);
+functag public ConVarChanged(Handle:convar, const String:oldValue[], const String:newValue[]);
 
 /**
  * Creates a hook for when a console variable's value is changed.
@@ -455,6 +473,10 @@ native bool:GetConVarBool(Handle:convar);
 /**
  * Sets the boolean value of a console variable.
  *
+ * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
+ * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
+ * is changed.
+ *
  * @param convar		Handle to the convar.
  * @param value			New boolean value.
  * @param replicate		If set to true, the new convar value will be set on all clients.
@@ -479,6 +501,10 @@ native GetConVarInt(Handle:convar);
 /**
  * Sets the integer value of a console variable.
  *
+ * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
+ * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
+ * is changed.
+ *
  * @param convar		Handle to the convar.
  * @param value			New integer value.
  * @param replicate		If set to true, the new convar value will be set on all clients.
@@ -502,6 +528,10 @@ native Float:GetConVarFloat(Handle:convar);
 
 /**
  * Sets the floating point value of a console variable.
+ *
+ * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
+ * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
+ * is changed.
  *
  * @param convar		Handle to the convar.
  * @param value			New floating point value.
@@ -529,6 +559,10 @@ native GetConVarString(Handle:convar, String:value[], maxlength);
 /**
  * Sets the string value of a console variable.
  *
+ * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
+ * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
+ * is changed.
+ *
  * @param convar		Handle to the convar.
  * @param value			New string value.
  * @param replicate		If set to true, the new convar value will be set on all clients.
@@ -543,6 +577,10 @@ native SetConVarString(Handle:convar, const String:value[], bool:replicate=false
 
 /**
  * Resets the console variable to its default value.
+ *
+ * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
+ * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
+ * is changed.
  *
  * @param convar		Handle to the convar.
  * @param replicate		If set to true, the new convar value will be set on all clients.
@@ -777,3 +815,23 @@ native bool:FindNextConCommand(Handle:search, String:buffer[], max_size, &bool:i
  * @error 				Invalid client index, client not in game, or client is fake
  */
 native bool:SendConVarValue(client, Handle:convar, const String:value[]);
+
+/**
+ * Appends a string to Valve's sv_tags convar and makes sure it remains after mapchanges.
+ *
+ * Note: Tags are automatically removed on plugin unload
+ *
+ * @param tag			Tag string to append.
+ * @noreturn
+ */
+native AddServerTag(const String:tag[]);
+
+/**
+ * Removes a string from valve's sv_tags convar.
+ *
+ * Note: You can only remove tags created by you.
+ *
+ * @param tag			Tag string to remove.
+ * @noreturn
+ */
+native RemoveServerTag(const String:tag[]);

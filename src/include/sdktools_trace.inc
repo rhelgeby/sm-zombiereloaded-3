@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: sdktools_trace.inc 2208 2008-05-29 03:50:36Z dvander $
+ * Version: $Id$
  */
 
 #if defined _sdktools_trace_included

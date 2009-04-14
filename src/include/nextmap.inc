@@ -30,56 +30,55 @@
  * Version: $Id$
  */
 
-#if defined _sdktools_voice_included
+#if defined _nextmap_included_
   #endinput
 #endif
-#define _sdktools_voice_included
+#define _nextmap_included_
 
 /**
- * @section voice flags.
- */
-#define VOICE_NORMAL		0	/**< Allow the client to listen and speak normally. */
-#define VOICE_MUTED		1	/**< Mutes the client from speaking to everyone. */
-#define VOICE_SPEAKALL		2	/**< Allow the client to speak to everyone. */
-#define VOICE_LISTENALL		4	/**< Allow the client to listen to everyone. */
-#define VOICE_TEAM		8	/**< Allow the client to always speak to team, even when dead. */
-#define VOICE_LISTENTEAM	16	/**< Allow the client to always hear teammates, including dead ones. */
- 
-/**
- * @endsection
- */
-
-/**
- * Set the client listening flags.
+ * Sets SourceMod's internal nextmap. 
+ * Equivalent to changing sm_nextmap but with an added validity check.
  *
- * @param client		The client index
- * @param flags		The voice flags
+ * @param map		Next map to set.
+ * @return			True if the nextmap was set, false if map was invalid.
+ */
+native bool:SetNextMap(const String:map[]);
+
+/**
+ * Returns SourceMod's internal nextmap.
+ *
+ * @param map		Buffer to store the nextmap name.
+ * @param maxlen	Maximum length of the map buffer.
+ * @return			True if a Map was found and copied, false if no nextmap is set (map will be unchanged).
+ */
+native bool:GetNextMap(String:map[], maxlen);
+
+/**
+ * Changes the current map and records the reason for the change with maphistory
+ *
+ * @param map		Map to change to.
+ * @param reason	Reason for change.
  * @noreturn
  */
-native SetClientListeningFlags(client, flags);
+native ForceChangeLevel(const String:map[], const String:reason[]);
 
 /**
- * Retrieve the client current listening flags.
+ * Gets the current number of maps in the map history
  *
- * @param client		The client index
- * @return			The current voice flags
+ * @return			Number of maps.
  */
-native GetClientListeningFlags(client);
+native GetMapHistorySize();
 
 /**
- * Set the receiver ability to listen to the sender.
- *
- * @param iReceiver		The listener index.
- * @param iSender		The sender index.
- * @return			True if successful otherwise false.
+ * Retrieves a map from the map history list.
+ * 
+ * @param item			Item number. Must be 0 or greater and less than GetMapHistorySize().
+ * @param map			Buffer to store the map name.
+ * @param mapLen		Length of map buffer.
+ * @param reason		Buffer to store the change reason.
+ * @param reasonLen		Length of the reason buffer.
+ * @param startTime		Time the map started.
+ * @noreturn
+ * @error				Invalid item number.	
  */
-native bool:SetClientListening(iReceiver, iSender, bool:bListen);
-
-/**
- * Retrieves if the receiver can listen to the sender.
- *
- * @param iReceiver		The listener index.
- * @param iSender		The sender index.
- * @return			True if successful otherwise false.
- */
-native bool:GetClientListening(iReceiver, iSender);
+native GetMapHistory(item, String:map[], mapLen, String:reason[], reasonLen, &startTime);

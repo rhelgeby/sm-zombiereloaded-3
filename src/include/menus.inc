@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: menus.inc 1777 2007-12-06 12:26:59Z dvander $
+ * Version: $Id$
  */
  
 #if defined _menus_included
@@ -149,7 +149,7 @@ enum MenuSource
  * @param param2			Second action parameter (usually the item).
  * @noreturn
  */
-functag MenuHandler public(Handle:menu, MenuAction:action, param1, param2);
+functag public MenuHandler(Handle:menu, MenuAction:action, param1, param2);
 
 /**
  * Creates a new, empty menu using the default style.
@@ -513,7 +513,7 @@ stock VoteMenuToAll(Handle:menu, time)
  *							defines.
  * @noreturn
  */
-functag VoteHandler public(Handle:menu,
+functag public VoteHandler(Handle:menu,
 						   num_votes, 
 						   num_clients,
 						   const client_info[][2], 
@@ -539,6 +539,28 @@ native SetVoteResultCallback(Handle:menu, VoteHandler:callback);
  * @return					Number of seconds to wait, or 0 for none.
  */
 native CheckVoteDelay();
+
+/**
+ * Returns whether a client is in the pool of clients allowed 
+ * to participate in the current vote.  This is determined by 
+ * the client list passed to StartVote().
+ *
+ * @param client			Client index.
+ * @return					True if client is allowed to vote, false otherwise.
+ * @error					If no vote is in progress or client index is invalid.
+ */
+native bool:IsClientInVotePool(client);
+
+/**
+ * Redraws the current vote menu to a client in the voting pool.
+ *
+ * @param client			Client index.
+ * @return					True on success, false if the client is in the vote pool 
+ *							but cannot vote again.
+ * @error					No vote in progress, client is not in the voting pool, 
+ *							or client index is invalid.
+ */
+native bool:RedrawClientVoteMenu(client);
 
 /**
  * Returns a style's global Handle.

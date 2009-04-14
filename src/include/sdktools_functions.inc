@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: sdktools_functions.inc 2069 2008-04-16 23:29:37Z dvander $
+ * Version: $Id$
  */
 
 #if defined _sdktools_functions_included
@@ -308,3 +308,15 @@ native EquipPlayerWeapon(client, weapon);
  * @error				Invalid entity or lack of mod support.
  */
 native ActivateEntity(entity);
+
+/**
+ * Sets values to client info buffer keys and notifies the engine of the change.
+ * The change does not get propogated to mods until the next frame.
+ *
+ * @param client		Player's index.
+ * @param key			Key string.
+ * @param value			Value string.
+ * @noreturn
+ * @error				Invalid client index, or client not connected.
+ */
+native SetClientInfo(client, const String:key[], const String:value[]);

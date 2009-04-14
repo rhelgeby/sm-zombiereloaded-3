@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: files.inc 1860 2008-01-22 17:04:59Z dvander $
+ * Version: $Id$
  */
 
 #if defined _files_included
@@ -176,11 +176,11 @@ native ReadFile(Handle:hndl, items[], num_items, size);
  * @param hndl			Handle to the file.
  * @param buffer		Buffer to store the string.
  * @param max_size		Maximum size of the string buffer.
- * @param stop			If true, reading will stop once max_size-1 bytes have 
- *						been read.  If false, reading will stop once a NUL 
- *						terminator is reached.  The buffer will simply be 
- *						terminated in either case, the difference is in how 
- *						the far the file position is changed.
+ * @param read_count	If -1, reads until a null terminator is encountered in 
+ *						the file.  Otherwise, read_count bytes are read 
+ *						into the buffer provided.  In this case the buffer 
+ *						is not explicitly null terminated, and the buffer 
+ *						will contain any null terminators read from the file.
  * @return				Number of characters written to the buffer, or -1 
  *						if an error was encountered.
  * @error				Invalid Handle, or read_count > max_size.
@@ -352,6 +352,25 @@ native FlushFile(Handle:file);
  * @return				True on success, false otherwise.
  */
 native bool:RemoveDir(const String:path[]);
+
+#define FPERM_U_READ		0x0100	/* User can read. */
+#define FPERM_U_WRITE		0x0080	/* User can write. */
+#define FPERM_U_EXEC		0x0040	/* User can exec. */
+#define FPERM_G_READ		0x0020	/* Group can read. */
+#define FPERM_G_WRITE		0x0010	/* Group can write. */
+#define FPERM_G_EXEC		0x0008	/* Group can exec. */
+#define FPERM_O_READ		0x0004	/* Anyone can read. */
+#define FPERM_O_WRITE		0x0002	/* Anyone can write. */
+#define FPERM_O_EXEC		0x0001	/* Anyone can exec. */
+
+/**
+ * Creates a directory.
+ *
+ * @param path			Path to create.
+ * @param mode			Permissions (default is o=rx,g=rx,u=rwx).  Note that folders must have 
+ *						the execute bit set on Linux.  On Windows, the mode is ignored.
+ */
+native bool:CreateDirectory(const String:path[], mode);
 
 /**
  * Returns a file timestamp as a unix timestamp.
