@@ -252,10 +252,13 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     
-    new dmg = GetEventInt(event, "dmg_health");
+    new dmg_health = GetEventInt(event, "dmg_health");
     
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
+    
+    // Forward event to modules.
+    KnockbackPlayerHurt(index, attacker, weapon, dmg_health);
     
     // Check if the attacker is a player.
     if (attacker != 0)
@@ -267,41 +270,6 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
             if (!pProtect[index] && StrEqual(weapon, "knife"))
             {
                 Zombify(index, attacker);
-            }
-        }
-        
-        // Check if a human attacks a zombie.
-        if (IsPlayerZombie(index) && IsPlayerHuman(attacker))
-        {
-            // Get zombie knockback value.
-            new Float:knockback = ClassGetKnockback(index);
-            
-            new Float:clientloc[3];
-            new Float:attackerloc[3];
-            
-            GetClientAbsOrigin(index, clientloc);
-            
-            // Check if a grenade was thrown.
-            if (StrEqual(weapon, "hegrenade"))
-            {
-                // Get the location of the grenade.
-                FindExplodingGrenade(attackerloc);
-                
-                // Give knockback on the victim.
-                KnockBack(index, clientloc, attackerloc, knockback, dmg, true);
-            }
-            else
-            {
-                GetPlayerEyePosition(attacker, attackerloc);
-                
-                new Float:attackerang[3];
-                GetPlayerEyeAngles(attacker, attackerang);
-                
-                // Calculate victim location.
-                TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, TraceRayFilter);
-                TR_GetEndPosition(clientloc);
-                
-                KnockBack(index, clientloc, attackerloc, knockback, dmg, false);
             }
         }
     }
@@ -335,41 +303,6 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     // Forward event to modules.
     ClassAlphaUpdate(index);
     UpdateHPDisplay(index);
-}
-
-public bool:TraceRayFilter(entity, contentsMask)
-{
-    if (entity > 0 && entity < MAXPLAYERS)
-    {
-        return false;
-    }
-    
-    return true;
-}
-
-FindExplodingGrenade(Float:heLoc[3])
-{
-    decl String:classname[64];
-                
-    new maxentities = GetMaxEntities();
-    for (new x = GetMaxClients(); x <= maxentities; x++)
-    {
-        if (IsValidEdict(x))
-        {
-            GetEdictClassname(x, classname, sizeof(classname));
-            if (StrEqual(classname, "hegrenade_projectile"))
-            {
-                new takedamage = GetEntProp(x, Prop_Data, "m_takedamage");
-                if (takedamage == 0)
-                {
-                    GetEntPropVector(x, Prop_Send, "m_vecOrigin", heLoc);
-                    return x;
-                }
-            }
-        }
-    }
-    
-    return -1;
 }
 
 public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)

@@ -96,7 +96,7 @@ LoadClassData()
         arrayClasses[classCount][data_speed] = KvGetFloat(kvClasses, "speed"), GetConVarFloat(gCvars[CVAR_ZOMBIE_SPEED]);
         arrayClasses[classCount][data_jump_distance] = KvGetFloat(kvClasses, "jump_distance"), GetConVarFloat(gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]);
         arrayClasses[classCount][data_jump_height] = KvGetFloat(kvClasses, "jump_height"), GetConVarFloat(gCvars[CVAR_ZOMBIE_JUMP_HEIGHT]);
-        arrayClasses[classCount][data_knockback] = KvGetFloat(kvClasses, "knockback"), GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
+        arrayClasses[classCount][data_knockback] = KvGetFloat(kvClasses, "knockback");
         arrayClasses[classCount][data_nvgs] = KvGetNum(kvClasses, "nvgs"), GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]);
         arrayClasses[classCount][data_fov] = KvGetNum(kvClasses, "fov"), GetConVarInt(gCvars[CVAR_ZOMBIE_FOV]);
         arrayClasses[classCount][data_regen] = bool:KvGetNum(kvClasses, "regen"), GetConVarBool(gCvars[CVAR_ZOMBIE_REGEN]);

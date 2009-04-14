@@ -308,7 +308,6 @@ Zombify(client, attacker = -1, bool:motherinfect = false)
     // Forward event to modules.
     ClassOnClientInfected(client);
     AbortTeleport(client);
-    AntiStick(attacker, client);
     
     // Apply effects.
     InfectionEffects(client);
@@ -388,32 +387,6 @@ InfectionEffects(client)
             EndMessage();
         }
     }
-}
-
-KnockBack(client, const Float:clientloc[3], const Float:attackerloc[3], Float:power, dmg, bool:grenade)
-{
-    if (!IsPlayerZombie(client))
-    {
-        return;
-    }
-    
-    new Float:vector[3];
-    
-    MakeVectorFromPoints(attackerloc, clientloc, vector);
-    
-    NormalizeVector(vector, vector);
-    
-    vector[0] *= power * (float(dmg) * 1.5);
-    vector[1] *= power * (float(dmg) * 1.5);
-    vector[2] *= power * (float(dmg) * 1.5);
-    
-    if (grenade)
-    {
-        new Float:knockback_grenade = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK_GRENADE]);
-        ScaleVector(vector, knockback_grenade);
-    }
-    
-    SetPlayerVelocity(client, vector, false);
 }
 
 JumpBoost(client, Float:distance, Float:height)

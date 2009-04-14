@@ -37,6 +37,9 @@
 // Weapons
 #include "zr/weapons/weapons"
 
+// Knockback
+#include "zr/knockback"
+
 #include "zr/zadmin"
 #include "zr/damagecontrol"
 #include "zr/commands"
@@ -153,6 +156,7 @@ public OnConfigsExecuted()
     if (FileExists(path))
     {
         ServerCommand("exec %s", mapconfig);
+        
         if (LogFlagCheck(LOG_CORE_EVENTS))
         {
             LogMessage("Executed map config file: %s", mapconfig);

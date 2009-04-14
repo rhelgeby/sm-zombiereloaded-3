@@ -264,7 +264,8 @@ public Action:Command_KnockbackMMenu(client, argc)
 {
     if (IsClientPlayer(client))
     {
-        ZRKnockbackMMenu(client);
+        // Disabled, under construction.
+        // ZRKnockbackMMenu(client);
     }
     else
     {

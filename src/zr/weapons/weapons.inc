@@ -114,9 +114,11 @@ WeaponsOnClientDisconnect(client)
  */
 WeaponsCreateWeaponArray(&Handle:arrayWeapons, maxlen = WEAPONS_MAX_LENGTH)
 {
+    // Initialize array handle.
     arrayWeapons = CreateArray(maxlen);
     new count = 0;
     
+    // Reset keyvalue's traveral stack.
     KvRewind(kvWeapons);
     if (KvGotoFirstSubKey(kvWeapons))
     {
@@ -126,11 +128,15 @@ WeaponsCreateWeaponArray(&Handle:arrayWeapons, maxlen = WEAPONS_MAX_LENGTH)
         {
             KvGetSectionName(kvWeapons, weapon, maxlen);
             
+            // Push weapon name into the array
             PushArrayString(arrayWeapons, weapon);
+            
+            // Increment count.
             count++;
         } while (KvGotoNextKey(kvWeapons));
     }
     
+    // Return the count
     return count;
 }
 
@@ -193,6 +199,7 @@ WeaponGetDisplayName(const String:weapon[], String:display[])
  */
 bool:WeaponsIsWeaponMenu(const String:weapon[])
 {
+    // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);
     if (KvGotoFirstSubKey(kvWeapons))
     {
@@ -203,14 +210,44 @@ bool:WeaponsIsWeaponMenu(const String:weapon[])
         {
             KvGetSectionName(kvWeapons, validweapon, sizeof(validweapon));
             
+            // If this is the right weapon, then return setting for it.
             if (StrEqual(validweapon, weapon, false))
             {
                 KvGetString(kvWeapons, "menu", menu, sizeof(menu), "yes");
                 
+                // Return weapon's setting.
                 return ConfigSettingToBool(menu);
             }
         } while (KvGotoNextKey(kvWeapons));
     }
     
     return false;
+}
+
+/**
+ * Returns knockback multiplier of the weapon
+ * @param weapon    The weapon name.
+ * @return          The float value of the knockback multiplier, 1.0 if not found.
+ */
+Float:WeaponGetWeaponKnockback(const String:weapon[])
+{
+    // Reset keyvalue's traversal stack.
+    KvRewind(kvWeapons);
+    if (KvGotoFirstSubKey(kvWeapons))
+    {
+        decl String:validweapon[WEAPONS_MAX_LENGTH];
+        
+        do
+        {
+            KvGetSectionName(kvWeapons, validweapon, sizeof(validweapon));
+            
+            // If this is the right weapon, then return setting for it.
+            if (StrEqual(validweapon, weapon, false))
+            {
+                return KvGetFloat(kvWeapons, "knockback", 1.0);
+            }
+        } while (KvGotoNextKey(kvWeapons));
+    }
+    
+    return 1.0;
 }
