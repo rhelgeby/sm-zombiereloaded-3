@@ -551,8 +551,6 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
  */
 ClassClientSetDefaultIndexes(client = -1)
 {
-    new classindex = GetDefaultClassIndex();    // Old class system. Not removed for backwards compatibility.
-    
     // Get indexes.
     new zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES);
     new humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS);
@@ -603,10 +601,6 @@ ClassClientSetDefaultIndexes(client = -1)
     // Check if a client is specified.
     if (client > 0)
     {
-        // Set the old array for backwards compatibility while introducing the
-        // new class system.
-        pClass[client] = classindex;
-        
         ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
         ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
         ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
@@ -619,10 +613,6 @@ ClassClientSetDefaultIndexes(client = -1)
         // No client specified. Loop through all players.
         for (new clientindex = 1; clientindex <= MAXPLAYERS; clientindex++)
         {
-            // Set the old array for backwards compatibility while introducing the
-            // new class system.
-            pClass[clientindex] = classindex;
-            
             ClassSelected[clientindex][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_HUMANS] = humanindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_ADMINS] = adminindex;

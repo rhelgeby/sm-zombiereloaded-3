@@ -76,9 +76,6 @@ new bool:dispHP[MAXPLAYERS + 1];
 new bool:pProtect[MAXPLAYERS + 1];
 new bool:gKilledByWorld[MAXPLAYERS + 1] = {false, ...};
 
-new pClass[MAXPLAYERS + 1];
-new pNextClass[MAXPLAYERS + 1];
-
 new pTimeLeft[MAXPLAYERS + 1];
 
 new Float:spawnLoc[MAXPLAYERS + 1][3];

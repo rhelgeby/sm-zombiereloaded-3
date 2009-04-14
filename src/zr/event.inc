@@ -185,18 +185,6 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     // Remove night vision.
     NightVisionOn(index, false);
     NightVision(index, false);
-  
-    if (pNextClass[index] != -1)
-    {
-        Call_StartForward(hOnZClassChanged);
-        Call_PushCell(index);
-        Call_PushCell(pClass[index]);
-        Call_PushCell(pNextClass[index]);
-        Call_Finish();
-        
-        pClass[index] = pNextClass[index];
-        pNextClass[index] = -1;
-    }
     
     pProtect[index] = false;
     if (zombieSpawned)

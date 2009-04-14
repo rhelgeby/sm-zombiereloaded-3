@@ -162,11 +162,6 @@ public Action:MotherZombie(Handle:timer)
 
 Zombify_Mother(client)
 {
-    Call_StartForward(hZombify);
-    Call_PushCell(client);
-    Call_PushCell(true);
-    Call_Finish();
-    
     gZombie[client] = true;
     motherZombie[client] = true;
     
@@ -245,12 +240,6 @@ Zombify(client, attacker = -1, bool:motherinfect = false)
             FireEvent(event, false);
         }
     }
-    
-    // Forward global event.
-    Call_StartForward(hZombify);
-    Call_PushCell(client);
-    Call_PushCell(false);
-    Call_Finish();
     
     // Set player status.
     gZombie[client] = true;

@@ -23,7 +23,6 @@
 #include "zr/translation"
 #include "zr/offsets"
 #include "zr/ambience"
-#include "zr/classes"
 #include "zr/models"
 #include "zr/overlays"
 #include "zr/playerclasses/playerclasses"
@@ -125,15 +124,8 @@ public OnMapStart()
     LoadModelData();
     LoadDownloadData();
     
-    
-    new i;
-    new classindex = GetDefaultClassIndex();
-    for (i = 1; i <= MAXPLAYERS; i++)
-    {
-        pClass[i] = classindex;
-    }
-    
     // Forward event to modules.
+    ClassLoad();
     WeaponsOnMapStart();
     Anticamp_Startup();
 }
@@ -164,15 +156,11 @@ public OnConfigsExecuted()
     }
     
     FindMapSky();
-    ClassLoad();
-    LoadClassData();
     LoadAmbienceData();
-    
 }
 
 public OnClientPutInServer(client)
 {
-    pClass[client] = GetDefaultClassIndex();
     gBlockMotherInfect[client] = false;
     gKilledByWorld[client] = false; 
     

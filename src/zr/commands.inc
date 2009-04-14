@@ -20,11 +20,11 @@ CreateCommands()
     RegAdminCmd("zr_restrict", Command_Restrict, ADMFLAG_GENERIC, "Restrict a specified weapon");
     RegAdminCmd("zr_unrestrict", Command_Unrestrict, ADMFLAG_GENERIC, "Unrestrict a specified weapon");
     
-    RegAdminCmd("zr_set_class_knockback", Command_SetClassKnockback, ADMFLAG_GENERIC, "Sets the knockback to the specified class. Usage: zr_set_class_knockback <class name> <value>");
-    RegAdminCmd("zr_get_class_knockback", Command_GetClassKnockback, ADMFLAG_GENERIC, "Gets the knockback to the specified class. Usage: zr_get_class_knockback <class name>");
+    //RegAdminCmd("zr_set_class_knockback", Command_SetClassKnockback, ADMFLAG_GENERIC, "Sets the knockback to the specified class. Usage: zr_set_class_knockback <class name> <value>");
+    //RegAdminCmd("zr_get_class_knockback", Command_GetClassKnockback, ADMFLAG_GENERIC, "Gets the knockback to the specified class. Usage: zr_get_class_knockback <class name>");
     
     RegAdminCmd("zr_admin", Command_AdminMenu, ADMFLAG_GENERIC, "Displays the admin menu for Zombie: Reloaded.");
-    RegAdminCmd("zr_knockback_m", Command_KnockbackMMenu, ADMFLAG_GENERIC, "Displays the knockback multiplier menu.");
+    //RegAdminCmd("zr_knockback_m", Command_KnockbackMMenu, ADMFLAG_GENERIC, "Displays the knockback multiplier menu.");
     RegAdminCmd("zr_teleadmin", Command_TeleMenu, ADMFLAG_GENERIC, "Displays the teleport admin menu for Zombie: Reloaded.");
     
     RegAdminCmd("zr_anticamp_create_volume", Command_AnticampCreateVolume, ADMFLAG_GENERIC, "Creates a rectangular hurt volume between two points. Usage: ht_create_volume <damage> <interval> <x1> <y1> <z1> <x2> <y2> <z2>");
@@ -192,7 +192,7 @@ public Action:Command_Unrestrict(client, argc)
     return Plugin_Handled;
 }
 
-public Action:Command_SetClassKnockback(client, argc)
+/*public Action:Command_SetClassKnockback(client, argc)
 {
     if (argc < 2)
     {
@@ -245,7 +245,7 @@ public Action:Command_GetClassKnockback(client, argc)
     ReplyToCommand(client, "Current knockback for %s: %f", classname, knockback);
     
     return Plugin_Handled;
-}
+}*/
 
 public Action:Command_AdminMenu(client, argc)
 {
@@ -255,7 +255,8 @@ public Action:Command_AdminMenu(client, argc)
     }
     else
     {
-        ReplyToCommand(client, "This menu cannot be used from the console.");
+        // BAD!
+        // ReplyToCommand(client, "This menu cannot be used from the console.");
     }
     return Plugin_Handled;
 }
@@ -269,7 +270,8 @@ public Action:Command_KnockbackMMenu(client, argc)
     }
     else
     {
-        ReplyToCommand(client, "This menu cannot be used from the console.");
+        // Tsk tsk no translation? :P
+        //ReplyToCommand(client, "This menu cannot be used from the console.");
     }
     return Plugin_Handled;
 }
@@ -282,6 +284,7 @@ public Action:Command_TeleMenu(client, argc)
     }
     else
     {
+        // BAD!
         ReplyToCommand(client, "This menu cannot be used from the console.");
     }
     return Plugin_Handled;
