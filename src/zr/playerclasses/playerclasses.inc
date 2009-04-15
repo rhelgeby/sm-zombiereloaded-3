@@ -5,7 +5,6 @@
  *
  *   File:        playerclasses.inc
  *   Description: Provides functions for managing classes.
- *   Author:      Richard Helgeby, Greyscale
  *
  * ============================================================================
  */
@@ -35,12 +34,6 @@
           There is one problem, the in-game knockback multiplier menu. It
           depends on the original class knockback values. A solution might be
           to have another array of class data, which is never canged.
-    
-    TODO: Make a solution with default valueas for each class team, without
-          using CVARs.
-          
-          SOLVED: Added boolean team_default class attribute. Default values
-          will be used from the first class with this value set.
     
     TODO: Make class attributes for for changing model render mode and colors.
     
@@ -249,6 +242,8 @@ new bool:ClassPlayerAdminMode[MAXPLAYERS + 1];
 #include "zr/playerclasses/clientalpha"
 #include "zr/playerclasses/healthregen"
 #include "zr/playerclasses/classevents"
+#include "zr/playerclasses/classmenus"
+#include "zr/playerclasses/classcommands"
 
 /**
  * Loads class attributes from playerclasses.txt into the ClassData array. If
@@ -631,4 +626,115 @@ ClassClientSetDefaultIndexes(client = -1)
             ClassReloadPlayerCache(client, humanindex);
         }
     }
+}
+
+/**
+ * Dump class data into a string. String buffer length should be at about 2048
+ * cells.
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest class
+ *                  data.
+ *                  ZR_CLASS_CACHE_PLAYER - Player cache. If this one is used,
+ *                  index will be used as a client index.
+ * @return          Number of cells written.
+ */
+ClassDumpData(index, cachetype, String:buffer[], maxlen)
+{
+    new cellcount;
+    decl String:attribute[320];
+    decl String:format_buffer[256];
+    
+    if (maxlen == 0)
+    {
+        return 0;
+    }
+    
+    Format(format_buffer, sizeof(format_buffer), "Class data at index %d:\n", index);
+    cellcount += StrCat(buffer, maxlen, format_buffer);
+    cellcount += StrCat(buffer, maxlen, "-------------------------------------------------------------------------------\n");
+    
+    Format(attribute, sizeof(attribute), "enabled:               \"%d\"\n", ClassIsEnabled(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "team:                  \"%d\"\n", ClassGetTeamID(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "team_default:          \"%d\"\n", ClassGetTeamDefault(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    ClassGetName(index, format_buffer, sizeof(format_buffer), cachetype);
+    Format(attribute, sizeof(attribute), "name:                  \"%s\"\n", format_buffer);
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    ClassGetDescription(index, format_buffer, sizeof(format_buffer), cachetype);
+    Format(attribute, sizeof(attribute), "description:           \"%s\"\n", format_buffer);
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    ClassGetModelPath(index, format_buffer, sizeof(format_buffer), cachetype);
+    Format(attribute, sizeof(attribute), "model_path:            \"%s\"\n", format_buffer);
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "alpha_initial:         \"%d\"\n", ClassGetAlphaInitial(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "alpha_damaged:         \"%d\"\n", ClassGetAlphaDamaged(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "alpha_damage:          \"%d\"\n", ClassGetAlphaDamage(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    ClassGetOverlayPath(index, format_buffer, sizeof(format_buffer), cachetype);
+    Format(attribute, sizeof(attribute), "overlay_path:          \"%s\"\n", format_buffer);
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "nvgs:                  \"%d\"\n", ClassGetNvgs(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "fov:                   \"%d\"\n", ClassGetFOV(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "napalm_time:           \"%f\"\n", ClassGetNapalmTime(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "immunity_mode:         \"%d\"\n", ClassGetImmunityMode(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "immunity_amount:       \"%f\"\n", ClassGetImmunityAmount(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "no_fall_damage:        \"%d\"\n", ClassGetNoFallDamage(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "health:                \"%d\"\n", ClassGetHealth(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "health_regen_interval: \"%f\"\n", ClassGetHealthRegenInterval(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "health_regen_amount:   \"%d\"\n", ClassGetHealthRegenAmount(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "health_infect_gain:    \"%d\"\n", ClassGetHealthInfectGain(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "kill_bonus:            \"%d\"\n", ClassGetKillBonus(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "speed:                 \"%f\"\n", ClassGetSpeed(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "knockback:             \"%f\"\n", ClassGetKnockback(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "jump_height:           \"%f\"\n", ClassGetJumpHeight(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "jump_distance:         \"%f\"\n", ClassGetJumpDistance(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    return cellcount;
 }

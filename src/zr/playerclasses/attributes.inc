@@ -5,7 +5,6 @@
  *
  *   File:        attributes.inc
  *   Description: Retrieving class attributes from certain caches.
- *   Author:      Richard Helgeby
  *
  * ============================================================================
  */

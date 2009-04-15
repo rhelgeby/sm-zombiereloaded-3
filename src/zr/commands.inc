@@ -32,6 +32,7 @@ CreateCommands()
     RegAdminCmd("zr_anticamp_list", Command_AnticampList, ADMFLAG_GENERIC, "List current volumes.");
     
     RegConsoleCmd("zr_log_flags", Command_LogFlags, "List available logging flags.");
+    RegConsoleCmd("zr_class_dump", Command_ClassDump, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
 }
 
 public Action:Command_Infect(client, argc)

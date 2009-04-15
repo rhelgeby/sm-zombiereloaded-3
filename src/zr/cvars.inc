@@ -19,7 +19,7 @@ enum ZRSettings
     Handle:CVAR_CLASSES,
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
-    Handle:CVAR_CLASSES_DEFAULT,
+    //Handle:CVAR_CLASSES_DEFAULT,
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
     Handle:CVAR_CLASSES_DEFAULT_ADMIN,
@@ -43,6 +43,7 @@ enum ZRSettings
     Handle:CVAR_ZOMBIE_ALPHA_DAMAGE,
     Handle:CVAR_OVERLAY_REDISPLAY,
     Handle:CVAR_ZVISION_ALLOW_DISABLE,
+    Handle:CVAR_MENU_AUTOCLOSE,
     Handle:CVAR_DARK,
     Handle:CVAR_DARK_LEVEL,
     Handle:CVAR_DARK_SKY,
@@ -108,7 +109,7 @@ CreateCvars()
     gCvars[CVAR_CLASSES]                   =    CreateConVar("zr_classes", "1", "Enable zombie classes");
     gCvars[CVAR_CLASSES_SPAWN]             =    CreateConVar("zr_classes_spawn", "0", "Classmenu is re-displayed every spawn (0: Disable)");
     gCvars[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round. Overrides zr_classes_spawn and default classes. (0: Disable)");
-    gCvars[CVAR_CLASSES_DEFAULT]           =    CreateConVar("zr_classes_default", "classic", "Default class selected for all players when they connect, or \"random\" to select a random class. Usage zr_classes_default <class name|\"random\">");
+    //gCvars[CVAR_CLASSES_DEFAULT]         =    CreateConVar("zr_classes_default", "classic", "Default class selected for all players when they connect, or \"random\" to select a random class. Usage zr_classes_default <class name|\"random\">");
     gCvars[CVAR_CLASSES_DEFAULT_ZOMBIE]    =    CreateConVar("zr_classes_default_zombie", "", "Default zombie class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
     gCvars[CVAR_CLASSES_DEFAULT_HUMAN]     =    CreateConVar("zr_classes_default_human", "", "Default human class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
     gCvars[CVAR_CLASSES_DEFAULT_ADMIN]     =    CreateConVar("zr_classes_default_admin", "", "Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
@@ -132,6 +133,7 @@ CreateCvars()
     gCvars[CVAR_ZOMBIE_ALPHA_DAMAGE]       =    CreateConVar("zr_zombie_alpha_damage", "0", "How much damage to do before changing transparency.");
     gCvars[CVAR_OVERLAY_REDISPLAY]         =    CreateConVar("zr_overlay_redisplay", "3", "Frequency, in seconds, to display overlay on the client's screen (Never go below 0.1, 0.2 seems safe)");
     gCvars[CVAR_ZVISION_ALLOW_DISABLE]     =    CreateConVar("zr_zvision_allow_disable", "1", "Allow users to disable ZVision with their nightvision key (0: Disable)");
+    gCvars[CVAR_MENU_AUTOCLOSE]            =    CreateConVar("zr_menu_autoclose", "0", "Automatically close menus on selection. If disabled the menu will remain open.");
     gCvars[CVAR_DARK]                      =    CreateConVar("zr_dark", "0", "Default value for darkening maps,  most dislike this feature (0: Disable)");
     gCvars[CVAR_DARK_LEVEL]                =    CreateConVar("zr_dark_level", "a", "The darkness of the map,  a being the darkest,  z being extremely bright when zr_dark is 1 (n: Default)");
     gCvars[CVAR_DARK_SKY]                  =    CreateConVar("zr_dark_sky", "sky_borealis01", "The sky the map will have when zr_dark is 1");

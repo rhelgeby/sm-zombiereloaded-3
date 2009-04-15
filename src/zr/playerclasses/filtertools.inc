@@ -4,8 +4,7 @@
  *   Zombie:Reloaded
  *
  *   File:        filtertools.inc
- *   Description: Class system: Validating, getting indexes or lists
- *   Author:      Richard Helgeby
+ *   Description: Class system tools; validating, getting indexes or lists
  *
  * ============================================================================
  */

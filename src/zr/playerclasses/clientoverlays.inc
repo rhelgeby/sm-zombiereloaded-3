@@ -5,7 +5,6 @@
  *
  *   File:        clientoverlays.inc
  *   Description: Handles overlays on clients, as a part of class attributes.
- *   Author:      Richard Helgeby
  *
  * ============================================================================
  */

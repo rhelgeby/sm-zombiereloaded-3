@@ -5,7 +5,6 @@
  *
  *   File:        clientalpha.inc
  *   Description: Handles transparency on clients.
- *   Author:      Richard Helgeby
  *
  * ============================================================================
  */
