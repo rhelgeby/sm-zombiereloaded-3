@@ -5,30 +5,15 @@
  *   Author: Greyscale
  * ==================== 
  */
-
-/**
- * @section Player hitgroup values.
- */
-#define	HITGROUP_GENERIC    0
-#define	HITGROUP_HEAD       1
-#define	HITGROUP_CHEST      2
-#define	HITGROUP_STOMACH    3
-#define HITGROUP_LEFTARM    4
-#define HITGROUP_RIGHTARM   5
-#define HITGROUP_LEFTLEG    6
-#define HITGROUP_RIGHTLEG   7
-#define HITGROUP_GEAR       10
-/**
- * @endsection
- */
   
 /** Player hurt event
  * @param client        The victim index. (zombie)
  * @param attacker      The attacker index. (human)
  * @param weapon        The weapon used.
+ * @param hitgroup      Hitgroup attacker has damaged. 
  * @param dmg_health    Damage done.
  */ 
-KnockbackPlayerHurt(client, attacker, const String:weapon[], dmg_health)
+KnockbackPlayerHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
 {
     // Check if the attacker is a player.
     if (attacker != 0)
@@ -68,14 +53,15 @@ KnockbackPlayerHurt(client, attacker, const String:weapon[], dmg_health)
                 TR_GetEndPosition(clientloc);
             }
             
-            // Apply damage knockback multiplier
-            knockback *= float(dmg_health);
-            
             // Retrieve weapon knockback boost.
             new Float:boostWeapon = WeaponGetWeaponKnockback(weapon);
             
-            // Apply weapon knockback multiplier.
-            knockback *= boostWeapon;
+            // Retrieve hitgroup knockback boost.
+            new Float:boostHitgroup = HitgroupsGetHitgroupKnockback(hitgroup);
+            
+            // Apply all knockback multipliers
+            PrintToChatAll("Multipliers %f * %f * %f * %f", knockback, float(dmg_health), boostWeapon, boostHitgroup);
+            knockback *= float(dmg_health) * boostWeapon * boostHitgroup;
             
             // Apply knockback.
             KnockbackSetVelocity(client, attackerloc, clientloc, knockback);

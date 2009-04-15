@@ -36,6 +36,9 @@
 // Weapons
 #include "zr/weapons/weapons"
 
+// Hitgroups
+#include "zr/hitgroups"
+
 // Knockback
 #include "zr/knockback"
 
@@ -126,7 +129,8 @@ public OnMapStart()
     
     // Forward event to modules.
     ClassLoad();
-    WeaponsOnMapStart();
+    WeaponsLoad();
+    HitgroupsLoad();
     Anticamp_Startup();
 }
 

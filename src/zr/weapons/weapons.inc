@@ -50,7 +50,7 @@ WeaponsClearData()
 /**
  * Loads weapon data from file.
  */
-WeaponsOnMapStart()
+WeaponsLoad()
 {
     // Clear weapon data
     WeaponsClearData();
@@ -73,13 +73,13 @@ WeaponsOnMapStart()
     }
     
     // Validate weapons config
-    WeaponsValidateWeaponsConfig();
+    WeaponsValidateConfig();
     
     // Forward event to sub-module
     RestrictOnMapStart();
 }
 
-WeaponsValidateWeaponsConfig()
+WeaponsValidateConfig()
 {
     // If log flag check fails, don't log
     if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))

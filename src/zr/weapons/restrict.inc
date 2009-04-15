@@ -126,14 +126,16 @@ RestrictDefaultRestrictions()
  */ 
 RestrictValidateWeaponGroups()
 {
-    // If log flag check fails, don't log
+    // If log flag check fails, don't log.
     if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
     {
         return;
     }
     
+    // Reset keygroup's traversal stack.
     KvRewind(kvWeaponGroups);
     
+    // Traverse into the keygroup. (weapon groups level)
     if (KvGotoFirstSubKey(kvWeaponGroups))
     {
         decl String:weapongroup[WEAPONS_MAX_LENGTH];
@@ -143,12 +145,14 @@ RestrictValidateWeaponGroups()
         {
             KvGetSectionName(kvWeaponGroups, weapongroup, sizeof(weapongroup));
             
+            // Traverse into the keygroup. (weapons level)
             if (KvGotoFirstSubKey(kvWeaponGroups))
             {
                 do
                 {
                     KvGetSectionName(kvWeaponGroups, groupweapon, sizeof(groupweapon));
                     
+                    // If weapon is invalid, then log it.
                     if (!WeaponsIsValidWeapon(groupweapon))
                     {
                         ZR_LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "Invalid weapon \"%s\" in group \"%s\" configured in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, groupweapon, weapongroup);
@@ -157,6 +161,7 @@ RestrictValidateWeaponGroups()
                 
                 KvGoBack(kvWeaponGroups);
             }
+            // If it couldn't traverse to the weapons, then log no weapons within group.
             else
             {
                 ZR_LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "No weapons listed in weapon group \"%s\" in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, weapongroup);

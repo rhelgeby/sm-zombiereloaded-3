@@ -240,13 +240,15 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     
+    new hitgroup = GetEventInt(event, "hitgroup");
+    
     new dmg_health = GetEventInt(event, "dmg_health");
     
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
     // Forward event to modules.
-    KnockbackPlayerHurt(index, attacker, weapon, dmg_health);
+    KnockbackPlayerHurt(index, attacker, weapon, hitgroup, dmg_health);
     
     // Check if the attacker is a player.
     if (attacker != 0)

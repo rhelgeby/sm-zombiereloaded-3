@@ -11,10 +11,9 @@ new curMenuClass[MAXPLAYERS + 1];
 
 bool:ZRAdminMenu(client)
 {
-    if (!GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    if (!IsClientAdmin(client))
     {
         ZR_PrintToChat(client, "Must be admin");
-        
         return false;
     }
     
@@ -520,6 +519,7 @@ ZRLogFlagsMenu(client)
     decl String:z_log_module_teleport[64];
     decl String:z_log_module_classes[64];
     decl String:z_log_module_weapons[64];
+    decl String:z_log_module_hitgroups[64];
     decl String:z_log_module_commands[64];
     decl String:z_log_module_anticamp[64];
     decl String:z_log_module_damagecontrol[64];
@@ -542,6 +542,7 @@ ZRLogFlagsMenu(client)
     Format(z_log_module_teleport, sizeof(z_log_module_teleport), "Teleporter (%d)", LogHasFlag(LOG_MODULE_TELEPORT));
     Format(z_log_module_classes, sizeof(z_log_module_classes), "Classes (%d)", LogHasFlag(LOG_MODULE_CLASSES));
     Format(z_log_module_weapons, sizeof(z_log_module_weapons), "Weapons (%d)", LogHasFlag(LOG_MODULE_WEAPONS));
+    Format(z_log_module_hitgroups, sizeof(z_log_module_hitgroups), "Hitgroups (%d)", LogHasFlag(LOG_MODULE_HITGROUPS));
     Format(z_log_module_commands, sizeof(z_log_module_commands), "Admin commands (%d)", LogHasFlag(LOG_MODULE_COMMANDS));
     Format(z_log_module_anticamp, sizeof(z_log_module_anticamp), "Anticamp (%d)", LogHasFlag(LOG_MODULE_ANTICAMP));
     Format(z_log_module_damagecontrol, sizeof(z_log_module_damagecontrol), "Damage control (suicides) (%d)", LogHasFlag(LOG_MODULE_DAMAGECONTROL));
@@ -573,7 +574,7 @@ ZRLogFlagsMenu(client)
     DisplayMenu(menu_log_flags, client, MENU_TIME_FOREVER);
 }
 
-public ZRLogFlagsMenuHandle(Handle:menu_log_flags , MenuAction:action, client, slot)
+public ZRLogFlagsMenuHandle(Handle:menu_log_flags, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
@@ -666,20 +667,25 @@ public ZRLogFlagsMenuHandle(Handle:menu_log_flags , MenuAction:action, client, s
             }
             case 17:
             {
-                ToggleLogFlag(LOG_MODULE_COMMANDS);
+                ToggleLogFlag(LOG_MODULE_HITGROUPS);
                 ZRLogFlagsMenu(client);
             }
             case 18:
             {
-                ToggleLogFlag(LOG_MODULE_ANTICAMP);
+                ToggleLogFlag(LOG_MODULE_COMMANDS);
                 ZRLogFlagsMenu(client);
             }
             case 19:
             {
-                ToggleLogFlag(LOG_MODULE_DAMAGECONTROL);
+                ToggleLogFlag(LOG_MODULE_ANTICAMP);
                 ZRLogFlagsMenu(client);
             }
             case 20:
+            {
+                ToggleLogFlag(LOG_MODULE_DAMAGECONTROL);
+                ZRLogFlagsMenu(client);
+            }
+            case 21:
             {
                 ToggleLogFlag(LOG_MODULE_OFFSETS);
                 ZRLogFlagsMenu(client);
@@ -695,7 +701,7 @@ public ZRLogFlagsMenuHandle(Handle:menu_log_flags , MenuAction:action, client, s
     }
     if (action == MenuAction_End)
     {
-        CloseHandle(menu_log_flags );
+        CloseHandle(menu_log_flags);
     }
 }
 

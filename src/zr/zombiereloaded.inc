@@ -55,9 +55,10 @@ enum ZTeam
 #define LOG_MODULE_OVERLAYS         65536       /** overlays.inc */
 #define LOG_MODULE_TELEPORT         131072      /** teleport.inc */
 #define LOG_MODULE_WEAPONS          262144      /** Weapons module - weapons/ *.inc */
-#define LOG_MODULE_ANTICAMP         524288      /** anticamp.inc */
-#define LOG_MODULE_DAMAGECONTROL    1048576     /** damagecontrol.inc */
-#define LOG_MODULE_OFFSETS          2097152     /** offsets.inc */
+#define LOG_MODULE_HITGROUPS        524288      /** hitgroups.inc */
+#define LOG_MODULE_ANTICAMP         1048576     /** anticamp.inc */
+#define LOG_MODULE_DAMAGECONTROL    2097152     /** damagecontrol.inc */
+#define LOG_MODULE_OFFSETS          4194304     /** offsets.inc */
 /*
  * @endsection
  */
@@ -240,6 +241,24 @@ bool:IsPlayerInList(client)
 bool:IsClientPlayer(client)
 {
     if (client > 0 && client <= maxclients)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+/**
+ * Returns whether a player is a generic admin or not.
+ *
+ * @param client    The client index.
+ * @return          True if generic admin, false otherwise.
+ */
+bool:IsClientAdmin(client)
+{
+    if (GetAdminFlag(GetUserAdmin(client), Admin_Generic))
     {
         return true;
     }
