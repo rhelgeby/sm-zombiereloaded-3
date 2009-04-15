@@ -138,7 +138,7 @@ public Action:MotherZombie(Handle:timer)
             randclient = RandomPlayerFromList();
         } while (!IsPlayerAlive(randclient) || gBlockMotherInfect[randclient]);
         
-        Zombify_Mother(randclient);
+        InfectPlayer(randclient, _, true);
     }
     else
     {
@@ -151,7 +151,7 @@ public Action:MotherZombie(Handle:timer)
                 randclient = RandomPlayerFromList();
             } while (IsPlayerZombie(randclient) || !IsPlayerAlive(randclient) || gBlockMotherInfect[randclient]);
             
-            Zombify_Mother(randclient);
+            InfectPlayer(randclient, _, true);
         }
     }
     
@@ -160,7 +160,7 @@ public Action:MotherZombie(Handle:timer)
     zombieSpawned = true;
 }
 
-Zombify_Mother(client)
+/*Zombify_Mother(client)
 {
     gZombie[client] = true;
     motherZombie[client] = true;
@@ -193,21 +193,7 @@ Zombify_Mother(client)
         }
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
-    
-    if (tHandles[client][TZHP] != INVALID_HANDLE)
-    {
-        KillTimer(tHandles[client][TZHP]);
-        tHandles[client][TZHP] = INVALID_HANDLE;
-    }
-    
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
-    if (zhp)
-    {
-        UpdateHPDisplay(client);
-        
-        tHandles[client][TZHP] = CreateTimer(5.0, ZHPTimer, client, TIMER_REPEAT);
-    }
-}
+}*/
 
 /**
  * Zombifies a player. Execute events, sets attributes and flags that indicate
@@ -217,7 +203,7 @@ Zombify_Mother(client)
  * @param attacker      Optional. The attacker who did the infect.
  * @param motherinfect  Optional. Indicates a mother zombie infect.
  */
-Zombify(client, attacker = -1, bool:motherinfect = false)
+InfectPlayer(client, attacker = -1, bool:motherinfect = false)
 {
     // Check if the attacker was specified.
     if (attacker > 0)
@@ -262,23 +248,9 @@ Zombify(client, attacker = -1, bool:motherinfect = false)
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
     
-    // Kill HP display timer.
-    if (tHandles[client][TZHP] != INVALID_HANDLE)
-    {
-        KillTimer(tHandles[client][TZHP]);
-        tHandles[client][TZHP] = INVALID_HANDLE;
-    }
-    
-    // Start HP display if enabled.
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
-    if (zhp)
-    {
-        UpdateHPDisplay(client);
-        tHandles[client][TZHP] = CreateTimer(5.0, ZHPTimer, client, TIMER_REPEAT);
-    }
-    
     // Forward event to modules.
-    ClassOnClientInfected(client);
+    ClassOnClientInfected(client, motherinfect);
+    ZHPOnClientInfected(client);
     AbortTeleport(client);
     
     // Apply effects.
@@ -425,7 +397,7 @@ PlayerLeft(client)
     }
     
     new randclient = GetArrayCell(aClients, GetRandomInt(0, size-1));
-    Zombify_Mother(randclient);
+    InfectPlayer(randclient, _, true);
                     
     ZR_PrintToChat(randclient, "Zombie replacement");
   
@@ -582,42 +554,6 @@ public Action:ZombieMoanTimer(Handle:timer, any:index)
     return Plugin_Continue;
 }
 
-UpdateHPDisplay(client)
-{
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
-    if (!zhp)
-    {
-        return;
-    }
-    
-    if (!IsPlayerZombie(client) || !dispHP[client])
-    {
-        return;
-    }
-    
-    new health = GetClientHealth(client);
-    if (health < 0)
-    {
-        health = 0;
-    }
-    
-    ZR_HudHint(client, "Display HP", health);
-}
-
-public Action:ZHPTimer(Handle:timer, any:index)
-{
-    if (!IsClientInGame(index))
-    {
-        tHandles[index][TZHP] = INVALID_HANDLE;
-        
-        return Plugin_Stop;
-    }
-    
-    UpdateHPDisplay(index);
-    
-    return Plugin_Continue;
-}
-
 RespawnPlayer(client)
 {
     if (!IsClientInGame(client))
@@ -637,13 +573,13 @@ RespawnPlayer(client)
     
     if (StrEqual(team, "zombie", false))
     {
-        Zombify(client, 0);
+        InfectPlayer(client);
         return;
     }
     
     if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
     {
-        Zombify(client, 0);
+        InfectPlayer(client);
         gKilledByWorld[client] = false;
     }
 }

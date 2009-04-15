@@ -65,7 +65,8 @@ public Action:SayCommand(client, argc)
     
     else if (StrEqual(args, "!zhp", false))
     {
-        ZHP(client);
+        // Toggle ZHP.
+        ZHPToggle(client);
     }
     else if (StrContains(args, "teleport", false) != -1
              || StrContains(args, "stuck", false) != -1
@@ -165,27 +166,4 @@ ZSpawn(client)
     RespawnPlayer(client);
     
     AddPlayerToList(client);
-}
-
-ZHP(client)
-{
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
-    if (!zhp)
-    {
-        ZR_PrintToChat(client, "Feature is disabled");
-        
-        return;
-    }
-    
-    if (dispHP[client])
-    {
-        ZR_PrintToChat(client, "!zhp disabled");
-    }
-    else
-    {
-        ZR_PrintToChat(client, "!zhp enabled");
-        UpdateHPDisplay(client);
-    }
-    
-    dispHP[client] = !dispHP[client];
 }

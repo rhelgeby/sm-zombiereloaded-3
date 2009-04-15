@@ -1,7 +1,7 @@
 "Phrases"
 {
 	// ===========================
-	// Chat Messages
+	// General
 	// ===========================
 
 	"Round objective"
@@ -77,19 +77,6 @@
 		"en"		"Switched zombie class to \"{1}\""
 		"ru"		"Класс зомби переключен на \"{1}\""
 	}
-
-	"Spawn protection begin"
-	{
-		"#format"	"{1:d}"
-		"en"		"Zombies are present, you have {1} seconds to find a safe place before you lose immunity."
-		"ru"		"Зомби на свободе, у вас {1} секунд, чтобы найти безопасное место, пока не потеряли иммунитет."
-	}
-
-	"Spawn protection end"
-	{
-		"en"		"You are now susceptible to zombie infection."
-		"ru"		"Теперь вы восприимчивы к зомби инфекции."
-	}
 	
 	"!ztele amount"
 	{
@@ -150,18 +137,6 @@
 	"!ztele successful"
 	{
 		"en"		"Teleport successful."
-	}
-
-	"!zhp enabled"
-	{
-		"en"		"HP display enabled, your real HP will be displayed persistently after infection."
-		"ru"		"Отображение здоровья включено, ваше реальное здоровье будет показано после инфицирования."
-	}
-
-	"!zhp disabled"
-	{
-		"en"		"HP display disabled."
-		"ru"		"Отображение здоровья включено."
 	}
 
 	// ===========================
@@ -317,6 +292,60 @@
 		"en"		"Unrestrict All Group Weapons"
 	}
 
+	// ===========================
+	// Spawn Protect
+	// ===========================
+
+	// General
+
+	"Spawn protection begin"
+	{
+		"#format"	"{1:d}"
+		"en"		"Zombies are present, you have {1} seconds to find a safe place before you lose immunity."
+		"ru"		"Зомби на свободе, у вас {1} секунд, чтобы найти безопасное место, пока не потеряли иммунитет."
+	}
+
+	"Spawn protection end"
+	{
+		"en"		"You are now susceptible to zombie infection."
+		"ru"		"Теперь вы восприимчивы к зомби инфекции."
+	}
+
+	// HUD
+
+	"Spawn Protect"
+	{
+		"#format"	"{1:d}"
+		"en"		"Zombie protection ends in: {1} seconds."
+	}
+
+	// ===========================
+	// ZHP
+	// ===========================
+
+	// General
+
+	"ZHP enable"
+	{
+		"en"		"HP display enabled, your real HP will be displayed after infection."
+	}
+
+	"ZHP disable"
+	{
+		"en"		"HP display disabled."
+		"ru"		"Отображение здоровья включено."
+	}
+
+	// HUD
+
+	"Display HP"
+	{
+		"#format"	"{1:d}"
+		"en"		"HP: {1}"
+		"ru"		"Здоровье: {1}"
+	}
+
+
 	"Suicide text"
 	{
 		"en"		"Nice try n00b!"
@@ -403,36 +432,36 @@
 		"en"		"Rebuy"
 		"ru"		"Купить снова"
 	}
-	
+
 	// ===========================
 	// Class menu
 	// ===========================
-	
+
 	"!zclass title"
 	{
 		"en"		"Class Selection:"
 	}
-	
+
 	"!zclass zombie"
 	{
 		"en"		"Select Zombie Class"
 	}
-	
+
 	"!zclass human"
 	{
 		"en"		"Select Human Class"
 	}
-	
+
 	"!zclass admin"
 	{
 		"en"		"Select Admin Class"
 	}
-	
+
 	"!zclass admin mode enabled"
 	{
 		"en"		"Admin mode is enabled!"
 	}
-	
+
 	"!zclass admin mode toggle"
 	{
 		"en"		"Toggle Admin Mode"
@@ -587,23 +616,6 @@
 	"!zadmin log flags title"
 	{
 		"en"		"Toggle Logging Flags:"
-	}
-
-	// ===========================
-	// HudHints
-	// ===========================
-
-	"Display HP"
-	{
-		"#format"	"{1:d}"
-		"en"		"HP: {1}"
-		"ru"		"Здоровье: {1}"
-	}
-
-	"Spawn Protect"
-	{
-		"#format"	"{1:d}"
-		"en"		"Zombie protection ends in: {1} seconds."
 	}
 
 	// ===========================

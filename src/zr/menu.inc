@@ -99,7 +99,10 @@ public MainMenuHandle(Handle:menu_main, MenuAction:action, client, slot)
             }
             case 6:
             {
-                ZHP(client);
+                // Toggle ZHP.
+                ZHPToggle(client);
+                
+                // Resend menu.
                 MainMenu(client);
             }
         }

@@ -70,7 +70,7 @@ public Action:Command_Infect(client, argc)
 
     for (new x = 0; x < tcount; x++)
     {
-        Zombify(targets[x], 0);
+        InfectPlayer(targets[x]);
         if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
         {
             GetClientName(targets[x], target_name, sizeof(target_name));

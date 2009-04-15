@@ -28,9 +28,10 @@ new pSpawnProtectTime[MAXPLAYERS + 1];
  * Client is joining the server.
  * 
  * @param client    The client index.
- */ 
+ */
 SpawnProtectClientInit(client)
 {
+    // Reset timer handle.
     tSpawnProtect[client] = INVALID_HANDLE;
 }
 

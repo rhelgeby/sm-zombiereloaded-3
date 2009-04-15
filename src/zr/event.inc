@@ -232,7 +232,7 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
             // Check if spawn protection is disabled and the weapon is a knife.
             if (!pProtect[index] && StrEqual(weapon, "knife"))
             {
-                Zombify(index, attacker);
+                InfectPlayer(index, attacker);
             }
         }
     }
@@ -265,7 +265,7 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassAlphaUpdate(index);
-    UpdateHPDisplay(index);
+    ZHPOnPlayerHurt(index);
 }
 
 public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
@@ -300,7 +300,8 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
             
             SetEntityHealth(attacker, health + healthgain);
             
-            UpdateHPDisplay(attacker);
+            // Forward event to modules.
+            ZHPOnHealthInfectGain(attacker);
         }
     }
     else

@@ -397,7 +397,7 @@ public ZRInfectHandle(Handle:menu_infect, MenuAction:action, client, slot)
          {
              decl String:name[64];
              GetClientName(target, name, sizeof(name));
-             Zombify(target, 0);
+             InfectPlayer(target);
              ShowActivity2(client, "[ZR] ", "Infected %s", name);
              ZRInfectMenu(client);
          }

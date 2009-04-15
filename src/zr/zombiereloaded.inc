@@ -73,7 +73,6 @@ new bool:gBlockMotherInfect[MAXPLAYERS + 1];
 new bool:bZVision[MAXPLAYERS + 1];
 //new bool:bZVisionOn[MAXPLAYERS + 1];
 //new String:ZVisionOverlay[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
-new bool:dispHP[MAXPLAYERS + 1];
 new bool:pProtect[MAXPLAYERS + 1];
 new bool:gKilledByWorld[MAXPLAYERS + 1] = {false, ...};
 
@@ -95,14 +94,13 @@ new Handle:tInfect = INVALID_HANDLE;
 
 new Handle:pList = INVALID_HANDLE;
 
-#define MAXTIMERS 6
+#define MAXTIMERS 5
 
 #define TMOAN 0
 #define TREGEN 1
 #define TTELE 2
-#define TZHP 3
-#define TRESPAWN 4
-#define TZVISION 5
+#define TRESPAWN 3
+#define TZVISION 4
 
 new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
 

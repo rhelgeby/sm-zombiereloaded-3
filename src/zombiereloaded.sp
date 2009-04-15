@@ -45,6 +45,9 @@
 // Spawn protect
 #include "zr/spawnprotect"
 
+// ZHP
+#include "zr/zhp"
+
 #include "zr/zadmin"
 #include "zr/damagecontrol"
 #include "zr/commands"
@@ -173,12 +176,12 @@ public OnClientPutInServer(client)
     
     bZVision[client] = !IsFakeClient(client);
     
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP_DEFAULT]);
-    dispHP[client] = zhp;
-    
     // Forward event to modules.
-    WeaponsClientInit(client);
     ClassClientInit(client);
+    WeaponsClientInit(client);
+    SpawnProtectClientInit(client);
+    ZHPClientInit(client);
+    
     if (!IsFakeClient(client)) AmbienceStart(client);
     
     ClientHookAttack(client);
@@ -199,8 +202,8 @@ public OnClientDisconnect(client)
     PlayerLeft(client);
     
     // Forward event to modules.
-    WeaponsOnClientDisconnect(client);
     ClassOnClientDisconnect(client);
+    WeaponsOnClientDisconnect(client);
     ZTeleResetClient(client);
     AmbienceStop(client);
     
