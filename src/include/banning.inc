@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: banning.inc 1456 2007-09-21 14:56:18Z dvander $
+ * Version: $Id$
  */
 
 #if defined _banning_included
@@ -144,7 +144,7 @@ native bool:BanIdentity(const String:identity[],
  *
  * @param identity		String to unban (ip or authstring).
  * @param flags			Flags (only IP and AUTHID are valid flags here).
- * @param command		Command strnig to identify the source.  If this is left 
+ * @param command		Command string to identify the source.  If this is left 
  *						empty, then OnRemoveBan will not be called.
  * @param source		A source value that could be interpreted as a player 
  *						index of any sort (not actually checked by Core).

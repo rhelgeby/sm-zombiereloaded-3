@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: sourcemod.inc 2212 2008-05-29 03:55:31Z dvander $
+ * Version: $Id$
  */
 
 #if defined _sourcemod_included
@@ -57,6 +57,7 @@ struct Plugin
 #include <logging>
 #include <timers>
 #include <admin>
+#include <keyvalues>
 #include <dbi>
 #include <lang>
 #include <sorting>
@@ -66,12 +67,12 @@ struct Plugin
 #include <events>
 #include <bitbuffer>
 #include <usermessages>
-#include <keyvalues>
 #include <menus>
 #include <halflife>
 #include <adt>
 #include <banning>
 #include <commandfilters>
+#include <nextmap>
 
 /**
  * Declare this as a struct in your plugin to expose its information.

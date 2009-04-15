@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: adt.inc 2093 2008-04-24 10:25:27Z damagedsoul $
+ * Version: $Id$
  */
  
 #if defined _adt_included
@@ -37,3 +37,4 @@
 
 #include <adt_array>
 #include <adt_trie>
+#include <adt_stack>

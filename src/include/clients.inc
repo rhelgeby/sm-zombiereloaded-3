@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: clients.inc 2362 2008-07-06 00:44:56Z dvander $
+ * Version: $Id$
  */
 
 #if defined _clients_included
@@ -45,11 +45,23 @@ enum NetFlow
 	NetFlow_Both,			/**< Both values added together */
 };
 
-#define MAXPLAYERS		64	/**< Maximum number of players that can be in server */
+/**
+ * MAXPLAYERS is not the same as MaxClients.
+ * MAXPLAYERS is a hardcoded value as an upper limit.  MaxClients changes based on the server.
+ *
+ * Both GetMaxClients() and MaxClients are only available once the map is loaded, and should 
+ * not be used in OnPluginStart().
+ */
+
+#define MAXPLAYERS		64	/**< Maximum number of players SourceMod supports */
 #define MAX_NAME_LENGTH 32	/**< Maximum buffer required to store a client name */
 
+public const MaxClients;	/**< Maximum number of players the server supports (dynamic) */
+
 /**
- * Called on client connection.
+ * Called on client connection.  If you return true, the client will be allowed in the server.
+ * If you return false (or return nothing), the client will be rejected.  If the client is 
+ * rejected by this forward or any other, OnClientDisconnect will not be called.
  *
  * @param client		Client index.
  * @param rejectmsg		Buffer to store the rejection message when the connection is refused.
@@ -57,6 +69,14 @@ enum NetFlow
  * @return				True to validate client's connection, false to refuse it.
  */
 forward bool:OnClientConnect(client, String:rejectmsg[], maxlen);
+
+/**
+ * Called once a client successfully connects.  This callback is paired with OnClientDisconnect.
+ *
+ * @param client		Client index.
+ * @noreturn
+ */
+forward OnClientConnected(client);
 
 /**
  * Called when a client is entering the game.
@@ -169,9 +189,15 @@ forward OnClientPostAdminFilter(client);
 forward OnClientPostAdminCheck(client);
 
 /**
+ * This function will be deprecated in a future release.  Use the MaxClients variable instead.
+ *
  * Returns the maximum number of clients allowed on the server.  This may 
  * return 0 if called before OnMapStart(), and thus should not be called 
  * in OnPluginStart().  
+ *
+ * You should not globally cache the value to GetMaxClients() because it can change from 
+ * SourceTV or TF2's arena mode.  Use the "MaxClients" dynamic variable documented at the 
+ * top of this file.
  *
  * @return				Maximum number of clients allowed.
  */
@@ -681,4 +707,18 @@ native KickClientEx(client, const String:format[]="", any:...);
  *						mod support.
  */
 native ChangeClientTeam(client, team);
+
+/**
+ * Returns the clients unique serial identifier.
+ *
+ * @return	Serial number.
+ */
+native GetClientSerial(client);
+
+/**
+ * Returns the client index by its serial number.
+ *
+ * @return				Client index, or 0 for invalid serial.
+ */
+native GetClientFromSerial(serial);
 

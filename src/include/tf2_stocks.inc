@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: tf2_stocks.inc 2236 2008-05-31 22:30:57Z damagedsoul $
+ * Version: $Id$
  */
 
 #if defined _tf2_stocks_included
@@ -86,8 +86,7 @@ static const String:TFResourceNames[TFResourceType][] =
  * Get's a Clients current class.
  *
  * @param client		Player's index.
- * @param class			TFClassType to change to.
- * @noreturn
+ * @return				Current TFClassType of player.
  * @error				Invalid client index.
  */
 stock TFClassType:TF2_GetPlayerClass(client)
@@ -217,3 +216,4 @@ stock TF2_RemoveAllWeapons(client)
 		TF2_RemoveWeaponSlot(client, i);
 	}
 }
+

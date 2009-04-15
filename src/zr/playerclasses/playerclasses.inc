@@ -232,6 +232,16 @@ new ClassCount;
  */
 new ClassSelected[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
 
+/**
+ * Specifies whether a player is currently in admin mode.
+ */
+new bool:ClassPlayerInAdminMode[MAXPLAYERS + 1];
+
+/**
+ * Specifies whether a player is set to be in admin mode next spawn.
+ */
+new bool:ClassPlayerAdminMode[MAXPLAYERS + 1];
+
 #include "zr/playerclasses/filtertools"
 #include "zr/playerclasses/attributes"
 #include "zr/playerclasses/apply"

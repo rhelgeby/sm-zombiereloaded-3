@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: sdktools_tempents.inc 1336 2007-08-15 06:19:30Z damagedsoul $
+ * Version: $Id$
  */
 
 #if defined _sdktools_tempents_included
@@ -44,7 +44,7 @@
  * @param delay		Delay in seconds to send the TE.
  * @return		Plugin_Continue to allow the transmission of the TE, Plugin_Stop to block it.
  */
-functag TEHook Action:public(const String:te_name[], const Players[], numClients, Float:delay);
+functag public Action:TEHook(const String:te_name[], const Players[], numClients, Float:delay);
 
 /**
  * Hooks a temp entity.

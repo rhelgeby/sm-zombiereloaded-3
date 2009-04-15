@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: sdktools_entoutput.inc 1990 2008-04-06 05:40:11Z dvander $
+ * Version: $Id$
  */
 
 #if defined _sdktools_entoutput_included
@@ -43,7 +43,7 @@
  * @param activator		Entity index of the activator.
  * @param delay			Delay in seconds? before the event gets fired.
  */
-functag EntityOutput public(const String:output[], caller, activator, Float:delay);
+functag public EntityOutput(const String:output[], caller, activator, Float:delay);
 
 /**
  * Add an entity output hook on a entity classname

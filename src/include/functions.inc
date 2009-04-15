@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: functions.inc 2360 2008-07-06 00:01:40Z dvander $
+ * Version: $Id$
  */
  
 #define SP_PARAMFLAG_BYREF	(1<<0)	/**< Internal use only. */
@@ -352,7 +352,7 @@ native Call_Cancel();
  * @param numParams			Number of parameters passed to the native.
  * @return 					Value for the native call to return.
  */
-functag NativeCall public(Handle:plugin, numParams);
+functag public NativeCall(Handle:plugin, numParams);
 
 /**
  * Creates a dynamic native.  This should only be called in AskPluginLoad(), or 

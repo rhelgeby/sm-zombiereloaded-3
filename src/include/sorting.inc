@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: sorting.inc 1923 2008-03-03 06:28:41Z pred $
+ * Version: $Id$
  */
 
 
@@ -98,7 +98,7 @@ native SortStrings(String:array[][], num_strings, SortOrder:order = Sort_Ascendi
  *						0 if first is equal to second
  *						1 if first should go after second
  */
-functag SortFunc1D public(elem1, elem2, const array[], Handle:hndl);
+functag public SortFunc1D(elem1, elem2, const array[], Handle:hndl);
 
 /** 
  * Sorts a custom 1D array.  You must pass in a comparison function.
@@ -163,7 +163,7 @@ native SortADTArray(Handle:array, SortOrder:order, SortType:type);
  *					0 if first is equal to second
  *					1 if first should go after second
  */
-functag SortFuncADTArray public(index1, index2, Handle:array, Handle:hndl);
+functag public SortFuncADTArray(index1, index2, Handle:array, Handle:hndl);
 
 /**
  * Custom sorts an ADT Array. You must pass in a comparison function.

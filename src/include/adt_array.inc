@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: adt_array.inc 2093 2008-04-24 10:25:27Z damagedsoul $
+ * Version: $Id$
  */
  
 #if defined _adt_array_included
@@ -85,8 +85,8 @@ native ClearArray(Handle:array);
  * no relation to the original. You MUST close it.
  *
  * @param array			Array handle to be cloned
- * @return			New handle to the cloned array object
- * @error			Invalid Handle
+ * @return				New handle to the cloned array object
+ * @error				Invalid Handle
  */
  native Handle:CloneArray(Handle:array);
 

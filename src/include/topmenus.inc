@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: topmenus.inc 2086 2008-04-19 10:34:56Z pred $
+ * Version: $Id$
  */
  
 #if defined _topmenus_included
@@ -127,7 +127,7 @@ enum TopMenuObject
  * @param maxlength			Output buffer (if used).
  * @noreturn
  */
-functag TopMenuHandler public(Handle:topmenu, 
+functag public TopMenuHandler(Handle:topmenu, 
 							  TopMenuAction:action,
 							  TopMenuObject:object_id,
 							  param,

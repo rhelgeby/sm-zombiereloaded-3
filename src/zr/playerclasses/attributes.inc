@@ -122,7 +122,7 @@ bool:ClassGetTeamDefault(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
- * @param name      The destination string buffer.
+ * @param buffer    The destination string buffer.
  * @param maxlen    The length of the destination string buffer.
  * @param cachetype Optional. Specifies what class cache to read from. Options:
  *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
@@ -131,21 +131,21 @@ bool:ClassGetTeamDefault(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
  *                  is used, index will be used as a client index.
  * @return          Number of cells written. -1 on error.
  */
-ClassGetName(index, String:name[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
+ClassGetName(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     switch (cachetype)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return strcopy(name, maxlen, ClassData[index][class_name]);
+            return strcopy(buffer, maxlen, ClassData[index][class_name]);
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return strcopy(name, maxlen, ClassDataCache[index][class_name]);
+            return strcopy(buffer, maxlen, ClassDataCache[index][class_name]);
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return strcopy(name, maxlen, ClassPlayerCache[index][class_name]);
+            return strcopy(buffer, maxlen, ClassPlayerCache[index][class_name]);
         }
     }
     

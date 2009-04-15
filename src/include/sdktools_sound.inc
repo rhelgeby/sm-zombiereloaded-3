@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2007 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -27,7 +27,7 @@
  * exceptions, found in LICENSE.txt (as of this writing, version JULY-31-2007),
  * or <http://www.sourcemod.net/license.php>.
  *
- * Version: $Id: sdktools_sound.inc 1934 2008-03-12 05:21:56Z dvander $
+ * Version: $Id$
  */
 
 #if defined _sdktools_sound_included
@@ -274,7 +274,7 @@ native EmitSentence(const clients[],
  * @return		Plugin_Continue to allow the sound to be played, Plugin_Stop to block it, 
  *			  Plugin_Changed when any parameter has been modified.
  */
-functag AmbientSHook Action:public(String:sample[PLATFORM_MAX_PATH], &entity, &Float:volume, &level, &pitch, Float:pos[3], &flags, &Float:delay);
+functag public Action:AmbientSHook(String:sample[PLATFORM_MAX_PATH], &entity, &Float:volume, &level, &pitch, Float:pos[3], &flags, &Float:delay);
 
 /**
  * Called when a sound is going to be emitted to one or more clients.
@@ -292,7 +292,7 @@ functag AmbientSHook Action:public(String:sample[PLATFORM_MAX_PATH], &entity, &F
  * @return			Plugin_Continue to allow the sound to be played, Plugin_Stop to block it, 
  *				  Plugin_Changed when any parameter has been modified.
  */
-functag NormalSHook Action:public(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags);
+functag public Action:NormalSHook(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags);
 
 /**
  * Hooks all played ambient sounds.
