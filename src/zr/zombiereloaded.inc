@@ -77,8 +77,6 @@ new bool:dispHP[MAXPLAYERS + 1];
 new bool:pProtect[MAXPLAYERS + 1];
 new bool:gKilledByWorld[MAXPLAYERS + 1] = {false, ...};
 
-new pTimeLeft[MAXPLAYERS + 1];
-
 new Float:spawnLoc[MAXPLAYERS + 1][3];
 new Float:bufferLoc[MAXPLAYERS + 1][3];
 new bool:ztele_spawned[MAXPLAYERS + 1] = {false, ...};
@@ -97,15 +95,14 @@ new Handle:tInfect = INVALID_HANDLE;
 
 new Handle:pList = INVALID_HANDLE;
 
-#define MAXTIMERS 7
+#define MAXTIMERS 6
 
 #define TMOAN 0
 #define TREGEN 1
 #define TTELE 2
 #define TZHP 3
-#define TPROTECT 4
-#define TRESPAWN 5
-#define TZVISION 6
+#define TRESPAWN 4
+#define TZVISION 5
 
 new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
 

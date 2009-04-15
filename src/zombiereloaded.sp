@@ -42,6 +42,9 @@
 // Knockback
 #include "zr/knockback"
 
+// Spawn protect
+#include "zr/spawnprotect"
+
 #include "zr/zadmin"
 #include "zr/damagecontrol"
 #include "zr/commands"

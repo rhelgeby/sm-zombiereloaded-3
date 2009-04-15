@@ -194,14 +194,6 @@ Zombify_Mother(client)
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
     }
     
-    if (tHandles[client][TPROTECT] != INVALID_HANDLE)
-    {
-        pProtect[client] = false;
-        
-        KillTimer(tHandles[client][TPROTECT]);
-        tHandles[client][TPROTECT] = INVALID_HANDLE;
-    }
-    
     if (tHandles[client][TZHP] != INVALID_HANDLE)
     {
         KillTimer(tHandles[client][TZHP]);
@@ -268,15 +260,6 @@ Zombify(client, attacker = -1, bool:motherinfect = false)
             KillTimer(tHandles[client][TMOAN]);
         }
         tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
-    }
-    
-    // Kill spawn protection timer.
-    if (tHandles[client][TPROTECT] != INVALID_HANDLE)
-    {
-        pProtect[client] = false;
-        
-        KillTimer(tHandles[client][TPROTECT]);
-        tHandles[client][TPROTECT] = INVALID_HANDLE;
     }
     
     // Kill HP display timer.
@@ -631,36 +614,6 @@ public Action:ZHPTimer(Handle:timer, any:index)
     }
     
     UpdateHPDisplay(index);
-    
-    return Plugin_Continue;
-}
-
-public Action:ProtectTimer(Handle:timer, any:index)
-{
-    if (!IsClientInGame(index))
-    {
-        tHandles[index][TPROTECT] = INVALID_HANDLE;
-        return Plugin_Stop;
-    }
-    
-    pTimeLeft[index]--;
-    ZR_HudHint(index, "Spawn Protect", pTimeLeft[index]);
-    
-    if (pTimeLeft[index] <= 0)
-    {
-        pProtect[index] = false;
-    
-        if (IsPlayerHuman(index))
-        {
-            ZR_HudHint(index, "Spawn protection end");
-            SetPlayerAlpha(index, 255);
-            SetPlayerSpeed(index, 300.0);
-        }
-
-        tHandles[index][TPROTECT] = INVALID_HANDLE;
-
-        return Plugin_Stop;
-    }
     
     return Plugin_Continue;
 }

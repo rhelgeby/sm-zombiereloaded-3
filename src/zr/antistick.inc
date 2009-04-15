@@ -139,23 +139,23 @@ public Action:AntiStickTimer(Handle:timer)
  * Re-solidifies a player being unstuck.
  *
  * @param timer     The timer handle. 
- * @param index     The client index.
+ * @param client    The client index.
 */
-public Action:AntiStickSolidify(Handle:timer, any:index)
+public Action:AntiStickSolidify(Handle:timer, any:client)
 {
     // Validate player is in-game, alive, and is being unstuck.
-    if (!IsClientInGame(index) || !IsPlayerAlive(index) || CanCollide(index))
+    if (!IsClientInGame(client) || !IsPlayerAlive(client) || CanCollide(client))
     {
         return Plugin_Stop;
     }
     
     // Stop if the player is still stuck.
-    if (AntiStickIsStuck(index) > -1)
+    if (AntiStickIsStuck(client) > -1)
     {
         return Plugin_Continue;
     }
     
-    NoCollide(index, false);
+    NoCollide(client, false);
     
     return Plugin_Stop;
 }
