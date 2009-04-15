@@ -60,7 +60,6 @@ KnockbackPlayerHurt(client, attacker, const String:weapon[], hitgroup, dmg_healt
             new Float:boostHitgroup = HitgroupsGetHitgroupKnockback(hitgroup);
             
             // Apply all knockback multipliers
-            PrintToChatAll("Multipliers %f * %f * %f * %f", knockback, float(dmg_health), boostWeapon, boostHitgroup);
             knockback *= float(dmg_health) * boostWeapon * boostHitgroup;
             
             // Apply knockback.
