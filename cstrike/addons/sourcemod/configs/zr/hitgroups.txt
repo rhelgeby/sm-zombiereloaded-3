@@ -1,0 +1,70 @@
+// Hitgroups
+//
+// Format
+//
+// "hitgroup index" // Index of the hitgroup (listed below)
+// {
+//	"name"			"name of hitgroup" // Redundant as of now, used for readability.
+//	"knockback"		"1.0" (default) // The knockback multiplier for the hitgroup
+// }
+//
+// Notes:
+//
+// A missing config setting will be assumed to be its default value (documented above).
+
+"hitgroups" // Counter-Strike: Source hitgroups
+{
+	"0"
+	{
+		"name"		"Generic"
+		"knockback"	"1.0"
+	}
+
+	"1"
+	{
+		"name"		"Head"
+		"knockback"	"2.0"
+	}
+
+	"2"
+	{
+		"name"		"Chest"
+		"knockback"	"1.3"
+	}
+
+	"3"
+	{
+		"name"		"Stomach"
+		"knockback"	"1.2"
+	}
+
+	"4"
+	{
+		"name"		"Left Arm"
+		"knockback"	"1.0"
+	}
+
+	"5"
+	{
+		"name"		"Right Arm"
+		"knockback"	"1.0"
+	}
+
+	"6"
+	{
+		"name"		"Left Leg"
+		"knockback"	"0.9"
+	}
+
+	"7"
+	{
+		"name"		"Right Leg"
+		"knockback"	"0.9"
+	}
+
+	"10"
+	{
+		"name"		"Gear"
+		"knockback"	"1.0"
+	}
+}

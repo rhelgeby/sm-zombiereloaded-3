@@ -55,9 +55,10 @@ enum ZTeam
 #define LOG_MODULE_OVERLAYS         65536       /** overlays.inc */
 #define LOG_MODULE_TELEPORT         131072      /** teleport.inc */
 #define LOG_MODULE_WEAPONS          262144      /** Weapons module - weapons/ *.inc */
-#define LOG_MODULE_ANTICAMP         524288      /** anticamp.inc */
-#define LOG_MODULE_DAMAGECONTROL    1048576     /** damagecontrol.inc */
-#define LOG_MODULE_OFFSETS          2097152     /** offsets.inc */
+#define LOG_MODULE_HITGROUPS        524288      /** hitgroups.inc */
+#define LOG_MODULE_ANTICAMP         1048576     /** anticamp.inc */
+#define LOG_MODULE_DAMAGECONTROL    2097152     /** damagecontrol.inc */
+#define LOG_MODULE_OFFSETS          4194304     /** offsets.inc */
 /*
  * @endsection
  */
@@ -75,8 +76,6 @@ new bool:bZVision[MAXPLAYERS + 1];
 new bool:dispHP[MAXPLAYERS + 1];
 new bool:pProtect[MAXPLAYERS + 1];
 new bool:gKilledByWorld[MAXPLAYERS + 1] = {false, ...};
-
-new pTimeLeft[MAXPLAYERS + 1];
 
 new Float:spawnLoc[MAXPLAYERS + 1][3];
 new Float:bufferLoc[MAXPLAYERS + 1][3];
@@ -96,15 +95,14 @@ new Handle:tInfect = INVALID_HANDLE;
 
 new Handle:pList = INVALID_HANDLE;
 
-#define MAXTIMERS 7
+#define MAXTIMERS 6
 
 #define TMOAN 0
 #define TREGEN 1
 #define TTELE 2
 #define TZHP 3
-#define TPROTECT 4
-#define TRESPAWN 5
-#define TZVISION 6
+#define TRESPAWN 4
+#define TZVISION 5
 
 new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
 
@@ -243,10 +241,8 @@ bool:IsClientPlayer(client)
     {
         return true;
     }
-    else
-    {
-        return false;
-    }
+    
+    return false;
 }
 
 /**
@@ -261,8 +257,6 @@ bool:IsClientAdmin(client)
     {
         return true;
     }
-    else
-    {
-        return false;
-    }
+    
+    return false;
 }

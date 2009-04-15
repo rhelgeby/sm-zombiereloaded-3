@@ -115,25 +115,3 @@ LoadDownloadData()
     CloseHandle(fileDownloads);
     CloseHandle(arrayDownloads);
 }
-
-/*ApplyZombieModel(client)
-{
-    decl String:modelpath[256];
-    
-    new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
-    if (classes)
-    {
-        GetClassModel(pClass[client], modelpath, sizeof(modelpath));
-        if (!StrEqual(modelpath, "default", false))
-        {
-            SetPlayerModel(client, modelpath);
-            return;
-        }
-    }
-    
-    new randmodel = GetRandomInt(0, GetArraySize(arrayModels) - 1);
-    GetArrayString(arrayModels, randmodel, modelpath, sizeof(modelpath));
-    Format(modelpath, sizeof(modelpath), "%s.mdl", modelpath);
-    
-    SetPlayerModel(client, modelpath);
-}*/

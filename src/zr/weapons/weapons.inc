@@ -25,7 +25,7 @@ new Handle:kvWeapons = INVALID_HANDLE;
 #include "zr/weapons/menu_weapons"
 
 /**
- * Weapons module init function
+ * Weapons module init function.
  */ 
 WeaponsInit()
 {
@@ -34,7 +34,7 @@ WeaponsInit()
 }
 
 /**
- * Clears weapon data
+ * Clears weapon data.
  */
 WeaponsClearData()
 {
@@ -50,18 +50,18 @@ WeaponsClearData()
 /**
  * Loads weapon data from file.
  */
-WeaponsOnMapStart()
+WeaponsLoad()
 {
-    // Clear weapon data
+    // Clear weapon data.
     WeaponsClearData();
     
-    // Clear weapon restrict data
+    // Clear weapon restrict data.
     RestrictClearData();
     
     decl String:path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/zr/weapons/weapons.txt");
     
-    // If file isn't found, stop plugin
+    // If file isn't found, stop plugin.
     if (!FileToKeyValues(kvWeapons, path))
     {
         if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
@@ -72,16 +72,19 @@ WeaponsOnMapStart()
         return;
     }
     
-    // Validate weapons config
-    WeaponsValidateWeaponsConfig();
+    // Validate weapons config.
+    WeaponsValidateConfig();
     
-    // Forward event to sub-module
+    // Forward event to sub-module.
     RestrictOnMapStart();
 }
 
-WeaponsValidateWeaponsConfig()
+/**
+ * Validate weapon config file and settings.
+ */ 
+WeaponsValidateConfig()
 {
-    // If log flag check fails, don't log
+    // If log flag check fails, don't log.
     if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
     {
         return;
@@ -94,15 +97,25 @@ WeaponsValidateWeaponsConfig()
     }
 }
 
+/**
+ * Client is joining the server.
+ * 
+ * @param client    The client index.  
+ */ 
 WeaponsClientInit(client)
 {
-    // Forward event to sub-module
+    // Forward event to sub-module.
     RestrictClientInit(client);
 }
 
+/**
+ * Client is leaving the server.
+ * 
+ * @param client    The client index.
+ */   
 WeaponsOnClientDisconnect(client)
 {
-    // Forward event to sub-module
+    // Forward event to sub-module.
     RestrictOnClientDisconnect(client);
 }
 
@@ -128,7 +141,7 @@ WeaponsCreateWeaponArray(&Handle:arrayWeapons, maxlen = WEAPONS_MAX_LENGTH)
         {
             KvGetSectionName(kvWeapons, weapon, maxlen);
             
-            // Push weapon name into the array
+            // Push weapon name into the array.
             PushArrayString(arrayWeapons, weapon);
             
             // Increment count.
@@ -141,12 +154,13 @@ WeaponsCreateWeaponArray(&Handle:arrayWeapons, maxlen = WEAPONS_MAX_LENGTH)
 }
 
 /**
- * Checks if a weapon is valid (aka listed in weapons.txt)
+ * Checks if a weapon is valid. (aka listed in weapons.txt)
  * @param weapon    The weapon name.
  * @return          Returns true if valid, false it not.
  */
 bool:WeaponsIsValidWeapon(const String:weapon[])
 {
+    // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);
     if (KvGotoFirstSubKey(kvWeapons))
     {
@@ -156,6 +170,7 @@ bool:WeaponsIsValidWeapon(const String:weapon[])
         {
             KvGetSectionName(kvWeapons, validweapon, sizeof(validweapon));
             
+            // If weaponname matches a valid weapon, then return true.
             if (StrEqual(validweapon, weapon, false))
             {
                 return true;
@@ -164,16 +179,18 @@ bool:WeaponsIsValidWeapon(const String:weapon[])
         } while (KvGotoNextKey(kvWeapons));
     }
     
+    // Weapon is invalid.
     return false;
 }
 
 /**
- * Looks up a weapon in weapons.txt and returns exact display name
+ * Looks up a weapon in weapons.txt and returns exact display name.
  * @param weapon    The weapon name.
  * @param display   Returns with the display name, is not changed if weapon is invalid. 
  */
 WeaponGetDisplayName(const String:weapon[], String:display[])
 {
+    // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);
     if (KvGotoFirstSubKey(kvWeapons))
     {
@@ -183,6 +200,7 @@ WeaponGetDisplayName(const String:weapon[], String:display[])
         {
             KvGetSectionName(kvWeapons, validweapon, sizeof(validweapon));
             
+            // If weapon matches a valid weapon (case-insensitive), then return display name.
             if (StrEqual(validweapon, weapon, false))
             {
                 strcopy(display, WEAPONS_MAX_LENGTH, validweapon);
@@ -225,7 +243,7 @@ bool:WeaponsIsWeaponMenu(const String:weapon[])
 }
 
 /**
- * Returns knockback multiplier of the weapon
+ * Returns knockback multiplier of the weapon.
  * @param weapon    The weapon name.
  * @return          The float value of the knockback multiplier, 1.0 if not found.
  */

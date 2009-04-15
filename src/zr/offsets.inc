@@ -21,9 +21,10 @@ new offsRender;
 
 new Handle:g_hGameConf = INVALID_HANDLE;
 new Handle:g_hRemoveAllItems = INVALID_HANDLE;
-new Handle:g_hTerminateRound = INVALID_HANDLE;
 new Handle:g_hEyePosition = INVALID_HANDLE;
 new Handle:g_hEyeAngles = INVALID_HANDLE;
+new Handle:g_hTerminateRound = INVALID_HANDLE;
+new Handle:g_hCSWeaponDrop = INVALID_HANDLE;
 
 FindOffsets()
 {
@@ -100,27 +101,61 @@ FindOffsets()
 
 SetupGameData()
 {
+    // Load game config file.
     g_hGameConf = LoadGameConfigFile("plugin.zombiereloaded");
     
+    // 
     StartPrepSDKCall(SDKCall_Player);
     PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "RemoveAllItems");
     g_hRemoveAllItems = EndPrepSDKCall();
+    
+    if(g_hRemoveAllItems == INVALID_HANDLE)
+	{
+		SetFailState("Couldn't find offset \"RemoveAllItems\"!");
+	}
     
     StartPrepSDKCall(SDKCall_Player);
     PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "EyePosition");
     PrepSDKCall_SetReturnInfo(SDKType_QAngle, SDKPass_ByValue);
     g_hEyePosition = EndPrepSDKCall();
     
+    if(g_hEyePosition == INVALID_HANDLE)
+	{
+		SetFailState("Couldn't find offset \"EyePosition\"!");
+	}
+	
     StartPrepSDKCall(SDKCall_Player);
     PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "EyeAngles");
     PrepSDKCall_SetReturnInfo(SDKType_QAngle, SDKPass_ByValue);
     g_hEyeAngles = EndPrepSDKCall();
     
+    if(g_hEyeAngles == INVALID_HANDLE)
+	{
+		SetFailState("Couldn't find offset \"EyeAngles\"!");
+	}
+	
     StartPrepSDKCall(SDKCall_GameRules);
     PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Signature, "TerminateRound");
     PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
     PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
     g_hTerminateRound = EndPrepSDKCall();
+    
+    if(g_hTerminateRound == INVALID_HANDLE)
+	{
+		SetFailState("Couldn't find signature \"CGameRules::TerminateRound\"!");
+	}
+	
+    StartPrepSDKCall(SDKCall_Player);
+    PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Signature, "CSWeaponDrop");
+    PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+    PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+    PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+    g_hCSWeaponDrop = EndPrepSDKCall();
+    
+    if(g_hCSWeaponDrop == INVALID_HANDLE)
+    {
+        SetFailState("Couldn't find signature \"CBasePlayer::CSWeaponDrop\"!");
+    }
 }
 
 SetPlayerVelocity(client, const Float:vec[3], bool:reset)
@@ -231,13 +266,12 @@ GetPlayerEyeAngles(client, Float:ang[3])
 
 TerminateRound(Float:delay, reason)
 {
-    if (g_hTerminateRound == INVALID_HANDLE) return;
     SDKCall(g_hTerminateRound, delay, reason);
 }
 
-SetPlayerModel(client, const String:model[])
+CSDropWeapon(client, weapon)
 {
-    SetEntityModel(client, model);
+    SDKCall(g_hCSWeaponDrop, client, weapon, true, false);
 }
 
 SetPlayerAlpha(client, alpha)

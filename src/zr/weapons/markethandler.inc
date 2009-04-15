@@ -15,13 +15,13 @@
  */
 public bool:Market_OnWeaponSelected(client, String:weaponid[])
 {
-    // If player is dead or weaponid is invalid, then stop
+    // If player is dead or weaponid is invalid, then stop.
     if (!weaponid[0] || !IsPlayerAlive(client))
     {
         return false;
     }
     
-    // If player is a zombie, then stop
+    // If player is a zombie, then stop.
     if (IsPlayerZombie(client))
     {
         ZR_PrintToChat(client, "Zombie cant use weapon");
@@ -29,7 +29,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
         return false;
     }
     
-    // If player is using the rebuy option then allow
+    // If player is using the rebuy option then allow.
     if (StrEqual(weaponid, "rebuy"))
     {
         return true;
@@ -39,16 +39,16 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     decl String:weapon[WEAPONS_MAX_LENGTH];
     new price;
     
-    // If the market plugin can't find info about the weapon, then stop
+    // If the market plugin can't find info about the weapon, then stop.
     if (!Market_GetWeaponIDInfo(weaponid, display, weapon, price))
     {
         return false;
     }
     
-    // Strip "weapon_" from entity name
+    // Strip "weapon_" from entity name.
     ReplaceString(weapon, sizeof(weapon), "weapon_", "");
     
-    // If the weapon is restricted, then stop
+    // If the weapon is restricted, then stop.
     if (RestrictIsWeaponRestricted(weapon))
     {
         ZR_PrintToChat(client, "Weapon is restricted", weapon);
@@ -56,7 +56,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
         return false;
     }
     
-    // Check if buyzone cvar is enabled, and if the client is in a buyzone
+    // Check if buyzone cvar is enabled, and if the client is in a buyzone.
     new bool:buyzone = GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]); 
     if (!IsClientInBuyZone(client) && buyzone)
     {
@@ -76,12 +76,12 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
  */
 public Market_PostOnWeaponSelected(client, &bool:allowed)
 {
-    // If the purchase wasn't allowed, then stop
+    // If the purchase wasn't allowed, then stop.
     if (!allowed)
     {
         return;
     }
     
-    // Resend market menu
+    // Resend market menu.
     ZMarket(client);
 }

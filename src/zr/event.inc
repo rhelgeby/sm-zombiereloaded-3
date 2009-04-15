@@ -169,6 +169,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     SetPlayerFOV(index, 90);
     ClientCommand(index, "r_screenoverlay \"\"");
     
+    // Stop here if client isn't on a team.
     new team = GetClientTeam(index);
     if (team != CS_TEAM_T && team != CS_TEAM_CT)
     {
@@ -186,41 +187,12 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     NightVisionOn(index, false);
     NightVision(index, false);
     
-    pProtect[index] = false;
     if (zombieSpawned)
     {
         if (team == CS_TEAM_T)
         {
             CS_SwitchTeam(index, CS_TEAM_CT);
             CS_RespawnPlayer(index);
-        }
-        
-        new protect = GetConVarInt(gCvars[CVAR_PROTECT]);
-        if (protect > 0)
-        {
-            decl String:respawnteam[32];
-            GetConVarString(gCvars[CVAR_RESPAWN_TEAM], respawnteam, sizeof(respawnteam));
-            
-            if (!StrEqual(respawnteam, "zombie", false) && !(GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[index]))
-            {
-                SetPlayerAlpha(index, 0);
-                SetPlayerSpeed(index, 600.0);
-                pProtect[index] = true;
-                
-                ZR_PrintToChat(index, "Spawn protection begin", protect);
-                ZR_PrintCenterText(index, "Spawn protection begin", protect);
-                
-                if (tHandles[index][TPROTECT] != INVALID_HANDLE)
-                {
-                    KillTimer(tHandles[index][TPROTECT]);
-                }
-                
-                pTimeLeft[index] = protect;
-                
-                PrintHintText(index, "%d", pTimeLeft[index]);
-
-                tHandles[index][TPROTECT] = CreateTimer(1.0, ProtectTimer, index, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-            }
         }
     }
     else
@@ -230,6 +202,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassOnClientSpawn(index);
+    SpawnProtectPlayerSpawn(index);
     ZTeleClientSpawned(index);
     
     ZR_PrintToChat(index, "!zmenu reminder");
@@ -240,13 +213,15 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     
+    new hitgroup = GetEventInt(event, "hitgroup");
+    
     new dmg_health = GetEventInt(event, "dmg_health");
     
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
     // Forward event to modules.
-    KnockbackPlayerHurt(index, attacker, weapon, dmg_health);
+    KnockbackPlayerHurt(index, attacker, weapon, hitgroup, dmg_health);
     
     // Check if the attacker is a player.
     if (attacker != 0)

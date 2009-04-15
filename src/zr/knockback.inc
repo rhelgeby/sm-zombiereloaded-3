@@ -5,30 +5,16 @@
  *   Author: Greyscale
  * ==================== 
  */
-
-/**
- * @section Player hitgroup values.
- */
-#define	HITGROUP_GENERIC    0
-#define	HITGROUP_HEAD       1
-#define	HITGROUP_CHEST      2
-#define	HITGROUP_STOMACH    3
-#define HITGROUP_LEFTARM    4
-#define HITGROUP_RIGHTARM   5
-#define HITGROUP_LEFTLEG    6
-#define HITGROUP_RIGHTLEG   7
-#define HITGROUP_GEAR       10
-/**
- * @endsection
- */
   
-/** Player hurt event
+/** Player hurt event.
+ *
  * @param client        The victim index. (zombie)
  * @param attacker      The attacker index. (human)
  * @param weapon        The weapon used.
+ * @param hitgroup      Hitgroup attacker has damaged. 
  * @param dmg_health    Damage done.
  */ 
-KnockbackPlayerHurt(client, attacker, const String:weapon[], dmg_health)
+KnockbackPlayerHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
 {
     // Check if the attacker is a player.
     if (attacker != 0)
@@ -68,14 +54,14 @@ KnockbackPlayerHurt(client, attacker, const String:weapon[], dmg_health)
                 TR_GetEndPosition(clientloc);
             }
             
-            // Apply damage knockback multiplier
-            knockback *= float(dmg_health);
-            
             // Retrieve weapon knockback boost.
             new Float:boostWeapon = WeaponGetWeaponKnockback(weapon);
             
-            // Apply weapon knockback multiplier.
-            knockback *= boostWeapon;
+            // Retrieve hitgroup knockback boost.
+            new Float:boostHitgroup = HitgroupsGetHitgroupKnockback(hitgroup);
+            
+            // Apply all knockback multipliers.
+            knockback *= float(dmg_health) * boostWeapon * boostHitgroup;
             
             // Apply knockback.
             KnockbackSetVelocity(client, attackerloc, clientloc, knockback);
@@ -85,6 +71,7 @@ KnockbackPlayerHurt(client, attacker, const String:weapon[], dmg_health)
 
 /**
  * Sets velocity on a player.
+ *  
  * @param client        The client index.
  * @param startpoint    The starting coordinate to push from.
  * @param endpoint      The ending coordinate to push towards.
@@ -108,6 +95,7 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
 
 /**
  * Trace Ray forward, used as a filter to continue tracing if told so. (See sdktools_trace.inc)
+ *  
  * @param entity        The entity index.
  * @param contentsMask  The contents mask.
  * @return              True to allow hit, false to continue tracing. 
@@ -126,6 +114,7 @@ public bool:KnockbackTRFilter(entity, contentsMask)
 
 /**
  * Find the location of an exploding grenade (currently inflicting damage in player_hurt).
+ *  
  * @param heLoc     The location of the exploding grenade.
  * @return          The entity index of the grenade. 
  */  

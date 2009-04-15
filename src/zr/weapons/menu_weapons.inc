@@ -16,12 +16,12 @@ enum WeaponsMenu
 }
 
 /**
- * Array to store the client's current weapon menu
+ * Array to store the client's current weapon menu.
  */
 new WeaponsMenu:curMenuWeapons[MAXPLAYERS + 1];
 
 /**
- * Array to store the client's current weapon group menu
+ * Array to store the client's current weapon group menu.
  */ 
 new String:curMenuGroup[WEAPONS_MAX_LENGTH][MAXPLAYERS + 1];
 
@@ -31,7 +31,7 @@ new String:curMenuGroup[WEAPONS_MAX_LENGTH][MAXPLAYERS + 1];
  */  
 WeaponsMenuMain(client)
 {
-    // Create menu handle
+    // Create menu handle.
     new Handle:menu_weapons_main = CreateMenu(WeaponsMenuMainHandle);
     
     SetGlobalTransTarget(client);
@@ -49,7 +49,7 @@ WeaponsMenuMain(client)
     AddMenuItem(menu_weapons_main, "toggleweaponrestriction", toggleweaponrestriction);
     AddMenuItem(menu_weapons_main, "togglewgrouprestriction", togglewgrouprestriction);
     
-    // Disable market option if market isn't installed
+    // Disable market option if market isn't installed.
     if (market)
     {
         AddMenuItem(menu_weapons_main, "zmarket", zmarket);
@@ -59,10 +59,10 @@ WeaponsMenuMain(client)
         AddMenuItem(menu_weapons_main, "zmarket", zmarket, ITEMDRAW_DISABLED);
     }
     
-    // Create a "Back" button to the weapons main menu
+    // Create a "Back" button to the weapons main menu.
     SetMenuExitBackButton(menu_weapons_main, true);
     
-    // Send menu
+    // Send menu.
     DisplayMenu(menu_weapons_main, client, MENU_TIME_FOREVER);
 }
 
@@ -75,7 +75,7 @@ WeaponsMenuMain(client)
  */ 
 public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client, slot)
 {
-    // Client selected an option
+    // Client selected an option.
     if (action == MenuAction_Select)
     {
         switch(slot)
@@ -94,16 +94,16 @@ public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client
             }
         }
     }
-    // Client closed the menu
+    // Client closed the menu.
     if (action == MenuAction_Cancel)
     {
-        // Client hit "Back" button
+        // Client hit "Back" button.
         if (slot == MenuCancel_ExitBack)
         {
             ZRAdminMenu(client);
         }
     }
-    // Client hit "Exit" button
+    // Client hit "Exit" button.
     else if (action == MenuAction_End)
     {
         CloseHandle(menu_weapons_main);
@@ -116,15 +116,15 @@ public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client
  */ 
 WeaponsMenuWeapons(client, WeaponsMenu:type)
 {
-    // Set the current action client is performing on a weapon (see enum WeaponsMenu)
+    // Set the current action client is performing on a weapon. (see enum WeaponsMenu)
     curMenuWeapons[client] = type;
     
-    // Create menu handle
+    // Create menu handle.
     new Handle:menu_weapons_weapons = CreateMenu(WeaponsMenuWeaponsHandle);
     
     SetGlobalTransTarget(client);
     
-    // If client wants to perform an action on a single weapon, show weapon list
+    // If client wants to perform an action on a single weapon, show weapon list.
     switch(curMenuWeapons[client])
     {
         case Weapon:
@@ -136,7 +136,7 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
             new Handle:arrayWeapons = INVALID_HANDLE;
             new size = WeaponsCreateWeaponArray(arrayWeapons);
             
-            // x = Array index
+            // x = Array index.
             for (new x = 0; x < size; x++)
             {
                 GetArrayString(arrayWeapons, x, weapon, sizeof(weapon));
@@ -148,7 +148,7 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
                     Format(display, sizeof(display), "%s*", weapon);
                 }
                 
-                // If weapon restriction is blocked for the menu, disable option
+                // If weapon restriction is blocked for the menu, disable option.
                 new bool:menu = WeaponsIsWeaponMenu(weapon);
                 
                 if (menu)
@@ -161,7 +161,7 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
                 }
             }
             
-            // If there are no weapons, add an "(Empty)" line
+            // If there are no weapons, add an "(Empty)" line.
             if (size == 0)
             {
                 decl String:empty[64];
@@ -170,10 +170,10 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
                 AddMenuItem(menu_weapons_weapons, "empty", empty, ITEMDRAW_DISABLED);
             }
             
-            // Kill the array handle
+            // Kill the array handle.
             CloseHandle(arrayWeapons);
         }
-        // If client wants to perform an action on a weapon group, show custom group list
+        // If client wants to perform an action on a weapon group, show custom group list.
         case WeaponGroup:
         {
             SetMenuTitle(menu_weapons_weapons, "%t\n ", "Weapons menu weapons group title");
@@ -183,7 +183,7 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
             new Handle:arrayWeaponGroups = INVALID_HANDLE;
             new size = RestrictCreateGroupArray(arrayWeaponGroups);
             
-            // x = Array index
+            // x = Array index.
             for (new x = 0; x < size; x++)
             {
                 GetArrayString(arrayWeaponGroups, x, weapongroup, sizeof(weapongroup));
@@ -202,7 +202,7 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
                 AddMenuItem(menu_weapons_weapons, weapongroup, display);
             }
             
-            // If there are no weapons, add an "(Empty)" line
+            // If there are no weapons, add an "(Empty)" line.
             if (size == 0)
             {
                 decl String:empty[64];
@@ -230,7 +230,7 @@ WeaponsMenuWeapons(client, WeaponsMenu:type)
  */ 
 public WeaponsMenuWeaponsHandle(Handle:menu_weapons_weapons, MenuAction:action, client, slot)
 {
-    // Client selected an option
+    // Client selected an option.
     if (action == MenuAction_Select)
     {
         decl String:weapon[WEAPONS_MAX_LENGTH];
@@ -238,7 +238,7 @@ public WeaponsMenuWeaponsHandle(Handle:menu_weapons_weapons, MenuAction:action, 
         
         switch(curMenuWeapons[client])
         {
-            // Client is restricting a single weapon
+            // Client is restricting a single weapon.
             case Weapon:
             {
                 new WpnRestrictQuery:output;
@@ -254,27 +254,27 @@ public WeaponsMenuWeaponsHandle(Handle:menu_weapons_weapons, MenuAction:action, 
                     RestrictPrintUnrestrictOutput(client, output, weapon, false);
                 }
                 
-                // Resend menu
+                // Resend menu.
                 WeaponsMenuWeapons(client, curMenuWeapons[client]);
             }
-            // Client is accessing a weapon group
+            // Client is accessing a weapon group.
             case WeaponGroup:
             {
-                // Send weapon group menu
+                // Send weapon group menu.
                 WeaponsMenuWeaponGroup(client, weapon);
             }
         }
     }
-    // Client closed the menu
+    // Client closed the menu.
     if (action == MenuAction_Cancel)
     {
-        // Client hit "Back" button
+        // Client hit "Back" button.
         if (slot == MenuCancel_ExitBack)
         {
             WeaponsMenuMain(client);
         }
     }
-    // Client hit "Exit" button
+    // Client hit "Exit" button.
     else if (action == MenuAction_End)
     {
         CloseHandle(menu_weapons_weapons);
@@ -285,7 +285,7 @@ WeaponsMenuWeaponGroup(client, const String:weapongroup[])
 {
     strcopy(curMenuGroup[client], WEAPONS_MAX_LENGTH, weapongroup);
     
-    // Create menu handle
+    // Create menu handle.
     new Handle:menu_weapons_groupweapon = CreateMenu(WeaponsMenuWeaponGroupHandle);
     
     SetMenuTitle(menu_weapons_groupweapon, "%t\n ", "Weapons menu weapon group title", weapongroup);
@@ -319,7 +319,7 @@ WeaponsMenuWeaponGroup(client, const String:weapongroup[])
     new Handle:arrayGroupWeapons = INVALID_HANDLE;
     new size = RestrictCreateGroupWeaponsArray(arrayGroupWeapons, weapongroup);
     
-    // x = Array index
+    // x = Array index.
     for (new x = 0; x < size; x++)
     {
         GetArrayString(arrayGroupWeapons, x, groupweapon, sizeof(groupweapon));
@@ -334,7 +334,7 @@ WeaponsMenuWeaponGroup(client, const String:weapongroup[])
         AddMenuItem(menu_weapons_groupweapon, groupweapon, display);
     }
     
-    // Kill the array handle
+    // Kill the array handle.
     CloseHandle(arrayGroupWeapons);
     
     SetMenuExitBackButton(menu_weapons_groupweapon, true);
@@ -351,7 +351,7 @@ WeaponsMenuWeaponGroup(client, const String:weapongroup[])
  */ 
 public WeaponsMenuWeaponGroupHandle(Handle:menu_weapons_groupweapon, MenuAction:action, client, slot)
 {
-    // Client selected an option
+    // Client selected an option.
     if (action == MenuAction_Select)
     {
         switch(slot)
@@ -387,19 +387,19 @@ public WeaponsMenuWeaponGroupHandle(Handle:menu_weapons_groupweapon, MenuAction:
             }
         }
         
-        // Resend menu
+        // Resend menu.
         WeaponsMenuWeaponGroup(client, curMenuGroup[client]);
     }
-    // Client closed the menu
+    // Client closed the menu.
     if (action == MenuAction_Cancel)
     {
-        // Client hit "Back" button
+        // Client hit "Back" button.
         if (slot == MenuCancel_ExitBack)
         {
             WeaponsMenuWeapons(client, curMenuWeapons[client]);
         }
     }
-    // Client hit "Exit" button
+    // Client hit "Exit" button.
     else if (action == MenuAction_End)
     {
         CloseHandle(menu_weapons_groupweapon);
@@ -412,7 +412,7 @@ public WeaponsMenuWeaponGroupHandle(Handle:menu_weapons_groupweapon, MenuAction:
  */  
 WeaponsMenuMarket(client)
 {
-    // Create menu handle
+    // Create menu handle.
     new Handle:menu_weapons_market = CreateMenu(WeaponsMenuMarketHandle);
     
     SetGlobalTransTarget(client);
@@ -428,7 +428,7 @@ WeaponsMenuMarket(client)
     
     AddMenuItem(menu_weapons_market, "togglebuyzone", togglebuyzone);
     
-    // Create a "Back" button to the weapons main menu
+    // Create a "Back" button to the weapons main menu.
     SetMenuExitBackButton(menu_weapons_market, true);
     
     // Send menu
@@ -444,7 +444,7 @@ WeaponsMenuMarket(client)
  */ 
 public WeaponsMenuMarketHandle(Handle:menu_weapons_market, MenuAction:action, client, slot)
 {
-    // Client selected an option
+    // Client selected an option.
     if (action == MenuAction_Select)
     {
         switch(slot)
@@ -462,19 +462,19 @@ public WeaponsMenuMarketHandle(Handle:menu_weapons_market, MenuAction:action, cl
             }
         }
         
-        // Resend menu
+        // Resend menu.
         WeaponsMenuMarket(client);
     }
-    // Client closed the menu
+    // Client closed the menu.
     if (action == MenuAction_Cancel)
     {
-        // Client hit "Back" button
+        // Client hit "Back" button.
         if (slot == MenuCancel_ExitBack)
         {
             WeaponsMenuMain(client);
         }
     }
-    // Client hit "Exit" button
+    // Client hit "Exit" button.
     else if (action == MenuAction_End)
     {
         CloseHandle(menu_weapons_market);
