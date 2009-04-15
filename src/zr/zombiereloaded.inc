@@ -237,7 +237,7 @@ bool:IsPlayerInList(client)
 
 bool:IsClientPlayer(client)
 {
-    if (client > 0 && client <= maxclients)
+    if (!IsFakeClient(client) && client > 0 && client <= maxclients)
     {
         return true;
     }
@@ -253,7 +253,7 @@ bool:IsClientPlayer(client)
  */
 bool:IsClientAdmin(client)
 {
-    if (GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    if (IsClientPlayer(client) && GetAdminFlag(GetUserAdmin(client), Admin_Generic))
     {
         return true;
     }
