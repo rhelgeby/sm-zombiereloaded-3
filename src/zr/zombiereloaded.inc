@@ -244,10 +244,8 @@ bool:IsClientPlayer(client)
     {
         return true;
     }
-    else
-    {
-        return false;
-    }
+    
+    return false;
 }
 
 /**
@@ -262,8 +260,6 @@ bool:IsClientAdmin(client)
     {
         return true;
     }
-    else
-    {
-        return false;
-    }
+    
+    return false;
 }
