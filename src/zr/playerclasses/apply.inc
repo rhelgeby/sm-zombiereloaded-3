@@ -5,7 +5,6 @@
  *
  *   File:        apply.inc
  *   Description: Functions for applying attributes and effects on a client.
- *   Author:      Richard Helgeby
  *
  * ============================================================================
  */

@@ -183,6 +183,23 @@ stock ZR_ReplyToCommand(client, any:...)
     ReplyToCommand(client, phrase);
 }
 
+/**
+ * Adds support for printing long strings.
+ */
+stock ZR_ReplyToCommandLong(client, const String:text[])
+{
+    decl String:partbuffer[1000];
+    new pos;
+    new cellswritten = 1;   // Initialize for the loop.
+
+    while (cellswritten)
+    {
+        cellswritten = strcopy(partbuffer, sizeof(partbuffer), text[pos]);
+        ReplyToCommand(client, partbuffer);
+        pos += cellswritten;
+    }
+}
+
 stock ZR_PrintToAdminChat(String:message[])
 {
     decl String:buffer[256];

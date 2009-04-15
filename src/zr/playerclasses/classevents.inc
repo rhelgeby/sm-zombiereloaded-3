@@ -5,7 +5,6 @@
  *
  *   File:        classevents.inc
  *   Description: Functions for handling class related events.
- *   Author:      Richard Helgeby
  *
  * ============================================================================
  */
@@ -45,7 +44,7 @@ ClassOnClientSpawn(client)
     
     if (showmenu && !randomclass)
     {
-        //ClassMenu(client);
+        ClassMenuMain(client);
     }
     
     // Assign random classes if enabled.

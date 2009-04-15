@@ -5,7 +5,6 @@
  *
  *   File:        healthregen.inc
  *   Description: Functions for managing health regeneration on a client.
- *   Author:      Richard Helgeby
  *
  * ============================================================================
  */
