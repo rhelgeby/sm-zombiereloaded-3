@@ -78,7 +78,7 @@ bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
     
     // TODO: Add support for keeping the default cs model ("default").
     
-    SetPlayerModel(client, modelpath);
+    SetEntityModel(client, modelpath);
     return true;
 }
 

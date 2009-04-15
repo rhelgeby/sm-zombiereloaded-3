@@ -1,7 +1,12 @@
 "Games"
 {
-	"cstrike"
+	"#default"
 	{
+		"#supported"
+		{
+			"game"		"cstrike"
+		}
+
 		"Offsets"
 		{
 			"RemoveAllItems"
@@ -9,17 +14,20 @@
 				"windows"	"283"
 				"linux"		"284"
 			}
+
 			"EyePosition"
 			{
 				"windows"	"117"
 				"linux"		"118"
 			}
+
 			"EyeAngles"
 			{
 				"windows"	"206"
 				"linux"		"207"
 			}
 		}
+
 		"Signatures"
 		{
 			"TerminateRound"
@@ -27,6 +35,13 @@
 				"library"	"server"
 				"windows"	"\x83\xEC\x18\x53\x55\x8B\xD9\x8B\x4C\x24\x28\x56\x57\x33\xF6\x8D"
 				"linux"		"@_ZN12CCSGameRules14TerminateRoundEfi"
+			}
+
+			"CSWeaponDrop"
+			{
+				"library"	"server"
+				"windows"	"\x2A\x2A\x2A\x2A\x2A\x2A\x53\x55\x56\x57\x8B\xBC\x24\x40\x01\x00\x00\x32\xDB\x85\xFF\x8B\xF1\x0F"
+				"linux"		"@_ZN9CCSPlayer12CSWeaponDropEP17CBaseCombatWeaponbb"
 			}
 		}
 	}
