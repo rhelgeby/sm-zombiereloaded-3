@@ -31,9 +31,12 @@ new Handle:kvHitgroups = INVALID_HANDLE;
  * @endsection
  */
 
+/**
+ * Clears hitgroup data.
+ */ 
 HitgroupsClearData()
 {
-    // Load hitgroup data
+    // Load hitgroup data.
     if (kvHitgroups != INVALID_HANDLE)
     {
         CloseHandle(kvHitgroups);
@@ -42,6 +45,9 @@ HitgroupsClearData()
     kvHitgroups = CreateKeyValues("hitgroups");
 }
 
+/**
+ * Loads hitgroup data from file.
+ */ 
 HitgroupsLoad()
 {
     // Clear hitgroup data
@@ -50,7 +56,7 @@ HitgroupsLoad()
     decl String:path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/zr/hitgroups.txt");
     
-    // If file isn't found, stop plugin
+    // If file isn't found, stop plugin.
     if (!FileToKeyValues(kvHitgroups, path))
     {
         if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
@@ -61,13 +67,16 @@ HitgroupsLoad()
         return;
     }
     
-    // Validate hitgroups config
+    // Validate hitgroups config.
     HitgroupsValidateConfig();
 }
 
+/**
+ * Validate hitgroup config file and settings.
+ */ 
 HitgroupsValidateConfig()
 {
-    // If log flag check fails, don't log
+    // If log flag check fails, don't log.
     if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
     {
         return;
@@ -80,6 +89,11 @@ HitgroupsValidateConfig()
     }
 }
 
+/**
+ * Retrieve hitgroup knockback value.
+ * 
+ * @param hitgroup  The hitgroup index.
+ */   
 Float:HitgroupsGetHitgroupKnockback(hitgroup)
 {
     // Reset keyvalue's traversal stack.

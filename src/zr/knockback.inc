@@ -6,7 +6,8 @@
  * ==================== 
  */
   
-/** Player hurt event
+/** Player hurt event.
+ *
  * @param client        The victim index. (zombie)
  * @param attacker      The attacker index. (human)
  * @param weapon        The weapon used.
@@ -59,7 +60,7 @@ KnockbackPlayerHurt(client, attacker, const String:weapon[], hitgroup, dmg_healt
             // Retrieve hitgroup knockback boost.
             new Float:boostHitgroup = HitgroupsGetHitgroupKnockback(hitgroup);
             
-            // Apply all knockback multipliers
+            // Apply all knockback multipliers.
             knockback *= float(dmg_health) * boostWeapon * boostHitgroup;
             
             // Apply knockback.
@@ -70,6 +71,7 @@ KnockbackPlayerHurt(client, attacker, const String:weapon[], hitgroup, dmg_healt
 
 /**
  * Sets velocity on a player.
+ *  
  * @param client        The client index.
  * @param startpoint    The starting coordinate to push from.
  * @param endpoint      The ending coordinate to push towards.
@@ -93,6 +95,7 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
 
 /**
  * Trace Ray forward, used as a filter to continue tracing if told so. (See sdktools_trace.inc)
+ *  
  * @param entity        The entity index.
  * @param contentsMask  The contents mask.
  * @return              True to allow hit, false to continue tracing. 
@@ -111,6 +114,7 @@ public bool:KnockbackTRFilter(entity, contentsMask)
 
 /**
  * Find the location of an exploding grenade (currently inflicting damage in player_hurt).
+ *  
  * @param heLoc     The location of the exploding grenade.
  * @return          The entity index of the grenade. 
  */  

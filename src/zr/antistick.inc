@@ -17,7 +17,7 @@
 */
 
 /**
- * Handle to keep track of AntiStickTimer 
+ * Handle to keep track of AntiStickTimer.
 */
 new Handle:tAntiStick = INVALID_HANDLE;
 
@@ -48,7 +48,7 @@ AntiStickReset()
 }
 
 /**
- * Checks if a player is currently stuck within another player
+ * Checks if a player is currently stuck within another player.
  *
  * @param client    The client index.
  * @return          The client index of the other stuck player, -1 when
@@ -61,11 +61,11 @@ AntiStickIsStuck(client)
     
     GetClientAbsOrigin(client, clientloc);
     
-    // x = client index
+    // x = client index.
     new maxplayers = GetMaxClients();
     for (new x = 1; x <= maxplayers; x++)
     {
-        // Validate player is in-game, alive, and isn't the player being checked ('client')
+        // Validate player is in-game, alive, and isn't the player being checked. ('client')
         if (!IsClientInGame(x) || !IsPlayerAlive(x) || x == client)
         {
             continue;
@@ -82,7 +82,7 @@ AntiStickIsStuck(client)
                 new Float:eyeloc[3];
                 GetPlayerEyePosition(client, eyeloc);
                 
-                // Get the distance between the eyes and feet and subtract the stack "view crush"
+                // Get the distance between the eyes and feet and subtract the stack "view crush."
                 new Float:eyedistance = FloatAbs(eyeloc[2] - clientloc[2]) - PLAYER_HULL_STACK_OFFSET;
                 new Float:zdistance = FloatAbs(stuckloc[2] - clientloc[2]);
                 
@@ -107,13 +107,13 @@ public Action:AntiStickTimer(Handle:timer)
     new maxplayers = GetMaxClients();
     for (new x = 1; x <= maxplayers; x++)
     {
-        // Validate player is in-game and alive
+        // Validate player is in-game and alive.
         if (!IsClientInGame(x) || !IsPlayerAlive(x))
         {
             continue;
         }
         
-        // Stop if the player isn't stuck
+        // Stop if the player isn't stuck.
         new stuckindex = AntiStickIsStuck(x);
         if (stuckindex == -1)
         {
@@ -138,17 +138,18 @@ public Action:AntiStickTimer(Handle:timer)
  * Repeated timer function.
  * Re-solidifies a player being unstuck.
  *
+ * @param timer     The timer handle. 
  * @param index     The client index.
 */
 public Action:AntiStickSolidify(Handle:timer, any:index)
 {
-    // Validate player is in-game, alive, and is being unstuck
+    // Validate player is in-game, alive, and is being unstuck.
     if (!IsClientInGame(index) || !IsPlayerAlive(index) || CanCollide(index))
     {
         return Plugin_Stop;
     }
     
-    // Stop if the player is still stuck
+    // Stop if the player is still stuck.
     if (AntiStickIsStuck(index) > -1)
     {
         return Plugin_Continue;
