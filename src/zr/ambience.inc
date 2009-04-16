@@ -97,9 +97,10 @@ AmbienceStop(client)
 
 AmbienceStopAll()
 {
-    for (new client = 1; client < maxclients; client++)
+    // x = client index.
+    for (new x = 1; x < MaxClients; x++)
     {
-        AmbienceStop(client);
+        AmbienceStop(x);
     }
 }
 
@@ -111,9 +112,10 @@ AmbienceRestart(client)
 
 AmbienceRestartAll()
 {
-    for (new client = 1; client < maxclients; client++)
+    // x = client index.
+    for (new x = 1; x < MaxClients; x++)
     {
-        AmbienceRestart(client);
+        AmbienceRestart(x);
     }
 }
 

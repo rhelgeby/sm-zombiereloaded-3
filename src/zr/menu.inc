@@ -9,7 +9,7 @@
 MainMenu(client)
 {
     new Handle:menu_main = CreateMenu(MainMenuHandle);
-    new itemdraw = (IsClientAdmin(client)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new itemdraw = (ZRIsClientAdmin(client)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
     
     SetGlobalTransTarget(client);
     

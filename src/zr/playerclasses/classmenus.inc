@@ -48,7 +48,7 @@ Admin mode is enabled!
 ClassMenuMain(client)
 {
     new Handle:menu = CreateMenu(ClassMenuMainHandle);
-    new itemdraw = (IsClientAdmin(client)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new itemdraw = (ZRIsClientAdmin(client)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
     
     SetGlobalTransTarget(client);
     SetMenuTitle(menu, "%t\n", "!zclass title");
@@ -83,7 +83,7 @@ ClassMenuMain(client)
     Format(humanselect, sizeof(humanselect), "%t\n    %s", "!zclass human", humanclass);
     AddMenuItem(menu, "", humanselect);
     
-    if (IsClientAdmin(client))
+    if (ZRIsClientAdmin(client))
     {
         // List admin class options.
         ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ADMINS], adminclass, sizeof(adminclass), ZR_CLASS_CACHE_MODIFIED);
@@ -134,7 +134,7 @@ public ClassMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
                 }
                 case 3:
                 {
-                    ClassMenuToggleAdmin(client);
+                    // ClassMenuToggleAdmin(client);
                 }
             }
         }
@@ -273,5 +273,4 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
 
 ClassMenuToggleAdmin(client)
 {
-    
 }

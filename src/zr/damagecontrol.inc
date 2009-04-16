@@ -24,11 +24,8 @@ new gHooks[MAXPLAYERS + 1][ZRHooks];
 
 InitDmgControl()
 {
-    /* It's case sensitive! */
     RegConsoleCmd("kill", Attempt_Suicide);
-    RegConsoleCmd("KILL", Attempt_Suicide);        
     RegConsoleCmd("jointeam", Attempt_Suicide);
-    RegConsoleCmd("JOINTEAM", Attempt_Suicide);
     RegConsoleCmd("spectate", Attempt_Suicide);
 }
 
@@ -48,7 +45,7 @@ public TraceAttack(client, inflictor, attacker, damage, hitbox, hitgroup)
 {
     new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
 
-    if (!attacker || !IsClientPlayer(attacker) || !IsClientInGame(attacker) || !enabled)
+    if (!attacker || !ZRIsValidClient(attacker) || !IsClientInGame(attacker) || !enabled)
     {
         return Hacks_Continue;
     }
@@ -99,7 +96,7 @@ public OnTakeDamage(client, inflictor, attacker, damage, damagetype, ammotype)
     
     if (damagetype & DMG_BLAST)
     {
-        if (!IsPlayerHuman(client) || !IsClientPlayer(attacker) || !IsClientInGame(attacker))
+        if (!IsPlayerHuman(client) || !ZRIsValidClient(attacker) || !IsClientInGame(attacker))
         {
             return Hacks_Continue;
         }
@@ -109,12 +106,12 @@ public OnTakeDamage(client, inflictor, attacker, damage, damagetype, ammotype)
     
     if (damagetype & DMG_BULLET)
     {
-        if (!client || !IsClientPlayer(client) || !IsClientInGame(client))
+        if (!client || !ZRIsValidClient(client) || !IsClientInGame(client))
         {
             return Hacks_Continue;
         }
         
-        if (!attacker || !IsClientPlayer(attacker) || !IsClientInGame(attacker))
+        if (!attacker || !ZRIsValidClient(attacker) || !IsClientInGame(attacker))
         {
             return Hacks_Continue;
         }

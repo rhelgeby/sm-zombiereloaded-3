@@ -250,7 +250,7 @@ public Action:Command_GetClassKnockback(client, argc)
 
 public Action:Command_AdminMenu(client, argc)
 {
-    if (IsClientPlayer(client))
+    if (ZRIsValidClient(client))
     {
         ZRAdminMenu(client);
     }
@@ -264,7 +264,7 @@ public Action:Command_AdminMenu(client, argc)
 
 public Action:Command_KnockbackMMenu(client, argc)
 {
-    if (IsClientPlayer(client))
+    if (ZRIsValidClient(client))
     {
         // Disabled, under construction.
         // ZRKnockbackMMenu(client);
@@ -279,7 +279,7 @@ public Action:Command_KnockbackMMenu(client, argc)
 
 public Action:Command_TeleMenu(client, argc)
 {
-    if (IsClientPlayer(client))
+    if (ZRIsValidClient(client))
     {
         ZRZTeleMenu(client);
     }

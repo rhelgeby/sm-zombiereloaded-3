@@ -11,7 +11,7 @@ new curMenuClass[MAXPLAYERS + 1];
 
 bool:ZRAdminMenu(client)
 {
-    if (!IsClientAdmin(client))
+    if (!ZRIsClientAdmin(client))
     {
         ZR_PrintToChat(client, "Must be admin");
         return false;
@@ -417,7 +417,8 @@ public ZRInfectHandle(Handle:menu_infect, MenuAction:action, client, slot)
 
 ZRSpawnAll(client)
 {
-    for (new x = 1; x < maxclients; x++)
+    // x = client index.
+    for (new x = 1; x < MaxClients; x++)
     {
         if (IsClientInGame(x))
         {

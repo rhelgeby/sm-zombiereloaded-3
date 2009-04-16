@@ -4,7 +4,7 @@
  *   Zombie:Reloaded
  *
  *   File:        zhp.inc
- *   Description: Displays 
+ *   Description: Displays HP to zombies.
  *   Author:      Greyscale, Richard Helgeby
  *
  * ============================================================================

@@ -23,7 +23,7 @@ stock ZR_PrintToChat(client, any:...)
 {
     decl String:phrase[192];
     
-    if (client)
+    if (ZRIsValidClient(client))
     {
         SetGlobalTransTarget(client);
         
@@ -204,11 +204,13 @@ stock ZR_PrintToAdminChat(String:message[])
 {
     decl String:buffer[256];
     Format(buffer, sizeof(buffer), "[ZR] %s", message);
-    for (new client = 1; client < maxclients; client++)
+    
+    // x = client index.
+    for (new x = 1; x < MaxClients; x++)
     {
-        if (IsClientConnected(client) && IsClientInGame(client) && GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+        if (IsClientInGame(x) && ZRIsClientAdmin(x))
         {
-            PrintToChat(client, buffer);
+            PrintToChat(x, buffer);
         }
     }
 }

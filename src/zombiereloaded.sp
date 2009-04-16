@@ -127,7 +127,6 @@ public OnLibraryAdded(const String:name[])
 
 public OnMapStart()
 {
-    maxclients = GetMaxClients();
     MapChangeCleanup();
     
     LoadModelData();
@@ -226,13 +225,14 @@ MapChangeCleanup()
     AmbienceStopAll();
     AntiStickReset();
     
-    for (new client = 1; client <= maxclients; client++)
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
     {
-        for (new x = 0; x < MAXTIMERS; x++)
+        for (new y = 0; y < MAXTIMERS; y++)
         {
-            if (tHandles[client][x] != INVALID_HANDLE)
+            if (tHandles[x][y] != INVALID_HANDLE)
             {
-                tHandles[client][x] = INVALID_HANDLE;
+                tHandles[x][y] = INVALID_HANDLE;
             }
         }
     }
@@ -250,7 +250,7 @@ ZREnd()
     new maxplayers = GetMaxClients();
     for (new x = 1; x <= maxplayers; x++)
     {
-        if (!IsClientConnected(x) || !IsClientInGame(x))
+        if (!IsClientInGame(x))
         {
             continue;
         }

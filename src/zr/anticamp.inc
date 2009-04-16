@@ -324,48 +324,50 @@ id  damage  interval    x_min   y_min   z_min   x_max   y_max   z_max
 
 UpdatePlayerLocations()
 {
-    new client;
-    for (client = 1; client <= maxclients; client++)
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
     {
-        if (IsClientConnected(client) && IsClientInGame(client))
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
         {
-            GetClientAbsOrigin(client, player_loc[client]);
+            return;
         }
+        
+        GetClientAbsOrigin(x, player_loc[x]);
     }
 }
 
 HurtPlayersInVolume(volume_index)
 {
-    new client;
     new client_health;
     decl String:client_name[64];
     decl String:buffer[192];
     new anticamp_echo = GetConVarBool(gCvars[CVAR_ANTICAMP_ECHO]);
     
-    for (client = 1; client <= maxclients; client++)
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
     {
-        if (IsClientConnected(client) &&
-            IsClientInGame(client) &&
-            IsPlayerAlive(client) &&
-            IsPlayerHuman(client))
+        if (IsClientInGame(x) &&
+            IsPlayerAlive(x) &&
+            IsPlayerHuman(x))
         {
-            if (IsPlayerInVolume(client, volume_index))
+            if (IsPlayerInVolume(x, volume_index))
             {
-                ZR_PrintToChat(client, "Unfair camping");
-                client_health = GetClientHealth(client) - volumes[volume_index][volume_damage];
+                ZR_PrintToChat(x, "Unfair camping");
+                client_health = GetClientHealth(x) - volumes[volume_index][volume_damage];
                 if (client_health > 0)
                 {
-                    SetEntityHealth(client, client_health);
+                    SetEntityHealth(x, client_health);
                 }
                 else
                 {
-                    ForcePlayerSuicide(client);
+                    ForcePlayerSuicide(x);
                     
-                    GetClientName(client, client_name, sizeof(client_name));
-                    SetGlobalTransTarget(client);
+                    GetClientName(x, client_name, sizeof(client_name));
+                    SetGlobalTransTarget(x);
                     Format(buffer, sizeof(buffer), "%T", "Unfair camper slayed", LANG_SERVER, client_name, volume_index);
 
-                    if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_ANTICAMP)) ZR_LogMessageFormatted(client, "anticamp", "kill", "%s", true, buffer);
+                    if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_ANTICAMP)) ZR_LogMessageFormatted(x, "anticamp", "kill", "%s", true, buffer);
                     if (anticamp_echo)
                     {
                         FormatTextString(buffer, sizeof(buffer));

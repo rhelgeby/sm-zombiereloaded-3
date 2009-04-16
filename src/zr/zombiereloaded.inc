@@ -87,8 +87,6 @@ new Handle:ztele_startup_timer = INVALID_HANDLE;
 new Handle:ztele_countdown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 new Handle:ztele_cooldown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 
-new maxclients;
-
 new Handle:tRound = INVALID_HANDLE;
 new Handle:tInfect = INVALID_HANDLE;
 
@@ -233,14 +231,22 @@ bool:IsPlayerInList(client)
     return false;
 }
 
-bool:IsClientPlayer(client)
+/**
+ * Check if a client index is a valid player.
+ * 
+ * @param client    The client index.
+ * @param console   True to include console (index 0), false if not.
+ */    
+bool:ZRIsValidClient(client, bool:console = false)
 {
-    if (!IsFakeClient(client) && client > 0 && client <= maxclients)
+    // If index is greater than max number of clients, then return false.
+    if (client > MaxClients)
     {
-        return true;
+        return false;
     }
     
-    return false;
+    // If console is true, return if client is >= 0, if not, then return client > 0.
+    return console ? (client >= 0) : (client > 0);
 }
 
 /**
@@ -249,12 +255,14 @@ bool:IsClientPlayer(client)
  * @param client    The client index.
  * @return          True if generic admin, false otherwise.
  */
-bool:IsClientAdmin(client)
+bool:ZRIsClientAdmin(client)
 {
-    if (IsClientPlayer(client) && GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    // Check to make sure client is valid and has the Admin_Generic SourceMod admin flag.
+    if (ZRIsValidClient(client) && GetAdminFlag(GetUserAdmin(client), Admin_Generic))
     {
         return true;
     }
     
+    // Client is not an admin.
     return false;
 }

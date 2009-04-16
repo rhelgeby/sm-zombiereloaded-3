@@ -457,7 +457,7 @@ bool:ClassReloadDataCache()
 bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Validate indexes.
-    if (!ClassValidateIndex(classindex) || !IsClientPlayer(client))
+    if (!ClassValidateIndex(classindex) || !ZRIsValidClient(client))
     {
         return false;
     }

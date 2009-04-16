@@ -220,11 +220,8 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
-    // Forward event to modules.
-    KnockbackPlayerHurt(index, attacker, weapon, hitgroup, dmg_health);
-    
     // Check if the attacker is a player.
-    if (attacker != 0)
+    if (ZRIsValidClient(attacker))
     {
         // Check if a zombie attacks a human.
         if (IsPlayerHuman(index) && IsPlayerZombie(attacker))
@@ -265,6 +262,7 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassAlphaUpdate(index);
+    KnockbackPlayerHurt(index, attacker, weapon, hitgroup, dmg_health);
     ZHPOnPlayerHurt(index);
 }
 
@@ -285,13 +283,13 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     if (StrEqual(weapon, "zombie_claws_of_death", false))
     {
         // Add a death count to the players score.
-        if (index)
+        if (ZRIsValidClient(index))
         {
             AddPlayerDeath(index, 1);
         }
         
         // Give a point to the attacker.
-        if (attacker)
+        if (ZRIsValidClient(attacker))
         {
             AddPlayerScore(attacker, 1);
             
@@ -317,14 +315,14 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
             EmitSoundToAll(sound, index);
             
             // Give kill bonus.
-            if (attacker)
+            if (ZRIsValidClient(attacker))
             {
                 new bonus = ClassGetKillBonus(attacker);
                 AddPlayerScore(attacker, bonus);
             }
             
             // Check if the player was killed by world damage.
-            if (!IsClientPlayer(attacker))
+            if (!ZRIsValidClient(attacker))
             {
                 gKilledByWorld[index] = true;
             }
