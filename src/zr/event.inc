@@ -268,13 +268,13 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-    decl String:weapon[32];
 
     // Reset field of view and extinguish fire.
     SetPlayerFOV(index, DEFAULT_FOV);
     ExtinguishEntity(index);
     
     // Get the weapon name.
+    decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
     // Check if the player was infected.
@@ -337,7 +337,7 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     // Forward event to modules.
     ClassOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
-    RespawnOnClientDeath(index);
+    RespawnOnClientDeath(index, weapon);
     ZHPOnClientDeath(index);
     
     new ZTeam:team = IsRoundOver();    

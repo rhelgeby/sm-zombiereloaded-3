@@ -48,12 +48,18 @@ RespawnOnClientSpawn(client)
  * 
  * @param client    The client index.
  */
-RespawnOnClientDeath(client)
+RespawnOnClientDeath(client, const String:weapon[])
 {
     // If timer is running, kill it.
     if (tRespawn[client] != INVALID_HANDLE)
     {
         KillTimer(tRespawn[client]);
+    }
+    
+    // If player was infected, then stop.
+    if (StrEqual(weapon, "zombie_claws_of_death", false))
+    {
+        return;
     }
     
     // If respawn is disabled, stop here.
@@ -125,7 +131,7 @@ public Action:RespawnTimer(Handle:timer, any:client)
     }
     
     // If player isn't alive, then stop.
-    if (!IsPlayerAlive(client))
+    if (IsPlayerAlive(client))
     {
         return;
     }
