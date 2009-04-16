@@ -94,8 +94,7 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 
     zombieSpawned = false;
     
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x<= maxplayers; x++)
+    for (new x = 1; x<= MaxClients; x++)
     {
         if (!IsClientInGame(x))
         {
@@ -150,11 +149,6 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     
     for (new x = 0; x < MAXTIMERS; x++)
     {
-        if (x == TRESPAWN)
-        {
-            continue;
-        }
-        
         if (tHandles[index][x] != INVALID_HANDLE)
         {
             KillTimer(tHandles[index][x]);
@@ -168,6 +162,11 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     // Reset FOV and overlay.
     SetPlayerFOV(index, 90);
     ClientCommand(index, "r_screenoverlay \"\"");
+    
+    // Forward event to modules.
+    SpawnProtectOnClientSpawn(index);
+    RespawnOnClientSpawn(index);
+    ZHPOnClientSpawn(index);
     
     // Stop here if client isn't on a team.
     new team = GetClientTeam(index);
@@ -202,7 +201,6 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassOnClientSpawn(index);
-    SpawnProtectPlayerSpawn(index);
     ZTeleClientSpawned(index);
     
     ZR_PrintToChat(index, "!zmenu reminder");
@@ -227,7 +225,7 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
         if (IsPlayerHuman(index) && IsPlayerZombie(attacker))
         {
             // Check if spawn protection is disabled and the weapon is a knife.
-            if (!pProtect[index] && StrEqual(weapon, "knife"))
+            if (!pSpawnProtect[index] && StrEqual(weapon, "knife"))
             {
                 InfectPlayer(index, attacker);
             }
@@ -321,15 +319,8 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
                 AddPlayerScore(attacker, bonus);
             }
             
-            // Check if the player was killed by world damage.
-            if (!ZRIsValidClient(attacker))
-            {
-                gKilledByWorld[index] = true;
-            }
-            else
-            {
-                gKilledByWorld[index] = false;
-            }
+            // Set gKilledByWorld to true if attacker is not a valid client.
+            gKilledByWorld[index] = !ZRIsValidClient(attacker);
         }
         
         // Kill various timers.
@@ -341,18 +332,13 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
                 tHandles[index][x] = INVALID_HANDLE;
             }
         }
-        
-        // Create respawn timer if enabled.
-        new bool:respawn = GetConVarBool(gCvars[CVAR_RESPAWN]);
-        if (respawn)
-        {   
-            new Float:delay = GetConVarFloat(gCvars[CVAR_RESPAWN_DELAY]);
-            tHandles[index][TRESPAWN] = CreateTimer(delay, RespawnTimer, index, TIMER_FLAG_NO_MAPCHANGE);
-        }
     }
     
     // Forward event to modules.
     ClassOnClientDeath(index);
+    SpawnProtectOnClientDeath(index);
+    RespawnOnClientDeath(index);
+    ZHPOnClientDeath(index);
     
     new ZTeam:team = IsRoundOver();    
     RoundWin(team);

@@ -128,7 +128,7 @@ public Action:Command_Respawn(client, argc)
                 ZR_LogMessageFormatted(targets[x], "admin commands", "spawn", "\"%s\" spawned player \"%s\".", true, client_name, target_name);
             }
             
-            RespawnPlayer(targets[x]);
+            RespawnSpawnClient(targets[x]);
         }
     }
     

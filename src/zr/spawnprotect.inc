@@ -36,14 +36,30 @@ SpawnProtectClientInit(client)
 }
 
 /**
- * Player is spawning into the game.
+ * Client is spawning into the game.
  * 
  * @param client    The client index.
  */   
-SpawnProtectPlayerSpawn(client)
+SpawnProtectOnClientSpawn(client)
 {
     // Disable spawn protection on client.
     pSpawnProtect[client] = false;
+    
+    // If timer is currently running, kill it.
+    if (tSpawnProtect[client] != INVALID_HANDLE)
+    {
+        KillTimer(tSpawnProtect[client]);
+    }
+    
+    // Reset timer handle.
+    tSpawnProtect[client] = INVALID_HANDLE;
+    
+    // If client isn't on a team, then stop.
+    new team = GetClientTeam(client);
+    if (team != CS_TEAM_T && team != CS_TEAM_CT)
+    {
+        return;
+    }
     
     // If zombie hasn't spawned, then stop.
     if (!zombieSpawned)
@@ -58,13 +74,10 @@ SpawnProtectPlayerSpawn(client)
         return;
     }
     
-    // Get respawn team.
-    decl String:respawnteam[32];
-    GetConVarString(gCvars[CVAR_RESPAWN_TEAM], respawnteam, sizeof(respawnteam));
-    
-    // If the respawn team is not set to zombie, and either cvar zr_suicide_world_damage or the client
-    // wasn't killed by world is false, then continue to protect client.
-    if (!StrEqual(respawnteam, "zombie", false) && !(GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client]))
+    // If player respawns as human, and either cvar zr_suicide_world_damage or the client
+    // wasn't killed by world is false, then continue on to protect client.
+    new bool:respawn_zombie = GetConVarBool(gCvars[CVAR_RESPAWN_ZOMBIE]);
+    if (!respawn_zombie && !(GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client]))
     {
         // Set spawn protect flag on client.
         pSpawnProtect[client] = true;
@@ -83,15 +96,26 @@ SpawnProtectPlayerSpawn(client)
         // Send time left in a hud message.
         ZR_HudHint(client, "Spawn Protect", pSpawnProtectTime[client]);
         
-        // If timer is currently running, kill it.
-        if (tSpawnProtect[client] != INVALID_HANDLE)
-        {
-            KillTimer(tSpawnProtect[client]);
-        }
-        
         // Start repeating timer.
         tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
     }
+}
+
+/**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ */
+SpawnProtectOnClientDeath(client)
+{
+    // If timer is running, kill it.
+    if (tSpawnProtect[client] != INVALID_HANDLE)
+    {
+        KillTimer(tSpawnProtect[client]);
+    }
+    
+    // Reset timer handle.
+    tSpawnProtect[client] = INVALID_HANDLE;
 }
 
 /**

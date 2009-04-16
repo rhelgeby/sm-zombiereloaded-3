@@ -38,6 +38,40 @@ ZHPClientInit(client)
 }
 
 /**
+ * Client is spawning into the game.
+ * 
+ * @param client    The client index.
+ */
+ZHPOnClientSpawn(client)
+{
+    // If timer is running, kill it.
+    if (tZHP[client] != INVALID_HANDLE)
+    {
+        KillTimer(tZHP[client]);
+    }
+    
+    // Reset timer handle.
+    tZHP[client] = INVALID_HANDLE;
+}
+
+/**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ */
+ZHPOnClientDeath(client)
+{
+    // If timer is running, kill it.
+    if (tZHP[client] != INVALID_HANDLE)
+    {
+        KillTimer(tZHP[client]);
+    }
+    
+    // Reset timer handle.
+    tZHP[client] = INVALID_HANDLE;
+}
+
+/**
  * Toggle ZHP on a client.
  * 
  * @param client    The client index.

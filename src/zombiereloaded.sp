@@ -25,8 +25,13 @@
 #include "zr/ambience"
 #include "zr/models"
 #include "zr/overlays"
+
+// Class system
 #include "zr/playerclasses/playerclasses"
+
+// Antistick
 #include "zr/antistick"
+
 #include "zr/anticamp"
 #include "zr/teleport"
 #include "zr/zombie"
@@ -44,6 +49,9 @@
 
 // Spawn protect
 #include "zr/spawnprotect"
+
+// Respawn
+#include "zr/respawn"
 
 // ZHP
 #include "zr/zhp"
@@ -173,12 +181,11 @@ public OnClientPutInServer(client)
     gBlockMotherInfect[client] = false;
     gKilledByWorld[client] = false; 
     
-    bZVision[client] = !IsFakeClient(client);
-    
     // Forward event to modules.
     ClassClientInit(client);
     WeaponsClientInit(client);
     SpawnProtectClientInit(client);
+    RespawnClientInit(client);
     ZHPClientInit(client);
     
     if (!IsFakeClient(client)) AmbienceStart(client);

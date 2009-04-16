@@ -21,8 +21,7 @@ ShowOverlays(Float:time, ZTeam:winner)
             GetConVarString(gCvars[CVAR_OVERLAYS_ZOMBIE], overlay, sizeof(overlay));
         }
             
-        new maxplayers = GetMaxClients();
-        for (new x = 1; x <= maxplayers; x++)
+        for (new x = 1; x <= MaxClients; x++)
         {
             if (IsClientInGame(x))
             {
@@ -36,8 +35,7 @@ ShowOverlays(Float:time, ZTeam:winner)
 
 public Action:KillOverlays(Handle:timer)
 {
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         if (IsClientInGame(x))
         {

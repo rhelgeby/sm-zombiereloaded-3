@@ -62,8 +62,7 @@ AntiStickIsStuck(client)
     GetClientAbsOrigin(client, clientloc);
     
     // x = client index.
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         // Validate player is in-game, alive, and isn't the player being checked. ('client')
         if (!IsClientInGame(x) || !IsPlayerAlive(x) || x == client)
@@ -104,8 +103,7 @@ AntiStickIsStuck(client)
 public Action:AntiStickTimer(Handle:timer)
 {
     // x = client index
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         // Validate player is in-game and alive.
         if (!IsClientInGame(x) || !IsPlayerAlive(x))

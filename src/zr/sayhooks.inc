@@ -42,7 +42,8 @@ public Action:SayCommand(client, argc)
     
     else if (StrEqual(args, "!zmarket", false))
     {
-        ZMarket(client);
+        // Send market menu.
+        ZMarketSend(client);
     }
     
     else if (StrEqual(args, "!zspawn", false))
@@ -78,66 +79,6 @@ public Action:SayCommand(client, argc)
     return Plugin_Continue;
 }
 
-/*bool:ZClass(client)
-{
-    new bool:classes = GetConVarBool(gCvars[CVAR_CLASSES]);
-    if (!classes)
-    {
-        ZR_PrintToChat(client, "Feature is disabled");
-        
-        return false;
-    }
-    
-    new bool:randomclass = GetConVarBool(gCvars[CVAR_CLASSES_RANDOM]);
-    if (randomclass)
-    {
-        ZR_PrintToChat(client, "Random class is enabled");
-        
-        return false;
-    }
-    
-    ClassMenu(client);
-    
-    return true;
-}*/
-
-bool:ZMarket(client)
-{
-    if (!market)
-    {
-        ZR_PrintToChat(client, "Feature is disabled");
-        
-        return false;
-    }
-    
-    if (!IsPlayerAlive(client))
-    {
-        ZR_PrintToChat(client, "Must be alive");
-        
-        return false;
-    }
-    
-    new bool:buyzone = GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]); 
-    if (!IsClientInBuyZone(client) && buyzone)
-    {
-        ZR_PrintCenterText(client, "Market out of buyzone");
-        
-        return false;
-    }
-    
-    SetGlobalTransTarget(client);
-    
-    decl String:title[64];
-    decl String:rebuy[64];
-    
-    Format(title, sizeof(title), "%t\n ", "Market title");
-    Format(rebuy, sizeof(rebuy), "%t\n ", "Market rebuy");
-    
-    Market_Send(client, title, rebuy);
-    
-    return true;
-}
-
 ZSpawn(client)
 {
     new bool:spawn = GetConVarBool(gCvars[CVAR_ZSPAWN]);
@@ -163,7 +104,7 @@ ZSpawn(client)
         return;
     }
 
-    RespawnPlayer(client);
+    RespawnSpawnClient(client);
     
     AddPlayerToList(client);
 }

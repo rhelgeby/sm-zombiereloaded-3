@@ -67,7 +67,7 @@ public MainMenuHandle(Handle:menu_main, MenuAction:action, client, slot)
             }
             case 2:
             {
-                if (!ZMarket(client))
+                if (!ZMarketSend(client))
                 {
                     MainMenu(client);
                 }

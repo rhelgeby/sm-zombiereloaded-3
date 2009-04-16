@@ -70,11 +70,7 @@ new bool:zombieSpawned;
 new bool:motherZombie[MAXPLAYERS + 1];
 new bool:gZombie[MAXPLAYERS + 1];
 new bool:gBlockMotherInfect[MAXPLAYERS + 1];
-new bool:bZVision[MAXPLAYERS + 1];
-//new bool:bZVisionOn[MAXPLAYERS + 1];
-//new String:ZVisionOverlay[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
-new bool:pProtect[MAXPLAYERS + 1];
-new bool:gKilledByWorld[MAXPLAYERS + 1] = {false, ...};
+new bool:gKilledByWorld[MAXPLAYERS + 1];
 
 new Float:spawnLoc[MAXPLAYERS + 1][3];
 new Float:bufferLoc[MAXPLAYERS + 1][3];
@@ -92,13 +88,10 @@ new Handle:tInfect = INVALID_HANDLE;
 
 new Handle:pList = INVALID_HANDLE;
 
-#define MAXTIMERS 5
+#define MAXTIMERS 2
 
 #define TMOAN 0
-#define TREGEN 1
-#define TTELE 2
-#define TRESPAWN 3
-#define TZVISION 4
+#define TTELE 1
 
 new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
 
@@ -178,8 +171,7 @@ RefreshList()
     
     pList = CreateArray();
     
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         if (IsClientInGame(x) && IsPlayerAlive(x))
         {  

@@ -50,7 +50,7 @@ enum ZRSettings
     Handle:CVAR_MOTHER_ZOMBIE_RATIO,
     Handle:CVAR_MOTHER_ZOMBIE_RESPAWN,
     Handle:CVAR_RESPAWN,
-    Handle:CVAR_RESPAWN_TEAM,
+    Handle:CVAR_RESPAWN_ZOMBIE,
     Handle:CVAR_RESPAWN_DELAY,
     Handle:CVAR_SUICIDE_ZOMBIE,
     Handle:CVAR_SUICIDE_HUMAN,
@@ -88,7 +88,6 @@ enum ZRSettings
     Handle:CVAR_INFECT_SHAKE_AMP,
     Handle:CVAR_INFECT_SHAKE_FREQUENCY,
     Handle:CVAR_INFECT_SHAKE_DURATION,
-    Handle:CVAR_INFECT_ANTISTICK_FORCE,
     Handle:CVAR_ANTICAMP,
     Handle:CVAR_ANTICAMP_UPDATE_INTERVAL,
     Handle:CVAR_ANTICAMP_ECHO
@@ -140,7 +139,7 @@ CreateCvars()
     gCvars[CVAR_MOTHER_ZOMBIE_RATIO]       =    CreateConVar("zr_mother_zombie_ratio", "5", "For every 'x' number of humans,  there will be 1 zombie (0: Always only 1 mother zombie)");
     gCvars[CVAR_MOTHER_ZOMBIE_RESPAWN]     =    CreateConVar("zr_mother_zombie_respawn", "0", "First zombie(s) will be teleported back to spawn when infected (0: Disable)");
     gCvars[CVAR_RESPAWN]                   =    CreateConVar("zr_respawn", "0", "When player is killed,  player will respawn");
-    gCvars[CVAR_RESPAWN_TEAM]              =    CreateConVar("zr_respawn_team", "zombie", "Which team to respawn player as (Choices: zombie, human)");
+    gCvars[CVAR_RESPAWN_ZOMBIE]            =    CreateConVar("zr_respawn_zombie", "1", "Respawn player as zombie (0: Respawn as human)");
     gCvars[CVAR_RESPAWN_DELAY]             =    CreateConVar("zr_respawn_delay", "1", "How long to wait after death to respawn,  in seconds");
     gCvars[CVAR_SUICIDE_ZOMBIE]            =    CreateConVar("zr_suicide_zombie", "1", "Stops zombies from suiciding");
     gCvars[CVAR_SUICIDE_HUMAN]             =    CreateConVar("zr_suicide_human", "1", "Stops humans from suiciding");
@@ -178,7 +177,6 @@ CreateCvars()
     gCvars[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "Amplitude of the shake, when zr_infect_shake is 1");
     gCvars[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "Frequency of the shake, when zr_infect_shake is 1");
     gCvars[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", "Duration of the shake, when zr_infect_shake is 1");
-    gCvars[CVAR_INFECT_ANTISTICK_FORCE]    =    CreateConVar("zr_infect_antistick_force", "-160.0", "Force to push away players from eachother on infection. Negative values push away, positive values pull. (0: Disable)");
     gCvars[CVAR_ANTICAMP]                  =    CreateConVar("zr_anticamp", "1", "Enables or disables hurt volumes for preventing unfair camping. (0: Disable)");
     gCvars[CVAR_ANTICAMP_UPDATE_INTERVAL]  =    CreateConVar("zr_anticamp_update_interval", "1", "How often to update player locations (in seconds).");
     gCvars[CVAR_ANTICAMP_ECHO]             =    CreateConVar("zr_anticamp_echo", "1", "Log kills done by anticamp to admin chat.");

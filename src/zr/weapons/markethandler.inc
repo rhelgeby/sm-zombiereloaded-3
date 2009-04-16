@@ -7,6 +7,55 @@
  */
 
 /**
+ * Sends market menu to client.
+ * 
+ * @param client    The client index.
+ */    
+bool:ZMarketSend(client)
+{
+    // If market is disabled, then stop.
+    if (!market)
+    {
+        // Tell client market is disabled.
+        ZR_PrintToChat(client, "Feature is disabled");
+        return false;
+    }
+    
+    // If player is dead, then stop.
+    if (!IsPlayerAlive(client))
+    {
+        // Tell player they must be alive.
+        ZR_PrintToChat(client, "Must be alive");
+        return false;
+    }
+    
+    // Check buyzone cvar to see if client has to be in a buyzone to use.
+    new bool:buyzone = GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]); 
+    if (!IsClientInBuyZone(client) && buyzone)
+    {
+        // Tell client they must be in a buyzone.
+        ZR_PrintCenterText(client, "Market out of buyzone");
+        return false;
+    }
+    
+    // Set translate target to client.
+    SetGlobalTransTarget(client);
+    
+    // Format title and rebuy lines.
+    decl String:title[64];
+    decl String:rebuy[64];
+    
+    Format(title, sizeof(title), "%t\n ", "Market title");
+    Format(rebuy, sizeof(rebuy), "%t\n ", "Market rebuy");
+    
+    // Send market menu.
+    Market_Send(client, title, rebuy);
+    
+    // Successfully sent the market menu.
+    return true;
+}
+
+/**
  * (Market) Forward called when a client selects a weapon from the market.
  * 
  * @param client    The client index.
@@ -83,5 +132,5 @@ public Market_PostOnWeaponSelected(client, &bool:allowed)
     }
     
     // Resend market menu.
-    ZMarket(client);
+    ZMarketSend(client);
 }

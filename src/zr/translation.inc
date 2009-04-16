@@ -41,8 +41,7 @@ stock ZR_PrintToChat(client, any:...)
         
         PrintToServer(phrase);
         
-        new maxplayers = GetMaxClients();
-        for (new x = 1; x <= maxplayers; x++)
+        for (new x = 1; x <= MaxClients; x++)
         {
             if (IsClientInGame(x))
             {

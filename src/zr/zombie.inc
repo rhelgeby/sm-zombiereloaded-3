@@ -46,7 +46,6 @@ public Action:Command_NightVision(client, argc)
         return;
     }
     
-    //bZVisionOn[client] = !bZVisionOn[client];
     bClientOverlayOn[client] = !bClientOverlayOn[client];
     
     decl String:overlay[256];
@@ -379,8 +378,7 @@ PlayerLeft(client)
     
     new Handle:aClients = CreateArray();
     
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         if (!IsClientInGame(x) || !IsPlayerAlive(x) || client == x || GetClientTeam(x) != CS_TEAM_CT || gBlockMotherInfect[x])
         {
@@ -408,8 +406,7 @@ GetZTeamCount(ZTeam:team)
 {
     new count = 0;
     
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         if (!IsClientInGame(x) || !IsPlayerAlive(x))
         {
@@ -431,8 +428,7 @@ ZTeam:IsRoundOver()
     new bool:zombies = false;
     new bool:humans = false;
     
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         if (!IsClientInGame(x) || !IsPlayerAlive(x))
         {
@@ -482,8 +478,7 @@ BalanceTeams()
     new count = 0;
     new cPlayers[MAXPLAYERS];
     
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         if (!IsClientInGame(x) || GetClientTeam(x) <= 1)
         {
@@ -552,50 +547,6 @@ public Action:ZombieMoanTimer(Handle:timer, any:index)
     ZombieMoan(index);
         
     return Plugin_Continue;
-}
-
-RespawnPlayer(client)
-{
-    if (!IsClientInGame(client))
-    {
-        return;
-    }
-    
-    CS_RespawnPlayer(client);
-    
-    if (!zombieSpawned)
-    {
-        return;
-    }
-    
-    decl String:team[32];
-    GetConVarString(gCvars[CVAR_RESPAWN_TEAM], team, sizeof(team));
-    
-    if (StrEqual(team, "zombie", false))
-    {
-        InfectPlayer(client);
-        return;
-    }
-    
-    if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
-    {
-        InfectPlayer(client);
-        gKilledByWorld[client] = false;
-    }
-}
-
-public Action:RespawnTimer(Handle:timer, any:index)
-{
-    new team = GetClientTeam(index);
-    if (!IsClientInGame(index) || IsPlayerAlive(index) || team != CS_TEAM_T && team != CS_TEAM_CT)
-    {
-        tHandles[index][TRESPAWN] = INVALID_HANDLE;
-        return;
-    }
-    
-    RespawnPlayer(index);
-    
-    tHandles[index][TRESPAWN] = INVALID_HANDLE;
 }
 
 public Action:RoundOver(Handle:timer)
