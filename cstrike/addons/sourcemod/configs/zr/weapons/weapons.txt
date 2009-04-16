@@ -212,6 +212,13 @@
 		"knockback"	"100.0"
 	}
 
+	"Knife"
+	{
+		"restrict"	"no"
+		"menu"		"no"
+		"knockback"	"8.0"
+	}
+
 	"NVGs"
 	{
 		"restrict"	"yes"

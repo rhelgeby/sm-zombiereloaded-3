@@ -77,7 +77,7 @@ SpawnProtectOnClientSpawn(client)
     // If player respawns as human, and either cvar zr_suicide_world_damage or the client
     // wasn't killed by world is false, then continue on to protect client.
     new bool:respawn_zombie = GetConVarBool(gCvars[CVAR_RESPAWN_ZOMBIE]);
-    if (!respawn_zombie && !(GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client]))
+    if (!respawn_zombie && !RespawnKilledByWorld(client))
     {
         // Set spawn protect flag on client.
         pSpawnProtect[client] = true;

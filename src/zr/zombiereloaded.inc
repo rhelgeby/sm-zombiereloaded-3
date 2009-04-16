@@ -70,7 +70,6 @@ new bool:zombieSpawned;
 new bool:motherZombie[MAXPLAYERS + 1];
 new bool:gZombie[MAXPLAYERS + 1];
 new bool:gBlockMotherInfect[MAXPLAYERS + 1];
-new bool:gKilledByWorld[MAXPLAYERS + 1];
 
 new Float:spawnLoc[MAXPLAYERS + 1][3];
 new Float:bufferLoc[MAXPLAYERS + 1][3];
@@ -88,9 +87,8 @@ new Handle:tInfect = INVALID_HANDLE;
 
 new Handle:pList = INVALID_HANDLE;
 
-#define MAXTIMERS 2
+#define MAXTIMERS 1
 
-#define TMOAN 0
 #define TTELE 1
 
 new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
@@ -228,6 +226,7 @@ bool:IsPlayerInList(client)
  * 
  * @param client    The client index.
  * @param console   True to include console (index 0), false if not.
+ * @return          True if client is valid, false otherwise. 
  */    
 bool:ZRIsValidClient(client, bool:console = false)
 {
@@ -239,6 +238,32 @@ bool:ZRIsValidClient(client, bool:console = false)
     
     // If console is true, return if client is >= 0, if not, then return client > 0.
     return console ? (client >= 0) : (client > 0);
+}
+
+/**
+ * Check if a client index is on a team.
+ * 
+ * @param client    The client index.
+ * @param team      Team to check if player is on, -1 to check both. 
+ * @return          True if client is on a team, false otherwise. 
+ */    
+bool:ZRIsClientOnTeam(client, team = -1)
+{
+    // If index is invalid, then stop.
+    if (!ZRIsValidClient(client))
+    {
+        return false;
+    }
+    
+    // Get client team.
+    new clientteam = GetClientTeam(client);
+    
+    if (team == -1)
+    {
+        return (clientteam == CS_TEAM_T || clientteam == CS_TEAM_CT);
+    }
+    
+    return (clientteam == team);
 }
 
 /**

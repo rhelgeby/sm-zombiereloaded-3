@@ -163,44 +163,40 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     SetPlayerFOV(index, 90);
     ClientCommand(index, "r_screenoverlay \"\"");
     
-    // Forward event to modules.
-    SpawnProtectOnClientSpawn(index);
-    RespawnOnClientSpawn(index);
-    ZHPOnClientSpawn(index);
-    
-    // Stop here if client isn't on a team.
-    new team = GetClientTeam(index);
-    if (team != CS_TEAM_T && team != CS_TEAM_CT)
+    // Check if client is on a team.
+    if (ZRIsClientOnTeam(index))
     {
-        return;
-    }
-    
-    new bool:cashfill = GetConVarBool(gCvars[CVAR_CASHFILL]);
-    if (cashfill)
-    {
-        new cash = GetConVarInt(gCvars[CVAR_CASHAMOUNT]);
-        SetPlayerMoney(index, cash);
-    }
-    
-    // Remove night vision.
-    NightVisionOn(index, false);
-    NightVision(index, false);
-    
-    if (zombieSpawned)
-    {
-        if (team == CS_TEAM_T)
+        new bool:cashfill = GetConVarBool(gCvars[CVAR_CASHFILL]);
+        if (cashfill)
         {
-            CS_SwitchTeam(index, CS_TEAM_CT);
-            CS_RespawnPlayer(index);
+            new cash = GetConVarInt(gCvars[CVAR_CASHAMOUNT]);
+            SetPlayerMoney(index, cash);
         }
-    }
-    else
-    {
-        SetPlayerAlpha(index, 255);
+        
+        // Remove night vision.
+        NightVisionOn(index, false);
+        NightVision(index, false);
+        
+        if (zombieSpawned)
+        {
+            if (ZRIsClientOnTeam(index, CS_TEAM_T))
+            {
+                CS_SwitchTeam(index, CS_TEAM_CT);
+                CS_RespawnPlayer(index);
+            }
+        }
+        else
+        {
+            SetPlayerAlpha(index, 255);
+        }
     }
     
     // Forward event to modules.
     ClassOnClientSpawn(index);
+    ZombieSoundsOnClientSpawn(index);
+    SpawnProtectOnClientSpawn(index);
+    RespawnOnClientSpawn(index);
+    ZHPOnClientSpawn(index);
     ZTeleClientSpawned(index);
     
     ZR_PrintToChat(index, "!zmenu reminder");
@@ -232,35 +228,21 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
         }
     }
     
-    // Check if the player is a human.
-    if (IsPlayerHuman(index))
+    // Check if the player is a zombie.
+    if (IsPlayerZombie(index))
     {
-        // We're done now. Nothing more to do on humans.
-        return;
-    }
-    
-    // Play a random zombie hurt sound.
-    if (GetRandomInt(1, 5) == 1)
-    {
-        decl String:sound[64];
-        new randsound = GetRandomInt(1, 6);
-        
-        Format(sound, sizeof(sound), "npc/zombie/zombie_pain%d.wav", randsound);
-        
-        PrecacheSound(sound);
-        EmitSoundToAll(sound, index);
-    }
-    
-    // Napalm effect.
-    new Float:napalm_time = ClassGetNapalmTime(index);
-    if (StrEqual(weapon, "hegrenade", false) && napalm_time > 0.0)
-    {
-        IgniteEntity(index, napalm_time);
+        // Napalm effect.
+        new Float:napalm_time = ClassGetNapalmTime(index);
+        if (StrEqual(weapon, "hegrenade", false) && napalm_time > 0.0)
+        {
+            IgniteEntity(index, napalm_time);
+        }
     }
     
     // Forward event to modules.
     ClassAlphaUpdate(index);
-    KnockbackPlayerHurt(index, attacker, weapon, hitgroup, dmg_health);
+    ZombieSoundsOnClientHurt(index);
+    KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
     ZHPOnPlayerHurt(index);
 }
 
@@ -304,13 +286,6 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     {
         if (IsPlayerZombie(index))
         {
-            decl String:sound[64];
-    
-            new randsound = GetRandomInt(1, 3);
-            Format(sound, sizeof(sound), "npc/zombie/zombie_die%d.wav", randsound);
-            
-            PrecacheSound(sound);
-            EmitSoundToAll(sound, index);
             
             // Give kill bonus.
             if (ZRIsValidClient(attacker))
@@ -318,9 +293,6 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
                 new bonus = ClassGetKillBonus(attacker);
                 AddPlayerScore(attacker, bonus);
             }
-            
-            // Set gKilledByWorld to true if attacker is not a valid client.
-            gKilledByWorld[index] = !ZRIsValidClient(attacker);
         }
         
         // Kill various timers.
@@ -336,8 +308,9 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassOnClientDeath(index);
+    ZombieSoundsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
-    RespawnOnClientDeath(index, weapon);
+    RespawnOnClientDeath(index, attacker, weapon);
     ZHPOnClientDeath(index);
     
     new ZTeam:team = IsRoundOver();    

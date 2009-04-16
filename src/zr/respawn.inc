@@ -15,6 +15,11 @@
 new Handle:tRespawn[MAXPLAYERS + 1];
 
 /**
+ * Array for flagging zombies who were killed by world.
+ */ 
+new bool:pKilledByWorld[MAXPLAYERS + 1];
+
+/**
  * Client is joining the server.
  */ 
 RespawnClientInit(client)
@@ -22,8 +27,8 @@ RespawnClientInit(client)
     // Reset timer handle.
     tRespawn[client] = INVALID_HANDLE;
     
-    // Init gKilledByWorld for client.
-    gKilledByWorld[client] = false;
+    // Init pKilledByWorld for client.
+    pKilledByWorld[client] = false;
 }
 
 /**
@@ -48,8 +53,15 @@ RespawnOnClientSpawn(client)
  * 
  * @param client    The client index.
  */
-RespawnOnClientDeath(client, const String:weapon[])
+RespawnOnClientDeath(client, attacker, const String:weapon[])
 {
+    // If client is a zombie, check if they were killed by world.
+    if (IsPlayerZombie(client))
+    {
+        // Set pKilledByWorld to true if attacker is not a valid client.
+        pKilledByWorld[client] = !ZRIsValidClient(attacker);
+    }
+    
     // If timer is running, kill it.
     if (tRespawn[client] != INVALID_HANDLE)
     {
@@ -73,7 +85,19 @@ RespawnOnClientDeath(client, const String:weapon[])
     new Float:delay = GetConVarFloat(gCvars[CVAR_RESPAWN_DELAY]);
     tRespawn[client] = CreateTimer(delay, RespawnTimer, client, TIMER_FLAG_NO_MAPCHANGE);
 }
- 
+
+/**
+ * Returns if a player is to be respawned as a zombie, because they were killed by world.
+ * 
+ * @param client    The client index.
+ * @return          True if they were killed by world, false if not or cvar is disabled.
+ */
+RespawnKilledByWorld(client)
+{
+    // Return true if both the cvar is enabled and the player was killed by world.
+    return (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && pKilledByWorld[client]);
+}
+
 /**
  * Spawns a player into the round.
  * 
@@ -106,10 +130,10 @@ RespawnSpawnClient(client)
         return;
     }
     
-    if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && gKilledByWorld[client])
+    if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && pKilledByWorld[client])
     {
         InfectPlayer(client);
-        gKilledByWorld[client] = false;
+        pKilledByWorld[client] = false;
     }
 }
 

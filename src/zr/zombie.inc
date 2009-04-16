@@ -159,41 +159,6 @@ public Action:MotherZombie(Handle:timer)
     zombieSpawned = true;
 }
 
-/*Zombify_Mother(client)
-{
-    gZombie[client] = true;
-    motherZombie[client] = true;
-    
-    CS_SwitchTeam(client, CS_TEAM_T);
-    
-    RemoveAllPlayersWeapons(client);
-    GivePlayerItem(client, "weapon_knife");
-    
-    ClassOnClientInfected(client, true);
-    InfectionEffects(client);
-    
-    ztele_count[client] = 0;
-    AbortTeleport(client);
-    
-    ZR_PrintToChat(client, "You are a zombie");
-    
-    new bool:mother_zombie_respawn = GetConVarBool(gCvars[CVAR_MOTHER_ZOMBIE_RESPAWN]);
-    if (mother_zombie_respawn)
-    {
-        TeleportEntity(client, spawnLoc[client], NULL_VECTOR, NULL_VECTOR);
-    }
-    
-    new Float:interval = GetConVarFloat(gCvars[CVAR_EMITSOUNDS]);
-    if (interval > 0.0)
-    {
-        if (tHandles[client][TMOAN] != INVALID_HANDLE)
-        {
-            KillTimer(tHandles[client][TMOAN]);
-        }
-        tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
-    }
-}*/
-
 /**
  * Zombifies a player. Execute events, sets attributes and flags that indicate
  * that the player is a zombie.
@@ -235,20 +200,9 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     // Switch the player to terrorists.
     CS_SwitchTeam(client, CS_TEAM_T);
     
-    // Check if random zombie sounds are enabled.
-    new Float:interval = GetConVarFloat(gCvars[CVAR_EMITSOUNDS]);
-    if (interval > 0.0)
-    {
-        // Create timer.
-        if (tHandles[client][TMOAN] != INVALID_HANDLE)
-        {
-            KillTimer(tHandles[client][TMOAN]);
-        }
-        tHandles[client][TMOAN] = CreateTimer(interval, ZombieMoanTimer, client, TIMER_REPEAT);
-    }
-    
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);
+    ZombieSoundsOnClientInfected(client);
     ZHPOnClientInfected(client);
     AbortTeleport(client);
     
@@ -268,8 +222,7 @@ InfectionEffects(client)
     GetConVarString(gCvars[CVAR_INFECT_SOUND], sound, sizeof(sound));
     if (sound[0])
     {
-        PrecacheSound(sound);
-        EmitSoundToAll(sound, client, SNDCHAN_AUTO, SNDLEVEL_SCREAMING);
+        SEffectsEmitSoundFromClient(client, sound, SNDLEVEL_SCREAMING);
     }
     
     new bool:esplash = GetConVarBool(gCvars[CVAR_INFECT_ESPLASH]);
@@ -522,31 +475,6 @@ RemoveObjectives()
                 RemoveEdict(x);
             }
     }
-}
-
-ZombieMoan(client)
-{
-    decl String:sound[64];
-    
-    new randsound = GetRandomInt(1, 14);
-    Format(sound, sizeof(sound), "npc/zombie/zombie_voice_idle%d.wav", randsound);
-    
-    PrecacheSound(sound);
-    EmitSoundToAll(sound, client, SNDCHAN_AUTO, SNDLEVEL_SCREAMING);
-}
-
-public Action:ZombieMoanTimer(Handle:timer, any:index)
-{
-    if (!IsClientInGame(index) || !IsPlayerZombie(index))
-    {
-        tHandles[index][TMOAN] = INVALID_HANDLE;
-        
-        return Plugin_Stop;
-    }
-    
-    ZombieMoan(index);
-        
-    return Plugin_Continue;
 }
 
 public Action:RoundOver(Handle:timer)

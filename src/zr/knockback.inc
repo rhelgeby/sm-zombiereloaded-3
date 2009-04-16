@@ -14,7 +14,7 @@
  * @param hitgroup      Hitgroup attacker has damaged. 
  * @param dmg_health    Damage done.
  */ 
-KnockbackPlayerHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
+KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
 {
     // Check if the attacker is a player.
     if (attacker != 0)

@@ -15,11 +15,12 @@ enum ZRSettings
     Handle:CVAR_AMBIENCE_FILE,
     Handle:CVAR_AMBIENCE_LENGTH,
     Handle:CVAR_AMBIENCE_VOLUME,
-    Handle:CVAR_EMITSOUNDS,
+    Handle:CVAR_SOUNDEFFECTS_MOAN,
+    Handle:CVAR_SOUNDEFFECTS_GROAN,
+    Handle:CVAR_SOUNDEFFECTS_DEATH,
     Handle:CVAR_CLASSES,
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
-    //Handle:CVAR_CLASSES_DEFAULT,
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
     Handle:CVAR_CLASSES_DEFAULT_ADMIN,
@@ -104,11 +105,12 @@ CreateCvars()
     gCvars[CVAR_AMBIENCE_FILE]             =    CreateConVar("zr_ambience_file", "ambient/zr/zr_ambience.mp3", "Path to ambient sound file that will be played throughout the game, when zr_ambience is 1");
     gCvars[CVAR_AMBIENCE_LENGTH]           =    CreateConVar("zr_ambience_length", "60.0", "The length, in seconds, of the ambient sound file");
     gCvars[CVAR_AMBIENCE_VOLUME]           =    CreateConVar("zr_ambience_volume", "0.6", "Volume of ambient sounds when zr_ambience is 1 (0.0: Unhearable,  1.0: Max volume)");
-    gCvars[CVAR_EMITSOUNDS]                =    CreateConVar("zr_emitsounds", "50", "How often a zombie emits a sound,  in seconds (0: Disable)");
+    gCvars[CVAR_SOUNDEFFECTS_MOAN]         =    CreateConVar("zr_soundeffects_moan", "50", "How often, in seconds, a zombie moans (0: Disable)");
+    gCvars[CVAR_SOUNDEFFECTS_GROAN]        =    CreateConVar("zr_soundeffects_groan", "5", "Chance factor a zombie will groan when shot (Lower: More often, 0: Disable)");
+    gCvars[CVAR_SOUNDEFFECTS_DEATH]        =    CreateConVar("zr_soundeffects_death", "1", "Zombie will emit a death sound when killed 0: Disable)");
     gCvars[CVAR_CLASSES]                   =    CreateConVar("zr_classes", "1", "Enable zombie classes");
     gCvars[CVAR_CLASSES_SPAWN]             =    CreateConVar("zr_classes_spawn", "0", "Classmenu is re-displayed every spawn (0: Disable)");
     gCvars[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round. Overrides zr_classes_spawn and default classes. (0: Disable)");
-    //gCvars[CVAR_CLASSES_DEFAULT]         =    CreateConVar("zr_classes_default", "classic", "Default class selected for all players when they connect, or \"random\" to select a random class. Usage zr_classes_default <class name|\"random\">");
     gCvars[CVAR_CLASSES_DEFAULT_ZOMBIE]    =    CreateConVar("zr_classes_default_zombie", "", "Default zombie class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
     gCvars[CVAR_CLASSES_DEFAULT_HUMAN]     =    CreateConVar("zr_classes_default_human", "", "Default human class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
     gCvars[CVAR_CLASSES_DEFAULT_ADMIN]     =    CreateConVar("zr_classes_default_admin", "", "Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");

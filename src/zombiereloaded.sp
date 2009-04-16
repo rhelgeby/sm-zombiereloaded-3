@@ -41,6 +41,9 @@
 // Weapons
 #include "zr/weapons/weapons"
 
+// Sound effects
+#include "zr/soundeffects/soundeffects"
+
 // Hitgroups
 #include "zr/hitgroups"
 
@@ -179,10 +182,10 @@ public OnConfigsExecuted()
 public OnClientPutInServer(client)
 {
     gBlockMotherInfect[client] = false;
-    gKilledByWorld[client] = false; 
     
     // Forward event to modules.
     ClassClientInit(client);
+    ZombieSoundsClientInit(client);
     WeaponsClientInit(client);
     SpawnProtectClientInit(client);
     RespawnClientInit(client);
