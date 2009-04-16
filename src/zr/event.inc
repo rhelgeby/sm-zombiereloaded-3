@@ -33,9 +33,11 @@ UnhookEvents()
 public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {   
     ChangeLightStyle();
-    AmbienceRestartAll();
-    AntiStickRestart();
     RefreshList();
+    
+    // Forward event to sub-modules.
+    SEffectsOnRoundStart();
+    AntiStickOnRoundStart();
     
     if (tRound != INVALID_HANDLE)
     {
@@ -74,6 +76,7 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
     new Float:randlen = GetRandomFloat(min, max);
     tInfect = CreateTimer(randlen, MotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
     
+    // Forward events to modules.
     ZTeleEnable();
 
 }
@@ -193,7 +196,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassOnClientSpawn(index);
-    ZombieSoundsOnClientSpawn(index);
+    SEffectsOnClientSpawn(index);
     SpawnProtectOnClientSpawn(index);
     RespawnOnClientSpawn(index);
     ZHPOnClientSpawn(index);
@@ -241,7 +244,7 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassAlphaUpdate(index);
-    ZombieSoundsOnClientHurt(index);
+    SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
     ZHPOnPlayerHurt(index);
 }
@@ -308,7 +311,7 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassOnClientDeath(index);
-    ZombieSoundsOnClientDeath(index);
+    SEffectsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
     RespawnOnClientDeath(index, attacker, weapon);
     ZHPOnClientDeath(index);

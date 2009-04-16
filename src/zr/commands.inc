@@ -311,7 +311,7 @@ public Action:Command_LogFlags(client, argc)
     ReplyToCommand(client, message);
     message[0] = 0;
 
-    StrCat(message, sizeof(message), "LOG_MODULE_AMBIENCE        (2048)   - ambience.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_AMBIENTSOUNDS   (2048)   - ambientsounds.inc\n");
     StrCat(message, sizeof(message), "LOG_MODULE_OVERLAYS        (4096)   - overlays.inc\n");
     StrCat(message, sizeof(message), "LOG_MODULE_SAYTRIGGERS     (8192)   - sayhooks.inc\n");
     StrCat(message, sizeof(message), "LOG_MODULE_TELEPORT        (16384)  - teleport.inc\n");

@@ -51,7 +51,7 @@ enum ZTeam
 #define LOG_MODULE_CLASSES          4096        /** Class system - playerclasses/ *.inc */
 #define LOG_MODULE_ZOMBIE           8192        /** zombie.inc */
 #define LOG_MODULE_SAYTRIGGERS      16384       /** sayhooks.inc */
-#define LOG_MODULE_AMBIENCE         32768       /** ambience.inc */
+#define LOG_MODULE_AMBIENTSOUNDS    32768       /** ambientsounds.inc */
 #define LOG_MODULE_OVERLAYS         65536       /** overlays.inc */
 #define LOG_MODULE_TELEPORT         131072      /** teleport.inc */
 #define LOG_MODULE_WEAPONS          262144      /** Weapons module - weapons/ *.inc */

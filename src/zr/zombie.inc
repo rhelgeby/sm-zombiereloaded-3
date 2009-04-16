@@ -202,7 +202,7 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);
-    ZombieSoundsOnClientInfected(client);
+    SEffectsOnClientInfected(client);
     ZHPOnClientInfected(client);
     AbortTeleport(client);
     

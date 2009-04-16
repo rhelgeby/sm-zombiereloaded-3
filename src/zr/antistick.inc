@@ -22,6 +22,15 @@
 new Handle:tAntiStick = INVALID_HANDLE;
 
 /**
+ * The round is starting.
+ */
+AntiStickOnRoundStart()
+{
+    // Restart antistick timer.
+    AntiStickRestart();
+}
+
+/**
  * Restarts the AntiStickTimer function.
 */
 AntiStickRestart()
@@ -97,8 +106,7 @@ AntiStickIsStuck(client)
 }
 
 /**
- * Repeated timer function.
- * Automatically unsticks players that are stuck together. 
+ * Timer callback, automatically unsticks players that are stuck together. 
 */
 public Action:AntiStickTimer(Handle:timer)
 {

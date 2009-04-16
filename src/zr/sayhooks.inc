@@ -75,14 +75,6 @@ public Action:SayCommand(client, argc)
     {
         ZR_PrintToChat(client, "!ztele stuck");
     }
-    else if (StrEqual(args, "play", false))
-    {
-        SEffectsEmitAmbientSound("ambient/machines/heli_pass_distant1.wav");
-    }
-    else if (StrEqual(args, "stop", false))
-    {
-        SEffectsStopAmbientSound("ambient/machines/heli_pass_distant1.wav");
-    }
     
     return Plugin_Continue;
 }

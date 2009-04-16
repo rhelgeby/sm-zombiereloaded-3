@@ -81,7 +81,7 @@ WeaponsLoad()
 
 /**
  * Validate weapon config file and settings.
- */ 
+ */
 WeaponsValidateConfig()
 {
     // If log flag check fails, don't log.

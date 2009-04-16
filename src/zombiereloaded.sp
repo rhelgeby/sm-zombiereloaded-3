@@ -22,15 +22,11 @@
 #include "zr/cvars"
 #include "zr/translation"
 #include "zr/offsets"
-#include "zr/ambience"
 #include "zr/models"
 #include "zr/overlays"
 
 // Class system
 #include "zr/playerclasses/playerclasses"
-
-// Antistick
-#include "zr/antistick"
 
 #include "zr/anticamp"
 #include "zr/teleport"
@@ -43,6 +39,9 @@
 
 // Sound effects
 #include "zr/soundeffects/soundeffects"
+
+// Antistick
+#include "zr/antistick"
 
 // Hitgroups
 #include "zr/hitgroups"
@@ -146,12 +145,14 @@ public OnMapStart()
     // Forward event to modules.
     ClassLoad();
     WeaponsLoad();
+    SEffectsOnMapStart();
     HitgroupsLoad();
     Anticamp_Startup();
 }
 
 public OnMapEnd()
 {
+    // Forward event to modules.
     Anticamp_Disable();
 }
 
@@ -176,7 +177,9 @@ public OnConfigsExecuted()
     }
     
     FindMapSky();
-    LoadAmbienceData();
+    
+    // Forward event to modules.
+    SEffectsLoad();
 }
 
 public OnClientPutInServer(client)
@@ -185,13 +188,11 @@ public OnClientPutInServer(client)
     
     // Forward event to modules.
     ClassClientInit(client);
-    ZombieSoundsClientInit(client);
+    SEffectsClientInit(client);
     WeaponsClientInit(client);
     SpawnProtectClientInit(client);
     RespawnClientInit(client);
     ZHPClientInit(client);
-    
-    if (!IsFakeClient(client)) AmbienceStart(client);
     
     ClientHookAttack(client);
     FindClientDXLevel(client);
@@ -214,7 +215,6 @@ public OnClientDisconnect(client)
     ClassOnClientDisconnect(client);
     WeaponsOnClientDisconnect(client);
     ZTeleResetClient(client);
-    AmbienceStop(client);
     
     for (new x = 0; x < MAXTIMERS; x++)
     {
@@ -232,7 +232,6 @@ MapChangeCleanup()
 {
     tRound = INVALID_HANDLE;
     tInfect = INVALID_HANDLE;
-    AmbienceStopAll();
     AntiStickReset();
     
     // x = client index.

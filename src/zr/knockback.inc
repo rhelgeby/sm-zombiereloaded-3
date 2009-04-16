@@ -16,57 +16,67 @@
  */ 
 KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
 {
-    // Check if the attacker is a player.
-    if (attacker != 0)
+    // If attacker is invalid, then stop.
+    if (!ZRIsValidClient(attacker))
     {
-        // Check if a human attacks a zombie.
-        if (IsPlayerZombie(client) && IsPlayerHuman(attacker))
+        return;
+    }
+    
+    // Client is a human, then stop.
+    if (IsPlayerHuman(client))
+    {
+        return;
+    }
+    
+    // If attacker is a zombie, then stop.
+    if (IsPlayerZombie(attacker))
+    {
+        return;
+    }
+    
+    // Get zombie knockback value.
+    new Float:knockback = ClassGetKnockback(client);
+    
+    new Float:clientloc[3];
+    new Float:attackerloc[3];
+    
+    GetClientAbsOrigin(client, clientloc);
+    
+    // Check if a grenade was thrown.
+    if (StrEqual(weapon, "hegrenade"))
+    {
+        // Get the location of the grenade.
+        if (KnockbackFindExplodingGrenade(attackerloc) == -1)
         {
-            // Get zombie knockback value.
-            new Float:knockback = ClassGetKnockback(client);
-            
-            new Float:clientloc[3];
-            new Float:attackerloc[3];
-            
-            GetClientAbsOrigin(client, clientloc);
-            
-            // Check if a grenade was thrown.
-            if (StrEqual(weapon, "hegrenade"))
-            {
-                // Get the location of the grenade.
-                if (KnockbackFindExplodingGrenade(attackerloc) == -1)
-                {
-                    // If the grenade wasn't found, then stop.
-                    return;
-                }
-            }
-            else
-            {
-                // Get attackers eye position.
-                GetPlayerEyePosition(attacker, attackerloc);
-                
-                // Get attackers eye angles.
-                new Float:attackerang[3];
-                GetPlayerEyeAngles(attacker, attackerang);
-                
-                // Calculate knockback end-vector.
-                TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, KnockbackTRFilter);
-                TR_GetEndPosition(clientloc);
-            }
-            
-            // Retrieve weapon knockback boost.
-            new Float:boostWeapon = WeaponGetWeaponKnockback(weapon);
-            
-            // Retrieve hitgroup knockback boost.
-            new Float:boostHitgroup = HitgroupsGetHitgroupKnockback(hitgroup);
-            
-            // Apply all knockback multipliers.
-            knockback *= float(dmg_health) * boostWeapon * boostHitgroup;
-            
-            // Apply knockback.
-            KnockbackSetVelocity(client, attackerloc, clientloc, knockback);
+            // If the grenade wasn't found, then stop.
+            return;
         }
     }
+    else
+    {
+        // Get attackers eye position.
+        GetPlayerEyePosition(attacker, attackerloc);
+        
+        // Get attackers eye angles.
+        new Float:attackerang[3];
+        GetPlayerEyeAngles(attacker, attackerang);
+        
+        // Calculate knockback end-vector.
+        TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, KnockbackTRFilter);
+        TR_GetEndPosition(clientloc);
+    }
+    
+    // Retrieve weapon knockback boost.
+    new Float:boostWeapon = WeaponGetWeaponKnockback(weapon);
+    
+    // Retrieve hitgroup knockback boost.
+    new Float:boostHitgroup = HitgroupsGetHitgroupKnockback(hitgroup);
+    
+    // Apply all knockback multipliers.
+    knockback *= float(dmg_health) * boostWeapon * boostHitgroup;
+    
+    // Apply knockback.
+    KnockbackSetVelocity(client, attackerloc, clientloc, knockback);
 }
 
 /**

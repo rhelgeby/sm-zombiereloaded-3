@@ -514,7 +514,7 @@ ZRLogFlagsMenu(client)
     decl String:z_log_ignore_console[64];
     decl String:z_log_modules_enabled[64];
     decl String:z_log_module_zombie[64];
-    decl String:z_log_module_ambience[64];
+    decl String:z_log_module_ambientsounds[64];
     decl String:z_log_module_overlays[64];
     decl String:z_log_module_saytriggers[64];
     decl String:z_log_module_teleport[64];
@@ -537,7 +537,7 @@ ZRLogFlagsMenu(client)
     Format(z_log_ignore_console, sizeof(z_log_ignore_console), "Don't log messages from the console (%d)", LogHasFlag(LOG_IGNORE_CONSOLE));
     Format(z_log_modules_enabled, sizeof(z_log_modules_enabled), "Module based log control (%d)", LogHasFlag(LOG_MODULES_ENABLED));
     Format(z_log_module_zombie, sizeof(z_log_module_zombie), "Zombie (%d)", LogHasFlag(LOG_MODULE_ZOMBIE));
-    Format(z_log_module_ambience, sizeof(z_log_module_ambience), "Ambience (%d)", LogHasFlag(LOG_MODULE_AMBIENCE));
+    Format(z_log_module_ambientsounds, sizeof(z_log_module_ambientsounds), "Ambient Sounds (%d)", LogHasFlag(LOG_MODULE_AMBIENTSOUNDS));
     Format(z_log_module_overlays, sizeof(z_log_module_overlays), "Overlays (%d)", LogHasFlag(LOG_MODULE_OVERLAYS));
     Format(z_log_module_saytriggers, sizeof(z_log_module_saytriggers), "Chat commands (%d)", LogHasFlag(LOG_MODULE_SAYTRIGGERS));
     Format(z_log_module_teleport, sizeof(z_log_module_teleport), "Teleporter (%d)", LogHasFlag(LOG_MODULE_TELEPORT));
@@ -560,7 +560,7 @@ ZRLogFlagsMenu(client)
     AddMenuItem(menu_log_flags, z_log_ignore_console, z_log_ignore_console, item_state);
     AddMenuItem(menu_log_flags, z_log_modules_enabled, z_log_modules_enabled, item_state);
     AddMenuItem(menu_log_flags, z_log_module_zombie, z_log_module_zombie, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_ambience, z_log_module_ambience, item_state);
+    AddMenuItem(menu_log_flags, z_log_module_ambientsounds, z_log_module_ambientsounds, item_state);
     AddMenuItem(menu_log_flags, z_log_module_overlays, z_log_module_overlays, item_state);
     AddMenuItem(menu_log_flags, z_log_module_saytriggers, z_log_module_saytriggers, item_state);
     AddMenuItem(menu_log_flags, z_log_module_teleport, z_log_module_teleport, item_state);
@@ -638,7 +638,7 @@ public ZRLogFlagsMenuHandle(Handle:menu_log_flags, MenuAction:action, client, sl
             }
             case 11:
             {
-                ToggleLogFlag(LOG_MODULE_AMBIENCE);
+                ToggleLogFlag(LOG_MODULE_AMBIENTSOUNDS);
                 ZRLogFlagsMenu(client);
             }
             case 12:

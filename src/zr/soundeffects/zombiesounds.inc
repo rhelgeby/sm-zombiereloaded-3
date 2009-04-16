@@ -176,7 +176,8 @@ ZombieSoundsOnClientInfected(client)
 /**
  * Gets a random zombie sound from hl2 folder.
  *
- * @param sound     The randomly picked moan sound.
+ * @param sound     The randomly picked sound.
+ * @param soundtype The type of sound to get. (See enum ZombieSounds)
  * @return          True if sound was successfully picked, false otherwise. 
  */    
 bool:ZombieSoundsGetRandomSound(String:sound[], ZombieSounds:soundtype)

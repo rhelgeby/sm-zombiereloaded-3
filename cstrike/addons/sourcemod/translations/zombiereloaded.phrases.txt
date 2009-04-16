@@ -646,40 +646,6 @@
 		"ru"		"Команда не используется для консоли."
 	}
 
-	"Restrict weapon mapstart"
-	{
-		"#format"	"{1:s}"
-		"en"		"Restricted weapon: {1}"
-		"ru"		"Запрещенное оружие: {1}"
-	}
-	
-	"Restrict weapon group mapstart"
-	{
-		"#format"	"{1:s}"
-		"en"		"Restricted group: {1}"
-		"ru"		"Запрещенная группа: {1}"
-	}
-
-	"Ambient sound load failed"
-	{
-		"#format"	"{1:s}"
-		"en"		"Invalid sound file: {1}"
-		"ru"		"Неправильный звуковой файл: {1}"
-	}
-
-	"Class limit"
-	{
-		"#format"	"{1:d}"
-		"en"		"The max amount of classes have been exceeded, only loading first {1}."
-		"ru"		"Превышено максимальное количество классов, загружаются только первые {1}."
-	}
-
-	"Class auto-disable"
-	{
-		"en"		"No classes defined in \"{1}\", disabling classes."
-		"ru"		"В \"{1}\" отсутствуют определения классов, классы отключены."
-	}
-
 	"Models loaded"
 	{
 		"en"		"--- Models Loaded ---"

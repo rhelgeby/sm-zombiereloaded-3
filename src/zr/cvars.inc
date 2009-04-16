@@ -11,10 +11,10 @@ enum ZRSettings
     Handle:CVAR_ENABLE,
     Handle:CVAR_LOG,
     Handle:CVAR_ALLOW_PLAYER_TEAM,
-    Handle:CVAR_AMBIENCE,
-    Handle:CVAR_AMBIENCE_FILE,
-    Handle:CVAR_AMBIENCE_LENGTH,
-    Handle:CVAR_AMBIENCE_VOLUME,
+    Handle:CVAR_AMBIENTSOUNDS,
+    Handle:CVAR_AMBIENTSOUNDS_FILE,
+    Handle:CVAR_AMBIENTSOUNDS_LENGTH,
+    Handle:CVAR_AMBIENTSOUNDS_VOLUME,
     Handle:CVAR_SOUNDEFFECTS_MOAN,
     Handle:CVAR_SOUNDEFFECTS_GROAN,
     Handle:CVAR_SOUNDEFFECTS_DEATH,
@@ -101,10 +101,10 @@ CreateCvars()
     gCvars[CVAR_ENABLE]                    =    CreateConVar("zr_enable", "1", "Enable zombie gameplay (0: Disable)");
     gCvars[CVAR_LOG]                       =    CreateConVar("zr_log", "331", "Logging flags. Log messages to sourcemod logs, server console or client console. Use zr_log_flags to see a list of flags. (0: Disable)");
     gCvars[CVAR_ALLOW_PLAYER_TEAM]         =    CreateConVar("zr_allow_player_team", "0", "This will allow the player_team event to be fired on first team join, enable when using mani model menu (0: Disable)");
-    gCvars[CVAR_AMBIENCE]                  =    CreateConVar("zr_ambience", "1", "Enable creepy ambience to be played throughout the game (0: Disable)");
-    gCvars[CVAR_AMBIENCE_FILE]             =    CreateConVar("zr_ambience_file", "ambient/zr/zr_ambience.mp3", "Path to ambient sound file that will be played throughout the game, when zr_ambience is 1");
-    gCvars[CVAR_AMBIENCE_LENGTH]           =    CreateConVar("zr_ambience_length", "60.0", "The length, in seconds, of the ambient sound file");
-    gCvars[CVAR_AMBIENCE_VOLUME]           =    CreateConVar("zr_ambience_volume", "0.6", "Volume of ambient sounds when zr_ambience is 1 (0.0: Unhearable,  1.0: Max volume)");
+    gCvars[CVAR_AMBIENTSOUNDS]             =    CreateConVar("zr_ambientsounds", "1", "Enable creepy ambience to be played throughout the game (0: Disable)");
+    gCvars[CVAR_AMBIENTSOUNDS_FILE]        =    CreateConVar("zr_ambientsounds_file", "ambient/zr/zr_ambience.mp3", "Path to ambient sound file that will be played throughout the game, when zr_ambience is 1");
+    gCvars[CVAR_AMBIENTSOUNDS_LENGTH]      =    CreateConVar("zr_ambientsounds_length", "60.0", "The length, in seconds, of the ambient sound file");
+    gCvars[CVAR_AMBIENTSOUNDS_VOLUME]      =    CreateConVar("zr_ambientsounds_volume", "1.0", "Volume of ambient sounds when zr_ambience is 1 (0.0: Unhearable,  1.0: Max volume)");
     gCvars[CVAR_SOUNDEFFECTS_MOAN]         =    CreateConVar("zr_soundeffects_moan", "50", "How often, in seconds, a zombie moans (0: Disable)");
     gCvars[CVAR_SOUNDEFFECTS_GROAN]        =    CreateConVar("zr_soundeffects_groan", "5", "Chance factor a zombie will groan when shot (Lower: More often, 0: Disable)");
     gCvars[CVAR_SOUNDEFFECTS_DEATH]        =    CreateConVar("zr_soundeffects_death", "1", "Zombie will emit a death sound when killed 0: Disable)");
