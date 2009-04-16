@@ -35,10 +35,10 @@ public Action:SayCommand(client, argc)
         ZRAdminMenu(client);
     }
     
-    /*else if (StrEqual(args, "!zclass", false))
+    else if (StrEqual(args, "!zclass", false))
     {
-        ZClass(client);
-    }*/
+        ClassMenuMain(client);
+    }
     
     else if (StrEqual(args, "!zmarket", false))
     {
