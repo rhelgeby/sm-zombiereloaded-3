@@ -18,6 +18,7 @@ enum ZRSettings
     Handle:CVAR_SOUNDEFFECTS_MOAN,
     Handle:CVAR_SOUNDEFFECTS_GROAN,
     Handle:CVAR_SOUNDEFFECTS_DEATH,
+    Handle:CVAR_NAPALM_IGNITEGRENADE,
     Handle:CVAR_CLASSES,
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
@@ -107,7 +108,8 @@ CreateCvars()
     gCvars[CVAR_AMBIENTSOUNDS_VOLUME]      =    CreateConVar("zr_ambientsounds_volume", "1.0", "Volume of ambient sounds when zr_ambience is 1 (0.0: Unhearable,  1.0: Max volume)");
     gCvars[CVAR_SOUNDEFFECTS_MOAN]         =    CreateConVar("zr_soundeffects_moan", "50", "How often, in seconds, a zombie moans (0: Disable)");
     gCvars[CVAR_SOUNDEFFECTS_GROAN]        =    CreateConVar("zr_soundeffects_groan", "5", "Chance factor a zombie will groan when shot (Lower: More often, 0: Disable)");
-    gCvars[CVAR_SOUNDEFFECTS_DEATH]        =    CreateConVar("zr_soundeffects_death", "1", "Zombie will emit a death sound when killed 0: Disable)");
+    gCvars[CVAR_SOUNDEFFECTS_DEATH]        =    CreateConVar("zr_soundeffects_death", "1", "Zombie will emit a death sound when killed (0: Disable)");
+    gCvars[CVAR_NAPALM_IGNITEGRENADE]      =    CreateConVar("zr_napalm_ignitegrenade", "1", "Ignites all thrown grenades. (0: Disable)");
     gCvars[CVAR_CLASSES]                   =    CreateConVar("zr_classes", "1", "Enable zombie classes");
     gCvars[CVAR_CLASSES_SPAWN]             =    CreateConVar("zr_classes_spawn", "0", "Classmenu is re-displayed every spawn (0: Disable)");
     gCvars[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round. Overrides zr_classes_spawn and default classes. (0: Disable)");

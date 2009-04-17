@@ -55,6 +55,9 @@
 // Respawn
 #include "zr/respawn"
 
+// Napalm
+#include "zr/napalm"
+
 // ZHP
 #include "zr/zhp"
 

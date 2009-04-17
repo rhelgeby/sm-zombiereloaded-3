@@ -72,6 +72,55 @@ ZHPOnClientDeath(client)
 }
 
 /**
+ * Player has been infected.
+ * 
+ * @param client    The client index.
+ */
+ZHPOnClientInfected(client)
+{
+    // If ZHP is disabled, then stop.
+    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
+    if (!zhp)
+    {
+        return;
+    }
+    
+    // Update HP display.
+    ZHPUpdateHUD(client);
+    
+    // If timer is currently running, kill it.
+    if (tZHP[client] != INVALID_HANDLE)
+    {
+        KillTimer(tZHP[client]);
+    }
+    
+    // Start repeating timer to update display.
+    tZHP[client] = CreateTimer(5.0, ZHPTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+/**
+ * Client has been hurt.
+ * 
+ * @param client    The client index.
+ */
+ZHPOnClientHurt(client)
+{
+    // Update HP display.
+    ZHPUpdateHUD(client);
+}
+
+/**
+ * Zombie has gained health for infecting a player.
+ * 
+ * @param client    The client index.
+ */
+ZHPOnHealthInfectGain(client)
+{
+    // Update HP display.
+    ZHPUpdateHUD(client);
+}
+
+/**
  * Toggle ZHP on a client.
  * 
  * @param client    The client index.
@@ -105,55 +154,6 @@ ZHPToggle(client)
     
     // Toggle ZHP flag.
     pZHP[client] = !pZHP[client];
-}
-
-/**
- * Player has been infected.
- * 
- * @param client    The client index.
- */
-ZHPOnClientInfected(client)
-{
-    // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
-    if (!zhp)
-    {
-        return;
-    }
-    
-    // Update HP display.
-    ZHPUpdateHUD(client);
-    
-    // If timer is currently running, kill it.
-    if (tZHP[client] != INVALID_HANDLE)
-    {
-        KillTimer(tZHP[client]);
-    }
-    
-    // Start repeating timer to update display.
-    tZHP[client] = CreateTimer(5.0, ZHPTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-}
-
-/**
- * Player has been hurt.
- * 
- * @param client    The client index.
- */
-ZHPOnPlayerHurt(client)
-{
-    // Update HP display.
-    ZHPUpdateHUD(client);
-}
-
-/**
- * Zombie has gained health for infecting a player.
- * 
- * @param client    The client index.
- */
-ZHPOnHealthInfectGain(client)
-{
-    // Update HP display.
-    ZHPUpdateHUD(client);
 }
 
 /**

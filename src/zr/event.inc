@@ -16,6 +16,7 @@ HookEvents()
     HookEvent("player_hurt", PlayerHurt);
     HookEvent("player_death", PlayerDeath);
     HookEvent("player_jump", PlayerJump);
+    HookEvent("weapon_fire", WeaponFire);
 }
 
 UnhookEvents()
@@ -28,6 +29,7 @@ UnhookEvents()
     UnhookEvent("player_hurt", PlayerHurt);
     UnhookEvent("player_death", PlayerDeath);
     UnhookEvent("player_jump", PlayerJump);
+    UnhookEvent("weapon_fire", WeaponFire);
 }
 
 public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
@@ -231,22 +233,12 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
         }
     }
     
-    // Check if the player is a zombie.
-    if (IsPlayerZombie(index))
-    {
-        // Napalm effect.
-        new Float:napalm_time = ClassGetNapalmTime(index);
-        if (StrEqual(weapon, "hegrenade", false) && napalm_time > 0.0)
-        {
-            IgniteEntity(index, napalm_time);
-        }
-    }
-    
     // Forward event to modules.
     ClassAlphaUpdate(index);
     SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
-    ZHPOnPlayerHurt(index);
+    NapalmOnClientHurt(index, weapon);
+    ZHPOnClientHurt(index);
 }
 
 public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
@@ -327,4 +319,13 @@ public Action:PlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
     new Float:height = ClassGetJumpHeight(client);
         
     JumpBoost(client, distance, height);
+}
+
+public Action:WeaponFire(Handle:event, const String:name[], bool:dontBroadcast)
+{
+    decl String:weapon[32];
+    GetEventString(event, "weapon", weapon, sizeof(weapon));
+    
+    // Forward event to modules.
+    NapalmOnWeaponFire(weapon);
 }
