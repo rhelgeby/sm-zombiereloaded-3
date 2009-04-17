@@ -230,7 +230,7 @@ bool:ZRIsClientOnTeam(client, team = -1)
  * 
  * @param team      (Optional) Team to check if there are clients on.
  */
-bool:ZRTeamHasClients(team = -1, bool:alive = false)
+bool:ZRTeamHasClients(team = -1)
 {
     // If team is
     if (team == -1)
