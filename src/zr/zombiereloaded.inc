@@ -312,12 +312,17 @@ ZRTeamHasClients(team = -1)
  */
 bool:ZRIsClientAdmin(client)
 {
-    // Check to make sure client is valid and has the Admin_Generic SourceMod admin flag.
-    if (ZRIsValidClient(client) && GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    // If index is invalid, then stop.
+    if (!ZRIsValidClient(client))
     {
-        return true;
+        return false;
+    }
+    // If client doesn't have the Admin_Generic flag, then stop.
+    if (!GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    {
+        return false;
     }
     
-    // Client is not an admin.
-    return false;
+    // Client is an admin.
+    return true;
 }
