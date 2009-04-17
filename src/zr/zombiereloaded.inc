@@ -5,25 +5,7 @@
  *   Author: Greyscale
  * ==================== 
  */
-
-#define Target_Bombed							1		// Target Successfully Bombed!
-#define VIP_Escaped								2		// The VIP has escaped!
-#define VIP_Assassinated						3		// VIP has been assassinated!
-#define Terrorists_Escaped						4		// The terrorists have escaped!
-#define CTs_PreventEscape						5		// The CT's have prevented most of the terrorists from escaping!
-#define Escaping_Terrorists_Neutralized			6		// Escaping terrorists have all been neutralized!
-#define Bomb_Defused							7		// The bomb has been defused!
-#define CTs_Win									8		// Counter-Terrorists Win!
-#define Terrorists_Win							9		// Terrorists Win!
-#define Round_Draw								10		// Round Draw!
-#define All_Hostages_Rescued					11		// All Hostages have been rescued!
-#define Target_Saved							12		// Target has been saved!
-#define Hostages_Not_Rescued					13		// Hostages have not been rescued!
-#define Terrorists_Not_Escaped					14		// Terrorists have not escaped!
-#define VIP_Not_Escaped							15		// VIP has not escaped!
-#define Game_Commencing							16		// Game Commencing!
-
-#define DXLEVEL_MIN 90
+ 
 #define DEFAULT_FOV 90
 
 /**
@@ -57,16 +39,6 @@
  */
 
 /**
- * Lists possible returns of the game at any time.
- */ 
-enum ZTeam
-{
-    Neither, /** Round is not over */
-    Zombie, /** Round is over because zombies win */
-    Human, /** Round is over because humans wins */
-}
-
-/**
  * Global variable set to true if market plugin is installed
  */ 
 new bool:g_bMarket;
@@ -90,11 +62,6 @@ new bool:bZombie[MAXPLAYERS + 1];
  * Array for flagging player has immune to mother infect.
  */
 new bool:bMotherInfectImmune[MAXPLAYERS + 1];
-
-/**
- * Global variable to store round win timer handle.
- */
-new Handle:tRound = INVALID_HANDLE;
 
 /**
  * Global variable to store the infect timer handle.
@@ -162,86 +129,6 @@ ZRBoolToConfigSetting(bool:bOption, String:option[], maxlen)
 }
 
 /**
- * Global variable to store a convar query cookie
- */ 
-new QueryCookie:mat_dxlevel;
-
-/**
- * Finds DX level of a client.
- * 
- * @param client    The client index.  
- */
-ZRFindClientDXLevel(client)
-{
-    // If client is fake (or bot), then stop.
-    if (IsFakeClient(client))
-    {
-        return;
-    }
-    
-    // Query mat_dxlevel on client.
-    mat_dxlevel = QueryClientConVar(client, "mat_dxlevel", ZRDXLevelClientQuery);
-}
-
-/**
- * Query callback function.
- *
- * @param cookie    Unique cookie of the query.
- * @param client    The client index.
- * @param result    The result of the query (see console.inc enum ConVarQueryResult)
- * @param cvarName  Name of the cvar.
- * @param cvarValue Value of the cvar.
- */       
-public ZRDXLevelClientQuery(QueryCookie:cookie, client, ConVarQueryResult:result, const String:cvarName[], const String:cvarValue[])
-{
-    // If query cookie does not match cookie given by mat_dxlevel query, then stop, this isn't our query.
-    if (cookie != mat_dxlevel)
-    {
-        return;
-    }
-    
-    // Reset dxLevel.
-    dxLevel[client] = 0;
-    
-    // If result is any other than ConVarQuery_Okay, then stop.
-    if (result != ConVarQuery_Okay)
-    {   
-        return;
-    }
-    
-    // Copy cvar value to dxLevel array.
-    dxLevel[client] = StringToInt(cvarValue);
-}
-
-/**
- * Displays overlay to client, or prints unsupported message on client's screen.
- * 
- * @param client    The client index.
- * @param overlay   The overlay path.
- */    
-ZRDisplayClientOverlay(client, const String:overlay[])
-{
-    // If dxLevel is 0, then query on client failed, so try again, then stop.
-    if (!dxLevel[client])
-    {
-        // Query dxlevel cvar.
-        ZRFindClientDXLevel(client);
-        return;
-    }
-    
-    // If dxLevel is above or equal to minimum requirement, then display overlay.
-    if (dxLevel[client] >= DXLEVEL_MIN)
-    {
-        ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
-    }
-    // If client doesn't meet minimum requirement, then print unsupported text.
-    else
-    {
-        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], DXLEVEL_MIN);
-    }
-}
-
-/**
  * Check if a client index is a valid player.
  * 
  * @param client    The client index.
@@ -258,6 +145,58 @@ bool:ZRIsValidClient(client, bool:console = false)
     
     // If console is true, return if client is >= 0, if not, then return client > 0.
     return console ? (client >= 0) : (client > 0);
+}
+
+/**
+ * Count clients on each team.
+ * 
+ * @param zombies   This is set to the number of clients that are zombies.
+ * @param humans    This is set to the number of clients that are humans.
+ * @param alive     If true it will only count live players, false will count alive and dead.
+ * @return          True if successful (zombie has spawned), false otherwise.
+ */
+bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true)
+{
+    // If zombie hasn't spawned, then stop.
+    if (!g_bZombieSpawned)
+    {
+        return false;
+    }
+    
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If client isn't on a team, then stop.
+        if (!ZRIsClientOnTeam(x))
+        {
+            continue;
+        }
+        
+        // If player must be alive, and player is dead, then stop.
+        if (alive && !IsPlayerAlive(x))
+        {
+            continue;
+        }
+        
+        // If player is a zombie, then increment zombie variable.
+        if (IsPlayerZombie(x))
+        {
+            zombiecount++;
+        }
+        // If player is a human, then increment human variable.
+        else if (IsPlayerHuman(x))
+        {
+            humancount++;
+        }
+    }
+    
+    return true;
 }
 
 /**
@@ -291,7 +230,7 @@ bool:ZRIsClientOnTeam(client, team = -1)
  * 
  * @param team      (Optional) Team to check if there are clients on.
  */
-ZRTeamHasClients(team = -1)
+bool:ZRTeamHasClients(team = -1, bool:alive = false)
 {
     // If team is
     if (team == -1)

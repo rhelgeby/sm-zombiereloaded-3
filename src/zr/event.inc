@@ -36,36 +36,38 @@ public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {   
     ChangeLightStyle();
     
-    // Forward event to sub-modules.
-    SEffectsOnRoundStart();
-    AntiStickOnRoundStart();
-    
-    if (tRound != INVALID_HANDLE)
-    {
-        KillTimer(tRound);
-        tRound = INVALID_HANDLE;
-    }
-    
     if (tInfect != INVALID_HANDLE)
     {
         KillTimer(tInfect);
         tInfect = INVALID_HANDLE;
     }
+
+    g_bZombieSpawned = false;
+    
+    for (new x = 1; x<= MaxClients; x++)
+    {
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        bZombie[x] = false;
+    }
+    
+    // Balance teams, and respawn all players.
+    BalanceTeams(true);
     
     ZR_PrintToChat(0, "Round objective");
+    
+    // Forward event to sub-modules.
+    RoundEndOnRoundStart();
+    SEffectsOnRoundStart();
+    AntiStickOnRoundStart();
 }
 
 public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
     RemoveObjectives();
-    
-    if (tRound != INVALID_HANDLE)
-    {
-        KillTimer(tRound);
-    }
-    
-    new Float:roundlen = GetConVarFloat(FindConVar("mp_roundtime")) * 60.0;
-    tRound = CreateTimer(roundlen, RoundOver, _, TIMER_FLAG_NO_MAPCHANGE);
     
     if (tInfect != INVALID_HANDLE)
     {
@@ -78,17 +80,14 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
     tInfect = CreateTimer(randlen, MotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
     
     // Forward events to modules.
+    RoundEndOnRoundFreezeEnd();
     ZTeleEnable();
 
 }
 
 public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    if (tRound != INVALID_HANDLE)
-    {
-        KillTimer(tRound);
-        tRound = INVALID_HANDLE;
-    }
+    new reason = GetEventInt(event, "reason");
     
     if (tInfect != INVALID_HANDLE)
     {
@@ -108,19 +107,11 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
         bZombie[x] = false;
     }
     
+    // Balance teams.    
     BalanceTeams();
     
-    new reason = GetEventInt(event, "reason");
-    
-    if (reason == CTs_PreventEscape)
-    {
-        ShowOverlays(5.0, Human);
-    }
-    else if (reason == Terrorists_Escaped)
-    {
-        ShowOverlays(5.0, Zombie);
-    }
-
+    // Forward event to modules.
+    RoundEndOnRoundEnd(reason);
     ZTeleReset();
 }
 
@@ -296,8 +287,11 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     RespawnOnClientDeath(index, attacker, weapon);
     ZHPOnClientDeath(index);
     
-    new ZTeam:team = IsRoundOver();    
-    RoundWin(team);
+    new RoundEndOutcome:outcome;
+    if (RoundEndGetRoundStatus(outcome))
+    {
+        RoundEndTerminateRound(outcome);
+    }
 }
 
 public Action:PlayerJump(Handle:event, const String:name[], bool:dontBroadcast)

@@ -90,10 +90,60 @@ ChangeLightStyle()
     }
 }
 
-public RestartGameHook(Handle:convar, const String:oldValue[], const String:newValue[])
+/**
+ * Create an array populated with eligible clients to be zombie.
+ * 
+ * @param arrayEligibleClients  The handle of the array, don't forget to call CloseHandle
+ *                              on it when finished!
+ * @param immunity              True to ignore clients immune from mother infect, false to count them.
+ */  
+CreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false, bool:immunity = false)
 {
-    SetConVarInt(FindConVar("mp_restartgame"), 0);
-    TerminateRound(StringToFloat(newValue), Round_Draw);
+    // Create array.
+    arrayEligibleClients = CreateArray();
+    
+    // Populate list with eligible clients.
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If client isn't on a team, then stop.
+        if (team && !ZRIsClientOnTeam(x))
+        {
+            continue;
+        }
+        
+        // If client is dead, then stop.
+        if (alive && !IsPlayerAlive(x))
+        {
+            continue;
+        }
+        
+        // If client is already zombie (via admin), then stop.
+        if (human && !IsPlayerHuman(x))
+        {
+            continue;
+        }
+        
+        // If client is immune from being a mother zombie, then stop.
+        if (immunity && bMotherInfectImmune[x])
+        {
+            // Take away immunity.
+            bMotherInfectImmune[x] = false;
+            
+            continue;
+        }
+        
+        // Add eligible client to array.
+        PushArrayCell(arrayEligibleClients, x);
+    }
+    
+    return GetArraySize(arrayEligibleClients);
 }
 
 /**
@@ -106,40 +156,11 @@ public Action:MotherZombie(Handle:timer)
     // Reset timer handle.
     tInfect = INVALID_HANDLE;
     
-    // Create array.
-    new Handle:arrayEligibleClients = CreateArray();
-    
-    // Populate list with eligible clients.
-    // x = client index.
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        // If client is dead, then stop.
-        if (!IsPlayerAlive(x))
-        {
-            continue;
-        }
-        
-        // If client is immune from being a mother zombie, then stop.
-        if (bMotherInfectImmune[x])
-        {
-            // Take away immunity.
-            bMotherInfectImmune[x] = false;
-            
-            continue;
-        }
-        
-        // Add eligible client to array.
-        PushArrayCell(arrayEligibleClients, x);
-    }
+    // Create eligible player list.
+    new Handle:arrayEligibleClients = INVALID_HANDLE;
+    new eligibleclients = CreateEligibleClientList(arrayEligibleClients, true, true, true, true);
     
     // If there are no eligible client's then stop.
-    new eligibleclients = GetArraySize(arrayEligibleClients);
     if (!eligibleclients)
     {
         return;
@@ -217,6 +238,9 @@ public Action:MotherZombie(Handle:timer)
     
     // Mother zombies have been infected.
     g_bZombieSpawned = true;
+    
+    // Destroy handle.
+    CloseHandle(arrayEligibleClients);
 }
 
 /**
@@ -230,7 +254,7 @@ public Action:MotherZombie(Handle:timer)
 InfectPlayer(client, attacker = -1, bool:motherinfect = false)
 {
     // Check if the attacker was specified.
-    if (attacker > 0)
+    if (ZRIsValidClient(attacker))
     {
         // Fire death event and set weapon info.
         new Handle:event = CreateEvent("player_death");
@@ -253,14 +277,21 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     ztele_count[client] = 0;    // In use?
     
     // Terminate the round if the last player was infected.
-    new ZTeam:team = IsRoundOver();
-    RoundWin(team);
+    new RoundEndOutcome:outcome;
+    if (RoundEndGetRoundStatus(outcome))
+    {
+        RoundEndTerminateRound(outcome);
+    }
     
     // Switch the player to terrorists.
     CS_SwitchTeam(client, CS_TEAM_T);
     
-    // Flag player to be immune from being mother zombie twice.
-    bMotherInfectImmune[client] = motherinfect;
+    
+    // Check if consecutive infection protection is enabled.
+    new bool:consecutive_infect = GetConVarBool(gCvars[CVAR_CONSECUTIVE_INFECT]);
+    
+    // Flag player to be immune from being mother zombie twice, if consecutive infect protection is enabled.
+    bMotherInfectImmune[client] = consecutive_infect ? motherinfect : false;
     
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);
@@ -360,159 +391,131 @@ JumpBoost(client, Float:distance, Float:height)
     SetPlayerVelocity(client, vel, false);
 }
 
+/**
+ * Finds a new zombie if the last one disconnects.
+ * 
+ * @param client    The client index.  
+ */ 
 PlayerLeft(client)
 {
-    if (!IsClientConnected(client) || !IsClientInGame(client))
+    // If client is dead, then stop.
+    if (!IsPlayerAlive(client))
     {
         return;
     }
     
-    new ZTeam:team = IsRoundOver();
-    if (team == Zombie)
-    {
-        RoundWin(team);
-        return;
-    }
-        
-    if (!IsPlayerAlive(client) || !IsPlayerZombie(client))
+    // If client isn't a zombie, then stop.
+    if (!IsPlayerZombie(client))
     {
         return;
     }
     
-    new zombiecount = GetZTeamCount(Zombie);
-    if (zombiecount > 1)
+    // Initialize count variables
+    new zombiecount;
+    new humancount;
+    
+    // Count valid clients. (true to only allow living clients)
+    ZRCountValidClients(zombiecount, humancount);
+    
+    // If there are other zombies besides the disconnecting player, then stop.
+    if (zombiecount - 1)
     {
         return;
     }
     
-    new count = GetTeamClientCount(CS_TEAM_CT);
-    if (count <= 1)
+    // If there is 1 or no humans left, then stop.
+    if (humancount <= 1)
     {
         return;
     }
     
-    new Handle:aClients = CreateArray();
+    // Create eligible player list.
+    new Handle:arrayEligibleClients = INVALID_HANDLE;
     
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        if (!IsClientInGame(x) || !IsPlayerAlive(x) || client == x || GetClientTeam(x) != CS_TEAM_CT || bMotherInfectImmune[x])
-        {
-            continue;
-        }
-        
-        PushArrayCell(aClients, x);
-    }
+    // Create eligible client list, with no mother infect immunities
+    new eligibleclients = CreateEligibleClientList(arrayEligibleClients, true, true, true);
     
-    new size = GetArraySize(aClients);
-    if (!size)
+    // If there are no eligible client's then stop.
+    if (!eligibleclients)
     {
         return;
     }
     
-    new randclient = GetArrayCell(aClients, GetRandomInt(0, size-1));
-    InfectPlayer(randclient, _, true);
-                    
+    // Get a random valid array index.
+    new randindex = GetRandomInt(0, eligibleclients - 1);
+    
+    // Get the client stored in the random array index.
+    new randclient = GetArrayCell(arrayEligibleClients, randindex);
+    
+    // Infect player.
+    InfectPlayer(randclient);
+    
+    // Tell client they have been randomly been chosen to replace disconnecting zombie.
     ZR_PrintToChat(randclient, "Zombie replacement");
-  
-    CloseHandle(aClients);
+    
+    // Destroy handle.
+    CloseHandle(arrayEligibleClients);
 }
 
-GetZTeamCount(ZTeam:team)
+/**
+ * Balances teams
+ * 
+ * @param spawn     If true, it will respawn player after switching their team.
+ */
+BalanceTeams(bool:spawn = false)
 {
-    new count = 0;
+    // Create eligible player list.
+    new Handle:arrayEligibleClients = INVALID_HANDLE;
+    new eligibleclients = CreateEligibleClientList(arrayEligibleClients, true);
     
-    for (new x = 1; x <= MaxClients; x++)
+    // If there are no eligible client's then stop.
+    if (!eligibleclients)
     {
-        if (!IsClientInGame(x) || !IsPlayerAlive(x))
+        return;
+    }
+    
+    new client;
+    
+    // Move all clients to T
+    
+    // x = array index.
+    // client = client index.
+    for (new x = 0; x < eligibleclients; x++)
+    {
+        // Get client stored in array index.
+        client = GetArrayCell(arrayEligibleClients, x);
+        
+        // Switch client to T
+        CS_SwitchTeam(client, CS_TEAM_T);
+        
+        // If spawn is false, then stop.
+        if (!spawn)
         {
             continue;
         }
         
-        new ZTeam:pTeam = GetPlayerZTeam(x);
-        if (pTeam == team)
-        {
-            count++;
-        }
+        CS_RespawnPlayer(client);
     }
     
-    return count;
-}
-
-ZTeam:IsRoundOver()
-{
-    new bool:zombies = false;
-    new bool:humans = false;
+    // Move every other client back to CT
     
-    for (new x = 1; x <= MaxClients; x++)
+    // x = array index
+    // client = client index.
+    for (new x = 0; x < eligibleclients; x += 2)
     {
-        if (!IsClientInGame(x) || !IsPlayerAlive(x))
+        // Get client stored in array index.
+        client = GetArrayCell(arrayEligibleClients, x);
+        
+        // Switch client to CT
+        CS_SwitchTeam(client, CS_TEAM_CT);
+        
+        // If spawn is false, then stop.
+        if (!spawn)
         {
             continue;
         }
         
-        if (IsPlayerZombie(x))
-        {
-            zombies = true;
-        }
-        else
-        {
-            humans = true;
-        }
-    }
-    
-    if (zombies && !humans)
-    {
-        return Zombie;
-    }
-    
-    if (humans && !zombies)
-    {
-        if (g_bZombieSpawned)
-        {
-            return Human;
-        }
-    }
-    
-    return Neither;
-}
-
-RoundWin(ZTeam:team)
-{
-    if (team == Human)
-    {
-        TerminateRound(5.0, CTs_PreventEscape);
-    }
-    else if (team == Zombie)
-    {
-        TerminateRound(5.0, Terrorists_Escaped);
-    }
-}
-
-BalanceTeams()
-{
-    new count = 0;
-    new cPlayers[MAXPLAYERS];
-    
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        if (!IsClientInGame(x) || GetClientTeam(x) <= 1)
-        {
-            continue;
-        }
-        
-        CS_SwitchTeam(x, CS_TEAM_T);
-        cPlayers[count++] = x;
-    }
-    
-    for (new x = 0; x < count; x++)
-    {
-        if (!IsClientInGame(cPlayers[x]) || GetClientTeam(cPlayers[x]) <= 1)
-        {
-            continue;
-        }
-        
-        CS_SwitchTeam(cPlayers[x], CS_TEAM_CT);
-        x++;
+        CS_RespawnPlayer(client);
     }
 }
 
@@ -539,13 +542,6 @@ RemoveObjectives()
     }
 }
 
-public Action:RoundOver(Handle:timer)
-{
-    tRound = INVALID_HANDLE;
-    
-    RoundWin(Human);
-}
-
 bool:IsPlayerZombie(client)
 {
     return bZombie[client];
@@ -554,14 +550,4 @@ bool:IsPlayerZombie(client)
 bool:IsPlayerHuman(client)
 {
     return !bZombie[client];
-}
-
-ZTeam:GetPlayerZTeam(client)
-{
-    if (IsPlayerZombie(client))
-    {
-        return Zombie;
-    }
-    
-    return Human;
 }

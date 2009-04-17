@@ -17,15 +17,28 @@
 
 #define VERSION "3.0-dev"
 
+// Core include.
 #include "zr/zombiereloaded"
-#include "zr/global"
-#include "zr/cvars"
-#include "zr/translation"
-#include "zr/offsets"
-#include "zr/models"
-#include "zr/overlays"
 
-// Class system
+// External api (not done)
+//#include "zr/global"
+
+// Cvars (core)
+#include "zr/cvars"
+
+// Translations (core)
+#include "zr/translation"
+
+// Offsets (core)
+#include "zr/offsets"
+
+// Models (core)
+#include "zr/models"
+
+// Round end (core)
+#include "zr/roundend"
+
+// Class system (module)
 #include "zr/playerclasses/playerclasses"
 
 #include "zr/anticamp"
@@ -34,31 +47,31 @@
 #include "zr/menu"
 #include "zr/sayhooks"
 
-// Weapons
+// Weapons (module)
 #include "zr/weapons/weapons"
 
-// Sound effects
+// Sound effects (module)
 #include "zr/soundeffects/soundeffects"
 
-// Antistick
+// Antistick (module)
 #include "zr/antistick"
 
-// Hitgroups
+// Hitgroups (module)
 #include "zr/hitgroups"
 
-// Knockback
+// Knockback (module)
 #include "zr/knockback"
 
-// Spawn protect
+// Spawn protect (module)
 #include "zr/spawnprotect"
 
-// Respawn
+// Respawn (module)
 #include "zr/respawn"
 
-// Napalm
+// Napalm (module)
 #include "zr/napalm"
 
-// ZHP
+// ZHP (module)
 #include "zr/zhp"
 
 #include "zr/zadmin"
@@ -77,7 +90,8 @@ public Plugin:myinfo =
 
 public bool:AskPluginLoad(Handle:myself, bool:late, String:error[], err_max)
 {
-    CreateGlobals();
+    // Todo: External API
+    //CreateGlobals();
     
     return true;
 }
@@ -146,6 +160,7 @@ public OnMapStart()
     LoadDownloadData();
     
     // Forward event to modules.
+    RoundEndOnMapStart();
     ClassLoad();
     WeaponsLoad();
     SEffectsOnMapStart();
@@ -190,6 +205,7 @@ public OnClientPutInServer(client)
     bMotherInfectImmune[client] = false;
     
     // Forward event to modules.
+    RoundEndGetClientDXLevel(client);
     ClassClientInit(client);
     SEffectsClientInit(client);
     WeaponsClientInit(client);
@@ -198,7 +214,6 @@ public OnClientPutInServer(client)
     ZHPClientInit(client);
     
     ClientHookAttack(client);
-    ZRFindClientDXLevel(client);
     
     for (new x = 0; x < MAXTIMERS; x++)
     {
@@ -229,7 +244,6 @@ public OnClientDisconnect(client)
 
 MapChangeCleanup()
 {
-    tRound = INVALID_HANDLE;
     tInfect = INVALID_HANDLE;
     AntiStickReset();
     
@@ -246,7 +260,7 @@ MapChangeCleanup()
     }
 }
 
-ZREnd()
+/*ZREnd()
 {
     TerminateRound(3.0, Game_Commencing);
         
@@ -272,4 +286,4 @@ ZREnd()
             }
         }
     }
-}
+}*/

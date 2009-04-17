@@ -54,7 +54,7 @@ bool:ClassApplyAttributes(client, bool:improved = false)
  */
 bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
-    decl String:modelpath[256];
+    decl String:modelpath[PLATFORM_MAX_PATH];
     
     // Get the model path from the specified cache.
     if (cachetype == ZR_CLASS_CACHE_PLAYER)
@@ -130,27 +130,34 @@ bool:ClassApplyAlpha(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
  */
 bool:ClassApplyOverlay(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
-    decl String:overlay[256];
-    
-    // Validate DirectX requirements.
-    if (dxLevel[client] < DXLEVEL_MIN)
+    // If dxLevel is 0, then query on client failed, so try again, then stop.
+    if (!dxLevel[client])
     {
-        // DirectX version is too old.
-        // TODO: Log warning?
+        // Query dxlevel cvar.
+        RoundEndGetClientDXLevel(client);
         return false;
     }
+    
+    // If client doesn't meet minimum requirement, then print unsupported text.
+    if (dxLevel[client] < ROUNDEND_MIN_DXLEVEL)
+    {
+        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], ROUNDEND_MIN_DXLEVEL);
+        return false;
+    }
+    
+    decl String:overlaypath[PLATFORM_MAX_PATH];
     
     // Get the overlay path from the specified cache.
     if (cachetype == ZR_CLASS_CACHE_PLAYER)
     {
-        ClassGetOverlayPath(client, overlay, sizeof(overlay), cachetype);
+        ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath), cachetype);
     }
     else
     {
-        ClassGetOverlayPath(classindex, overlay, sizeof(overlay), cachetype);
+        ClassGetOverlayPath(classindex, overlaypath, sizeof(overlaypath), cachetype);
     }
     
-    ClassOverlayInitialize(client, overlay);
+    ClassOverlayInitialize(client, overlaypath);
     return true;
 }
 
