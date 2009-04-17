@@ -25,7 +25,7 @@ ShowOverlays(Float:time, ZTeam:winner)
         {
             if (IsClientInGame(x))
             {
-                DisplayClientOverlay(x, overlay);
+                ZRDisplayClientOverlay(x, overlay);
             }
         }
         

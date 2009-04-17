@@ -109,7 +109,7 @@ public OnPluginStart()
     
     // ======================================================================
     
-    market = LibraryExists("market");
+    g_bMarket = LibraryExists("market");
     
     // ======================================================================
     
@@ -126,7 +126,7 @@ public OnLibraryRemoved(const String:name[])
 {
 	if (StrEqual(name, "market"))
 	{
-		market = false;
+		g_bMarket = false;
 	}
 }
  
@@ -134,7 +134,7 @@ public OnLibraryAdded(const String:name[])
 {
 	if (StrEqual(name, "market"))
 	{
-		market = true;
+		g_bMarket = true;
 	}
 }
 
@@ -187,7 +187,7 @@ public OnConfigsExecuted()
 
 public OnClientPutInServer(client)
 {
-    gBlockMotherInfect[client] = false;
+    bMotherInfectImmune[client] = false;
     
     // Forward event to modules.
     ClassClientInit(client);
@@ -198,14 +198,12 @@ public OnClientPutInServer(client)
     ZHPClientInit(client);
     
     ClientHookAttack(client);
-    FindClientDXLevel(client);
+    ZRFindClientDXLevel(client);
     
     for (new x = 0; x < MAXTIMERS; x++)
     {
         tHandles[client][x] = INVALID_HANDLE;
     }
-    
-    RefreshList();
 }
 
 public OnClientDisconnect(client)
@@ -227,8 +225,6 @@ public OnClientDisconnect(client)
             tHandles[client][x] = INVALID_HANDLE;
         }
     }
-    
-    RefreshList();
 }
 
 MapChangeCleanup()

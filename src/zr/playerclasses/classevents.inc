@@ -56,7 +56,7 @@ ClassOnClientSpawn(client)
         
         // If the first zombie spawned, and the player is on the terrorist team, then
         // find a random zombie class, otherwise find a human class.
-        if (zombieSpawned && teamid == CS_TEAM_T)
+        if (g_bZombieSpawned && teamid == CS_TEAM_T)
         {
             new classindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES);
             ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = classindex;

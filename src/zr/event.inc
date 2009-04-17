@@ -35,7 +35,6 @@ UnhookEvents()
 public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {   
     ChangeLightStyle();
-    RefreshList();
     
     // Forward event to sub-modules.
     SEffectsOnRoundStart();
@@ -97,7 +96,7 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
         tInfect = INVALID_HANDLE;
     }
 
-    zombieSpawned = false;
+    g_bZombieSpawned = false;
     
     for (new x = 1; x<= MaxClients; x++)
     {
@@ -106,10 +105,7 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
             continue;
         }
         
-        gZombie[x] = false;
-        
-        new bool:consecutive_infect = GetConVarBool(gCvars[CVAR_CONSECUTIVE_INFECT]);
-        gBlockMotherInfect[x] = consecutive_infect ? false : motherZombie[x];
+        bZombie[x] = false;
     }
     
     BalanceTeams();
@@ -135,14 +131,7 @@ public Action:PlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
     
     if (team == CS_TEAM_SPECTATOR)
     {
-        gZombie[index] = false;
-        motherZombie[index] = false;
-    }
-    
-    new bool:allow_player_team = GetConVarBool(gCvars[CVAR_ALLOW_PLAYER_TEAM]);
-    if (allow_player_team && !IsPlayerInList(index))
-    {
-        return Plugin_Continue;
+        bZombie[index] = false;
     }
     
     return Plugin_Handled;
@@ -161,8 +150,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         }
     }
     
-    gZombie[index] = false;
-    motherZombie[index] = false;
+    bZombie[index] = false;
     
     // Reset FOV and overlay.
     SetPlayerFOV(index, 90);
@@ -182,7 +170,7 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
         NightVisionOn(index, false);
         NightVision(index, false);
         
-        if (zombieSpawned)
+        if (g_bZombieSpawned)
         {
             if (ZRIsClientOnTeam(index, CS_TEAM_T))
             {

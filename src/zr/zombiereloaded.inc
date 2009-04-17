@@ -6,13 +6,6 @@
  * ==================== 
  */
 
-enum ZTeam
-{
-    Neither, /** Round is not over */
-    Zombie, /** Round is over because zombies win */
-    Human, /** Round is over because humans wins */
-}
-
 #define Target_Bombed							1		// Target Successfully Bombed!
 #define VIP_Escaped								2		// The VIP has escaped!
 #define VIP_Assassinated						3		// VIP has been assassinated!
@@ -63,14 +56,52 @@ enum ZTeam
  * @endsection
  */
 
-new bool:market;
+/**
+ * Lists possible returns of the game at any time.
+ */ 
+enum ZTeam
+{
+    Neither, /** Round is not over */
+    Zombie, /** Round is over because zombies win */
+    Human, /** Round is over because humans wins */
+}
+
+/**
+ * Global variable set to true if market plugin is installed
+ */ 
+new bool:g_bMarket;
+
+/**
+ * The DirectX level of a client.
+ */
 new dxLevel[MAXPLAYERS + 1];
 
-new bool:zombieSpawned;
-new bool:motherZombie[MAXPLAYERS + 1];
-new bool:gZombie[MAXPLAYERS + 1];
-new bool:gBlockMotherInfect[MAXPLAYERS + 1];
+/**
+ * Global variable set to true when the first zombie(s) is/are spawned.
+ */
+new bool:g_bZombieSpawned;
 
+/**
+ * Array for flagging client as zombie.
+ */
+new bool:bZombie[MAXPLAYERS + 1];
+
+/**
+ * Array for flagging player has immune to mother infect.
+ */
+new bool:bMotherInfectImmune[MAXPLAYERS + 1];
+
+/**
+ * Global variable to store round win timer handle.
+ */
+new Handle:tRound = INVALID_HANDLE;
+
+/**
+ * Global variable to store the infect timer handle.
+ */
+new Handle:tInfect = INVALID_HANDLE;
+
+// TODO: MOVE TO TELEPORT MODULE.
 new Float:spawnLoc[MAXPLAYERS + 1][3];
 new Float:bufferLoc[MAXPLAYERS + 1][3];
 new bool:ztele_spawned[MAXPLAYERS + 1] = {false, ...};
@@ -82,143 +113,132 @@ new Handle:ztele_startup_timer = INVALID_HANDLE;
 new Handle:ztele_countdown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 new Handle:ztele_cooldown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 
-new Handle:tRound = INVALID_HANDLE;
-new Handle:tInfect = INVALID_HANDLE;
 
-new Handle:pList = INVALID_HANDLE;
-
+// TODO: USE SEPARATE VARIABLE TO STORE TELEPORT TIMER HANDLE
+// THEN WE CAN REMOVE tHandles ARRAY FOR GOOD.
 #define MAXTIMERS 1
 
 #define TTELE 1
 
 new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
 
-new QueryCookie:mat_dxlevel;
-
-bool:ConfigSettingToBool(const String:option[])
+/**
+ * Converts string of "yes" or "no" to a boolean value.
+ * 
+ * @param option    "yes" or "no" string to be converted.
+ * @return          True if string is "yes", false otherwise.
+ */
+bool:ZRConfigSettingToBool(const String:option[])
 {
+    // If option is equal to "yes," then return true.
     if (StrEqual(option, "yes", false))
     {
         return true;
     }
     
+    // Option isn't "yes."
     return false;
 }
 
-BoolToConfigSetting(bool:bOption, String:option[], maxlen)
+/**
+ * Converts boolean value to "yes" or "no".
+ * 
+ * @param bOption   True/false value to be converted to "yes"/"no", respectively.
+ * @param option    Variable to store "yes" or "no" in.
+ * @param maxlen    Max length of return string, (can't be more than 4)
+ */
+ZRBoolToConfigSetting(bool:bOption, String:option[], maxlen)
 {
+    // If option is true, then copy "yes" to return string.
     if (bOption)
     {
         strcopy(option, maxlen, "yes");
     }
+    // If option is false, then copy "no" to return string.
     else
     {
         strcopy(option, maxlen, "no");
     }
 }
 
-FindClientDXLevel(client)
+/**
+ * Global variable to store a convar query cookie
+ */ 
+new QueryCookie:mat_dxlevel;
+
+/**
+ * Finds DX level of a client.
+ * 
+ * @param client    The client index.  
+ */
+ZRFindClientDXLevel(client)
 {
+    // If client is fake (or bot), then stop.
     if (IsFakeClient(client))
     {
         return;
     }
     
-    mat_dxlevel = QueryClientConVar(client, "mat_dxlevel", DXLevelClientQuery);
+    // Query mat_dxlevel on client.
+    mat_dxlevel = QueryClientConVar(client, "mat_dxlevel", ZRDXLevelClientQuery);
 }
 
-public DXLevelClientQuery(QueryCookie:cookie, client, ConVarQueryResult:result, const String:cvarName[], const String:cvarValue[])
+/**
+ * Query callback function.
+ *
+ * @param cookie    Unique cookie of the query.
+ * @param client    The client index.
+ * @param result    The result of the query (see console.inc enum ConVarQueryResult)
+ * @param cvarName  Name of the cvar.
+ * @param cvarValue Value of the cvar.
+ */       
+public ZRDXLevelClientQuery(QueryCookie:cookie, client, ConVarQueryResult:result, const String:cvarName[], const String:cvarValue[])
 {
+    // If query cookie does not match cookie given by mat_dxlevel query, then stop, this isn't our query.
     if (cookie != mat_dxlevel)
     {
         return;
     }
     
+    // Reset dxLevel.
     dxLevel[client] = 0;
     
+    // If result is any other than ConVarQuery_Okay, then stop.
     if (result != ConVarQuery_Okay)
     {   
         return;
     }
     
+    // Copy cvar value to dxLevel array.
     dxLevel[client] = StringToInt(cvarValue);
 }
 
-DisplayClientOverlay(client, const String:overlay[])
+/**
+ * Displays overlay to client, or prints unsupported message on client's screen.
+ * 
+ * @param client    The client index.
+ * @param overlay   The overlay path.
+ */    
+ZRDisplayClientOverlay(client, const String:overlay[])
 {
+    // If dxLevel is 0, then query on client failed, so try again, then stop.
     if (!dxLevel[client])
     {
-        FindClientDXLevel(client);
-        
+        // Query dxlevel cvar.
+        ZRFindClientDXLevel(client);
         return;
     }
     
+    // If dxLevel is above or equal to minimum requirement, then display overlay.
     if (dxLevel[client] >= DXLEVEL_MIN)
     {
         ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
     }
+    // If client doesn't meet minimum requirement, then print unsupported text.
     else
     {
         ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], DXLEVEL_MIN);
     }
-}
-
-RefreshList()
-{
-    ClearList();
-    
-    pList = CreateArray();
-    
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        if (IsClientInGame(x) && IsPlayerAlive(x))
-        {  
-            new team = GetClientTeam(x);
-            if (team == CS_TEAM_T || team == CS_TEAM_CT)
-            {
-                PushArrayCell(pList, x);
-            }
-        }
-    }
-}
-
-AddPlayerToList(client)
-{
-    if (pList != INVALID_HANDLE)
-    {
-        PushArrayCell(pList, client);
-    }
-}
-
-ClearList()
-{
-    if (pList != INVALID_HANDLE)
-    {
-        ClearArray(pList);
-    }
-}
-
-RandomPlayerFromList()
-{
-    if (pList != INVALID_HANDLE)
-    {
-        new size = GetArraySize(pList);
-        new index = GetRandomInt(0, size - 1);
-        
-        return GetArrayCell(pList, index);
-    }
-    
-    return -1;
-}
-
-bool:IsPlayerInList(client)
-{
-    if (pList != INVALID_HANDLE)
-    {
-        return (FindValueInArray(pList, client) != -1);
-    }
-    
-    return false;
 }
 
 /**
@@ -264,6 +284,24 @@ bool:ZRIsClientOnTeam(client, team = -1)
     }
     
     return (clientteam == team);
+}
+
+/**
+ * Check if there are clients on a team.
+ * 
+ * @param team      (Optional) Team to check if there are clients on.
+ */
+ZRTeamHasClients(team = -1)
+{
+    // If team is
+    if (team == -1)
+    {
+        // Return true if both teams have at least 1 client.
+        return (GetTeamClientCount(CS_TEAM_T) && GetTeamClientCount(CS_TEAM_CT));
+    }
+    
+    // Return true if given team has at least 1 client.
+    return (GetTeamClientCount(team));
 }
 
 /**

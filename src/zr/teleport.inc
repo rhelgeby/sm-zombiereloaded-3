@@ -386,7 +386,7 @@ bool:ZTele(client)
             tele_humans = true;
         }
         
-        if (!tele_humans && zombieSpawned)
+        if (!tele_humans && g_bZombieSpawned)
         {
             ZR_PrintToChat(client, "!ztele humans restricted");
             return false;

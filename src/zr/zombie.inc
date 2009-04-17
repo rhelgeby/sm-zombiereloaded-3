@@ -96,67 +96,127 @@ public RestartGameHook(Handle:convar, const String:oldValue[], const String:newV
     TerminateRound(StringToFloat(newValue), Round_Draw);
 }
 
+/**
+ * Timer callback, chooses mother zombies.
+ * 
+ * @param timer     The timer handle.  
+ */ 
 public Action:MotherZombie(Handle:timer)
 {
-    RefreshList();
+    // Reset timer handle.
+    tInfect = INVALID_HANDLE;
     
-    new size = GetArraySize(pList);
-    new immune = 0;
+    // Create array.
+    new Handle:arrayEligibleClients = CreateArray();
     
-    for (new x = 0; x < size; x++)
+    // Populate list with eligible clients.
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
     {
-        new index = GetArrayCell(pList, x);
-        
-        if (gBlockMotherInfect[index])
-        {
-            immune++;
-        }
-        
-        if (!IsPlayerAlive(index) || IsPlayerZombie(index))
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
         {
             continue;
         }
         
-        CS_SwitchTeam(index, CS_TEAM_CT);
+        // If client is dead, then stop.
+        if (!IsPlayerAlive(x))
+        {
+            continue;
+        }
+        
+        // If client is immune from being a mother zombie, then stop.
+        if (bMotherInfectImmune[x])
+        {
+            // Take away immunity.
+            bMotherInfectImmune[x] = false;
+            
+            continue;
+        }
+        
+        // Add eligible client to array.
+        PushArrayCell(arrayEligibleClients, x);
     }
     
-    if (!(size - immune))
+    // If there are no eligible client's then stop.
+    new eligibleclients = GetArraySize(arrayEligibleClients);
+    if (!eligibleclients)
     {
-        tInfect = INVALID_HANDLE;
-        
         return;
     }
     
-    new randclient;
+    // Move all clients to CT
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If client is dead, then stop.
+        if (!IsPlayerAlive(x))
+        {
+            continue;
+        }
+        
+        // Switch client to CT team.
+        CS_SwitchTeam(x, CS_TEAM_CT);
+    }
+    
+    // Variable to store randomly chosen array index.
+    new randindex;
+    
+    // Variable to store client stored in random array index.
+    new client;
+    
+    // Ratio of mother zombies to humans.
     new ratio = GetConVarInt(gCvars[CVAR_MOTHER_ZOMBIE_RATIO]);
     
+    // If ratio is 0 or lower, then pick 1 zombie.
     if (ratio <= 0)
     {
-        do
-        {
-            randclient = RandomPlayerFromList();
-        } while (!IsPlayerAlive(randclient) || gBlockMotherInfect[randclient]);
+        // Get a random valid array index.
+        randindex = GetRandomInt(0, eligibleclients - 1);
         
-        InfectPlayer(randclient, _, true);
+        // Get the client stored in the random array index.
+        client = GetArrayCell(arrayEligibleClients, randindex);
+        
+        // Infect player.
+        InfectPlayer(client, _, true);
     }
     else
     {
-        new mothercount = RoundToCeil(float(size) / ratio);
+        // Calculate mother zombie sound.
+        new mothercount = RoundToCeil(float(eligibleclients) / ratio);
         
+        // x = current mother zombie count.
         for (new x = 0; x < mothercount; x++)
         {
-            do
-            {
-                randclient = RandomPlayerFromList();
-            } while (IsPlayerZombie(randclient) || !IsPlayerAlive(randclient) || gBlockMotherInfect[randclient]);
+            // Recount eligible clients.
+            eligibleclients = GetArraySize(arrayEligibleClients);
             
-            InfectPlayer(randclient, _, true);
+            // If there are no more eligible clients, then break loop.
+            if (!eligibleclients)
+            {
+                break;
+            }
+            // Get a random valid array index.
+            randindex = GetRandomInt(0, eligibleclients - 1);
+            
+            // Get the client stored in the random array index.
+            client = GetArrayCell(arrayEligibleClients, randindex);
+            
+            // Infect player.
+            InfectPlayer(client, _, true);
+            
+            // Remove player from eligible zombie list.
+            RemoveFromArray(arrayEligibleClients, randindex);
         }
     }
     
-    tInfect = INVALID_HANDLE;
-    
-    zombieSpawned = true;
+    // Mother zombies have been infected.
+    g_bZombieSpawned = true;
 }
 
 /**
@@ -184,8 +244,7 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     }
     
     // Set player status.
-    gZombie[client] = true;
-    motherZombie[client] = motherinfect;
+    bZombie[client] = true;
     
     // Remove all weapons and give a knife.
     RemoveAllPlayersWeapons(client);
@@ -199,6 +258,9 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     
     // Switch the player to terrorists.
     CS_SwitchTeam(client, CS_TEAM_T);
+    
+    // Flag player to be immune from being mother zombie twice.
+    bMotherInfectImmune[client] = motherinfect;
     
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);
@@ -333,7 +395,7 @@ PlayerLeft(client)
     
     for (new x = 1; x <= MaxClients; x++)
     {
-        if (!IsClientInGame(x) || !IsPlayerAlive(x) || client == x || GetClientTeam(x) != CS_TEAM_CT || gBlockMotherInfect[x])
+        if (!IsClientInGame(x) || !IsPlayerAlive(x) || client == x || GetClientTeam(x) != CS_TEAM_CT || bMotherInfectImmune[x])
         {
             continue;
         }
@@ -405,7 +467,7 @@ ZTeam:IsRoundOver()
     
     if (humans && !zombies)
     {
-        if (zombieSpawned)
+        if (g_bZombieSpawned)
         {
             return Human;
         }
@@ -486,12 +548,12 @@ public Action:RoundOver(Handle:timer)
 
 bool:IsPlayerZombie(client)
 {
-    return gZombie[client];
+    return bZombie[client];
 }
 
 bool:IsPlayerHuman(client)
 {
-    return !gZombie[client];
+    return !bZombie[client];
 }
 
 ZTeam:GetPlayerZTeam(client)

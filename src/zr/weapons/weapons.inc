@@ -234,7 +234,7 @@ bool:WeaponsIsWeaponMenu(const String:weapon[])
                 KvGetString(kvWeapons, "menu", menu, sizeof(menu), "yes");
                 
                 // Return weapon's setting.
-                return ConfigSettingToBool(menu);
+                return ZRConfigSettingToBool(menu);
             }
         } while (KvGotoNextKey(kvWeapons));
     }

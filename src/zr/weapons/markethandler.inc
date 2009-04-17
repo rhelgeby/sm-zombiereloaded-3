@@ -14,7 +14,7 @@
 bool:ZMarketSend(client)
 {
     // If market is disabled, then stop.
-    if (!market)
+    if (!g_bMarket)
     {
         // Tell client market is disabled.
         ZR_PrintToChat(client, "Feature is disabled");

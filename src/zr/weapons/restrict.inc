@@ -107,7 +107,7 @@ RestrictDefaultRestrictions()
             decl String:restrict[8];
             KvGetString(kvWeapons, "restrict", restrict, sizeof(restrict), "no");
             
-            if (ConfigSettingToBool(restrict))
+            if (ZRConfigSettingToBool(restrict))
             {
                 new WpnRestrictQuery:output = RestrictRestrict(weapon, display);
                 RestrictPrintRestrictOutput(0, output, display, true);

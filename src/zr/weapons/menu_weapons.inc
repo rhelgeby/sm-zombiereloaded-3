@@ -50,7 +50,7 @@ WeaponsMenuMain(client)
     AddMenuItem(menu_weapons_main, "togglewgrouprestriction", togglewgrouprestriction);
     
     // Disable market option if market isn't installed.
-    if (market)
+    if (g_bMarket)
     {
         AddMenuItem(menu_weapons_main, "zmarket", zmarket);
     }
@@ -422,7 +422,7 @@ WeaponsMenuMarket(client)
     decl String:togglebuyzone[64];
     
     decl String:curSetting[8];
-    BoolToConfigSetting(GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
+    ZRBoolToConfigSetting(GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
     
     Format(togglebuyzone, sizeof(togglebuyzone), "%t", "Weapons menu market toggle buyzone", curSetting);
     

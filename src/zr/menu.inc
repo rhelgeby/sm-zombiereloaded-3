@@ -32,7 +32,7 @@ MainMenu(client)
     AddMenuItem(menu_main, "zadmin", zadmin, itemdraw);
     AddMenuItem(menu_main, "zclass", zclass);
     
-    if (market)
+    if (g_bMarket)
     {
         AddMenuItem(menu_main, "zmarket", zmarket);
     }

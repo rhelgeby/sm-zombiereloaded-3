@@ -115,7 +115,7 @@ RespawnSpawnClient(client)
     CS_RespawnPlayer(client);
     
     // Stop here if the first zombie hasn't spawned yet.
-    if (!zombieSpawned)
+    if (!g_bZombieSpawned)
     {
         return;
     }

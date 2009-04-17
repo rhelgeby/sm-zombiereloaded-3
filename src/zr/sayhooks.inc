@@ -98,13 +98,6 @@ ZSpawn(client)
     {
         return;
     }
-    
-    if (IsPlayerInList(client))
-    {
-        return;
-    }
 
     RespawnSpawnClient(client);
-    
-    AddPlayerToList(client);
 }
