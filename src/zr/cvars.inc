@@ -64,9 +64,9 @@ enum ZRSettings
     Handle:CVAR_ANTISTICK_INTERVAL,
     Handle:CVAR_PROTECT,
     Handle:CVAR_CONSECUTIVE_INFECT,
-    Handle:CVAR_OVERLAYS,
-    Handle:CVAR_OVERLAYS_HUMAN,
-    Handle:CVAR_OVERLAYS_ZOMBIE,
+    Handle:CVAR_ROUNDEND_OVERLAY,
+    Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
+    Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
     Handle:CVAR_ZMARKET_BUYZONE,
     Handle:CVAR_ZSPAWN,
     Handle:CVAR_ZTELE,
@@ -154,9 +154,9 @@ CreateCvars()
     gCvars[CVAR_ANTISTICK_INTERVAL]        =    CreateConVar("zr_antistick_interval", "1.0", "How often, in seconds, the anti-stick module checks each player for being stuck. (1.0: Default)");
     gCvars[CVAR_PROTECT]                   =    CreateConVar("zr_protect", "10", "Players that join late will be protected for this long, in seconds (0: Disable)");
     gCvars[CVAR_CONSECUTIVE_INFECT]        =    CreateConVar("zr_consecutive_infect", "0", "Allow player to be randomly chosen twice in a row to be a mother zombie (0: Disable)");
-    gCvars[CVAR_OVERLAYS]                  =    CreateConVar("zr_overlays", "1", "Will show overlays that tell who the winner of the round was (0: Disable)");
-    gCvars[CVAR_OVERLAYS_HUMAN]            =    CreateConVar("zr_overlays_human", "overlays/zr/humans_win", "The overlay shown to tell everyone that humans won when zr_overlays is 1");
-    gCvars[CVAR_OVERLAYS_ZOMBIE]           =    CreateConVar("zr_overlays_zombie", "overlays/zr/zombies_win", "The overlay shown to tell everyone that zombies won when zr_overlays is 1");
+    gCvars[CVAR_ROUNDEND_OVERLAY]          =    CreateConVar("zr_roundend_overlay", "1", "Shows an overlay to all clients when a team wins. (0: Disable)");
+    gCvars[CVAR_ROUNDEND_OVERLAY_HUMAN]    =    CreateConVar("zr_roundend_overlays_human", "overlays/zr/humans_win", "Path to \"humans win\" overlay");
+    gCvars[CVAR_ROUNDEND_OVERLAY_ZOMBIE]   =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "Path to \"zombies win\" overlay");
     gCvars[CVAR_ZMARKET_BUYZONE]           =    CreateConVar("zr_zmarket_buyzone", "1", "Must be in buyzone to access !zmarket, if Market is installed (0: Can be used anywhere)");
     gCvars[CVAR_ZSPAWN]                    =    CreateConVar("zr_zspawn", "1", "Allow players to spawn if they just joined the game (0: Disable)");
     gCvars[CVAR_ZTELE]                     =    CreateConVar("zr_tele", "1", "Allow players to use the teleporter to get to spawn. (0: Disable)");
@@ -184,7 +184,9 @@ CreateCvars()
     gCvars[CVAR_ANTICAMP_UPDATE_INTERVAL]  =    CreateConVar("zr_anticamp_update_interval", "1", "How often to update player locations (in seconds).");
     gCvars[CVAR_ANTICAMP_ECHO]             =    CreateConVar("zr_anticamp_echo", "1", "Log kills done by anticamp to admin chat.");
     
-    HookConVarChange(gCvars[CVAR_ENABLE], EnableHook);
+    // TODO: Recode.
+    //HookConVarChange(gCvars[CVAR_ENABLE], EnableHook);
+    
     HookConVarChange(gCvars[CVAR_ANTICAMP], AnticampHook);
     HookConVarChange(gCvars[CVAR_ANTICAMP_UPDATE_INTERVAL], UpdateIntervalHook);
     
@@ -198,19 +200,15 @@ HookCvars()
     
     HookConVarChange(FindConVar("mp_autoteambalance"), AutoTeamBalanceHook);
     HookConVarChange(FindConVar("mp_limitteams"), LimitTeamsHook);
-    
-    HookConVarChange(FindConVar("mp_restartgame"), RestartGameHook);
 }
 
 UnhookCvars()
 {
     UnhookConVarChange(FindConVar("mp_autoteambalance"), AutoTeamBalanceHook);
     UnhookConVarChange(FindConVar("mp_limitteams"), LimitTeamsHook);
-    
-    UnhookConVarChange(FindConVar("mp_restartgame"), RestartGameHook);
 }
 
-public EnableHook(Handle:convar, const String:oldValue[], const String:newValue[])
+/*public EnableHook(Handle:convar, const String:oldValue[], const String:newValue[])
 {
     new bool:enable = bool:StringToInt(newValue);
     
@@ -225,7 +223,7 @@ public EnableHook(Handle:convar, const String:oldValue[], const String:newValue[
     {
         ZREnd();
     }
-}
+}*/
 
 public AutoTeamBalanceHook(Handle:convar, const String:oldValue[], const String:newValue[])
 {

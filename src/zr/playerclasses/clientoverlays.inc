@@ -27,7 +27,7 @@ new bClientOverlayOn[MAXPLAYERS + 1];
 /**
  * Path to the currently active overlay.
  */
-new String:ActiveOverlay[MAXPLAYERS + 1][256];
+new String:ActiveOverlay[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
 
 bool:ClientHasOverlay(client)
 {
