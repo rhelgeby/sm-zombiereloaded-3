@@ -143,19 +143,19 @@ stock ZR_LogMessageFormatted(client, const String:module[], const String:block[]
         case LOG_FORMAT_TYPE_SIMPLE:
         {
             VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "Log -- %s", message);
+            Format(text, sizeof(text), "%s", message);
             LogMessage(text);
         }
         case LOG_FORMAT_TYPE_FULL:
         {
             VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "Log (%s : %s) -- %s", module, block, buffer);
+            Format(text, sizeof(text), "\"%s\" : \"%s\" -- %s", module, block, buffer);
             LogMessage(text);
         }
         case LOG_FORMAT_TYPE_ERROR:
         {
             VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "Log (%s : %s) -- %s", module, block, buffer);
+            Format(text, sizeof(text), "\"%s\" : \"%s\" -- %s", module, block, buffer);
             LogError(text);
         }
     }

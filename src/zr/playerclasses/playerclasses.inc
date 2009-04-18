@@ -246,14 +246,10 @@ new bool:ClassPlayerAdminMode[MAXPLAYERS + 1];
 #include "zr/playerclasses/classcommands"
 
 /**
- * Loads class attributes from playerclasses.txt into the ClassData array. If
- * any error occour the plugin load will fail.
- *
- * @param classfile     Optional. Specifies what file to read from. Valves key/
- *                      values format. The path is relative to the sourcemod
- *                      folder.
+ * Loads class attributes from the class file into ClassData array. If any
+ * error occour the plugin load will fail, and errors will be logged.
  */
-ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
+ClassLoad()
 {
     // Make sure kvClassData is ready to use.
     if (kvClassData != INVALID_HANDLE)
@@ -262,13 +258,16 @@ ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
     }
     kvClassData = CreateKeyValues("classes");
     
+    decl String:classfile[256];
+    GetConVarString(gCvars[CVAR_CLASSES_FILE], classfile, sizeof(classfile));
+    
     // Try to load the class configuration file.
     decl String:path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), classfile);
     
     if (!FileToKeyValues(kvClassData, path))
     {
-        SetFailState("Class data (\"%s\") missing from server.", path);
+        SetFailState("Could not load class data file (\"%s\"). Check path in zr_classes_file in the configuration file.", path);
     }
     
     // Try to find the first class.
@@ -294,7 +293,7 @@ ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
             // Maximum classes reached. Write a warning and exit the loop.
             if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
             {
-                ZR_LogMessageFormatted(-1, "classes", "loading classes", "Warning: Maximum classes reached (%d). The rest is skipped.", _, ZR_CLASS_MAX + 1);
+                ZR_LogMessageFormatted(-1, "Classes", "Load", "Warning: Maximum classes reached (%d). Skipping other classes.", _, ZR_CLASS_MAX + 1);
             }
             
             break;
@@ -358,7 +357,7 @@ ClassLoad(const String:classfile[256] = "configs/zr/playerclasses.txt")
             ClassData[ClassCount][class_enabled] = false;
             if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
             {
-                ZR_LogMessageFormatted(-1, "classes", "load", "Invalid class at index %d. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
+                ZR_LogMessageFormatted(-1, "Classes", "Load", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
             }
         }
         
