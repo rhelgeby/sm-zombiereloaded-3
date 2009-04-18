@@ -466,6 +466,11 @@
 	{
 		"en"		"Toggle Admin Mode"
 	}
+	
+	"!zclass not found"
+	{
+		"en"		"No classes found."
+	}
 
 	// ===========================
 	// ZAdmin Menu

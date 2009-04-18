@@ -422,6 +422,62 @@ bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = false, 
 }
 
 /**
+ * Counts total classes or classes in the specified team.
+ *
+ * @param teamfilter        Optional. The team ID to filter. Negative value for
+ *                          no filter (default).
+ * @param ignoreEnabled     Ignore the enabled attribute.
+ * @param cachetype         Optional. Specifies what class cache to read from.
+ *                          Options:
+ *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                          ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
+ *                          class data.
+ * @return  Number of total classes or classes in the specified team.
+ */
+ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+{
+    // Check if there are no classes.
+    if (ClassCount == 0)
+    {
+        return 0;
+    }
+    
+    // Store a local boolean that says if the user specified a team filter or not.
+    new bool:has_filter = bool:(teamfilter >= 0);
+    new count;
+    
+    // Loop through all classes.
+    for (new classindex = 0; classindex < ClassCount; classindex++)
+    {
+        if (!ignoreEnabled && !ClassIsEnabled(classindex, cachetype))
+        {
+            // The class is disabled and the enabled attribute is NOT ignored.
+            // Skip to the next class.
+            continue;
+        }
+        
+        // Check team filtering.
+        if (has_filter)
+        {
+            // Only add classes with matching team ID.
+            if (ClassGetTeamID(classindex, cachetype) == teamfilter)
+            {
+                // Team ID match. Increment counter.
+                count++;
+            }
+        }
+        else
+        {
+            // No filter. Increment counter.
+            count++;
+        }
+    }
+    
+    // Return number of classes found.
+    return count;
+}
+
+/**
  * Gets a random class index from a specified team or from all classes.
  *
  * @param teamfilter    Optional. The team ID to filter. A negative value for

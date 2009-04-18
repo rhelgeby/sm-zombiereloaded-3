@@ -112,9 +112,9 @@ CreateCvars()
     gCvars[CVAR_CLASSES]                   =    CreateConVar("zr_classes", "1", "Enable zombie classes");
     gCvars[CVAR_CLASSES_SPAWN]             =    CreateConVar("zr_classes_spawn", "0", "Classmenu is re-displayed every spawn (0: Disable)");
     gCvars[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round. Overrides zr_classes_spawn and default classes. (0: Disable)");
-    gCvars[CVAR_CLASSES_DEFAULT_ZOMBIE]    =    CreateConVar("zr_classes_default_zombie", "", "Default zombie class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
-    gCvars[CVAR_CLASSES_DEFAULT_HUMAN]     =    CreateConVar("zr_classes_default_human", "", "Default human class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
-    gCvars[CVAR_CLASSES_DEFAULT_ADMIN]     =    CreateConVar("zr_classes_default_admin", "", "Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
+    gCvars[CVAR_CLASSES_DEFAULT_ZOMBIE]    =    CreateConVar("zr_classes_default_zombie", "random", "Default zombie class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
+    gCvars[CVAR_CLASSES_DEFAULT_HUMAN]     =    CreateConVar("zr_classes_default_human", "random", "Default human class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
+    gCvars[CVAR_CLASSES_DEFAULT_ADMIN]     =    CreateConVar("zr_classes_default_admin", "random", "Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
     gCvars[CVAR_ZOMBIE_HEALTH]             =    CreateConVar("zr_zombie_health", "5000", "The default health of a zombie");
     gCvars[CVAR_ZOMBIE_SPEED]              =    CreateConVar("zr_zombie_speed", "350", "How fast zombies travel (300: Default speed,  600: Double speed)");
     gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]      =    CreateConVar("zr_zombie_jump_distance", "0.1", "How far the zombie jumps,  (0: Regular jump distance)");
