@@ -28,54 +28,11 @@
 		"en"		"You have randomly been assigned to the @green\"{1}\" @defaultclass."
 		"ru"		"Вам был случайным образом установлен класс \"{1}\"."
 	}
-	
-	"Random class is enabled"
-	{
-		"en"		"Class selection is locked.  A random class will be assigned to you every round."
-		"ru"		"Выбор класса отключен. Каждый раунд вам будет установлен случайнй класс."
-	}
-
-	"Feature is disabled"
-	{
-		"en"		"This feature has been disabled by the server host."
-		"ru"		"Данная функция отключена."
-	}
-
-	"Must be admin"
-	{
-		"en"		"Can only be used by admins."
-		"ru"		"Может быть использовано только, когда жив."
-	}
-
-	"Must be alive"
-	{
-		"en"		"Can only be used when alive."
-		"ru"		"Может быть использовано только, когда жив."
-	}
-
-	"Must be dead"
-	{
-		"en"		"Can only be used when dead."
-		"ru"		"Может быть использовано только, когда мертв."
-	}
-
-	"Must be zombie"
-	{
-		"en"		"Can only be used while zombie."
-		"ru"		"Может быть использовано только, когда зомби."
-	}
 
 	"!zmenu reminder"
 	{
 		"en"		"Type !zmenu in chat to view all ZR commands."
 		"ru"		"Напишите !zmenu в чате для просмотра всех команд."
-	}
-
-	"Class select"
-	{
-		"#format"	"{1:s}"
-		"en"		"Switched zombie class to \"{1}\""
-		"ru"		"Класс зомби переключен на \"{1}\""
 	}
 	
 	"!ztele amount"
@@ -143,11 +100,58 @@
 	// Generic
 	// ===========================
 
+	// General
+
+	"Console restricted"
+	{
+		"en"		"Command not usable from console."
+		"ru"		"Команда не используется для консоли."
+	}
+
+	"Feature is disabled"
+	{
+		"en"		"This feature has been disabled by the server host."
+		"ru"		"Данная функция отключена."
+	}
+
+	"Must be admin"
+	{
+		"en"		"Can only be used by admins."
+		"ru"		"Может быть использовано только, когда жив."
+	}
+
+	"Must be alive"
+	{
+		"en"		"Can only be used when alive."
+		"ru"		"Может быть использовано только, когда жив."
+	}
+
+	"Must be dead"
+	{
+		"en"		"Can only be used when dead."
+		"ru"		"Может быть использовано только, когда мертв."
+	}
+
+	"Must be zombie"
+	{
+		"en"		"Can only be used while zombie."
+		"ru"		"Может быть использовано только, когда зомби."
+	}
+
 	// Menu
 
 	"Menu empty"
 	{
 		"en"		"(Empty)"
+	}
+
+	// ===========================
+	// (Core) Damage
+	// ===========================
+
+	"Damage suicide intercept"
+	{
+		"en"		"Suicide attempt intercepted."
 	}
 	
 	// ===========================
@@ -344,13 +348,6 @@
 		"en"		"HP: {1}"
 		"ru"		"Здоровье: {1}"
 	}
-
-
-	"Suicide text"
-	{
-		"en"		"Nice try n00b!"
-		"ru"		"Неплохая попытка n00b!"
-	}
 	
 	"Unfair camping"
 	{
@@ -465,11 +462,6 @@
 	"!zclass admin mode toggle"
 	{
 		"en"		"Toggle Admin Mode"
-	}
-	
-	"!zclass not found"
-	{
-		"en"		"No classes found."
 	}
 
 	// ===========================
@@ -643,12 +635,6 @@
 	{
 		"en"		"-----------|         Zombie:Reloaded Loaded         |----------"
 		"ru"		"-----------|        Zombie:Reloaded Загружен        |----------"
-	}
-
-	"Console restricted"
-	{
-		"en"		"Command not usable from console."
-		"ru"		"Команда не используется для консоли."
 	}
 
 	"Models loaded"

@@ -38,6 +38,9 @@
 // Round end (core)
 #include "zr/roundend"
 
+// Damage (core)
+#include "zr/damage"
+
 // Class system (module)
 #include "zr/playerclasses/playerclasses"
 
@@ -75,7 +78,6 @@
 #include "zr/zhp"
 
 #include "zr/zadmin"
-#include "zr/damagecontrol"
 #include "zr/commands"
 #include "zr/event"
 
@@ -119,7 +121,8 @@ public OnPluginStart()
     // Weapons
     WeaponsInit();
     
-    InitDmgControl();
+    // Damage
+    DamageInit();
     
     // ======================================================================
     
@@ -205,15 +208,14 @@ public OnClientPutInServer(client)
     bMotherInfectImmune[client] = false;
     
     // Forward event to modules.
-    RoundEndGetClientDXLevel(client);
+    RoundEndClientInit(client);
+    DamageClientInit(client);
     ClassClientInit(client);
     SEffectsClientInit(client);
     WeaponsClientInit(client);
     SpawnProtectClientInit(client);
     RespawnClientInit(client);
     ZHPClientInit(client);
-    
-    ClientHookAttack(client);
     
     for (new x = 0; x < MAXTIMERS; x++)
     {
@@ -223,11 +225,10 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect(client)
 {
-    ClientUnHookAttack(client);
-    
     PlayerLeft(client);
     
     // Forward event to modules.
+    DamageOnClientDisconnect(client);
     ClassOnClientDisconnect(client);
     WeaponsOnClientDisconnect(client);
     ZTeleResetClient(client);

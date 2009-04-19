@@ -56,7 +56,7 @@ enum ZRSettings
     Handle:CVAR_RESPAWN_DELAY,
     Handle:CVAR_SUICIDE_ZOMBIE,
     Handle:CVAR_SUICIDE_HUMAN,
-    Handle:CVAR_SUICIDE_ECHO,
+    Handle:CVAR_SUICIDE_CMDS,
     Handle:CVAR_SUICIDE_WORLD_DAMAGE,
     Handle:CVAR_SPAWN_MIN,
     Handle:CVAR_SPAWN_MAX,
@@ -144,9 +144,10 @@ CreateCvars()
     gCvars[CVAR_RESPAWN]                   =    CreateConVar("zr_respawn", "0", "When player is killed,  player will respawn");
     gCvars[CVAR_RESPAWN_ZOMBIE]            =    CreateConVar("zr_respawn_zombie", "1", "Respawn player as zombie (0: Respawn as human)");
     gCvars[CVAR_RESPAWN_DELAY]             =    CreateConVar("zr_respawn_delay", "1", "How long to wait after death to respawn,  in seconds");
-    gCvars[CVAR_SUICIDE_ZOMBIE]            =    CreateConVar("zr_suicide_zombie", "1", "Stops zombies from suiciding");
-    gCvars[CVAR_SUICIDE_HUMAN]             =    CreateConVar("zr_suicide_human", "1", "Stops humans from suiciding");
-    gCvars[CVAR_SUICIDE_ECHO]              =    CreateConVar("zr_suicide_echo", "0", "Log suicide attempts to admin chat.");
+    gCvars[CVAR_SUICIDE_ZOMBIE]            =    CreateConVar("zr_suicide_zombie", "1", "Intercept human suicide attempts.");
+    gCvars[CVAR_SUICIDE_HUMAN]             =    CreateConVar("zr_suicide_human", "1", "Intercept zombie suicide attempts.");
+    gCvars[CVAR_SUICIDE_CMDS]              =    CreateConVar("zr_suicide_cmds", "kill, spectate, jointeam", "List of suicide commands to intercept. (Delimited by \", \"");
+    /** Note: CVAR_SUICIDE_WORLD_DAMAGE should be renamed as it is not part of the suicide intercept function*/
     gCvars[CVAR_SUICIDE_WORLD_DAMAGE]      =    CreateConVar("zr_suicide_world_damage", "1", "Respawn zombies as zombies if they were killed by the world, like elevators, doors and lasers. (0: Disable)");
     gCvars[CVAR_SPAWN_MIN]                 =    CreateConVar("zr_spawn_min", "30", "Minimum time a player is picked to be zombie after the round starts,  in seconds");
     gCvars[CVAR_SPAWN_MAX]                 =    CreateConVar("zr_spawn_max", "50", "Maximum time a player is picked to be zombie after the round starts,  in seconds");

@@ -523,7 +523,7 @@ ZRLogFlagsMenu(client)
     decl String:z_log_module_hitgroups[64];
     decl String:z_log_module_commands[64];
     decl String:z_log_module_anticamp[64];
-    decl String:z_log_module_damagecontrol[64];
+    decl String:z_log_module_damage[64];
     decl String:z_log_module_offsets[64];
 
     Format(z_log_core, sizeof(z_log_core), "Log core events (%d)", LogHasFlag(LOG_CORE_EVENTS));
@@ -546,7 +546,7 @@ ZRLogFlagsMenu(client)
     Format(z_log_module_hitgroups, sizeof(z_log_module_hitgroups), "Hitgroups (%d)", LogHasFlag(LOG_MODULE_HITGROUPS));
     Format(z_log_module_commands, sizeof(z_log_module_commands), "Admin commands (%d)", LogHasFlag(LOG_MODULE_COMMANDS));
     Format(z_log_module_anticamp, sizeof(z_log_module_anticamp), "Anticamp (%d)", LogHasFlag(LOG_MODULE_ANTICAMP));
-    Format(z_log_module_damagecontrol, sizeof(z_log_module_damagecontrol), "Damage control (suicides) (%d)", LogHasFlag(LOG_MODULE_DAMAGECONTROL));
+    Format(z_log_module_damage, sizeof(z_log_module_damage), "Damage (Suicide Intercept) (%d)", LogHasFlag(LOG_MODULE_DAMAGE));
     Format(z_log_module_offsets, sizeof(z_log_module_offsets), "Offsets (properties) (%d)", LogHasFlag(LOG_MODULE_OFFSETS));
     
     AddMenuItem(menu_log_flags, z_log_core, z_log_core, item_state);
@@ -568,7 +568,7 @@ ZRLogFlagsMenu(client)
     AddMenuItem(menu_log_flags, z_log_module_weapons, z_log_module_weapons, item_state);
     AddMenuItem(menu_log_flags, z_log_module_commands, z_log_module_commands, item_state);
     AddMenuItem(menu_log_flags, z_log_module_anticamp, z_log_module_anticamp, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_damagecontrol, z_log_module_damagecontrol, item_state);
+    AddMenuItem(menu_log_flags, z_log_module_damage, z_log_module_damage, item_state);
     AddMenuItem(menu_log_flags, z_log_module_offsets, z_log_module_offsets, item_state);
     
     SetMenuExitBackButton(menu_log_flags, true);
@@ -683,7 +683,7 @@ public ZRLogFlagsMenuHandle(Handle:menu_log_flags, MenuAction:action, client, sl
             }
             case 20:
             {
-                ToggleLogFlag(LOG_MODULE_DAMAGECONTROL);
+                ToggleLogFlag(LOG_MODULE_DAMAGE);
                 ZRLogFlagsMenu(client);
             }
             case 21:

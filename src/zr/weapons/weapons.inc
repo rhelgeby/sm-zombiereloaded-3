@@ -101,7 +101,7 @@ WeaponsValidateConfig()
  * Client is joining the server.
  * 
  * @param client    The client index.  
- */ 
+ */
 WeaponsClientInit(client)
 {
     // Forward event to sub-module.
@@ -112,7 +112,7 @@ WeaponsClientInit(client)
  * Client is leaving the server.
  * 
  * @param client    The client index.
- */   
+ */ 
 WeaponsOnClientDisconnect(client)
 {
     // Forward event to sub-module.

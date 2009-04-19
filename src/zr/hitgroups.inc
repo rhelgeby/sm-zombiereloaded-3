@@ -5,7 +5,6 @@
  *
  *   File:        hitgroup.inc
  *   Description: API for loading hitgroup specific settings.
- *   Author:      Greyscale, Richard Helgeby
  *
  * ============================================================================
  */

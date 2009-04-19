@@ -319,7 +319,7 @@ public Action:Command_LogFlags(client, argc)
     StrCat(message, sizeof(message), "LOG_MODULE_WEAPONRESTICT   (65536)  - weaponrestrict.inc\n");
     StrCat(message, sizeof(message), "LOG_MODULE_COMMANDS        (131072) - commands.inc\n");
     StrCat(message, sizeof(message), "LOG_MODULE_ANTICAMP        (262144) - anticamp.inc\n");
-    StrCat(message, sizeof(message), "LOG_MODULE_DAMAGECONTROL   (524288) - damagecontrol.inc\n");
+    StrCat(message, sizeof(message), "LOG_MODULE_DAMAGE          (524288) - damage.inc\n");
     StrCat(message, sizeof(message), "LOG_MODULE_OFFSETS         (524288) - offsets.inc");
     
     ReplyToCommand(client, message);

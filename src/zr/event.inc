@@ -54,9 +54,6 @@ public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
         bZombie[x] = false;
     }
     
-    // Balance teams, and respawn all players.
-    BalanceTeams(true);
-    
     ZR_PrintToChat(0, "Round objective");
     
     // Forward event to sub-modules.
@@ -106,9 +103,6 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
         
         bZombie[x] = false;
     }
-    
-    // Balance teams.    
-    BalanceTeams();
     
     // Forward event to modules.
     RoundEndOnRoundEnd(reason);

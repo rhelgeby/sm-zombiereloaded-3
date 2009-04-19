@@ -77,6 +77,17 @@ RoundEndOnMapStart()
 }
 
 /**
+ * Client is joining the server.
+ * 
+ * @param client    The client index.  
+ */ 
+RoundEndClientInit(client)
+{
+    // Get client's DX level.
+    RoundEndGetClientDXLevel(client);
+}
+
+/**
  * The round is starting.
  */
 RoundEndOnRoundStart()
@@ -90,6 +101,9 @@ RoundEndOnRoundStart()
         // Reset timer handle.
         tRoundEnd = INVALID_HANDLE;
     }
+    
+    // Balance teams, and respawn all players.
+    RoundEndBalanceTeams(true);
 }
 
 /**
@@ -130,6 +144,9 @@ RoundEndOnRoundEnd(reason)
     
     // Display the overlay to all clients.
     RoundEndOverlayStart(ROUNDEND_DELAY_NORMAL, outcome);
+    
+    // Balance teams.    
+    RoundEndBalanceTeams();
 }
 
 /**
@@ -295,6 +312,75 @@ RoundEndTerminateRound(RoundEndOutcome:outcome)
             // Terminate the round with a normal delay, and CTs as the winner.
             TerminateRound(ROUNDEND_DELAY_NORMAL, ROUNDEND_CTS_WIN);
         }
+    }
+}
+
+/**
+ * Balances teams
+ * 
+ * @param spawn     If true, it will respawn player after switching their team.
+ */
+RoundEndBalanceTeams(bool:spawn = false)
+{
+    // Create eligible player list.
+    new Handle:arrayEligibleClients = INVALID_HANDLE;
+    new eligibleclients = CreateEligibleClientList(arrayEligibleClients, true);
+    
+    // If there are no eligible client's then stop.
+    if (!eligibleclients)
+    {
+        return;
+    }
+    
+    new client;
+    
+    // Move all clients to T
+    
+    // x = array index.
+    // client = client index.
+    for (new x = 0; x < eligibleclients; x++)
+    {
+        // Get client stored in array index.
+        client = GetArrayCell(arrayEligibleClients, x);
+        
+        // Switch client to T
+        CS_SwitchTeam(client, CS_TEAM_T);
+    }
+    
+    // Move every other client back to CT
+    
+    // x = array index
+    // client = client index.
+    for (new x = 0; x < eligibleclients; x += 2)
+    {
+        // Get client stored in array index.
+        client = GetArrayCell(arrayEligibleClients, x);
+        
+        // Switch client to CT
+        CS_SwitchTeam(client, CS_TEAM_CT);
+    }
+    
+    // If spawn is false, then stop.
+    if (!spawn)
+    {
+        return;
+    }
+    
+    // x = array index.
+    // client = client index.
+    for (new x = 0; x < eligibleclients; x++)
+    {
+        // Get client stored in array index.
+        client = GetArrayCell(arrayEligibleClients, x);
+        
+        // If client is dead, then stop.
+        if (!IsPlayerAlive(client))
+        {
+            continue;
+        }
+        
+        // Respawn client.
+        CS_RespawnPlayer(client);
     }
 }
 

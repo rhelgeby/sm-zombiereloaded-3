@@ -457,68 +457,6 @@ PlayerLeft(client)
     CloseHandle(arrayEligibleClients);
 }
 
-/**
- * Balances teams
- * 
- * @param spawn     If true, it will respawn player after switching their team.
- */
-BalanceTeams(bool:spawn = false)
-{
-    // Create eligible player list.
-    new Handle:arrayEligibleClients = INVALID_HANDLE;
-    new eligibleclients = CreateEligibleClientList(arrayEligibleClients, true);
-    
-    // If there are no eligible client's then stop.
-    if (!eligibleclients)
-    {
-        return;
-    }
-    
-    new client;
-    
-    // Move all clients to T
-    
-    // x = array index.
-    // client = client index.
-    for (new x = 0; x < eligibleclients; x++)
-    {
-        // Get client stored in array index.
-        client = GetArrayCell(arrayEligibleClients, x);
-        
-        // Switch client to T
-        CS_SwitchTeam(client, CS_TEAM_T);
-        
-        // If spawn is false, then stop.
-        if (!spawn)
-        {
-            continue;
-        }
-        
-        CS_RespawnPlayer(client);
-    }
-    
-    // Move every other client back to CT
-    
-    // x = array index
-    // client = client index.
-    for (new x = 0; x < eligibleclients; x += 2)
-    {
-        // Get client stored in array index.
-        client = GetArrayCell(arrayEligibleClients, x);
-        
-        // Switch client to CT
-        CS_SwitchTeam(client, CS_TEAM_CT);
-        
-        // If spawn is false, then stop.
-        if (!spawn)
-        {
-            continue;
-        }
-        
-        CS_RespawnPlayer(client);
-    }
-}
-
 RemoveObjectives()
 {
     decl String:classname[64];

@@ -32,7 +32,7 @@
 #define LOG_MODULE_WEAPONS          262144      /** Weapons module - weapons/ *.inc */
 #define LOG_MODULE_HITGROUPS        524288      /** hitgroups.inc */
 #define LOG_MODULE_ANTICAMP         1048576     /** anticamp.inc */
-#define LOG_MODULE_DAMAGECONTROL    2097152     /** damagecontrol.inc */
+#define LOG_MODULE_DAMAGE           2097152     /** damage.inc */
 #define LOG_MODULE_OFFSETS          4194304     /** offsets.inc */
 /*
  * @endsection
