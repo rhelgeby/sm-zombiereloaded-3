@@ -202,21 +202,19 @@
 	{
 		"restrict"	"yes"
 		"menu"		"no"
-		"knockback"	"100.0"
 	}
 
 	"smokegrenade"
 	{
 		"restrict"	"yes"
 		"menu"		"no"
-		"knockback"	"100.0"
 	}
 
 	"Knife"
 	{
 		"restrict"	"no"
 		"menu"		"no"
-		"knockback"	"8.0"
+		"knockback"	"15.0"
 	}
 
 	"NVGs"
