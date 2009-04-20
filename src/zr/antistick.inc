@@ -40,10 +40,10 @@ AntiStickRestart()
         KillTimer(tAntiStick);
     }
     
-    new bool:antistick = GetConVarBool(gCvars[CVAR_ANTISTICK]);
+    new bool:antistick = GetConVarBool(g_hCvarsList[CVAR_ANTISTICK]);
     if (antistick)
     {
-        new Float:interval = GetConVarFloat(gCvars[CVAR_ANTISTICK_INTERVAL]);
+        new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_ANTISTICK_INTERVAL]);
         tAntiStick = CreateTimer(interval, AntiStickTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
     }
 }

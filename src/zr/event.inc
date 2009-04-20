@@ -71,8 +71,8 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
         KillTimer(tInfect);
     }
     
-    new Float:min = GetConVarFloat(gCvars[CVAR_SPAWN_MIN]);
-    new Float:max = GetConVarFloat(gCvars[CVAR_SPAWN_MAX]);
+    new Float:min = GetConVarFloat(g_hCvarsList[CVAR_SPAWN_MIN]);
+    new Float:max = GetConVarFloat(g_hCvarsList[CVAR_SPAWN_MAX]);
     new Float:randlen = GetRandomFloat(min, max);
     tInfect = CreateTimer(randlen, MotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
     
@@ -144,10 +144,10 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     // Check if client is on a team.
     if (ZRIsClientOnTeam(index))
     {
-        new bool:cashfill = GetConVarBool(gCvars[CVAR_CASHFILL]);
+        new bool:cashfill = GetConVarBool(g_hCvarsList[CVAR_CASHFILL]);
         if (cashfill)
         {
-            new cash = GetConVarInt(gCvars[CVAR_CASHAMOUNT]);
+            new cash = GetConVarInt(g_hCvarsList[CVAR_CASHAMOUNT]);
             SetPlayerMoney(index, cash);
         }
         

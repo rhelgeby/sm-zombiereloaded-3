@@ -117,7 +117,7 @@ public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
 /*ZRKnockbackMMenu(client)
 {
     new Handle:menu_knockbackm = CreateMenu(ZRKnockbackMHandle);
-    new Float:curknockback = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
+    new Float:curknockback = GetConVarFloat(g_hCvarsList[CVAR_ZOMBIE_KNOCKBACK]);
     
     SetGlobalTransTarget(client);
     
@@ -297,7 +297,7 @@ public ZRClassKnockbackHandle(Handle:menu_knockback, MenuAction:action, client, 
 ZRNVGSMenu(client)
 {
     new Handle:menu_nvgs = CreateMenu(ZRNVGSHandle);
-    new curnvgs = GetConVarInt(gCvars[CVAR_ZOMBIE_NVGS]);
+    new curnvgs = GetConVarInt(g_hCvarsList[CVAR_ZOMBIE_NVGS]);
 
     SetGlobalTransTarget(client);
     
@@ -328,17 +328,17 @@ public ZRNVGSHandle(Handle:menu_nvgs, MenuAction:action, client, slot)
         {
             case 0:
             {
-                SetConVarInt(gCvars[CVAR_ZOMBIE_NVGS], -1);
+                SetConVarInt(g_hCvarsList[CVAR_ZOMBIE_NVGS], -1);
                 ZRNVGSMenu(client);
             }
             case 1:
             {
-                SetConVarInt(gCvars[CVAR_ZOMBIE_NVGS], 0);
+                SetConVarInt(g_hCvarsList[CVAR_ZOMBIE_NVGS], 0);
                 ZRNVGSMenu(client);
             }
             case 2:
             {
-                SetConVarInt(gCvars[CVAR_ZOMBIE_NVGS], 1);
+                SetConVarInt(g_hCvarsList[CVAR_ZOMBIE_NVGS], 1);
                 ZRNVGSMenu(client);
             }
         }
@@ -708,8 +708,8 @@ public ZRLogFlagsMenuHandle(Handle:menu_log_flags, MenuAction:action, client, sl
 
 AddToKnockbackMultiplier(Float:value)
 {
-    new Float:current_val = GetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK]);
-    SetConVarFloat(gCvars[CVAR_ZOMBIE_KNOCKBACK], current_val + value);
+    new Float:current_val = GetConVarFloat(g_hCvarsList[CVAR_ZOMBIE_KNOCKBACK]);
+    SetConVarFloat(g_hCvarsList[CVAR_ZOMBIE_KNOCKBACK], current_val + value);
 }
 
 AddToClassKnockback(classindex, Float:value)
@@ -720,7 +720,7 @@ AddToClassKnockback(classindex, Float:value)
 ToggleLogFlag(flag)
 {
     new log_flags;
-    log_flags = GetConVarInt(gCvars[CVAR_LOG]);
+    log_flags = GetConVarInt(g_hCvarsList[CVAR_LOG]);
     
     if (log_flags & flag)
     {
@@ -731,5 +731,5 @@ ToggleLogFlag(flag)
         log_flags = log_flags + flag;
     }
     
-    SetConVarInt(gCvars[CVAR_LOG], log_flags);
+    SetConVarInt(g_hCvarsList[CVAR_LOG], log_flags);
 }

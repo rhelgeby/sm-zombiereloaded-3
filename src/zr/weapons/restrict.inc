@@ -67,6 +67,16 @@ RestrictClearData()
  */
 RestrictOnMapStart()
 {
+    // Clear weapon restrict data.
+    RestrictClearData();
+    
+    // If module is disabled, then stop.
+    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    if (!restrict)
+    {
+        return;
+    }
+    
     // Restrict default restrictions. (set in weapons.txt)
     RestrictDefaultRestrictions();
     
@@ -78,7 +88,7 @@ RestrictOnMapStart()
     {
         if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
         {
-            ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapongroups.txt.", LOG_FORMAT_TYPE_FULL);
+            ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapongroups.txt.", LOG_FORMAT_TYPE_ERROR);
         }
         
         return;
@@ -208,7 +218,7 @@ RestrictOnClientDisconnect(client)
 public Action:RestrictBuyHook(client, argc)
 {
     // If plugin is disabled then stop.
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (!enabled)
     {
         // Allow command.
@@ -835,7 +845,7 @@ RestrictGetGroupWeapons(const String:groupname[], String:weaponlist[], maxlen, c
 public RestrictCanUse(client, weapon, dummy1, dummy2, dummy3, dummy4)
 {
     // If plugin is disabled then stop.
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (!enabled)
     {
         return Hacks_Continue;

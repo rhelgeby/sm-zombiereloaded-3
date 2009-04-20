@@ -37,7 +37,7 @@ CreateCommands()
 
 public Action:Command_Infect(client, argc)
 {
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (argc < 1 || !enabled)
     {
         return Plugin_Handled;
@@ -84,7 +84,7 @@ public Action:Command_Infect(client, argc)
 
 public Action:Command_Respawn(client, argc)
 {
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (argc < 1 || !enabled)
     {
         return Plugin_Handled;
@@ -136,16 +136,37 @@ public Action:Command_Respawn(client, argc)
 }
 
 /**
- * Command callback for client command "zr_restrict"
+ * Command callback (zr_restrict)
+ * Restricts a weapon or group
+ *   
  * @param client    The client index.
  * @param argc      Argument count.
-*/ 
+*/
 public Action:Command_Restrict(client, argc)
 {
+    // Disabled.
     // If plugin is disabled then stop
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    /**new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (argc < 1 || !enabled)
     {
+        return Plugin_Handled;
+    }*/
+    
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        // Tell client command is disabled.
+        ZR_ReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // If restrict module is disabled, then stop.
+    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    if (!restrict)
+    {
+        // Tell client command is disabled.
+        ZR_ReplyToCommand(client, "Feature is disabled");
         return Plugin_Handled;
     }
     
@@ -165,16 +186,37 @@ public Action:Command_Restrict(client, argc)
 }
 
 /**
- * Command callback for client command "zr_unrestrict"
+ * Command callback (zr_unrestrict)
+ * Unrestricts a weapon or group
+ *   
  * @param client    The client index.
  * @param argc      Argument count.
-*/ 
+*/
 public Action:Command_Unrestrict(client, argc)
 {
+    // Disabled.
     // If plugin is disabled then stop
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    /**new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (argc < 1 || !enabled)
     {
+        return Plugin_Handled;
+    }*/
+    
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        // Tell client command is disabled.
+        ZR_ReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // If restrict module is disabled, then stop.
+    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    if (!restrict)
+    {
+        // Tell client command is disabled.
+        ZR_ReplyToCommand(client, "Feature is disabled");
         return Plugin_Handled;
     }
     

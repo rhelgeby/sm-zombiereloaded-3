@@ -41,11 +41,6 @@
  * Delay between round ending and new round starting. (Short, for ROUNDEND_GAME_COMMENCING)
  */
 #define ROUNDEND_DELAY_SHORT 3.0
-
-/**
- * Minimum dx level required to see overlays.
- */
-#define ROUNDEND_MIN_DXLEVEL 90
  
 /**
  * Possible round end outcomes.
@@ -401,14 +396,14 @@ RoundEndDisplayClientOverlay(client, const String:overlay[])
     }
     
     // If dxLevel is above or equal to minimum requirement, then display overlay.
-    if (dxLevel[client] >= ROUNDEND_MIN_DXLEVEL)
+    if (dxLevel[client] >= GENERAL_MIN_DXLEVEL)
     {
         ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
     }
     // If client doesn't meet minimum requirement, then print unsupported text.
     else
     {
-        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], ROUNDEND_MIN_DXLEVEL);
+        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], GENERAL_MIN_DXLEVEL);
     }
 }
 
@@ -421,7 +416,7 @@ RoundEndDisplayClientOverlay(client, const String:overlay[])
 RoundEndOverlayStart(Float:time, RoundEndOutcome:outcome)
 {
     // If round end overlays are disabled, then stop.
-    new bool:overlay = GetConVarBool(gCvars[CVAR_ROUNDEND_OVERLAY]);
+    new bool:overlay = GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_OVERLAY]);
     if (!overlay)
     {
         return;
@@ -434,12 +429,12 @@ RoundEndOverlayStart(Float:time, RoundEndOutcome:outcome)
         // Show "zombies win" overlay.
         case ZombiesWin:
         {
-            GetConVarString(gCvars[CVAR_ROUNDEND_OVERLAY_ZOMBIE], overlaypath, sizeof(overlaypath));
+            GetConVarString(g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE], overlaypath, sizeof(overlaypath));
         }
         // Show "humans win" overlay.
         case HumansWin:
         {
-            GetConVarString(gCvars[CVAR_ROUNDEND_OVERLAY_HUMAN], overlaypath, sizeof(overlaypath));
+            GetConVarString(g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN], overlaypath, sizeof(overlaypath));
         }
         // Show no overlay.
         default:

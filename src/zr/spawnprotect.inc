@@ -67,16 +67,16 @@ SpawnProtectOnClientSpawn(client)
         return;
     }
     
-    // If protect cvar is invalid or 0, then stop.
-    new protect = GetConVarInt(gCvars[CVAR_PROTECT]);
-    if (protect <= 0)
+    // If protect cvar is disabled, then stop.
+    new bool:protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
+    if (!protect)
     {
         return;
     }
     
     // If player respawns as human, and either cvar zr_suicide_world_damage or the client
     // wasn't killed by world is false, then continue on to protect client.
-    new bool:respawn_zombie = GetConVarBool(gCvars[CVAR_RESPAWN_ZOMBIE]);
+    new bool:respawn_zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE]);
     if (!respawn_zombie && !RespawnKilledByWorld(client))
     {
         // Set spawn protect flag on client.
@@ -87,11 +87,12 @@ SpawnProtectOnClientSpawn(client)
         SetPlayerAlpha(client, 0);
         SetPlayerSpeed(client, 600.0);
         
-        // Set time left to zr_protect's value.
-        pSpawnProtectTime[client] = protect;
+        // Set time left to zr_protect_time's value.
+        new protect_time = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_TIME]);
+        pSpawnProtectTime[client] = protect_time;
         
         // Tell client they are being protected.
-        ZR_PrintToChat(client, "Spawn protection begin", protect);
+        ZR_PrintToChat(client, "Spawn protection begin", protect_time);
         
         // Send time left in a hud message.
         ZR_HudHint(client, "Spawn Protect", pSpawnProtectTime[client]);

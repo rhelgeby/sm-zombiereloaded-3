@@ -9,6 +9,11 @@
 #define DEFAULT_FOV 90
 
 /**
+ * Minimum dx level required to see overlays.
+ */
+#define GENERAL_MIN_DXLEVEL 90
+
+/**
  * @section Logging flags.
  */
 #define LOG_CORE_EVENTS             1           /** Executing config files, error messages, etc. */

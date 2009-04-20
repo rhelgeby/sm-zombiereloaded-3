@@ -14,7 +14,7 @@ HookChatCmds()
 
 public Action:SayCommand(client, argc)
 {
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (!client || !enabled)
     {
         return Plugin_Continue;
@@ -81,7 +81,7 @@ public Action:SayCommand(client, argc)
 
 ZSpawn(client)
 {
-    new bool:spawn = GetConVarBool(gCvars[CVAR_ZSPAWN]);
+    new bool:spawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
     if (!spawn)
     {
         ZR_PrintToChat(client, "Feature is disabled");

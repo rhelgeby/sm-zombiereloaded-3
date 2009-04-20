@@ -29,13 +29,13 @@ HookCommands()
 
 public Action:Command_NightVision(client, argc)
 {
-    new bool:allow_disable = GetConVarBool(gCvars[CVAR_ZVISION_ALLOW_DISABLE]);
+    new bool:allow_disable = GetConVarBool(g_hCvarsList[CVAR_ZVISION_ALLOW_DISABLE]);
     if (!allow_disable)
     {
         return;
     }
     
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (!enabled)
     {
         return;
@@ -71,14 +71,14 @@ FindMapSky()
 
 ChangeLightStyle()
 {
-    new bool:dark = GetConVarBool(gCvars[CVAR_DARK]);
+    new bool:dark = GetConVarBool(g_hCvarsList[CVAR_DARK]);
     if (dark)
     {
         decl String:darkness[2];
         decl String:sky[32];
         
-        GetConVarString(gCvars[CVAR_DARK_LEVEL], darkness, sizeof(darkness));
-        GetConVarString(gCvars[CVAR_DARK_SKY], sky, sizeof(sky));
+        GetConVarString(g_hCvarsList[CVAR_DARK_LEVEL], darkness, sizeof(darkness));
+        GetConVarString(g_hCvarsList[CVAR_DARK_SKY], sky, sizeof(sky));
         
         SetLightStyle(0, darkness);
         SetConVarString(FindConVar("sv_skyname"), sky, true, false);
@@ -192,7 +192,7 @@ public Action:MotherZombie(Handle:timer)
     new client;
     
     // Ratio of mother zombies to humans.
-    new ratio = GetConVarInt(gCvars[CVAR_MOTHER_ZOMBIE_RATIO]);
+    new ratio = GetConVarInt(g_hCvarsList[CVAR_MOTHER_ZOMBIE_RATIO]);
     
     // If ratio is 0 or lower, then pick 1 zombie.
     if (ratio <= 0)
@@ -288,7 +288,7 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     
     
     // Check if consecutive infection protection is enabled.
-    new bool:consecutive_infect = GetConVarBool(gCvars[CVAR_CONSECUTIVE_INFECT]);
+    new bool:consecutive_infect = GetConVarBool(g_hCvarsList[CVAR_CONSECUTIVE_INFECT]);
     
     // Flag player to be immune from being mother zombie twice, if consecutive infect protection is enabled.
     bMotherInfectImmune[client] = consecutive_infect ? motherinfect : false;
@@ -312,13 +312,13 @@ InfectionEffects(client)
     clientloc[2] += 30;
     
     decl String:sound[128];
-    GetConVarString(gCvars[CVAR_INFECT_SOUND], sound, sizeof(sound));
+    GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
     if (sound[0])
     {
         SEffectsEmitSoundFromClient(client, sound, SNDLEVEL_SCREAMING);
     }
     
-    new bool:esplash = GetConVarBool(gCvars[CVAR_INFECT_ESPLASH]);
+    new bool:esplash = GetConVarBool(g_hCvarsList[CVAR_INFECT_ESPLASH]);
     if (esplash)
     {
         TE_SetupEnergySplash(clientloc, direction, true);
@@ -332,19 +332,19 @@ InfectionEffects(client)
         new flags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
         flags = flags | EXP_NODAMAGE | EXP_NODECAL;
         
-        new bool:fireball = GetConVarBool(gCvars[CVAR_INFECT_FIREBALL]);
+        new bool:fireball = GetConVarBool(g_hCvarsList[CVAR_INFECT_FIREBALL]);
         if (!fireball)
         {
             flags = flags | EXP_NOFIREBALL;
         }
         
-        new bool:smoke = GetConVarBool(gCvars[CVAR_INFECT_SMOKE]);
+        new bool:smoke = GetConVarBool(g_hCvarsList[CVAR_INFECT_SMOKE]);
         if (!smoke)
         {
             flags = flags | EXP_NOSMOKE;
         }
         
-        new bool:sparks = GetConVarBool(gCvars[CVAR_INFECT_SPARKS]);
+        new bool:sparks = GetConVarBool(g_hCvarsList[CVAR_INFECT_SPARKS]);
         if (!sparks)
         {
             flags = flags | EXP_NOSPARKS;
@@ -362,16 +362,16 @@ InfectionEffects(client)
         AcceptEntityInput(explosion, "Explode");
     }
     
-    new bool:shake = GetConVarBool(gCvars[CVAR_INFECT_SHAKE]);
+    new bool:shake = GetConVarBool(g_hCvarsList[CVAR_INFECT_SHAKE]);
     if (shake)
     {
         new Handle:hShake = StartMessageOne("Shake", client);
         if (hShake != INVALID_HANDLE)
         {
             BfWriteByte(hShake, 0);
-            BfWriteFloat(hShake, GetConVarFloat(gCvars[CVAR_INFECT_SHAKE_AMP]));
-            BfWriteFloat(hShake, GetConVarFloat(gCvars[CVAR_INFECT_SHAKE_FREQUENCY]));
-            BfWriteFloat(hShake, GetConVarFloat(gCvars[CVAR_INFECT_SHAKE_DURATION]));
+            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_AMP]));
+            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]));
+            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]));
             
             EndMessage();
         }

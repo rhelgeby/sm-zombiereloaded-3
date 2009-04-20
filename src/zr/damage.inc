@@ -50,7 +50,7 @@ DamageInit()
 {
     // Create command callbacks (intercepts) for listed suicide commands.
     decl String:suicidecmds[64];
-    GetConVarString(gCvars[CVAR_SUICIDE_CMDS], suicidecmds, sizeof(suicidecmds));
+    GetConVarString(g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS], suicidecmds, sizeof(suicidecmds));
     
     // Create array to store cmds
     new String:arrayCmds[DAMAGE_SUICIDE_MAX_CMDS][DAMAGE_SUICIDE_MAX_LENGTH];
@@ -105,7 +105,7 @@ DamageOnClientDisconnect(client)
 public DamageTraceAttack(client, inflictor, attacker, damage, hitbox, hitgroup)
 {
     // Disabled
-    // new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    // new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     
     // If attacker isn't valid, then stop.
     if (!ZRIsValidClient(attacker))
@@ -144,7 +144,7 @@ public DamageOnTakeDamage(client, inflictor, attacker, damage, damagetype, ammot
 {
     // Disabled.
     /**
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (!enabled)
     {
         return Hacks_Continue;
@@ -250,7 +250,7 @@ public Action:DamageSuicideIntercept(client, argc)
 {
     // Disabled.
     /**
-    new bool:enabled = GetConVarBool(gCvars[CVAR_ENABLE]);
+    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (!enabled)
     {
         return Plugin_Continue;
@@ -278,8 +278,8 @@ public Action:DamageSuicideIntercept(client, argc)
     new bool:clientzombie = IsPlayerZombie(client);
     
     // Get cvar values for suicide interception.
-    new bool:suicidezombie = GetConVarBool(gCvars[CVAR_SUICIDE_ZOMBIE]);
-    new bool:suicidehuman = GetConVarBool(gCvars[CVAR_SUICIDE_HUMAN]);
+    new bool:suicidezombie = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]);
+    new bool:suicidehuman = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]);
     
     // Determine whether to block suicide based off of the client's zombie flag and cvar values.
     new bool:blocksuicide = clientzombie ? suicidezombie : suicidehuman;

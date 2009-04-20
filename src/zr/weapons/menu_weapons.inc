@@ -422,7 +422,7 @@ WeaponsMenuMarket(client)
     decl String:togglebuyzone[64];
     
     decl String:curSetting[8];
-    ZRBoolToConfigSetting(GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
+    ZRBoolToConfigSetting(GetConVarBool(g_hCvarsList[CVAR_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
     
     Format(togglebuyzone, sizeof(togglebuyzone), "%t", "Weapons menu market toggle buyzone", curSetting);
     
@@ -451,13 +451,13 @@ public WeaponsMenuMarketHandle(Handle:menu_weapons_market, MenuAction:action, cl
         {
             case 0:
             {
-                if (GetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE]))
+                if (GetConVarBool(g_hCvarsList[CVAR_ZMARKET_BUYZONE]))
                 {
-                    SetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE], false);
+                    SetConVarBool(g_hCvarsList[CVAR_ZMARKET_BUYZONE], false);
                 }
                 else
                 {
-                    SetConVarBool(gCvars[CVAR_ZMARKET_BUYZONE], true);
+                    SetConVarBool(g_hCvarsList[CVAR_ZMARKET_BUYZONE], true);
                 }
             }
         }

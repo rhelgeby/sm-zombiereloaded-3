@@ -637,15 +637,15 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
     {
         case ZR_CLASS_TEAM_ZOMBIES:
         {
-            GetConVarString(gCvars[CVAR_CLASSES_DEFAULT_ZOMBIE], classname, sizeof(classname));
+            GetConVarString(g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE], classname, sizeof(classname));
         }
         case ZR_CLASS_TEAM_HUMANS:
         {
-            GetConVarString(gCvars[CVAR_CLASSES_DEFAULT_HUMAN], classname, sizeof(classname));
+            GetConVarString(g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN], classname, sizeof(classname));
         }
         case ZR_CLASS_TEAM_ADMINS:
         {
-            GetConVarString(gCvars[CVAR_CLASSES_DEFAULT_ADMIN], classname, sizeof(classname));
+            GetConVarString(g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN], classname, sizeof(classname));
         }
         default:
         {

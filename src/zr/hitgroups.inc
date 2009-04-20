@@ -52,6 +52,13 @@ HitgroupsLoad()
     // Clear hitgroup data
     HitgroupsClearData();
     
+    // If module is disabled, then stop.
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (!hitgroups)
+    {
+        return;
+    }
+    
     decl String:path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/zr/hitgroups.txt");
     

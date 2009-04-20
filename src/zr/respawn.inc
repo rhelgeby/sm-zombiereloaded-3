@@ -75,14 +75,14 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
     }
     
     // If respawn is disabled, stop here.
-    new bool:respawn = GetConVarBool(gCvars[CVAR_RESPAWN]);
+    new bool:respawn = GetConVarBool(g_hCvarsList[CVAR_RESPAWN]);
     if (!respawn)
     {
         return;
     }
     
     // Start respawn timer.
-    new Float:delay = GetConVarFloat(gCvars[CVAR_RESPAWN_DELAY]);
+    new Float:delay = GetConVarFloat(g_hCvarsList[CVAR_RESPAWN_DELAY]);
     tRespawn[client] = CreateTimer(delay, RespawnTimer, client, TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -95,7 +95,7 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
 RespawnKilledByWorld(client)
 {
     // Return true if both the cvar is enabled and the player was killed by world.
-    return (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && pKilledByWorld[client]);
+    return (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && pKilledByWorld[client]);
 }
 
 /**
@@ -121,7 +121,7 @@ RespawnSpawnClient(client)
     }
     
     // Get respawn team.
-    new bool:respawn_zombie = GetConVarBool(gCvars[CVAR_RESPAWN_ZOMBIE]);
+    new bool:respawn_zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE]);
     
     // Get suicide respawn cvar
     if (respawn_zombie)
@@ -130,7 +130,7 @@ RespawnSpawnClient(client)
         return;
     }
     
-    if (GetConVarBool(gCvars[CVAR_SUICIDE_WORLD_DAMAGE]) && pKilledByWorld[client])
+    if (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && pKilledByWorld[client])
     {
         InfectPlayer(client);
         pKilledByWorld[client] = false;

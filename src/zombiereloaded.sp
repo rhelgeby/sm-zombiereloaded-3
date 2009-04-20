@@ -26,6 +26,9 @@
 // Cvars (core)
 #include "zr/cvars"
 
+// Log (TODO)
+// #include "zr/log"
+
 // Translations (core)
 #include "zr/translation"
 
@@ -35,37 +38,31 @@
 // Models (core)
 #include "zr/models"
 
-// Round end (core)
+// Class System (core)
+#include "zr/playerclasses/playerclasses"
+
+// Round End (core)
 #include "zr/roundend"
 
 // Damage (core)
 #include "zr/damage"
 
-// Class system (module)
-#include "zr/playerclasses/playerclasses"
-
-#include "zr/anticamp"
-#include "zr/teleport"
-#include "zr/zombie"
-#include "zr/menu"
-#include "zr/sayhooks"
-
-// Weapons (module)
+// Weapons (core)
 #include "zr/weapons/weapons"
 
-// Sound effects (module)
+// Hitgroups (core)
+#include "zr/hitgroups"
+
+// Sound Effects (module)
 #include "zr/soundeffects/soundeffects"
 
 // Antistick (module)
 #include "zr/antistick"
 
-// Hitgroups (module)
-#include "zr/hitgroups"
-
 // Knockback (module)
 #include "zr/knockback"
 
-// Spawn protect (module)
+// Spawn Protect (module)
 #include "zr/spawnprotect"
 
 // Respawn (module)
@@ -77,6 +74,11 @@
 // ZHP (module)
 #include "zr/zhp"
 
+#include "zr/anticamp"
+#include "zr/teleport"
+#include "zr/zombie"
+#include "zr/menu"
+#include "zr/sayhooks"
 #include "zr/zadmin"
 #include "zr/commands"
 #include "zr/event"
@@ -109,10 +111,13 @@ public OnPluginStart()
     
     // ======================================================================
     
+    // Cvars
+    CvarsInit();
+    CvarsHook();
+    
+    // TODO: Be modulized/recoded.
     HookEvents();
     HookChatCmds();
-    CreateCvars();
-    HookCvars();
     CreateCommands();
     HookCommands();
     FindOffsets();
@@ -163,11 +168,11 @@ public OnMapStart()
     LoadDownloadData();
     
     // Forward event to modules.
-    RoundEndOnMapStart();
     ClassLoad();
+    RoundEndOnMapStart();
     WeaponsLoad();
-    SEffectsOnMapStart();
     HitgroupsLoad();
+    SEffectsOnMapStart();
     Anticamp_Startup();
 }
 
@@ -208,9 +213,9 @@ public OnClientPutInServer(client)
     bMotherInfectImmune[client] = false;
     
     // Forward event to modules.
+    ClassClientInit(client);
     RoundEndClientInit(client);
     DamageClientInit(client);
-    ClassClientInit(client);
     SEffectsClientInit(client);
     WeaponsClientInit(client);
     SpawnProtectClientInit(client);
@@ -228,8 +233,8 @@ public OnClientDisconnect(client)
     PlayerLeft(client);
     
     // Forward event to modules.
-    DamageOnClientDisconnect(client);
     ClassOnClientDisconnect(client);
+    DamageOnClientDisconnect(client);
     WeaponsOnClientDisconnect(client);
     ZTeleResetClient(client);
     
@@ -265,8 +270,8 @@ MapChangeCleanup()
 {
     TerminateRound(3.0, Game_Commencing);
         
-    UnhookCvars();
-    UnhookEvents();
+    CvarsHook();
+    CvarsUnhook();
     
     // TODO: Disable all modules! Teleport, ambience, overlays, antistick, etc.
     

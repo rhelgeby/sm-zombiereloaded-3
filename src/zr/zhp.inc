@@ -28,7 +28,7 @@ new bool:pZHP[MAXPLAYERS + 1];
 ZHPClientInit(client)
 {
     // Get default client setting from cvar.
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP_DEFAULT]);
+    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
     
     // Set flag to default value.
     pZHP[client] = zhp;
@@ -79,7 +79,7 @@ ZHPOnClientDeath(client)
 ZHPOnClientInfected(client)
 {
     // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
+    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
     if (!zhp)
     {
         return;
@@ -128,7 +128,7 @@ ZHPOnHealthInfectGain(client)
 ZHPToggle(client)
 {
     // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
+    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
     if (!zhp)
     {
         // Tell client feature is disabled.
@@ -164,7 +164,7 @@ ZHPToggle(client)
 ZHPUpdateHUD(client)
 {
     // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(gCvars[CVAR_ZHP]);
+    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
     if (!zhp)
     {
         return;

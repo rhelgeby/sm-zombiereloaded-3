@@ -1,9 +1,12 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: weapons.inc
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:        weapons.inc
+ *   Description: API for all weapon-related functions.
+ *
+ * ============================================================================
  */
 
 /**
@@ -55,8 +58,12 @@ WeaponsLoad()
     // Clear weapon data.
     WeaponsClearData();
     
-    // Clear weapon restrict data.
-    RestrictClearData();
+    // If module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        return;
+    }
     
     decl String:path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/zr/weapons/weapons.txt");
@@ -66,7 +73,7 @@ WeaponsLoad()
     {
         if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
         {
-            ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapons.txt, disabling weapons-based modules.", LOG_FORMAT_TYPE_FULL);
+            ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapons.txt, disabling weapons-based modules.", LOG_FORMAT_TYPE_ERROR);
         }
         
         return;
@@ -93,7 +100,7 @@ WeaponsValidateConfig()
     KvRewind(kvWeapons);
     if (!KvGotoFirstSubKey(kvWeapons))
     {
-        ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "No weapons listed in weapons.txt, disabling weapons-based modules.", LOG_FORMAT_TYPE_FULL);
+        ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "No weapons listed in weapons.txt, disabling weapons-based modules.", LOG_FORMAT_TYPE_ERROR);
     }
 }
 

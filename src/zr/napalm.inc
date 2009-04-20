@@ -53,12 +53,11 @@ NapalmOnClientHurt(client, const String:weapon[])
  */
 NapalmOnWeaponFire(const String:weapon[])
 {
-    // If ignite grenade is disabled, then stop.
-    new bool:ignitegrenade = GetConVarBool(gCvars[CVAR_NAPALM_IGNITEGRENADE]);
-    if (!ignitegrenade)
+    // If human class can't throw napalm grenades, then stop. (TODO)
+    /*if ()
     {
         return;
-    }
+    }*/
     
     // If weapon isn't a grenade, then stop.
     if (!StrEqual(weapon, "hegrenade", false))

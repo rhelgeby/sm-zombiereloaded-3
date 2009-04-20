@@ -31,7 +31,7 @@ new Handle:hUpdateTimer;
 
 Anticamp_Startup(bool:no_reset = false)
 {
-    new Float:interval = GetConVarFloat(gCvars[CVAR_ANTICAMP_UPDATE_INTERVAL]);
+    new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL]);
     
     // Create timer for updating player locations.
     if (hUpdateTimer != INVALID_HANDLE)
@@ -342,7 +342,7 @@ HurtPlayersInVolume(volume_index)
     new client_health;
     decl String:client_name[64];
     decl String:buffer[192];
-    new anticamp_echo = GetConVarBool(gCvars[CVAR_ANTICAMP_ECHO]);
+    new anticamp_echo = GetConVarBool(g_hCvarsList[CVAR_ANTICAMP_ECHO]);
     
     // x = client index.
     for (new x = 1; x <= MaxClients; x++)

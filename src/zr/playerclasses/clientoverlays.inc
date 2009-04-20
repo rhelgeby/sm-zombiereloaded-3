@@ -66,7 +66,7 @@ ClassOverlayStart(client)
     ClientCommand(client, "r_screenoverlay \"%s\"", ActiveOverlay[client]);
     bClientOverlayOn[client] = true;
     
-    new Float:redisplay = GetConVarFloat(gCvars[CVAR_OVERLAY_REDISPLAY]);
+    new Float:redisplay = GetConVarFloat(g_hCvarsList[CVAR_OVERLAY_REDISPLAY]);
     tOverlay[client] = CreateTimer(redisplay, ClassOverlayTimer, client, TIMER_REPEAT);
 }
 

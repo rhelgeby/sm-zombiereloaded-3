@@ -259,7 +259,7 @@ ClassLoad()
     kvClassData = CreateKeyValues("classes");
     
     decl String:classfile[256];
-    GetConVarString(gCvars[CVAR_CLASSES_FILE], classfile, sizeof(classfile));
+    GetConVarString(g_hCvarsList[CVAR_CLASSES_FILE], classfile, sizeof(classfile));
     
     // Try to load the class configuration file.
     decl String:path[PLATFORM_MAX_PATH];

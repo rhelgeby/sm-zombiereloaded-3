@@ -13,7 +13,7 @@ ZTeleEnable()
     {
         KillTimer(ztele_startup_timer);
     }
-    new Float:startup_delay = GetConVarFloat(gCvars[CVAR_ZTELE_STARTUP_DELAY]);
+    new Float:startup_delay = GetConVarFloat(g_hCvarsList[CVAR_ZTELE_STARTUP_DELAY]);
     if (startup_delay > 0)
     {
         ztele_startup_timer = CreateTimer(startup_delay, Event_TeleporterStartup);
@@ -336,7 +336,7 @@ public Action:Command_TeleportAbort(client, argc)
 bool:ZTele(client)
 {
     // Check if the teleporter is disabled.
-    new bool:tele = GetConVarBool(gCvars[CVAR_ZTELE]);
+    new bool:tele = GetConVarBool(g_hCvarsList[CVAR_ZTELE]);
     if (!tele)
     {
         ZR_PrintToChat(client, "Feature is disabled");
@@ -375,7 +375,7 @@ bool:ZTele(client)
     // Check limits.
     if (IsPlayerHuman(client))
     {
-        new human_limit = GetConVarInt(gCvars[CVAR_ZTELE_HUMAN_LIMIT]);
+        new human_limit = GetConVarInt(g_hCvarsList[CVAR_ZTELE_HUMAN_LIMIT]);
         new bool:tele_humans;
         if (human_limit == 0)
         {
@@ -400,7 +400,7 @@ bool:ZTele(client)
     }
     else
     {
-        new zombie_limit = GetConVarInt(gCvars[CVAR_ZTELE_ZOMBIE_LIMIT]);
+        new zombie_limit = GetConVarInt(g_hCvarsList[CVAR_ZTELE_ZOMBIE_LIMIT]);
         new bool:tele_zombies;
         if (zombie_limit == 0)
         {
@@ -439,8 +439,8 @@ TeleportClient(client, bool:no_delay = false, bool:free_tele = false, bool:no_co
 
     if (IsPlayerHuman(client))
     {
-        new human_delay = GetConVarInt(gCvars[CVAR_ZTELE_HUMAN_DELAY]);
-        new human_limit = GetConVarInt(gCvars[CVAR_ZTELE_HUMAN_LIMIT]);
+        new human_delay = GetConVarInt(g_hCvarsList[CVAR_ZTELE_HUMAN_DELAY]);
+        new human_limit = GetConVarInt(g_hCvarsList[CVAR_ZTELE_HUMAN_LIMIT]);
         if (human_delay > 0)
         {
             ztele_countdown[client] = human_delay;
@@ -461,8 +461,8 @@ TeleportClient(client, bool:no_delay = false, bool:free_tele = false, bool:no_co
     }
     else
     {
-        new zombie_delay = GetConVarInt(gCvars[CVAR_ZTELE_ZOMBIE_DELAY]);
-        new zombie_limit = GetConVarInt(gCvars[CVAR_ZTELE_ZOMBIE_LIMIT]);
+        new zombie_delay = GetConVarInt(g_hCvarsList[CVAR_ZTELE_ZOMBIE_DELAY]);
+        new zombie_limit = GetConVarInt(g_hCvarsList[CVAR_ZTELE_ZOMBIE_LIMIT]);
         if (zombie_delay > 0)
         {
             ztele_countdown[client] = zombie_delay;
@@ -490,7 +490,7 @@ TeleportClient(client, bool:no_delay = false, bool:free_tele = false, bool:no_co
         TeleportEntity(client, spawnLoc[client], NULL_VECTOR, empty_vector);
         
         // Create cooldown timer if enabled.
-        new cooldown = GetConVarInt(gCvars[CVAR_ZTELE_COOLDOWN]);
+        new cooldown = GetConVarInt(g_hCvarsList[CVAR_ZTELE_COOLDOWN]);
         if (!no_cooldown && cooldown)
         {
             ztele_countdown[client] = cooldown;

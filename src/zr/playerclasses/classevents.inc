@@ -37,8 +37,8 @@ ClassOnClientDisconnect(client)
 
 ClassOnClientSpawn(client)
 {
-    new bool:randomclass = GetConVarBool(gCvars[CVAR_CLASSES_RANDOM]);
-    new bool:showmenu = GetConVarBool(gCvars[CVAR_CLASSES_SPAWN]);
+    new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
+    new bool:showmenu = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SPAWN]);
     decl String:steamid[16];
     decl String:classname[64];
     

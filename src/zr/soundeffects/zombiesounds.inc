@@ -105,7 +105,7 @@ ZombieSoundsOnClientDeath(client)
     }
     
     // If death sound cvar is disabled, then stop.
-    new bool:death = GetConVarBool(gCvars[CVAR_SOUNDEFFECTS_DEATH]);
+    new bool:death = GetConVarBool(g_hCvarsList[CVAR_SOUNDEFFECTS_DEATH]);
     if (!death)
     {
         return;
@@ -132,7 +132,7 @@ ZombieSoundsOnClientHurt(client)
     }
     
     // Get groan factor, if 0, then stop.
-    new groan = GetConVarInt(gCvars[CVAR_SOUNDEFFECTS_GROAN]);
+    new groan = GetConVarInt(g_hCvarsList[CVAR_SOUNDEFFECTS_GROAN]);
     if (!groan)
     {
         return;
@@ -157,7 +157,7 @@ ZombieSoundsOnClientHurt(client)
 ZombieSoundsOnClientInfected(client)
 {
     // If interval is set to 0, then stop.
-    new Float:interval = GetConVarFloat(gCvars[CVAR_SOUNDEFFECTS_MOAN]);
+    new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_SOUNDEFFECTS_MOAN]);
     if (!interval)
     {
         return;

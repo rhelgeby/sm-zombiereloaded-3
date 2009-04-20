@@ -1,49 +1,55 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: cvars.inc
- *   Author: Greyscale
- * ====================
+ *
+ *   File:        cvars.inc
+ *   Description: Config creation and cvar control.
+ *
+ * ============================================================================
  */
 
-enum ZRSettings
+/**
+ * List of cvars used by the plugin.
+ */
+enum CvarsList
 {
     Handle:CVAR_ENABLE,
     Handle:CVAR_LOG,
-    Handle:CVAR_ALLOW_PLAYER_TEAM,
-    Handle:CVAR_AMBIENTSOUNDS,
-    Handle:CVAR_AMBIENTSOUNDS_FILE,
-    Handle:CVAR_AMBIENTSOUNDS_LENGTH,
-    Handle:CVAR_AMBIENTSOUNDS_VOLUME,
-    Handle:CVAR_SOUNDEFFECTS_MOAN,
-    Handle:CVAR_SOUNDEFFECTS_GROAN,
-    Handle:CVAR_SOUNDEFFECTS_DEATH,
-    Handle:CVAR_NAPALM_IGNITEGRENADE,
-    Handle:CVAR_CLASSES,
+    Handle:CVAR_ROUNDEND_OVERLAY,
+    Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
+    Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
     Handle:CVAR_CLASSES_DEFAULT_ADMIN,
     Handle:CVAR_CLASSES_FILE,
-    Handle:CVAR_ZOMBIE_HEALTH,
-    Handle:CVAR_ZOMBIE_SPEED,
-    Handle:CVAR_ZOMBIE_JUMP_DISTANCE,
-    Handle:CVAR_ZOMBIE_JUMP_HEIGHT,
-    Handle:CVAR_ZOMBIE_NVGS,
-    Handle:CVAR_ZOMBIE_FOV,
-    Handle:CVAR_ZOMBIE_REGEN,
-    Handle:CVAR_ZOMBIE_REGEN_HEALTH,
-    Handle:CVAR_ZOMBIE_REGEN_INTERVAL,
-    Handle:CVAR_ZOMBIE_NAPALM,
-    Handle:CVAR_ZOMBIE_NAPALM_TIME,
-    Handle:CVAR_ZOMBIE_NOFALLDAMAGE,
-    Handle:CVAR_ZOMBIE_KILL_BONUS,
-    Handle:CVAR_ZOMBIE_INFECT_HEALTH,
-    Handle:CVAR_ZOMBIE_ZVISION,
-    Handle:CVAR_ZOMBIE_ALPHA_SPAWN,
-    Handle:CVAR_ZOMBIE_ALPHA_DAMAGED,
-    Handle:CVAR_ZOMBIE_ALPHA_DAMAGE,
+    Handle:CVAR_DAMAGE_SUICIDE_ZOMBIE,
+    Handle:CVAR_DAMAGE_SUICIDE_HUMAN,
+    Handle:CVAR_DAMAGE_SUICIDE_CMDS,
+    Handle:CVAR_WEAPONS,
+    Handle:CVAR_WEAPONS_RESTRICT,
+    Handle:CVAR_HITGROUPS,
+    Handle:CVAR_SOUNDEFFECTS_MOAN,
+    Handle:CVAR_SOUNDEFFECTS_GROAN,
+    Handle:CVAR_SOUNDEFFECTS_DEATH,
+    Handle:CVAR_AMBIENTSOUNDS,
+    Handle:CVAR_AMBIENTSOUNDS_FILE,
+    Handle:CVAR_AMBIENTSOUNDS_LENGTH,
+    Handle:CVAR_AMBIENTSOUNDS_VOLUME,
+    Handle:CVAR_ANTISTICK,
+    Handle:CVAR_ANTISTICK_INTERVAL,
+    Handle:CVAR_SPAWNPROTECT,
+    Handle:CVAR_SPAWNPROTECT_TIME,
+    Handle:CVAR_RESPAWN,
+    Handle:CVAR_RESPAWN_DELAY,
+    Handle:CVAR_RESPAWN_ZOMBIE,
+    Handle:CVAR_RESPAWN_ZOMBIE_WORLD,
+    Handle:CVAR_ZHP,
+    Handle:CVAR_ZHP_DEFAULT,
+    
+    // To be modulized/recoded.
     Handle:CVAR_OVERLAY_REDISPLAY,
     Handle:CVAR_ZVISION_ALLOW_DISABLE,
     Handle:CVAR_MENU_AUTOCLOSE,
@@ -52,22 +58,10 @@ enum ZRSettings
     Handle:CVAR_DARK_SKY,
     Handle:CVAR_MOTHER_ZOMBIE_RATIO,
     Handle:CVAR_MOTHER_ZOMBIE_RESPAWN,
-    Handle:CVAR_RESPAWN,
-    Handle:CVAR_RESPAWN_ZOMBIE,
-    Handle:CVAR_RESPAWN_DELAY,
-    Handle:CVAR_SUICIDE_ZOMBIE,
-    Handle:CVAR_SUICIDE_HUMAN,
-    Handle:CVAR_SUICIDE_CMDS,
     Handle:CVAR_SUICIDE_WORLD_DAMAGE,
     Handle:CVAR_SPAWN_MIN,
     Handle:CVAR_SPAWN_MAX,
-    Handle:CVAR_ANTISTICK,
-    Handle:CVAR_ANTISTICK_INTERVAL,
-    Handle:CVAR_PROTECT,
     Handle:CVAR_CONSECUTIVE_INFECT,
-    Handle:CVAR_ROUNDEND_OVERLAY,
-    Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
-    Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
     Handle:CVAR_ZMARKET_BUYZONE,
     Handle:CVAR_ZSPAWN,
     Handle:CVAR_ZTELE,
@@ -78,8 +72,6 @@ enum ZRSettings
     Handle:CVAR_ZTELE_ZOMBIE_DELAY,
     Handle:CVAR_ZTELE_ZOMBIE_LIMIT,
     Handle:CVAR_ZTELE_RESET_BUFFERS,
-    Handle:CVAR_ZHP,
-    Handle:CVAR_ZHP_DEFAULT,
     Handle:CVAR_CASHFILL,
     Handle:CVAR_CASHAMOUNT,
     Handle:CVAR_INFECT_FIREBALL,
@@ -93,119 +85,292 @@ enum ZRSettings
     Handle:CVAR_INFECT_SHAKE_DURATION,
     Handle:CVAR_ANTICAMP,
     Handle:CVAR_ANTICAMP_UPDATE_INTERVAL,
-    Handle:CVAR_ANTICAMP_ECHO
+    Handle:CVAR_ANTICAMP_ECHO,
 }
 
-new gCvars[ZRSettings];
+/**
+ * Array to store cvar data in.
+ */
+new g_hCvarsList[CvarsList];
 
-CreateCvars()
+/**
+ * Cvars module init function.
+ */ 
+CvarsInit()
 {
-    gCvars[CVAR_ENABLE]                    =    CreateConVar("zr_enable", "1", "Enable zombie gameplay (0: Disable)");
-    gCvars[CVAR_LOG]                       =    CreateConVar("zr_log", "331", "Logging flags. Log messages to sourcemod logs, server console or client console. Use zr_log_flags to see a list of flags. (0: Disable)");
-    gCvars[CVAR_AMBIENTSOUNDS]             =    CreateConVar("zr_ambientsounds", "1", "Enable creepy ambience to be played throughout the game (0: Disable)");
-    gCvars[CVAR_AMBIENTSOUNDS_FILE]        =    CreateConVar("zr_ambientsounds_file", "ambient/zr/zr_ambience.mp3", "Path to ambient sound file that will be played throughout the game, when zr_ambience is 1");
-    gCvars[CVAR_AMBIENTSOUNDS_LENGTH]      =    CreateConVar("zr_ambientsounds_length", "60.0", "The length, in seconds, of the ambient sound file");
-    gCvars[CVAR_AMBIENTSOUNDS_VOLUME]      =    CreateConVar("zr_ambientsounds_volume", "1.0", "Volume of ambient sounds when zr_ambience is 1 (0.0: Unhearable,  1.0: Max volume)");
-    gCvars[CVAR_SOUNDEFFECTS_MOAN]         =    CreateConVar("zr_soundeffects_moan", "50", "How often, in seconds, a zombie moans (0: Disable)");
-    gCvars[CVAR_SOUNDEFFECTS_GROAN]        =    CreateConVar("zr_soundeffects_groan", "5", "Chance factor a zombie will groan when shot (Lower: More often, 0: Disable)");
-    gCvars[CVAR_SOUNDEFFECTS_DEATH]        =    CreateConVar("zr_soundeffects_death", "1", "Zombie will emit a death sound when killed (0: Disable)");
-    gCvars[CVAR_NAPALM_IGNITEGRENADE]      =    CreateConVar("zr_napalm_ignitegrenade", "1", "Ignites all thrown grenades. (0: Disable)");
-    gCvars[CVAR_CLASSES]                   =    CreateConVar("zr_classes", "1", "Enable zombie classes");
-    gCvars[CVAR_CLASSES_SPAWN]             =    CreateConVar("zr_classes_spawn", "0", "Classmenu is re-displayed every spawn (0: Disable)");
-    gCvars[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "A random class is assigned to each player every round. Overrides zr_classes_spawn and default classes. (0: Disable)");
-    gCvars[CVAR_CLASSES_DEFAULT_ZOMBIE]    =    CreateConVar("zr_classes_default_zombie", "random", "Default zombie class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
-    gCvars[CVAR_CLASSES_DEFAULT_HUMAN]     =    CreateConVar("zr_classes_default_human", "random", "Default human class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
-    gCvars[CVAR_CLASSES_DEFAULT_ADMIN]     =    CreateConVar("zr_classes_default_admin", "random", "Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.");
-    gCvars[CVAR_CLASSES_FILE]              =    CreateConVar("zr_classes_file", "configs/zr/playerclasses.txt", "Class data file to read from, in Valves key/values format. The path is relative to the \"sourcemod\" folder.");
-    gCvars[CVAR_ZOMBIE_HEALTH]             =    CreateConVar("zr_zombie_health", "5000", "The default health of a zombie");
-    gCvars[CVAR_ZOMBIE_SPEED]              =    CreateConVar("zr_zombie_speed", "350", "How fast zombies travel (300: Default speed,  600: Double speed)");
-    gCvars[CVAR_ZOMBIE_JUMP_DISTANCE]      =    CreateConVar("zr_zombie_jump_distance", "0.1", "How far the zombie jumps,  (0: Regular jump distance)");
-    gCvars[CVAR_ZOMBIE_JUMP_HEIGHT]        =    CreateConVar("zr_zombie_jump_height", "10.0", "How high a zombie jumps (0: Regular jump height)");
-    gCvars[CVAR_ZOMBIE_NVGS]               =    CreateConVar("zr_zombie_nvgs", "-1", "Zombies will be equipped with nightvision. Also used to override class nvgs if non-negative. (-1: No override, uses class setting,  0: No nvgs,  1: Nvgs on)");
-    gCvars[CVAR_ZOMBIE_FOV]                =    CreateConVar("zr_zombie_fov", "110", "The field of vision of zombies (90: Default vision)");
-    gCvars[CVAR_ZOMBIE_REGEN]              =    CreateConVar("zr_zombie_regen", "0", "Zombies will regenerate health");
-    gCvars[CVAR_ZOMBIE_REGEN_HEALTH]       =    CreateConVar("zr_zombie_regen_health", "1", "How much health is regenerated when zr_zombie_regen is 1");
-    gCvars[CVAR_ZOMBIE_REGEN_INTERVAL]     =    CreateConVar("zr_zombie_regen_interval", "5", "How often,  in seconds,  a zombie regenerates health when zr_zombie_regen is 1");
-    gCvars[CVAR_ZOMBIE_NAPALM]             =    CreateConVar("zr_zombie_napalm", "1", "Turns grenades into napalm grenades that light zombies on fire (0: Disable)");
-    gCvars[CVAR_ZOMBIE_NAPALM_TIME]        =    CreateConVar("zr_zombie_napalm_time", "20", "How long the zombie burns when zr_napalm is 1");
-    gCvars[CVAR_ZOMBIE_NOFALLDAMAGE]       =    CreateConVar("zr_zombie_nofalldamage", "0", "Zombies wont be hurt from falling (0: Disable)");
-    gCvars[CVAR_ZOMBIE_KILL_BONUS]         =    CreateConVar("zr_zombie_kill_bonus", "2", "How many additional kills are rewarded to the killer of the zombie");
-    gCvars[CVAR_ZOMBIE_INFECT_HEALTH]      =    CreateConVar("zr_zombie_infect_health", "100", "How much health a zombie gains when infecting a human (0: Disable)");
-    gCvars[CVAR_ZOMBIE_ZVISION]            =    CreateConVar("zr_zombie_zvision", "overlays/zr/zvision", "Overlay to be shown on all zombies' screen on infection (Leave empty to disable)");
-    gCvars[CVAR_ZOMBIE_ALPHA_SPAWN]        =    CreateConVar("zr_zombie_alpha_spawn", "255", "Initial transparency (0: Invisible. 255: Fully visible)");
-    gCvars[CVAR_ZOMBIE_ALPHA_DAMAGED]      =    CreateConVar("zr_zombie_alpha_damaged", "255", "Transparency when damaged (0: Invisible. 255: Fully visible)");
-    gCvars[CVAR_ZOMBIE_ALPHA_DAMAGE]       =    CreateConVar("zr_zombie_alpha_damage", "0", "How much damage to do before changing transparency.");
-    gCvars[CVAR_OVERLAY_REDISPLAY]         =    CreateConVar("zr_overlay_redisplay", "3", "Frequency, in seconds, to display overlay on the client's screen (Never go below 0.1, 0.2 seems safe)");
-    gCvars[CVAR_ZVISION_ALLOW_DISABLE]     =    CreateConVar("zr_zvision_allow_disable", "1", "Allow users to disable ZVision with their nightvision key (0: Disable)");
-    gCvars[CVAR_MENU_AUTOCLOSE]            =    CreateConVar("zr_menu_autoclose", "0", "Automatically close menus on selection. If disabled the menu will remain open.");
-    gCvars[CVAR_DARK]                      =    CreateConVar("zr_dark", "0", "Default value for darkening maps,  most dislike this feature (0: Disable)");
-    gCvars[CVAR_DARK_LEVEL]                =    CreateConVar("zr_dark_level", "a", "The darkness of the map,  a being the darkest,  z being extremely bright when zr_dark is 1 (n: Default)");
-    gCvars[CVAR_DARK_SKY]                  =    CreateConVar("zr_dark_sky", "sky_borealis01", "The sky the map will have when zr_dark is 1");
-    gCvars[CVAR_MOTHER_ZOMBIE_RATIO]       =    CreateConVar("zr_mother_zombie_ratio", "5", "For every 'x' number of humans,  there will be 1 zombie (0: Always only 1 mother zombie)");
-    gCvars[CVAR_MOTHER_ZOMBIE_RESPAWN]     =    CreateConVar("zr_mother_zombie_respawn", "0", "First zombie(s) will be teleported back to spawn when infected (0: Disable)");
-    gCvars[CVAR_RESPAWN]                   =    CreateConVar("zr_respawn", "0", "When player is killed,  player will respawn");
-    gCvars[CVAR_RESPAWN_ZOMBIE]            =    CreateConVar("zr_respawn_zombie", "1", "Respawn player as zombie (0: Respawn as human)");
-    gCvars[CVAR_RESPAWN_DELAY]             =    CreateConVar("zr_respawn_delay", "1", "How long to wait after death to respawn,  in seconds");
-    gCvars[CVAR_SUICIDE_ZOMBIE]            =    CreateConVar("zr_suicide_zombie", "1", "Intercept human suicide attempts.");
-    gCvars[CVAR_SUICIDE_HUMAN]             =    CreateConVar("zr_suicide_human", "1", "Intercept zombie suicide attempts.");
-    gCvars[CVAR_SUICIDE_CMDS]              =    CreateConVar("zr_suicide_cmds", "kill, spectate, jointeam", "List of suicide commands to intercept. (Delimited by \", \"");
-    /** Note: CVAR_SUICIDE_WORLD_DAMAGE should be renamed as it is not part of the suicide intercept function*/
-    gCvars[CVAR_SUICIDE_WORLD_DAMAGE]      =    CreateConVar("zr_suicide_world_damage", "1", "Respawn zombies as zombies if they were killed by the world, like elevators, doors and lasers. (0: Disable)");
-    gCvars[CVAR_SPAWN_MIN]                 =    CreateConVar("zr_spawn_min", "30", "Minimum time a player is picked to be zombie after the round starts,  in seconds");
-    gCvars[CVAR_SPAWN_MAX]                 =    CreateConVar("zr_spawn_max", "50", "Maximum time a player is picked to be zombie after the round starts,  in seconds");
-    gCvars[CVAR_ANTISTICK]                 =    CreateConVar("zr_antistick", "1", "Enable the anti-stick module, which will automatically unstick players stuck within each other. (0:Disable)");
-    gCvars[CVAR_ANTISTICK_INTERVAL]        =    CreateConVar("zr_antistick_interval", "1.0", "How often, in seconds, the anti-stick module checks each player for being stuck. (1.0: Default)");
-    gCvars[CVAR_PROTECT]                   =    CreateConVar("zr_protect", "10", "Players that join late will be protected for this long, in seconds (0: Disable)");
-    gCvars[CVAR_CONSECUTIVE_INFECT]        =    CreateConVar("zr_consecutive_infect", "0", "Allow player to be randomly chosen twice in a row to be a mother zombie (0: Disable)");
-    gCvars[CVAR_ROUNDEND_OVERLAY]          =    CreateConVar("zr_roundend_overlay", "1", "Shows an overlay to all clients when a team wins. (0: Disable)");
-    gCvars[CVAR_ROUNDEND_OVERLAY_HUMAN]    =    CreateConVar("zr_roundend_overlays_human", "overlays/zr/humans_win", "Path to \"humans win\" overlay");
-    gCvars[CVAR_ROUNDEND_OVERLAY_ZOMBIE]   =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "Path to \"zombies win\" overlay");
-    gCvars[CVAR_ZMARKET_BUYZONE]           =    CreateConVar("zr_zmarket_buyzone", "1", "Must be in buyzone to access !zmarket, if Market is installed (0: Can be used anywhere)");
-    gCvars[CVAR_ZSPAWN]                    =    CreateConVar("zr_zspawn", "1", "Allow players to spawn if they just joined the game (0: Disable)");
-    gCvars[CVAR_ZTELE]                     =    CreateConVar("zr_tele", "1", "Allow players to use the teleporter to get to spawn. (0: Disable)");
-    gCvars[CVAR_ZTELE_STARTUP_DELAY]       =    CreateConVar("zr_tele_startup_delay", "30", "Number of seconds to wait before the teleporter is enabled (0: Always enabled)");
-    gCvars[CVAR_ZTELE_COOLDOWN]            =    CreateConVar("zr_tele_cooldown", "20", "Number of seconds to wait before the teleporter can be used again, after a teleport. (0: Disable)");
-    gCvars[CVAR_ZTELE_HUMAN_DELAY]         =    CreateConVar("zr_tele_human_delay", "10", "Teleport delay for humans. (0: No delay)");
-    gCvars[CVAR_ZTELE_HUMAN_LIMIT]         =    CreateConVar("zr_tele_human_limit", "3", "Maximum number of teleports humans can do. (0: Humans can't use the teleporter. -1: Unlimited)");
-    gCvars[CVAR_ZTELE_ZOMBIE_DELAY]        =    CreateConVar("zr_tele_zombie_delay", "0", "Teleport delay for zombies. (0: No delay)");
-    gCvars[CVAR_ZTELE_ZOMBIE_LIMIT]        =    CreateConVar("zr_tele_zombie_limit", "8", "Maximum number of teleports zombies can do. (0: Zombies can't use the teleporter. -1: Unlimited)");
-    gCvars[CVAR_ZTELE_RESET_BUFFERS]       =    CreateConVar("zr_tele_reset_buffers", "1", "Reset custom saved teleport locations on each round start. (0: Disable)");
-    gCvars[CVAR_ZHP]                       =    CreateConVar("zr_zhp", "1", "Allows clients to enable/disable zombie health display (1: On,  0: Off)");
-    gCvars[CVAR_ZHP_DEFAULT]               =    CreateConVar("zr_zhp_default", "1", "The default value of zombie health display to new clients (1: On,  0: Off)");
-    gCvars[CVAR_CASHFILL]                  =    CreateConVar("zr_cashfill", "1", "Enable the mod to set the players cash to zr_cashamount (0: Disabled)");
-    gCvars[CVAR_CASHAMOUNT]                =    CreateConVar("zr_cashamount", "12000", "How much money players will have when they spawn when zr_cashfill is 1");
-    gCvars[CVAR_INFECT_FIREBALL]           =    CreateConVar("zr_infect_fireball", "1", "A fireball is created when a player is infected (0: Disable)");
-    gCvars[CVAR_INFECT_SMOKE]              =    CreateConVar("zr_infect_smoke", "1", "A puff of smoke is created when a player is infected (0: Disable)");
-    gCvars[CVAR_INFECT_SPARKS]             =    CreateConVar("zr_infect_sparks", "1", "Sparks are emitted when a player is infected (0: Disable)");
-    gCvars[CVAR_INFECT_SOUND]              =    CreateConVar("zr_infect_sound", "npc/fast_zombie/fz_scream1.wav", "Sound played from from player on infection (Leave blank to disable)");
-    gCvars[CVAR_INFECT_ESPLASH]            =    CreateConVar("zr_infect_esplash", "1", "An energy splash is emitted when player is infected (0: Disable)");
-    gCvars[CVAR_INFECT_SHAKE]              =    CreateConVar("zr_infect_shake", "1", "Player's screen is shaken on infection (0: Disable)");
-    gCvars[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "Amplitude of the shake, when zr_infect_shake is 1");
-    gCvars[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "Frequency of the shake, when zr_infect_shake is 1");
-    gCvars[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", "Duration of the shake, when zr_infect_shake is 1");
-    gCvars[CVAR_ANTICAMP]                  =    CreateConVar("zr_anticamp", "1", "Enables or disables hurt volumes for preventing unfair camping. (0: Disable)");
-    gCvars[CVAR_ANTICAMP_UPDATE_INTERVAL]  =    CreateConVar("zr_anticamp_update_interval", "1", "How often to update player locations (in seconds).");
-    gCvars[CVAR_ANTICAMP_ECHO]             =    CreateConVar("zr_anticamp_echo", "1", "Log kills done by anticamp to admin chat.");
+    // Cvar naming guidelines:
+    // 1. Prefix: "zr_"
+    // 2. Module name next. "zr_modulename_"
+    // 3. (If applys) Submodule name next. "zr_modulename_submodulename_" Ex "zr_weapons_restrict_"
+    // 4. Name last part to be defaulted to "1" (if boolean cvar) Ex "zr_damage_suicide_zombie",
+    //    because it will be defaulted to "1".  "zr_damage_suicide_zombie_disable" = bad.  Because we want
+    //    to try to default everything to "1" and let hosts disable what they don't want.
+    //
+    // Cvar description guidelines
+    // Assume cvar is enabled.
+    // Ex. "zr_roundend_overlay" "1" "Display round win overlays to all clients."
+    // Explain (additional) options in brackets.
+    // Ex. "zr_classes_default_zombie" "" "Default zombie class. ['""' = Class config defaults.  'random' = Give client random class on connect.]"
+    // Any thing else?
+    
+    // ===========================
+	// General (Core)
+	// ===========================
+	
+    g_hCvarsList[CVAR_ENABLE]                    =    CreateConVar("zr_enable", "1", "");
+    
+    // ===========================
+	// Log (core)
+	// ===========================
+	
+    g_hCvarsList[CVAR_LOG]                       =    CreateConVar("zr_log", "331", "");
+    // Old Desc: Logging flags. Log messages to sourcemod logs, server console or client console. Use zr_log_flags to see a list of flags. (0: Disable)
+    
+    // ===========================
+	// Translations (core)
+	// ===========================
+	
+    // (None)
+    
+    // ===========================
+	// Round End (core)
+	// ===========================
+	
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]          =    CreateConVar("zr_roundend_overlay", "1", "");
+    // Old Desc: Shows an overlay to all clients when a team wins. (0: Disable)
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]    =    CreateConVar("zr_roundend_overlays_human", "");
+    // Old Desc: overlays/zr/humans_win", "Path to \"humans win\" overlay
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]   =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "");
+    // Old Desc: Path to \"zombies win\" overlay
+    
+    // ===========================
+	// Offsets (core)
+	// ===========================
+	
+	// (None)
+	
+	// ===========================
+	// Models (core)
+	// ===========================
+	
+	// TODO: config file path.
+	
+    // ===========================
+    // Classes (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_CLASSES_SPAWN]             =    CreateConVar("zr_classes_spawn", "0", "");
+    // Old Desc: Classmenu is re-displayed every spawn (0: Disable)
+    g_hCvarsList[CVAR_CLASSES_RANDOM]            =    CreateConVar("zr_classes_random", "0", "");
+    // Old Desc: A random class is assigned to each player every round. Overrides zr_classes_spawn and default classes. (0: Disable)
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE]    =    CreateConVar("zr_classes_default_zombie", "random", "");
+    // Old Desc: Default zombie class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]     =    CreateConVar("zr_classes_default_human", "random", "");
+    // Old Desc: 
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]     =    CreateConVar("zr_classes_default_admin", "random", "");
+    // Old Desc: Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.
+    g_hCvarsList[CVAR_CLASSES_FILE]              =    CreateConVar("zr_classes_file", "configs/zr/playerclasses.txt", "");
+    // Old Desc: Class data file to read from, in Valves key/values format. The path is relative to the \"sourcemod\" folder.
+    
+    // ===========================
+    // Damage (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie", "1", "");
+    // Old Desc: Intercept human suicide attempts.
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human", "1", "");
+    // Old Desc: Intercept zombie suicide attempts.
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds", "kill, spectate, jointeam", "");
+    // Old Desc: List of suicide commands to intercept. (Delimited by \", \"
+    
+    // ===========================
+    // Weapons (core)
+    // ===========================
+    
+    // General
+    
+    g_hCvarsList[CVAR_WEAPONS]                          =    CreateConVar("zr_weapons", "1", "");
+    // Note make config file cvar.
+    // Note this disables restrict submodule.
+    
+    // Restrict
+    
+    g_hCvarsList[CVAR_WEAPONS_RESTRICT]                 =    CreateConVar("zr_weapons_restrict", "1", "");
+    // Note make config file cvar.
+    
+    // ===========================
+    // Hitgroups (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_HITGROUPS]                        =    CreateConVar("zr_hitgroups", "1", "");
+    // Note make config file cvar.
+    
+    // ===========================
+	// Sound Effects (module)
+	// ===========================
+	
+	// Zombie Sounds
+	
+    g_hCvarsList[CVAR_SOUNDEFFECTS_MOAN]         =    CreateConVar("zr_soundeffects_moan", "30", "");
+    // Old Desc: How often, in seconds, a zombie moans (0: Disable)
+    g_hCvarsList[CVAR_SOUNDEFFECTS_GROAN]        =    CreateConVar("zr_soundeffects_groan", "5", "");
+    // Old Desc: Chance factor a zombie will groan when shot (Lower: More often, 0: Disable)
+    g_hCvarsList[CVAR_SOUNDEFFECTS_DEATH]        =    CreateConVar("zr_soundeffects_death", "1", "");
+    // Old Desc: Zombie will emit a death sound when killed (0: Disable)
+    
+    // Ambient Sounds
+    
+    g_hCvarsList[CVAR_AMBIENTSOUNDS]             =    CreateConVar("zr_ambientsounds", "1", "");
+    // Old Desc: Enable creepy ambience to be played throughout the game (0: Disable)
+    g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE]        =    CreateConVar("zr_ambientsounds_file", "ambient/zr/zr_ambience.mp3", "");
+    // Old Desc: Path to ambient sound file that will be played throughout the game, when zr_ambience is 1
+    g_hCvarsList[CVAR_AMBIENTSOUNDS_LENGTH]      =    CreateConVar("zr_ambientsounds_length", "60.0", "");
+    // Old Desc: The length, in seconds, of the ambient sound file
+    g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]      =    CreateConVar("zr_ambientsounds_volume", "1.0", "");
+    // Old Desc: Volume of ambient sounds when zr_ambience is 1 (0.0: Unhearable,  1.0: Max volume)
+    
+    // ===========================
+	// Antistick (module)
+	// ===========================
+	
+    g_hCvarsList[CVAR_ANTISTICK]                 =    CreateConVar("zr_antistick", "1", "");
+    // Old Desc: Enable the anti-stick module, which will automatically unstick players stuck within each other. (0:Disable)
+    g_hCvarsList[CVAR_ANTISTICK_INTERVAL]        =    CreateConVar("zr_antistick_interval", "0.5", "");
+    // Old Desc: How often, in seconds, the anti-stick module checks each player for being stuck. (1.0: Default)
+    
+    // ===========================
+	// Knockback (module)
+	// ===========================
+	
+	// (None)
+	
+	// ===========================
+	// Spawn Protect (module)
+	// ===========================
+	
+    g_hCvarsList[CVAR_SPAWNPROTECT]                   =    CreateConVar("zr_spawnprotect", "1", "");
+    g_hCvarsList[CVAR_SPAWNPROTECT_TIME]              =    CreateConVar("zr_spawnprotect_time", "10", "");
+    
+    // ===========================
+	// Respawn (module)
+	// ===========================
+	
+    g_hCvarsList[CVAR_RESPAWN]                   =    CreateConVar("zr_respawn", "0", "");
+    // Old Desc: When player is killed,  player will respawn
+    g_hCvarsList[CVAR_RESPAWN_DELAY]             =    CreateConVar("zr_respawn_delay", "1", "");
+    // Old Desc: How long to wait after death to respawn,  in seconds
+    g_hCvarsList[CVAR_RESPAWN_ZOMBIE]            =    CreateConVar("zr_respawn_zombie", "1", "");
+    // Old Desc: Respawn player as zombie (0: Respawn as human)
+    g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]      =    CreateConVar("zr_respawn_zombie_world", "1", "");
+    // Old Desc: Respawn zombies as zombies if they were killed by the world, like elevators, doors and lasers. (0: Disable)
+    
+    // ===========================
+	// Napalm (module)
+	// ===========================
+	
+	// (None)
+	
+	// ===========================
+	// ZHP (module)
+	// ===========================
+	
+    g_hCvarsList[CVAR_ZHP]                       =    CreateConVar("zr_zhp", "1", "");
+    // Old Desc: Allows clients to enable/disable zombie health display (1: On,  0: Off)
+    g_hCvarsList[CVAR_ZHP_DEFAULT]               =    CreateConVar("zr_zhp_default", "1", "");
+    // Old Desc: The default value of zombie health display to new clients (1: On,  0: Off)
+    
+    
+    // TO BE MODULIZED/RECODED.
+    g_hCvarsList[CVAR_OVERLAY_REDISPLAY]         =    CreateConVar("zr_overlay_redisplay", "3", "");
+    // Old Desc: Frequency, in seconds, to display overlay on the client's screen (Never go below 0.1, 0.2 seems safe)
+    g_hCvarsList[CVAR_ZVISION_ALLOW_DISABLE]     =    CreateConVar("zr_zvision_allow_disable", "1", "");
+    // Old Desc: Allow users to disable ZVision with their nightvision key (0: Disable)
+    g_hCvarsList[CVAR_MENU_AUTOCLOSE]            =    CreateConVar("zr_menu_autoclose", "0", "");
+    // Old Desc: Automatically close menus on selection. If disabled the menu will remain open.
+    g_hCvarsList[CVAR_DARK]                      =    CreateConVar("zr_dark", "0", "");
+    // Old Desc: Default value for darkening maps,  most dislike this feature (0: Disable)
+    g_hCvarsList[CVAR_DARK_LEVEL]                =    CreateConVar("zr_dark_level", "a", "");
+    // Old Desc: The darkness of the map,  a being the darkest,  z being extremely bright when zr_dark is 1 (n: Default)
+    g_hCvarsList[CVAR_DARK_SKY]                  =    CreateConVar("zr_dark_sky", "sky_borealis01", "");
+    // Old Desc: The sky the map will have when zr_dark is 1
+    g_hCvarsList[CVAR_MOTHER_ZOMBIE_RATIO]       =    CreateConVar("zr_mother_zombie_ratio", "5", "");
+    // Old Desc: For every 'x' number of humans,  there will be 1 zombie (0: Always only 1 mother zombie)
+    g_hCvarsList[CVAR_MOTHER_ZOMBIE_RESPAWN]     =    CreateConVar("zr_mother_zombie_respawn", "0", "");
+    // Old Desc: First zombie(s) will be teleported back to spawn when infected (0: Disable)
+    g_hCvarsList[CVAR_SPAWN_MIN]                 =    CreateConVar("zr_spawn_min", "30", "");
+    // Old Desc: Minimum time a player is picked to be zombie after the round starts,  in seconds
+    g_hCvarsList[CVAR_SPAWN_MAX]                 =    CreateConVar("zr_spawn_max", "50", "");
+    // Old Desc: Maximum time a player is picked to be zombie after the round starts,  in seconds
+    g_hCvarsList[CVAR_CONSECUTIVE_INFECT]        =    CreateConVar("zr_consecutive_infect", "0", "");
+    // Old Desc: Allow player to be randomly chosen twice in a row to be a mother zombie (0: Disable)
+    g_hCvarsList[CVAR_ZMARKET_BUYZONE]           =    CreateConVar("zr_zmarket_buyzone", "1", "");
+    // Old Desc: Must be in buyzone to access !zmarket, if Market is installed (0: Can be used anywhere)
+    g_hCvarsList[CVAR_ZSPAWN]                    =    CreateConVar("zr_zspawn", "1", "");
+    // Old Desc: Allow players to spawn if they just joined the game (0: Disable)
+    g_hCvarsList[CVAR_ZTELE]                     =    CreateConVar("zr_tele", "1", "");
+    // Old Desc: Allow players to use the teleporter to get to spawn. (0: Disable)
+    g_hCvarsList[CVAR_ZTELE_STARTUP_DELAY]       =    CreateConVar("zr_tele_startup_delay", "30", "");
+    // Old Desc: Number of seconds to wait before the teleporter is enabled (0: Always enabled)
+    g_hCvarsList[CVAR_ZTELE_COOLDOWN]            =    CreateConVar("zr_tele_cooldown", "20", "");
+    // Old Desc: Number of seconds to wait before the teleporter can be used again, after a teleport. (0: Disable)
+    g_hCvarsList[CVAR_ZTELE_HUMAN_DELAY]         =    CreateConVar("zr_tele_human_delay", "10", "");
+    // Old Desc: Teleport delay for humans. (0: No delay)
+    g_hCvarsList[CVAR_ZTELE_HUMAN_LIMIT]         =    CreateConVar("zr_tele_human_limit", "3", "");
+    // Old Desc: Maximum number of teleports humans can do. (0: Humans can't use the teleporter. -1: Unlimited)
+    g_hCvarsList[CVAR_ZTELE_ZOMBIE_DELAY]        =    CreateConVar("zr_tele_zombie_delay", "0", "");
+    // Old Desc: Teleport delay for zombies. (0: No delay)
+    g_hCvarsList[CVAR_ZTELE_ZOMBIE_LIMIT]        =    CreateConVar("zr_tele_zombie_limit", "8", "");
+    // Old Desc: Maximum number of teleports zombies can do. (0: Zombies can't use the teleporter. -1: Unlimited)
+    g_hCvarsList[CVAR_ZTELE_RESET_BUFFERS]       =    CreateConVar("zr_tele_reset_buffers", "1", "");
+    // Old Desc: Reset custom saved teleport locations on each round start. (0: Disable)
+    g_hCvarsList[CVAR_CASHFILL]                  =    CreateConVar("zr_cashfill", "1", "");
+    // Old Desc: Enable the mod to set the players cash to zr_cashamount (0: Disabled)
+    g_hCvarsList[CVAR_CASHAMOUNT]                =    CreateConVar("zr_cashamount", "12000", "");
+    // Old Desc: How much money players will have when they spawn when zr_cashfill is 1
+    g_hCvarsList[CVAR_INFECT_FIREBALL]           =    CreateConVar("zr_infect_fireball", "1", "");
+    // Old Desc: A fireball is created when a player is infected (0: Disable)
+    g_hCvarsList[CVAR_INFECT_SMOKE]              =    CreateConVar("zr_infect_smoke", "1", "");
+    // Old Desc: A puff of smoke is created when a player is infected (0: Disable)
+    g_hCvarsList[CVAR_INFECT_SPARKS]             =    CreateConVar("zr_infect_sparks", "1", "");
+    // Old Desc: Sparks are emitted when a player is infected (0: Disable)
+    g_hCvarsList[CVAR_INFECT_SOUND]              =    CreateConVar("zr_infect_sound", "");
+    // Old Desc: npc/fast_zombie/fz_scream1.wav", "Sound played from from player on infection (Leave blank to disable)
+    g_hCvarsList[CVAR_INFECT_ESPLASH]            =    CreateConVar("zr_infect_esplash", "1", "");
+    // Old Desc: An energy splash is emitted when player is infected (0: Disable)
+    g_hCvarsList[CVAR_INFECT_SHAKE]              =    CreateConVar("zr_infect_shake", "1", "");
+    // Old Desc: Player's screen is shaken on infection (0: Disable)
+    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "");
+    // Old Desc: Amplitude of the shake, when zr_infect_shake is 1
+    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "");
+    // Old Desc: Frequency of the shake, when zr_infect_shake is 1
+    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", ""); 
+    // Old Desc: Duration of the shake, when zr_infect_shake is 1
+    g_hCvarsList[CVAR_ANTICAMP]                  =    CreateConVar("zr_anticamp", "1", "");
+    // Old Desc:  Enables or disables hurt volumes for preventing unfair camping. (0: Disable)
+    g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL]  =    CreateConVar("zr_anticamp_update_interval", "1", "");
+    // Old Desc: How often to update player locations (in seconds).
+    g_hCvarsList[CVAR_ANTICAMP_ECHO]             =    CreateConVar("zr_anticamp_echo", "1", "");
+    // Old Desc: Log kills done by anticamp to admin chat.
     
     // TODO: Recode.
-    //HookConVarChange(gCvars[CVAR_ENABLE], EnableHook);
-    
-    HookConVarChange(gCvars[CVAR_ANTICAMP], AnticampHook);
-    HookConVarChange(gCvars[CVAR_ANTICAMP_UPDATE_INTERVAL], UpdateIntervalHook);
+    //HookConVarChange(g_hCvarsList[CVAR_ENABLE], EnableHook);
     
     AutoExecConfig(true, "zombiereloaded", "sourcemod/zombiereloaded");
 }
 
-HookCvars()
+CvarsHook()
 {   
     SetConVarBool(FindConVar("mp_autoteambalance"), false);
     SetConVarInt(FindConVar("mp_limitteams"), 0);
     
     HookConVarChange(FindConVar("mp_autoteambalance"), AutoTeamBalanceHook);
     HookConVarChange(FindConVar("mp_limitteams"), LimitTeamsHook);
+    
+    HookConVarChange(g_hCvarsList[CVAR_ANTICAMP], AnticampHook);
+    HookConVarChange(g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL], UpdateIntervalHook);
 }
 
-UnhookCvars()
+CvarsUnhook()
 {
     UnhookConVarChange(FindConVar("mp_autoteambalance"), AutoTeamBalanceHook);
     UnhookConVarChange(FindConVar("mp_limitteams"), LimitTeamsHook);
@@ -240,7 +405,7 @@ public LimitTeamsHook(Handle:convar, const String:oldValue[], const String:newVa
 
 LogHasFlag(flag)
 {
-    if (GetConVarInt(gCvars[CVAR_LOG]) & flag)
+    if (GetConVarInt(g_hCvarsList[CVAR_LOG]) & flag)
     {
         return 1;
     }
