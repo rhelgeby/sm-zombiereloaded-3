@@ -12,13 +12,11 @@
 /**
  * @section Damage type flags.
  */
-#define DMG_GENERIC			0			// generic damage was done
-#define DMG_BULLET			(1 << 1)	// shot
-#define DMG_SLASH			(1 << 2)	// cut, clawed, stabbed
-#define DMG_BURN			(1 << 3)	// heat burned
-#define DMG_FALL			(1 << 5)	// fell too far
-#define DMG_BLAST			(1 << 6)	// explosive blast damage
-#define DMG_DROWN			(1 << 14)	// Drowning
+#define DMG_FALL        (1 << 5)    /** Client was damaged by falling. */
+#define DMG_BLAST       (1 << 6)    /** Client was damaged by explosion. */
+#define DMG_BULLET      (1 << 12)   /** Client was shot or knifed. */
+#define DMG_HEADSHOT    (1 << 30)   /** Client was shot in the head. */
+
 /**
  * @endsection
  */
@@ -37,8 +35,8 @@
  */
 enum DamageHooks
 {
-    Hook_TraceAttack,
-    Hook_OnTakeDamage,
+    Hook_TraceAttack, /** TraceAttack HookID */
+    Hook_OnTakeDamage, /** OnTakeDamage HookID */
 }
 
 new g_iDamageHooks[MAXPLAYERS + 1][DamageHooks];
@@ -74,8 +72,9 @@ DamageInit()
  */ 
 DamageClientInit(client)
 {
-    g_iDamageHooks[client][Hook_TraceAttack] = Hacks_Hook(client, HACKS_HTYPE_TRACEATTACK, DamageTraceAttack, false);
-    g_iDamageHooks[client][Hook_OnTakeDamage] = Hacks_Hook(client, HACKS_HTYPE_ONTAKEDAMAGE, DamageOnTakeDamage, false);
+    // Hook damage callbacks.
+    g_iDamageHooks[client][Hook_TraceAttack] = Hacks_Hook(client, HACKS_HTYPE_TRACEATTACK, DamageTraceAttack);
+    g_iDamageHooks[client][Hook_OnTakeDamage] = Hacks_Hook(client, HACKS_HTYPE_ONTAKEDAMAGE, DamageOnTakeDamage);
 }
 
 /**
@@ -85,6 +84,7 @@ DamageClientInit(client)
  */
 DamageOnClientDisconnect(client)
 {
+    // Unhook damage callbacks.
     Hacks_Unhook(g_iDamageHooks[client][Hook_TraceAttack]);
     Hacks_Unhook(g_iDamageHooks[client][Hook_OnTakeDamage]);
 }
@@ -160,79 +160,76 @@ public DamageOnTakeDamage(client, inflictor, attacker, damage, damagetype, ammot
         return Hacks_Continue;
     }
     
-    switch(damagetype)
+    // Client was damaged by falling.
+    if (damagetype & DMG_FALL)
     {
-        // Client fell too far.
-        case DMG_FALL:
+        // If client isn't a zombie, then allow damage.
+        if (!IsPlayerZombie(client))
         {
-            // If client isn't a zombie, then allow damage.
-            if (!IsPlayerZombie(client))
-            {
-                return Hacks_Continue;
-            }
-            
-            // If class has "nofalldamage" disabled, then allow damage.
-            new bool:blockfalldamage = ClassGetNoFallDamage(client);
-            if (!blockfalldamage)
-            {
-                return Hacks_Continue;
-            }
-            
-            // Stop damage.
-            return 0;
-        }
-        // Client is being damaged by a blast.
-        case DMG_BLAST:
-        {
-            // If attacker isn't valid, then allow damage.
-            if (!ZRIsValidClient(attacker))
-            {
-                return Hacks_Continue;
-            }
-            
-            // If client is a zombie, then allow damage.
-            if (IsPlayerZombie(client))
-            {
-                return Hacks_Continue;
-            }
-            
-            // Stop damage.
-            return 0;
-        }
-        // Client is being shot.
-        case DMG_BULLET:
-        {
-            // If attacker isn't valid, then allow damage.
-            if (!ZRIsValidClient(attacker))
-            {
-                return Hacks_Continue;
-            }
-            
-            // Get zombie flag for each client.
-            new bool:clientzombie = IsPlayerZombie(client);
-            new bool:attackerzombie = IsPlayerZombie(attacker);
-            
-            // If client and attacker are on the same team, then let CS:S handle the rest.
-            if (clientzombie == attackerzombie)
-            {
-                return Hacks_Continue;
-            }
-            
-            // We know that clientzombie is the opposite of attacker zombie.
-            
-            // If the client is a zombie, then allow damage.
-            if (clientzombie)
-            {
-                return Hacks_Continue;
-            }
-            
-            // Client is about to be infected, re-add HP so they aren't killed by knife.
-            new health = GetClientHealth(client);
-            SetEntityHealth(client, health + damage);
-            
-            // Allow damage.
             return Hacks_Continue;
         }
+        
+        // If class has "nofalldamage" disabled, then allow damage.
+        new bool:blockfalldamage = ClassGetNoFallDamage(client);
+        if (!blockfalldamage)
+        {
+            return Hacks_Continue;
+        }
+        
+        // Stop damage.
+        return 0;
+    }
+    // Client was damaged by explosion.
+    else if (damagetype & DMG_BLAST)
+    {
+        // If attacker isn't valid, then allow damage.
+        if (!ZRIsValidClient(attacker))
+        {
+            return Hacks_Continue;
+        }
+        
+        // If client is a zombie, then allow damage.
+        if (IsPlayerZombie(client))
+        {
+            return Hacks_Continue;
+        }
+        
+        // Stop damage.
+        return 0;
+    }
+    // Client was shot or knifed.
+    else if (damagetype & DMG_BULLET)
+    {
+        // If attacker isn't valid, then allow damage.
+        if (!ZRIsValidClient(attacker))
+        {
+            return Hacks_Continue;
+        }
+        
+        // Get zombie flag for each client.
+        new bool:clientzombie = IsPlayerZombie(client);
+        new bool:attackerzombie = IsPlayerZombie(attacker);
+        
+        // If client and attacker are on the same team, then let CS:S handle the rest.
+        if (clientzombie == attackerzombie)
+        {
+            return Hacks_Continue;
+        }
+        
+        // We know that clientzombie is the opposite of attacker zombie.
+        
+        // If the client is a zombie, then allow damage.
+        if (clientzombie)
+        {
+            return Hacks_Continue;
+        }
+        
+        // Client is about to be infected, re-add HP so they aren't killed by knife.
+        new health = GetClientHealth(client);
+        SetEntityHealth(client, health + damage);
+        
+        // Allow damage.
+        return Hacks_Continue;
     }
     
     // Allow damage.

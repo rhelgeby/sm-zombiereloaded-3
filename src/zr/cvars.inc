@@ -62,7 +62,7 @@ enum CvarsList
     Handle:CVAR_SUICIDE_WORLD_DAMAGE,
     Handle:CVAR_SPAWN_MIN,
     Handle:CVAR_SPAWN_MAX,
-    Handle:CVAR_CONSECUTIVE_INFECT,
+    Handle:CVAR_INFECT_CONSECUTIVE_BLOCK,
     Handle:CVAR_ZMARKET_BUYZONE,
     Handle:CVAR_ZSPAWN,
     Handle:CVAR_ZTELE,
@@ -302,7 +302,7 @@ CvarsInit()
     // Old Desc: Minimum time a player is picked to be zombie after the round starts,  in seconds
     g_hCvarsList[CVAR_SPAWN_MAX]                 =    CreateConVar("zr_spawn_max", "50", "");
     // Old Desc: Maximum time a player is picked to be zombie after the round starts,  in seconds
-    g_hCvarsList[CVAR_CONSECUTIVE_INFECT]        =    CreateConVar("zr_consecutive_infect", "0", "");
+    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]  =    CreateConVar("zr_infect_consecutive_block", "1", "");
     // Old Desc: Allow player to be randomly chosen twice in a row to be a mother zombie (0: Disable)
     g_hCvarsList[CVAR_ZMARKET_BUYZONE]           =    CreateConVar("zr_zmarket_buyzone", "1", "");
     // Old Desc: Must be in buyzone to access !zmarket, if Market is installed (0: Can be used anywhere)

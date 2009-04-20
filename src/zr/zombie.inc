@@ -288,10 +288,10 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     
     
     // Check if consecutive infection protection is enabled.
-    new bool:consecutive_infect = GetConVarBool(g_hCvarsList[CVAR_CONSECUTIVE_INFECT]);
+    new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]);
     
     // Flag player to be immune from being mother zombie twice, if consecutive infect protection is enabled.
-    bMotherInfectImmune[client] = consecutive_infect ? motherinfect : false;
+    bMotherInfectImmune[client] = infectconsecutiveblock ? motherinfect : false;
     
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);
