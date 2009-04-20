@@ -57,7 +57,7 @@ bool:AmbientSoundsValidateConfig()
     }
     
     // If logging is disabled for ambient sounds, then stop.
-    if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_AMBIENTSOUNDS))
+    if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_AMBIENTSOUNDS))
     {
         return false;
     }
@@ -71,7 +71,7 @@ bool:AmbientSoundsValidateConfig()
     if (!FileExists(sound, true))
     {
         // Log invalid sound file error.
-        ZR_LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Invalid sound file specified in zr_ambientsounds_file.", LOG_FORMAT_TYPE_ERROR);
+        LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Invalid sound file specified in zr_ambientsounds_file.", LOG_FORMAT_TYPE_ERROR);
         return false;
     }
     
@@ -80,7 +80,7 @@ bool:AmbientSoundsValidateConfig()
     if (ambientvolume <= 0.0)
     {
         // Log invalid ambient sound volume error.
-        ZR_LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Ambient sound is either muted or invalid.", LOG_FORMAT_TYPE_ERROR);
+        LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Ambient sound is either muted or invalid.", LOG_FORMAT_TYPE_ERROR);
         return false;
     }
     
@@ -89,7 +89,7 @@ bool:AmbientSoundsValidateConfig()
     if (ambientlength <= 0.0)
     {
         // Log invalid ambient sound length error.
-        ZR_LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Ambient sound length is invalid.", LOG_FORMAT_TYPE_ERROR);
+        LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Ambient sound length is invalid.", LOG_FORMAT_TYPE_ERROR);
         return false;
     }
     

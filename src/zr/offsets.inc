@@ -18,6 +18,7 @@ new offsFOV;
 new offsBuyZone;
 new offsColor;
 new offsRender;
+new offsActiveWeapon;
 
 new Handle:g_hGameConf = INVALID_HANDLE;
 new Handle:g_hRemoveAllItems = INVALID_HANDLE;
@@ -89,13 +90,21 @@ FindOffsets()
     }
 
     offsColor = FindSendPropInfo("CAI_BaseNPC", "m_clrRender");
-    if(offsColor == -1) {
+    if(offsColor == -1)
+    {
         SetFailState("Couldn't find \"m_clrRender\"!");
     }
 
     offsRender = FindSendPropInfo("CBaseAnimating", "m_nRenderMode");
-    if(offsRender == -1) {
+    if(offsRender == -1)
+    {
         SetFailState("Couldn't find \"m_nRenderMode\"!");
+    }
+    
+    offsActiveWeapon = FindSendPropInfo("CBasePlayer", "m_hActiveWeapon");
+    if(offsActiveWeapon == -1)
+    {
+        SetFailState("Couldn't find \"m_hActiveWeapon\"!");
     }
 }
 
@@ -276,7 +285,6 @@ CSDropWeapon(client, weapon)
 
 SetPlayerAlpha(client, alpha)
 {
-    SetEntData(client, offsColor + 3, alpha, 1, true);
     SetEntData(client, offsRender, 3, 1, true);
+    SetEntData(client, offsColor + 3, alpha, 1, true);
 }
-

@@ -65,9 +65,9 @@ HitgroupsLoad()
     // If file isn't found, stop plugin.
     if (!FileToKeyValues(kvHitgroups, path))
     {
-        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
         {
-            ZR_LogMessageFormatted(-1, "Hitgroups", "Config Validation", "Missing file hitgroups.txt, disabling hitgroup-based modules.", LOG_FORMAT_TYPE_FULL);
+            LogMessageFormatted(-1, "Hitgroups", "Config Validation", "Missing file hitgroups.txt, disabling hitgroup-based modules.", LOG_FORMAT_TYPE_FULL);
         }
         
         return;
@@ -83,7 +83,7 @@ HitgroupsLoad()
 HitgroupsValidateConfig()
 {
     // If log flag check fails, don't log.
-    if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
+    if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
     {
         return;
     }
@@ -91,7 +91,7 @@ HitgroupsValidateConfig()
     KvRewind(kvHitgroups);
     if (!KvGotoFirstSubKey(kvHitgroups))
     {
-        ZR_LogMessageFormatted(-1, "Hitgroups", "Config Validation", "No hitgroups listed in hitgroups.txt, disabling hitgroup-based modules.", LOG_FORMAT_TYPE_FULL);
+        LogMessageFormatted(-1, "Hitgroups", "Config Validation", "No hitgroups listed in hitgroups.txt, disabling hitgroup-based modules.", LOG_FORMAT_TYPE_FULL);
     }
 }
 

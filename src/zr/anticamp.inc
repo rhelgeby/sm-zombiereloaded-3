@@ -274,9 +274,9 @@ public Action:Command_AnticampRemoveVolume(client, argc)
         volumes[vol_index][volume_in_use] = false;
         ReplyToCommand(client, "Removed volume %d.", vol_index);
         
-        if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_ANTICAMP))
+        if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_ANTICAMP))
         {
-            ZR_LogMessageFormatted(client, "anticamp", "remove volume", "\"%L\" removed volume %d.", true, client, vol_index);
+            LogMessageFormatted(client, "anticamp", "remove volume", "\"%L\" removed volume %d.", true, client, vol_index);
         }
     }
     else
@@ -342,7 +342,6 @@ HurtPlayersInVolume(volume_index)
     new client_health;
     decl String:client_name[64];
     decl String:buffer[192];
-    new anticamp_echo = GetConVarBool(g_hCvarsList[CVAR_ANTICAMP_ECHO]);
     
     // x = client index.
     for (new x = 1; x <= MaxClients; x++)
@@ -367,11 +366,9 @@ HurtPlayersInVolume(volume_index)
                     SetGlobalTransTarget(x);
                     Format(buffer, sizeof(buffer), "%T", "Unfair camper slayed", LANG_SERVER, client_name, volume_index);
 
-                    if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_ANTICAMP)) ZR_LogMessageFormatted(x, "anticamp", "kill", "%s", true, buffer);
-                    if (anticamp_echo)
+                    if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_ANTICAMP))
                     {
-                        FormatTextString(buffer, sizeof(buffer));
-                        ZR_PrintToAdminChat(buffer);
+                        LogMessageFormatted(x, "anticamp", "kill", "%s", true, buffer);
                     }
                 }
             }
@@ -385,17 +382,17 @@ bool:IsPlayerInVolume(client, volume_index)
     new Float:player_loc_y = player_loc[client][1];
     new Float:player_loc_z = player_loc[client][2];
     new log;
-    log = LogFlagCheck(LOG_DEBUG_MAX_DETAIL, LOG_MODULE_ANTICAMP);
+    log = LogCheckFlag(LOG_DEBUG_MAX_DETAIL, LOG_MODULE_ANTICAMP);
     
     if ((player_loc_x >= volumes[volume_index][x_min]) && (player_loc_x <= volumes[volume_index][x_max]))
     {
-        if (log) ZR_LogMessageFormatted(client, "anticamp", "IsPlayerInVolume", "Client %d matches X values.", true, client);
+        if (log) LogMessageFormatted(client, "anticamp", "IsPlayerInVolume", "Client %d matches X values.", true, client);
         if ((player_loc_y >= volumes[volume_index][y_min]) && (player_loc_y <= volumes[volume_index][y_max]))
         {
-            if (log) ZR_LogMessageFormatted(client, "anticamp", "IsPlayerInVolume", "Client %d matches Y values.", true, client);
+            if (log) LogMessageFormatted(client, "anticamp", "IsPlayerInVolume", "Client %d matches Y values.", true, client);
             if ((player_loc_z >= volumes[volume_index][z_min]) && (player_loc_z <= volumes[volume_index][z_max]))
             {
-                if (log) ZR_LogMessageFormatted(client, "anticamp", "IsPlayerInVolume", "Client %d matches Z values.", true, client);
+                if (log) LogMessageFormatted(client, "anticamp", "IsPlayerInVolume", "Client %d matches Z values.", true, client);
                 return true;
             }
         }

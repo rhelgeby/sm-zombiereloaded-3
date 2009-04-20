@@ -17,7 +17,7 @@
 
 #define VERSION "3.0-dev"
 
-// Core include.
+// Core include
 #include "zr/zombiereloaded"
 
 // External api (not done)
@@ -26,8 +26,8 @@
 // Cvars (core)
 #include "zr/cvars"
 
-// Log (TODO)
-// #include "zr/log"
+// Log (core)
+#include "zr/log"
 
 // Translations (core)
 #include "zr/translation"
@@ -196,9 +196,9 @@ public OnConfigsExecuted()
     {
         ServerCommand("exec %s", mapconfig);
         
-        if (LogFlagCheck(LOG_CORE_EVENTS))
+        if (LogCheckFlag(LOG_CORE_EVENTS))
         {
-            LogMessage("Executed map config file: %s", mapconfig);
+            LogMessageFormatted(-1, "", "", "Executed map config file: %s.", LOG_FORMAT_TYPE_SIMPLE, mapconfig);
         }
     }
     

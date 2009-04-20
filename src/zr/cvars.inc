@@ -16,6 +16,7 @@ enum CvarsList
 {
     Handle:CVAR_ENABLE,
     Handle:CVAR_LOG,
+    Handle:CVAR_LOGFLAGS,
     Handle:CVAR_ROUNDEND_OVERLAY,
     Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
     Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
@@ -85,7 +86,6 @@ enum CvarsList
     Handle:CVAR_INFECT_SHAKE_DURATION,
     Handle:CVAR_ANTICAMP,
     Handle:CVAR_ANTICAMP_UPDATE_INTERVAL,
-    Handle:CVAR_ANTICAMP_ECHO,
 }
 
 /**
@@ -123,7 +123,8 @@ CvarsInit()
 	// Log (core)
 	// ===========================
 	
-    g_hCvarsList[CVAR_LOG]                       =    CreateConVar("zr_log", "331", "");
+    g_hCvarsList[CVAR_LOG]                   =    CreateConVar("zr_log", "1", "");
+    g_hCvarsList[CVAR_LOGFLAGS]              =    CreateConVar("zr_logflags", "331", "");
     // Old Desc: Logging flags. Log messages to sourcemod logs, server console or client console. Use zr_log_flags to see a list of flags. (0: Disable)
     
     // ===========================
@@ -349,8 +350,6 @@ CvarsInit()
     // Old Desc:  Enables or disables hurt volumes for preventing unfair camping. (0: Disable)
     g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL]  =    CreateConVar("zr_anticamp_update_interval", "1", "");
     // Old Desc: How often to update player locations (in seconds).
-    g_hCvarsList[CVAR_ANTICAMP_ECHO]             =    CreateConVar("zr_anticamp_echo", "1", "");
-    // Old Desc: Log kills done by anticamp to admin chat.
     
     // TODO: Recode.
     //HookConVarChange(g_hCvarsList[CVAR_ENABLE], EnableHook);
@@ -401,44 +400,4 @@ public AutoTeamBalanceHook(Handle:convar, const String:oldValue[], const String:
 public LimitTeamsHook(Handle:convar, const String:oldValue[], const String:newValue[])
 {
     SetConVarInt(FindConVar("mp_limitteams"), 0);
-}
-
-LogHasFlag(flag)
-{
-    if (GetConVarInt(g_hCvarsList[CVAR_LOG]) & flag)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-/**
- * Check if a log message should be written depending on log flags. If module
- * overrides are enalbed only logs with it's module flag set will be logged.
- *
- * @param logtype   Log type flag.
- * @param module    Specifies what module the log event belongs to.
- *
- * @return  True if the event should be logged, false otherwise.
- */
-LogFlagCheck(logtype, modulefilter = 0)
-{
-    if (modulefilter && (logtype & LOG_MODULES_ENABLED))
-    {
-        if (logtype & modulefilter)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else
-    {
-        return LogHasFlag(logtype);
-    }
 }

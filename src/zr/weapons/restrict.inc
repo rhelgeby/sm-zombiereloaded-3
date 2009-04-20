@@ -86,9 +86,9 @@ RestrictOnMapStart()
     // If file isn't found, stop plugin.
     if (!FileToKeyValues(kvWeaponGroups, path))
     {
-        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
         {
-            ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapongroups.txt.", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapongroups.txt.", LOG_FORMAT_TYPE_ERROR);
         }
         
         return;
@@ -137,7 +137,7 @@ RestrictDefaultRestrictions()
 RestrictValidateWeaponGroups()
 {
     // If log flag check fails, don't log.
-    if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
+    if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
     {
         return;
     }
@@ -165,7 +165,7 @@ RestrictValidateWeaponGroups()
                     // If weapon is invalid, then log it.
                     if (!WeaponsIsValidWeapon(groupweapon))
                     {
-                        ZR_LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "Invalid weapon \"%s\" in group \"%s\" configured in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, groupweapon, weapongroup);
+                        LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "Invalid weapon \"%s\" in group \"%s\" configured in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, groupweapon, weapongroup);
                     }
                 } while (KvGotoNextKey(kvWeaponGroups));
                 
@@ -174,7 +174,7 @@ RestrictValidateWeaponGroups()
             // If it couldn't traverse to the weapons, then log no weapons within group.
             else
             {
-                ZR_LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "No weapons listed in weapon group \"%s\" in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, weapongroup);
+                LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "No weapons listed in weapon group \"%s\" in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, weapongroup);
             }
         } while (KvGotoNextKey(kvWeaponGroups));
     }
@@ -439,9 +439,9 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
         {
             ZR_PrintToChat(0, "Restrict weapon", weapon);
             
-            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
+            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
             {
-                ZR_LogMessageFormatted(client, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
+                LogMessageFormatted(client, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
             }
         }
         // Weapon group was successfully restricted.
@@ -452,9 +452,9 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
             
             ZR_PrintToChat(0, "Restrict custom weapon group", weapon, weaponlist);
             
-            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
+            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
             {
-                ZR_LogMessageFormatted(client, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon group: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
+                LogMessageFormatted(client, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon group: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
             }
         }
         // Weapon was already restricted.
@@ -515,9 +515,9 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
         {
             ZR_PrintToChat(0, "Unrestrict weapon", weapon);
             
-            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
+            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
             {
-                ZR_LogMessageFormatted(client, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
+                LogMessageFormatted(client, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
             }
         }
         // Weapon group was successfully unrestricted.
@@ -528,9 +528,9 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
             
             ZR_PrintToChat(0, "Unrestrict custom weapon group", weapon, weaponlist);
             
-            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
+            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
             {
-                ZR_LogMessageFormatted(client, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon group: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
+                LogMessageFormatted(client, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon group: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
             }
         }
         // Weapon wasn't restricted.

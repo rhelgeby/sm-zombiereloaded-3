@@ -13,11 +13,28 @@
  * Maximum length of a weapon name string
  */
 #define WEAPONS_MAX_LENGTH 32
-
 /**
  * @endsection
  */
-  
+
+/**
+ * Number of weapon slots (For CS:S)
+ */
+#define WEAPONS_SLOTS_MAX 5
+
+/**
+ * Weapon types.
+ */
+enum WeaponsType
+{
+    Type_Invalid = -1,
+    Type_Primary = 0,
+    Type_Secondary = 1,
+    Type_Melee = 2,
+    Type_Projectile = 3,
+    Type_Explosive = 4,
+}
+ 
 /**
  * Array to store keyvalue data.
  */
@@ -71,9 +88,9 @@ WeaponsLoad()
     // If file isn't found, stop plugin.
     if (!FileToKeyValues(kvWeapons, path))
     {
-        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
         {
-            ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapons.txt, disabling weapons-based modules.", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapons.txt.", LOG_FORMAT_TYPE_ERROR);
         }
         
         return;
@@ -92,7 +109,7 @@ WeaponsLoad()
 WeaponsValidateConfig()
 {
     // If log flag check fails, don't log.
-    if (!LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
+    if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
     {
         return;
     }
@@ -100,7 +117,7 @@ WeaponsValidateConfig()
     KvRewind(kvWeapons);
     if (!KvGotoFirstSubKey(kvWeapons))
     {
-        ZR_LogMessageFormatted(-1, "Weapons", "Config Validation", "No weapons listed in weapons.txt, disabling weapons-based modules.", LOG_FORMAT_TYPE_ERROR);
+        LogMessageFormatted(-1, "Weapons", "Config Validation", "No weapons listed in weapons.txt.", LOG_FORMAT_TYPE_ERROR);
     }
 }
 
@@ -275,4 +292,70 @@ Float:WeaponGetWeaponKnockback(const String:weapon[])
     }
     
     return 1.0;
+}
+
+/**
+ * General weapon API.
+ */
+ 
+/**
+ * Return an array that contains all client's weapon indexes.
+ * 
+ * @param client    The client index.
+ * @param weapons   The weapon index array.
+ *                  -1 if no weapon in slot. 
+ */
+WeaponsGetClientWeapons(client, weapons[WeaponsType])
+{
+    // x = weapon slot.
+    for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
+    {
+        weapons[x] = GetPlayerWeaponSlot(client, x);
+    }
+}
+
+/**
+ * Returns weapon index of the client's deployed weapon.
+ * 
+ * @param client    The client index.
+ * @return          The weapon index of the deployed weapon.
+ *                  -1 if no weapon is deployed. 
+ */
+WeaponsGetDeployedWeaponIndex(client)
+{
+    // Return the client's active weapon.
+    return GetEntDataEnt2(client, offsActiveWeapon);
+}
+
+/**
+ * Returns slot of client's deployed weapon.
+ *
+ * @param client    The client index.
+ * @return          The slot number of deployed weapon.
+ */
+WeaponsType:WeaponsGetDeployedWeaponSlot(client)
+{
+    // Get all client's weapon indexes.
+    new weapons[WeaponsType];
+    WeaponsGetClientWeapons(client, weapons);
+    
+    // Get client's deployed weapon.
+    new deployedweapon = WeaponsGetDeployedWeaponIndex(client);
+    
+    // If client has no deployed weapon, then stop.
+    if (deployedweapon == -1)
+    {
+        return Type_Invalid;
+    }
+    
+    // x = weapon slot.
+    for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
+    {
+        if (weapons[x] == deployedweapon)
+        {
+            return x;
+        }
+    }
+    
+    return Type_Invalid;
 }

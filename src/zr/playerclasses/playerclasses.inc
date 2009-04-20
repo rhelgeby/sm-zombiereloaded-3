@@ -291,9 +291,9 @@ ClassLoad()
         if (ClassCount > ZR_CLASS_MAX)
         {
             // Maximum classes reached. Write a warning and exit the loop.
-            if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+            if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
             {
-                ZR_LogMessageFormatted(-1, "Classes", "Load", "Warning: Maximum classes reached (%d). Skipping other classes.", _, ZR_CLASS_MAX + 1);
+                LogMessageFormatted(-1, "Classes", "Load", "Warning: Maximum classes reached (%d). Skipping other classes.", _, ZR_CLASS_MAX + 1);
             }
             
             break;
@@ -355,9 +355,9 @@ ClassLoad()
             // There's one or more invalid class attributes. Disable the class
             // and log an error message.
             ClassData[ClassCount][class_enabled] = false;
-            if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+            if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
             {
-                ZR_LogMessageFormatted(-1, "Classes", "Load", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
+                LogMessageFormatted(-1, "Classes", "Load", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
             }
         }
         
@@ -565,9 +565,9 @@ ClassClientSetDefaultIndexes(client = -1)
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
         {
-            ZR_LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default zombie class, falling back to default class. Check spelling in \"zr_classes_default_zombie\".", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default zombie class, falling back to default class. Check spelling in \"zr_classes_default_zombie\".", LOG_FORMAT_TYPE_ERROR);
         }
         
         // Use default class.
@@ -579,9 +579,9 @@ ClassClientSetDefaultIndexes(client = -1)
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
         {
-            ZR_LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default human class, falling back to default class. Check spelling in \"zr_classes_default_human\".", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default human class, falling back to default class. Check spelling in \"zr_classes_default_human\".", LOG_FORMAT_TYPE_ERROR);
         }
         
         // Use default class.
@@ -593,9 +593,9 @@ ClassClientSetDefaultIndexes(client = -1)
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        if (LogFlagCheck(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
         {
-            ZR_LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default admin class, falling back to default class. Check spelling in \"zr_classes_default_admin\".", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default admin class, falling back to default class. Check spelling in \"zr_classes_default_admin\".", LOG_FORMAT_TYPE_ERROR);
         }
         
         // Use default class.

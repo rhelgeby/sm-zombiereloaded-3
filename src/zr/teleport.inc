@@ -167,7 +167,7 @@ public Action:Command_Teleport(client, argc)
                 AbortTeleport(target_list[i]);
                 TeleportClient(target_list[i], true, true);
                 GetClientName(target_list[i], target_name, sizeof(target_name));
-                if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) ZR_LogMessageFormatted(client, "teleport", "manual teleport", "\"%s\" teleported \"%s\" to spawn.", true, client_name, target_name);
+                if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) LogMessageFormatted(client, "teleport", "manual teleport", "\"%s\" teleported \"%s\" to spawn.", true, client_name, target_name);
             }
         }
     }
@@ -177,7 +177,7 @@ public Action:Command_Teleport(client, argc)
         {
             AbortTeleport(client);
             TeleportClient(client, true, true);
-            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) ZR_LogMessageFormatted(client, "teleport", "manual teleport", "\"%s\" self-teleported to spawn.", true, client_name);
+            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) LogMessageFormatted(client, "teleport", "manual teleport", "\"%s\" self-teleported to spawn.", true, client_name);
         }
     }
     
@@ -262,7 +262,7 @@ public Action:Command_TeleportToLocation(client, argc)
                 TeleportEntity(target_client, bufferLoc[client], NULL_VECTOR, empty_vector);
                 ZR_PrintToChat(client, "!ztele successful");
                 if (target_client != client) ZR_PrintToChat(target_client, "!ztele successful");
-                if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) ZR_LogMessageFormatted(client, "teleport", "custom teleport", "\"%s\" teleported \"%s\".", true, client_name, target_name);
+                if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_TELEPORT)) LogMessageFormatted(client, "teleport", "custom teleport", "\"%s\" teleported \"%s\".", true, client_name, target_name);
             }
             else
             {

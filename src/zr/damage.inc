@@ -294,9 +294,9 @@ public Action:DamageSuicideIntercept(client, argc)
     ZR_ReplyToCommand(client, "Damage suicide intercept");
     
     // Log attempt.
-    if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_DAMAGE))
+    if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_DAMAGE))
     {
-        ZR_LogMessageFormatted(client, "Damage", "Suicide Intercept", "Player %N attempted suicide.", LOG_FORMAT_TYPE_FULL, client);
+        LogMessageFormatted(client, "Damage", "Suicide Intercept", "Player %N attempted suicide.", LOG_FORMAT_TYPE_FULL, client);
     }
     
     // Block command.

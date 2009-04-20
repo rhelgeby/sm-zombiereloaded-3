@@ -72,10 +72,10 @@ public Action:Command_Infect(client, argc)
     for (new x = 0; x < tcount; x++)
     {
         InfectPlayer(targets[x]);
-        if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
+        if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
         {
             GetClientName(targets[x], target_name, sizeof(target_name));
-            ZR_LogMessageFormatted(client, "admin commands", "infect", "\"%s\" infected \"%s\".", true, client_name, target_name);
+            LogMessageFormatted(client, "admin commands", "infect", "\"%s\" infected \"%s\".", true, client_name, target_name);
         }
     }
     
@@ -122,10 +122,10 @@ public Action:Command_Respawn(client, argc)
         team = GetClientTeam(targets[x]);
         if (team == CS_TEAM_T || team == CS_TEAM_CT)
         {
-            if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
+            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
             {
                 GetClientName(targets[x], target_name, sizeof(target_name));
-                ZR_LogMessageFormatted(targets[x], "admin commands", "spawn", "\"%s\" spawned player \"%s\".", true, client_name, target_name);
+                LogMessageFormatted(targets[x], "admin commands", "spawn", "\"%s\" spawned player \"%s\".", true, client_name, target_name);
             }
             
             RespawnSpawnClient(targets[x]);

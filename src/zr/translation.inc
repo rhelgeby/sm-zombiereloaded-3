@@ -6,10 +6,6 @@
  * ==================== 
  */
 
-#define LOG_FORMAT_TYPE_SIMPLE     0      // Simple log message, no module or block info.
-#define LOG_FORMAT_TYPE_FULL       1      // Full log message, with module and block info.
-#define LOG_FORMAT_TYPE_ERROR      2      // Full log message, but log to error log instead.
-
 FormatTextString(String:text[], maxlen)
 {
     Format(text, maxlen, "@green[%t] @default%s", "ZR", text);
@@ -114,62 +110,6 @@ stock ZR_TranslateMessage(String:buffer[], maxlen, any:...)
     VFormat(buffer, maxlen, "%t", 3);
 }
 
-/**
- * Logs a formatted message with module and block info depending, on the type.
- *
- * @param client    Specifies the client who triggered the event/command. Use
- *                  -1 for core events like validation, etc.
- * @param module    what module the log event belongs to.
- * @param block     What function or code block the log is triggered from.
- * @param message   Log message. Formatted string.
- * @param type      Optional. What logging type or style to use. Options:
- *                  LOG_FORMAT_TYPE_SIMPLE - Simple, no module or block info.
- *                  LOG_FORMAT_TYPE_FULL - Full, with module and block info.
- *                  LOG_FORMAT_TYPE_ERROR - Full, but log to error log instead.
- * @param any...    Formatting parameters.
- */
-stock ZR_LogMessageFormatted(client, const String:module[], const String:block[], const String:message[], type = LOG_FORMAT_TYPE_FULL, any:...)
-{
-    decl String:buffer[2048];
-    decl String:text[2048];
-
-    if (client == 0 && LogHasFlag(LOG_IGNORE_CONSOLE))
-    {
-        return;
-    }
-    
-    switch (type)
-    {
-        case LOG_FORMAT_TYPE_SIMPLE:
-        {
-            VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "%s", message);
-            LogMessage(text);
-        }
-        case LOG_FORMAT_TYPE_FULL:
-        {
-            VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "\"%s\" : \"%s\" -- %s", module, block, buffer);
-            LogMessage(text);
-        }
-        case LOG_FORMAT_TYPE_ERROR:
-        {
-            VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "\"%s\" : \"%s\" -- %s", module, block, buffer);
-            LogError(text);
-        }
-    }
-
-    if (LogHasFlag(LOG_TO_ADMINS))
-    {
-        ZR_PrintToAdminChat(text);
-    }
-    if (client > 0 && LogHasFlag(LOG_TO_CLIENT) && IsClientConnected(client) && IsClientInGame(client))
-    {
-        PrintToConsole(client, "[ZR] %s", text);
-    }
-}
-
 stock ZR_ReplyToCommand(client, any:...)
 {
     decl String:phrase[192];
@@ -184,10 +124,13 @@ stock ZR_ReplyToCommand(client, any:...)
 
 /**
  * Adds support for printing long strings.
+ * 
+ * @param client    The client index.
+ * @param text      The text to print.   
  */
 stock ZR_ReplyToCommandLong(client, const String:text[])
 {
-    decl String:partbuffer[1000];
+    decl String:partbuffer[1024];
     new pos;
     new cellswritten = 1;   // Initialize for the loop.
 
@@ -196,20 +139,5 @@ stock ZR_ReplyToCommandLong(client, const String:text[])
         cellswritten = strcopy(partbuffer, sizeof(partbuffer), text[pos]);
         ReplyToCommand(client, partbuffer);
         pos += cellswritten;
-    }
-}
-
-stock ZR_PrintToAdminChat(String:message[])
-{
-    decl String:buffer[256];
-    Format(buffer, sizeof(buffer), "[ZR] %s", message);
-    
-    // x = client index.
-    for (new x = 1; x < MaxClients; x++)
-    {
-        if (IsClientInGame(x) && ZRIsClientAdmin(x))
-        {
-            PrintToChat(x, buffer);
-        }
     }
 }
