@@ -262,6 +262,7 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     RespawnOnClientDeath(index, attacker, weapon);
     ZHPOnClientDeath(index);
     
+    // Terminate round if round is over.
     new RoundEndOutcome:outcome;
     if (RoundEndGetRoundStatus(outcome))
     {

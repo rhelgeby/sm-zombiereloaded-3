@@ -398,33 +398,47 @@ JumpBoost(client, Float:distance, Float:height)
  */ 
 PlayerLeft(client)
 {
+    // If zombie hasn't spawned, then stop.
+    if (!g_bZombieSpawned)
+    {
+        return;
+    }
+    
     // If client is dead, then stop.
     if (!IsPlayerAlive(client))
     {
         return;
     }
     
-    // If client isn't a zombie, then stop.
-    if (!IsPlayerZombie(client))
-    {
-        return;
-    }
+    // Get zombie flag on client.
+    new zombieclient = IsPlayerZombie(client);
     
     // Initialize count variables
     new zombiecount;
     new humancount;
     
-    // Count valid clients. (true to only allow living clients)
+    // Count valid clients.
     ZRCountValidClients(zombiecount, humancount);
     
-    // If there are other zombies besides the disconnecting player, then stop.
-    if (zombiecount - 1)
+    // If client is a human, and is the last one, then terminate round.
+    if (IsPlayerHuman(client) && humancount <= 1)
     {
+        // If there are no more clients in the server, then stop.
+        if (!ZRTeamHasClients(CS_TEAM_T))
+        {
+            return;
+        }
+        
+        // Manually terminate round.
+        RoundEndTerminateRound(ZombiesWin);
+        
         return;
     }
     
-    // If there is 1 or no humans left, then stop.
-    if (humancount <= 1)
+    // We know here that player is a zombie.
+    
+    // If there are other zombies (ignoring this zombie), then stop.
+    if (zombiecount - 1)
     {
         return;
     }

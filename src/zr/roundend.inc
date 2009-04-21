@@ -377,6 +377,9 @@ RoundEndBalanceTeams(bool:spawn = false)
         // Respawn client.
         CS_RespawnPlayer(client);
     }
+    
+    // Destroy handle.
+    CloseHandle(arrayEligibleClients);
 }
 
 /**
