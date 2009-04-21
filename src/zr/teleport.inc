@@ -6,6 +6,17 @@
  * ==================== 
  */
 
+new Float:spawnLoc[MAXPLAYERS + 1][3];
+new Float:bufferLoc[MAXPLAYERS + 1][3];
+new bool:ztele_spawned[MAXPLAYERS + 1] = {false, ...};
+new bool:bufferLocSaved[MAXPLAYERS + 1] = {false, ...};
+new ztele_countdown[MAXPLAYERS + 1] = {-1, ...};
+new ztele_count[MAXPLAYERS + 1];
+new bool:ztele_online = false;
+new Handle:ztele_startup_timer = INVALID_HANDLE;
+new Handle:ztele_countdown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
+new Handle:ztele_cooldown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
+
 ZTeleEnable()
 {
     ztele_online = false;
@@ -94,6 +105,12 @@ ZTeleClientSpawned(client)
     {
         GetClientAbsOrigin(client, spawnLoc[client]);
     }
+}
+
+TeleportOnClientInfected(client)
+{
+    ztele_count[client] = 0;
+    AbortTeleport(client);
 }
 
 public Action:Event_TeleporterStartup(Handle:timer)

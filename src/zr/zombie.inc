@@ -253,39 +253,12 @@ public Action:MotherZombie(Handle:timer)
  */
 InfectPlayer(client, attacker = -1, bool:motherinfect = false)
 {
-    // Check if the attacker was specified.
-    if (ZRIsValidClient(attacker))
-    {
-        // Fire death event and set weapon info.
-        new Handle:event = CreateEvent("player_death");
-        if (event != INVALID_HANDLE)
-        {
-            SetEventInt(event, "userid", GetClientUserId(client));
-            SetEventInt(event, "attacker", GetClientUserId(attacker));
-            SetEventString(event, "weapon", "zombie_claws_of_death");
-            FireEvent(event, false);
-        }
-    }
-    
-    // Set player status.
+    // Mark player as zombie.
     bZombie[client] = true;
     
     // Remove all weapons and give a knife.
     RemoveAllPlayersWeapons(client);
     GivePlayerItem(client, "weapon_knife");
-    
-    ztele_count[client] = 0;    // In use?
-    
-    // Terminate the round if the last player was infected.
-    new RoundEndOutcome:outcome;
-    if (RoundEndGetRoundStatus(outcome))
-    {
-        RoundEndTerminateRound(outcome);
-    }
-    
-    // Switch the player to terrorists.
-    CS_SwitchTeam(client, CS_TEAM_T);
-    
     
     // Check if consecutive infection protection is enabled.
     new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]);
@@ -297,10 +270,34 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     ClassOnClientInfected(client, motherinfect);
     SEffectsOnClientInfected(client);
     ZHPOnClientInfected(client);
-    AbortTeleport(client);
+    TeleportOnClientInfected(client);
     
     // Apply effects.
     InfectionEffects(client);
+    
+    // Fire death event and set weapon info if the attacker is specified.
+    if (ZRIsValidClient(attacker))
+    {
+        new Handle:event = CreateEvent("player_death");
+        if (event != INVALID_HANDLE)
+        {
+            SetEventInt(event, "userid", GetClientUserId(client));
+            SetEventInt(event, "attacker", GetClientUserId(attacker));
+            SetEventString(event, "weapon", "zombie_claws_of_death");
+            FireEvent(event, false);
+        }
+    }
+    
+    // Switch the player to terrorists.
+    // TODO: A solution to stop confusing bots? Respawn and teleport?
+    CS_SwitchTeam(client, CS_TEAM_T);
+    
+    // Terminate the round if the last player was infected.
+    new RoundEndOutcome:outcome;
+    if (RoundEndGetRoundStatus(outcome))
+    {
+        RoundEndTerminateRound(outcome);
+    }
 }
 
 InfectionEffects(client)

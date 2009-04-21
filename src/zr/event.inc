@@ -210,8 +210,7 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 
-    // Reset field of view and extinguish fire.
-    SetPlayerFOV(index, DEFAULT_FOV);
+    // Extinguish fire.    
     ExtinguishEntity(index);
     
     // Get the weapon name.
@@ -243,9 +242,11 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     }
     else
     {
+        // Reset field of view.
+        SetPlayerFOV(index, DEFAULT_FOV);
+        
         if (IsPlayerZombie(index))
         {
-            
             // Give kill bonus.
             if (ZRIsValidClient(attacker))
             {
@@ -253,14 +254,14 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
                 AddPlayerScore(attacker, bonus);
             }
         }
+        
+        // Forward event to modules.
+        ClassOnClientDeath(index);
+        SEffectsOnClientDeath(index);
+        SpawnProtectOnClientDeath(index);
+        RespawnOnClientDeath(index, attacker, weapon);
+        ZHPOnClientDeath(index);
     }
-    
-    // Forward event to modules.
-    ClassOnClientDeath(index);
-    SEffectsOnClientDeath(index);
-    SpawnProtectOnClientDeath(index);
-    RespawnOnClientDeath(index, attacker, weapon);
-    ZHPOnClientDeath(index);
     
     new RoundEndOutcome:outcome;
     if (RoundEndGetRoundStatus(outcome))
