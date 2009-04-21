@@ -126,15 +126,6 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 {
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
-    for (new x = 0; x < MAXTIMERS; x++)
-    {
-        if (tHandles[index][x] != INVALID_HANDLE)
-        {
-            KillTimer(tHandles[index][x]);
-            tHandles[index][x] = INVALID_HANDLE;
-        }
-    }
-    
     bZombie[index] = false;
     
     // Reset FOV and overlay.
@@ -260,16 +251,6 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
             {
                 new bonus = ClassGetKillBonus(attacker);
                 AddPlayerScore(attacker, bonus);
-            }
-        }
-        
-        // Kill various timers.
-        for (new x = 0; x < MAXTIMERS; x++)
-        {
-            if (tHandles[index][x] != INVALID_HANDLE)
-            {
-                KillTimer(tHandles[index][x]);
-                tHandles[index][x] = INVALID_HANDLE;
             }
         }
     }

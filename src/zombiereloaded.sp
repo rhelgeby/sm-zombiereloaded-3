@@ -173,6 +173,7 @@ public OnMapStart()
     WeaponsLoad();
     HitgroupsLoad();
     SEffectsOnMapStart();
+    AntiStickOnMapStart();
     Anticamp_Startup();
 }
 
@@ -221,11 +222,6 @@ public OnClientPutInServer(client)
     SpawnProtectClientInit(client);
     RespawnClientInit(client);
     ZHPClientInit(client);
-    
-    for (new x = 0; x < MAXTIMERS; x++)
-    {
-        tHandles[client][x] = INVALID_HANDLE;
-    }
 }
 
 public OnClientDisconnect(client)
@@ -237,33 +233,11 @@ public OnClientDisconnect(client)
     DamageOnClientDisconnect(client);
     WeaponsOnClientDisconnect(client);
     ZTeleResetClient(client);
-    
-    for (new x = 0; x < MAXTIMERS; x++)
-    {
-        if (tHandles[client][x] != INVALID_HANDLE)
-        {
-            KillTimer(tHandles[client][x]);
-            tHandles[client][x] = INVALID_HANDLE;
-        }
-    }
 }
 
 MapChangeCleanup()
 {
     tInfect = INVALID_HANDLE;
-    AntiStickReset();
-    
-    // x = client index.
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        for (new y = 0; y < MAXTIMERS; y++)
-        {
-            if (tHandles[x][y] != INVALID_HANDLE)
-            {
-                tHandles[x][y] = INVALID_HANDLE;
-            }
-        }
-    }
 }
 
 /*ZREnd()

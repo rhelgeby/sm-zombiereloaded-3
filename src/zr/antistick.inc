@@ -22,38 +22,34 @@
 new Handle:tAntiStick = INVALID_HANDLE;
 
 /**
+ * Map is starting.
+*/
+AntiStickOnMapStart()
+{
+    // Reset timer handle.
+    tAntiStick = INVALID_HANDLE;
+}
+
+/**
  * The round is starting.
  */
 AntiStickOnRoundStart()
 {
-    // Restart antistick timer.
-    AntiStickRestart();
-}
-
-/**
- * Restarts the AntiStickTimer function.
-*/
-AntiStickRestart()
-{
+    // If timer is running, kill it.
     if (tAntiStick != INVALID_HANDLE)
     {
         KillTimer(tAntiStick);
     }
     
+    // If antistick is disabled, then stop.
     new bool:antistick = GetConVarBool(g_hCvarsList[CVAR_ANTISTICK]);
-    if (antistick)
+    if (!antistick)
     {
-        new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_ANTISTICK_INTERVAL]);
-        tAntiStick = CreateTimer(interval, AntiStickTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+        return;
     }
-}
-
-/**
- * Resets the handle that keeps track of the AntiStickTimer function.
-*/
-AntiStickReset()
-{
-    tAntiStick = INVALID_HANDLE;
+    
+    new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_ANTISTICK_INTERVAL]);
+    tAntiStick = CreateTimer(interval, AntiStickTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 /**

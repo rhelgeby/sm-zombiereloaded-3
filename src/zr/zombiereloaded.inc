@@ -55,15 +55,6 @@ new Handle:ztele_startup_timer = INVALID_HANDLE;
 new Handle:ztele_countdown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 new Handle:ztele_cooldown_timer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 
-
-// TODO: USE SEPARATE VARIABLE TO STORE TELEPORT TIMER HANDLE
-// THEN WE CAN REMOVE tHandles ARRAY FOR GOOD.
-#define MAXTIMERS 1
-
-#define TTELE 1
-
-new Handle:tHandles[MAXPLAYERS + 1][MAXTIMERS];
-
 /**
  * Converts string of "yes" or "no" to a boolean value.
  * 
