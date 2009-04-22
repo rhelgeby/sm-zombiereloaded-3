@@ -83,6 +83,21 @@ RoundEndClientInit(client)
 }
 
 /**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ */
+RoundEndOnClientDeath()
+{
+    // Terminate the round if the last player was infected.
+    new RoundEndOutcome:outcome;
+    if (RoundEndGetRoundStatus(outcome))
+    {
+        RoundEndTerminateRound(outcome);
+    }
+}
+
+/**
  * The round is starting.
  */
 RoundEndOnRoundStart()
@@ -96,6 +111,9 @@ RoundEndOnRoundStart()
         // Reset timer handle.
         tRoundEnd = INVALID_HANDLE;
     }
+    
+    // Tell plugin no zombies have been spawned.
+    g_bZombieSpawned = false;
     
     // Balance teams, and respawn all players.
     RoundEndBalanceTeams(true);
@@ -133,6 +151,9 @@ RoundEndOnRoundEnd(reason)
         // Reset timer handle.
         tRoundEnd = INVALID_HANDLE;
     }
+    
+    // Tell plugin no zombies have been spawned.
+    g_bZombieSpawned = false;
     
     // Get outcome of the round.
     new RoundEndOutcome:outcome = RoundEndReasonToOutcome(reason);
@@ -319,7 +340,7 @@ RoundEndBalanceTeams(bool:spawn = false)
 {
     // Create eligible player list.
     new Handle:arrayEligibleClients = INVALID_HANDLE;
-    new eligibleclients = CreateEligibleClientList(arrayEligibleClients, true);
+    new eligibleclients = ZRCreateEligibleClientList(arrayEligibleClients, true);
     
     // If there are no eligible client's then stop.
     if (!eligibleclients)
@@ -399,14 +420,14 @@ RoundEndDisplayClientOverlay(client, const String:overlay[])
     }
     
     // If dxLevel is above or equal to minimum requirement, then display overlay.
-    if (dxLevel[client] >= GENERAL_MIN_DXLEVEL)
+    if (dxLevel[client] >= GENERAL_DXLEVEL_MIN)
     {
         ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
     }
     // If client doesn't meet minimum requirement, then print unsupported text.
     else
     {
-        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], GENERAL_MIN_DXLEVEL);
+        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], GENERAL_DXLEVEL_MIN);
     }
 }
 

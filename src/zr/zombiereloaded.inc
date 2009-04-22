@@ -1,22 +1,18 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: zombiereloaded.inc
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:        zombiereloaded.inc
+ *   Description: General plugin functions and defines.
+ *
+ * ============================================================================
  */
- 
-#define DEFAULT_FOV 90
 
 /**
  * Minimum dx level required to see overlays.
  */
-#define GENERAL_MIN_DXLEVEL 90
-
-/**
- * Global variable set to true if market plugin is installed
- */ 
-new bool:g_bMarket;
+#define GENERAL_DXLEVEL_MIN 90
 
 /**
  * The DirectX level of a client.
@@ -27,22 +23,6 @@ new dxLevel[MAXPLAYERS + 1];
  * Global variable set to true when the first zombie(s) is/are spawned.
  */
 new bool:g_bZombieSpawned;
-
-/**
- * Array for flagging client as zombie.
- */
-new bool:bZombie[MAXPLAYERS + 1];
-
-/**
- * Array for flagging player has immune to mother infect.
- */
-new bool:bMotherInfectImmune[MAXPLAYERS + 1];
-
-/**
- * Global variable to store the infect timer handle.
- */
-new Handle:tInfect = INVALID_HANDLE;
-
 
 /**
  * Converts string of "yes" or "no" to a boolean value.
@@ -84,6 +64,53 @@ ZRBoolToConfigSetting(bool:bOption, String:option[], maxlen)
 }
 
 /**
+ * Create an array populated with eligible clients to be zombie.
+ * 
+ * @param arrayEligibleClients  The handle of the array, don't forget to call CloseHandle
+ *                              on it when finished!
+ * @param immunity              True to ignore clients immune from mother infect, false to count them.
+ */  
+ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false)
+{
+    // Create array.
+    arrayEligibleClients = CreateArray();
+    
+    // Populate list with eligible clients.
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If client isn't on a team, then stop.
+        if (team && !ZRIsClientOnTeam(x))
+        {
+            continue;
+        }
+        
+        // If client is dead, then stop.
+        if (alive && !IsPlayerAlive(x))
+        {
+            continue;
+        }
+        
+        // If client is already zombie (via admin), then stop.
+        if (human && !IsPlayerHuman(x))
+        {
+            continue;
+        }
+        
+        // Add eligible client to array.
+        PushArrayCell(arrayEligibleClients, x);
+    }
+    
+    return GetArraySize(arrayEligibleClients);
+}
+
+/**
  * Check if a client index is a valid player.
  * 
  * @param client    The client index.
@@ -110,10 +137,10 @@ bool:ZRIsValidClient(client, bool:console = false)
  * @param alive     If true it will only count live players, false will count alive and dead.
  * @return          True if successful (zombie has spawned), false otherwise.
  */
-bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true)
+bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true, bool:ignorezombiespawned = false)
 {
-    // If zombie hasn't spawned, then stop.
-    if (!g_bZombieSpawned)
+    // If zombie hasn't spawned and were not only counting humans, then stop.
+    if (!g_bZombieSpawned && !ignorezombiespawned)
     {
         return false;
     }
@@ -195,7 +222,7 @@ bool:ZRTeamHasClients(team = -1)
     }
     
     // Return true if given team has at least 1 client.
-    return (GetTeamClientCount(team));
+    return bool:GetTeamClientCount(team);
 }
 
 /**

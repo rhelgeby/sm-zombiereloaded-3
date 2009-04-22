@@ -41,17 +41,23 @@
 // Class System (core)
 #include "zr/playerclasses/playerclasses"
 
+// Weapons (core)
+#include "zr/weapons/weapons"
+
 // Round End (core)
 #include "zr/roundend"
+
+// Infect (core)
+#include "zr/infect"
 
 // Damage (core)
 #include "zr/damage"
 
-// Weapons (core)
-#include "zr/weapons/weapons"
-
 // Hitgroups (core)
 #include "zr/hitgroups"
+
+// Account (module)
+#include "zr/account"
 
 // Sound Effects (module)
 #include "zr/soundeffects/soundeffects"
@@ -162,15 +168,14 @@ public OnLibraryAdded(const String:name[])
 
 public OnMapStart()
 {
-    MapChangeCleanup();
-    
     LoadModelData();
     LoadDownloadData();
     
     // Forward event to modules.
     ClassLoad();
-    RoundEndOnMapStart();
     WeaponsLoad();
+    RoundEndOnMapStart();
+    InfectOnMapStart();
     HitgroupsLoad();
     SEffectsOnMapStart();
     AntiStickOnMapStart();
@@ -211,14 +216,13 @@ public OnConfigsExecuted()
 
 public OnClientPutInServer(client)
 {
-    bMotherInfectImmune[client] = false;
-    
     // Forward event to modules.
     ClassClientInit(client);
+    WeaponsClientInit(client);
     RoundEndClientInit(client);
+    InfectClientInit(client);
     DamageClientInit(client);
     SEffectsClientInit(client);
-    WeaponsClientInit(client);
     SpawnProtectClientInit(client);
     RespawnClientInit(client);
     ZHPClientInit(client);
@@ -226,44 +230,10 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect(client)
 {
-    PlayerLeft(client);
-    
     // Forward event to modules.
     ClassOnClientDisconnect(client);
-    DamageOnClientDisconnect(client);
     WeaponsOnClientDisconnect(client);
+    InfectOnClientDisconnect(client);
+    DamageOnClientDisconnect(client);
     ZTeleResetClient(client);
 }
-
-MapChangeCleanup()
-{
-    tInfect = INVALID_HANDLE;
-}
-
-/*ZREnd()
-{
-    TerminateRound(3.0, Game_Commencing);
-        
-    CvarsHook();
-    CvarsUnhook();
-    
-    // TODO: Disable all modules! Teleport, ambience, overlays, antistick, etc.
-    
-    new maxplayers = GetMaxClients();
-    for (new x = 1; x <= maxplayers; x++)
-    {
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        for (new y = 0; y < MAXTIMERS; y++)
-        {
-            if (tHandles[x][y] != INVALID_HANDLE)
-            {
-                KillTimer(tHandles[x][y]);
-                tHandles[x][y] = INVALID_HANDLE;
-            }
-        }
-    }
-}*/

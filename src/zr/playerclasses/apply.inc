@@ -139,9 +139,9 @@ bool:ClassApplyOverlay(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
     }
     
     // If client doesn't meet minimum requirement, then print unsupported text.
-    if (dxLevel[client] < GENERAL_MIN_DXLEVEL)
+    if (dxLevel[client] < GENERAL_DXLEVEL_MIN)
     {
-        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], GENERAL_MIN_DXLEVEL);
+        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], GENERAL_DXLEVEL_MIN);
         return false;
     }
     

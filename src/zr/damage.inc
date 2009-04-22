@@ -69,7 +69,7 @@ DamageInit()
  * Client is joining the server.
  * 
  * @param client    The client index.  
- */ 
+ */
 DamageClientInit(client)
 {
     // Hook damage callbacks.

@@ -6,14 +6,14 @@
  * ==================== 
  */
   
-/** Player hurt event.
+/** Client has been hurt.
  *
- * @param client        The victim index. (zombie)
+ * @param client        The client index. (zombie)
  * @param attacker      The attacker index. (human)
  * @param weapon        The weapon used.
  * @param hitgroup      Hitgroup attacker has damaged. 
  * @param dmg_health    Damage done.
- */ 
+ */
 KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
 {
     // If attacker is invalid, then stop.

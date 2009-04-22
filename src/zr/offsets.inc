@@ -13,7 +13,7 @@ new offsSpeed;
 new offsNVG;
 new offsNVGOn;
 new offsCollision;
-new offsMoney;
+new offsAccount;
 new offsFOV;
 new offsBuyZone;
 new offsColor;
@@ -21,7 +21,6 @@ new offsRender;
 new offsActiveWeapon;
 
 new Handle:g_hGameConf = INVALID_HANDLE;
-new Handle:g_hRemoveAllItems = INVALID_HANDLE;
 new Handle:g_hEyePosition = INVALID_HANDLE;
 new Handle:g_hEyeAngles = INVALID_HANDLE;
 new Handle:g_hTerminateRound = INVALID_HANDLE;
@@ -71,8 +70,8 @@ FindOffsets()
         SetFailState("Couldn't find \"m_CollisionGroup\"!");
     }
     
-    offsMoney = FindSendPropInfo("CCSPlayer", "m_iAccount");
-    if (offsMoney == -1)
+    offsAccount = FindSendPropInfo("CCSPlayer", "m_iAccount");
+    if (offsAccount == -1)
     {
         SetFailState("Couldn't find \"m_iAccount\"!");
     }
@@ -112,16 +111,6 @@ SetupGameData()
 {
     // Load game config file.
     g_hGameConf = LoadGameConfigFile("plugin.zombiereloaded");
-    
-    // 
-    StartPrepSDKCall(SDKCall_Player);
-    PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "RemoveAllItems");
-    g_hRemoveAllItems = EndPrepSDKCall();
-    
-    if(g_hRemoveAllItems == INVALID_HANDLE)
-	{
-		SetFailState("Couldn't find offset \"RemoveAllItems\"!");
-	}
     
     StartPrepSDKCall(SDKCall_Player);
     PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "EyePosition");
@@ -230,11 +219,6 @@ bool:CanCollide(client)
     
     return true;
 }
-    
-SetPlayerMoney(client, amount)
-{
-    SetEntData(client, offsMoney, amount, 4, true);
-}
 
 SetPlayerFOV(client, fov)
 {
@@ -258,11 +242,6 @@ AddPlayerDeath(client, amount)
     SetEntProp(client, Prop_Data, "m_iDeaths", deaths + amount);
 }
 
-RemoveAllPlayersWeapons(client)
-{
-    SDKCall(g_hRemoveAllItems, client);
-}
-
 GetPlayerEyePosition(client, Float:vec[3])
 {
     SDKCall(g_hEyePosition, client, vec);
@@ -276,11 +255,6 @@ GetPlayerEyeAngles(client, Float:ang[3])
 TerminateRound(Float:delay, reason)
 {
     SDKCall(g_hTerminateRound, delay, reason);
-}
-
-CSDropWeapon(client, weapon)
-{
-    SDKCall(g_hCSWeaponDrop, client, weapon, true, false);
 }
 
 SetPlayerAlpha(client, alpha)

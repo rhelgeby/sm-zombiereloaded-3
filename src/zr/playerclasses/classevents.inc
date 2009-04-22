@@ -37,6 +37,9 @@ ClassOnClientDisconnect(client)
 
 ClassOnClientSpawn(client)
 {
+    // Reset client's FOV.
+    SetPlayerFOV(client, ATTRIBUTES_FOV_DEFAULT);
+    
     new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
     new bool:showmenu = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SPAWN]);
     decl String:steamid[16];
@@ -92,7 +95,6 @@ ClassOnClientInfected(client, bool:motherzombie = false)
 
 ClassOnRoundStart()
 {
-    
 }
 
 

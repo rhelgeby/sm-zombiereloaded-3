@@ -15,11 +15,6 @@
 new Handle:tSpawnProtect[MAXPLAYERS + 1];
 
 /**
- * Array for flagging client to be protected.
- */ 
-new bool:pSpawnProtect[MAXPLAYERS + 1];
-
-/**
  * Array for storing time left for spawn protection per client.
  */
 new pSpawnProtectTime[MAXPLAYERS + 1];
@@ -43,7 +38,7 @@ SpawnProtectClientInit(client)
 SpawnProtectOnClientSpawn(client)
 {
     // Disable spawn protection on client.
-    pSpawnProtect[client] = false;
+    bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
     
     // If timer is currently running, kill it.
     if (tSpawnProtect[client] != INVALID_HANDLE)
@@ -80,7 +75,7 @@ SpawnProtectOnClientSpawn(client)
     if (!respawn_zombie && !RespawnKilledByWorld(client))
     {
         // Set spawn protect flag on client.
-        pSpawnProtect[client] = true;
+        bInfectImmune[client][INFECT_TYPE_NORMAL] = true;
         
         // Set improved attributes
         // (Move to cvar?)
@@ -149,7 +144,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
     if (pSpawnProtectTime[client] <= 0)
     {
         // Remove protect flag.
-        pSpawnProtect[client] = false;
+        bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
         
         // Tell client spawn protection is over.
         ZR_HudHint(client, "Spawn protection end");

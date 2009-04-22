@@ -36,28 +36,11 @@ public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {   
     ChangeLightStyle();
     
-    if (tInfect != INVALID_HANDLE)
-    {
-        KillTimer(tInfect);
-        tInfect = INVALID_HANDLE;
-    }
-
-    g_bZombieSpawned = false;
-    
-    for (new x = 1; x<= MaxClients; x++)
-    {
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        bZombie[x] = false;
-    }
-    
     ZR_PrintToChat(0, "Round objective");
     
     // Forward event to sub-modules.
     RoundEndOnRoundStart();
+    InfectOnRoundStart();
     SEffectsOnRoundStart();
     AntiStickOnRoundStart();
 }
@@ -66,67 +49,40 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
 {
     RemoveObjectives();
     
-    if (tInfect != INVALID_HANDLE)
-    {
-        KillTimer(tInfect);
-    }
-    
-    new Float:min = GetConVarFloat(g_hCvarsList[CVAR_SPAWN_MIN]);
-    new Float:max = GetConVarFloat(g_hCvarsList[CVAR_SPAWN_MAX]);
-    new Float:randlen = GetRandomFloat(min, max);
-    tInfect = CreateTimer(randlen, MotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
-    
     // Forward events to modules.
     RoundEndOnRoundFreezeEnd();
+    InfectOnRoundFreezeEnd();
     ZTeleEnable();
 
 }
 
 public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
+    // Get all required event info.
     new reason = GetEventInt(event, "reason");
-    
-    if (tInfect != INVALID_HANDLE)
-    {
-        KillTimer(tInfect);
-        tInfect = INVALID_HANDLE;
-    }
-
-    g_bZombieSpawned = false;
-    
-    for (new x = 1; x<= MaxClients; x++)
-    {
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        bZombie[x] = false;
-    }
     
     // Forward event to modules.
     RoundEndOnRoundEnd(reason);
+    InfectOnRoundEnd();
     ZTeleReset();
 }
 
 public Action:PlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
 {
+    // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new team = GetEventInt(event, "team");
     
-    if (team == CS_TEAM_SPECTATOR)
-    {
-        bZombie[index] = false;
-    }
+    // Forward event to modules.
+    InfectOnClientTeam(index, team);
     
     return Plugin_Handled;
 }
 
 public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 {
+    // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    
-    bZombie[index] = false;
     
     // Reset FOV and overlay.
     SetPlayerFOV(index, 90);
@@ -135,13 +91,6 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     // Check if client is on a team.
     if (ZRIsClientOnTeam(index))
     {
-        new bool:cashfill = GetConVarBool(g_hCvarsList[CVAR_CASHFILL]);
-        if (cashfill)
-        {
-            new cash = GetConVarInt(g_hCvarsList[CVAR_CASHAMOUNT]);
-            SetPlayerMoney(index, cash);
-        }
-        
         // Remove night vision.
         NightVisionOn(index, false);
         NightVision(index, false);
@@ -162,7 +111,9 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     
     // Forward event to modules.
     ClassOnClientSpawn(index);
+    InfectOnClientSpawn(index);
     SEffectsOnClientSpawn(index);
+    AccountOnClientSpawn(index);
     SpawnProtectOnClientSpawn(index);
     RespawnOnClientSpawn(index);
     ZHPOnClientSpawn(index);
@@ -173,32 +124,18 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 
 public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 {
+    // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-    
     new hitgroup = GetEventInt(event, "hitgroup");
-    
     new dmg_health = GetEventInt(event, "dmg_health");
     
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
-    // Check if the attacker is a player.
-    if (ZRIsValidClient(attacker))
-    {
-        // Check if a zombie attacks a human.
-        if (IsPlayerHuman(index) && IsPlayerZombie(attacker))
-        {
-            // Check if spawn protection is disabled and the weapon is a knife.
-            if (!pSpawnProtect[index] && StrEqual(weapon, "knife"))
-            {
-                InfectPlayer(index, attacker);
-            }
-        }
-    }
-    
     // Forward event to modules.
     ClassAlphaUpdate(index);
+    InfectOnClientHurt(index, attacker, weapon);
     SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
     NapalmOnClientHurt(index, weapon);
@@ -207,72 +144,49 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 
 public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-
-    // Extinguish fire.    
-    ExtinguishEntity(index);
-    
     // Get the weapon name.
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
-    // Check if the player was infected.
+    // If client is being infected, then stop.
     if (StrEqual(weapon, "zombie_claws_of_death", false))
     {
-        // Add a death count to the players score.
-        if (ZRIsValidClient(index))
-        {
-            AddPlayerDeath(index, 1);
-        }
-        
-        // Give a point to the attacker.
-        if (ZRIsValidClient(attacker))
-        {
-            AddPlayerScore(attacker, 1);
-            
-            new healthgain = ClassGetHealthInfectGain(attacker);
-            new health = GetClientHealth(attacker);
-            
-            SetEntityHealth(attacker, health + healthgain);
-            
-            // Forward event to modules.
-            ZHPOnHealthInfectGain(attacker);
-        }
-    }
-    else
-    {
-        // Reset field of view.
-        SetPlayerFOV(index, DEFAULT_FOV);
-        
-        if (IsPlayerZombie(index))
-        {
-            // Give kill bonus.
-            if (ZRIsValidClient(attacker))
-            {
-                new bonus = ClassGetKillBonus(attacker);
-                AddPlayerScore(attacker, bonus);
-            }
-        }
-        
-        // Forward event to modules.
-        ClassOnClientDeath(index);
-        SEffectsOnClientDeath(index);
-        SpawnProtectOnClientDeath(index);
-        RespawnOnClientDeath(index, attacker, weapon);
-        ZHPOnClientDeath(index);
+        return;
     }
     
-    new RoundEndOutcome:outcome;
-    if (RoundEndGetRoundStatus(outcome))
+    // Get all required event info.
+    new index = GetClientOfUserId(GetEventInt(event, "userid"));
+    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+
+    // Extinguish any flames to stop burning sounds.
+    ExtinguishEntity(index);
+    
+    // If the attacker is valid, then continue.
+    if (ZRIsValidClient(attacker))
     {
-        RoundEndTerminateRound(outcome);
+        // If the client is a zombie, then continue.
+        if (IsPlayerZombie(index))
+        {
+            // Add kill bonus to attacker's score.
+            new bonus = ClassGetKillBonus(attacker);
+            AddPlayerScore(attacker, bonus);
+        }
     }
+        
+    // Forward event to modules.
+    ClassOnClientDeath(index);
+    RoundEndOnClientDeath();
+    SEffectsOnClientDeath(index);
+    SpawnProtectOnClientDeath(index);
+    RespawnOnClientDeath(index, attacker, weapon);
+    ZHPOnClientDeath(index);
 }
 
 public Action:PlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    new client = GetClientOfUserId(GetEventInt(event, "userid"));    
+    // Get all required event info.
+    new client = GetClientOfUserId(GetEventInt(event, "userid"));
+    
     new Float:distance = ClassGetJumpDistance(client);
     new Float:height = ClassGetJumpHeight(client);
         
@@ -281,6 +195,7 @@ public Action:PlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
 
 public Action:WeaponFire(Handle:event, const String:name[], bool:dontBroadcast)
 {
+    // Get all required event info.
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     

@@ -9,11 +9,6 @@
 
 		"Offsets"
 		{
-			"RemoveAllItems"
-			{
-				"windows"	"283"
-				"linux"		"284"
-			}
 
 			"EyePosition"
 			{

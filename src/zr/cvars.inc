@@ -29,9 +29,26 @@ enum CvarsList
     Handle:CVAR_DAMAGE_SUICIDE_ZOMBIE,
     Handle:CVAR_DAMAGE_SUICIDE_HUMAN,
     Handle:CVAR_DAMAGE_SUICIDE_CMDS,
+    Handle:CVAR_INFECT_SPAWNTIME_MIN,
+    Handle:CVAR_INFECT_SPAWNTIME_MAX,
+    Handle:CVAR_INFECT_CONSECUTIVE_BLOCK,
+    Handle:CVAR_INFECT_MZOMBIE_RATIO,
+    Handle:CVAR_INFECT_MZOMBIE_RESPAWN,
+    Handle:CVAR_INFECT_SOUND,
+    Handle:CVAR_INFECT_ESPLASH,
+    Handle:CVAR_INFECT_FIREBALL,
+    Handle:CVAR_INFECT_SMOKE,
+    Handle:CVAR_INFECT_SPARKS,
+    Handle:CVAR_INFECT_SHAKE,
+    Handle:CVAR_INFECT_SHAKE_AMP,
+    Handle:CVAR_INFECT_SHAKE_FREQUENCY,
+    Handle:CVAR_INFECT_SHAKE_DURATION,
     Handle:CVAR_WEAPONS,
     Handle:CVAR_WEAPONS_RESTRICT,
+    Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
     Handle:CVAR_HITGROUPS,
+    Handle:CVAR_ACCOUNT_CASHFILL,
+    Handle:CVAR_ACCOUNT_CASHFILL_VALUE,
     Handle:CVAR_SOUNDEFFECTS_MOAN,
     Handle:CVAR_SOUNDEFFECTS_GROAN,
     Handle:CVAR_SOUNDEFFECTS_DEATH,
@@ -57,13 +74,6 @@ enum CvarsList
     Handle:CVAR_DARK,
     Handle:CVAR_DARK_LEVEL,
     Handle:CVAR_DARK_SKY,
-    Handle:CVAR_MOTHER_ZOMBIE_RATIO,
-    Handle:CVAR_MOTHER_ZOMBIE_RESPAWN,
-    Handle:CVAR_SUICIDE_WORLD_DAMAGE,
-    Handle:CVAR_SPAWN_MIN,
-    Handle:CVAR_SPAWN_MAX,
-    Handle:CVAR_INFECT_CONSECUTIVE_BLOCK,
-    Handle:CVAR_ZMARKET_BUYZONE,
     Handle:CVAR_ZSPAWN,
     Handle:CVAR_ZTELE,
     Handle:CVAR_ZTELE_STARTUP_DELAY,
@@ -73,17 +83,6 @@ enum CvarsList
     Handle:CVAR_ZTELE_ZOMBIE_DELAY,
     Handle:CVAR_ZTELE_ZOMBIE_LIMIT,
     Handle:CVAR_ZTELE_RESET_BUFFERS,
-    Handle:CVAR_CASHFILL,
-    Handle:CVAR_CASHAMOUNT,
-    Handle:CVAR_INFECT_FIREBALL,
-    Handle:CVAR_INFECT_SMOKE,
-    Handle:CVAR_INFECT_SPARKS,
-    Handle:CVAR_INFECT_SOUND,
-    Handle:CVAR_INFECT_ESPLASH,
-    Handle:CVAR_INFECT_SHAKE,
-    Handle:CVAR_INFECT_SHAKE_AMP,
-    Handle:CVAR_INFECT_SHAKE_FREQUENCY,
-    Handle:CVAR_INFECT_SHAKE_DURATION,
     Handle:CVAR_ANTICAMP,
     Handle:CVAR_ANTICAMP_UPDATE_INTERVAL,
 }
@@ -185,6 +184,28 @@ CvarsInit()
     // Old Desc: List of suicide commands to intercept. (Delimited by \", \"
     
     // ===========================
+    // Infect (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]       =    CreateConVar("zr_infect_motherzombie_ratio", "5", "");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]     =    CreateConVar("zr_infect_motherzombie_respawn", "0", "");
+    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]            =    CreateConVar("zr_infect_spawntime_min", "30.0", "");
+    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]            =    CreateConVar("zr_infect_spawntime_max", "50.0", "");
+    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block", "1", "");
+    
+    // Effects
+    
+    g_hCvarsList[CVAR_INFECT_FIREBALL]           =    CreateConVar("zr_infect_fireball", "1", "");
+    g_hCvarsList[CVAR_INFECT_SMOKE]              =    CreateConVar("zr_infect_smoke", "1", "");
+    g_hCvarsList[CVAR_INFECT_SPARKS]             =    CreateConVar("zr_infect_sparks", "1", "");
+    g_hCvarsList[CVAR_INFECT_SOUND]              =    CreateConVar("zr_infect_sound", "npc/fast_zombie/fz_scream1.wav", "");
+    g_hCvarsList[CVAR_INFECT_ESPLASH]            =    CreateConVar("zr_infect_esplash", "1", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE]              =    CreateConVar("zr_infect_shake", "1", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", ""); 
+    
+    // ===========================
     // Weapons (core)
     // ===========================
     
@@ -199,12 +220,26 @@ CvarsInit()
     g_hCvarsList[CVAR_WEAPONS_RESTRICT]                 =    CreateConVar("zr_weapons_restrict", "1", "");
     // Note make config file cvar.
     
+    // Market Handler
+    
+    g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]           =    CreateConVar("zr_weapons_zmarket_buyzone", "1", "");
+    // Old Desc: Must be in buyzone to access !zmarket, if Market is installed (0: Can be used anywhere)
+    
     // ===========================
     // Hitgroups (core)
     // ===========================
     
     g_hCvarsList[CVAR_HITGROUPS]                        =    CreateConVar("zr_hitgroups", "1", "");
     // Note make config file cvar.
+    
+    // ===========================
+    // Account (module)
+    // ===========================
+    
+    g_hCvarsList[CVAR_ACCOUNT_CASHFILL]                 =    CreateConVar("zr_account_cashfill", "1", "");
+    // Old Desc: Enable the mod to set the players cash to zr_cashamount (0: Disabled)
+    g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]           =    CreateConVar("zr_account_cashfill_value", "12000", "");
+    // Old Desc: How much money players will have when they spawn when zr_cashfill is 1
     
     // ===========================
 	// Sound Effects (module)
@@ -294,18 +329,6 @@ CvarsInit()
     // Old Desc: The darkness of the map,  a being the darkest,  z being extremely bright when zr_dark is 1 (n: Default)
     g_hCvarsList[CVAR_DARK_SKY]                  =    CreateConVar("zr_dark_sky", "sky_borealis01", "");
     // Old Desc: The sky the map will have when zr_dark is 1
-    g_hCvarsList[CVAR_MOTHER_ZOMBIE_RATIO]       =    CreateConVar("zr_mother_zombie_ratio", "5", "");
-    // Old Desc: For every 'x' number of humans,  there will be 1 zombie (0: Always only 1 mother zombie)
-    g_hCvarsList[CVAR_MOTHER_ZOMBIE_RESPAWN]     =    CreateConVar("zr_mother_zombie_respawn", "0", "");
-    // Old Desc: First zombie(s) will be teleported back to spawn when infected (0: Disable)
-    g_hCvarsList[CVAR_SPAWN_MIN]                 =    CreateConVar("zr_spawn_min", "30", "");
-    // Old Desc: Minimum time a player is picked to be zombie after the round starts,  in seconds
-    g_hCvarsList[CVAR_SPAWN_MAX]                 =    CreateConVar("zr_spawn_max", "50", "");
-    // Old Desc: Maximum time a player is picked to be zombie after the round starts,  in seconds
-    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]  =    CreateConVar("zr_infect_consecutive_block", "1", "");
-    // Old Desc: Allow player to be randomly chosen twice in a row to be a mother zombie (0: Disable)
-    g_hCvarsList[CVAR_ZMARKET_BUYZONE]           =    CreateConVar("zr_zmarket_buyzone", "1", "");
-    // Old Desc: Must be in buyzone to access !zmarket, if Market is installed (0: Can be used anywhere)
     g_hCvarsList[CVAR_ZSPAWN]                    =    CreateConVar("zr_zspawn", "1", "");
     // Old Desc: Allow players to spawn if they just joined the game (0: Disable)
     g_hCvarsList[CVAR_ZTELE]                     =    CreateConVar("zr_tele", "1", "");
@@ -324,28 +347,6 @@ CvarsInit()
     // Old Desc: Maximum number of teleports zombies can do. (0: Zombies can't use the teleporter. -1: Unlimited)
     g_hCvarsList[CVAR_ZTELE_RESET_BUFFERS]       =    CreateConVar("zr_tele_reset_buffers", "1", "");
     // Old Desc: Reset custom saved teleport locations on each round start. (0: Disable)
-    g_hCvarsList[CVAR_CASHFILL]                  =    CreateConVar("zr_cashfill", "1", "");
-    // Old Desc: Enable the mod to set the players cash to zr_cashamount (0: Disabled)
-    g_hCvarsList[CVAR_CASHAMOUNT]                =    CreateConVar("zr_cashamount", "12000", "");
-    // Old Desc: How much money players will have when they spawn when zr_cashfill is 1
-    g_hCvarsList[CVAR_INFECT_FIREBALL]           =    CreateConVar("zr_infect_fireball", "1", "");
-    // Old Desc: A fireball is created when a player is infected (0: Disable)
-    g_hCvarsList[CVAR_INFECT_SMOKE]              =    CreateConVar("zr_infect_smoke", "1", "");
-    // Old Desc: A puff of smoke is created when a player is infected (0: Disable)
-    g_hCvarsList[CVAR_INFECT_SPARKS]             =    CreateConVar("zr_infect_sparks", "1", "");
-    // Old Desc: Sparks are emitted when a player is infected (0: Disable)
-    g_hCvarsList[CVAR_INFECT_SOUND]              =    CreateConVar("zr_infect_sound", "");
-    // Old Desc: npc/fast_zombie/fz_scream1.wav", "Sound played from from player on infection (Leave blank to disable)
-    g_hCvarsList[CVAR_INFECT_ESPLASH]            =    CreateConVar("zr_infect_esplash", "1", "");
-    // Old Desc: An energy splash is emitted when player is infected (0: Disable)
-    g_hCvarsList[CVAR_INFECT_SHAKE]              =    CreateConVar("zr_infect_shake", "1", "");
-    // Old Desc: Player's screen is shaken on infection (0: Disable)
-    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "");
-    // Old Desc: Amplitude of the shake, when zr_infect_shake is 1
-    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "");
-    // Old Desc: Frequency of the shake, when zr_infect_shake is 1
-    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", ""); 
-    // Old Desc: Duration of the shake, when zr_infect_shake is 1
     g_hCvarsList[CVAR_ANTICAMP]                  =    CreateConVar("zr_anticamp", "1", "");
     // Old Desc:  Enables or disables hurt volumes for preventing unfair camping. (0: Disable)
     g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL]  =    CreateConVar("zr_anticamp_update_interval", "1", "");

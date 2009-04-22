@@ -297,7 +297,7 @@ Float:WeaponGetWeaponKnockback(const String:weapon[])
 /**
  * General weapon API.
  */
- 
+
 /**
  * Return an array that contains all client's weapon indexes.
  * 
@@ -358,4 +358,16 @@ WeaponsType:WeaponsGetDeployedWeaponSlot(client)
     }
     
     return Type_Invalid;
+}
+
+/**
+ * Forces player to drop weapon index.
+ * 
+ * @param client    The client index.
+ * @param weapon    The weapon index to force client to drop.
+ */
+WeaponForceClientDrop(client, weapon)
+{
+    // Force client to drop weapon.
+    SDKCall(g_hCSWeaponDrop, client, weapon, true, false);
 }

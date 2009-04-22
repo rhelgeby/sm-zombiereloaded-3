@@ -1,10 +1,18 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: markethandler.inc
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:        markethandler.inc
+ *   Description: Handles market (optional plugin) API, natives, and forwards.
+ *
+ * ============================================================================
  */
+
+/**
+ * Global variable set to true if market plugin is installed
+ */ 
+new bool:g_bMarket;
 
 /**
  * Sends market menu to client.
@@ -30,7 +38,7 @@ bool:ZMarketSend(client)
     }
     
     // Check buyzone cvar to see if client has to be in a buyzone to use.
-    new bool:buyzone = GetConVarBool(g_hCvarsList[CVAR_ZMARKET_BUYZONE]); 
+    new bool:buyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]); 
     if (!IsClientInBuyZone(client) && buyzone)
     {
         // Tell client they must be in a buyzone.
@@ -106,7 +114,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     }
     
     // Check if buyzone cvar is enabled, and if the client is in a buyzone.
-    new bool:buyzone = GetConVarBool(g_hCvarsList[CVAR_ZMARKET_BUYZONE]); 
+    new bool:buyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]); 
     if (!IsClientInBuyZone(client) && buyzone)
     {
         ZR_PrintCenterText(client, "Market out of buyzone");
