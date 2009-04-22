@@ -15,6 +15,7 @@
 enum CvarsList
 {
     Handle:CVAR_ENABLE,
+    Handle:CVAR_ENABLE_ZM_VERSION_VAR,
     Handle:CVAR_LOG,
     Handle:CVAR_LOGFLAGS,
     Handle:CVAR_ROUNDEND_OVERLAY,
@@ -117,6 +118,7 @@ CvarsInit()
 	// ===========================
 	
     g_hCvarsList[CVAR_ENABLE]                    =    CreateConVar("zr_enable", "1", "");
+    g_hCvarsList[CVAR_ENABLE_ZM_VERSION_VAR]     =    CreateConVar("zr_enable_zm_version_var", "1", "Enable zombie_version variable for compatibility with ZombieMod server filters.");
     
     // ===========================
 	// Log (core)
