@@ -26,7 +26,7 @@
 	{
 		"name"		"Head"
 		"knockback"	"2.0"
-		"damage"	"no"
+		"damage"	"yes"
 	}
 
 	"2"
@@ -47,7 +47,7 @@
 	{
 		"name"		"Left Arm"
 		"knockback"	"1.0"
-		"damage"	"no"
+		"damage"	"yes"
 	}
 
 	"5"
@@ -61,7 +61,7 @@
 	{
 		"name"		"Left Leg"
 		"knockback"	"0.9"
-		"damage"	"no"
+		"damage"	"yes"
 	}
 
 	"7"
