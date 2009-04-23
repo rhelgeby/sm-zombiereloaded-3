@@ -120,10 +120,36 @@ public DamageTraceAttack(client, inflictor, attacker, damage, hitbox, hitgroup)
     // If the flags are the same on both clients, then stop.
     if (clientzombie == attackerzombie)
     {
+        // If friendly fire is blocked, then allow damage.
+        new bool:damageblockff = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]);
+        if (!damageblockff)
+        {
+            return Hacks_Continue;
+        }
+        
+        // Stop bullet from hurting client.
         return 0;
     }
     
-    // Players are on differen't teams.
+    // Here we know that attacker and client are different teams.
+    
+    // If damage hitgroups cvar is disabled, then allow damage.
+    new bool:damagehitgroups = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_HITGROUPS]);
+    if (!damagehitgroups)
+    {
+        // Allow damage.
+        return Hacks_Continue;
+    }
+    
+    // If damage is disabled for this hitgroup, then stop.
+    new bool:candamage = HitgroupsCanDamageHitgroup(hitgroup);
+    if (!candamage)
+    {
+        // Stop bullet from hurting client.
+        return 0;
+    }
+    
+    // Allow damage.
     return Hacks_Continue;
 }
 
@@ -160,45 +186,8 @@ public DamageOnTakeDamage(client, inflictor, attacker, damage, damagetype, ammot
         return Hacks_Continue;
     }
     
-    // Client was damaged by falling.
-    if (damagetype & DMG_FALL)
-    {
-        // If client isn't a zombie, then allow damage.
-        if (!IsPlayerZombie(client))
-        {
-            return Hacks_Continue;
-        }
-        
-        // If class has "nofalldamage" disabled, then allow damage.
-        new bool:blockfalldamage = ClassGetNoFallDamage(client);
-        if (!blockfalldamage)
-        {
-            return Hacks_Continue;
-        }
-        
-        // Stop damage.
-        return 0;
-    }
-    // Client was damaged by explosion.
-    else if (damagetype & DMG_BLAST)
-    {
-        // If attacker isn't valid, then allow damage.
-        if (!ZRIsValidClient(attacker))
-        {
-            return Hacks_Continue;
-        }
-        
-        // If client is a zombie, then allow damage.
-        if (IsPlayerZombie(client))
-        {
-            return Hacks_Continue;
-        }
-        
-        // Stop damage.
-        return 0;
-    }
     // Client was shot or knifed.
-    else if (damagetype & DMG_BULLET)
+    if (damagetype & DMG_BULLET)
     {
         // If attacker isn't valid, then allow damage.
         if (!ZRIsValidClient(attacker))
@@ -230,6 +219,50 @@ public DamageOnTakeDamage(client, inflictor, attacker, damage, damagetype, ammot
         
         // Allow damage.
         return Hacks_Continue;
+    }
+    // Client was damaged by explosion.
+    else if (damagetype & DMG_BLAST)
+    {
+        // If blast damage is blocked, then stop.
+        new bool:damageblockblast = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]);
+        if (!damageblockblast)
+        {
+            return Hacks_Continue;
+        }
+        
+        // If attacker isn't valid, then allow damage.
+        if (!ZRIsValidClient(attacker))
+        {
+            return Hacks_Continue;
+        }
+        
+        // If client is a zombie, then allow damage.
+        if (IsPlayerZombie(client))
+        {
+            return Hacks_Continue;
+        }
+        
+        // Stop damage.
+        return 0;
+    }
+    // Client was damaged by falling.
+    else if (damagetype & DMG_FALL)
+    {
+        // If client isn't a zombie, then allow damage.
+        if (!IsPlayerZombie(client))
+        {
+            return Hacks_Continue;
+        }
+        
+        // If class has "nofalldamage" disabled, then allow damage.
+        new bool:blockfalldamage = ClassGetNoFallDamage(client);
+        if (!blockfalldamage)
+        {
+            return Hacks_Continue;
+        }
+        
+        // Stop damage.
+        return 0;
     }
     
     // Allow damage.

@@ -17,18 +17,25 @@ enum CvarsList
     Handle:CVAR_ENABLE,
     Handle:CVAR_LOG,
     Handle:CVAR_LOGFLAGS,
-    Handle:CVAR_ROUNDEND_OVERLAY,
-    Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
-    Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
     Handle:CVAR_CLASSES_DEFAULT_ADMIN,
     Handle:CVAR_CLASSES_FILE,
+    Handle:CVAR_WEAPONS,
+    Handle:CVAR_WEAPONS_RESTRICT,
+    Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
+    Handle:CVAR_HITGROUPS,
+    Handle:CVAR_DAMAGE_HITGROUPS,
+    Handle:CVAR_DAMAGE_BLOCK_FF,
+    Handle:CVAR_DAMAGE_BLOCK_BLAST,
     Handle:CVAR_DAMAGE_SUICIDE_ZOMBIE,
     Handle:CVAR_DAMAGE_SUICIDE_HUMAN,
     Handle:CVAR_DAMAGE_SUICIDE_CMDS,
+    Handle:CVAR_ROUNDEND_OVERLAY,
+    Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
+    Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
     Handle:CVAR_INFECT_SPAWNTIME_MIN,
     Handle:CVAR_INFECT_SPAWNTIME_MAX,
     Handle:CVAR_INFECT_CONSECUTIVE_BLOCK,
@@ -43,10 +50,6 @@ enum CvarsList
     Handle:CVAR_INFECT_SHAKE_AMP,
     Handle:CVAR_INFECT_SHAKE_FREQUENCY,
     Handle:CVAR_INFECT_SHAKE_DURATION,
-    Handle:CVAR_WEAPONS,
-    Handle:CVAR_WEAPONS_RESTRICT,
-    Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
-    Handle:CVAR_HITGROUPS,
     Handle:CVAR_ACCOUNT_CASHFILL,
     Handle:CVAR_ACCOUNT_CASHFILL_VALUE,
     Handle:CVAR_SOUNDEFFECTS_MOAN,
@@ -133,17 +136,6 @@ CvarsInit()
     // (None)
     
     // ===========================
-	// Round End (core)
-	// ===========================
-	
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]          =    CreateConVar("zr_roundend_overlay", "1", "");
-    // Old Desc: Shows an overlay to all clients when a team wins. (0: Disable)
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]    =    CreateConVar("zr_roundend_overlays_human", "");
-    // Old Desc: overlays/zr/humans_win", "Path to \"humans win\" overlay
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]   =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "");
-    // Old Desc: Path to \"zombies win\" overlay
-    
-    // ===========================
 	// Offsets (core)
 	// ===========================
 	
@@ -173,39 +165,6 @@ CvarsInit()
     // Old Desc: Class data file to read from, in Valves key/values format. The path is relative to the \"sourcemod\" folder.
     
     // ===========================
-    // Damage (core)
-    // ===========================
-    
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie", "1", "");
-    // Old Desc: Intercept human suicide attempts.
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human", "1", "");
-    // Old Desc: Intercept zombie suicide attempts.
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds", "kill, spectate, jointeam", "");
-    // Old Desc: List of suicide commands to intercept. (Delimited by \", \"
-    
-    // ===========================
-    // Infect (core)
-    // ===========================
-    
-    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]       =    CreateConVar("zr_infect_motherzombie_ratio", "5", "");
-    g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]     =    CreateConVar("zr_infect_motherzombie_respawn", "0", "");
-    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]            =    CreateConVar("zr_infect_spawntime_min", "30.0", "");
-    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]            =    CreateConVar("zr_infect_spawntime_max", "50.0", "");
-    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block", "1", "");
-    
-    // Effects
-    
-    g_hCvarsList[CVAR_INFECT_FIREBALL]           =    CreateConVar("zr_infect_fireball", "1", "");
-    g_hCvarsList[CVAR_INFECT_SMOKE]              =    CreateConVar("zr_infect_smoke", "1", "");
-    g_hCvarsList[CVAR_INFECT_SPARKS]             =    CreateConVar("zr_infect_sparks", "1", "");
-    g_hCvarsList[CVAR_INFECT_SOUND]              =    CreateConVar("zr_infect_sound", "npc/fast_zombie/fz_scream1.wav", "");
-    g_hCvarsList[CVAR_INFECT_ESPLASH]            =    CreateConVar("zr_infect_esplash", "1", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE]              =    CreateConVar("zr_infect_shake", "1", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", ""); 
-    
-    // ===========================
     // Weapons (core)
     // ===========================
     
@@ -231,6 +190,62 @@ CvarsInit()
     
     g_hCvarsList[CVAR_HITGROUPS]                        =    CreateConVar("zr_hitgroups", "1", "");
     // Note make config file cvar.
+    
+    // ===========================
+	// Round End (core)
+	// ===========================
+	
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]          =    CreateConVar("zr_roundend_overlay", "1", "");
+    // Old Desc: Shows an overlay to all clients when a team wins. (0: Disable)
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]    =    CreateConVar("zr_roundend_overlays_human", "");
+    // Old Desc: overlays/zr/humans_win", "Path to \"humans win\" overlay
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]   =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "");
+    // Old Desc: Path to \"zombies win\" overlay
+    
+    // ===========================
+    // Infect (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]       =    CreateConVar("zr_infect_motherzombie_ratio", "5", "");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]     =    CreateConVar("zr_infect_motherzombie_respawn", "0", "");
+    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]            =    CreateConVar("zr_infect_spawntime_min", "30.0", "");
+    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]            =    CreateConVar("zr_infect_spawntime_max", "50.0", "");
+    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block", "1", "");
+    
+    // Effects
+    
+    g_hCvarsList[CVAR_INFECT_FIREBALL]           =    CreateConVar("zr_infect_fireball", "1", "");
+    g_hCvarsList[CVAR_INFECT_SMOKE]              =    CreateConVar("zr_infect_smoke", "1", "");
+    g_hCvarsList[CVAR_INFECT_SPARKS]             =    CreateConVar("zr_infect_sparks", "1", "");
+    g_hCvarsList[CVAR_INFECT_SOUND]              =    CreateConVar("zr_infect_sound", "npc/fast_zombie/fz_scream1.wav", "");
+    g_hCvarsList[CVAR_INFECT_ESPLASH]            =    CreateConVar("zr_infect_esplash", "1", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE]              =    CreateConVar("zr_infect_shake", "1", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", ""); 
+    
+    // ===========================
+    // Damage (core)
+    // ===========================
+    
+    // Hitgroup Damage
+    
+    g_hCvarsList[CVAR_DAMAGE_HITGROUPS]              =    CreateConVar("zr_damage_hitgroups", "1", "");
+    
+    // Block Damage Types
+    
+    g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]              =    CreateConVar("zr_damage_block_ff", "1", "");
+    // note overrides mp_friendlyfire
+    g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]           =    CreateConVar("zr_damage_block_blast", "1", "");
+    
+    // Suicide Intercept
+    
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie", "1", "");
+    // Old Desc: Intercept human suicide attempts.
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human", "1", "");
+    // Old Desc: Intercept zombie suicide attempts.
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds", "kill, spectate, jointeam", "");
+    // Old Desc: List of suicide commands to intercept. (Delimited by \", \"
     
     // ===========================
     // Account (module)

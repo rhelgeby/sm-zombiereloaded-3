@@ -101,7 +101,7 @@ bool:AmbientSoundsValidateConfig()
 
 /**
  * Map is starting.
- */ 
+ */
 AmbientSoundsOnMapStart()
 {
     // Reset timer handle.

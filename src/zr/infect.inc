@@ -60,7 +60,13 @@ InfectOnMapStart()
 {
     // Reset timer handle.
     tInfect = INVALID_HANDLE;
-    
+}
+
+/**
+ * Loads downloadable content data for infect module.
+ */
+InfectLoad()
+{
     // Get infection sound.
     decl String:sound[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
@@ -517,10 +523,7 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     // Apply effects.
     InfectEffects(client);
     
-    // Add a death to the zombie's score.
-    AddPlayerDeath(client, 1);
-    
-    // Fire death event and set weapon info if the attacker is specified.
+    // If attacker is valid, then continue.
     if (ZRIsValidClient(attacker))
     {
         // Create and send custom player_death event.
@@ -535,6 +538,9 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
         
         // Give client's infector a point.
         AddPlayerScore(attacker, 1);
+        
+        // Add a death to the zombie's score.
+        AddPlayerDeath(client, 1);
         
         // Apply infect HP gain.
         new healthgain = ClassGetHealthInfectGain(attacker);
