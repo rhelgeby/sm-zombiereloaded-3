@@ -118,7 +118,7 @@ LogMessageFormatted(client, const String:module[], const String:block[], const S
         LogToAdmins(text);
     }
     
-    if (ZRIsValidClient(client) && LogCheckFlag(LOG_TO_CLIENT))
+    if (ZRIsClientValid(client) && LogCheckFlag(LOG_TO_CLIENT))
     {
         // Set client as translation target.
         SetGlobalTransTarget(client);

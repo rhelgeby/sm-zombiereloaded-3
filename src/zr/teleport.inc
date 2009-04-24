@@ -390,7 +390,7 @@ bool:ZTele(client)
     }
 
     // Check limits.
-    if (IsPlayerHuman(client))
+    if (InfectIsClientHuman(client))
     {
         new human_limit = GetConVarInt(g_hCvarsList[CVAR_ZTELE_HUMAN_LIMIT]);
         new bool:tele_humans;
@@ -454,7 +454,7 @@ TeleportClient(client, bool:no_delay = false, bool:free_tele = false, bool:no_co
     new bool:teleports_unlimited = false;
     new Float:empty_vector[3] = {0.0, 0.0, 0.0};
 
-    if (IsPlayerHuman(client))
+    if (InfectIsClientHuman(client))
     {
         new human_delay = GetConVarInt(g_hCvarsList[CVAR_ZTELE_HUMAN_DELAY]);
         new human_limit = GetConVarInt(g_hCvarsList[CVAR_ZTELE_HUMAN_LIMIT]);

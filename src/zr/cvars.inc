@@ -15,7 +15,6 @@
 enum CvarsList
 {
     Handle:CVAR_ENABLE,
-    Handle:CVAR_ENABLE_ZM_VERSION_VAR,
     Handle:CVAR_LOG,
     Handle:CVAR_LOGFLAGS,
     Handle:CVAR_CLASSES_SPAWN,
@@ -53,9 +52,13 @@ enum CvarsList
     Handle:CVAR_INFECT_SHAKE_DURATION,
     Handle:CVAR_ACCOUNT_CASHFILL,
     Handle:CVAR_ACCOUNT_CASHFILL_VALUE,
-    Handle:CVAR_SOUNDEFFECTS_MOAN,
-    Handle:CVAR_SOUNDEFFECTS_GROAN,
-    Handle:CVAR_SOUNDEFFECTS_DEATH,
+    Handle:CVAR_VEFFECTS_LIGHTSTYLE,
+    Handle:CVAR_VEFFECTS_LIGHTSTYLE_VALUE,
+    Handle:CVAR_VEFFECTS_SKY,
+    Handle:CVAR_VEFFECTS_SKY_PATH,
+    Handle:CVAR_SEFFECTS_MOAN,
+    Handle:CVAR_SEFFECTS_GROAN,
+    Handle:CVAR_SEFFECTS_DEATH,
     Handle:CVAR_AMBIENTSOUNDS,
     Handle:CVAR_AMBIENTSOUNDS_FILE,
     Handle:CVAR_AMBIENTSOUNDS_LENGTH,
@@ -75,9 +78,6 @@ enum CvarsList
     Handle:CVAR_OVERLAY_REDISPLAY,
     Handle:CVAR_ZVISION_ALLOW_DISABLE,
     Handle:CVAR_MENU_AUTOCLOSE,
-    Handle:CVAR_DARK,
-    Handle:CVAR_DARK_LEVEL,
-    Handle:CVAR_DARK_SKY,
     Handle:CVAR_ZSPAWN,
     Handle:CVAR_ZTELE,
     Handle:CVAR_ZTELE_STARTUP_DELAY,
@@ -121,7 +121,6 @@ CvarsInit()
 	// ===========================
 	
     g_hCvarsList[CVAR_ENABLE]                    =    CreateConVar("zr_enable", "1", "");
-    g_hCvarsList[CVAR_ENABLE_ZM_VERSION_VAR]     =    CreateConVar("zr_enable_zm_version_var", "1", "Enable zombie_version variable for compatibility with ZombieMod server filters.");
     
     // ===========================
 	// Log (core)
@@ -259,16 +258,25 @@ CvarsInit()
     // Old Desc: How much money players will have when they spawn when zr_cashfill is 1
     
     // ===========================
+    // Visual Effects (module)
+    // ===========================
+    
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]              =    CreateConVar("zr_veffects_lightstyle", "1", "");
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE]        =    CreateConVar("zr_veffects_lightstyle_value", "a", "");
+    g_hCvarsList[CVAR_VEFFECTS_SKY]                     =    CreateConVar("zr_veffects_sky", "1", "");
+    g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path", "skybox/sky_c17_05bk.vmt", "");
+    
+    // ===========================
 	// Sound Effects (module)
 	// ===========================
 	
 	// Zombie Sounds
 	
-    g_hCvarsList[CVAR_SOUNDEFFECTS_MOAN]         =    CreateConVar("zr_soundeffects_moan", "30", "");
+    g_hCvarsList[CVAR_SEFFECTS_MOAN]         =    CreateConVar("zr_seffects_moan", "30", "");
     // Old Desc: How often, in seconds, a zombie moans (0: Disable)
-    g_hCvarsList[CVAR_SOUNDEFFECTS_GROAN]        =    CreateConVar("zr_soundeffects_groan", "5", "");
+    g_hCvarsList[CVAR_SEFFECTS_GROAN]        =    CreateConVar("zr_seffects_groan", "5", "");
     // Old Desc: Chance factor a zombie will groan when shot (Lower: More often, 0: Disable)
-    g_hCvarsList[CVAR_SOUNDEFFECTS_DEATH]        =    CreateConVar("zr_soundeffects_death", "1", "");
+    g_hCvarsList[CVAR_SEFFECTS_DEATH]        =    CreateConVar("zr_seffects_death", "1", "");
     // Old Desc: Zombie will emit a death sound when killed (0: Disable)
     
     // Ambient Sounds
@@ -340,12 +348,6 @@ CvarsInit()
     // Old Desc: Allow users to disable ZVision with their nightvision key (0: Disable)
     g_hCvarsList[CVAR_MENU_AUTOCLOSE]            =    CreateConVar("zr_menu_autoclose", "0", "");
     // Old Desc: Automatically close menus on selection. If disabled the menu will remain open.
-    g_hCvarsList[CVAR_DARK]                      =    CreateConVar("zr_dark", "0", "");
-    // Old Desc: Default value for darkening maps,  most dislike this feature (0: Disable)
-    g_hCvarsList[CVAR_DARK_LEVEL]                =    CreateConVar("zr_dark_level", "a", "");
-    // Old Desc: The darkness of the map,  a being the darkest,  z being extremely bright when zr_dark is 1 (n: Default)
-    g_hCvarsList[CVAR_DARK_SKY]                  =    CreateConVar("zr_dark_sky", "sky_borealis01", "");
-    // Old Desc: The sky the map will have when zr_dark is 1
     g_hCvarsList[CVAR_ZSPAWN]                    =    CreateConVar("zr_zspawn", "1", "");
     // Old Desc: Allow players to spawn if they just joined the game (0: Disable)
     g_hCvarsList[CVAR_ZTELE]                     =    CreateConVar("zr_tele", "1", "");

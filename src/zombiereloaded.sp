@@ -59,6 +59,9 @@
 // Account (module)
 #include "zr/account"
 
+// Visual Effects (module)
+#include "zr/visualeffects"
+
 // Sound Effects (module)
 #include "zr/soundeffects/soundeffects"
 
@@ -142,12 +145,8 @@ public OnPluginStart()
     // ======================================================================
     
     CreateConVar("gs_zombiereloaded_version", VERSION, "[ZR] Current version of this plugin", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
-    
-    // Create zombie_version variable if specified.
-    if (GetConVarBool(g_hCvarsList[CVAR_ENABLE_ZM_VERSION_VAR]))
-    {
-        CreateConVar("zombie_version", VERSION, "Zombie:Reloaded Version", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
-    }
+    CreateConVar("zombie_version", VERSION, "Zombie:Reloaded Version", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
+    CreateConVar("zombie_enabled", "1", "Not synced with zr_enable", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
     
     // ======================================================================
     
@@ -210,12 +209,11 @@ public OnConfigsExecuted()
         }
     }
     
-    FindMapSky();
-    
     // Forward event to modules.
     WeaponsLoad();
     HitgroupsLoad();
     InfectLoad();
+    VEffectsLoad();
     SEffectsLoad();
 }
 

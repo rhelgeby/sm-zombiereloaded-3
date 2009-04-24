@@ -86,7 +86,7 @@ ClassOverlayStop(client)
 
 public Action:ClassOverlayTimer(Handle:timer, any:client)
 {
-    if (!IsClientInGame(client) || !IsPlayerZombie(client))
+    if (!IsClientInGame(client) || !InfectIsClientInfected(client))
     {
         tOverlay[client] = INVALID_HANDLE;
         return Plugin_Stop;

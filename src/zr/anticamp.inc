@@ -348,7 +348,7 @@ HurtPlayersInVolume(volume_index)
     {
         if (IsClientInGame(x) &&
             IsPlayerAlive(x) &&
-            IsPlayerHuman(x))
+            InfectIsClientHuman(x))
         {
             if (IsPlayerInVolume(x, volume_index))
             {

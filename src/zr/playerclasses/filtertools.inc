@@ -331,7 +331,7 @@ ClassGetActiveIndex(client)
         return -1;
     }
     
-    if (IsPlayerHuman(client))
+    if (InfectIsClientHuman(client))
     {
         teamid = ZR_CLASS_TEAM_HUMANS;
     }

@@ -22,7 +22,7 @@
  */
 ClassClientInit(client)
 {
-    if (ZRIsValidClient(client))
+    if (ZRIsClientValid(client))
     {
         // Set default class indexes on the player.
         ClassClientSetDefaultIndexes(client);

@@ -108,14 +108,20 @@ public DamageTraceAttack(client, inflictor, attacker, damage, hitbox, hitgroup)
     // new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     
     // If attacker isn't valid, then stop.
-    if (!ZRIsValidClient(attacker))
+    if (!ZRIsClientValid(attacker))
+    {
+        return Hacks_Continue;
+    }
+    
+    // If client is attacking himself, then stop.
+    if(attacker == client)
     {
         return Hacks_Continue;
     }
     
     // Get zombie flag for each client.
-    new bool:clientzombie = IsPlayerZombie(client);
-    new bool:attackerzombie = IsPlayerZombie(attacker);
+    new bool:clientzombie = InfectIsClientInfected(client);
+    new bool:attackerzombie = InfectIsClientInfected(attacker);
     
     // If the flags are the same on both clients, then stop.
     if (clientzombie == attackerzombie)
@@ -190,14 +196,14 @@ public DamageOnTakeDamage(client, inflictor, attacker, damage, damagetype, ammot
     if (damagetype & DMG_BULLET)
     {
         // If attacker isn't valid, then allow damage.
-        if (!ZRIsValidClient(attacker))
+        if (!ZRIsClientValid(attacker))
         {
             return Hacks_Continue;
         }
         
         // Get zombie flag for each client.
-        new bool:clientzombie = IsPlayerZombie(client);
-        new bool:attackerzombie = IsPlayerZombie(attacker);
+        new bool:clientzombie = InfectIsClientInfected(client);
+        new bool:attackerzombie = InfectIsClientInfected(attacker);
         
         // If client and attacker are on the same team, then let CS:S handle the rest.
         if (clientzombie == attackerzombie)
@@ -231,13 +237,13 @@ public DamageOnTakeDamage(client, inflictor, attacker, damage, damagetype, ammot
         }
         
         // If attacker isn't valid, then allow damage.
-        if (!ZRIsValidClient(attacker))
+        if (!ZRIsClientValid(attacker))
         {
             return Hacks_Continue;
         }
         
         // If client is a zombie, then allow damage.
-        if (IsPlayerZombie(client))
+        if (InfectIsClientInfected(client))
         {
             return Hacks_Continue;
         }
@@ -249,7 +255,7 @@ public DamageOnTakeDamage(client, inflictor, attacker, damage, damagetype, ammot
     else if (damagetype & DMG_FALL)
     {
         // If client isn't a zombie, then allow damage.
-        if (!IsPlayerZombie(client))
+        if (!InfectIsClientInfected(client))
         {
             return Hacks_Continue;
         }
@@ -293,7 +299,7 @@ public Action:DamageSuicideIntercept(client, argc)
     }
     
     // If client is invalid, then stop.  (Stop console.)
-    if (!ZRIsValidClient(client))
+    if (!ZRIsClientValid(client))
     {
         return Plugin_Continue;
     }
@@ -305,7 +311,7 @@ public Action:DamageSuicideIntercept(client, argc)
     }
     
     // Get zombie flag on client.
-    new bool:clientzombie = IsPlayerZombie(client);
+    new bool:clientzombie = InfectIsClientInfected(client);
     
     // Get cvar values for suicide interception.
     new bool:suicidezombie = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]);

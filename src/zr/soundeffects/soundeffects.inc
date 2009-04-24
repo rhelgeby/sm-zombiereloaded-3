@@ -69,8 +69,18 @@ SEffectsOnRoundStart()
 SEffectsOnClientSpawn(client)
 {
     // Forward event to sub-modules.
-    AmbientSoundsOnClientSpawn(client);
+    //AmbientSoundsOnClientSpawn(client);
     ZombieSoundsOnClientSpawn(client);
+}
+
+/**
+ * Fired one frame after client spawns into the game.
+ * 
+ * @param client    The client index.
+ */
+SEffectsOnClientSpawnPost(client)
+{
+    AmbientSoundsOnClientSpawnPost(client);
 }
 
 /**
@@ -121,7 +131,7 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
     // Stop sound before playing again.
     SEffectsStopAmbientSound(sound);
     
-    if (ZRIsValidClient(client))
+    if (ZRIsClientValid(client))
     {
         // Emit ambient sound.
         EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);

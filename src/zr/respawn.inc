@@ -56,10 +56,10 @@ RespawnOnClientSpawn(client)
 RespawnOnClientDeath(client, attacker, const String:weapon[])
 {
     // If client is a zombie, check if they were killed by world.
-    if (IsPlayerZombie(client))
+    if (InfectIsClientInfected(client))
     {
         // Set pKilledByWorld to true if attacker is not a valid client.
-        pKilledByWorld[client] = !ZRIsValidClient(attacker);
+        pKilledByWorld[client] = !ZRIsClientValid(attacker);
     }
     
     // If timer is running, kill it.
@@ -126,13 +126,13 @@ RespawnSpawnClient(client)
     // Get suicide respawn cvar
     if (respawn_zombie)
     {
-        InfectPlayer(client);
+        InfectClient(client);
         return;
     }
     
     if (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && pKilledByWorld[client])
     {
-        InfectPlayer(client);
+        InfectClient(client);
         pKilledByWorld[client] = false;
     }
 }

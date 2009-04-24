@@ -33,14 +33,13 @@ UnhookEvents()
 }
 
 public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
-{   
-    ChangeLightStyle();
-    
+{
     ZR_PrintToChat(0, "Round objective");
     
     // Forward event to sub-modules.
     RoundEndOnRoundStart();
     InfectOnRoundStart();
+    VEffectsOnRoundStart();
     SEffectsOnRoundStart();
     AntiStickOnRoundStart();
 }
@@ -84,6 +83,9 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
+    // Call post player_spawn
+    CreateTimer(0.0, PlayerSpawnPost, index);
+    
     // Reset FOV and overlay.
     SetPlayerFOV(index, 90);
     ClientCommand(index, "r_screenoverlay \"\"");
@@ -120,6 +122,12 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     ZTeleClientSpawned(index);
     
     ZR_PrintToChat(index, "!zmenu reminder");
+}
+
+public Action:PlayerSpawnPost(Handle:timer, any:client)
+{
+    // Forward event to modules.
+    SEffectsOnClientSpawnPost(client);
 }
 
 public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
@@ -162,10 +170,10 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     ExtinguishEntity(index);
     
     // If the attacker is valid, then continue.
-    if (ZRIsValidClient(attacker))
+    if (ZRIsClientValid(attacker))
     {
         // If the client is a zombie, then continue.
-        if (IsPlayerZombie(index))
+        if (InfectIsClientInfected(index))
         {
             // Add kill bonus to attacker's score.
             new bonus = ClassGetKillBonus(attacker);

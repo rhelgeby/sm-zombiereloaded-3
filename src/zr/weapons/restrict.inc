@@ -226,7 +226,7 @@ public Action:RestrictBuyHook(client, argc)
     }
     
     // If player is a zombie then block command.
-    if (IsPlayerZombie(client))
+    if (InfectIsClientInfected(client))
     {
         ZR_PrintToChat(client, "Zombie cant use weapon");
         
@@ -864,7 +864,7 @@ public RestrictCanUse(client, weapon, dummy1, dummy2, dummy3, dummy4)
     }
     
     // If the player is a zombie and the weapon isn't a knife then prevent pickup.
-    if (IsPlayerZombie(client) && !StrEqual(weaponname, "knife"))
+    if (InfectIsClientInfected(client) && !StrEqual(weaponname, "knife"))
     {
         return 0;
     }

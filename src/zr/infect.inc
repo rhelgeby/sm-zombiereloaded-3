@@ -123,7 +123,7 @@ InfectOnClientDisconnect(client)
     ZRCountValidClients(zombiecount, humancount);
     
     // If client is a human.
-    if (IsPlayerHuman(client))
+    if (InfectIsClientHuman(client))
     {
         // If there are other humans (ignoring this human), then stop.
         if (humancount > 1)
@@ -176,7 +176,7 @@ InfectOnClientDisconnect(client)
     new randclient = GetArrayCell(arrayEligibleClients, randindex);
     
     // Infect player.
-    InfectPlayer(randclient);
+    InfectClient(randclient);
     
     // Tell client they have been randomly been chosen to replace disconnecting zombie.
     ZR_PrintToChat(randclient, "Zombie replacement");
@@ -223,19 +223,19 @@ InfectOnClientSpawn(client)
 InfectOnClientHurt(client, attacker, const String:weapon[])
 {
     // If attacker isn't valid, then stop.
-    if (!ZRIsValidClient(attacker))
+    if (!ZRIsClientValid(attacker))
     {
         return;
     }
     
     // If client isn't a human, then stop.
-    if (!IsPlayerHuman(client))
+    if (!InfectIsClientHuman(client))
     {
         return;
     }
     
     // Attacker isn't a zombie, then stop.
-    if (!IsPlayerZombie(attacker))
+    if (!InfectIsClientInfected(attacker))
     {
         return;
     }
@@ -253,7 +253,7 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
     }
     
     // Infect client.
-    InfectPlayer(client, attacker);
+    InfectClient(client, attacker);
 }
 
 /**
@@ -425,7 +425,7 @@ public Action:InfectMotherZombie(Handle:timer)
         client = GetArrayCell(arrayEligibleClients, randindex);
         
         // Infect player.
-        InfectPlayer(client, _, true);
+        InfectClient(client, _, true);
     }
     else
     {
@@ -457,7 +457,7 @@ public Action:InfectMotherZombie(Handle:timer)
             client = GetArrayCell(arrayEligibleClients, randindex);
             
             // Infect player.
-            InfectPlayer(client, _, true);
+            InfectClient(client, _, true);
             
             // Remove player from eligible zombie list.
             RemoveFromArray(arrayEligibleClients, randindex);
@@ -479,7 +479,7 @@ public Action:InfectMotherZombie(Handle:timer)
  * @param attacker      (Optional) The attacker who did the infect.
  * @param motherinfect  (Optional) Indicates a mother zombie infect.
  */
-InfectPlayer(client, attacker = -1, bool:motherinfect = false)
+InfectClient(client, attacker = -1, bool:motherinfect = false)
 {
     // Mark player as zombie.
     bZombie[client] = true;
@@ -521,10 +521,10 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     bInfectImmune[client][INFECT_TYPE_MOTHER] = infectconsecutiveblock ? motherinfect : false;
     
     // Apply effects.
-    InfectEffects(client);
+    InfectFireEffects(client);
     
     // If attacker is valid, then continue.
-    if (ZRIsValidClient(attacker))
+    if (ZRIsClientValid(attacker))
     {
         // Create and send custom player_death event.
         new Handle:event = CreateEvent("player_death");
@@ -576,7 +576,7 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
  * 
  * @param client    The client index.
  */
-InfectEffects(client)
+InfectFireEffects(client)
 {
     // Create location and direction arrays.
     new Float:clientloc[3];
@@ -668,4 +668,40 @@ InfectEffects(client)
             EndMessage();
         }
     }
+}
+
+/**
+ * Returns if a client is infected.
+ * 
+ * @param client    The client index.
+ * @return          True if the client has been infected, false otherwise.
+ */    
+bool:InfectIsClientInfected(client)
+{
+    // If client is invalid, then stop.
+    if (!ZRIsClientValid(client))
+    {
+        return false;
+    }
+    
+    // Return client's zombie flag.
+    return bZombie[client];
+}
+
+/**
+ * Returns if a client is a human.
+ * 
+ * @param client    The client index.
+ * @return          True if the client is a human, false otherwise.
+ */
+bool:InfectIsClientHuman(client)
+{
+    // If client is invalid, then stop.
+    if (!ZRIsClientValid(client))
+    {
+        return true;
+    }
+    
+    // Return opposite of client's zombie flag.
+    return !bZombie[client];
 }

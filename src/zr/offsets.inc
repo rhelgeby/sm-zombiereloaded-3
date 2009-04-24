@@ -21,7 +21,6 @@ new offsRender;
 new offsActiveWeapon;
 
 new Handle:g_hGameConf = INVALID_HANDLE;
-new Handle:g_hEyePosition = INVALID_HANDLE;
 new Handle:g_hEyeAngles = INVALID_HANDLE;
 new Handle:g_hTerminateRound = INVALID_HANDLE;
 new Handle:g_hCSWeaponDrop = INVALID_HANDLE;
@@ -111,16 +110,6 @@ SetupGameData()
 {
     // Load game config file.
     g_hGameConf = LoadGameConfigFile("plugin.zombiereloaded");
-    
-    StartPrepSDKCall(SDKCall_Player);
-    PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "EyePosition");
-    PrepSDKCall_SetReturnInfo(SDKType_QAngle, SDKPass_ByValue);
-    g_hEyePosition = EndPrepSDKCall();
-    
-    if(g_hEyePosition == INVALID_HANDLE)
-	{
-		SetFailState("Couldn't find offset \"EyePosition\"!");
-	}
 	
     StartPrepSDKCall(SDKCall_Player);
     PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Virtual, "EyeAngles");
@@ -240,11 +229,6 @@ AddPlayerDeath(client, amount)
 {
     new deaths = GetEntProp(client, Prop_Data, "m_iDeaths");
     SetEntProp(client, Prop_Data, "m_iDeaths", deaths + amount);
-}
-
-GetPlayerEyePosition(client, Float:vec[3])
-{
-    SDKCall(g_hEyePosition, client, vec);
 }
 
 GetPlayerEyeAngles(client, Float:ang[3])
