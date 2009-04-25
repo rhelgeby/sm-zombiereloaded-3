@@ -7,7 +7,7 @@
  */
 
 #include "include/adminmenu.inc"
-new curMenuClass[MAXPLAYERS + 1];
+//new curMenuClass[MAXPLAYERS + 1];
 
 bool:ZRAdminMenu(client)
 {

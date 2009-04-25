@@ -75,7 +75,12 @@ bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
         Format(modelpath, sizeof(modelpath), "%s.mdl", modelpath);
     }
     
-    // TODO: Add support for keeping the default cs model ("default").
+    // Check if the user specified no change.
+    else if (strcmp(modelpath, "default", false) == 0)
+    {
+        // Don't change the model.
+        return true;
+    }
     
     SetEntityModel(client, modelpath);
     return true;

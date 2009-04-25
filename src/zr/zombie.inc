@@ -27,19 +27,14 @@ public Action:Command_NightVision(client, argc)
         return;
     }
     
-    if (!IsPlayerZombie(client))
-    {
-        return;
-    }
-    
     bClientOverlayOn[client] = !bClientOverlayOn[client];
     
-    decl String:overlay[256];
+    decl String:overlay[PLATFORM_MAX_PATH];
     ClassGetOverlayPath(client, overlay, sizeof(overlay));
     
     if (strlen(overlay) > 0)
     {
-        if (bClientOverlayOn[client])
+        if (ClassOverlayIsOn(client))
         {
             ClassOverlayInitialize(client, overlay);
         }
@@ -84,7 +79,7 @@ JumpBoost(client, Float:distance, Float:height)
     
     vel[0] *= distance;
     vel[1] *= distance;
-    vel[2] *= height;
+    vel[2] += height;
     
     SetPlayerVelocity(client, vel, false);
 }

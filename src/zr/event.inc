@@ -110,8 +110,8 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     }
     
     // Forward event to modules.
-    ClassOnClientSpawn(index);
     InfectOnClientSpawn(index);
+    ClassOnClientSpawn(index);          // Module event depends on infect module.
     SEffectsOnClientSpawn(index);
     AccountOnClientSpawn(index);
     SpawnProtectOnClientSpawn(index);
@@ -189,7 +189,7 @@ public Action:PlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
     
     new Float:distance = ClassGetJumpDistance(client);
     new Float:height = ClassGetJumpHeight(client);
-        
+    
     JumpBoost(client, distance, height);
 }
 

@@ -87,27 +87,26 @@ bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
 ClassValidateAttributes(classindex)
 {
     // TODO: Validate immunity mode and amount.
-    // TODO: Validate jump values.
     
     new flags;
     
     // Name.
-    if (strlen(ClassData[classindex][class_name]) == 0)
+    if (strlen(ClassData[classindex][class_name]) < ZR_CLASS_NAME_MIN)
     {
-        flags += ZR_CLASS_ATTRIB_ERR_NAME;
+        flags += ZR_CLASS_FLAG_NAME;
     }
     
     // Description.
-    if (strlen(ClassData[classindex][class_description]) == 0)
+    if (strlen(ClassData[classindex][class_description]) < ZR_CLASS_DESCRIPTION_MIN)
     {
-        flags += ZR_CLASS_ATTRIB_ERR_DESCRIPTION;
+        flags += ZR_CLASS_FLAG_DESCRIPTION;
     }
     
     // Model path.
-    decl String:model_path[256];
+    decl String:model_path[PLATFORM_MAX_PATH];
     if (strcopy(model_path, sizeof(model_path), ClassData[classindex][class_model_path]) == 0)
     {
-        flags += ZR_CLASS_ATTRIB_ERR_MODEL_PATH;
+        flags += ZR_CLASS_FLAG_MODEL_PATH;
     }
     else
     {
@@ -117,99 +116,120 @@ ClassValidateAttributes(classindex)
             // Check if the file exists.
             if (!FileExists(model_path))
             {
-                flags += ZR_CLASS_ATTRIB_ERR_MODEL_PATH;
+                flags += ZR_CLASS_FLAG_MODEL_PATH;
             }
         }        
     }
     
     // Alpha, initial.
     new alpha_initial = ClassData[classindex][class_alpha_initial];
-    if (!(alpha_initial >= 0 && alpha_initial <= 255))
+    if (!(alpha_initial >= ZR_CLASS_ALPHA_INITIAL_MIN && alpha_initial <= ZR_CLASS_ALPHA_INITIAL_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_ALPHA_INITIAL;
+        flags += ZR_CLASS_FLAG_ALPHA_INITIAL;
     }
     
     // Alpha, damaged.
     new alpha_damaged = ClassData[classindex][class_alpha_damaged];
-    if (!(alpha_damaged >= 0 && alpha_damaged <= 255))
+    if (!(alpha_damaged >= ZR_CLASS_ALPHA_DAMAGED_MIN && alpha_damaged <= ZR_CLASS_ALPHA_DAMAGED_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_ALPHA_DAMAGED;
+        flags += ZR_CLASS_FLAG_ALPHA_DAMAGED;
     }
     
     // Alpha, damage.
     new alpha_damage = ClassData[classindex][class_alpha_damage];
-    if (!(alpha_damage >= 0 && alpha_damage <= 65536))
+    if (!(alpha_damage >= ZR_CLASS_ALPHA_DAMAGE_MIN && alpha_damage <= ZR_CLASS_ALPHA_DAMAGE_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_ALPHA_DAMAGE;
+        flags += ZR_CLASS_FLAG_ALPHA_DAMAGE;
     }
     
     // Overlay path.
-    decl String:overlay_path[256];
-    decl String:overlay[256];
+    decl String:overlay_path[PLATFORM_MAX_PATH];
+    decl String:overlay[PLATFORM_MAX_PATH];
     if (strcopy(overlay_path, sizeof(overlay_path), ClassData[classindex][class_overlay_path]) > 0)
     {
         // Check if the file exists.
         Format(overlay, sizeof(overlay), "materials/%s.vmt", overlay_path);
         if (!FileExists(overlay))
         {
-            flags += ZR_CLASS_ATTRIB_ERR_OVERLAY_PATH;
+            flags += ZR_CLASS_FLAG_OVERLAY_PATH;
         }
     }
     
     // Field of view.
     new fov = ClassData[classindex][class_fov];
-    if (!(fov > 15 && fov < 180))
+    if (!(fov >= ZR_CLASS_FOV_MIN && fov <= ZR_CLASS_FOV_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_FOV;
+        flags += ZR_CLASS_FLAG_FOV;
     }
     
     // Napalm time.
     new Float:napalm_time = ClassData[classindex][class_napalm_time];
-    if (!(napalm_time >= 0.0 && napalm_time <= 900.0))
+    if (!(napalm_time >= ZR_CLASS_NAPALM_TIME_MIN && napalm_time <= ZR_CLASS_NAPALM_TIME_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_NAPALM_TIME;
+        flags += ZR_CLASS_FLAG_NAPALM_TIME;
+    }
+    
+    // Health.
+    new health = ClassData[classindex][class_health];
+    if (!(health >= ZR_CLASS_HEALTH_MIN && health <= ZR_CLASS_HEALTH_MAX))
+    {
+        flags += ZR_CLASS_FLAG_HEALTH;
     }
     
     // Health regen interval.
     new Float:regen_interval = ClassData[classindex][class_health_regen_interval];
-    if (!(regen_interval >= 0.0 && regen_interval <= 900.0))
+    if (!(regen_interval >= ZR_CLASS_HEALTH_REGEN_INTERVAL_MIN && regen_interval <= ZR_CLASS_HEALTH_REGEN_INTERVAL_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_INTERVAL;
+        flags += ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL;
         
         // Health regen amount. Only validating if interval is set.
         new regen_amount = ClassData[classindex][class_health_regen_amount];
-        if (!(regen_amount > 0 && regen_amount <= 65536))
+        if (!(regen_amount >= ZR_CLASS_HEALTH_REGEN_AMOUNT_MIN && regen_amount <= ZR_CLASS_HEALTH_REGEN_AMOUNT_MAX))
         {
-            flags += ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_AMOUNT;
+            flags += ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT;
         }
     }
     
     // Health infect gain.
     new infect_gain = ClassData[classindex][class_health_infect_gain];
-    if (!(infect_gain >= 0 && infect_gain <= 65536))
+    if (!(infect_gain >= ZR_CLASS_HEALTH_INFECT_GAIN_MIN && infect_gain <= ZR_CLASS_HEALTH_INFECT_GAIN_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_INFECT_GAIN;
+        flags += ZR_CLASS_FLAG_INFECT_GAIN;
     }
     
     // Kill bonus.
     new kill_bonus = ClassData[classindex][class_kill_bonus];
-    if (!(kill_bonus >= 0 && kill_bonus <= 128))
+    if (!(kill_bonus >= ZR_CLASS_KILL_BONUS_MIN && kill_bonus <= ZR_CLASS_KILL_BONUS_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_KILL_BONUS;
+        flags += ZR_CLASS_FLAG_KILL_BONUS;
     }
     
     // Speed.
     new Float:speed = ClassData[classindex][class_speed];
-    if (!(speed >= 0.0 && speed <= 1024.0))
+    if (!(speed >= ZR_CLASS_SPEED_MIN && speed <= ZR_CLASS_SPEED_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_SPEED;
+        flags += ZR_CLASS_FLAG_SPEED;
     }
     
     // Knockback.
     new Float:knockback = ClassData[classindex][class_knockback];
-    if (!(knockback >= -10.0 && knockback <= 50.0))
+    if (!(knockback >= ZR_CLASS_KNOCKBACK_MIN && knockback <= ZR_CLASS_KNOCKBACK_MAX))
     {
-        flags += ZR_CLASS_ATTRIB_ERR_KNOCKBACK;
+        flags += ZR_CLASS_FLAG_KNOCKBACK;
+    }
+    
+    // Jump height.
+    new Float:jump_height = ClassData[classindex][class_jump_height];
+    if (!(jump_height >= ZR_CLASS_JUMP_HEIGHT_MIN && jump_height <= ZR_CLASS_JUMP_HEIGHT_MAX))
+    {
+        flags += ZR_CLASS_FLAG_JUMP_HEIGHT;
+    }
+    
+    // Jump distance.
+    new Float:jump_distance = ClassData[classindex][class_jump_distance];
+    if (!(jump_distance >= ZR_CLASS_JUMP_DISTANCE_MIN && jump_distance <= ZR_CLASS_JUMP_DISTANCE_MAX))
+    {
+        flags += ZR_CLASS_FLAG_JUMP_DISTANCE;
     }
     
     return flags;
@@ -325,24 +345,31 @@ ClassGetActiveIndex(client)
 {
     new teamid = GetClientTeam(client);
     
-    if (teamid == CS_TEAM_SPECTATOR || teamid == CS_TEAM_NONE)
+    if (!ZRIsClientOnTeam(client))
     {
         // No active team.
         return -1;
     }
     
-    if (IsPlayerHuman(client))
+    // Check if the player currently is in admin mode.
+    if (ClassPlayerInAdminMode[client])
     {
-        teamid = ZR_CLASS_TEAM_HUMANS;
+        teamid = ZR_CLASS_TEAM_ADMINS;
     }
     else
     {
-        teamid = ZR_CLASS_TEAM_ZOMBIES;
+        // Not in admin mode, check if player is human or zombie.
+        if (IsPlayerHuman(client))
+        {
+            teamid = ZR_CLASS_TEAM_HUMANS;
+        }
+        else
+        {
+            teamid = ZR_CLASS_TEAM_ZOMBIES;
+        }
     }
     
-    // TODO: How to detect that virtual admin team?
-    
-    // Return the active class for the current team.
+    // Return the active class for the active team.
     return ClassSelected[client][teamid];
 }
 

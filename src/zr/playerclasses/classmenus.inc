@@ -68,8 +68,8 @@ ClassMenuMain(client)
     Format(humanselect, sizeof(humanselect), "%t\n    %s", "!zclass human", humanclass);
     AddMenuItem(menu, "", humanselect, human_itemdraw);
     
-    // Only display admin class options for admins.
-    if (ZRIsClientAdmin(client))
+    // Only display admin class options for admins, and if admin classes exist.
+    if (ZRIsClientAdmin(client) && ClassCountTeam(ZR_CLASS_TEAM_ADMINS))
     {
         // List admin class options.
         ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ADMINS], adminclass, sizeof(adminclass), ZR_CLASS_CACHE_MODIFIED);
@@ -243,23 +243,35 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
             // Solve teamid from the class index.
             teamid = ClassGetTeamID(classindex, ZR_CLASS_CACHE_MODIFIED);
             
-            // Set the players active class to the specified class.
-            ClassSelected[client][teamid] = classindex;
+            // Check if the class is a admin class.
+            if (teamid == ZR_CLASS_TEAM_ADMINS)
+            {
+                // Set the admin class to be used on next admin spawn.
+                ClassPlayerNextAdminClass[client] = classindex;
+            }
+            else
+            {
+                // Set the players active class to the specified class.
+                ClassSelected[client][teamid] = classindex;
+            }
         }
         case MenuAction_Cancel:
         {
             if (slot == MenuCancel_ExitBack)
             {
                 ClassMenuMain(client);
+                return;
             }
         }
         case MenuAction_End:
         {
             CloseHandle(menu);
+            return;
         }
     }
     
-    // Redisplay the main class menu if autoclose is disabled.
+    // Redisplay the main class menu after a selection, if autoclose is
+    // disabled.
     if (!autoclose)
     {
         ClassMenuMain(client);

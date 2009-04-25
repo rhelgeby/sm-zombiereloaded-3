@@ -17,21 +17,39 @@ new Handle:tOverlay[MAXPLAYERS + 1];
 /**
  * Specifies if a client have a overlay.
  */
-new bClientHasOverlay[MAXPLAYERS + 1];
+new bool:bClientHasOverlay[MAXPLAYERS + 1];
 
 /**
  * Tells wether the overlay is on or not.
  */
-new bClientOverlayOn[MAXPLAYERS + 1];
+new bool:bClientOverlayOn[MAXPLAYERS + 1];
 
 /**
  * Path to the currently active overlay.
  */
 new String:ActiveOverlay[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
 
-bool:ClientHasOverlay(client)
+
+/**
+ * Returns if the have a overlay path specified.
+ *
+ * @param client    The client index.
+ * @return          True if a overlay path is specified, false otherwise.
+ */
+bool:ClassClientHasOverlay(client)
 {
     return bClientHasOverlay[client];
+}
+
+/**
+ * Returns if the overlay is currently on or not.
+ *
+ * @param client    The client index.
+ * @return          True if on, false otherwise.
+ */
+bool:ClassOverlayIsOn(client)
+{
+    return bClientOverlayOn[client];
 }
 
 ClassOverlayInitialize(client, const String:overlay[])

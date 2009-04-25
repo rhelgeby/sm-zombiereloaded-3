@@ -172,7 +172,6 @@ public OnMapStart()
     LoadDownloadData();
     
     // Forward event to modules.
-    ClassLoad();
     WeaponsLoad();
     RoundEndOnMapStart();
     InfectOnMapStart();
@@ -212,6 +211,7 @@ public OnConfigsExecuted()
     
     // Forward event to modules.
     SEffectsLoad();
+    ClassLoad();
 }
 
 public OnClientPutInServer(client)
