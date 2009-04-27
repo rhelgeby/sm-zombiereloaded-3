@@ -78,7 +78,8 @@ SpawnProtectOnClientSpawn(client)
         bInfectImmune[client][INFECT_TYPE_NORMAL] = true;
         
         // Set improved attributes
-        // (Move to cvar?)
+        // TODO: Move to cvar.
+        // (Set weapon alpha too?)
         SetPlayerAlpha(client, 0);
         SetPlayerSpeed(client, 600.0);
         
@@ -150,9 +151,8 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
         ZR_HudHint(client, "Spawn protection end");
         
         // Fix attributes.
-        // TODO: Set class attributes.
-        SetPlayerAlpha(client, 255);
-        SetPlayerSpeed(client, 300.0);
+        SetPlayerAlpha(client, ClassGetAlphaInitial(client));
+        SetPlayerSpeed(client, ClassGetSpeed(client));
         
         // Clear timer handle.
         tSpawnProtect[client] = INVALID_HANDLE;
