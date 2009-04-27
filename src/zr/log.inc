@@ -57,7 +57,24 @@
 /*
  * @endsection
  */
- 
+
+/**
+ * @section Global handles for modules cvars.
+ */
+new Handle:g_hLog = INVALID_HANDLE;
+new Handle:g_hLogFlags = INVALID_HANDLE;
+/**
+ * @endsection
+ */
+
+LogInit()
+{
+    // Create modules cvars.
+    g_hLog      =   CreateConVar("zr_log", "1", "");
+    g_hLogFlags =   CreateConVar("zr_logflags", "331", "");
+    // Old Desc: Logging flags. Log messages to sourcemod logs, server console or client console. Use zr_log_flags to see a list of flags. (0: Disable)
+}
+
 /**
  * Logs a formatted message with module and block info depending, on the type.
  *
@@ -75,39 +92,45 @@
 LogMessageFormatted(client, const String:module[], const String:block[], const String:message[], type = LOG_FORMAT_TYPE_FULL, any:...)
 {
     // If logging is disabled, then stop.
-    new bool:log = GetConVarBool(g_hCvarsList[CVAR_LOG]);
+    new bool:log = GetConVarBool(g_hLog);
     if (!log)
     {
         return;
     }
     
-    decl String:buffer[LOG_MAX_LENGTH_FILE];
-    decl String:text[LOG_MAX_LENGTH_FILE];
-
-    if (client == 0 && LogCheckFlag(LOG_IGNORE_CONSOLE))
+    decl String:logtext[LOG_MAX_LENGTH_FILE];
+    
+    // Set to true if log to console, false if client.
+    new bool:console = !ZRIsClientValid(client);
+    
+    // If client is invalid (console), and console is ignored, then stop.
+    if (console && LogCheckFlag(LOG_IGNORE_CONSOLE))
     {
         return;
     }
     
+    // Format log text.
+    VFormat(logtext, sizeof(logtext), message, 6);
+    
+    // Format other parameters onto the log text.
     switch (type)
     {
+        // Log type is simple.
         case LOG_FORMAT_TYPE_SIMPLE:
         {
-            VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "%s", message);
-            LogMessage(text);
+            LogMessage(logtext);
         }
+        // Log type is full.
         case LOG_FORMAT_TYPE_FULL:
         {
-            VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "\"%s\" : \"%s\" -- %s", module, block, buffer);
-            LogMessage(text);
+            Format(logtext, sizeof(logtext), "\"%s\" : \"%s\" -- %s", module, block, logtext);
+            LogMessage(logtext);
         }
+        // Log type is error.
         case LOG_FORMAT_TYPE_ERROR:
         {
-            VFormat(buffer, sizeof(buffer), message, 6);
-            Format(text, sizeof(text), "\"%s\" : \"%s\" -- %s", module, block, buffer);
-            LogError(text);
+            Format(logtext, sizeof(logtext), "\"%s\" : \"%s\" -- %s", module, block, logtext);
+            LogError(logtext);
         }
     }
     
@@ -115,16 +138,17 @@ LogMessageFormatted(client, const String:module[], const String:block[], const S
     if (LogCheckFlag(LOG_TO_ADMINS))
     {
         // Print text to admins.
-        LogToAdmins(text);
+        LogToAdmins(logtext);
     }
     
-    if (ZRIsClientValid(client) && LogCheckFlag(LOG_TO_CLIENT))
+    // If client isn't console, and we log to client's then continue.
+    if (!console && LogCheckFlag(LOG_TO_CLIENT))
     {
         // Set client as translation target.
         SetGlobalTransTarget(client);
         
         // Print to client.
-        PrintToConsole(client, "%t %s", "ZR", text);
+        PrintToConsole(client, "%t %s", "ZR", logtext);
     }
 }
 
@@ -164,7 +188,7 @@ LogToAdmins(String:message[])
 bool:LogHasFlag(flag)
 {
     // Get log flags.
-    new logflags = GetConVarInt(g_hCvarsList[CVAR_LOGFLAGS]);
+    new logflags = GetConVarInt(g_hLogFlags);
     
     // Return true if flag is found, false if not.
     return bool:(logflags & flag);
@@ -174,9 +198,9 @@ bool:LogHasFlag(flag)
  * Check if a log message should be written depending on log flags. If module
  * overrides are enabled only logs with it's module flag set will be logged.
  *
- * @param logtype   Log type flag.
- * @param module    Specifies what module the log event belongs to.
- * @return          True if the event should be logged, false otherwise.
+ * @param logtype           Log type flag.
+ * @param modulefilter      Specifies what module the log event belongs to.
+ * @return                  True if the event should be logged, false otherwise.
  */
 bool:LogCheckFlag(logtype, modulefilter = 0)
 {
@@ -186,4 +210,29 @@ bool:LogCheckFlag(logtype, modulefilter = 0)
     }
     
     return LogHasFlag(logtype);
+}
+
+/**
+ * Toggles a log flag.
+ * 
+ * @param flag  The flag to toggle.
+ */
+LogToggleFlag(flag)
+{
+    // Get current flags
+    new logflags = GetConVarInt(g_hLogFlags);
+    
+    // If cvar contains flag, then remove it.
+    if (logflags & flag)
+    {
+        logflags = logflags - flag;
+    }
+    // If cvar doesn't have the flag, then add it.
+    else
+    {
+        logflags = logflags + flag;
+    }
+    
+    // Set new value to logflags cvar.
+    SetConVarInt(g_hLogFlags, logflags);
 }

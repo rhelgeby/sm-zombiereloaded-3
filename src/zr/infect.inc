@@ -270,19 +270,6 @@ InfectOnRoundStart()
         // Reset timer handle.
         tInfect = INVALID_HANDLE;
     }
-    
-    // x = client index.
-    for (new x = 1; x <=  MaxClients; x++)
-    {
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        // Disable zombie flag on client.
-        bZombie[x] = false;
-    }
 }
 
 /**
@@ -437,7 +424,7 @@ public Action:InfectMotherZombie(Handle:timer)
         ZRCountValidClients(zombiecount, humancount, _, true);
         
         // Calculate mother zombie count.
-        new mothercount = RoundToCeil(float(humancount) / ratio);
+        new mothercount = RoundToNearest(float(humancount) / ratio);
         
         // x = current mother zombie count.
         for (new x = 0; x < mothercount; x++)
@@ -559,16 +546,10 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
     
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);
+    RoundEndOnClientInfected();
     SEffectsOnClientInfected(client);
     ZHPOnClientInfected(client);
     TeleportOnClientInfected(client);
-    
-    // Terminate the round if the last player was infected.
-    new RoundEndOutcome:outcome;
-    if (RoundEndGetRoundStatus(outcome))
-    {
-        RoundEndTerminateRound(outcome);
-    }
 }
 
 /**
@@ -578,7 +559,7 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
  */
 InfectFireEffects(client)
 {
-    // Create location and direction arrays.
+    // Initialize vector variables.
     new Float:clientloc[3];
     new Float:direction[3] = {0.0, 0.0, 0.0};
     
@@ -586,87 +567,61 @@ InfectFireEffects(client)
     GetClientAbsOrigin(client, clientloc);
     clientloc[2] += 30;
     
-    // Get infection sound.
+    // If cvar contains path, then continue.
     decl String:sound[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
     if (sound[0])
     {
+        // Emit infect sound from infected client.
         SEffectsEmitSoundFromClient(client, sound, SNDLEVEL_SCREAMING);
     }
     
-    // Create an energy splash effect.
+    // If energy splash effect is enabled, then continue.
     new bool:esplash = GetConVarBool(g_hCvarsList[CVAR_INFECT_ESPLASH]);
     if (esplash)
     {
-        TE_SetupEnergySplash(clientloc, direction, true);
-        TE_SendToAll();
+        // Create energy splash effect.
+        VEffectsCreateEnergySplash(clientloc, direction, true);
     }
     
-    // Create an explosion entity.
-    new explosion = CreateEntityByName("env_explosion");
+    // Initialize explosion flags variable.
+    new flags;
     
-    // If explosion entity is valid, then continue.
-    if (explosion != -1)
+    // Set "nofireball" flag if fireball is disabled.
+    new bool:fireball = GetConVarBool(g_hCvarsList[CVAR_INFECT_FIREBALL]);
+    if (!fireball)
     {
-        // Get and set flags on explosion.
-        new flags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
-        flags = flags | EXP_NODAMAGE | EXP_NODECAL;
-        
-        // Set "nofireball" flag if fireball is disabled.
-        new bool:fireball = GetConVarBool(g_hCvarsList[CVAR_INFECT_FIREBALL]);
-        if (!fireball)
-        {
-            flags = flags | EXP_NOFIREBALL;
-        }
-        
-        // Set "nosmoke" flag if smoke is disabled.
-        new bool:smoke = GetConVarBool(g_hCvarsList[CVAR_INFECT_SMOKE]);
-        if (!smoke)
-        {
-            flags = flags | EXP_NOSMOKE;
-        }
-        
-        // Set "nosparks" flag if sparks are disabled.
-        new bool:sparks = GetConVarBool(g_hCvarsList[CVAR_INFECT_SPARKS]);
-        if (!sparks)
-        {
-            flags = flags | EXP_NOSPARKS;
-        }
-        
-        // Set new flags on entity.
-        SetEntProp(explosion, Prop_Data, "m_spawnflags", flags);
-        
-        // Spawn the entity into the world.
-        DispatchSpawn(explosion);
-        
-        // Precache fireball model.
-        PrecacheModel("materials/sprites/xfireball3.vmt");
-        
-        // Set origin and explosion key values on entity.
-        DispatchKeyValueVector(explosion, "origin", clientloc);
-        DispatchKeyValue(explosion, "fireballsprite", "materials/sprites/xfireball3.vmt");
-        
-        // Tell the entity to explode.
-        AcceptEntityInput(explosion, "Explode");
+        flags = flags | EXP_NOFIREBALL;
     }
+    
+    // Set "nosmoke" flag if smoke is disabled.
+    new bool:smoke = GetConVarBool(g_hCvarsList[CVAR_INFECT_SMOKE]);
+    if (!smoke)
+    {
+        flags = flags | EXP_NOSMOKE;
+    }
+    
+    // Set "nosparks" flag if sparks are disabled.
+    new bool:sparks = GetConVarBool(g_hCvarsList[CVAR_INFECT_SPARKS]);
+    if (!sparks)
+    {
+        flags = flags | EXP_NOSPARKS;
+    }
+    
+    // Create explosion at client's origin.
+    VEffectsCreateExplosion(clientloc, flags);
     
     // If shake effect is enabled, then continue.
     new bool:shake = GetConVarBool(g_hCvarsList[CVAR_INFECT_SHAKE]);
     if (shake)
     {
-        // If shake usermsg isn't invalid, then continue.
-        new Handle:hShake = StartMessageOne("Shake", client);
-        if (hShake != INVALID_HANDLE)
-        {
-            // Write shake information to usermsg handle.
-            BfWriteByte(hShake, 0);
-            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_AMP]));
-            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]));
-            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]));
-            
-            // End usermsg and sent to client.
-            EndMessage();
-        }
+        // Get shake info.
+        new Float:shakeamp = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_AMP]);
+        new Float:shakefrequency = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]);
+        new Float:shakeduration = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]);
+        
+        // Shake client's screen.
+        VEffectsShakeClientScreen(client, shakeamp, shakefrequency, shakeduration);
     }
 }
 

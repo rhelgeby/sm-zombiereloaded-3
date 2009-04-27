@@ -583,112 +583,112 @@ public ZRLogFlagsMenuHandle(Handle:menu_log_flags, MenuAction:action, client, sl
         {
             case 0:
             {
-                ToggleLogFlag(LOG_CORE_EVENTS);
+                LogToggleFlag(LOG_CORE_EVENTS);
                 ZRLogFlagsMenu(client);
             }
             case 1:
             {
-                ToggleLogFlag(LOG_GAME_EVENTS);
+                LogToggleFlag(LOG_GAME_EVENTS);
                 ZRLogFlagsMenu(client);
             }
             case 2:
             {
-                ToggleLogFlag(LOG_PLAYER_COMMANDS);
+                LogToggleFlag(LOG_PLAYER_COMMANDS);
                 ZRLogFlagsMenu(client);
             }
             case 3:
             {
-                ToggleLogFlag(LOG_DEBUG);
+                LogToggleFlag(LOG_DEBUG);
                 ZRLogFlagsMenu(client);
             }
             case 4:
             {
-                ToggleLogFlag(LOG_DEBUG_DETAIL);
+                LogToggleFlag(LOG_DEBUG_DETAIL);
                 ZRLogFlagsMenu(client);
             }
             case 5:
             {
-                ToggleLogFlag(LOG_DEBUG_MAX_DETAIL);
+                LogToggleFlag(LOG_DEBUG_MAX_DETAIL);
                 ZRLogFlagsMenu(client);
             }
             case 6:
             {
-                ToggleLogFlag(LOG_TO_ADMINS);
+                LogToggleFlag(LOG_TO_ADMINS);
                 ZRLogFlagsMenu(client);
             }
             case 7:
             {
-                ToggleLogFlag(LOG_TO_CLIENT);
+                LogToggleFlag(LOG_TO_CLIENT);
                 ZRLogFlagsMenu(client);
             }
             case 8:
             {
-                ToggleLogFlag(LOG_IGNORE_CONSOLE);
+                LogToggleFlag(LOG_IGNORE_CONSOLE);
                 ZRLogFlagsMenu(client);
             }
             case 9:
             {
-                ToggleLogFlag(LOG_MODULES_ENABLED);
+                LogToggleFlag(LOG_MODULES_ENABLED);
                 ZRLogFlagsMenu(client);
             }
             case 10:
             {
-                ToggleLogFlag(LOG_MODULE_ZOMBIE);
+                LogToggleFlag(LOG_MODULE_ZOMBIE);
                 ZRLogFlagsMenu(client);
             }
             case 11:
             {
-                ToggleLogFlag(LOG_MODULE_AMBIENTSOUNDS);
+                LogToggleFlag(LOG_MODULE_AMBIENTSOUNDS);
                 ZRLogFlagsMenu(client);
             }
             case 12:
             {
-                ToggleLogFlag(LOG_MODULE_OVERLAYS);
+                LogToggleFlag(LOG_MODULE_OVERLAYS);
                 ZRLogFlagsMenu(client);
             }
             case 13:
             {
-                ToggleLogFlag(LOG_MODULE_SAYTRIGGERS);
+                LogToggleFlag(LOG_MODULE_SAYTRIGGERS);
                 ZRLogFlagsMenu(client);
             }
             case 14:
             {
-                ToggleLogFlag(LOG_MODULE_TELEPORT);
+                LogToggleFlag(LOG_MODULE_TELEPORT);
                 ZRLogFlagsMenu(client);
             }
             case 15:
             {
-                ToggleLogFlag(LOG_MODULE_CLASSES);
+                LogToggleFlag(LOG_MODULE_CLASSES);
                 ZRLogFlagsMenu(client);
             }
             case 16:
             {
-                ToggleLogFlag(LOG_MODULE_WEAPONS);
+                LogToggleFlag(LOG_MODULE_WEAPONS);
                 ZRLogFlagsMenu(client);
             }
             case 17:
             {
-                ToggleLogFlag(LOG_MODULE_HITGROUPS);
+                LogToggleFlag(LOG_MODULE_HITGROUPS);
                 ZRLogFlagsMenu(client);
             }
             case 18:
             {
-                ToggleLogFlag(LOG_MODULE_COMMANDS);
+                LogToggleFlag(LOG_MODULE_COMMANDS);
                 ZRLogFlagsMenu(client);
             }
             case 19:
             {
-                ToggleLogFlag(LOG_MODULE_ANTICAMP);
+                LogToggleFlag(LOG_MODULE_ANTICAMP);
                 ZRLogFlagsMenu(client);
             }
             case 20:
             {
-                ToggleLogFlag(LOG_MODULE_DAMAGE);
+                LogToggleFlag(LOG_MODULE_DAMAGE);
                 ZRLogFlagsMenu(client);
             }
             case 21:
             {
-                ToggleLogFlag(LOG_MODULE_OFFSETS);
+                LogToggleFlag(LOG_MODULE_OFFSETS);
                 ZRLogFlagsMenu(client);
             }
         }
@@ -715,21 +715,4 @@ AddToKnockbackMultiplier(Float:value)
 AddToClassKnockback(classindex, Float:value)
 {
     arrayClasses[classindex][data_knockback] = arrayClasses[classindex][data_knockback] + value;
-}
-
-ToggleLogFlag(flag)
-{
-    new log_flags;
-    log_flags = GetConVarInt(g_hCvarsList[CVAR_LOG]);
-    
-    if (log_flags & flag)
-    {
-        log_flags = log_flags - flag;
-    }
-    else
-    {
-        log_flags = log_flags + flag;
-    }
-    
-    SetConVarInt(g_hCvarsList[CVAR_LOG], log_flags);
 }

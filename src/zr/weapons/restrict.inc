@@ -42,7 +42,9 @@ RestrictInit()
     gRestrictedWeapons = CreateArray(32, 0);
     
     // Hook buy command.
-    RegConsoleCmd("buy", RestrictBuyHook);
+    RegConsoleCmd("buy", RestrictBuyCommand);
+    RegConsoleCmd("autobuy", RestrictBuyCommand);
+    RegConsoleCmd("rebuy", RestrictBuyCommand);
 }
 
 /**
@@ -136,7 +138,7 @@ RestrictDefaultRestrictions()
  */ 
 RestrictValidateWeaponGroups()
 {
-    // If log flag check fails, don't log.
+    // If log flag check fails, then don't log.
     if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
     {
         return;
@@ -215,17 +217,18 @@ RestrictOnClientDisconnect(client)
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action:RestrictBuyHook(client, argc)
+public Action:RestrictBuyCommand(client, argc)
 {
     // If plugin is disabled then stop.
-    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
+    /*new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (!enabled)
     {
         // Allow command.
         return Plugin_Continue;
-    }
+    }*/
+    // Disabled
     
-    // If player is a zombie then block command.
+    // If player is a zombie, then block command.
     if (InfectIsClientInfected(client))
     {
         ZR_PrintToChat(client, "Zombie cant use weapon");

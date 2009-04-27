@@ -1,38 +1,69 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: events.inc
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:        (Core) event.inc
+ *   Description: Event hooking and forwarding.
+ *
+ * ============================================================================
  */
 
-HookEvents()
+/**
+ * Init function for event module.
+ */
+EventInit()
 {
-    HookEvent("round_start", RoundStart);
-    HookEvent("round_freeze_end", RoundFreezeEnd);
-    HookEvent("round_end", RoundEnd);
-    HookEvent("player_team", PlayerTeam, EventHookMode_Pre);
-    HookEvent("player_spawn", PlayerSpawn);
-    HookEvent("player_hurt", PlayerHurt);
-    HookEvent("player_death", PlayerDeath);
-    HookEvent("player_jump", PlayerJump);
-    HookEvent("weapon_fire", WeaponFire);
+    // Hook all events used by plugin.
+    EventHook();
 }
 
-UnhookEvents()
+/**
+ * Hook events used by plugin.
+ * 
+ * @param unhook    If true, then unhook all events, if false, then hook.
+ */ 
+EventHook(bool:unhook = false)
 {
-    UnhookEvent("round_start", RoundStart);
-    UnhookEvent("round_freeze_end", RoundFreezeEnd);
-    UnhookEvent("round_end", RoundEnd);
-    UnhookEvent("player_team", PlayerTeam, EventHookMode_Pre);
-    UnhookEvent("player_spawn", PlayerSpawn);
-    UnhookEvent("player_hurt", PlayerHurt);
-    UnhookEvent("player_death", PlayerDeath);
-    UnhookEvent("player_jump", PlayerJump);
-    UnhookEvent("weapon_fire", WeaponFire);
+    // If unhook is true, then continue.
+    if (unhook)
+    {
+        // Unhook all events.
+        UnhookEvent("round_start", EventRoundStart);
+        UnhookEvent("round_freeze_end", EventRoundFreezeEnd);
+        UnhookEvent("round_end", EventRoundEnd);
+        UnhookEvent("player_team", EventPlayerTeam, EventHookMode_Pre);
+        UnhookEvent("player_spawn", EventPlayerSpawn);
+        UnhookEvent("player_hurt", EventPlayerHurt);
+        UnhookEvent("player_death", EventPlayerDeath);
+        UnhookEvent("player_jump", EventPlayerJump);
+        UnhookEvent("weapon_fire", EventWeaponFire);
+        
+        // Stop after unhooking events.
+        return;
+    }
+    
+    // Hook all events used by plugin.
+    HookEvent("round_start", EventRoundStart);
+    HookEvent("round_freeze_end", EventRoundFreezeEnd);
+    HookEvent("round_end", EventRoundEnd);
+    HookEvent("player_team", EventPlayerTeam, EventHookMode_Pre);
+    HookEvent("player_spawn", EventPlayerSpawn);
+    HookEvent("player_hurt", EventPlayerHurt);
+    HookEvent("player_death", EventPlayerDeath);
+    HookEvent("player_jump", EventPlayerJump);
+    HookEvent("weapon_fire", EventWeaponFire);
 }
 
-public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (round_start)
+ * The round is starting.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
     ZR_PrintToChat(0, "Round objective");
     
@@ -44,7 +75,15 @@ public Action:RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
     AntiStickOnRoundStart();
 }
 
-public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (round_freeze_end)
+ * The freeze time is ending.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
     RemoveObjectives();
     
@@ -55,7 +94,15 @@ public Action:RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadca
 
 }
 
-public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (round_end)
+ * The round is ending.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
     new reason = GetEventInt(event, "reason");
@@ -63,10 +110,19 @@ public Action:RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
     // Forward event to modules.
     RoundEndOnRoundEnd(reason);
     InfectOnRoundEnd();
+    RespawnOnRoundEnd();
     ZTeleReset();
 }
 
-public Action:PlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (player_team)
+ * Client is joining a team.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
@@ -78,13 +134,18 @@ public Action:PlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
     return Plugin_Handled;
 }
 
-public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (player_spawn)
+ * Client is spawning into the game.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    
-    // Call post player_spawn
-    CreateTimer(0.0, PlayerSpawnPost, index);
     
     // Reset FOV and overlay.
     SetPlayerFOV(index, 90);
@@ -124,13 +185,15 @@ public Action:PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
     ZR_PrintToChat(index, "!zmenu reminder");
 }
 
-public Action:PlayerSpawnPost(Handle:timer, any:client)
-{
-    // Forward event to modules.
-    SEffectsOnClientSpawnPost(client);
-}
-
-public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (player_hurt)
+ * Client is being hurt.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
@@ -138,7 +201,7 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     new hitgroup = GetEventInt(event, "hitgroup");
     new dmg_health = GetEventInt(event, "dmg_health");
     
-    decl String:weapon[32];
+    decl String:weapon[WEAPONS_MAX_LENGTH];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
     // Forward event to modules.
@@ -150,10 +213,18 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
     ZHPOnClientHurt(index);
 }
 
-public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (player_death)
+ * Client has been killed.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get the weapon name.
-    decl String:weapon[32];
+    decl String:weapon[WEAPONS_MAX_LENGTH];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
     // If client is being infected, then stop.
@@ -190,7 +261,15 @@ public Action:PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
     ZHPOnClientDeath(index);
 }
 
-public Action:PlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (player_jump)
+ * Client is jumping.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventPlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
     new client = GetClientOfUserId(GetEventInt(event, "userid"));
@@ -201,7 +280,15 @@ public Action:PlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
     JumpBoost(client, distance, height);
 }
 
-public Action:WeaponFire(Handle:event, const String:name[], bool:dontBroadcast)
+/**
+ * Event callback (weapon_fire)
+ * Weapon has been fired.
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventWeaponFire(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
     decl String:weapon[32];

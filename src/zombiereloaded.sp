@@ -23,11 +23,11 @@
 // External api (not done)
 //#include "zr/global"
 
-// Cvars (core)
-#include "zr/cvars"
-
 // Log (core)
 #include "zr/log"
+
+// Cvars (core)
+#include "zr/cvars"
 
 // Translations (core)
 #include "zr/translation"
@@ -90,6 +90,8 @@
 #include "zr/sayhooks"
 #include "zr/zadmin"
 #include "zr/commands"
+
+// Event
 #include "zr/event"
 
 public Plugin:myinfo =
@@ -120,12 +122,13 @@ public OnPluginStart()
     
     // ======================================================================
     
+    // Log
+    LogInit();
+    
     // Cvars
     CvarsInit();
-    CvarsHook();
     
     // TODO: Be modulized/recoded.
-    HookEvents();
     HookChatCmds();
     CreateCommands();
     HookCommands();
@@ -137,6 +140,9 @@ public OnPluginStart()
     
     // Damage
     DamageInit();
+    
+    // Event
+    EventInit();
     
     // ======================================================================
     

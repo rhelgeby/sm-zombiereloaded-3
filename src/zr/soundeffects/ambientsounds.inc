@@ -122,7 +122,7 @@ AmbientSoundsOnRoundStart()
  * 
  * @param client    The client index.
  */
-AmbientSoundsOnClientSpawnPost(client)
+AmbientSoundsOnClientSpawn(client)
 {
     // If ambience is disabled, then stop.
     if (!g_bAmbientSounds)

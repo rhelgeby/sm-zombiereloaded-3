@@ -69,18 +69,8 @@ SEffectsOnRoundStart()
 SEffectsOnClientSpawn(client)
 {
     // Forward event to sub-modules.
-    //AmbientSoundsOnClientSpawn(client);
+    AmbientSoundsOnClientSpawn(client);
     ZombieSoundsOnClientSpawn(client);
-}
-
-/**
- * Fired one frame after client spawns into the game.
- * 
- * @param client    The client index.
- */
-SEffectsOnClientSpawnPost(client)
-{
-    AmbientSoundsOnClientSpawnPost(client);
 }
 
 /**
