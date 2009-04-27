@@ -100,11 +100,8 @@ LogMessageFormatted(client, const String:module[], const String:block[], const S
     
     decl String:logtext[LOG_MAX_LENGTH_FILE];
     
-    // Set to true if log to console, false if client.
-    new bool:console = !ZRIsClientValid(client);
-    
-    // If client is invalid (console), and console is ignored, then stop.
-    if (console && LogCheckFlag(LOG_IGNORE_CONSOLE))
+    // If client is invalid (console), and console log events are ignored, then stop.
+    if (client == 0 && LogCheckFlag(LOG_IGNORE_CONSOLE))
     {
         return;
     }
@@ -141,8 +138,8 @@ LogMessageFormatted(client, const String:module[], const String:block[], const S
         LogToAdmins(logtext);
     }
     
-    // If client isn't console, and we log to client's then continue.
-    if (!console && LogCheckFlag(LOG_TO_CLIENT))
+    // If client is a valid client (but not console), and we log to client's then continue.
+    if (ZRIsClientValid(client) && LogCheckFlag(LOG_TO_CLIENT))
     {
         // Set client as translation target.
         SetGlobalTransTarget(client);
