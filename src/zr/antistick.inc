@@ -84,7 +84,7 @@ AntiStickIsStuck(client)
             if (clientloc[2] <= stuckloc[2])
             {
                 new Float:eyeloc[3];
-                GetPlayerEyePosition(client, eyeloc);
+                GetClientEyePosition(client, eyeloc);
                 
                 // Get the distance between the eyes and feet and subtract the stack "view crush."
                 new Float:eyedistance = FloatAbs(eyeloc[2] - clientloc[2]) - PLAYER_HULL_STACK_OFFSET;

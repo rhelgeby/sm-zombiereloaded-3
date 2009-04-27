@@ -82,7 +82,7 @@ HitgroupsLoad()
  */ 
 HitgroupsValidateConfig()
 {
-    // If log flag check fails, don't log.
+    // If log flag check fails, then don't log.
     if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
     {
         return;
@@ -99,7 +99,8 @@ HitgroupsValidateConfig()
  * Retrieve hitgroup knockback value.
  * 
  * @param hitgroup  The hitgroup index.
- */   
+ * @return          The knockback multiplier of the hitgroup. 
+ */
 Float:HitgroupsGetHitgroupKnockback(hitgroup)
 {
     // Reset keyvalue's traversal stack.
@@ -121,4 +122,39 @@ Float:HitgroupsGetHitgroupKnockback(hitgroup)
     }
     
     return 1.0;
+}
+
+/**
+ * Retrieve hitgroup damage value.
+ * 
+ * @param hitgroup  The hitgroup index.
+ * @return          True if hitgroup can be damaged, false if not.
+ */
+bool:HitgroupsCanDamageHitgroup(hitgroup)
+{
+    // Reset keyvalue's traversal stack.
+    KvRewind(kvHitgroups);
+    if (KvGotoFirstSubKey(kvHitgroups))
+    {
+        decl String:sHitgroup[4];
+        decl String:damage[8];
+        
+        do
+        {
+            KvGetSectionName(kvHitgroups, sHitgroup, sizeof(sHitgroup));
+            
+            // If this is the right hitgroup, then return knockback for it.
+            if (hitgroup == StringToInt(sHitgroup))
+            {
+                // Get config setting string.
+                KvGetString(kvHitgroups, "damage", damage, sizeof(damage), "yes");
+                
+                // Return hitgroup's damage setting.
+                return ZRConfigSettingToBool(damage);
+            }
+        } while (KvGotoNextKey(kvHitgroups));
+    }
+    
+    // If hitgroup is missing, then default to "yes."
+    return true;
 }

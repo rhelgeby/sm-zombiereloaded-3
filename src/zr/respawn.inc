@@ -17,7 +17,7 @@ new Handle:tRespawn[MAXPLAYERS + 1];
 /**
  * Array for flagging zombies who were killed by world.
  */ 
-new bool:pKilledByWorld[MAXPLAYERS + 1];
+new bool:bKilledByWorld[MAXPLAYERS + 1];
 
 /**
  * Client is joining the server.
@@ -27,8 +27,8 @@ RespawnClientInit(client)
     // Reset timer handle.
     tRespawn[client] = INVALID_HANDLE;
     
-    // Init pKilledByWorld for client.
-    pKilledByWorld[client] = false;
+    // Init bKilledByWorld for client.
+    bKilledByWorld[client] = false;
 }
 
 /**
@@ -56,10 +56,10 @@ RespawnOnClientSpawn(client)
 RespawnOnClientDeath(client, attacker, const String:weapon[])
 {
     // If client is a zombie, check if they were killed by world.
-    if (IsPlayerZombie(client))
+    if (InfectIsClientInfected(client))
     {
-        // Set pKilledByWorld to true if attacker is not a valid client.
-        pKilledByWorld[client] = !ZRIsValidClient(attacker);
+        // Set bKilledByWorld to true if attacker is not a valid client.
+        bKilledByWorld[client] = !ZRIsClientValid(attacker);
     }
     
     // If timer is running, kill it.
@@ -87,6 +87,34 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
 }
 
 /**
+ * The round is ending.
+ */
+RespawnOnRoundEnd()
+{
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If timer isn't currently running, then stop.
+        if (tRespawn[x] == INVALID_HANDLE)
+        {
+            continue;
+        }
+        
+        // Stop timer.
+        KillTimer(tRespawn[x]);
+        
+        // Reset timer handle.
+        tRespawn[x] = INVALID_HANDLE;
+    }
+}
+
+/**
  * Returns if a player is to be respawned as a zombie, because they were killed by world.
  * 
  * @param client    The client index.
@@ -95,7 +123,7 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
 RespawnKilledByWorld(client)
 {
     // Return true if both the cvar is enabled and the player was killed by world.
-    return (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && pKilledByWorld[client]);
+    return (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && bKilledByWorld[client]);
 }
 
 /**
@@ -126,14 +154,14 @@ RespawnSpawnClient(client)
     // Get suicide respawn cvar
     if (respawn_zombie)
     {
-        InfectPlayer(client);
+        InfectClient(client);
         return;
     }
     
-    if (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && pKilledByWorld[client])
+    if (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && bKilledByWorld[client])
     {
-        InfectPlayer(client);
-        pKilledByWorld[client] = false;
+        InfectClient(client);
+        bKilledByWorld[client] = false;
     }
 }
 

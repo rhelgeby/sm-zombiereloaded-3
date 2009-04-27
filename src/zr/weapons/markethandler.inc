@@ -79,7 +79,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     }
     
     // If player is a zombie, then stop.
-    if (IsPlayerZombie(client))
+    if (InfectIsClientInfected(client))
     {
         ZR_PrintToChat(client, "Zombie cant use weapon");
         

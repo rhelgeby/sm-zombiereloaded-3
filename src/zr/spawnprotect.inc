@@ -129,7 +129,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
     }
     
     // If client has become a zombie, then stop timer.
-    if (!IsPlayerHuman(client))
+    if (!InfectIsClientHuman(client))
     {
         return Plugin_Stop;
     }

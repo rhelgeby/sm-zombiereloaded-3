@@ -121,7 +121,7 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
     // Stop sound before playing again.
     SEffectsStopAmbientSound(sound);
     
-    if (ZRIsValidClient(client))
+    if (ZRIsClientValid(client))
     {
         // Emit ambient sound.
         EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);

@@ -108,7 +108,7 @@ WeaponsLoad()
  */
 WeaponsValidateConfig()
 {
-    // If log flag check fails, don't log.
+    // If log flag check fails, then don't log.
     if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
     {
         return;

@@ -99,13 +99,13 @@ ZombieSoundsOnClientDeath(client)
     tSEffectsMoan[client] = INVALID_HANDLE;
     
     // If player isn't a zombie, then stop.
-    if (!IsPlayerZombie(client))
+    if (!InfectIsClientInfected(client))
     {
         return;
     }
     
     // If death sound cvar is disabled, then stop.
-    new bool:death = GetConVarBool(g_hCvarsList[CVAR_SOUNDEFFECTS_DEATH]);
+    new bool:death = GetConVarBool(g_hCvarsList[CVAR_SEFFECTS_DEATH]);
     if (!death)
     {
         return;
@@ -126,13 +126,13 @@ ZombieSoundsOnClientDeath(client)
 ZombieSoundsOnClientHurt(client)
 {
     // If player isn't a zombie, then stop.
-    if (!IsPlayerZombie(client))
+    if (!InfectIsClientInfected(client))
     {
         return;
     }
     
     // Get groan factor, if 0, then stop.
-    new groan = GetConVarInt(g_hCvarsList[CVAR_SOUNDEFFECTS_GROAN]);
+    new groan = GetConVarInt(g_hCvarsList[CVAR_SEFFECTS_GROAN]);
     if (!groan)
     {
         return;
@@ -157,7 +157,7 @@ ZombieSoundsOnClientHurt(client)
 ZombieSoundsOnClientInfected(client)
 {
     // If interval is set to 0, then stop.
-    new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_SOUNDEFFECTS_MOAN]);
+    new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_SEFFECTS_MOAN]);
     if (!interval)
     {
         return;
@@ -245,7 +245,7 @@ bool:ZombieSoundsGetRandomSound(String:sound[], ZombieSounds:soundtype)
 public Action:ZombieSoundsMoanTimer(Handle:timer, any:client)
 {
     // If client isn't in-game or client is no longer a zombie, then stop.
-    if (!IsClientInGame(client) || !IsPlayerZombie(client))
+    if (!IsClientInGame(client) || !InfectIsClientInfected(client))
     {
         // Reset timer handle.
         tSEffectsMoan[client] = INVALID_HANDLE;

@@ -47,9 +47,9 @@
  */
 enum RoundEndOutcome
 {
-    HumansWin, /** Humans have killed all zombies. */
-    ZombiesWin, /** Zombies have infected all humans. */
-    Draw, /** Round has ended in unexpected way. */
+    HumansWin,      /** Humans have killed all zombies. */
+    ZombiesWin,     /** Zombies have infected all humans. */
+    Draw,           /** Round has ended in unexpected way. */
 }
 
 /**
@@ -84,10 +84,21 @@ RoundEndClientInit(client)
 
 /**
  * Client has been killed.
- * 
- * @param client    The client index.
  */
 RoundEndOnClientDeath()
+{
+    // Terminate the round if the last player was killed.
+    new RoundEndOutcome:outcome;
+    if (RoundEndGetRoundStatus(outcome))
+    {
+        RoundEndTerminateRound(outcome);
+    }
+}
+
+/**
+ * Client has been infected.
+ */
+RoundEndOnClientInfected()
 {
     // Terminate the round if the last player was infected.
     new RoundEndOutcome:outcome;
@@ -111,12 +122,6 @@ RoundEndOnRoundStart()
         // Reset timer handle.
         tRoundEnd = INVALID_HANDLE;
     }
-    
-    // Tell plugin no zombies have been spawned.
-    g_bZombieSpawned = false;
-    
-    // Balance teams, and respawn all players.
-    RoundEndBalanceTeams(true);
 }
 
 /**
@@ -332,11 +337,22 @@ RoundEndTerminateRound(RoundEndOutcome:outcome)
 }
 
 /**
+ * Restarts the game.
+ * 
+ * @param delay     How long to wait between round end and new round.
+ */
+RoundEndRestart(Float:delay)
+{
+    // Terminate the round.
+    TerminateRound(delay, ROUNDEND_GAME_COMMENCING);
+}
+
+/**
  * Balances teams
  * 
  * @param spawn     If true, it will respawn player after switching their team.
  */
-RoundEndBalanceTeams(bool:spawn = false)
+RoundEndBalanceTeams()
 {
     // Create eligible player list.
     new Handle:arrayEligibleClients = INVALID_HANDLE;
@@ -374,29 +390,6 @@ RoundEndBalanceTeams(bool:spawn = false)
         
         // Switch client to CT
         CS_SwitchTeam(client, CS_TEAM_CT);
-    }
-    
-    // If spawn is false, then stop.
-    if (!spawn)
-    {
-        return;
-    }
-    
-    // x = array index.
-    // client = client index.
-    for (new x = 0; x < eligibleclients; x++)
-    {
-        // Get client stored in array index.
-        client = GetArrayCell(arrayEligibleClients, x);
-        
-        // If client is dead, then stop.
-        if (!IsPlayerAlive(client))
-        {
-            continue;
-        }
-        
-        // Respawn client.
-        CS_RespawnPlayer(client);
     }
     
     // Destroy handle.

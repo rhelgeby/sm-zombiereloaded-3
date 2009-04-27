@@ -359,7 +359,7 @@ ClassGetActiveIndex(client)
     else
     {
         // Not in admin mode, check if player is human or zombie.
-        if (IsPlayerHuman(client))
+        if (InfectIsClientHuman(client))
         {
             teamid = ZR_CLASS_TEAM_HUMANS;
         }

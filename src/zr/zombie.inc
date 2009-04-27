@@ -6,8 +6,6 @@
  * ==================== 
  */
         
-new String:skyname[32];
-
 HookCommands()
 {
     RegConsoleCmd("nightvision", Command_NightVision);
@@ -45,32 +43,6 @@ public Action:Command_NightVision(client, argc)
     }
 }
 
-FindMapSky()
-{
-    GetConVarString(FindConVar("sv_skyname"), skyname, sizeof(skyname));
-}
-
-ChangeLightStyle()
-{
-    new bool:dark = GetConVarBool(g_hCvarsList[CVAR_DARK]);
-    if (dark)
-    {
-        decl String:darkness[2];
-        decl String:sky[32];
-        
-        GetConVarString(g_hCvarsList[CVAR_DARK_LEVEL], darkness, sizeof(darkness));
-        GetConVarString(g_hCvarsList[CVAR_DARK_SKY], sky, sizeof(sky));
-        
-        SetLightStyle(0, darkness);
-        SetConVarString(FindConVar("sv_skyname"), sky, true, false);
-    }
-    else
-    {
-        SetLightStyle(0, "n");
-        SetConVarString(FindConVar("sv_skyname"), skyname, true, false);
-    }
-}
-
 JumpBoost(client, Float:distance, Float:height)
 {
     new Float:vel[3];
@@ -105,14 +77,4 @@ RemoveObjectives()
                 RemoveEdict(x);
             }
     }
-}
-
-bool:IsPlayerZombie(client)
-{
-    return bZombie[client];
-}
-
-bool:IsPlayerHuman(client)
-{
-    return !bZombie[client];
 }

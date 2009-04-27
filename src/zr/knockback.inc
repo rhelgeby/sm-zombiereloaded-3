@@ -17,19 +17,19 @@
 KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
 {
     // If attacker is invalid, then stop.
-    if (!ZRIsValidClient(attacker))
+    if (!ZRIsClientValid(attacker))
     {
         return;
     }
     
     // Client is a human, then stop.
-    if (IsPlayerHuman(client))
+    if (InfectIsClientHuman(client))
     {
         return;
     }
     
     // If attacker is a zombie, then stop.
-    if (IsPlayerZombie(attacker))
+    if (InfectIsClientInfected(attacker))
     {
         return;
     }
@@ -55,7 +55,7 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
     else
     {
         // Get attackers eye position.
-        GetPlayerEyePosition(attacker, attackerloc);
+        GetClientEyePosition(attacker, attackerloc);
         
         // Get attackers eye angles.
         new Float:attackerang[3];

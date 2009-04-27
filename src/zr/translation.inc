@@ -19,7 +19,7 @@ stock ZR_PrintToChat(client, any:...)
 {
     decl String:phrase[192];
     
-    if (ZRIsValidClient(client))
+    if (ZRIsClientValid(client))
     {
         SetGlobalTransTarget(client);
         

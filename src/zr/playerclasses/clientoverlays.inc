@@ -20,7 +20,7 @@ new Handle:tOverlay[MAXPLAYERS + 1];
 new bool:bClientHasOverlay[MAXPLAYERS + 1];
 
 /**
- * Tells wether the overlay is on or not.
+ * Tells whether the overlay is on or not.
  */
 new bool:bClientOverlayOn[MAXPLAYERS + 1];
 
@@ -104,7 +104,7 @@ ClassOverlayStop(client)
 
 public Action:ClassOverlayTimer(Handle:timer, any:client)
 {
-    if (!IsClientInGame(client) || !IsPlayerZombie(client))
+    if (!IsClientInGame(client) || !InfectIsClientInfected(client))
     {
         tOverlay[client] = INVALID_HANDLE;
         return Plugin_Stop;

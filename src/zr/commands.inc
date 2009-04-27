@@ -71,7 +71,7 @@ public Action:Command_Infect(client, argc)
 
     for (new x = 0; x < tcount; x++)
     {
-        InfectPlayer(targets[x]);
+        InfectClient(targets[x]);
         if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
         {
             GetClientName(targets[x], target_name, sizeof(target_name));
@@ -292,7 +292,7 @@ public Action:Command_GetClassKnockback(client, argc)
 
 public Action:Command_AdminMenu(client, argc)
 {
-    if (ZRIsValidClient(client))
+    if (ZRIsClientValid(client))
     {
         ZRAdminMenu(client);
     }
@@ -306,7 +306,7 @@ public Action:Command_AdminMenu(client, argc)
 
 public Action:Command_KnockbackMMenu(client, argc)
 {
-    if (ZRIsValidClient(client))
+    if (ZRIsClientValid(client))
     {
         // Disabled, under construction.
         // ZRKnockbackMMenu(client);
@@ -321,7 +321,7 @@ public Action:Command_KnockbackMMenu(client, argc)
 
 public Action:Command_TeleMenu(client, argc)
 {
-    if (ZRIsValidClient(client))
+    if (ZRIsClientValid(client))
     {
         ZRZTeleMenu(client);
     }

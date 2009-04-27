@@ -60,7 +60,13 @@ InfectOnMapStart()
 {
     // Reset timer handle.
     tInfect = INVALID_HANDLE;
-    
+}
+
+/**
+ * Loads downloadable content data for infect module.
+ */
+InfectLoad()
+{
     // Get infection sound.
     decl String:sound[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
@@ -117,7 +123,7 @@ InfectOnClientDisconnect(client)
     ZRCountValidClients(zombiecount, humancount);
     
     // If client is a human.
-    if (IsPlayerHuman(client))
+    if (InfectIsClientHuman(client))
     {
         // If there are other humans (ignoring this human), then stop.
         if (humancount > 1)
@@ -170,7 +176,7 @@ InfectOnClientDisconnect(client)
     new randclient = GetArrayCell(arrayEligibleClients, randindex);
     
     // Infect player.
-    InfectPlayer(randclient);
+    InfectClient(randclient);
     
     // Tell client they have been randomly been chosen to replace disconnecting zombie.
     ZR_PrintToChat(randclient, "Zombie replacement");
@@ -217,19 +223,19 @@ InfectOnClientSpawn(client)
 InfectOnClientHurt(client, attacker, const String:weapon[])
 {
     // If attacker isn't valid, then stop.
-    if (!ZRIsValidClient(attacker))
+    if (!ZRIsClientValid(attacker))
     {
         return;
     }
     
     // If client isn't a human, then stop.
-    if (!IsPlayerHuman(client))
+    if (!InfectIsClientHuman(client))
     {
         return;
     }
     
     // Attacker isn't a zombie, then stop.
-    if (!IsPlayerZombie(attacker))
+    if (!InfectIsClientInfected(attacker))
     {
         return;
     }
@@ -247,7 +253,7 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
     }
     
     // Infect client.
-    InfectPlayer(client, attacker);
+    InfectClient(client, attacker);
 }
 
 /**
@@ -263,19 +269,6 @@ InfectOnRoundStart()
         
         // Reset timer handle.
         tInfect = INVALID_HANDLE;
-    }
-    
-    // x = client index.
-    for (new x = 1; x <=  MaxClients; x++)
-    {
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        // Disable zombie flag on client.
-        bZombie[x] = false;
     }
 }
 
@@ -419,7 +412,7 @@ public Action:InfectMotherZombie(Handle:timer)
         client = GetArrayCell(arrayEligibleClients, randindex);
         
         // Infect player.
-        InfectPlayer(client, _, true);
+        InfectClient(client, _, true);
     }
     else
     {
@@ -431,7 +424,7 @@ public Action:InfectMotherZombie(Handle:timer)
         ZRCountValidClients(zombiecount, humancount, _, true);
         
         // Calculate mother zombie count.
-        new mothercount = RoundToCeil(float(humancount) / ratio);
+        new mothercount = RoundToNearest(float(humancount) / ratio);
         
         // x = current mother zombie count.
         for (new x = 0; x < mothercount; x++)
@@ -451,7 +444,7 @@ public Action:InfectMotherZombie(Handle:timer)
             client = GetArrayCell(arrayEligibleClients, randindex);
             
             // Infect player.
-            InfectPlayer(client, _, true);
+            InfectClient(client, _, true);
             
             // Remove player from eligible zombie list.
             RemoveFromArray(arrayEligibleClients, randindex);
@@ -473,7 +466,7 @@ public Action:InfectMotherZombie(Handle:timer)
  * @param attacker      (Optional) The attacker who did the infect.
  * @param motherinfect  (Optional) Indicates a mother zombie infect.
  */
-InfectPlayer(client, attacker = -1, bool:motherinfect = false)
+InfectClient(client, attacker = -1, bool:motherinfect = false)
 {
     // Mark player as zombie.
     bZombie[client] = true;
@@ -515,13 +508,10 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     bInfectImmune[client][INFECT_TYPE_MOTHER] = infectconsecutiveblock ? motherinfect : false;
     
     // Apply effects.
-    InfectEffects(client);
+    InfectFireEffects(client);
     
-    // Add a death to the zombie's score.
-    AddPlayerDeath(client, 1);
-    
-    // Fire death event and set weapon info if the attacker is specified.
-    if (ZRIsValidClient(attacker))
+    // If attacker is valid, then continue.
+    if (ZRIsClientValid(attacker))
     {
         // Create and send custom player_death event.
         new Handle:event = CreateEvent("player_death");
@@ -535,6 +525,9 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
         
         // Give client's infector a point.
         AddPlayerScore(attacker, 1);
+        
+        // Add a death to the zombie's score.
+        AddPlayerDeath(client, 1);
         
         // Apply infect HP gain.
         new healthgain = ClassGetHealthInfectGain(attacker);
@@ -553,16 +546,10 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
     
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);
+    RoundEndOnClientInfected();
     SEffectsOnClientInfected(client);
     ZHPOnClientInfected(client);
     TeleportOnClientInfected(client);
-    
-    // Terminate the round if the last player was infected.
-    new RoundEndOutcome:outcome;
-    if (RoundEndGetRoundStatus(outcome))
-    {
-        RoundEndTerminateRound(outcome);
-    }
 }
 
 /**
@@ -570,9 +557,9 @@ InfectPlayer(client, attacker = -1, bool:motherinfect = false)
  * 
  * @param client    The client index.
  */
-InfectEffects(client)
+InfectFireEffects(client)
 {
-    // Create location and direction arrays.
+    // Initialize vector variables.
     new Float:clientloc[3];
     new Float:direction[3] = {0.0, 0.0, 0.0};
     
@@ -580,86 +567,96 @@ InfectEffects(client)
     GetClientAbsOrigin(client, clientloc);
     clientloc[2] += 30;
     
-    // Get infection sound.
+    // If cvar contains path, then continue.
     decl String:sound[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
     if (sound[0])
     {
+        // Emit infect sound from infected client.
         SEffectsEmitSoundFromClient(client, sound, SNDLEVEL_SCREAMING);
     }
     
-    // Create an energy splash effect.
+    // If energy splash effect is enabled, then continue.
     new bool:esplash = GetConVarBool(g_hCvarsList[CVAR_INFECT_ESPLASH]);
     if (esplash)
     {
-        TE_SetupEnergySplash(clientloc, direction, true);
-        TE_SendToAll();
+        // Create energy splash effect.
+        VEffectsCreateEnergySplash(clientloc, direction, true);
     }
     
-    // Create an explosion entity.
-    new explosion = CreateEntityByName("env_explosion");
+    // Initialize explosion flags variable.
+    new flags;
     
-    // If explosion entity is valid, then continue.
-    if (explosion != -1)
+    // Set "nofireball" flag if fireball is disabled.
+    new bool:fireball = GetConVarBool(g_hCvarsList[CVAR_INFECT_FIREBALL]);
+    if (!fireball)
     {
-        // Get and set flags on explosion.
-        new flags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
-        flags = flags | EXP_NODAMAGE | EXP_NODECAL;
-        
-        // Set "nofireball" flag if fireball is disabled.
-        new bool:fireball = GetConVarBool(g_hCvarsList[CVAR_INFECT_FIREBALL]);
-        if (!fireball)
-        {
-            flags = flags | EXP_NOFIREBALL;
-        }
-        
-        // Set "nosmoke" flag if smoke is disabled.
-        new bool:smoke = GetConVarBool(g_hCvarsList[CVAR_INFECT_SMOKE]);
-        if (!smoke)
-        {
-            flags = flags | EXP_NOSMOKE;
-        }
-        
-        // Set "nosparks" flag if sparks are disabled.
-        new bool:sparks = GetConVarBool(g_hCvarsList[CVAR_INFECT_SPARKS]);
-        if (!sparks)
-        {
-            flags = flags | EXP_NOSPARKS;
-        }
-        
-        // Set new flags on entity.
-        SetEntProp(explosion, Prop_Data, "m_spawnflags", flags);
-        
-        // Spawn the entity into the world.
-        DispatchSpawn(explosion);
-        
-        // Precache fireball model.
-        PrecacheModel("materials/sprites/xfireball3.vmt");
-        
-        // Set origin and explosion key values on entity.
-        DispatchKeyValueVector(explosion, "origin", clientloc);
-        DispatchKeyValue(explosion, "fireballsprite", "materials/sprites/xfireball3.vmt");
-        
-        // Tell the entity to explode.
-        AcceptEntityInput(explosion, "Explode");
+        flags = flags | EXP_NOFIREBALL;
     }
+    
+    // Set "nosmoke" flag if smoke is disabled.
+    new bool:smoke = GetConVarBool(g_hCvarsList[CVAR_INFECT_SMOKE]);
+    if (!smoke)
+    {
+        flags = flags | EXP_NOSMOKE;
+    }
+    
+    // Set "nosparks" flag if sparks are disabled.
+    new bool:sparks = GetConVarBool(g_hCvarsList[CVAR_INFECT_SPARKS]);
+    if (!sparks)
+    {
+        flags = flags | EXP_NOSPARKS;
+    }
+    
+    // Create explosion at client's origin.
+    VEffectsCreateExplosion(clientloc, flags);
     
     // If shake effect is enabled, then continue.
     new bool:shake = GetConVarBool(g_hCvarsList[CVAR_INFECT_SHAKE]);
     if (shake)
     {
-        // If shake usermsg isn't invalid, then continue.
-        new Handle:hShake = StartMessageOne("Shake", client);
-        if (hShake != INVALID_HANDLE)
-        {
-            // Write shake information to usermsg handle.
-            BfWriteByte(hShake, 0);
-            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_AMP]));
-            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]));
-            BfWriteFloat(hShake, GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]));
-            
-            // End usermsg and sent to client.
-            EndMessage();
-        }
+        // Get shake info.
+        new Float:shakeamp = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_AMP]);
+        new Float:shakefrequency = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]);
+        new Float:shakeduration = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]);
+        
+        // Shake client's screen.
+        VEffectsShakeClientScreen(client, shakeamp, shakefrequency, shakeduration);
     }
+}
+
+/**
+ * Returns if a client is infected.
+ * 
+ * @param client    The client index.
+ * @return          True if the client has been infected, false otherwise.
+ */    
+bool:InfectIsClientInfected(client)
+{
+    // If client is invalid, then stop.
+    if (!ZRIsClientValid(client))
+    {
+        return false;
+    }
+    
+    // Return client's zombie flag.
+    return bZombie[client];
+}
+
+/**
+ * Returns if a client is a human.
+ * 
+ * @param client    The client index.
+ * @return          True if the client is a human, false otherwise.
+ */
+bool:InfectIsClientHuman(client)
+{
+    // If client is invalid, then stop.
+    if (!ZRIsClientValid(client))
+    {
+        return true;
+    }
+    
+    // Return opposite of client's zombie flag.
+    return !bZombie[client];
 }

@@ -171,7 +171,7 @@ ZHPUpdateHUD(client)
     }
     
     // If player is a zombie, or has ZHP disabled, then stop.
-    if (!IsPlayerZombie(client) || !pZHP[client])
+    if (!InfectIsClientInfected(client) || !pZHP[client])
     {
         return;
     }

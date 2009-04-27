@@ -10,25 +10,39 @@
  */
 
 /**
+ * @section Locked cvar value defines.
+ */
+#define CVARS_AUTOTEAMBALANCE_LOCKED 0
+#define CVARS_LIMITTEAMS_LOCKED 0
+/**
+ * @endsection
+ */
+
+/**
  * List of cvars used by the plugin.
  */
 enum CvarsList
 {
     Handle:CVAR_ENABLE,
-    Handle:CVAR_LOG,
-    Handle:CVAR_LOGFLAGS,
-    Handle:CVAR_ROUNDEND_OVERLAY,
-    Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
-    Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
     Handle:CVAR_CLASSES_DEFAULT_ADMIN,
     Handle:CVAR_CLASSES_FILE,
+    Handle:CVAR_WEAPONS,
+    Handle:CVAR_WEAPONS_RESTRICT,
+    Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
+    Handle:CVAR_HITGROUPS,
+    Handle:CVAR_DAMAGE_HITGROUPS,
+    Handle:CVAR_DAMAGE_BLOCK_FF,
+    Handle:CVAR_DAMAGE_BLOCK_BLAST,
     Handle:CVAR_DAMAGE_SUICIDE_ZOMBIE,
     Handle:CVAR_DAMAGE_SUICIDE_HUMAN,
     Handle:CVAR_DAMAGE_SUICIDE_CMDS,
+    Handle:CVAR_ROUNDEND_OVERLAY,
+    Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
+    Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
     Handle:CVAR_INFECT_SPAWNTIME_MIN,
     Handle:CVAR_INFECT_SPAWNTIME_MAX,
     Handle:CVAR_INFECT_CONSECUTIVE_BLOCK,
@@ -43,15 +57,23 @@ enum CvarsList
     Handle:CVAR_INFECT_SHAKE_AMP,
     Handle:CVAR_INFECT_SHAKE_FREQUENCY,
     Handle:CVAR_INFECT_SHAKE_DURATION,
-    Handle:CVAR_WEAPONS,
-    Handle:CVAR_WEAPONS_RESTRICT,
-    Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
-    Handle:CVAR_HITGROUPS,
     Handle:CVAR_ACCOUNT_CASHFILL,
     Handle:CVAR_ACCOUNT_CASHFILL_VALUE,
-    Handle:CVAR_SOUNDEFFECTS_MOAN,
-    Handle:CVAR_SOUNDEFFECTS_GROAN,
-    Handle:CVAR_SOUNDEFFECTS_DEATH,
+    Handle:CVAR_VEFFECTS_LIGHTSTYLE,
+    Handle:CVAR_VEFFECTS_LIGHTSTYLE_VALUE,
+    Handle:CVAR_VEFFECTS_SKY,
+    Handle:CVAR_VEFFECTS_SKY_PATH,
+    Handle:CVAR_VEFFECTS_FOG,
+    Handle:CVAR_VEFFECTS_FOG_OVERRIDE,
+    Handle:CVAR_VEFFECTS_FOG_PCOLOR,
+    Handle:CVAR_VEFFECTS_FOG_SCOLOR,
+    Handle:CVAR_VEFFECTS_FOG_DENSITY,
+    Handle:CVAR_VEFFECTS_FOG_STARTDIST,
+    Handle:CVAR_VEFFECTS_FOG_ENDDIST,
+    Handle:CVAR_VEFFECTS_FOG_FARZ,
+    Handle:CVAR_SEFFECTS_MOAN,
+    Handle:CVAR_SEFFECTS_GROAN,
+    Handle:CVAR_SEFFECTS_DEATH,
     Handle:CVAR_AMBIENTSOUNDS,
     Handle:CVAR_AMBIENTSOUNDS_FILE,
     Handle:CVAR_AMBIENTSOUNDS_LENGTH,
@@ -71,9 +93,6 @@ enum CvarsList
     Handle:CVAR_OVERLAY_REDISPLAY,
     Handle:CVAR_ZVISION_ALLOW_DISABLE,
     Handle:CVAR_MENU_AUTOCLOSE,
-    Handle:CVAR_DARK,
-    Handle:CVAR_DARK_LEVEL,
-    Handle:CVAR_DARK_SKY,
     Handle:CVAR_ZSPAWN,
     Handle:CVAR_ZTELE,
     Handle:CVAR_ZTELE_STARTUP_DELAY,
@@ -93,9 +112,36 @@ enum CvarsList
 new g_hCvarsList[CvarsList];
 
 /**
+ * @section Global cvar handles.
+ */
+new Handle:g_hAutoTeamBalance = INVALID_HANDLE;
+new Handle:g_hLimitTeams = INVALID_HANDLE;
+new Handle:g_hRestartGame = INVALID_HANDLE;
+/**
+ * @endsection
+ */
+
+/**
  * Cvars module init function.
- */ 
+ */
 CvarsInit()
+{
+    // Retrieve handles of CS:S cvars.
+    g_hAutoTeamBalance = FindConVar("mp_autoteambalance");
+    g_hLimitTeams = FindConVar("mp_limitteams");
+    g_hRestartGame = FindConVar("mp_restartgame");
+    
+    // Create zombiereloaded cvars.
+    CvarsCreate();
+    
+    // Hook cvars.
+    CvarsHook();
+}
+
+/**
+ * Create all cvars for plugin.
+ */
+CvarsCreate()
 {
     // Cvar naming guidelines:
     // 1. Prefix: "zr_"
@@ -121,27 +167,14 @@ CvarsInit()
     // ===========================
 	// Log (core)
 	// ===========================
-	
-    g_hCvarsList[CVAR_LOG]                   =    CreateConVar("zr_log", "1", "");
-    g_hCvarsList[CVAR_LOGFLAGS]              =    CreateConVar("zr_logflags", "331", "");
-    // Old Desc: Logging flags. Log messages to sourcemod logs, server console or client console. Use zr_log_flags to see a list of flags. (0: Disable)
+    
+    // Cvars created in log.inc, because of compilation problems when creating them here.
     
     // ===========================
 	// Translations (core)
 	// ===========================
 	
     // (None)
-    
-    // ===========================
-	// Round End (core)
-	// ===========================
-	
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]          =    CreateConVar("zr_roundend_overlay", "1", "");
-    // Old Desc: Shows an overlay to all clients when a team wins. (0: Disable)
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]    =    CreateConVar("zr_roundend_overlays_human", "");
-    // Old Desc: overlays/zr/humans_win", "Path to \"humans win\" overlay
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]   =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "");
-    // Old Desc: Path to \"zombies win\" overlay
     
     // ===========================
 	// Offsets (core)
@@ -173,39 +206,6 @@ CvarsInit()
     // Old Desc: Class data file to read from, in Valves key/values format. The path is relative to the \"sourcemod\" folder.
     
     // ===========================
-    // Damage (core)
-    // ===========================
-    
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie", "1", "");
-    // Old Desc: Intercept human suicide attempts.
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human", "1", "");
-    // Old Desc: Intercept zombie suicide attempts.
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds", "kill, spectate, jointeam", "");
-    // Old Desc: List of suicide commands to intercept. (Delimited by \", \"
-    
-    // ===========================
-    // Infect (core)
-    // ===========================
-    
-    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]       =    CreateConVar("zr_infect_motherzombie_ratio", "5", "");
-    g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]     =    CreateConVar("zr_infect_motherzombie_respawn", "0", "");
-    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]            =    CreateConVar("zr_infect_spawntime_min", "30.0", "");
-    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]            =    CreateConVar("zr_infect_spawntime_max", "50.0", "");
-    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block", "1", "");
-    
-    // Effects
-    
-    g_hCvarsList[CVAR_INFECT_FIREBALL]           =    CreateConVar("zr_infect_fireball", "1", "");
-    g_hCvarsList[CVAR_INFECT_SMOKE]              =    CreateConVar("zr_infect_smoke", "1", "");
-    g_hCvarsList[CVAR_INFECT_SPARKS]             =    CreateConVar("zr_infect_sparks", "1", "");
-    g_hCvarsList[CVAR_INFECT_SOUND]              =    CreateConVar("zr_infect_sound", "npc/fast_zombie/fz_scream1.wav", "");
-    g_hCvarsList[CVAR_INFECT_ESPLASH]            =    CreateConVar("zr_infect_esplash", "1", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE]              =    CreateConVar("zr_infect_shake", "1", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", ""); 
-    
-    // ===========================
     // Weapons (core)
     // ===========================
     
@@ -233,6 +233,62 @@ CvarsInit()
     // Note make config file cvar.
     
     // ===========================
+	// Round End (core)
+	// ===========================
+	
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]          =    CreateConVar("zr_roundend_overlay", "1", "");
+    // Old Desc: Shows an overlay to all clients when a team wins. (0: Disable)
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]    =    CreateConVar("zr_roundend_overlays_human", "overlays/zr/humans_win");
+    // Old Desc: overlays/zr/humans_win", "Path to \"humans win\" overlay
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]   =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "");
+    // Old Desc: Path to \"zombies win\" overlay
+    
+    // ===========================
+    // Infect (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]       =    CreateConVar("zr_infect_mzombie_ratio", "5", "");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]     =    CreateConVar("zr_infect_mzombie_respawn", "0", "");
+    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]            =    CreateConVar("zr_infect_spawntime_min", "30.0", "");
+    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]            =    CreateConVar("zr_infect_spawntime_max", "50.0", "");
+    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block", "1", "");
+    
+    // Effects
+    
+    g_hCvarsList[CVAR_INFECT_FIREBALL]           =    CreateConVar("zr_infect_fireball", "1", "");
+    g_hCvarsList[CVAR_INFECT_SMOKE]              =    CreateConVar("zr_infect_smoke", "1", "");
+    g_hCvarsList[CVAR_INFECT_SPARKS]             =    CreateConVar("zr_infect_sparks", "1", "");
+    g_hCvarsList[CVAR_INFECT_SOUND]              =    CreateConVar("zr_infect_sound", "npc/fast_zombie/fz_scream1.wav", "");
+    g_hCvarsList[CVAR_INFECT_ESPLASH]            =    CreateConVar("zr_infect_esplash", "1", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE]              =    CreateConVar("zr_infect_shake", "1", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]          =    CreateConVar("zr_infect_shake_amp", "15.0", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]    =    CreateConVar("zr_infect_shake_frequency", "1.0", "");
+    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]     =    CreateConVar("zr_infect_shake_duration", "5.0", ""); 
+    
+    // ===========================
+    // Damage (core)
+    // ===========================
+    
+    // Hitgroup Damage
+    
+    g_hCvarsList[CVAR_DAMAGE_HITGROUPS]              =    CreateConVar("zr_damage_hitgroups", "1", "");
+    
+    // Block Damage Types
+    
+    g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]              =    CreateConVar("zr_damage_block_ff", "1", "");
+    // note overrides mp_friendlyfire
+    g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]           =    CreateConVar("zr_damage_block_blast", "1", "");
+    
+    // Suicide Intercept
+    
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie", "1", "");
+    // Old Desc: Intercept human suicide attempts.
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human", "1", "");
+    // Old Desc: Intercept zombie suicide attempts.
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds", "kill, spectate, jointeam", "");
+    // Old Desc: List of suicide commands to intercept. (Delimited by \", \"
+    
+    // ===========================
     // Account (module)
     // ===========================
     
@@ -242,16 +298,43 @@ CvarsInit()
     // Old Desc: How much money players will have when they spawn when zr_cashfill is 1
     
     // ===========================
+    // Visual Effects (module)
+    // ===========================
+    
+    // Lightstyle
+    
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]              =    CreateConVar("zr_veffects_lightstyle", "0", "");
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE]        =    CreateConVar("zr_veffects_lightstyle_value", "a", "");
+    
+    // Sky
+    
+    g_hCvarsList[CVAR_VEFFECTS_SKY]                     =    CreateConVar("zr_veffects_sky", "1", "");
+    g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path", "sky_fake_white.vmt", "");
+    
+    // Fog
+    
+    g_hCvarsList[CVAR_VEFFECTS_FOG]                     =    CreateConVar("zr_veffects_fog", "0", "");
+    // NOTE DISABLE. SOURCEMOD DOESNT SUPPORT THIS YET.
+    g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE]            =    CreateConVar("zr_veffects_fog_override", "0", "");
+    // NOTE DISABLE. SOURCEMOD DOESNT SUPPORT THIS YET.
+    g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR]              =    CreateConVar("zr_veffects_fog_pcolor", "255 255 255", "");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR]              =    CreateConVar("zr_veffects_fog_scolor", "255 255 255", "");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY]             =    CreateConVar("zr_veffects_fog_density", "0.8", "");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST]           =    CreateConVar("zr_veffects_fog_startdist", "0", "");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST]             =    CreateConVar("zr_veffects_fog_enddist", "400", "");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ]                =    CreateConVar("zr_veffects_fog_farz", "2000", "");
+    
+    // ===========================
 	// Sound Effects (module)
 	// ===========================
 	
 	// Zombie Sounds
 	
-    g_hCvarsList[CVAR_SOUNDEFFECTS_MOAN]         =    CreateConVar("zr_soundeffects_moan", "30", "");
+    g_hCvarsList[CVAR_SEFFECTS_MOAN]         =    CreateConVar("zr_seffects_moan", "30", "");
     // Old Desc: How often, in seconds, a zombie moans (0: Disable)
-    g_hCvarsList[CVAR_SOUNDEFFECTS_GROAN]        =    CreateConVar("zr_soundeffects_groan", "5", "");
+    g_hCvarsList[CVAR_SEFFECTS_GROAN]        =    CreateConVar("zr_seffects_groan", "5", "");
     // Old Desc: Chance factor a zombie will groan when shot (Lower: More often, 0: Disable)
-    g_hCvarsList[CVAR_SOUNDEFFECTS_DEATH]        =    CreateConVar("zr_soundeffects_death", "1", "");
+    g_hCvarsList[CVAR_SEFFECTS_DEATH]        =    CreateConVar("zr_seffects_death", "1", "");
     // Old Desc: Zombie will emit a death sound when killed (0: Disable)
     
     // Ambient Sounds
@@ -323,12 +406,6 @@ CvarsInit()
     // Old Desc: Allow users to disable ZVision with their nightvision key (0: Disable)
     g_hCvarsList[CVAR_MENU_AUTOCLOSE]            =    CreateConVar("zr_menu_autoclose", "0", "");
     // Old Desc: Automatically close menus on selection. If disabled the menu will remain open.
-    g_hCvarsList[CVAR_DARK]                      =    CreateConVar("zr_dark", "0", "");
-    // Old Desc: Default value for darkening maps,  most dislike this feature (0: Disable)
-    g_hCvarsList[CVAR_DARK_LEVEL]                =    CreateConVar("zr_dark_level", "a", "");
-    // Old Desc: The darkness of the map,  a being the darkest,  z being extremely bright when zr_dark is 1 (n: Default)
-    g_hCvarsList[CVAR_DARK_SKY]                  =    CreateConVar("zr_dark_sky", "sky_borealis01", "");
-    // Old Desc: The sky the map will have when zr_dark is 1
     g_hCvarsList[CVAR_ZSPAWN]                    =    CreateConVar("zr_zspawn", "1", "");
     // Old Desc: Allow players to spawn if they just joined the game (0: Disable)
     g_hCvarsList[CVAR_ZTELE]                     =    CreateConVar("zr_tele", "1", "");
@@ -352,53 +429,105 @@ CvarsInit()
     g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL]  =    CreateConVar("zr_anticamp_update_interval", "1", "");
     // Old Desc: How often to update player locations (in seconds).
     
-    // TODO: Recode.
-    //HookConVarChange(g_hCvarsList[CVAR_ENABLE], EnableHook);
-    
+    // Auto-generate config file if it doesn't exist, then execute.
     AutoExecConfig(true, "zombiereloaded", "sourcemod/zombiereloaded");
 }
 
-CvarsHook()
-{   
-    SetConVarBool(FindConVar("mp_autoteambalance"), false);
-    SetConVarInt(FindConVar("mp_limitteams"), 0);
+/**
+ * Hook cvar changes.
+ * 
+ * @param unhook    If true, cvars will be unhooked, false to hook cvars.
+ */
+CvarsHook(bool:unhook = false)
+{
+    // If unhook is true, then continue.
+    if (unhook)
+    {
+        // Unhook all cvars.
+        UnhookConVarChange(g_hAutoTeamBalance, CvarsHookLocked);
+        UnhookConVarChange(g_hLimitTeams, CvarsHookLocked);
+        UnhookConVarChange(g_hRestartGame, CvarsHookRestartGame);
+        
+        // Stop after unhooking cvars.
+        return;
+    }
     
-    HookConVarChange(FindConVar("mp_autoteambalance"), AutoTeamBalanceHook);
-    HookConVarChange(FindConVar("mp_limitteams"), LimitTeamsHook);
+    // Set locked cvars to their locked value.
+    SetConVarInt(g_hAutoTeamBalance, CVARS_AUTOTEAMBALANCE_LOCKED);
+    SetConVarInt(g_hLimitTeams, CVARS_LIMITTEAMS_LOCKED);
     
+    // Hook cvar to prevent it from changing.
+    HookConVarChange(g_hAutoTeamBalance, CvarsHookLocked);
+    //HookConVarChange(hLimitTeams, CvarsHookLocked);
+    HookConVarChange(g_hRestartGame, CvarsHookRestartGame);
+    
+    // Anticamp shtuff. (needs to be moved to anticamp if these hooks are necessary)
     HookConVarChange(g_hCvarsList[CVAR_ANTICAMP], AnticampHook);
     HookConVarChange(g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL], UpdateIntervalHook);
 }
 
-CvarsUnhook()
+/**
+ * Cvar hook callback (mp_autoteambalance, mp_limitteams)
+ * Prevents changes to cvar.
+ * 
+ * @param convar    The cvar handle.
+ * @param oldvalue  The value before the attempted change.
+ * @param newvalue  The new value.
+ */
+public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newvalue[])
 {
-    UnhookConVarChange(FindConVar("mp_autoteambalance"), AutoTeamBalanceHook);
-    UnhookConVarChange(FindConVar("mp_limitteams"), LimitTeamsHook);
-}
-
-/*public EnableHook(Handle:convar, const String:oldValue[], const String:newValue[])
-{
-    new bool:enable = bool:StringToInt(newValue);
-    
-    if (enable)
+    // If cvar is mp_autoteambalance, then continue.
+    if (cvar == g_hAutoTeamBalance)
     {
-        HookEvents();
-        HookCvars();
+        // Revert to locked value.
+        SetConVarInt(g_hAutoTeamBalance, CVARS_AUTOTEAMBALANCE_LOCKED);
         
-        TerminateRound(3.0, Game_Commencing);
+        // If log flag check fails, then don't log.
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CORE))
+        {
+            LogMessageFormatted(-1, "Cvars", "Cvar Locked", "Cvar \"mp_autoteambalance\" was reverted back to \"CVARS_AUTOTEAMBALANCE_LOCKED\".", LOG_FORMAT_TYPE_FULL);
+        }
     }
-    else
+    // If cvar is mp_limitteams, then continue.
+    else if (cvar == g_hLimitTeams)
     {
-        ZREnd();
+        // Revert to locked value.
+        SetConVarInt(g_hLimitTeams, CVARS_LIMITTEAMS_LOCKED);
+        
+        // If log flag check fails, then don't log.
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CORE))
+        {
+            LogMessageFormatted(-1, "Cvars", "Cvar Locked", "Cvar \"mp_limitteams\" was reverted back to \"CVARS_LIMITTEAMS_LOCKED\".", LOG_FORMAT_TYPE_FULL);
+        }
     }
-}*/
-
-public AutoTeamBalanceHook(Handle:convar, const String:oldValue[], const String:newValue[])
-{
-    SetConVarBool(FindConVar("mp_autoteambalance"), false);
 }
 
-public LimitTeamsHook(Handle:convar, const String:oldValue[], const String:newValue[])
+/**
+ * Cvar hook callback (mp_restartgame)
+ * Stops restart and just ends the round.
+ * 
+ * @param convar    The cvar handle.
+ * @param oldvalue  The value before the attempted change.
+ * @param newvalue  The new value.
+ */
+public CvarsHookRestartGame(Handle:cvar, const String:oldvalue[], const String:newvalue[])
 {
-    SetConVarInt(FindConVar("mp_limitteams"), 0);
+    // Prevent round restart.
+    SetConVarInt(cvar, 0);
+    
+    // If value was invalid or 0, then stop.
+    new Float:delay = StringToFloat(newvalue);
+    if (delay <= 0)
+    {
+        return;
+    }
+    
+    // Terminate the round with restart time as delay.
+    RoundEndRestart(delay);
+    
+    // If log flag check fails, then don't log.
+    if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CORE))
+    {
+        LogMessageFormatted(-1, "Cvars", "Restart Game", "\"mp_restartgame\" was caught and blocked, commencing round.", LOG_FORMAT_TYPE_FULL);
+    }
 }

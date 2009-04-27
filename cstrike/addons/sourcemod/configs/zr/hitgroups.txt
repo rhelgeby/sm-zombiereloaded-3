@@ -5,7 +5,8 @@
 // "hitgroup index" // Index of the hitgroup (listed below)
 // {
 //	"name"			"name of hitgroup" // Redundant as of now, used for readability.
-//	"knockback"		"1.0" (default) // The knockback multiplier for the hitgroup
+//	"knockback"		"1.0" (default) // The knockback multiplier for the hitgroup.
+//	"damage"		"yes" (default // Toggle damage on and off for this hitgroup.
 // }
 //
 // Notes:
@@ -18,53 +19,62 @@
 	{
 		"name"		"Generic"
 		"knockback"	"1.0"
+		"damage"	"yes"
 	}
 
 	"1"
 	{
 		"name"		"Head"
 		"knockback"	"2.0"
+		"damage"	"yes"
 	}
 
 	"2"
 	{
 		"name"		"Chest"
 		"knockback"	"1.3"
+		"damage"	"yes"
 	}
 
 	"3"
 	{
 		"name"		"Stomach"
 		"knockback"	"1.2"
+		"damage"	"yes"
 	}
 
 	"4"
 	{
 		"name"		"Left Arm"
 		"knockback"	"1.0"
+		"damage"	"yes"
 	}
 
 	"5"
 	{
 		"name"		"Right Arm"
 		"knockback"	"1.0"
+		"damage"	"yes"
 	}
 
 	"6"
 	{
 		"name"		"Left Leg"
 		"knockback"	"0.9"
+		"damage"	"yes"
 	}
 
 	"7"
 	{
 		"name"		"Right Leg"
 		"knockback"	"0.9"
+		"damage"	"yes"
 	}
 
 	"10"
 	{
 		"name"		"Gear"
 		"knockback"	"1.0"
+		"damage"	"yes"
 	}
 }

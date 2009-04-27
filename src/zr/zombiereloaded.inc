@@ -98,7 +98,7 @@ ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool
         }
         
         // If client is already zombie (via admin), then stop.
-        if (human && !IsPlayerHuman(x))
+        if (human && !InfectIsClientHuman(x))
         {
             continue;
         }
@@ -117,7 +117,7 @@ ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool
  * @param console   True to include console (index 0), false if not.
  * @return          True if client is valid, false otherwise. 
  */    
-bool:ZRIsValidClient(client, bool:console = false)
+bool:ZRIsClientValid(client, bool:console = false)
 {
     // If index is greater than max number of clients, then return false.
     if (client > MaxClients)
@@ -167,12 +167,12 @@ bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true, b
         }
         
         // If player is a zombie, then increment zombie variable.
-        if (IsPlayerZombie(x))
+        if (InfectIsClientInfected(x))
         {
             zombiecount++;
         }
         // If player is a human, then increment human variable.
-        else if (IsPlayerHuman(x))
+        else if (InfectIsClientHuman(x))
         {
             humancount++;
         }
@@ -191,7 +191,7 @@ bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true, b
 bool:ZRIsClientOnTeam(client, team = -1)
 {
     // If index is invalid, then stop.
-    if (!ZRIsValidClient(client))
+    if (!ZRIsClientValid(client))
     {
         return false;
     }
@@ -234,7 +234,7 @@ bool:ZRTeamHasClients(team = -1)
 bool:ZRIsClientAdmin(client)
 {
     // If index is invalid, then stop.
-    if (!ZRIsValidClient(client))
+    if (!ZRIsClientValid(client))
     {
         return false;
     }

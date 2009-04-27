@@ -23,7 +23,7 @@
 NapalmOnClientHurt(client, const String:weapon[])
 {
     // If player isn't a zombie, then stop.
-    if (!IsPlayerZombie(client))
+    if (!InfectIsClientInfected(client))
     {
         return;
     }
