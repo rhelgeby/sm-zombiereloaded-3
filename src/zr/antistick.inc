@@ -7,11 +7,20 @@
  */
 
 /**
+ * @section Collision values.
+*/
+#define ANTISTICK_COLLISIONS_OFF 2
+#define ANTISTICK_COLLISIONS_ON 5
+/**
+ * @endsection
+*/
+
+/**
  * @section Offsets relating to player hull dimensions.
 */
-#define PLAYER_HULL_XY_OFFSET 32
-#define PLAYER_HULL_Z_OFFSET 12
-#define PLAYER_HULL_STACK_OFFSET 14
+#define ANTISTICK_PLAYER_HULL_XY_OFFSET 32
+#define ANTISTICK_PLAYER_HULL_Z_OFFSET 12
+#define ANTISTICK_PLAYER_HULL_STACK_OFFSET 14
 /**
  * @endsection
 */
@@ -79,7 +88,7 @@ AntiStickIsStuck(client)
         
         // x-y plane distance formula: sqrt((x2-x1)^2 + (y2-y1)^2)
         new Float:xydistance = SquareRoot(Pow(stuckloc[0] - clientloc[0], 2.0) + Pow(stuckloc[1] - clientloc[1], 2.0));
-        if (xydistance < PLAYER_HULL_XY_OFFSET)
+        if (xydistance < ANTISTICK_PLAYER_HULL_XY_OFFSET)
         {
             if (clientloc[2] <= stuckloc[2])
             {
@@ -87,10 +96,10 @@ AntiStickIsStuck(client)
                 GetClientEyePosition(client, eyeloc);
                 
                 // Get the distance between the eyes and feet and subtract the stack "view crush."
-                new Float:eyedistance = FloatAbs(eyeloc[2] - clientloc[2]) - PLAYER_HULL_STACK_OFFSET;
+                new Float:eyedistance = FloatAbs(eyeloc[2] - clientloc[2]) - ANTISTICK_PLAYER_HULL_STACK_OFFSET;
                 new Float:zdistance = FloatAbs(stuckloc[2] - clientloc[2]);
                 
-                if (zdistance <= eyedistance + PLAYER_HULL_Z_OFFSET)
+                if (zdistance <= eyedistance + ANTISTICK_PLAYER_HULL_Z_OFFSET)
                 {
                     return x;
                 }
@@ -122,15 +131,15 @@ public Action:AntiStickTimer(Handle:timer)
             continue;
         }
         
-        if (CanCollide(x))
+        if (AntiStickClientCollisionGroup(x, false))
         {
-            NoCollide(x, true);
+            AntiStickClientCollisionGroup(x, true, ANTISTICK_COLLISIONS_OFF);
             CreateTimer(0.5, AntiStickSolidify, x, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
         }
         
-        if (CanCollide(stuckindex))
+        if (AntiStickClientCollisionGroup(stuckindex, false))
         {
-            NoCollide(stuckindex, true);
+            AntiStickClientCollisionGroup(stuckindex, true, ANTISTICK_COLLISIONS_OFF);
             CreateTimer(0.5, AntiStickSolidify, stuckindex, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
         }
     }
@@ -146,7 +155,7 @@ public Action:AntiStickTimer(Handle:timer)
 public Action:AntiStickSolidify(Handle:timer, any:client)
 {
     // Validate player is in-game, alive, and is being unstuck.
-    if (!IsClientInGame(client) || !IsPlayerAlive(client) || CanCollide(client))
+    if (!IsClientInGame(client) || !IsPlayerAlive(client) || AntiStickClientCollisionGroup(client, false))
     {
         return Plugin_Stop;
     }
@@ -157,9 +166,27 @@ public Action:AntiStickSolidify(Handle:timer, any:client)
         return Plugin_Continue;
     }
     
-    NoCollide(client, false);
+    AntiStickClientCollisionGroup(client, true, ANTISTICK_COLLISIONS_ON);
     
     return Plugin_Stop;
+}
+
+/**
+ * Set collision group flags on a client.
+ * @param client            The client index.
+ * @param collisiongroup    Collision group flag.
+ * @return                  The collision group on the client, -1 if applying collision group. 
+ */
+AntiStickClientCollisionGroup(client, bool:apply = true, collisiongroup = 0)
+{
+    if (apply)
+    {
+        SetEntData(client, g_iToolsCollisionGroup, collisiongroup, 1, true);
+        
+        return -1;
+    }
+    
+    return GetEntData(client, g_iToolsCollisionGroup, 1);
 }
     
         

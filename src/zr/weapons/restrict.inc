@@ -847,30 +847,30 @@ RestrictGetGroupWeapons(const String:groupname[], String:weaponlist[], maxlen, c
  */
 public RestrictCanUse(client, weapon, dummy1, dummy2, dummy3, dummy4)
 {
-    // If plugin is disabled then stop.
-    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
-    if (!enabled)
-    {
-        return Hacks_Continue;
-    }
-    
     new String:weaponname[WEAPONS_MAX_LENGTH];
     GetEdictClassname(weapon, weaponname, sizeof(weaponname));
     
     // Strip "weapon_" from entity name.
     ReplaceString(weaponname, sizeof(weaponname), "weapon_", "");
     
-    // If the weapon is restricted then prevent pickup.
+    // If weapon is a knife, then allow pickup.
+    if (StrEqual(weaponname, "knife"))
+    {
+        return Hacks_Continue;
+    }
+    
+    // If the weapon is restricted, then prevent pickup.
     if (RestrictIsWeaponRestricted(weaponname))
     {
         return 0;
     }
     
-    // If the player is a zombie and the weapon isn't a knife then prevent pickup.
-    if (InfectIsClientInfected(client) && !StrEqual(weaponname, "knife"))
+    // If the player is a zombie, then prevent pickup.
+    if (InfectIsClientInfected(client))
     {
         return 0;
     }
     
+    // Allow pickup.
     return Hacks_Continue;
 }

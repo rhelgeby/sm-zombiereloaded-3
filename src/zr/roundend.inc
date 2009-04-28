@@ -12,22 +12,22 @@
 /**
  * @section All round end reasons.
  */
-#define ROUNDEND_TARGET_BOMBED							1		// Target Successfully Bombed!
-#define ROUNDEND_VIP_ESCAPED							2		// The VIP has escaped!
-#define ROUNDEND_VIP_ASSASSINATED						3		// VIP has been assassinated!
-#define ROUNDEND_TERRORISTS_ESCAPED						4		// The terrorists have escaped!
-#define ROUNDEND_CTS_PREVENTESCAPE						5		// The CT's have prevented most of the terrorists from escaping!
-#define ROUNDEND_ESCAPING_TERRORISTS_NEUTRALIZED		6		// Escaping terrorists have all been neutralized!
-#define ROUNDEND_BOMB_DEFUSED							7		// The bomb has been defused!
-#define ROUNDEND_CTS_WIN								8		// Counter-Terrorists Win!
-#define ROUNDEND_TERRORISTS_WIN							9		// Terrorists Win!
-#define ROUNDEND_ROUND_DRAW								10		// Round Draw!
-#define ROUNDEND_ALL_HOSTAGES_RESCUED					11		// All Hostages have been rescued!
-#define ROUNDEND_TARGET_SAVED							12		// Target has been saved!
-#define ROUNDEND_HOSTAGES_NOT_RESCUED					13		// Hostages have not been rescued!
-#define ROUNDEND_TERRORISTS_NOT_ESCAPED					14		// Terrorists have not escaped!
-#define ROUNDEND_VIP_NOT_ESCAPED						15		// VIP has not escaped!
-#define ROUNDEND_GAME_COMMENCING						16		// Game Commencing!
+#define ROUNDEND_TARGET_BOMBED                            1        // Target Successfully Bombed!
+#define ROUNDEND_VIP_ESCAPED                            2        // The VIP has escaped!
+#define ROUNDEND_VIP_ASSASSINATED                        3        // VIP has been assassinated!
+#define ROUNDEND_TERRORISTS_ESCAPED                        4        // The terrorists have escaped!
+#define ROUNDEND_CTS_PREVENTESCAPE                        5        // The CT's have prevented most of the terrorists from escaping!
+#define ROUNDEND_ESCAPING_TERRORISTS_NEUTRALIZED        6        // Escaping terrorists have all been neutralized!
+#define ROUNDEND_BOMB_DEFUSED                            7        // The bomb has been defused!
+#define ROUNDEND_CTS_WIN                                8        // Counter-Terrorists Win!
+#define ROUNDEND_TERRORISTS_WIN                            9        // Terrorists Win!
+#define ROUNDEND_ROUND_DRAW                                10        // Round Draw!
+#define ROUNDEND_ALL_HOSTAGES_RESCUED                    11        // All Hostages have been rescued!
+#define ROUNDEND_TARGET_SAVED                            12        // Target has been saved!
+#define ROUNDEND_HOSTAGES_NOT_RESCUED                    13        // Hostages have not been rescued!
+#define ROUNDEND_TERRORISTS_NOT_ESCAPED                    14        // Terrorists have not escaped!
+#define ROUNDEND_VIP_NOT_ESCAPED                        15        // VIP has not escaped!
+#define ROUNDEND_GAME_COMMENCING                        16        // Game Commencing!
 /**
  * @endsection
  */
@@ -35,21 +35,17 @@
 /**
  * Delay between round ending and new round starting. (Normal)
  */
-#define ROUNDEND_DELAY_NORMAL 5.0
-
-/**
- * Delay between round ending and new round starting. (Short, for ROUNDEND_GAME_COMMENCING)
- */
-#define ROUNDEND_DELAY_SHORT 3.0
+#define ROUNDEND_DELAY 5.0
  
 /**
  * Possible round end outcomes.
  */
 enum RoundEndOutcome
 {
+    Restart,        /** Round is restarting. */
+    Draw,           /** Round has ended in unexpected way. */
     HumansWin,      /** Humans have killed all zombies. */
     ZombiesWin,     /** Zombies have infected all humans. */
-    Draw,           /** Round has ended in unexpected way. */
 }
 
 /**
@@ -91,7 +87,7 @@ RoundEndOnClientDeath()
     new RoundEndOutcome:outcome;
     if (RoundEndGetRoundStatus(outcome))
     {
-        RoundEndTerminateRound(outcome);
+        RoundEndTerminateRound(ROUNDEND_DELAY, outcome);
     }
 }
 
@@ -104,7 +100,7 @@ RoundEndOnClientInfected()
     new RoundEndOutcome:outcome;
     if (RoundEndGetRoundStatus(outcome))
     {
-        RoundEndTerminateRound(outcome);
+        RoundEndTerminateRound(ROUNDEND_DELAY, outcome);
     }
 }
 
@@ -164,7 +160,7 @@ RoundEndOnRoundEnd(reason)
     new RoundEndOutcome:outcome = RoundEndReasonToOutcome(reason);
     
     // Display the overlay to all clients.
-    RoundEndOverlayStart(ROUNDEND_DELAY_NORMAL, outcome);
+    RoundEndOverlayStart(ROUNDEND_DELAY, outcome);
     
     // Balance teams.    
     RoundEndBalanceTeams();
@@ -255,8 +251,8 @@ RoundEndOutcome:RoundEndReasonToOutcome(reason)
  */
 public Action:RoundEndTimer(Handle:timer)
 {
-    // Terminate the round with a normal delay, and CTs as the winner.
-    TerminateRound(ROUNDEND_DELAY_NORMAL, ROUNDEND_CTS_WIN);
+    // Terminate the round with humans as the winner.
+    RoundEndTerminateRound(ROUNDEND_DELAY, HumansWin);
 }
 
 /**
@@ -313,38 +309,36 @@ bool:RoundEndGetRoundStatus(&RoundEndOutcome:outcome)
 }
 
 /**
- * Ends the round with the given outcome.
+ * Ends the round with the given outcome and delay.
  * 
+ * @param delay     Delay before new round starts. 
  * @param outcome   The outcome of the round.
  */
-RoundEndTerminateRound(RoundEndOutcome:outcome)
+RoundEndTerminateRound(Float:delay, RoundEndOutcome:outcome = Restart)
 {
     switch(outcome)
     {
+        // Round is restarting.
+        case Restart:
+        {
+            SDKCall(g_hToolsTerminateRound, delay, ROUNDEND_GAME_COMMENCING);
+        }
+        // Round was a draw.
+        case Draw:
+        {
+            SDKCall(g_hToolsTerminateRound, delay, ROUNDEND_ROUND_DRAW);
+        }
         // Zombies won.
         case ZombiesWin:
         {
-            // Terminate the round with a normal delay, and Ts as the winner.
-            TerminateRound(ROUNDEND_DELAY_NORMAL, ROUNDEND_TERRORISTS_WIN);
+            SDKCall(g_hToolsTerminateRound, delay, ROUNDEND_TERRORISTS_WIN);
         }
         // Humans won.
         case HumansWin:
         {
-            // Terminate the round with a normal delay, and CTs as the winner.
-            TerminateRound(ROUNDEND_DELAY_NORMAL, ROUNDEND_CTS_WIN);
+            SDKCall(g_hToolsTerminateRound, delay, ROUNDEND_CTS_WIN);
         }
     }
-}
-
-/**
- * Restarts the game.
- * 
- * @param delay     How long to wait between round end and new round.
- */
-RoundEndRestart(Float:delay)
-{
-    // Terminate the round.
-    TerminateRound(delay, ROUNDEND_GAME_COMMENCING);
 }
 
 /**

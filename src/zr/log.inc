@@ -24,6 +24,7 @@
 #define LOG_FORMAT_TYPE_SIMPLE      0      /** Simple log message. */
 #define LOG_FORMAT_TYPE_FULL        1      /** Full log message, printed in normal log. */
 #define LOG_FORMAT_TYPE_ERROR       2      /** Full log message, printed in error log. */
+#define LOG_FORMAT_TYPE_FATALERROR  3      /** Full log message, stops the plugin and printed in error logs. */
 /**
  * @endsection
  */
@@ -67,6 +68,9 @@ new Handle:g_hLogFlags = INVALID_HANDLE;
  * @endsection
  */
 
+/**
+ * Log module init function.
+ */
 LogInit()
 {
     // Create modules cvars.
@@ -100,11 +104,8 @@ LogMessageFormatted(client, const String:module[], const String:block[], const S
     
     decl String:logtext[LOG_MAX_LENGTH_FILE];
     
-    // Set to true if log to console, false if client.
-    new bool:console = !ZRIsClientValid(client);
-    
-    // If client is invalid (console), and console is ignored, then stop.
-    if (console && LogCheckFlag(LOG_IGNORE_CONSOLE))
+    // If client is invalid (console), and console log events are ignored, then stop.
+    if (client == 0 && LogCheckFlag(LOG_IGNORE_CONSOLE))
     {
         return;
     }
@@ -132,6 +133,11 @@ LogMessageFormatted(client, const String:module[], const String:block[], const S
             Format(logtext, sizeof(logtext), "\"%s\" : \"%s\" -- %s", module, block, logtext);
             LogError(logtext);
         }
+        case LOG_FORMAT_TYPE_FATALERROR:
+        {
+            Format(logtext, sizeof(logtext), "\"%s\" : \"%s\" -- %s", module, block, logtext);
+            SetFailState(logtext);
+        }
     }
     
     // If log to admin flag is enabled, then print to admins.
@@ -141,8 +147,8 @@ LogMessageFormatted(client, const String:module[], const String:block[], const S
         LogToAdmins(logtext);
     }
     
-    // If client isn't console, and we log to client's then continue.
-    if (!console && LogCheckFlag(LOG_TO_CLIENT))
+    // If client is a valid client (but not console), and we log to client's then continue.
+    if (ZRIsClientValid(client) && LogCheckFlag(LOG_TO_CLIENT))
     {
         // Set client as translation target.
         SetGlobalTransTarget(client);

@@ -112,7 +112,7 @@ bool:ClassApplyAlpha(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
         return false;
     }
     
-    SetPlayerAlpha(client, alpha);
+    ToolsSetClientAlpha(client, alpha);
     return true;
 }
 
@@ -187,13 +187,9 @@ bool:ClassApplyNightVision(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER
         nvgs = ClassGetNvgs(classindex, cachetype);
     }
     
-    NightVision(client, nvgs);
+    ToolsClientNightVision(client, nvgs);
+    ToolsClientNightVision(client, nvgs, false);
     
-    // Turn on night vision if applied.
-    if (nvgs)
-    {
-        NightVisionOn(client, nvgs);
-    }
     return true;
 }
 
@@ -223,7 +219,7 @@ bool:ClassApplyFOV(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
         fov = ClassGetFOV(classindex, cachetype);
     }
     
-    SetPlayerFOV(client, fov);
+    ToolsSetClientDefaultFOV(client, fov);
     return true;
 }
 
@@ -333,6 +329,6 @@ bool:ClassApplySpeed(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
         speed = ClassGetSpeed(classindex, cachetype);
     }
     
-    SetPlayerSpeed(client, speed);
+    ToolsSetClientLMV(client, speed);
     return true;
 }

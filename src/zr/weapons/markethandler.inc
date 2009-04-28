@@ -39,7 +39,7 @@ bool:ZMarketSend(client)
     
     // Check buyzone cvar to see if client has to be in a buyzone to use.
     new bool:buyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]); 
-    if (!IsClientInBuyZone(client) && buyzone)
+    if (!ZMarketIsClientInBuyZone(client) && buyzone)
     {
         // Tell client they must be in a buyzone.
         ZR_PrintCenterText(client, "Market out of buyzone");
@@ -61,6 +61,17 @@ bool:ZMarketSend(client)
     
     // Successfully sent the market menu.
     return true;
+}
+
+/**
+ * Checks if a client is in a buyzone.
+ * 
+ * @param client    The client index.
+ */
+bool:ZMarketIsClientInBuyZone(client)
+{
+    // Return if client is in buyzone.
+    return bool:GetEntData(client, g_iToolsInBuyZone);
 }
 
 /**
@@ -115,7 +126,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     
     // Check if buyzone cvar is enabled, and if the client is in a buyzone.
     new bool:buyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]); 
-    if (!IsClientInBuyZone(client) && buyzone)
+    if (!ZMarketIsClientInBuyZone(client) && buyzone)
     {
         ZR_PrintCenterText(client, "Market out of buyzone");
         

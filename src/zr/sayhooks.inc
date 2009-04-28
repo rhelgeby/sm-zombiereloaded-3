@@ -1,103 +1,104 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: sayhooks.inc
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:        sayhooks.inc
+ *   Description: Hook plugin say commands and redirect to their handling module.
+ *
+ * ============================================================================
  */
 
-HookChatCmds()
+/**
+ * Max number of characters in a chat text string.
+ */
+#define SAYHOOKS_MAX_CHAT_LENGTH 192
+
+/**
+ * @section Say command key words.
+ */
+#define SAYHOOKS_KEYWORD_ZMENU      "!zmenu"
+#define SAYHOOKS_KEYWORD_ZADMIN     "!zadmin"
+#define SAYHOOKS_KEYWORD_ZCLASS     "!zclass"
+#define SAYHOOKS_KEYWORD_ZSPAWN     "!zspawn"
+#define SAYHOOKS_KEYWORD_ZTELE      "!ztele"
+#define SAYHOOKS_KEYWORD_ZHP        "!zhp"
+#define SAYHOOKS_KEYWORD_ZMARKET    "!zmarket"
+/**
+ * @endsection
+ */
+
+/**
+ * Say hooks module init function.
+ */
+SayHooksInit()
 {
-    RegConsoleCmd("say", SayCommand);
-    RegConsoleCmd("say_team", SayCommand);
+    // Hook client's say commands.
+    RegConsoleCmd("say", SayHooksCmdSay);
+    RegConsoleCmd("say_team", SayHooksCmdSay);
 }
 
-public Action:SayCommand(client, argc)
+/**
+ * Command callback. (say, say_team)
+ * Catches all client's say text and takes action on key words.
+ * 
+ * @param client    The client index.
+ * @param argc      The number of arguments in command string.
+ */
+public Action:SayHooksCmdSay(client, argc)
 {
-    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
-    if (!client || !enabled)
-    {
-        return Plugin_Continue;
-    }
+    decl String:args[SAYHOOKS_MAX_CHAT_LENGTH];
     
-    decl String:args[192];
-    
+    // Get client's command string (typically 'say "text"')
     GetCmdArgString(args, sizeof(args));
+    
+    // Strip away the quotes.
     ReplaceString(args, sizeof(args), "\"", "");
     
-    if (StrEqual(args, "!zmenu", false))
+    // If client triggered the zmenu keyword, then send menu.
+    if (StrEqual(args, SAYHOOKS_KEYWORD_ZMENU, false))
     {
-        MainMenu(client);
+        MenuMain(client);
     }
     
-    if (StrEqual(args, "!zadmin", false))
+    // If client triggered the zmenu keyword, then send menu.
+    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZADMIN, false))
     {
         ZRAdminMenu(client);
     }
     
-    else if (StrEqual(args, "!zclass", false))
+    // If client triggered the zmenu keyword, then send menu.
+    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZCLASS, false))
     {
         ClassMenuMain(client);
     }
     
-    else if (StrEqual(args, "!zmarket", false))
+    // If client triggered the zmenu keyword, then send menu.
+    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZSPAWN, false))
+    {
+        // Spawns a late-joining client into the game.
+        ZSpawnClient(client);
+    }
+    
+    // If client triggered the zmenu keyword, then send menu.
+    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZTELE, false))
+    {
+        ZTele(client);
+    }
+    
+    // If client triggered the zmenu keyword, then send menu.
+    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZHP, false))
+    {
+        // Toggle ZHP.
+        ZHPToggle(client);
+    }
+    
+    // If client triggered the zmenu keyword, then send menu.
+    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZMARKET, false))
     {
         // Send market menu.
         ZMarketSend(client);
     }
     
-    else if (StrEqual(args, "!zspawn", false))
-    {
-        ZSpawn(client);
-    }
-    
-    else if (StrEqual(args, "!tp", false) ||
-             StrEqual(args, "!ztele", false) ||
-             StrEqual(args, "!tele", false) ||
-             StrEqual(args, "!teleport", false))
-    {
-        ZTele(client);
-    }
-    
-    else if (StrEqual(args, "!teleabort", false))
-    {
-        AbortTeleport(client, false);
-    }
-    
-    else if (StrEqual(args, "!zhp", false))
-    {
-        // Toggle ZHP.
-        ZHPToggle(client);
-    }
-    else if (StrContains(args, "teleport", false) != -1
-             || StrContains(args, "stuck", false) != -1
-             || StrContains(args, "help", false) != -1)
-    {
-        ZR_PrintToChat(client, "!ztele stuck");
-    }
-    
     return Plugin_Continue;
-}
-
-ZSpawn(client)
-{
-    new bool:spawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
-    if (!spawn)
-    {
-        ZR_PrintToChat(client, "Feature is disabled");
-        return;
-    }
-    
-    new team = GetClientTeam(client);
-    if (team != CS_TEAM_T && team != CS_TEAM_CT)
-    {
-        return;
-    }
-    
-    if (IsPlayerAlive(client))
-    {
-        return;
-    }
-
-    RespawnSpawnClient(client);
 }

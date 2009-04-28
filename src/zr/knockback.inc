@@ -59,7 +59,7 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
         
         // Get attackers eye angles.
         new Float:attackerang[3];
-        GetPlayerEyeAngles(attacker, attackerang);
+        KnockbackGetClientEyeAngles(attacker, attackerang);
         
         // Calculate knockback end-vector.
         TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, KnockbackTRFilter);
@@ -99,8 +99,8 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
     // Apply the magnitude by scaling the vector (multiplying each of its components).
     ScaleVector(vector, magnitude);
     
-    // ADD the given vector to the clients current velocity.
-    SetPlayerVelocity(client, vector, false);
+    // ADD the given vector to the client's current velocity.
+    ToolsClientVelocity(client, vector);
 }
 
 /**
@@ -163,4 +163,15 @@ KnockbackFindExplodingGrenade(Float:heLoc[3])
     
     // Didn't find the grenade.
     return -1;
+}
+
+/**
+ * Get client's eye angles.
+ * 
+ * @param client    The client index.
+ * @param vecAngles The angle vector of the client's eyes.
+ */
+KnockbackGetClientEyeAngles(client, Float:vecAngles[3])
+{
+    SDKCall(g_hToolsEyeAngles, client, vecAngles);
 }

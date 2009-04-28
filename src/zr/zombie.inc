@@ -48,19 +48,6 @@ public Action:Command_NightVision(client, argc)
     }
 }
 
-JumpBoost(client, Float:distance, Float:height)
-{
-    new Float:vel[3];
-    
-    GetPlayerVelocity(client, vel);
-    
-    vel[0] *= distance;
-    vel[1] *= distance;
-    vel[2] *= height;
-    
-    SetPlayerVelocity(client, vel, false);
-}
-
 RemoveObjectives()
 {
     decl String:classname[64];

@@ -55,5 +55,5 @@ AccountSetClientCash(client, value)
     }
     
     // Set client's cash.
-    SetEntData(client, offsAccount, value, 4);
+    SetEntData(client, g_iToolsAccount, value, 4);
 }

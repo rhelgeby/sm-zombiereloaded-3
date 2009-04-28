@@ -102,7 +102,7 @@ public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
     {
         if (slot == MenuCancel_ExitBack)
         {
-            MainMenu(client);
+            MenuMain(client);
         }
     }
     else if (action == MenuAction_End)
@@ -422,7 +422,7 @@ ZRSpawnAll(client)
     {
         if (IsClientInGame(x))
         {
-            ZSpawn(x);
+            ZSpawnClient(x);
         }
     }
     ZRAdminMenu(client);

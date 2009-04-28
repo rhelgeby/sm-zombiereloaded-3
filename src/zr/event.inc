@@ -73,6 +73,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     VEffectsOnRoundStart();
     SEffectsOnRoundStart();
     AntiStickOnRoundStart();
+    ZSpawnOnRoundStart();
 }
 
 /**
@@ -148,15 +149,17 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
     // Reset FOV and overlay.
-    SetPlayerFOV(index, 90);
+    ToolsSetClientDefaultFOV(index, 90);
     ClientCommand(index, "r_screenoverlay \"\"");
     
     // Check if client is on a team.
     if (ZRIsClientOnTeam(index))
     {
-        // Remove night vision.
-        NightVisionOn(index, false);
-        NightVision(index, false);
+        // Turn off nightvision.
+        ToolsClientNightVision(index, false, false);
+        
+        // Take nightvision away.
+        ToolsClientNightVision(index, false);
         
         if (g_bZombieSpawned)
         {
@@ -165,10 +168,6 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
                 CS_SwitchTeam(index, CS_TEAM_CT);
                 CS_RespawnPlayer(index);
             }
-        }
-        else
-        {
-            SetPlayerAlpha(index, 255);
         }
     }
     
@@ -248,7 +247,8 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
         {
             // Add kill bonus to attacker's score.
             new bonus = ClassGetKillBonus(attacker);
-            AddPlayerScore(attacker, bonus);
+            new score = ToolsClientScore(index, true, false);
+            ToolsClientScore(index, true, true, score + bonus);
         }
     }
         
@@ -272,12 +272,10 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
 public Action:EventPlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
-    new client = GetClientOfUserId(GetEventInt(event, "userid"));
+    new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
-    new Float:distance = ClassGetJumpDistance(client);
-    new Float:height = ClassGetJumpHeight(client);
-        
-    JumpBoost(client, distance, height);
+    // Forward event to modules.
+    JumpBoostOnClientJump(index);
 }
 
 /**

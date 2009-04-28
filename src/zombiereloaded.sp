@@ -1,9 +1,12 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: zombiereloaded.sp
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:        (base) zombiereloaded.sp
+ *   Description: Plugins base file.
+ *
+ * ============================================================================
  */
 
 #pragma semicolon 1
@@ -17,110 +20,83 @@
 
 #define VERSION "3.0-dev"
 
-// Core include
+// Core includes.
 #include "zr/zombiereloaded"
-
-// External api (not done)
-//#include "zr/global"
-
-// Log (core)
 #include "zr/log"
-
-// Cvars (core)
 #include "zr/cvars"
-
-// Translations (core)
 #include "zr/translation"
-
-// Offsets (core)
-#include "zr/offsets"
-
-// Models (core)
+#include "zr/tools"
 #include "zr/models"
-
-// Class System (core)
 #include "zr/playerclasses/playerclasses"
-
-// Weapons (core)
 #include "zr/weapons/weapons"
-
-// Hitgroups (core)
 #include "zr/hitgroups"
-
-// Round End (core)
 #include "zr/roundend"
-
-// Infect (core)
 #include "zr/infect"
-
-// Damage (core)
 #include "zr/damage"
-
-// Account (module)
-#include "zr/account"
-
-// Visual Effects (module)
-#include "zr/visualeffects"
-
-// Sound Effects (module)
-#include "zr/soundeffects/soundeffects"
-
-// Antistick (module)
-#include "zr/antistick"
-
-// Knockback (module)
-#include "zr/knockback"
-
-// Spawn Protect (module)
-#include "zr/spawnprotect"
-
-// Respawn (module)
-#include "zr/respawn"
-
-// Napalm (module)
-#include "zr/napalm"
-
-// ZHP (module)
-#include "zr/zhp"
-
-#include "zr/anticamp"
-#include "zr/teleport"
-#include "zr/zombie"
 #include "zr/menu"
 #include "zr/sayhooks"
+#include "zr/event"
 #include "zr/zadmin"
 #include "zr/commands"
+//#include "zr/global"
 
-// Event
-#include "zr/event"
+// Modules
+#include "zr/account"
+#include "zr/visualeffects"
+#include "zr/soundeffects/soundeffects"
+#include "zr/antistick"
+#include "zr/knockback"
+#include "zr/spawnprotect"
+#include "zr/respawn"
+#include "zr/napalm"
+#include "zr/zspawn"
+#include "zr/zhp"
+#include "zr/jumpboost"
+#include "zr/anticamp"
+#include "zr/teleport"
 
+// Almost replaced! :)
+#include "zr/zombie"
+
+/**
+ * Tell SM ZR's info.
+ */
 public Plugin:myinfo =
 {
-    name = "Zombie:Reloaded", 
-    author = "Greyscale", 
-    description = "Infection/survival style gameplay", 
-    version = VERSION, 
+    name = "Zombie:Reloaded",
+    author = "Greyscale, Rhelgeby (Richard)",
+    description = "Infection/survival style gameplay",
+    version = VERSION,
     url = ""
 };
 
+/**
+ * Called before plugin is loaded.
+ * 
+ * @param myself    The plugin handle.
+ * @param late      True if the plugin was loaded after map change, false on map start.
+ * @param error     Error message if load failed.
+ * @param err_max   Max length of the error message.
+ */
 public bool:AskPluginLoad(Handle:myself, bool:late, String:error[], err_max)
 {
-    // Todo: External API
-    //CreateGlobals();
+    // TODO: EXTERNAL API
     
+    // Let plugin load.
     return true;
 }
 
+/**
+ * Plugin is loading.
+ */
 public OnPluginStart()
 {
+    // Load translations phrases used by plugin.
     LoadTranslations("common.phrases.txt");
     LoadTranslations("zombiereloaded.phrases.txt");
     
-    // ======================================================================
-    
+    // Start loading ZR init functions.
     ZR_PrintToServer("Plugin loading");
-    
-    // ======================================================================
     
     // Log
     LogInit();
@@ -128,12 +104,12 @@ public OnPluginStart()
     // Cvars
     CvarsInit();
     
+    // Tools
+    ToolsInit();
+    
     // TODO: Be modulized/recoded.
-    HookChatCmds();
     CreateCommands();
     HookCommands();
-    FindOffsets();
-    SetupGameData();
     
     // Weapons
     WeaponsInit();
@@ -141,40 +117,53 @@ public OnPluginStart()
     // Damage
     DamageInit();
     
+    // Say Hooks
+    SayHooksInit();
+    
     // Event
     EventInit();
     
-    // ======================================================================
-    
+    // Set market variable to true if market is installed.
     g_bMarket = LibraryExists("market");
     
-    // ======================================================================
-    
+    // Create public cvar for tracking.
     CreateConVar("gs_zombiereloaded_version", VERSION, "[ZR] Current version of this plugin", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
-    CreateConVar("zombie_version", VERSION, "Zombie:Reloaded Version", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
-    CreateConVar("zombie_enabled", "1", "Not synced with zr_enable", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
     
-    // ======================================================================
-    
+    // Finish loading ZR init functions.
     ZR_PrintToServer("Plugin loaded");
 }
 
+/**
+ * Library is being removed.
+ * 
+ * @param name  The name of the library.
+ */
 public OnLibraryRemoved(const String:name[])
 {
-	if (StrEqual(name, "market"))
-	{
-		g_bMarket = false;
-	}
-}
- 
-public OnLibraryAdded(const String:name[])
-{
-	if (StrEqual(name, "market"))
-	{
-		g_bMarket = true;
-	}
+    // If market is being removed, then set variable to false.
+    if (StrEqual(name, "market", false))
+    {
+        g_bMarket = false;
+    }
 }
 
+/**
+ * Library is being added.
+ * 
+ * @param name  The name of the library.
+ */
+public OnLibraryAdded(const String:name[])
+{
+    // If market is being added, then set variable to true.
+    if (StrEqual(name, "market", false))
+    {
+        g_bMarket = true;
+    }
+}
+
+/**
+ * The map is starting.
+ */
 public OnMapStart()
 {
     LoadModelData();
@@ -189,14 +178,21 @@ public OnMapStart()
     Anticamp_Startup();
 }
 
+/**
+ * The map is ending.
+ */
 public OnMapEnd()
 {
     // Forward event to modules.
     Anticamp_Disable();
 }
 
+/**
+ * Configs just finished getting executed.
+ */
 public OnConfigsExecuted()
 {
+    // TODO: move to config module when made.
     decl String:mapconfig[PLATFORM_MAX_PATH];
     
     GetCurrentMap(mapconfig, sizeof(mapconfig));
@@ -223,6 +219,11 @@ public OnConfigsExecuted()
     SEffectsLoad();
 }
 
+/**
+ * Client is joining the server.
+ * 
+ * @param client    The client index.
+ */
 public OnClientPutInServer(client)
 {
     // Forward event to modules.
@@ -237,6 +238,11 @@ public OnClientPutInServer(client)
     ZHPClientInit(client);
 }
 
+/**
+ * Client is leaving the server.
+ * 
+ * @param client    The client index.
+ */
 public OnClientDisconnect(client)
 {
     // Forward event to modules.
@@ -244,5 +250,6 @@ public OnClientDisconnect(client)
     WeaponsOnClientDisconnect(client);
     InfectOnClientDisconnect(client);
     DamageOnClientDisconnect(client);
+    ZSpawnOnClientDisconnect(client);
     ZTeleResetClient(client);
 }

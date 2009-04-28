@@ -369,5 +369,5 @@ WeaponsType:WeaponsGetDeployedWeaponSlot(client)
 WeaponForceClientDrop(client, weapon)
 {
     // Force client to drop weapon.
-    SDKCall(g_hCSWeaponDrop, client, weapon, true, false);
+    SDKCall(g_hToolsCSWeaponDrop, client, weapon, true, false);
 }

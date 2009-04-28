@@ -79,8 +79,8 @@ SpawnProtectOnClientSpawn(client)
         
         // Set improved attributes
         // (Move to cvar?)
-        SetPlayerAlpha(client, 0);
-        SetPlayerSpeed(client, 600.0);
+        ToolsSetClientAlpha(client, 0);
+        ToolsSetClientLMV(client, 600.0);
         
         // Set time left to zr_protect_time's value.
         new protect_time = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_TIME]);
@@ -151,8 +151,8 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
         
         // Fix attributes.
         // TODO: Set class attributes.
-        SetPlayerAlpha(client, 255);
-        SetPlayerSpeed(client, 300.0);
+        ToolsSetClientAlpha(client, 255);
+        ToolsSetClientLMV(client, 300.0);
         
         // Clear timer handle.
         tSpawnProtect[client] = INVALID_HANDLE;

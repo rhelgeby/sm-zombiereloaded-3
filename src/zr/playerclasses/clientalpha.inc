@@ -22,6 +22,6 @@ ClassAlphaUpdate(client)
     if ((max_health - current_health) > max_damage)
     {
         new alpha_damaged = ClassGetAlphaDamaged(client);
-        SetPlayerAlpha(client, alpha_damaged);
+        ToolsSetClientAlpha(client, alpha_damaged);
     }
 }

@@ -39,7 +39,7 @@ enum DamageHooks
     Hook_OnTakeDamage, /** OnTakeDamage HookID */
 }
 
-new g_iDamageHooks[MAXPLAYERS + 1][DamageHooks];
+new g_iDamageHookID[MAXPLAYERS + 1][DamageHooks];
 
 /**
  * Damage module init function.
@@ -73,8 +73,8 @@ DamageInit()
 DamageClientInit(client)
 {
     // Hook damage callbacks.
-    g_iDamageHooks[client][Hook_TraceAttack] = Hacks_Hook(client, HACKS_HTYPE_TRACEATTACK, DamageTraceAttack);
-    g_iDamageHooks[client][Hook_OnTakeDamage] = Hacks_Hook(client, HACKS_HTYPE_ONTAKEDAMAGE, DamageOnTakeDamage);
+    g_iDamageHookID[client][Hook_TraceAttack] = Hacks_Hook(client, HACKS_HTYPE_TRACEATTACK, DamageTraceAttack);
+    g_iDamageHookID[client][Hook_OnTakeDamage] = Hacks_Hook(client, HACKS_HTYPE_ONTAKEDAMAGE, DamageOnTakeDamage);
 }
 
 /**
@@ -85,8 +85,8 @@ DamageClientInit(client)
 DamageOnClientDisconnect(client)
 {
     // Unhook damage callbacks.
-    Hacks_Unhook(g_iDamageHooks[client][Hook_TraceAttack]);
-    Hacks_Unhook(g_iDamageHooks[client][Hook_OnTakeDamage]);
+    Hacks_Unhook(g_iDamageHookID[client][Hook_TraceAttack]);
+    Hacks_Unhook(g_iDamageHookID[client][Hook_OnTakeDamage]);
 }
 
 /**

@@ -138,7 +138,7 @@ InfectOnClientDisconnect(client)
         }
         
         // Manually terminate round.
-        RoundEndTerminateRound(ZombiesWin);
+        RoundEndTerminateRound(ROUNDEND_DELAY, ZombiesWin);
         
         return;
     }
@@ -351,6 +351,12 @@ public Action:InfectMotherZombie(Handle:timer)
     // client = client index.
     for (new x = 0; x < eligibleclients; x++)
     {
+        // Stop pruning if there is only 1 player left.
+        if (eligibleclients <= 1)
+        {
+            break;
+        }
+        
         // Get client stored in array index.
         client = GetArrayCell(arrayEligibleClients, x);
         
@@ -365,12 +371,6 @@ public Action:InfectMotherZombie(Handle:timer)
             
             // Subtract one from count.
             eligibleclients--;
-            
-            // If there are no eligible client's then stop.
-            if (!eligibleclients)
-            {
-                return;
-            }
             
             // Backtrack one index, because we deleted it out from under the loop.
             x--;
@@ -426,6 +426,12 @@ public Action:InfectMotherZombie(Handle:timer)
         // Calculate mother zombie count.
         new mothercount = RoundToNearest(float(humancount) / ratio);
         
+        // If mothercount is 0, then set to 1.
+        if (!mothercount)
+        {
+            mothercount = 1;
+        }
+            
         // x = current mother zombie count.
         for (new x = 0; x < mothercount; x++)
         {
@@ -437,6 +443,7 @@ public Action:InfectMotherZombie(Handle:timer)
             {
                 break;
             }
+            
             // Get a random valid array index.
             randindex = GetRandomInt(0, eligibleclients - 1);
             
@@ -475,28 +482,39 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
     new weapons[WeaponsType];
     WeaponsGetClientWeapons(client, weapons);
     
+    // Check if weapons drop is enabled.
+    new bool:weaponsdrop = GetConVarBool(g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]);
+    
     // Loop through array slots and force drop.
     // x = weapon slot.
     for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
     {
-        // If this is the knife slot, then stop.
-        if (WeaponsType:x == Type_Melee)
-        {
-            continue;
-        }
-        
         // If weapon is invalid, then stop.
         if (weapons[x] == -1)
         {
             continue;
         }
         
-        // Force client to drop weapon.
-        WeaponForceClientDrop(client, weapons[x]);
+        if (weaponsdrop)
+        {
+            // If this is the knife slot, then stop.
+            if (WeaponsType:x == Type_Melee)
+            {
+                continue;
+            }
+            
+            // Force client to drop weapon.
+            WeaponForceClientDrop(client, weapons[x]);
+        }
+        else
+        {
+            // Strip weapon.
+            RemovePlayerItem(client, weapons[x]);
+        }
     }
     
     // If client has no knife, give them one.
-    if (weapons[Type_Melee] == -1)
+    if (GetPlayerWeaponSlot(client, _:Type_Melee) == -1)
     {
         GivePlayerItem(client, "weapon_knife");
     }
@@ -524,10 +542,12 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
         }
         
         // Give client's infector a point.
-        AddPlayerScore(attacker, 1);
+        new score = ToolsClientScore(attacker, true, false);
+        ToolsClientScore(attacker, true, true, ++score);
         
         // Add a death to the zombie's score.
-        AddPlayerDeath(client, 1);
+        new deaths = ToolsClientScore(client, false, false);
+        ToolsClientScore(client, false, true, ++deaths);
         
         // Apply infect HP gain.
         new healthgain = ClassGetHealthInfectGain(attacker);

@@ -136,7 +136,7 @@ public ClassMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
         {
             if (slot == MenuCancel_ExitBack)
             {
-                MainMenu(client);
+                MenuMain(client);
             }
         }
     }
@@ -256,6 +256,9 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
         case MenuAction_End:
         {
             CloseHandle(menu);
+            
+            // Stop so menu doesn't reopen.
+            return;
         }
     }
     
