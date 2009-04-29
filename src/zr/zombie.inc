@@ -19,20 +19,9 @@ public Action:Command_NightVision(client, argc)
         return;
     }
     
-    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
-    if (!enabled)
-    {
-        return;
-    }
-    
-    if (!InfectIsClientInfected(client))
-    {
-        return;
-    }
-    
     bClientOverlayOn[client] = !bClientOverlayOn[client];
     
-    decl String:overlay[256];
+    decl String:overlay[PLATFORM_MAX_PATH];
     ClassGetOverlayPath(client, overlay, sizeof(overlay));
     
     if (strlen(overlay) > 0)

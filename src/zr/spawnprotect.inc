@@ -150,9 +150,8 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
         ZR_HudHint(client, "Spawn protection end");
         
         // Fix attributes.
-        // TODO: Set class attributes.
-        ToolsSetClientAlpha(client, 255);
-        ToolsSetClientLMV(client, 300.0);
+        ToolsSetClientAlpha(client, ClassGetAlphaInitial(client));
+        ToolsSetClientLMV(client, ClassGetSpeed(client));
         
         // Clear timer handle.
         tSpawnProtect[client] = INVALID_HANDLE;
