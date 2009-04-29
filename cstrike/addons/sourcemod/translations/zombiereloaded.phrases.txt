@@ -66,11 +66,6 @@
 		"en"		"The teleporter is disabled for zombies."
 	}
 
-	"!ztele stuck"
-	{
-		"en"		"Tip: Use !tp to teleport away if you are stuck."
-	}
-
 	"!ztele not spawned"
 	{
 		"en"		"You cannot use the teleporter before you've spawned."
@@ -146,7 +141,92 @@
 	}
 
 	// ===========================
-	// (Core) Damage
+	// Player Classes
+	// ===========================
+
+	// General
+
+	"!zclass admin mode enabled"
+	{
+		"en"		"Admin mode is enabled!"
+	}
+
+	// Menu
+
+	"!zclass title"
+	{
+		"en"		"Class Selection:"
+	}
+
+	"!zclass zombie"
+	{
+		"en"		"Select Zombie Class"
+	}
+
+	"!zclass human"
+	{
+		"en"		"Select Human Class"
+	}
+
+	"!zclass admin"
+	{
+		"en"		"Select Admin Class"
+	}
+
+	"!zclass admin mode toggle"
+	{
+		"en"		"Toggle Admin Mode"
+	}
+
+	// ===========================
+	// Menu (core)
+	// ===========================
+
+	// General
+
+	"Menu main title"
+	{
+		"en"		"ZR Commands:"
+		"ru"		"ZR Команды:"
+	}
+
+	"Menu main zadmin"
+	{
+		"en"		"ZAdmin (!zadmin) - View Admin Menu"
+	}
+
+	"Menu main zclass"
+	{
+		"en"		"ZClass (!zclass) - Select a zombie class"
+		"ru"		"ZClass (!zclass) - Выбор класса зомби"
+	}
+
+	"Menu main zspawn"
+	{
+		"en"		"ZSpawn (!zspawn) - Spawn into game"
+		"ru"		"ZSpawn (!zspawn) - Заход в игру"
+	}
+
+	"Menu main ztele"
+	{
+		"en"		"ZTele (!ztele) - Teleport to your spawnpoint"
+		"ru"		"ZTele (!ztele) - Телепорт на место появления"
+	}
+
+	"Menu main zhp"
+	{
+		"en"		"ZHP (!zhp) - Toggle real HP display when zombie"
+		"ru"		"ZHP (!zhp) - Показ здоровья зомби"
+	}
+
+	"Menu main zmarket"
+	{
+		"en"		"ZMarket (!zmarket) - Custom weapon list"
+		"ru"		"ZMarket (!zmarket) - Собственный набор оружия"
+	}
+
+	// ===========================
+	// (core) Damage
 	// ===========================
 
 	"Damage suicide intercept"
@@ -155,7 +235,7 @@
 	}
 	
 	// ===========================
-	// Weapons
+	// (core) Weapons
 	// ===========================
 
 	// General
@@ -235,6 +315,19 @@
 		"#format"	"{1:s}"
 		"en"		"Weapon @green{1} @defaultis restricted."
 		"ru"		"Оружие @green{1} @default запрещено."
+	}
+
+	// Market
+
+	"Market title"
+	{
+		"en"		"Available Weapons:"
+	}
+
+	"Market rebuy"
+	{
+		"en"		"Rebuy"
+		"ru"		"Купить снова"
 	}
 
 	// Menu
@@ -348,7 +441,8 @@
 		"en"		"HP: {1}"
 		"ru"		"Здоровье: {1}"
 	}
-	
+
+
 	"Unfair camping"
 	{
 		"en"		"An admin has marked this area as unfair, please move along, or die."
@@ -365,103 +459,6 @@
 		"#format"	"{1:d},{2:d}"
 		"en"		"Blocking Overlay - DX{1} Detected (DX{2} Required)"
 		"ru"		"Оверлей Отключен - Обнаружен DX{1} (Необходим DX{2})"
-	}
-
-	// ===========================
-	// Menus
-	// ===========================
-
-	"!zmenu title"
-	{
-		"en"		"ZR Commands:"
-		"ru"		"ZR Команды:"
-	}
-
-	"!zmenu menu"
-	{
-		"en"		"ZMenu (!zmenu) - Display all ZR commands"
-		"ru"		"ZMenu (!zmenu) - Показывает все ZR команды"
-	}
-
-	"!zmenu admin"
-	{
-		"en"		"ZAdmin (!zadmin) - View Admin Menu"
-	}
-
-	"!zmenu class"
-	{
-		"en"		"ZClass (!zclass) - Select a zombie class"
-		"ru"		"ZClass (!zclass) - Выбор класса зомби"
-	}
-
-	"!zmenu market"
-	{
-		"en"		"ZMarket (!zmarket) - Custom weapon list"
-		"ru"		"ZMarket (!zmarket) - Собственный набор оружия"
-	}
-
-	"!zmenu spawn"
-	{
-		"en"		"ZSpawn (!zspawn) - Spawn into game"
-		"ru"		"ZSpawn (!zspawn) - Заход в игру"
-	}
-
-	"!zmenu tele"
-	{
-		"en"		"ZTele (!ztele) - Teleport to your spawnpoint"
-		"ru"		"ZTele (!ztele) - Телепорт на место появления"
-	}
-
-	"!zmenu hp"
-	{
-		"en"		"ZHP (!zhp) - Toggle persistent display of HP as zombie"
-		"ru"		"ZHP (!zhp) - Показ здоровья зомби"
-	}
-
-	"Market title"
-	{
-		"en"		"Available Guns:"
-		"ru"		"Доступные Пушки:"
-	}
-
-	"Market rebuy"
-	{
-		"en"		"Rebuy"
-		"ru"		"Купить снова"
-	}
-
-	// ===========================
-	// Class menu
-	// ===========================
-
-	"!zclass title"
-	{
-		"en"		"Class Selection:"
-	}
-
-	"!zclass zombie"
-	{
-		"en"		"Select Zombie Class"
-	}
-
-	"!zclass human"
-	{
-		"en"		"Select Human Class"
-	}
-
-	"!zclass admin"
-	{
-		"en"		"Select Admin Class"
-	}
-
-	"!zclass admin mode enabled"
-	{
-		"en"		"Admin mode is enabled!"
-	}
-
-	"!zclass admin mode toggle"
-	{
-		"en"		"Toggle Admin Mode"
 	}
 
 	// ===========================
