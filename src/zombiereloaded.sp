@@ -170,7 +170,6 @@ public OnMapStart()
     LoadDownloadData();
     
     // Forward event to modules.
-    ClassLoad();
     RoundEndOnMapStart();
     InfectOnMapStart();
     SEffectsOnMapStart();
@@ -217,6 +216,7 @@ public OnConfigsExecuted()
     InfectLoad();
     VEffectsLoad();
     SEffectsLoad();
+    ClassLoad();
 }
 
 /**

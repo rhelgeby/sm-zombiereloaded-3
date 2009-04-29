@@ -123,28 +123,67 @@
  */
 
 /**
+ * @section Attribute limit values. Used when validating.
+ */
+#define ZR_CLASS_NAME_MIN                   1
+#define ZR_CLASS_DESCRIPTION_MIN            1
+/** Model path is checked for existance. */
+#define ZR_CLASS_ALPHA_INITIAL_MIN          0
+#define ZR_CLASS_ALPHA_INITIAL_MAX          255
+#define ZR_CLASS_ALPHA_DAMAGED_MIN          0
+#define ZR_CLASS_ALPHA_DAMAGED_MAX          255
+#define ZR_CLASS_ALPHA_DAMAGE_MIN           0
+#define ZR_CLASS_ALPHA_DAMAGE_MAX           16384
+/** Overlay path is optional, and file is checked for existance if specified. */
+#define ZR_CLASS_FOV_MIN                    15
+#define ZR_CLASS_FOV_MAX                    165
+#define ZR_CLASS_NAPALM_TIME_MIN            0.0
+#define ZR_CLASS_NAPALM_TIME_MAX            600.0
+#define ZR_CLASS_HEALTH_MIN                 1
+#define ZR_CLASS_HEALTH_MAX                 16384
+#define ZR_CLASS_HEALTH_REGEN_INTERVAL_MIN  0.0
+#define ZR_CLASS_HEALTH_REGEN_INTERVAL_MAX  900.0
+#define ZR_CLASS_HEALTH_REGEN_AMOUNT_MIN    0.0
+#define ZR_CLASS_HEALTH_REGEN_AMOUNT_MAX    16384
+#define ZR_CLASS_HEALTH_INFECT_GAIN_MIN     0
+#define ZR_CLASS_HEALTH_INFECT_GAIN_MAX     16384
+#define ZR_CLASS_KILL_BONUS_MIN             0
+#define ZR_CLASS_KILL_BONUS_MAX             16
+#define ZR_CLASS_SPEED_MIN                  10.0
+#define ZR_CLASS_SPEED_MAX                  2000.0
+#define ZR_CLASS_KNOCKBACK_MIN              -10.0
+#define ZR_CLASS_KNOCKBACK_MAX              20.0
+#define ZR_CLASS_JUMP_HEIGHT_MIN            0.0
+#define ZR_CLASS_JUMP_HEIGHT_MAX            1024.0
+#define ZR_CLASS_JUMP_DISTANCE_MIN          0.0
+#define ZR_CLASS_JUMP_DISTANCE_MAX          1024.0
+/**
+ * @endsection
+ */
+
+/**
  * @section Error flags for invalid class attributes.
  */
-#define ZR_CLASS_ATTRIB_ERR_OK                      0
-#define ZR_CLASS_ATTRIB_ERR_NAME                    1
-#define ZR_CLASS_ATTRIB_ERR_DESCRIPTION             2
-#define ZR_CLASS_ATTRIB_ERR_MODEL_PATH              4
-#define ZR_CLASS_ATTRIB_ERR_ALPHA_INITIAL           8
-#define ZR_CLASS_ATTRIB_ERR_ALPHA_DAMAGED           16
-#define ZR_CLASS_ATTRIB_ERR_ALPHA_DAMAGE            32
-#define ZR_CLASS_ATTRIB_ERR_OVERLAY_PATH            64
-#define ZR_CLASS_ATTRIB_ERR_FOV                     128
-#define ZR_CLASS_ATTRIB_ERR_NAPALM_TIME             256
-#define ZR_CLASS_ATTRIB_ERR_IMMUNITY_MODE           512
-#define ZR_CLASS_ATTRIB_ERR_IMMUNITY_AMOUNT         1024
-#define ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_INTERVAL   2048
-#define ZR_CLASS_ATTRIB_ERR_HEALTH_REGEN_AMOUNT     4096
-#define ZR_CLASS_ATTRIB_ERR_INFECT_GAIN             8192
-#define ZR_CLASS_ATTRIB_ERR_KILL_BONUS              16384
-#define ZR_CLASS_ATTRIB_ERR_SPEED                   32768
-#define ZR_CLASS_ATTRIB_ERR_KNOCKBACK               65536
-#define ZR_CLASS_ATTRIB_ERR_JUMP_HEIGHT             131072
-#define ZR_CLASS_ATTRIB_ERR_JUMP_DISTANCE           262144
+#define ZR_CLASS_FLAG_NAME                  (1<<0)
+#define ZR_CLASS_FLAG_DESCRIPTION           (1<<1)
+#define ZR_CLASS_FLAG_MODEL_PATH            (1<<2)
+#define ZR_CLASS_FLAG_ALPHA_INITIAL         (1<<3)
+#define ZR_CLASS_FLAG_ALPHA_DAMAGED         (1<<4)
+#define ZR_CLASS_FLAG_ALPHA_DAMAGE          (1<<5)
+#define ZR_CLASS_FLAG_OVERLAY_PATH          (1<<6)
+#define ZR_CLASS_FLAG_FOV                   (1<<7)
+#define ZR_CLASS_FLAG_NAPALM_TIME           (1<<8)
+#define ZR_CLASS_FLAG_IMMUNITY_MODE         (1<<9)
+#define ZR_CLASS_FLAG_IMMUNITY_AMOUNT       (1<<10)
+#define ZR_CLASS_FLAG_HEALTH                (1<<11)
+#define ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL (1<<12)
+#define ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT   (1<<13)
+#define ZR_CLASS_FLAG_INFECT_GAIN           (1<<14)
+#define ZR_CLASS_FLAG_KILL_BONUS            (1<<15)
+#define ZR_CLASS_FLAG_SPEED                 (1<<16)
+#define ZR_CLASS_FLAG_KNOCKBACK             (1<<17)
+#define ZR_CLASS_FLAG_JUMP_HEIGHT           (1<<18)
+#define ZR_CLASS_FLAG_JUMP_DISTANCE         (1<<19)
 /**
  * @endsection
  */
@@ -164,13 +203,13 @@ enum ClassAttributes
     String:class_description[256],
     
     /* Model */
-    String:class_model_path[256],
+    String:class_model_path[PLATFORM_MAX_PATH],
     class_alpha_initial,
     class_alpha_damaged,
     class_alpha_damage,
     
     /* Hud */
-    String:class_overlay_path[256],
+    String:class_overlay_path[PLATFORM_MAX_PATH],
     bool:class_nvgs,
     class_fov,
     
@@ -235,6 +274,11 @@ new bool:ClassPlayerInAdminMode[MAXPLAYERS + 1];
  */
 new bool:ClassPlayerAdminMode[MAXPLAYERS + 1];
 
+/**
+ * Specifies the admin class to use on next admin mode spawn.
+ */
+new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
+
 #include "zr/playerclasses/filtertools"
 #include "zr/playerclasses/attributes"
 #include "zr/playerclasses/apply"
@@ -258,7 +302,7 @@ ClassLoad()
     }
     kvClassData = CreateKeyValues("classes");
     
-    decl String:classfile[256];
+    decl String:classfile[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_CLASSES_FILE], classfile, sizeof(classfile));
     
     // Try to load the class configuration file.
@@ -279,8 +323,8 @@ ClassLoad()
     
     decl String:name[64];
     decl String:description[256];
-    decl String:model_path[256];
-    decl String:overlay_path[256];
+    decl String:model_path[PLATFORM_MAX_PATH];
+    decl String:overlay_path[PLATFORM_MAX_PATH];
     
     ClassCount = 0;
     new ClassErrorFlags;
@@ -313,7 +357,7 @@ ClassLoad()
         
         /* Model */
         KvGetString(kvClassData, "model_path", model_path, sizeof(model_path), ZR_CLASS_DEFAULT_MODEL_PATH);
-        strcopy(ClassData[ClassCount][class_model_path], 256, model_path);
+        strcopy(ClassData[ClassCount][class_model_path], PLATFORM_MAX_PATH, model_path);
         
         ClassData[ClassCount][class_alpha_initial] = KvGetNum(kvClassData, "alpha_initial", ZR_CLASS_DEFAULT_ALPHA_INITIAL);
         ClassData[ClassCount][class_alpha_damaged] = KvGetNum(kvClassData, "alpha_damaged", ZR_CLASS_DEFAULT_ALPHA_DAMAGED);
@@ -322,7 +366,7 @@ ClassLoad()
         
         /* Hud */
         KvGetString(kvClassData, "overlay_path", overlay_path, sizeof(overlay_path), ZR_CLASS_DEFAULT_OVERLAY_PATH);
-        strcopy(ClassData[ClassCount][class_overlay_path], 256, overlay_path);
+        strcopy(ClassData[ClassCount][class_overlay_path], PLATFORM_MAX_PATH, overlay_path);
         
         ClassData[ClassCount][class_nvgs] = bool:KvGetNum(kvClassData, "nvgs", ZR_CLASS_DEFAULT_NVGS);
         ClassData[ClassCount][class_fov] = KvGetNum(kvClassData, "fov", ZR_CLASS_DEFAULT_FOV);
@@ -388,18 +432,13 @@ ClassLoad()
  */
 bool:ClassReloadDataCache()
 {
-    /*
-     * TODO: This must be done in a safe way, because the plugin may read from
-     *       the cache at any time. The plugin might read attributes at the
-     *       same time when the cache is reloaded. There's a chance for
-     *       corrupted attributes at that exact moment.
-     */
-    
+    // Check if there are no classes.
     if (ClassCount == 0)
     {
         return false;
     }
     
+    // Loop through all classes.
     for (new classindex = 0; classindex < ClassCount; classindex++)
     {
         /* General */
@@ -410,13 +449,13 @@ bool:ClassReloadDataCache()
         strcopy(ClassDataCache[classindex][class_description], 256, ClassData[classindex][class_description]);
         
         /* Model */
-        strcopy(ClassDataCache[classindex][class_model_path], 256, ClassData[classindex][class_model_path]);
+        strcopy(ClassDataCache[classindex][class_model_path], PLATFORM_MAX_PATH, ClassData[classindex][class_model_path]);
         ClassDataCache[classindex][class_alpha_initial] = ClassData[classindex][class_alpha_initial];
         ClassDataCache[classindex][class_alpha_damaged] = ClassData[classindex][class_alpha_damaged];
         ClassDataCache[classindex][class_alpha_damage] = ClassData[classindex][class_alpha_damage];
         
         /* Hud */
-        strcopy(ClassDataCache[classindex][class_overlay_path], 256, ClassData[classindex][class_overlay_path]);
+        strcopy(ClassDataCache[classindex][class_overlay_path], PLATFORM_MAX_PATH, ClassData[classindex][class_overlay_path]);
         ClassDataCache[classindex][class_nvgs] = ClassData[classindex][class_nvgs];
         ClassDataCache[classindex][class_fov] = ClassData[classindex][class_fov];
         
@@ -473,13 +512,13 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             strcopy(ClassPlayerCache[client][class_description], 256, ClassData[classindex][class_description]);
             
             /* Model */
-            strcopy(ClassPlayerCache[client][class_model_path], 256, ClassData[classindex][class_model_path]);
+            strcopy(ClassPlayerCache[client][class_model_path], PLATFORM_MAX_PATH, ClassData[classindex][class_model_path]);
             ClassPlayerCache[client][class_alpha_initial] = ClassData[classindex][class_alpha_initial];
             ClassPlayerCache[client][class_alpha_damaged] = ClassData[classindex][class_alpha_damaged];
             ClassPlayerCache[client][class_alpha_damage] = ClassData[classindex][class_alpha_damage];
             
             /* Hud */
-            strcopy(ClassPlayerCache[client][class_overlay_path], 256, ClassData[classindex][class_overlay_path]);
+            strcopy(ClassPlayerCache[client][class_overlay_path], PLATFORM_MAX_PATH, ClassData[classindex][class_overlay_path]);
             ClassPlayerCache[client][class_nvgs] = ClassData[classindex][class_nvgs];
             ClassPlayerCache[client][class_fov] = ClassData[classindex][class_fov];
             
@@ -510,13 +549,13 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             strcopy(ClassPlayerCache[client][class_description], 256, ClassDataCache[classindex][class_description]);
             
             /* Model */
-            strcopy(ClassPlayerCache[client][class_model_path], 256, ClassDataCache[classindex][class_model_path]);
+            strcopy(ClassPlayerCache[client][class_model_path], PLATFORM_MAX_PATH, ClassDataCache[classindex][class_model_path]);
             ClassPlayerCache[client][class_alpha_initial] = ClassDataCache[classindex][class_alpha_initial];
             ClassPlayerCache[client][class_alpha_damaged] = ClassDataCache[classindex][class_alpha_damaged];
             ClassPlayerCache[client][class_alpha_damage] = ClassDataCache[classindex][class_alpha_damage];
             
             /* Hud */
-            strcopy(ClassPlayerCache[client][class_overlay_path], 256, ClassDataCache[classindex][class_overlay_path]);
+            strcopy(ClassPlayerCache[client][class_overlay_path], PLATFORM_MAX_PATH, ClassDataCache[classindex][class_overlay_path]);
             ClassPlayerCache[client][class_nvgs] = ClassDataCache[classindex][class_nvgs];
             ClassPlayerCache[client][class_fov] = ClassDataCache[classindex][class_fov];
             
@@ -567,7 +606,7 @@ ClassClientSetDefaultIndexes(client = -1)
         // log a warning.
         if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
         {
-            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default zombie class, falling back to default class. Check spelling in \"zr_classes_default_zombie\".", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".", LOG_FORMAT_TYPE_ERROR);
         }
         
         // Use default class.
@@ -581,7 +620,7 @@ ClassClientSetDefaultIndexes(client = -1)
         // log a warning.
         if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
         {
-            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default human class, falling back to default class. Check spelling in \"zr_classes_default_human\".", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".", LOG_FORMAT_TYPE_ERROR);
         }
         
         // Use default class.
@@ -591,28 +630,14 @@ ClassClientSetDefaultIndexes(client = -1)
     // Validate admin class index.
     if (!ClassValidateIndex(adminindex))
     {
-        // Invalid class index. Fall back to default class in class config and
-        // log a warning.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
-        {
-            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default admin class, falling back to default class. Check spelling in \"zr_classes_default_admin\".", LOG_FORMAT_TYPE_ERROR);
-        }
-        
-        // Use default class.
+        // Invalid class index. Fall back to default class in class config if
+        // possible. A invalid class index (-1) can also be stored if there are
+        // no admin classes at all.
         adminindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ADMINS);
     }
     
-    // Check if a client is specified.
-    if (client > 0)
-    {
-        ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
-        ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
-        ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
-        
-        // Copy human class data to player cache.
-        ClassReloadPlayerCache(client, humanindex);
-    }
-    else
+    // Check if a client isn't specified.
+    if (client < 1)
     {
         // No client specified. Loop through all players.
         for (new clientindex = 1; clientindex <= MAXPLAYERS; clientindex++)
@@ -620,10 +645,21 @@ ClassClientSetDefaultIndexes(client = -1)
             ClassSelected[clientindex][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_HUMANS] = humanindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_ADMINS] = adminindex;
+            ClassPlayerNextAdminClass[clientindex] = adminindex;
             
             // Copy human class data to player cache.
             ClassReloadPlayerCache(client, humanindex);
         }
+    }
+    else
+    {
+        ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
+        ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
+        ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
+        ClassPlayerNextAdminClass[client] = adminindex;
+        
+        // Copy human class data to player cache.
+        ClassReloadPlayerCache(client, humanindex);
     }
 }
 
