@@ -24,6 +24,12 @@
 enum CvarsList
 {
     Handle:CVAR_ENABLE,
+    Handle:CVAR_CONFIG_PATH_MODELS,
+    Handle:CVAR_CONFIG_PATH_DOWNLOADS,
+    Handle:CVAR_CONFIG_PATH_PLAYERCLASSES,
+    Handle:CVAR_CONFIG_PATH_WEAPONS,
+    Handle:CVAR_CONFIG_PATH_WEAPONGROUPS,
+    Handle:CVAR_CONFIG_PATH_HITGROUPS,
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
@@ -40,6 +46,8 @@ enum CvarsList
     Handle:CVAR_DAMAGE_SUICIDE_ZOMBIE,
     Handle:CVAR_DAMAGE_SUICIDE_HUMAN,
     Handle:CVAR_DAMAGE_SUICIDE_CMDS,
+    Handle:CVAR_SAYHOOKS_QUIET,
+    Handle:CVAR_SAYHOOKS_QUIET_FLAGS,
     Handle:CVAR_ROUNDEND_OVERLAY,
     Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
     Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
@@ -178,6 +186,17 @@ CvarsCreate()
     // (None)
     
     // ===========================
+    // Config (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_CONFIG_PATH_MODELS]        =    CreateConVar("zr_config_path_models", "configs/zr/models.txt", "");
+    g_hCvarsList[CVAR_CONFIG_PATH_DOWNLOADS]     =    CreateConVar("zr_config_path_downloads", "configs/zr/downloads.txt");
+    g_hCvarsList[CVAR_CONFIG_PATH_PLAYERCLASSES] =    CreateConVar("zr_config_path_playerclasses", "configs/zr/playerclasses.txt");
+    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons", "configs/zr/weapons/weapons.txt");
+    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONGROUPS]  =    CreateConVar("zr_config_path_weapongroups", "configs/zr/weapons/weapongroups.txt");
+    g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]     =    CreateConVar("zr_config_path_hitgroups", "configs/zr/hitgroups.txt");
+    
+    // ===========================
     // Tools (core)
     // ===========================
     
@@ -289,6 +308,22 @@ CvarsCreate()
     // Old Desc: Intercept zombie suicide attempts.
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds", "kill, spectate, jointeam", "");
     // Old Desc: List of suicide commands to intercept. (Delimited by \", \"
+    
+    // ===========================
+    // Say Hooks (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_SAYHOOKS_QUIET]                   =    CreateConVar("zr_sayhooks_quiet", "1", "");
+    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FLAGS]             =    CreateConVar("zr_sayhooks_quiet_flags", "58", "");
+    // Flags (default: 2 + 8 + 16 + 32)
+    // 0    Allow all.
+    // 1    Quiet "!zmenu" say hook.
+    // 2    Quiet "!zadmin" say hook.
+    // 4    Quiet "!zclass" say hook.
+    // 8    Quiet "!zspawn" say hook.
+    // 16   Quiet "!ztele" say hook.
+    // 32   Quiet "!zhp" say hook.
+    // 64   Quiet "!zmarket" say hook.
     
     // ===========================
     // Account (module)
@@ -465,7 +500,7 @@ CvarsHook(bool:unhook = false)
     
     // Hook cvar to prevent it from changing.
     HookConVarChange(g_hAutoTeamBalance, CvarsHookLocked);
-    //HookConVarChange(hLimitTeams, CvarsHookLocked);
+    HookConVarChange(g_hLimitTeams, CvarsHookLocked);
     HookConVarChange(g_hRestartGame, CvarsHookRestartGame);
     
     // Anticamp shtuff. (needs to be moved to anticamp if these hooks are necessary)
@@ -486,6 +521,12 @@ public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newval
     // If cvar is mp_autoteambalance, then continue.
     if (cvar == g_hAutoTeamBalance)
     {
+        // If plugin is reverting value, then stop.
+        if (StringToInt(newvalue) == CVARS_AUTOTEAMBALANCE_LOCKED)
+        {
+            return;
+        }
+        
         // Revert to locked value.
         SetConVarInt(g_hAutoTeamBalance, CVARS_AUTOTEAMBALANCE_LOCKED);
         
@@ -498,6 +539,12 @@ public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newval
     // If cvar is mp_limitteams, then continue.
     else if (cvar == g_hLimitTeams)
     {
+        // If plugin is reverting value, then stop.
+        if (StringToInt(newvalue) == CVARS_LIMITTEAMS_LOCKED)
+        {
+            return;
+        }
+        
         // Revert to locked value.
         SetConVarInt(g_hLimitTeams, CVARS_LIMITTEAMS_LOCKED);
         

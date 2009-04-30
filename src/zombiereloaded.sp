@@ -24,6 +24,7 @@
 #include "zr/zombiereloaded"
 #include "zr/log"
 #include "zr/cvars"
+#include "zr/config"
 #include "zr/translation"
 #include "zr/tools"
 #include "zr/models"
@@ -166,9 +167,6 @@ public OnLibraryAdded(const String:name[])
  */
 public OnMapStart()
 {
-    LoadModelData();
-    LoadDownloadData();
-    
     // Forward event to modules.
     RoundEndOnMapStart();
     InfectOnMapStart();
@@ -191,26 +189,9 @@ public OnMapEnd()
  */
 public OnConfigsExecuted()
 {
-    // TODO: move to config module when made.
-    decl String:mapconfig[PLATFORM_MAX_PATH];
-    
-    GetCurrentMap(mapconfig, sizeof(mapconfig));
-    Format(mapconfig, sizeof(mapconfig), "sourcemod/zombiereloaded/%s.cfg", mapconfig);
-    
-    decl String:path[PLATFORM_MAX_PATH];
-    Format(path, sizeof(path), "cfg/%s", mapconfig);
-    
-    if (FileExists(path))
-    {
-        ServerCommand("exec %s", mapconfig);
-        
-        if (LogCheckFlag(LOG_CORE_EVENTS))
-        {
-            LogMessageFormatted(-1, "", "", "Executed map config file: %s.", LOG_FORMAT_TYPE_SIMPLE, mapconfig);
-        }
-    }
-    
     // Forward event to modules.
+    ConfigLoad();
+    ModelsLoad();
     WeaponsLoad();
     HitgroupsLoad();
     InfectLoad();

@@ -261,6 +261,9 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
             {
                 ClassMenuMain(client);
             }
+            
+            // Stop so menu doesn't reopen.
+            return;
         }
         case MenuAction_End:
         {

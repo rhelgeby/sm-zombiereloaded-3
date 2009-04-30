@@ -29,6 +29,20 @@
  */
 
 /**
+ * @section Say hook quiet flags.
+ */
+#define SAYHOOKS_KEYWORD_FLAG_ZMENU      1
+#define SAYHOOKS_KEYWORD_FLAG_ZADMIN     2
+#define SAYHOOKS_KEYWORD_FLAG_ZCLASS     4
+#define SAYHOOKS_KEYWORD_FLAG_ZSPAWN     8
+#define SAYHOOKS_KEYWORD_FLAG_ZTELE      16
+#define SAYHOOKS_KEYWORD_FLAG_ZHP        32
+#define SAYHOOKS_KEYWORD_FLAG_ZMARKET    64
+/**
+ * @endsection
+ */
+
+/**
  * Say hooks module init function.
  */
 SayHooksInit()
@@ -55,50 +69,114 @@ public Action:SayHooksCmdSay(client, argc)
     // Strip away the quotes.
     ReplaceString(args, sizeof(args), "\"", "");
     
-    // If client triggered the zmenu keyword, then send menu.
-    if (StrEqual(args, SAYHOOKS_KEYWORD_ZMENU, false))
+    new chatflag = SayHooksChatToFlag(args);
+    
+    // If chatflag is invalid, then continue.
+    if (!chatflag)
     {
-        MenuMain(client);
+        return Plugin_Continue;
     }
     
-    // If client triggered the zmenu keyword, then send menu.
-    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZADMIN, false))
+    switch(chatflag)
     {
-        ZRAdminMenu(client);
+        // Client triggered ZMenu flag.
+        case SAYHOOKS_KEYWORD_FLAG_ZMENU:
+        {
+            // Send main menu.
+            MenuMain(client);
+        }
+        // Client triggered ZAdmin flag.
+        case SAYHOOKS_KEYWORD_FLAG_ZADMIN:
+        {
+            ZRAdminMenu(client);
+        }
+        // Client triggered ZClass flag.
+        case SAYHOOKS_KEYWORD_FLAG_ZCLASS:
+        {
+            // Send class menu.
+            ClassMenuMain(client);
+        }
+        // Client triggered ZSpawn flag.
+        case SAYHOOKS_KEYWORD_FLAG_ZSPAWN:
+        {
+            // Spawns a late-joining client into the game.
+            ZSpawnClient(client);
+        }
+        // Client triggered ZTele flag.
+        case SAYHOOKS_KEYWORD_FLAG_ZTELE:
+        {
+            ZTele(client);
+        }
+        // Client triggered ZHP flag.
+        case SAYHOOKS_KEYWORD_FLAG_ZHP:
+        {
+            // Toggle ZHP.
+            ZHPToggle(client);
+        }
+        // Client triggered ZMarket flag.
+        case SAYHOOKS_KEYWORD_FLAG_ZMARKET:
+        {
+            // Send market menu.
+            ZMarketMenu(client);
+        }
     }
     
-    // If client triggered the zmenu keyword, then send menu.
-    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZCLASS, false))
+    // If quiet cvar is disabled, then continue.
+    new bool:quiet = GetConVarBool(g_hCvarsList[CVAR_SAYHOOKS_QUIET]);
+    if (!quiet)
     {
-        ClassMenuMain(client);
+        return Plugin_Continue;
     }
     
-    // If client triggered the zmenu keyword, then send menu.
-    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZSPAWN, false))
+    // If word is flagged to be quieted, then stop.
+    new quietflags = GetConVarInt(g_hCvarsList[CVAR_SAYHOOKS_QUIET_FLAGS]);
+    if (quietflags & chatflag)
     {
-        // Spawns a late-joining client into the game.
-        ZSpawnClient(client);
-    }
-    
-    // If client triggered the zmenu keyword, then send menu.
-    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZTELE, false))
-    {
-        ZTele(client);
-    }
-    
-    // If client triggered the zmenu keyword, then send menu.
-    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZHP, false))
-    {
-        // Toggle ZHP.
-        ZHPToggle(client);
-    }
-    
-    // If client triggered the zmenu keyword, then send menu.
-    else if (StrEqual(args, SAYHOOKS_KEYWORD_ZMARKET, false))
-    {
-        // Send market menu.
-        ZMarketSend(client);
+        return Plugin_Handled;
     }
     
     return Plugin_Continue;
+}
+
+/**
+ * Convert chat text into a defined flag.
+ * 
+ * @param chat  The chat text to convert.
+ * @return      Returns flag for word given, returns 0 if matches none.
+ */
+SayHooksChatToFlag(const String:chat[])
+{
+    // Return flag for chatstring.
+    
+    if (StrEqual(chat, SAYHOOKS_KEYWORD_ZMENU, false))
+    {
+        return SAYHOOKS_KEYWORD_FLAG_ZMENU;
+    }
+    else if (StrEqual(chat, SAYHOOKS_KEYWORD_ZADMIN, false))
+    {
+        return SAYHOOKS_KEYWORD_FLAG_ZADMIN;
+    }
+    else if (StrEqual(chat, SAYHOOKS_KEYWORD_ZCLASS, false))
+    {
+        return SAYHOOKS_KEYWORD_FLAG_ZCLASS;
+    }
+    else if (StrEqual(chat, SAYHOOKS_KEYWORD_ZSPAWN, false))
+    {
+        return SAYHOOKS_KEYWORD_FLAG_ZSPAWN;
+    }
+    else if (StrEqual(chat, SAYHOOKS_KEYWORD_ZTELE, false))
+    {
+        return SAYHOOKS_KEYWORD_FLAG_ZTELE;
+    }
+    else if (StrEqual(chat, SAYHOOKS_KEYWORD_ZHP, false))
+    {
+        return SAYHOOKS_KEYWORD_FLAG_ZHP;
+    }
+    else if (StrEqual(chat, SAYHOOKS_KEYWORD_ZMARKET, false))
+    {
+        return SAYHOOKS_KEYWORD_FLAG_ZMARKET;
+    }
+    
+    // Return 0.
+    return 0;
 }

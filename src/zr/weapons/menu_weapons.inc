@@ -48,16 +48,7 @@ WeaponsMenuMain(client)
     
     AddMenuItem(menu_weapons_main, "toggleweaponrestriction", toggleweaponrestriction);
     AddMenuItem(menu_weapons_main, "togglewgrouprestriction", togglewgrouprestriction);
-    
-    // Disable market option if market isn't installed.
-    if (g_bMarket)
-    {
-        AddMenuItem(menu_weapons_main, "zmarket", zmarket);
-    }
-    else
-    {
-        AddMenuItem(menu_weapons_main, "zmarket", zmarket, ITEMDRAW_DISABLED);
-    }
+    AddMenuItem(menu_weapons_main, "zmarket", zmarket, MenuGetItemDraw(g_bMarket));
     
     // Create a "Back" button to the weapons main menu.
     SetMenuExitBackButton(menu_weapons_main, true);

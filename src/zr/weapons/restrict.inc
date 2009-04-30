@@ -82,20 +82,26 @@ RestrictOnMapStart()
     // Restrict default restrictions. (set in weapons.txt)
     RestrictDefaultRestrictions();
     
-    decl String:path[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, path, sizeof(path), "configs/zr/weapons/weapongroups.txt");
+    // Get weapon groups config path.
+    decl String:pathweapongroups[PLATFORM_MAX_PATH];
+    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_WEAPONGROUPS, pathweapongroups);
     
-    // If file isn't found, stop plugin.
-    if (!FileToKeyValues(kvWeaponGroups, path))
+    // If file doesn't exist, then log and stop.
+    if (!exists)
     {
+        // Log failure.
         if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
         {
-            LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapongroups.txt.", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing weapon groups config file: %s", LOG_FORMAT_TYPE_ERROR, pathweapongroups);
         }
         
         return;
     }
     
+    // Put file data into memory.
+    FileToKeyValues(kvWeaponGroups, pathweapongroups);
+    
+    // Validate weapon groups config.
     RestrictValidateWeaponGroups();
 }
 
@@ -197,6 +203,7 @@ RestrictWeaponUnrestrictAll()
  */
 RestrictClientInit(client)
 {
+    // Hook "canuse" on client.
     gCanUseHookID[client] = Hacks_Hook(client, HACKS_HTYPE_WEAPON_CANUSE, RestrictCanUse, false);
 }
 
@@ -207,7 +214,20 @@ RestrictClientInit(client)
  */
 RestrictOnClientDisconnect(client)
 {
+    // Unhook "canuse" on client.
     Hacks_Unhook(gCanUseHookID[client]);
+}
+
+/**
+ * Client is spawning into the game.
+ * 
+ * @param client    The client index.
+ */
+RestrictOnClientSpawn(client)
+{
+    // Re-hook "canuse" on client.
+    Hacks_Unhook(gCanUseHookID[client]);
+    gCanUseHookID[client] = Hacks_Hook(client, HACKS_HTYPE_WEAPON_CANUSE, RestrictCanUse, false);
 }
 
 /**

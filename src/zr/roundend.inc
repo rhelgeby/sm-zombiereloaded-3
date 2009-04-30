@@ -251,6 +251,12 @@ RoundEndOutcome:RoundEndReasonToOutcome(reason)
  */
 public Action:RoundEndTimer(Handle:timer)
 {
+    // If there aren't clients on both teams, then stop.
+    if (ZRTeamHasClients())
+    {
+        return;
+    }
+    
     // Terminate the round with humans as the winner.
     RoundEndTerminateRound(ROUNDEND_DELAY, HumansWin);
 }

@@ -19,7 +19,7 @@ new bool:g_bMarket;
  * 
  * @param client    The client index.
  */    
-bool:ZMarketSend(client)
+bool:ZMarketMenu(client)
 {
     // If market is disabled, then stop.
     if (!g_bMarket)
@@ -151,5 +151,5 @@ public Market_PostOnWeaponSelected(client, &bool:allowed)
     }
     
     // Resend market menu.
-    ZMarketSend(client);
+    ZMarketMenu(client);
 }

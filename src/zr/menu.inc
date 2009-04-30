@@ -82,6 +82,7 @@ public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
                 // Copy return to resend variable.
                 resend = !ZRAdminMenu(client);
             }
+            // Select zclass.
             case 1:
             {
                 // Send class menu
@@ -90,25 +91,29 @@ public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
                 // Don't resend this menu.
                 resend = false;
             }
+            // Select zspawn.
             case 2:
-            {
-                // Copy return to resend variable.
-                resend = !ZMarketSend(client);
-            }
-            case 3:
             {
                 // Send zspawn command from client.
                 ZSpawnClient(client);
             }
-            case 4:
+            // Select ztele.
+            case 3:
             {
                 // Copy return to resend variable.
                 resend = !ZTele(client);
             }
-            case 5:
+            // Select zhp.
+            case 4:
             {
                 // Toggle ZHP.
                 ZHPToggle(client);
+            }
+            // Select zmarket.
+            case 5:
+            {
+                // Copy return to resend variable.
+                resend = !ZMarketMenu(client);
             }
         }
         

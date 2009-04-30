@@ -174,6 +174,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     // Forward event to modules.
     InfectOnClientSpawn(index);
     ClassOnClientSpawn(index);      // Module event depends on infect module.
+    RestrictOnClientSpawn(index);
     SEffectsOnClientSpawn(index);
     AccountOnClientSpawn(index);
     SpawnProtectOnClientSpawn(index);

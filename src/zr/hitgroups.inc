@@ -17,10 +17,10 @@ new Handle:kvHitgroups = INVALID_HANDLE;
 /**
  * @section Player hitgroup values.
  */
-#define    HITGROUP_GENERIC    0
-#define    HITGROUP_HEAD       1
-#define    HITGROUP_CHEST      2
-#define    HITGROUP_STOMACH    3
+#define HITGROUP_GENERIC    0
+#define HITGROUP_HEAD       1
+#define HITGROUP_CHEST      2
+#define HITGROUP_STOMACH    3
 #define HITGROUP_LEFTARM    4
 #define HITGROUP_RIGHTARM   5
 #define HITGROUP_LEFTLEG    6
@@ -59,19 +59,24 @@ HitgroupsLoad()
         return;
     }
     
-    decl String:path[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, path, sizeof(path), "configs/zr/hitgroups.txt");
+    // Get hitgroups config path.
+    decl String:pathhitgroups[PLATFORM_MAX_PATH];
+    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
     
-    // If file isn't found, stop plugin.
-    if (!FileToKeyValues(kvHitgroups, path))
+    // If file doesn't exist, then log and stop.
+    if (!exists)
     {
+        // Log failure.
         if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
         {
-            LogMessageFormatted(-1, "Hitgroups", "Config Validation", "Missing file hitgroups.txt, disabling hitgroup-based modules.", LOG_FORMAT_TYPE_FULL);
+            LogMessageFormatted(-1, "Hitgroups", "Config Validation", "Missing hitgroups config file: %s", LOG_FORMAT_TYPE_ERROR, pathhitgroups);
         }
         
         return;
     }
+    
+    // Put file data into memory.
+    FileToKeyValues(kvHitgroups, pathhitgroups);
     
     // Validate hitgroups config.
     HitgroupsValidateConfig();

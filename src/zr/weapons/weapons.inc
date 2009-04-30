@@ -82,19 +82,24 @@ WeaponsLoad()
         return;
     }
     
-    decl String:path[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, path, sizeof(path), "configs/zr/weapons/weapons.txt");
+    // Get weapons config path.
+    decl String:pathweapons[PLATFORM_MAX_PATH];
+    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_WEAPONS, pathweapons);
     
-    // If file isn't found, stop plugin.
-    if (!FileToKeyValues(kvWeapons, path))
+    // If file doesn't exist, then log and stop.
+    if (!exists)
     {
+        // Log failure.
         if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
         {
-            LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing file weapons.txt.", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing weapons config file: %s", LOG_FORMAT_TYPE_ERROR, pathweapons);
         }
         
         return;
     }
+    
+    // Put file data into memory.
+    FileToKeyValues(kvWeapons, pathweapons);
     
     // Validate weapons config.
     WeaponsValidateConfig();
