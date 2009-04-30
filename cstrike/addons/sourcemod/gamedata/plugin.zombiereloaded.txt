@@ -13,7 +13,7 @@
 			"EyeAngles"
 			{
 				"windows"	"206"
-				"linux"		"207"
+				"osx"		"207"
 			}
 		}
 
