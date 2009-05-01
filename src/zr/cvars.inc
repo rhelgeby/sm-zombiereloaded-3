@@ -35,7 +35,6 @@ enum CvarsList
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
     Handle:CVAR_CLASSES_DEFAULT_ADMIN,
-    Handle:CVAR_CLASSES_FILE,
     Handle:CVAR_WEAPONS,
     Handle:CVAR_WEAPONS_RESTRICT,
     Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
@@ -222,8 +221,6 @@ CvarsCreate()
     // Old Desc: 
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin", "random", "");
     // Old Desc: Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.
-    g_hCvarsList[CVAR_CLASSES_FILE]                     =    CreateConVar("zr_classes_file", "configs/zr/playerclasses.txt", "");
-    // Old Desc: Class data file to read from, in Valves key/values format. The path is relative to the \"sourcemod\" folder.
     
     // ===========================
     // Weapons (core)

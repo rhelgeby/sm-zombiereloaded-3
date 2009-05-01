@@ -233,7 +233,11 @@ enum ClassAttributes
     Float:class_jump_distance
 }
 
-new Handle:kvClassData;
+/**
+ * Keyvalue handle to store class data.
+ * 
+ * @redir   config.inc
+ */
 
 /**
  * The original class data. This array only changed when class data is loaded.
@@ -302,23 +306,30 @@ ClassLoad()
     }
     kvClassData = CreateKeyValues("classes");
     
-    decl String:classfile[PLATFORM_MAX_PATH];
-    GetConVarString(g_hCvarsList[CVAR_CLASSES_FILE], classfile, sizeof(classfile));
+    // Get weapons config path.
+    decl String:pathclasses[PLATFORM_MAX_PATH];
+    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_PLAYERCLASSES, pathclasses);
     
-    // Try to load the class configuration file.
-    decl String:path[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, path, sizeof(path), classfile);
-    
-    if (!FileToKeyValues(kvClassData, path))
+    // If file doesn't exist, then log and stop.
+    if (!exists)
     {
-        SetFailState("Could not load class data file (\"%s\"). Check path in zr_classes_file in the configuration file.", path);
+        // Log failure.
+        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
+        {
+            LogMessageFormatted(-1, "Classes", "Config Validation", "Missing playerclasses config file: %s", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
+        }
+        
+        return;
     }
+    
+    // Put file data into memory.
+    FileToKeyValues(kvClassData, pathclasses);
     
     // Try to find the first class.
     KvRewind(kvClassData);
     if (!KvGotoFirstSubKey(kvClassData))
     {
-        SetFailState("Cannot find any classes in \"%s\".", path);
+        LogMessageFormatted(-1, "Classes", "Config Validation", "Can't find any classes in %s", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
     }
     
     decl String:name[64];
@@ -401,7 +412,7 @@ ClassLoad()
             ClassData[ClassCount][class_enabled] = false;
             if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
             {
-                LogMessageFormatted(-1, "Classes", "Load", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
+                LogMessageFormatted(-1, "Classes", "Config Validation", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
             }
         }
         
@@ -412,13 +423,13 @@ ClassLoad()
     // Validate team requirements.
     if (!ClassValidateTeamRequirements())
     {
-        SetFailState("The class configuration doesn't match the team requirements.");
+        LogMessageFormatted(-1, "Classes", "Config Validation", "The class configuration doesn't match the team requirements.", LOG_FORMAT_TYPE_FATALERROR);
     }
     
     // Validate team default requirements.
     if (!ClassValidateTeamDefaults())
     {
-        SetFailState("Couldn't find a default class for one or more teams. At least one class per team must be marked as default.");
+        LogMessageFormatted(-1, "Classes", "Config Validation", "Couldn't find a default class for one or more teams. At least one class per team must be marked as default.", LOG_FORMAT_TYPE_FATALERROR);
     }
     
     // Cache class data.

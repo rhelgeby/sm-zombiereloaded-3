@@ -252,7 +252,7 @@ RoundEndOutcome:RoundEndReasonToOutcome(reason)
 public Action:RoundEndTimer(Handle:timer)
 {
     // If there aren't clients on both teams, then stop.
-    if (ZRTeamHasClients())
+    if (!ZRTeamHasClients())
     {
         return;
     }

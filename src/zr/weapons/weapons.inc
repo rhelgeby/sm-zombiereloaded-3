@@ -27,18 +27,19 @@
  */
 enum WeaponsType
 {
-    Type_Invalid = -1,
-    Type_Primary = 0,
-    Type_Secondary = 1,
-    Type_Melee = 2,
-    Type_Projectile = 3,
-    Type_Explosive = 4,
+    Type_Invalid = -1, /** Invalid weapon (slot). */
+    Type_Primary = 0, /** Primary weapon slot. */
+    Type_Secondary = 1, /** Secondary weapon slot. */
+    Type_Melee = 2, /** Melee (knife) weapon slot. */
+    Type_Projectile = 3, /** Projectile (grenades, flashbangs, etc) weapon slot. */
+    Type_Explosive = 4, /** Explosive (c4) weapon slot. */
 }
- 
+
 /**
- * Array to store keyvalue data.
+ * Keyvalue handle to store weapon data.
+ * 
+ * @redir   config.inc
  */
-new Handle:kvWeapons = INVALID_HANDLE;
 
 #include "zr/weapons/restrict"
 #include "zr/weapons/markethandler"
@@ -263,7 +264,7 @@ bool:WeaponsIsWeaponMenu(const String:weapon[])
                 KvGetString(kvWeapons, "menu", menu, sizeof(menu), "yes");
                 
                 // Return weapon's setting.
-                return ZRConfigSettingToBool(menu);
+                return ConfigSettingToBool(menu);
             }
         } while (KvGotoNextKey(kvWeapons));
     }

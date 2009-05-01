@@ -21,8 +21,9 @@
 
 /**
  * Array that stores a list of validated models.
+ * 
+ * @redir   config.inc
  */
-new Handle:arrayModelsList = INVALID_HANDLE;
 
 ModelsLoad()
 {

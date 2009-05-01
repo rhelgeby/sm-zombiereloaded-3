@@ -413,7 +413,7 @@ WeaponsMenuMarket(client)
     decl String:togglebuyzone[64];
     
     decl String:curSetting[8];
-    ZRBoolToConfigSetting(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
+    ConfigBoolToSetting(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]), curSetting, sizeof(curSetting));
     
     Format(togglebuyzone, sizeof(togglebuyzone), "%t", "Weapons menu market toggle buyzone", curSetting);
     

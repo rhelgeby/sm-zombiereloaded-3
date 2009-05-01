@@ -25,45 +25,6 @@ new dxLevel[MAXPLAYERS + 1];
 new bool:g_bZombieSpawned;
 
 /**
- * Converts string of "yes" or "no" to a boolean value.
- * 
- * @param option    "yes" or "no" string to be converted.
- * @return          True if string is "yes", false otherwise.
- */
-bool:ZRConfigSettingToBool(const String:option[])
-{
-    // If option is equal to "yes," then return true.
-    if (StrEqual(option, "yes", false))
-    {
-        return true;
-    }
-    
-    // Option isn't "yes."
-    return false;
-}
-
-/**
- * Converts boolean value to "yes" or "no".
- * 
- * @param bOption   True/false value to be converted to "yes"/"no", respectively.
- * @param option    Variable to store "yes" or "no" in.
- * @param maxlen    Max length of return string, (can't be more than 4)
- */
-ZRBoolToConfigSetting(bool:bOption, String:option[], maxlen)
-{
-    // If option is true, then copy "yes" to return string.
-    if (bOption)
-    {
-        strcopy(option, maxlen, "yes");
-    }
-    // If option is false, then copy "no" to return string.
-    else
-    {
-        strcopy(option, maxlen, "no");
-    }
-}
-
-/**
  * Create an array populated with eligible clients to be zombie.
  * 
  * @param arrayEligibleClients  The handle of the array, don't forget to call CloseHandle

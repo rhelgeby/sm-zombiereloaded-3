@@ -10,9 +10,10 @@
  */
 
 /**
- * Array to store keyvalue data.
+ * Keyvalue handle to store hitgroups data.
+ * 
+ * @redir   config.inc
  */
-new Handle:kvHitgroups = INVALID_HANDLE;
 
 /**
  * @section Player hitgroup values.
@@ -155,7 +156,7 @@ bool:HitgroupsCanDamageHitgroup(hitgroup)
                 KvGetString(kvHitgroups, "damage", damage, sizeof(damage), "yes");
                 
                 // Return hitgroup's damage setting.
-                return ZRConfigSettingToBool(damage);
+                return ConfigSettingToBool(damage);
             }
         } while (KvGotoNextKey(kvHitgroups));
     }

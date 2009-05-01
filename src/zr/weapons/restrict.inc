@@ -12,9 +12,10 @@
 new Handle:gRestrictedWeapons = INVALID_HANDLE;
 
 /**
- * Array to store keyvalue data.
+ * Keyvalue handle to store weapon groups data.
+ * 
+ * @redir   config.inc
  */
-new Handle:kvWeaponGroups = INVALID_HANDLE;
 
 /**
  * Array that stores the "HookID" to be later unhooked on player disconnect.
@@ -125,7 +126,7 @@ RestrictDefaultRestrictions()
             decl String:restrict[8];
             KvGetString(kvWeapons, "restrict", restrict, sizeof(restrict), "no");
             
-            if (ZRConfigSettingToBool(restrict))
+            if (ConfigSettingToBool(restrict))
             {
                 new WpnRestrictQuery:output = RestrictRestrict(weapon, display);
                 RestrictPrintRestrictOutput(0, output, display, true);
