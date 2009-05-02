@@ -93,11 +93,11 @@ ConfigLoad()
  * @param file  The cvar define of the path to the file.
  * @return      True if the file exists, false if not.
  */
-bool:ConfigGetFilePath(CvarsList:cvar, String:path[])
+bool:ConfigGetFilePath(CvarsList:cvar, String:path[] = "")
 {
     // Get cvar's path.
     decl String:filepath[PLATFORM_MAX_PATH];
-    GetConVarString(g_hCvarsList[cvar], filepath, sizeof(filepath));
+    GetConVarString(Handle:g_hCvarsList[cvar], filepath, sizeof(filepath));
     
     // Build full path in return string.
     BuildPath(Path_SM, path, PLATFORM_MAX_PATH, filepath);
@@ -316,7 +316,7 @@ bool:ConfigSettingToBool(const String:option[])
  * @param option    Variable to store "yes" or "no" in.
  * @param maxlen    Max length of return string, (can't be more than 4)
  */
-ConfigBoolToSetting(bool:bOption, String:option[], maxlen)
+ConfigBoolToSetting(bool:bOption, String:option[] = "", maxlen)
 {
     // If option is true, then copy "yes" to return string.
     if (bOption)

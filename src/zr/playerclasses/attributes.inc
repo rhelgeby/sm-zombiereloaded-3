@@ -130,7 +130,7 @@ bool:ClassGetTeamDefault(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
  *                  is used, index will be used as a client index.
  * @return          Number of cells written. -1 on error.
  */
-ClassGetName(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
+ClassGetName(index, String:buffer[] = "", maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     switch (cachetype)
     {
@@ -165,7 +165,7 @@ ClassGetName(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
  *                  is used, index will be used as a client index.
  * @return  Number of cells written. -1 on error.
  */
-ClassGetDescription(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
+ClassGetDescription(index, String:buffer[] = "", maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     switch (cachetype)
     {
@@ -209,7 +209,7 @@ ClassGetDescription(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_P
  *                  is used, index will be used as a client index.
  * @return  Number of cells written. -1 on error.
  */
-ClassGetModelPath(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
+ClassGetModelPath(index, String:buffer[] = "", maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     switch (cachetype)
     {
@@ -351,7 +351,7 @@ ClassGetAlphaDamage(index, cachetype = ZR_CLASS_CACHE_PLAYER)
  *                  is used, index will be used as a client index.
  * @return  Number of cells written. -1 on error.
  */
-ClassGetOverlayPath(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
+ClassGetOverlayPath(index, String:buffer[] = "", maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     switch (cachetype)
     {

@@ -827,7 +827,7 @@ RestrictCreateGroupWeaponsArray(&Handle:arrayGroupWeapons, const String:weapongr
  * @param maxlen        Maximum length of the weapon list, the rest is truncated.
  * @param separator     Separator character between weapon names. 
  */
-RestrictGetGroupWeapons(const String:groupname[], String:weaponlist[], maxlen, const String:separator[])
+RestrictGetGroupWeapons(const String:groupname[], String:weaponlist[] = "", maxlen, const String:separator[])
 {
     KvRewind(kvWeaponGroups);
     KvJumpToKey(kvWeaponGroups, groupname);
