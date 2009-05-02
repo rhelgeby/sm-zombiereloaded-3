@@ -218,7 +218,7 @@ bool:WeaponsIsValidWeapon(const String:weapon[])
  * @param weapon    The weapon name.
  * @param display   Returns with the display name, is not changed if weapon is invalid. 
  */
-WeaponGetDisplayName(const String:weapon[], String:display[] = "")
+WeaponGetDisplayName(const String:weapon[], String:display[])
 {
     // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);

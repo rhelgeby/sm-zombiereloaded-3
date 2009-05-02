@@ -688,7 +688,7 @@ ClassClientSetDefaultIndexes(client = -1)
  *                  index will be used as a client index.
  * @return          Number of cells written.
  */
-ClassDumpData(index, cachetype, String:buffer[] = "", maxlen)
+ClassDumpData(index, cachetype, String:buffer[], maxlen)
 {
     new cellcount;
     decl String:attribute[320];
