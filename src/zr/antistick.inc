@@ -188,5 +188,3 @@ AntiStickClientCollisionGroup(client, bool:apply = true, collisiongroup = 0)
     
     return GetEntData(client, g_iToolsCollisionGroup, 1);
 }
-    
-        

@@ -133,30 +133,30 @@
 #define ZR_CLASS_ALPHA_DAMAGED_MIN          0
 #define ZR_CLASS_ALPHA_DAMAGED_MAX          255
 #define ZR_CLASS_ALPHA_DAMAGE_MIN           0
-#define ZR_CLASS_ALPHA_DAMAGE_MAX           16384
+#define ZR_CLASS_ALPHA_DAMAGE_MAX           20000
 /** Overlay path is optional, and file is checked for existance if specified. */
 #define ZR_CLASS_FOV_MIN                    15
 #define ZR_CLASS_FOV_MAX                    165
 #define ZR_CLASS_NAPALM_TIME_MIN            0.0
 #define ZR_CLASS_NAPALM_TIME_MAX            600.0
 #define ZR_CLASS_HEALTH_MIN                 1
-#define ZR_CLASS_HEALTH_MAX                 16384
+#define ZR_CLASS_HEALTH_MAX                 20000
 #define ZR_CLASS_HEALTH_REGEN_INTERVAL_MIN  0.0
 #define ZR_CLASS_HEALTH_REGEN_INTERVAL_MAX  900.0
 #define ZR_CLASS_HEALTH_REGEN_AMOUNT_MIN    0.0
-#define ZR_CLASS_HEALTH_REGEN_AMOUNT_MAX    16384
+#define ZR_CLASS_HEALTH_REGEN_AMOUNT_MAX    10000
 #define ZR_CLASS_HEALTH_INFECT_GAIN_MIN     0
-#define ZR_CLASS_HEALTH_INFECT_GAIN_MAX     16384
+#define ZR_CLASS_HEALTH_INFECT_GAIN_MAX     20000
 #define ZR_CLASS_KILL_BONUS_MIN             0
 #define ZR_CLASS_KILL_BONUS_MAX             16
 #define ZR_CLASS_SPEED_MIN                  10.0
 #define ZR_CLASS_SPEED_MAX                  2000.0
-#define ZR_CLASS_KNOCKBACK_MIN              -10.0
-#define ZR_CLASS_KNOCKBACK_MAX              20.0
-#define ZR_CLASS_JUMP_HEIGHT_MIN            0.0
-#define ZR_CLASS_JUMP_HEIGHT_MAX            1024.0
-#define ZR_CLASS_JUMP_DISTANCE_MIN          0.0
-#define ZR_CLASS_JUMP_DISTANCE_MAX          1024.0
+#define ZR_CLASS_KNOCKBACK_MIN              -30.0
+#define ZR_CLASS_KNOCKBACK_MAX              30.0
+#define ZR_CLASS_JUMP_HEIGHT_MIN            -500.0
+#define ZR_CLASS_JUMP_HEIGHT_MAX            500.0
+#define ZR_CLASS_JUMP_DISTANCE_MIN          -500.0
+#define ZR_CLASS_JUMP_DISTANCE_MAX          500.0
 /**
  * @endsection
  */
