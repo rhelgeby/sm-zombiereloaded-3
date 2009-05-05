@@ -118,6 +118,18 @@ AmbientSoundsOnRoundStart()
 }
 
 /**
+ * The round is ending.
+ */
+AmbientSoundsOnRoundEnd()
+{
+    // x = client index
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        bAmbientSoundsIsPlaying[x] = false;
+    }
+}
+
+/**
  * Client is spawning into the game.
  * 
  * @param client    The client index.
@@ -145,6 +157,9 @@ AmbientSoundsOnClientSpawn(client)
     
     // Emit ambient sound.
     SEffectsEmitAmbientSound(sound, ambientvolume, client);
+    
+    // Flag client that sound is playing.
+    bAmbientSoundsIsPlaying[client] = true;
 }
 
 /**
@@ -162,18 +177,6 @@ AmbientSoundsRestart()
     if (!g_bAmbientSounds)
     {
         return;
-    }
-    
-    // x = client index
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        bAmbientSoundsIsPlaying[x] = false;
     }
     
     // Get ambient sound length.
@@ -202,6 +205,9 @@ public Action:AmbientSoundsTimer(Handle:timer)
     
     // Get ambient sound volume.
     new Float:ambientvolume = GetConVarFloat(g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]);
+    
+    // Stop sound before playing again.
+    SEffectsStopAmbientSound(sound);
     
     // Emit ambient sound.
     SEffectsEmitAmbientSound(sound, ambientvolume);

@@ -109,6 +109,7 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     // Forward event to modules.
     RoundEndOnRoundEnd(reason);
     InfectOnRoundEnd();
+    SEffectsOnRoundEnd();
     RespawnOnRoundEnd();
 }
 

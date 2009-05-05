@@ -62,6 +62,15 @@ SEffectsOnRoundStart()
 }
 
 /**
+ * The round is ending.
+ */
+SEffectsOnRoundEnd()
+{
+    // Forward event to sub-modules.
+    AmbientSoundsOnRoundEnd();
+}
+
+/**
  * Client is spawning into the game.
  * 
  * @param client    The client index.
@@ -118,9 +127,6 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
     // Precache sound before playing.
     PrecacheSound(sound);
     
-    // Stop sound before playing again.
-    SEffectsStopAmbientSound(sound);
-    
     if (ZRIsClientValid(client))
     {
         // Emit ambient sound.
@@ -140,10 +146,7 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
             }
             
             // Emit ambient sound.
-            EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
-            
-            // Flag client that sound is playing.
-            bAmbientSoundsIsPlaying[x] = true;
+            EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
         }
     }
 }
