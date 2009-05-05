@@ -105,7 +105,7 @@ public Action:SayHooksCmdSay(client, argc)
         // Client triggered ZTele flag.
         case SAYHOOKS_KEYWORD_FLAG_ZTELE:
         {
-            ZTele(client);
+            ZTeleClient(client);
         }
         // Client triggered ZHP flag.
         case SAYHOOKS_KEYWORD_FLAG_ZHP:

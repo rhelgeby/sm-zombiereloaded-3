@@ -95,6 +95,15 @@ enum CvarsList
     Handle:CVAR_RESPAWN_ZOMBIE,
     Handle:CVAR_RESPAWN_ZOMBIE_WORLD,
     Handle:CVAR_ZSPAWN,
+    Handle:CVAR_ZTELE_ZOMBIE,
+    Handle:CVAR_ZTELE_HUMAN_BEFORE,
+    Handle:CVAR_ZTELE_HUMAN_AFTER,
+    Handle:CVAR_ZTELE_DELAY_ZOMBIE,
+    Handle:CVAR_ZTELE_DELAY_HUMAN,
+    Handle:CVAR_ZTELE_MAX_ZOMBIE,
+    Handle:CVAR_ZTELE_MAX_HUMAN,
+    Handle:CVAR_ZTELE_AUTOCANCEL,
+    Handle:CVAR_ZTELE_AUTOCANCEL_DISTANCE,
     Handle:CVAR_ZHP,
     Handle:CVAR_ZHP_DEFAULT,
     
@@ -102,14 +111,6 @@ enum CvarsList
     Handle:CVAR_OVERLAY_REDISPLAY,
     Handle:CVAR_ZVISION_ALLOW_DISABLE,
     Handle:CVAR_MENU_AUTOCLOSE,
-    Handle:CVAR_ZTELE,
-    Handle:CVAR_ZTELE_STARTUP_DELAY,
-    Handle:CVAR_ZTELE_COOLDOWN,
-    Handle:CVAR_ZTELE_HUMAN_DELAY,
-    Handle:CVAR_ZTELE_HUMAN_LIMIT,
-    Handle:CVAR_ZTELE_ZOMBIE_DELAY,
-    Handle:CVAR_ZTELE_ZOMBIE_LIMIT,
-    Handle:CVAR_ZTELE_RESET_BUFFERS,
     Handle:CVAR_ANTICAMP,
     Handle:CVAR_ANTICAMP_UPDATE_INTERVAL,
 }
@@ -431,6 +432,20 @@ CvarsCreate()
     // Old Desc: Allow players to spawn if they just joined the game (0: Disable)
     
     // ===========================
+    // ZTele (module)
+    // ===========================
+    
+    g_hCvarsList[CVAR_ZTELE_ZOMBIE]                     =    CreateConVar("zr_ztele_zombie", "1", "");
+    g_hCvarsList[CVAR_ZTELE_HUMAN_BEFORE]               =    CreateConVar("zr_ztele_human_before", "1", "");
+    g_hCvarsList[CVAR_ZTELE_HUMAN_AFTER]                =    CreateConVar("zr_ztele_human_after", "0", "");
+    g_hCvarsList[CVAR_ZTELE_DELAY_ZOMBIE]               =    CreateConVar("zr_ztele_delay_zombie", "3", "");
+    g_hCvarsList[CVAR_ZTELE_DELAY_HUMAN]                =    CreateConVar("zr_ztele_delay_human", "3", "");
+    g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]                 =    CreateConVar("zr_ztele_max_zombie", "3", "");
+    g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]                  =    CreateConVar("zr_ztele_max_human", "1", "");
+    g_hCvarsList[CVAR_ZTELE_AUTOCANCEL]                 =    CreateConVar("zr_ztele_autocancel", "1", "");
+    g_hCvarsList[CVAR_ZTELE_AUTOCANCEL_DISTANCE]        =    CreateConVar("zr_ztele_autocancel_distance", "20", "");
+    
+    // ===========================
     // ZHP (module)
     // ===========================
     
@@ -447,22 +462,6 @@ CvarsCreate()
     // Old Desc: Allow users to disable ZVision with their nightvision key (0: Disable)
     g_hCvarsList[CVAR_MENU_AUTOCLOSE]                   =    CreateConVar("zr_menu_autoclose", "0", "");
     // Old Desc: Automatically close menus on selection. If disabled the menu will remain open.
-    g_hCvarsList[CVAR_ZTELE]                            =    CreateConVar("zr_tele", "1", "");
-    // Old Desc: Allow players to use the teleporter to get to spawn. (0: Disable)
-    g_hCvarsList[CVAR_ZTELE_STARTUP_DELAY]              =    CreateConVar("zr_tele_startup_delay", "30", "");
-    // Old Desc: Number of seconds to wait before the teleporter is enabled (0: Always enabled)
-    g_hCvarsList[CVAR_ZTELE_COOLDOWN]                   =    CreateConVar("zr_tele_cooldown", "20", "");
-    // Old Desc: Number of seconds to wait before the teleporter can be used again, after a teleport. (0: Disable)
-    g_hCvarsList[CVAR_ZTELE_HUMAN_DELAY]                =    CreateConVar("zr_tele_human_delay", "10", "");
-    // Old Desc: Teleport delay for humans. (0: No delay)
-    g_hCvarsList[CVAR_ZTELE_HUMAN_LIMIT]                =    CreateConVar("zr_tele_human_limit", "3", "");
-    // Old Desc: Maximum number of teleports humans can do. (0: Humans can't use the teleporter. -1: Unlimited)
-    g_hCvarsList[CVAR_ZTELE_ZOMBIE_DELAY]               =    CreateConVar("zr_tele_zombie_delay", "0", "");
-    // Old Desc: Teleport delay for zombies. (0: No delay)
-    g_hCvarsList[CVAR_ZTELE_ZOMBIE_LIMIT]               =    CreateConVar("zr_tele_zombie_limit", "8", "");
-    // Old Desc: Maximum number of teleports zombies can do. (0: Zombies can't use the teleporter. -1: Unlimited)
-    g_hCvarsList[CVAR_ZTELE_RESET_BUFFERS]              =    CreateConVar("zr_tele_reset_buffers", "1", "");
-    // Old Desc: Reset custom saved teleport locations on each round start. (0: Disable)
     g_hCvarsList[CVAR_ANTICAMP]                         =    CreateConVar("zr_anticamp", "1", "");
     // Old Desc:  Enables or disables hurt volumes for preventing unfair camping. (0: Disable)
     g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL]         =    CreateConVar("zr_anticamp_update_interval", "1", "");

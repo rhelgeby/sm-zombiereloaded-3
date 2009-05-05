@@ -34,62 +34,6 @@
 		"en"		"Type !zmenu in chat to view all ZR commands."
 		"ru"		"Напишите !zmenu в чате для просмотра всех команд."
 	}
-	
-	"!ztele amount"
-	{
-		"#format"	"{1:d}"
-		"en"		"You have @green{1}@default teleports left this round."
-		"ru"		"У вас осталось @green{1}@default телепортов в этом раунде."
-	}
-
-	"!ztele time left"
-	{
-		"#format"	"{1:d}"
-		"en"		"You will be teleported in {1} seconds."
-		"ru"		"Вы будете телепортированы через {1} секунды."
-	}
-
-	"!ztele limit reached"
-	{
-		"en"		"Teleportation limit has been reached."
-		"ru"		"Вы использовали все свои телепорты."
-	}
-
-	"!ztele humans restricted"
-	{
-		"en"		"Once a player has been infected, only zombies can use !ztele."
-		"ru"		"После инфицирования кого-либо, только зомби могут использовать !ztele"
-	}
-
-	"!ztele zombies restricted"
-	{
-		"en"		"The teleporter is disabled for zombies."
-	}
-
-	"!ztele not spawned"
-	{
-		"en"		"You cannot use the teleporter before you've spawned."
-	}
-
-	"!ztele offline"
-	{
-		"en"		"The teleporter is not online yet."
-	}
-
-	"!ztele cooldown"
-	{
-		"en"		"Your teleporter is still on a cooldown."
-	}
-
-	"!ztele in progress"
-	{
-		"en"		"You already have a teleportation in progress."
-	}
-
-	"!ztele successful"
-	{
-		"en"		"Teleport successful."
-	}
 
 	// ===========================
 	// Generic
@@ -97,40 +41,39 @@
 
 	// General
 
-	"Console restricted"
-	{
-		"en"		"Command not usable from console."
-		"ru"		"Команда не используется для консоли."
-	}
-
 	"Feature is disabled"
 	{
-		"en"		"This feature has been disabled by the server host."
-		"ru"		"Данная функция отключена."
+		"en"		"This feature is currently disabled by the server host."
+	}
+
+	"Must be player"
+	{
+		"en"		"This feature is reserved for players only."
 	}
 
 	"Must be admin"
 	{
-		"en"		"Can only be used by admins."
-		"ru"		"Может быть использовано только, когда жив."
+		"en"		"This feature is reserved for admins only."
 	}
 
 	"Must be alive"
 	{
-		"en"		"Can only be used when alive."
-		"ru"		"Может быть использовано только, когда жив."
+		"en"		"This feature requires that you are alive."
 	}
 
 	"Must be dead"
 	{
-		"en"		"Can only be used when dead."
-		"ru"		"Может быть использовано только, когда мертв."
+		"en"		"This feature requires that you are dead."
 	}
 
 	"Must be zombie"
 	{
-		"en"		"Can only be used while zombie."
-		"ru"		"Может быть использовано только, когда зомби."
+		"en"		"This feature requires that you are a zombie.
+	}
+
+	"Must be human"
+	{
+		"en"		"This feature requires that you are a human."
 	}
 
 	// Menu
@@ -442,6 +385,49 @@
 		"ru"		"Здоровье: {1}"
 	}
 
+	// ===========================
+	// ZTele
+	// ===========================
+
+	// General
+
+	"ZTele restricted human"
+	{
+		"en"		"ZTele is restricted for humans at this time."
+	}
+
+	"ZTele max"
+	{
+		"#format"	"{1:d}"
+		"en"		"You have reached your max of {1} teleports per round."
+	}
+
+	"ZTele autocancel text"
+	{
+		"#format"	"{1:d}"
+		"en"		"Teleport has been cancelled.  (Restrictive boundary is {1} ft.)"
+	}
+
+	// Center Text
+
+	"ZTele countdown"
+	{
+		"#format"	"{1:d}"
+		"en"		"Teleporting back to spawn in: {1} seconds."
+	}
+
+	"ZTele autocancel centertext"
+	{
+		"en"		"Teleport has been cancelled."
+	}
+
+	"ZTele countdown end"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"Teleported back to spawn. (Count: {1}/{2})"
+	}
+
+
 
 	"Unfair camping"
 	{
@@ -632,18 +618,5 @@
 	{
 		"en"		"-----------|         Zombie:Reloaded Loaded         |----------"
 		"ru"		"-----------|        Zombie:Reloaded Загружен        |----------"
-	}
-
-	"Models loaded"
-	{
-		"en"		"--- Models Loaded ---"
-		"ru"		"--- Модели Загружены ---"
-	}
-
-	"File load failed"
-	{
-		"#format"	"{1:s}"
-		"en"		"Missing file for download: \"{1}\", check downloads.txt"
-		"ru"		"Пропущен файл для скачивания: \"{1}\", проверьте downloads.txt"
 	}
 }

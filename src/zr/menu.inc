@@ -101,7 +101,7 @@ public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             case 3:
             {
                 // Copy return to resend variable.
-                resend = !ZTele(client);
+                resend = !ZTeleClient(client);
             }
             // Select zhp.
             case 4:

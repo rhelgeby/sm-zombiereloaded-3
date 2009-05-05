@@ -568,8 +568,8 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
     ClassOnClientInfected(client, motherinfect);
     RoundEndOnClientInfected();
     SEffectsOnClientInfected(client);
+    ZTeleOnClientInfected(client);
     ZHPOnClientInfected(client);
-    TeleportOnClientInfected(client);
 }
 
 /**

@@ -51,10 +51,10 @@
 #include "zr/respawn"
 #include "zr/napalm"
 #include "zr/zspawn"
+#include "zr/ztele"
 #include "zr/zhp"
 #include "zr/jumpboost"
 #include "zr/anticamp"
-#include "zr/teleport"
 
 // Almost replaced! :)
 #include "zr/zombie"
@@ -216,6 +216,7 @@ public OnClientPutInServer(client)
     SEffectsClientInit(client);
     SpawnProtectClientInit(client);
     RespawnClientInit(client);
+    ZTeleClientInit(client);
     ZHPClientInit(client);
 }
 
@@ -232,5 +233,4 @@ public OnClientDisconnect(client)
     InfectOnClientDisconnect(client);
     DamageOnClientDisconnect(client);
     ZSpawnOnClientDisconnect(client);
-    ZTeleResetClient(client);
 }

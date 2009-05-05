@@ -192,7 +192,7 @@ ZHPUpdateHUD(client)
  * 
  * @param timer     The timer handle. 
  * @param client    The client index.
- */ 
+ */
 public Action:ZHPTimer(Handle:timer, any:client)
 {
     // If client leaves, then stop timer.

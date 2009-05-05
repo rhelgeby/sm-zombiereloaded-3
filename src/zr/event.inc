@@ -91,8 +91,6 @@ public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBr
     // Forward events to modules.
     RoundEndOnRoundFreezeEnd();
     InfectOnRoundFreezeEnd();
-    ZTeleEnable();
-
 }
 
 /**
@@ -112,7 +110,6 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     RoundEndOnRoundEnd(reason);
     InfectOnRoundEnd();
     RespawnOnRoundEnd();
-    ZTeleReset();
 }
 
 /**
@@ -179,8 +176,8 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     AccountOnClientSpawn(index);
     SpawnProtectOnClientSpawn(index);
     RespawnOnClientSpawn(index);
+    ZTeleOnClientSpawn(index);
     ZHPOnClientSpawn(index);
-    ZTeleClientSpawned(index);
     
     ZR_PrintToChat(index, "!zmenu reminder");
 }
@@ -259,6 +256,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     SEffectsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
     RespawnOnClientDeath(index, attacker, weapon);
+    ZTeleOnClientDeath(index);
     ZHPOnClientDeath(index);
 }
 

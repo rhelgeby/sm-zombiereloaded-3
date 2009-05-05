@@ -15,6 +15,15 @@
 #define GENERAL_DXLEVEL_MIN 90
 
 /**
+ * @section Conversion factors.
+ */
+#define CONVERSION_UNITS_TO_FEET    16.000
+#define CONVERSION_FEET_TO_UNITS    0.0625
+/**
+ * @endsection
+ */
+
+/**
  * The DirectX level of a client.
  */
 new dxLevel[MAXPLAYERS + 1];
@@ -23,6 +32,18 @@ new dxLevel[MAXPLAYERS + 1];
  * Global variable set to true when the first zombie(s) is/are spawned.
  */
 new bool:g_bZombieSpawned;
+
+/**
+ * Function to convert numbers to defined units.
+ * 
+ * @param number        The number to convert.
+ * @param conversion    The conversion factor to multiply by. (See defines above)
+ * @return              The converted number.
+ */
+Float:ZRConvertUnitsFloat(Float:number, Float:conversion)
+{
+    return number / conversion;
+}
 
 /**
  * Create an array populated with eligible clients to be zombie.
