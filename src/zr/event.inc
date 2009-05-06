@@ -71,7 +71,6 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     // Forward event to sub-modules.
     RoundEndOnRoundStart();
     InfectOnRoundStart();
-    VEffectsOnRoundStart();
     SEffectsOnRoundStart();
     AntiStickOnRoundStart();
     ZSpawnOnRoundStart();

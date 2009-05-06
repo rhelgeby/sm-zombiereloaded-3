@@ -37,25 +37,167 @@ VEffectsLoad()
     // Store map's default sky before applying new one.
     GetConVarString(g_hSkyname, g_VEffectsDefaultSky, sizeof(g_VEffectsDefaultSky));
     
-    // If sky path is empty, then stop.
-    if (!g_VEffectsDefaultSky[0])
+    // If sky is disabled, then stop.
+    new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
+    if (!sky)
     {
         return;
     }
     
     decl String:downloadpath[PLATFORM_MAX_PATH];
+    decl String:skypath[PLATFORM_MAX_PATH];
+    
+    // Get sky path.
+    GetConVarString(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], skypath, sizeof(skypath));
     
     // Prepend materials/skybox to the path.
-    Format(downloadpath, sizeof(downloadpath), "materials/skybox/%s", g_VEffectsDefaultSky);
+    Format(downloadpath, sizeof(downloadpath), "materials/skybox/%s", skypath);
     
     // Add skybox file to downloads table.
     AddFileToDownloadsTable(downloadpath);
+    
+    // Apply all visual effects now
+    VEffectsApplyAll();
 }
 
 /**
- * The round is starting.
+ * Plugin has just finished creating/hooking cvars.
  */
-VEffectsOnRoundStart()
+VEffectsOnCvarInit()
+{
+    // Hook zr_veffects_* cvars.
+    VEffectsCvarsHook();
+}
+
+/**
+ * Hook zr_veffects_* cvar changes.
+ * 
+ * @param unhook    If true, cvars will be unhooked, false to hook cvars.
+ */
+VEffectsCvarsHook(bool:unhook = false)
+{
+    // If unhook is true, then continue.
+    if (unhook)
+    {
+        // Unhook lightstyle cvars.
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE], VEffectsCvarsHookLightStyle);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE], VEffectsCvarsHookLightStyle);
+        
+        // Unhook sky cvars.
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY], VEffectsCvarsHookSky);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], VEffectsCvarsHookSky);
+        
+        // Unhook sun cvars.
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE], VEffectsCvarsHookSunDisable);
+        
+        // Unhook fog cvars.
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG], VEffectsCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE], VEffectsCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR], VEffectsCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR], VEffectsCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY], VEffectsCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST], VEffectsCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST], VEffectsCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ], VEffectsCvarsHookFog);
+        
+        // Stop after unhooking cvars.
+        return;
+    }
+    
+    // Hook lightstyle cvars.
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE], VEffectsCvarsHookLightStyle);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE], VEffectsCvarsHookLightStyle);
+    
+    // Hook sky cvars.
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY], VEffectsCvarsHookSky);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], VEffectsCvarsHookSky);
+    
+    // Hook sun cvars.
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE], VEffectsCvarsHookSunDisable);
+    
+    // Hook fog cvars.
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG], VEffectsCvarsHookFog);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE], VEffectsCvarsHookFog);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR], VEffectsCvarsHookFog);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR], VEffectsCvarsHookFog);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY], VEffectsCvarsHookFog);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST], VEffectsCvarsHookFog);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST], VEffectsCvarsHookFog);
+    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ], VEffectsCvarsHookFog);
+}
+
+/**
+ * Cvar hook callback (zr_veffects_lightstyle, zr_veffects_lightstyle_value)
+ * Updated server to cvar values.
+ * 
+ * @param convar    The cvar handle.
+ * @param oldvalue  The value before change.
+ * @param newvalue  The new value.
+ */
+public VEffectsCvarsHookLightStyle(Handle:cvar, const String:oldvalue[], const String:newvalue[])
+{
+    // If lightstyle is disabled, then disable.
+    new bool:lightstyle = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]);
+    
+    // Apply light style.
+    VEffectsApplyLightStyle(!lightstyle);
+}
+
+/**
+ * Cvar hook callback (zr_veffects_sky, zr_veffects_sky_path)
+ * Updated server to cvar values.
+ * 
+ * @param convar    The cvar handle.
+ * @param oldvalue  The value before change.
+ * @param newvalue  The new value.
+ */
+public VEffectsCvarsHookSky(Handle:cvar, const String:oldvalue[], const String:newvalue[])
+{
+    // If sky is disabled, then disable.
+    new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
+    
+    // Apply new sky.
+    VEffectsApplySky(!sky);
+}
+
+/**
+ * Cvar hook callback (zr_veffects_sun_disable)
+ * Updated server to cvar values.
+ * 
+ * @param convar    The cvar handle.
+ * @param oldvalue  The value before change.
+ * @param newvalue  The new value.
+ */
+public VEffectsCvarsHookSunDisable(Handle:cvar, const String:oldvalue[], const String:newvalue[])
+{
+    // If fog is disabled, then disable.
+    new bool:sun = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]);
+    
+    // Apply fog.
+    VEffectsApplySunDisable(!sun);
+}
+
+/**
+ * Cvar hook callback (zr_veffects_fog_*)
+ * Updated server to cvar values.
+ * 
+ * @param convar    The cvar handle.
+ * @param oldvalue  The value before change.
+ * @param newvalue  The new value.
+ */
+public VEffectsCvarsHookFog(Handle:cvar, const String:oldvalue[], const String:newvalue[])
+{
+    // If fog is disabled, then disable.
+    new bool:fogoverride = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE]);
+    
+    // Apply fog.
+    VEffectsApplyFog(fogoverride);
+}
+
+/**
+ * Apply all cvar values on server.
+ */
+VEffectsApplyAll()
 {
     // If lightstyle is disabled, then disable.
     new bool:lightstyle = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]);
@@ -112,6 +254,30 @@ VEffectsApplySky(bool:disable = false)
     
     // Set new sky on all clients.
     SetConVarString(g_hSkyname, skypath, true);
+}
+
+VEffectsApplySunDisable(bool:disable = false)
+{
+    // Find sun entity.
+    new sun = FindEntityByClassname(-1, "env_sun");
+    
+    // If sun is invalid, then stop.
+    if (sun == -1)
+    {
+        return;
+    }
+    
+    // If default, then re-enable sun rendering.
+    if (disable)
+    {
+        // Turn on sun rendering.
+        AcceptEntityInput(sun, "TurnOn");
+        
+        return;
+    }
+    
+    // Turn off sun rendering.
+    AcceptEntityInput(sun, "TurnOff");
 }
 
 VEffectsApplyFog(bool:override = false)

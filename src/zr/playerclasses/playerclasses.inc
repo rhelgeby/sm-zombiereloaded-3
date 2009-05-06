@@ -231,7 +231,7 @@ enum ClassAttributes
     Float:class_speed,
     Float:class_knockback,
     Float:class_jump_height,
-    Float:class_jump_distance
+    Float:class_jump_distance,
 }
 
 /**

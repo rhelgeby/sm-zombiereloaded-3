@@ -73,6 +73,7 @@ enum CvarsList
     Handle:CVAR_VEFFECTS_LIGHTSTYLE_VALUE,
     Handle:CVAR_VEFFECTS_SKY,
     Handle:CVAR_VEFFECTS_SKY_PATH,
+    Handle:CVAR_VEFFECTS_SUN_DISABLE,
     Handle:CVAR_VEFFECTS_FOG,
     Handle:CVAR_VEFFECTS_FOG_OVERRIDE,
     Handle:CVAR_VEFFECTS_FOG_PCOLOR,
@@ -151,6 +152,9 @@ CvarsInit()
     
     // Hook cvars.
     CvarsHook();
+    
+    // Forward event to modules.
+    VEffectsOnCvarInit();
 }
 
 /**
@@ -346,13 +350,17 @@ CvarsCreate()
     
     // Lightstyle
     
-    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]              =    CreateConVar("zr_veffects_lightstyle", "0", "");
-    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE]        =    CreateConVar("zr_veffects_lightstyle_value", "a", "");
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]              =    CreateConVar("zr_veffects_lightstyle", "1", "");
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE]        =    CreateConVar("zr_veffects_lightstyle_value", "b", "");
     
     // Sky
     
     g_hCvarsList[CVAR_VEFFECTS_SKY]                     =    CreateConVar("zr_veffects_sky", "1", "");
-    g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path", "sky_fake_white.vmt", "");
+    g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path", "sky_borealis01up.vmt", "");
+    
+    // Sun
+    
+    g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]             =    CreateConVar("zr_veffects_sun_disable", "1", "");
     
     // Fog
     
