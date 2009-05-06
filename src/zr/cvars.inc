@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        cvars.inc
- *   Description: Config creation and cvar control.
+ *   File:          cvars.inc
+ *   Type:          Core
+ *   Description:   Config creation and cvar control.
  *
  * ============================================================================
  */

@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        tools.inc
- *   Description: Find offsets and signatures.
+ *   File:          tools.inc
+ *   Type:          Core
+ *   Description:   Find offsets and signatures.
  *
  * ============================================================================
  */

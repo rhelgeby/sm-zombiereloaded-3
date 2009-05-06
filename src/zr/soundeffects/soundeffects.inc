@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        soundeffects.inc
- *   Description: Basic sound-management API.
+ *   File:          soundeffects.inc
+ *   Type:          Core 
+ *   Description:   Basic sound-management API.
  *
  * ============================================================================
  */

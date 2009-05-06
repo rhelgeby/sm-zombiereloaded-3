@@ -1,9 +1,13 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: knockback.inc
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:          knockback.inc
+ *   Type:          Module
+ *   Description:   Handles knockback on clients.
+ *
+ * ============================================================================
  */
   
 /** Client has been hurt.

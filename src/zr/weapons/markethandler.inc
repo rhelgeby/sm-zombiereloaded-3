@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        markethandler.inc
- *   Description: Handles market (optional plugin) API, natives, and forwards.
+ *   File:          markethandler.inc
+ *   Type:          Core
+ *   Description:   Handles market (optional plugin) API, natives, and forwards.
  *
  * ============================================================================
  */

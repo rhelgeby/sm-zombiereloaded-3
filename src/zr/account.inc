@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        account.inc
- *   Description: (Module) Handles client's accounts. (cash)
+ *   File:          account.inc
+ *   Type:          Module
+ *   Description:   Handles client's accounts. (cash)
  *
  * ============================================================================
  */

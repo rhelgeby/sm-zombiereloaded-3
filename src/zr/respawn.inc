@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        respawn.inc
- *   Description: Players come back to life
+ *   File:          respawn.inc
+ *   Type:          Module 
+ *   Description:   Players come back to life
  *
  * ============================================================================
  */

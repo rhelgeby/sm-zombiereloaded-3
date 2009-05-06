@@ -360,29 +360,12 @@
 	}
 
 	// ===========================
-	// ZHP
+	// ZSpawn
 	// ===========================
 
-	// General
-
-	"ZHP enable"
+	"ZSpawn double spawn"
 	{
-		"en"		"HP display enabled, your real HP will be displayed after infection."
-	}
-
-	"ZHP disable"
-	{
-		"en"		"HP display disabled."
-		"ru"		"Отображение здоровья включено."
-	}
-
-	// HUD
-
-	"Display HP"
-	{
-		"#format"	"{1:d}"
-		"en"		"HP: {1}"
-		"ru"		"Здоровье: {1}"
+		"en"		"ZSpawn can only be used if you joined late during a round in progress."
 	}
 
 	// ===========================
@@ -425,6 +408,32 @@
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"Teleported back to spawn. (Count: {1}/{2})"
+	}
+
+	// ===========================
+	// ZHP
+	// ===========================
+
+	// General
+
+	"ZHP enable"
+	{
+		"en"		"HP display enabled, your real HP will be displayed after infection."
+	}
+
+	"ZHP disable"
+	{
+		"en"		"HP display disabled."
+		"ru"		"Отображение здоровья включено."
+	}
+
+	// HUD
+
+	"Display HP"
+	{
+		"#format"	"{1:d}"
+		"en"		"HP: {1}"
+		"ru"		"Здоровье: {1}"
 	}
 
 

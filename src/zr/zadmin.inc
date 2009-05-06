@@ -1,9 +1,13 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: admin.inc
- *   Author: Richard H
- * ==================== 
+ *
+ *   File:          zadmin.inc
+ *   Type:          Core
+ *   Description:   Handle admin functions and menus.
+ *
+ * ============================================================================
  */
 
 #include "include/adminmenu.inc"

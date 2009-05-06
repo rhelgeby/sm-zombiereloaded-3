@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        sayhooks.inc
- *   Description: Hook plugin say commands and redirect to their handling module.
+ *   File:          sayhooks.inc
+ *   Type:          Core
+ *   Description:   Hook plugin say commands and redirect to their handling module.
  *
  * ============================================================================
  */

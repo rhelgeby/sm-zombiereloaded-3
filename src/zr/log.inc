@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        log.inc
- *   Description: Logging API.
+ *   File:          log.inc
+ *   Type:          Core
+ *   Description:   Logging API.
  *
  * ============================================================================
  */

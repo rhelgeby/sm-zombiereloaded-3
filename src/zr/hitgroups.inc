@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        hitgroup.inc
- *   Description: API for loading hitgroup specific settings.
+ *   File:          hitgroup.inc
+ *   Type:          Core
+ *   Description:   API for loading hitgroup specific settings.
  *
  * ============================================================================
  */

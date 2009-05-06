@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        healthregen.inc
- *   Description: Functions for managing health regeneration on a client.
+ *   File:          healthregen.inc
+ *   Type:          Core 
+ *   Description:   Functions for managing health regeneration on a client.
  *
  * ============================================================================
  */

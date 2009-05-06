@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        config.inc
- *   Description: Config API and executing.
+ *   File:          config.inc
+ *   Type:          Core
+ *   Description:   Config API and executing.
  *
  * ============================================================================
  */

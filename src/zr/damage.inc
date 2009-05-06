@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        damage.inc
- *   Description: (Core) Modify damage stuff here.
+ *   File:          damage.inc
+ *   Type:          Core
+ *   Description:   Modify damage stuff here.
  *
  * ============================================================================
  */

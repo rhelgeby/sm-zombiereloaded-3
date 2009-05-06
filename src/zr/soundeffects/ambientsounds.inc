@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        ambientsounds.inc
- *   Description: Plays ambient sounds to clients.
+ *   File:          ambientsounds.inc
+ *   Type:          Core 
+ *   Description:   Plays ambient sounds to clients.
  *
  * ============================================================================
  */

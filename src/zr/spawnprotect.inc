@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        spawnprotect.inc
- *   Description: Protects late-joining players from zombies for x seconds.
+ *   File:          spawnprotect.inc
+ *   Type:          Module
+ *   Description:   Protects late-joining players from zombies for x seconds.
  *
  * ============================================================================
  */

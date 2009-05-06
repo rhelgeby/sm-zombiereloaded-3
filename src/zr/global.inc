@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        (Core) global.inc
- *   Description: External API.
+ *   File:          global.inc
+ *   Type:          Core
+ *   Description:   External API.
  *
  * ============================================================================
  */

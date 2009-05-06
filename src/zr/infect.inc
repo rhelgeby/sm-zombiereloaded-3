@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        infect.inc
- *   Description: Client infection functions.
+ *   File:          infect.inc
+ *   Type:          Core
+ *   Description:   Client infection functions.
  *
  * ============================================================================
  */

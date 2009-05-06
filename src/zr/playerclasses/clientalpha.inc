@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        clientalpha.inc
- *   Description: Handles transparency on clients.
+ *   File:          clientalpha.inc
+ *   Type:          Core
+ *   Description:   Handles transparency on clients.
  *
  * ============================================================================
  */

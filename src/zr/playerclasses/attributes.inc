@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        attributes.inc
- *   Description: Retrieving class attributes from certain caches.
+ *   File:          attributes.inc
+ *   Type:          Core
+ *   Description:   Retrieving class attributes from certain caches.
  *
  * ============================================================================
  */

@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        playerclasses.inc
- *   Description: Provides functions for managing classes.
+ *   File:          playerclasses.inc
+ *   Type:          Core 
+ *   Description:   Provides functions for managing classes.
  *
  * ============================================================================
  */

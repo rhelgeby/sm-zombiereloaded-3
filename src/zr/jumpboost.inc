@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        jumpboost.inc
- *   Description: Modified jump vector magnitudes.
+ *   File:          jumpboost.inc
+ *   Type:          Module
+ *   Description:   Modified jump vector magnitudes.
  *
  * ============================================================================
  */

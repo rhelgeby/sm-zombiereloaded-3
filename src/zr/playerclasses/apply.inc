@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        apply.inc
- *   Description: Functions for applying attributes and effects on a client.
+ *   File:          apply.inc
+ *   Type:          Core
+ *   Description:   Functions for applying attributes and effects on a client.
  *
  * ============================================================================
  */

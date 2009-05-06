@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        (base) zombiereloaded.sp
- *   Description: Plugins base file.
+ *   File:          zombiereloaded.sp
+ *   Type:          Base
+ *   Description:   Plugins base file.
  *
  * ============================================================================
  */

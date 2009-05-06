@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        zombiesounds.inc
- *   Description: Zombie sound effects.
+ *   File:          zombiesounds.inc
+ *   Type:          Core 
+ *   Description:   Zombie sound effects.
  *
  * ============================================================================
  */

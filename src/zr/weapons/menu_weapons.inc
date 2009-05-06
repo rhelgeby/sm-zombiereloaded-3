@@ -1,9 +1,13 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: menu_weapons.inc
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:          menu_weapons.inc
+ *   Type:          Core
+ *   Description:   Handles weapons management menu.
+ *
+ * ============================================================================
  */
 
 /**

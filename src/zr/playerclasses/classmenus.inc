@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        classmenus.inc
- *   Description: Provides functions for managing class menus.
+ *   File:          classmenus.inc
+ *   Type:          Core
+ *   Description:   Provides functions for managing class menus.
  *
  * ============================================================================
  */

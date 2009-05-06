@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        (Core) event.inc
- *   Description: Event hooking and forwarding.
+ *   File:          event.inc
+ *   Type:          Core
+ *   Description:   Event hooking and forwarding.
  *
  * ============================================================================
  */

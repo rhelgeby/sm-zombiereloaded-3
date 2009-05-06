@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        models.inc
- *   Description: Model validation and API
+ *   File:          models.inc
+ *   Type:          Core
+ *   Description:   Model validation and API
  *
  * ============================================================================
  */

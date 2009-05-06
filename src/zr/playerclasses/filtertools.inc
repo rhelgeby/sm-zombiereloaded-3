@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        filtertools.inc
- *   Description: Class system tools; validating, getting indexes or lists
+ *   File:          filtertools.inc
+ *   Type:          Core 
+ *   Description:   Class system tools; validating, getting indexes or lists
  *
  * ============================================================================
  */

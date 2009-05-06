@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        menu.inc
- *   Description: Base menu functions for the plugin.
+ *   File:          menu.inc
+ *   Type:          Core
+ *   Description:   Base menu functions for the plugin.
  *
  * ============================================================================
  */

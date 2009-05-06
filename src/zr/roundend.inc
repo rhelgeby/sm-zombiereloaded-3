@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        roundend.inc
- *   Description: (Core) Handles round end actions.
+ *   File:          roundend.inc
+ *   Type:          Core
+ *   Description:   Handles round end actions.
  *
  * ============================================================================
  */

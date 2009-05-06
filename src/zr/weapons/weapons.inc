@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        weapons.inc
- *   Description: API for all weapon-related functions.
+ *   File:          weapons.inc
+ *   Type:          Core 
+ *   Description:   API for all weapon-related functions.
  *
  * ============================================================================
  */

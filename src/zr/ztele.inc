@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        ztele.inc
- *   Description: ZTele handle functions.
+ *   File:          ztele.inc
+ *   Type:          Module
+ *   Description:   ZTele handle functions.
  *
  * ============================================================================
  */

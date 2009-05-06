@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        napalm.inc
- *   Description: Grenades burn zombies when damaged by them.
+ *   File:          napalm.inc
+ *   Type:          Module 
+ *   Description:   Grenades burn zombies when damaged by them.
  *
  * ============================================================================
  */

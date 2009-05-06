@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        clientoverlays.inc
- *   Description: Handles overlays on clients, as a part of class attributes.
+ *   File:          clientoverlays.inc
+ *   Type:          Core 
+ *   Description:   Handles overlays on clients, as a part of class attributes.
  *
  * ============================================================================
  */

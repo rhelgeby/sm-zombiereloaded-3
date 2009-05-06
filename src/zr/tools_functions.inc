@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        tools_functions.inc
- *   Description: API for offsets/signatures exposed in tools.inc
+ *   File:          tools_functions.inc
+ *   Type:          Core
+ *   Description:   API for offsets/signatures exposed in tools.inc
  *
  * ============================================================================
  */

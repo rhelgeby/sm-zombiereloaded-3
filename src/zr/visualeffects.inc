@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        visualeffects.inc
- *   Description: Visual effects such as map darkening, fog, etc..
+ *   File:          visualeffects.inc
+ *   Type:          Module
+ *   Description:   Visual effects such as map darkening, fog, etc..
  *
  * ============================================================================
  */

@@ -1,9 +1,13 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: translations.inc
- *   Author: Greyscale
- * ==================== 
+ *
+ *   File:          translation.inc
+ *   Type:          Core
+ *   Description:   Translation parsing functions.
+ *
+ * ============================================================================
  */
 
 FormatTextString(String:text[], maxlen)

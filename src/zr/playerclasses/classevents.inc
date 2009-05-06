@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        classevents.inc
- *   Description: Functions for handling class related events.
+ *   File:          classevents.inc
+ *   Type:          Core
+ *   Description:   Functions for handling class related events.
  *
  * ============================================================================
  */

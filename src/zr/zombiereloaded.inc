@@ -3,8 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:        zombiereloaded.inc
- *   Description: General plugin functions and defines.
+ *   File:          zombiereloaded.inc
+ *   Type:          Core 
+ *   Description:   General plugin functions and defines.
  *
  * ============================================================================
  */
