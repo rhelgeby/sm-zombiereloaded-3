@@ -92,6 +92,8 @@ enum CvarsList
     Handle:CVAR_ANTISTICK_INTERVAL,
     Handle:CVAR_SPAWNPROTECT,
     Handle:CVAR_SPAWNPROTECT_TIME,
+    Handle:CVAR_SPAWNPROTECT_SPEED,
+    Handle:CVAR_SPAWNPROTECT_ALPHA,
     Handle:CVAR_RESPAWN,
     Handle:CVAR_RESPAWN_DELAY,
     Handle:CVAR_RESPAWN_ZOMBIE,
@@ -410,6 +412,8 @@ CvarsCreate()
     
     g_hCvarsList[CVAR_SPAWNPROTECT]                     =    CreateConVar("zr_spawnprotect", "1", "");
     g_hCvarsList[CVAR_SPAWNPROTECT_TIME]                =    CreateConVar("zr_spawnprotect_time", "10", "");
+    g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]               =    CreateConVar("zr_spawnprotect_speed", "600.0", "");
+    g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]               =    CreateConVar("zr_spawnprotect_speed", "0", "");
     
     // ===========================
     // Respawn (module)

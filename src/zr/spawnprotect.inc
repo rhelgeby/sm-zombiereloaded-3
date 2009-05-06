@@ -78,10 +78,13 @@ SpawnProtectOnClientSpawn(client)
         // Set spawn protect flag on client.
         bInfectImmune[client][INFECT_TYPE_NORMAL] = true;
         
-        // Set improved attributes
-        // (Move to cvar?)
-        ToolsSetClientAlpha(client, 0);
-        ToolsSetClientLMV(client, 600.0);
+        // Get spawn protect attribute cvars.
+        new Float:speed = GetConVarFloat(g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]);
+        new alpha = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]);
+        
+        // Set spawn protect attributes.
+        ToolsSetClientLMV(client, speed);
+        ToolsSetClientAlpha(client, alpha);
         
         // Set time left to zr_protect_time's value.
         new protect_time = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_TIME]);
