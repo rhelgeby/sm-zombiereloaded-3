@@ -173,6 +173,7 @@ public OnMapStart()
     InfectOnMapStart();
     SEffectsOnMapStart();
     AntiStickOnMapStart();
+    ZSpawnOnMapStart();
     Anticamp_Startup();
 }
 

@@ -92,6 +92,7 @@ public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBr
     // Forward events to modules.
     RoundEndOnRoundFreezeEnd();
     InfectOnRoundFreezeEnd();
+    ZSpawnOnRoundFreezeEnd();
 }
 
 /**
@@ -112,6 +113,7 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     InfectOnRoundEnd();
     SEffectsOnRoundEnd();
     RespawnOnRoundEnd();
+    ZSpawnOnRoundEnd();
 }
 
 /**
@@ -258,6 +260,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     SEffectsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
     RespawnOnClientDeath(index, attacker, weapon);
+    ZSpawnOnClientDeath(index);
     ZTeleOnClientDeath(index);
     ZHPOnClientDeath(index);
 }

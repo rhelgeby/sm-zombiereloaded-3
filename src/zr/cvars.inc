@@ -96,6 +96,8 @@ enum CvarsList
     Handle:CVAR_RESPAWN_ZOMBIE,
     Handle:CVAR_RESPAWN_ZOMBIE_WORLD,
     Handle:CVAR_ZSPAWN,
+    Handle:CVAR_ZSPAWN_TIMELIMIT,
+    Handle:CVAR_ZSPAWN_TIMELIMIT_TIME,
     Handle:CVAR_ZTELE_ZOMBIE,
     Handle:CVAR_ZTELE_HUMAN_BEFORE,
     Handle:CVAR_ZTELE_HUMAN_AFTER,
@@ -432,6 +434,8 @@ CvarsCreate()
     g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn", "1", "");
     // Old Desc: Allow players to spawn if they just joined the game (0: Disable)
     
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit", "1", "");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time", "120", "");
     // ===========================
     // ZTele (module)
     // ===========================

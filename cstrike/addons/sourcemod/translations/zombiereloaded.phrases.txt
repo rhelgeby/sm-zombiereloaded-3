@@ -66,6 +66,11 @@
 		"en"		"This feature requires that you are dead."
 	}
 
+	"Must be on team"
+	{
+		"en"		"This feature requires that you are on a team."
+	}
+
 	"Must be zombie"
 	{
 		"en"		"This feature requires that you are a zombie.
@@ -366,6 +371,12 @@
 	"ZSpawn double spawn"
 	{
 		"en"		"ZSpawn can only be used if you joined late during a round in progress."
+	}
+
+	"ZSpawn timelimit"
+	{
+		"#format"	"{1:d}"
+		"en"		"The timelimit, to use ZSpawn, ({1} seconds) has already expired."
 	}
 
 	// ===========================
