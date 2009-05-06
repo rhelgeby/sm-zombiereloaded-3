@@ -125,7 +125,7 @@ ZHPOnHealthInfectGain(client)
  * 
  * @param client    The client index.
  */
-ZHPToggle(client)
+bool:ZHPToggle(client)
 {
     // If ZHP is disabled, then stop.
     new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
@@ -135,7 +135,7 @@ ZHPToggle(client)
         ZR_PrintToChat(client, "Feature is disabled");
         
         // Stop.
-        return;
+        return false;
     }
     
     // If ZHP is enabled, then tell client it's being disabled.
@@ -154,6 +154,8 @@ ZHPToggle(client)
     
     // Toggle ZHP flag.
     pZHP[client] = !pZHP[client];
+    
+    return true;
 }
 
 /**

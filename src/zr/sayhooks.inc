@@ -78,6 +78,9 @@ public Action:SayHooksCmdSay(client, argc)
         return Plugin_Continue;
     }
     
+    // Define success as true until otherwise changed.
+    new bool:success = true;
+    
     switch(chatflag)
     {
         // Client triggered ZMenu flag.
@@ -89,7 +92,7 @@ public Action:SayHooksCmdSay(client, argc)
         // Client triggered ZAdmin flag.
         case SAYHOOKS_KEYWORD_FLAG_ZADMIN:
         {
-            ZRAdminMenu(client);
+            success = ZRAdminMenu(client);
         }
         // Client triggered ZClass flag.
         case SAYHOOKS_KEYWORD_FLAG_ZCLASS:
@@ -101,24 +104,24 @@ public Action:SayHooksCmdSay(client, argc)
         case SAYHOOKS_KEYWORD_FLAG_ZSPAWN:
         {
             // Spawns a late-joining client into the game.
-            ZSpawnClient(client);
+            success = ZSpawnClient(client);
         }
         // Client triggered ZTele flag.
         case SAYHOOKS_KEYWORD_FLAG_ZTELE:
         {
-            ZTeleClient(client);
+            success = ZTeleClient(client);
         }
         // Client triggered ZHP flag.
         case SAYHOOKS_KEYWORD_FLAG_ZHP:
         {
             // Toggle ZHP.
-            ZHPToggle(client);
+            success = ZHPToggle(client);
         }
         // Client triggered ZMarket flag.
         case SAYHOOKS_KEYWORD_FLAG_ZMARKET:
         {
             // Send market menu.
-            ZMarketMenu(client);
+            success = ZMarketMenu(client);
         }
     }
     
@@ -127,6 +130,13 @@ public Action:SayHooksCmdSay(client, argc)
     if (!quiet)
     {
         return Plugin_Continue;
+    }
+    
+    // If filter is enabled, and the command failed to be executed, then stop.
+    new bool:filter = GetConVarBool(g_hCvarsList[CVAR_SAYHOOKS_QUIET_FILTER]);
+    if (filter && !success)
+    {
+        return Plugin_Handled;
     }
     
     // If word is flagged to be quieted, then stop.

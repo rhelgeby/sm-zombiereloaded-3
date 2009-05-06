@@ -147,6 +147,13 @@ bool:ZTeleClient(client)
         return false;
     }
     
+    // If teleport is already in progress, then stop.
+    if (tZTele[client] != INVALID_HANDLE)
+    {
+        ZR_PrintToChat(client, "ZTele in progress");
+        return false;
+    }
+    
     // Get current location.
     GetClientAbsOrigin(client, g_vecZTeleOrigin[client]);
     

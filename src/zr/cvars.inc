@@ -47,6 +47,7 @@ enum CvarsList
     Handle:CVAR_DAMAGE_SUICIDE_HUMAN,
     Handle:CVAR_DAMAGE_SUICIDE_CMDS,
     Handle:CVAR_SAYHOOKS_QUIET,
+    Handle:CVAR_SAYHOOKS_QUIET_FILTER,
     Handle:CVAR_SAYHOOKS_QUIET_FLAGS,
     Handle:CVAR_ROUNDEND_OVERLAY,
     Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
@@ -315,6 +316,8 @@ CvarsCreate()
     // ===========================
     
     g_hCvarsList[CVAR_SAYHOOKS_QUIET]                   =    CreateConVar("zr_sayhooks_quiet", "1", "");
+    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FILTER]            =    CreateConVar("zr_sayhooks_quiet_filter", "1", "");
+    // when enabled it filters out failed sayhooks
     g_hCvarsList[CVAR_SAYHOOKS_QUIET_FLAGS]             =    CreateConVar("zr_sayhooks_quiet_flags", "58", "");
     // Flags (default: 2 + 8 + 16 + 32)
     // 0    Allow all.

@@ -393,7 +393,12 @@
 	"ZTele max"
 	{
 		"#format"	"{1:d}"
-		"en"		"You have reached your max of {1} teleports per round."
+		"en"		"You have reached your max of {1} teleport(s) per round."
+	}
+
+	"ZTele in progress"
+	{
+		"en"		"You are currently pending teleportation."
 	}
 
 	"ZTele autocancel text"
