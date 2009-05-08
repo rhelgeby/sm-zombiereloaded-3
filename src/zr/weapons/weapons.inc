@@ -378,3 +378,33 @@ WeaponForceClientDrop(client, weapon)
     // Force client to drop weapon.
     SDKCall(g_hToolsCSWeaponDrop, client, weapon, true, false);
 }
+
+/**
+ * Set's the alpha on a client's weapons.
+ * 
+ * @param client    The client index.
+ * @param alpha     The alpha to set the weapons to.
+ */
+WeaponSetWeaponAlpha(client, alpha)
+{
+    // Get client's list of weapons.
+    new weapons[WeaponsType];
+    WeaponsGetClientWeapons(client, weapons);
+    
+    // Loop through array slots and set alpha.
+    // x = weapon slot.
+    for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
+    {
+        // If weapon is invalid, then stop.
+        if (weapons[x] == -1)
+        {
+            continue;
+        }
+        
+        // Turn rendermode on, on the weapon.
+        SetEntityRenderMode(weapons[x], RENDER_TRANSALPHA);
+        
+        // Set alpha value on the weapon.
+        SetEntityRenderColor(weapons[x], _, _, _, alpha);
+    }
+}

@@ -139,12 +139,22 @@ ToolsClientScore(client, bool:score = true, bool:apply = true, value = 0)
  * 
  * @param client    The client index.
  * @param alpha     The alpha value to set client's alpha to. (0-255)
+ * @param weapons   Apply alpha to all client's weapons.
  */
-ToolsSetClientAlpha(client, alpha)
+ToolsSetClientAlpha(client, alpha, bool:bWeapons = true)
 {
     // Turn rendermode on, on the client.
-    SetEntData(client, g_iToolsRenderMode, 3, 1, true);
+    SetEntityRenderMode(client, RENDER_TRANSALPHA);
     
     // Set alpha value on the client.
-    SetEntData(client, g_iToolsRender + 3, alpha, 1, true);
+    SetEntityRenderColor(client, _, _, _, alpha);
+    
+    // If bWeapons is false, then stop.
+    if (!bWeapons)
+    {
+        return;
+    }
+    
+    // Set client's weapons' alpha.
+    WeaponSetWeaponAlpha(client, alpha);
 }

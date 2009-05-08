@@ -36,7 +36,6 @@
 #include "zr/roundend"
 #include "zr/infect"
 #include "zr/damage"
-
 #include "zr/menu"
 #include "zr/event"
 #include "zr/zadmin"

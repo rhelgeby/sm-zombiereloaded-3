@@ -22,8 +22,6 @@ new g_iToolsCollisionGroup;
 new g_iToolsAccount;
 new g_iToolsDefaultFOV;
 new g_iToolsInBuyZone;
-new g_iToolsRender;
-new g_iToolsRenderMode;
 new g_iToolsActiveWeapon;
 /**
  * @endsection
@@ -121,20 +119,6 @@ ToolsFindOffsets()
     if (g_iToolsInBuyZone == -1)
     {
         LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CCSPlayer::m_bInBuyZone\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
-    }
-    
-    // If offset "m_clrRender" can't be found, then stop the plugin.
-    g_iToolsRender = FindSendPropInfo("CAI_BaseNPC", "m_clrRender");
-    if (g_iToolsRender == -1)
-    {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CAI_BaseNPC::m_clrRender\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
-    }
-    
-    // If offset "m_nRenderMode" can't be found, then stop the plugin.
-    g_iToolsRenderMode = FindSendPropInfo("CBaseAnimating", "m_nRenderMode");
-    if (g_iToolsRenderMode == -1)
-    {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CBaseAnimating::m_nRenderMode\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
     }
     
     // If offset "m_hActiveWeapon" can't be found, then stop the plugin.
