@@ -140,37 +140,32 @@
 
 	"Menu main zadmin"
 	{
-		"en"		"ZAdmin (!zadmin) - View Admin Menu"
+		"en"		"ZAdmin ({1}) - Open admin menu."
 	}
 
 	"Menu main zclass"
 	{
-		"en"		"ZClass (!zclass) - Select a zombie class"
-		"ru"		"ZClass (!zclass) - Выбор класса зомби"
+		"en"		"ZClass ({1}) - Configure your class settings."
 	}
 
 	"Menu main zspawn"
 	{
-		"en"		"ZSpawn (!zspawn) - Spawn into game"
-		"ru"		"ZSpawn (!zspawn) - Заход в игру"
+		"en"		"ZSpawn ({1}) - Join late?  Use this to spawn."
 	}
 
 	"Menu main ztele"
 	{
-		"en"		"ZTele (!ztele) - Teleport to your spawnpoint"
-		"ru"		"ZTele (!ztele) - Телепорт на место появления"
+		"en"		"ZTele ({1}) - Teleport back to your spawn location."
 	}
 
 	"Menu main zhp"
 	{
-		"en"		"ZHP (!zhp) - Toggle real HP display when zombie"
-		"ru"		"ZHP (!zhp) - Показ здоровья зомби"
+		"en"		"ZHP ({1}) - Toggle real HP display when infected."
 	}
 
 	"Menu main zmarket"
 	{
-		"en"		"ZMarket (!zmarket) - Custom weapon list"
-		"ru"		"ZMarket (!zmarket) - Собственный набор оружия"
+		"en"		"ZMarket ({1}) - Need a weapon?  Buy them here."
 	}
 
 	// ===========================
@@ -376,7 +371,7 @@
 	"ZSpawn timelimit"
 	{
 		"#format"	"{1:d}"
-		"en"		"The timelimit, to use ZSpawn, ({1} seconds) has already expired."
+		"en"		"The timelimit ({1} seconds), to use ZSpawn, has already expired."
 	}
 
 	// ===========================

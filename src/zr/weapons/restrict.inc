@@ -44,7 +44,7 @@ enum WpnRestrictQuery
 RestrictInit()
 {
     // Initialize weapon restrict array.
-    gRestrictedWeapons = CreateArray(32, 0);
+    gRestrictedWeapons = CreateArray(WEAPONS_MAX_LENGTH, 0);
     
     // Hook buy command.
     RegConsoleCmd("buy", RestrictBuyCommand);

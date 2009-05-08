@@ -67,8 +67,9 @@ public Action:SayHooksCmdSay(client, argc)
     // Get client's command string (typically 'say "text"')
     GetCmdArgString(args, sizeof(args));
     
-    // Strip away the quotes.
-    ReplaceString(args, sizeof(args), "\"", "");
+    // Strip away certain characters.
+    ReplaceString(args, sizeof(args), "\"", ""); // Strip quotes
+    ReplaceString(args, sizeof(args), " ", ""); // Strip all whitespace.
     
     new chatflag = SayHooksChatToFlag(args);
     
@@ -152,8 +153,8 @@ public Action:SayHooksCmdSay(client, argc)
 /**
  * Convert chat text into a defined flag.
  * 
- * @param chat  The chat text to convert.
- * @return      Returns flag for word given, returns 0 if matches none.
+ * @param chat      The chat text to convert.
+ * @return          Returns flag for word given, returns 0 if matches none.
  */
 SayHooksChatToFlag(const String:chat[])
 {

@@ -35,12 +35,12 @@ MenuMain(client)
     decl String:zmarket[64];
     
     // Translate each line into client's language.
-    Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin");
-    Format(zclass, sizeof(zclass), "%t", "Menu main zclass");
-    Format(zspawn, sizeof(zspawn), "%t", "Menu main zspawn");
-    Format(ztele, sizeof(ztele), "%t", "Menu main ztele");
-    Format(zhp, sizeof(zhp), "%t", "Menu main zhp");
-    Format(zmarket, sizeof(zmarket), "%t", "Menu main zmarket");
+    Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin", SAYHOOKS_KEYWORD_ZMENU);
+    Format(zclass, sizeof(zclass), "%t", "Menu main zclass", SAYHOOKS_KEYWORD_ZADMIN);
+    Format(zspawn, sizeof(zspawn), "%t", "Menu main zspawn", SAYHOOKS_KEYWORD_ZCLASS);
+    Format(ztele, sizeof(ztele), "%t", "Menu main ztele", SAYHOOKS_KEYWORD_ZTELE);
+    Format(zhp, sizeof(zhp), "%t", "Menu main zhp", SAYHOOKS_KEYWORD_ZHP);
+    Format(zmarket, sizeof(zmarket), "%t", "Menu main zmarket", SAYHOOKS_KEYWORD_ZMARKET);
     
     // Add items to menu.
     

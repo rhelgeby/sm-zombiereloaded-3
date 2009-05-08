@@ -27,6 +27,7 @@
 #include "zr/cvars"
 #include "zr/config"
 #include "zr/translation"
+#include "zr/sayhooks"
 #include "zr/tools"
 #include "zr/models"
 #include "zr/playerclasses/playerclasses"
@@ -35,8 +36,8 @@
 #include "zr/roundend"
 #include "zr/infect"
 #include "zr/damage"
+
 #include "zr/menu"
-#include "zr/sayhooks"
 #include "zr/event"
 #include "zr/zadmin"
 #include "zr/commands"
@@ -66,7 +67,7 @@
 public Plugin:myinfo =
 {
     name = "Zombie:Reloaded",
-    author = "Greyscale, Rhelgeby (Richard)",
+    author = "Greyscale | Richard Helgeby",
     description = "Infection/survival style gameplay",
     version = VERSION,
     url = ""
