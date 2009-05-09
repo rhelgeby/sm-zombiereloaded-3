@@ -37,7 +37,7 @@ ZSpawnOnMapStart()
 ZSpawnOnClientDisconnect(client)
 {
     // Check if client is a bot.
-    if (!IsFakeClient(client))
+    if (IsFakeClient(client))
     {
         return;
     }
