@@ -36,6 +36,12 @@ ZSpawnOnMapStart()
  */
 ZSpawnOnClientDisconnect(client)
 {
+    // Check if client is a bot.
+    if (!IsFakeClient(client))
+    {
+        return;
+    }
+    
     // Get client's unique serial number.
     new serial = GetClientSerial(client);
     

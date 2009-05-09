@@ -300,6 +300,9 @@ new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
  */
 ClassLoad()
 {
+    // Initialize log boolean.
+    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS);
+    
     // Make sure kvClassData is ready to use.
     if (kvClassData != INVALID_HANDLE)
     {
@@ -311,14 +314,16 @@ ClassLoad()
     decl String:pathclasses[PLATFORM_MAX_PATH];
     new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_PLAYERCLASSES, pathclasses);
     
+    // Log what class file that is loaded.
+    if (enablelog)
+    {
+        LogMessageFormatted(-1, "Classes", "Load", "Loading classes from file \"%s\".", LOG_FORMAT_TYPE_SIMPLE, pathclasses);
+    }
+
     // If file doesn't exist, then log and stop.
     if (!exists)
     {
-        // Log failure.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
-        {
-            LogMessageFormatted(-1, "Classes", "Config Validation", "Missing playerclasses config file: %s", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
-        }
+        LogMessageFormatted(-1, "Classes", "Load", "Fatal error: Missing playerclasses config file \"%s\"", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
         
         return;
     }
@@ -330,7 +335,7 @@ ClassLoad()
     KvRewind(kvClassData);
     if (!KvGotoFirstSubKey(kvClassData))
     {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "Can't find any classes in %s", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
+        LogMessageFormatted(-1, "Classes", "Load", "Fatal error: Can't find any classes in \"%s\"", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
     }
     
     decl String:name[64];
@@ -339,6 +344,7 @@ ClassLoad()
     decl String:overlay_path[PLATFORM_MAX_PATH];
     
     ClassCount = 0;
+    new failedcount;
     new ClassErrorFlags;
     
     // Loop through all classes and store attributes in the ClassData array.
@@ -347,7 +353,7 @@ ClassLoad()
         if (ClassCount > ZR_CLASS_MAX)
         {
             // Maximum classes reached. Write a warning and exit the loop.
-            if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+            if (enablelog)
             {
                 LogMessageFormatted(-1, "Classes", "Load", "Warning: Maximum classes reached (%d). Skipping other classes.", _, ZR_CLASS_MAX + 1);
             }
@@ -411,10 +417,12 @@ ClassLoad()
             // There's one or more invalid class attributes. Disable the class
             // and log an error message.
             ClassData[ClassCount][class_enabled] = false;
-            if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+            if (enablelog)
             {
                 LogMessageFormatted(-1, "Classes", "Config Validation", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
             }
+            
+            failedcount++;
         }
         
         // Update the counter.
@@ -424,17 +432,23 @@ ClassLoad()
     // Validate team requirements.
     if (!ClassValidateTeamRequirements())
     {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "The class configuration doesn't match the team requirements.", LOG_FORMAT_TYPE_FATALERROR);
+        LogMessageFormatted(-1, "Classes", "Config Validation", "Fatal error: The class configuration doesn't match the team requirements.", LOG_FORMAT_TYPE_FATALERROR);
     }
     
     // Validate team default requirements.
     if (!ClassValidateTeamDefaults())
     {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "Couldn't find a default class for one or more teams. At least one class per team must be marked as default.", LOG_FORMAT_TYPE_FATALERROR);
+        LogMessageFormatted(-1, "Classes", "Config Validation", "Fatal error: Couldn't find a default class for one or more teams. At least one class per team must be marked as default.", LOG_FORMAT_TYPE_FATALERROR);
     }
     
     // Cache class data.
     ClassReloadDataCache();
+    
+    // Log summary.
+    if (enablelog)
+    {
+        LogMessageFormatted(-1, "Classes", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", _, ClassCount, ClassCount - failedcount, failedcount);
+    }
 }
 
 /**

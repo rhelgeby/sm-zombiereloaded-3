@@ -660,6 +660,9 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
     decl String:classname[64];
     new classindex;
     
+    // Initialize log boolean.
+    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES);
+    
     // Get the default class name from the correct CVAR depending on teamid.
     switch (teamid)
     {
@@ -723,7 +726,7 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                 // in the specified team, and log a warning.
                 classindex = ClassGetFirstClass(teamid, _, cachetype);
                 
-                if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+                if (enablelog)
                 {
                     LogMessageFormatted(-1, "Classes", "DefaultSpawnClass", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", _, classname, teamid);
                 }
@@ -732,7 +735,7 @@ ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                 if (ClassValidateIndex(classindex))
                 {
                     // Log a warning.
-                    if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+                    if (enablelog)
                     {
                         LogMessageFormatted(-1, "Classes", "DefaultSpawnClass", "Warning: The default class name \"%s\" does not exist or matches the team ID.", _, classname);
                     }

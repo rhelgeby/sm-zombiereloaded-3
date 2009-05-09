@@ -41,6 +41,9 @@
  */
 #define CONFIG_OPTION_MAX_LENGTH 32
 
+/**
+ * Actions to use when working on key/values.
+ */
 enum ConfigKeyvalueAction
 {
     Create, /** Create a key. */
@@ -48,6 +51,9 @@ enum ConfigKeyvalueAction
     Set, /** Modify setting of a key. */
     Get, /** Get setting of a key. */
 }
+/**
+ * @endsection
+ */
 
 /**
  * @section Global data handle initializations.
@@ -57,6 +63,7 @@ new Handle:kvClassData = INVALID_HANDLE;
 new Handle:kvWeapons = INVALID_HANDLE;
 new Handle:kvWeaponGroups = INVALID_HANDLE;
 new Handle:kvHitgroups = INVALID_HANDLE;
+
 /**
  * Load plugin configs.
  */
@@ -89,6 +96,48 @@ ConfigLoad()
 }
 
 /**
+ * Executed when modules are done loading. After all init calls in
+ * OnConfigsExecuted.
+ *
+ * Executes post map configs if they exist.
+ */
+ConfigOnModulesLoaded()
+{
+    decl String:mapname[256];
+    decl String:mapconfig[PLATFORM_MAX_PATH];
+    decl String:path[PLATFORM_MAX_PATH];
+    new bool:cfgexists;
+    
+    // Get map name and format into config path.
+    GetCurrentMap(mapname, sizeof(mapname));
+    Format(mapconfig, sizeof(mapconfig), "sourcemod/zombiereloaded/%s.post.cfg", mapname);
+    
+    // Prepend cfg to path.
+    Format(path, sizeof(path), "cfg/%s", mapconfig);
+    
+    // Workaround for bug 3083 in SourceMod compiler. Having FileExist directly
+    // in the if in this function makes it crash. Storing the result in a
+    // boolean first works.
+    
+    // Check if the file exist.
+    cfgexists = FileExists(path);
+    if (!cfgexists)
+    {
+        // File doesn't exist, then stop.
+        return;
+    }
+    
+    // Execute config file.
+    ServerCommand("exec %s", mapconfig);
+    
+    // Log action.
+    if (LogCheckFlag(LOG_CORE_EVENTS))
+    {
+        LogMessageFormatted(-1, "", "", "Executed post map config file: %s.", LOG_FORMAT_TYPE_SIMPLE, mapconfig);
+    }
+}
+
+/**
  * Load config file.
  * 
  * @param file  The cvar define of the path to the file.
@@ -105,6 +154,7 @@ bool:ConfigGetFilePath(CvarsList:cvar, String:path[])
     
     return FileExists(path);
 }
+
 
 /**
  * Creates, deletes, sets, or gets any key/setting of any ZR config keyvalue file in memory.
