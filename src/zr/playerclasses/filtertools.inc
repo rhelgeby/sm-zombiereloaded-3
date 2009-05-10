@@ -96,6 +96,20 @@ ClassValidateAttributes(classindex)
     {
         flags += ZR_CLASS_FLAG_NAME;
     }
+    else
+    {
+        decl String:name[64];
+        strcopy(name, sizeof(name), ClassData[classindex][class_name]);
+        
+        // Check for reserved name keyworks.
+        if (StrEqual(name, "all", false) ||
+            StrEqual(name, "humans", false) ||
+            StrEqual(name, "zombies", false) ||
+            StrEqual(name, "admins", false))
+        {
+            flags += ZR_CLASS_FLAG_NAME;
+        }
+    }
     
     // Description.
     if (strlen(ClassData[classindex][class_description]) < ZR_CLASS_DESCRIPTION_MIN)
@@ -195,7 +209,7 @@ ClassValidateAttributes(classindex)
     new infect_gain = ClassData[classindex][class_health_infect_gain];
     if (!(infect_gain >= ZR_CLASS_HEALTH_INFECT_GAIN_MIN && infect_gain <= ZR_CLASS_HEALTH_INFECT_GAIN_MAX))
     {
-        flags += ZR_CLASS_FLAG_INFECT_GAIN;
+        flags += ZR_CLASS_FLAG_HEALTH_INFECT_GAIN;
     }
     
     // Kill bonus.

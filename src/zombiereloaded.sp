@@ -202,6 +202,7 @@ public OnConfigsExecuted()
     ClassLoad();
     
     ConfigOnModulesLoaded();
+    ClassOnModulesLoaded();
 }
 
 /**
