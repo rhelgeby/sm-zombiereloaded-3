@@ -5,7 +5,7 @@
  *
  *   File:          zombiereloaded.sp
  *   Type:          Base
- *   Description:   Plugins base file.
+ *   Description:   Plugin's base file.
  *
  * ============================================================================
  */
@@ -14,7 +14,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <cstrike>
-#include <hacks>
+#include <zrtools>
 
 #undef REQUIRE_PLUGIN
 #include <market>

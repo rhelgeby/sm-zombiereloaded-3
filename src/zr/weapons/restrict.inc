@@ -209,7 +209,7 @@ RestrictWeaponUnrestrictAll()
 RestrictClientInit(client)
 {
     // Hook "canuse" on client.
-    gCanUseHookID[client] = Hacks_Hook(client, HACKS_HTYPE_WEAPON_CANUSE, RestrictCanUse, false);
+    gCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
 }
 
 /**
@@ -220,7 +220,7 @@ RestrictClientInit(client)
 RestrictOnClientDisconnect(client)
 {
     // Unhook "canuse" on client.
-    Hacks_Unhook(gCanUseHookID[client]);
+    ZRTools_UnhookWeapon_CanUse(gCanUseHookID[client]);
 }
 
 /**
@@ -231,8 +231,8 @@ RestrictOnClientDisconnect(client)
 RestrictOnClientSpawn(client)
 {
     // Re-hook "canuse" on client.
-    Hacks_Unhook(gCanUseHookID[client]);
-    gCanUseHookID[client] = Hacks_Hook(client, HACKS_HTYPE_WEAPON_CANUSE, RestrictCanUse, false);
+    ZRTools_UnhookWeapon_CanUse(gCanUseHookID[client]);
+    gCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
 }
 
 /**
@@ -868,9 +868,10 @@ RestrictGetGroupWeapons(const String:groupname[], String:weaponlist[], maxlen, c
  * Hook callback, called when a player is trying to pick up a weapon.
  * @param client    The client index.
  * @param weapon    The weapon index.
- * @return          0 to block weapon pickup, Hacks_Continue to allow.
+ * @return          Return ZRTools_Handled to stop weapon pickup.
+ *                  ZRTools_Continue to allow weapon pickup.
  */
-public RestrictCanUse(client, weapon, dummy1, dummy2, dummy3, dummy4)
+public ZRTools_Action:RestrictCanUse(client, weapon)
 {
     new String:weaponname[WEAPONS_MAX_LENGTH];
     GetEdictClassname(weapon, weaponname, sizeof(weaponname));
@@ -881,21 +882,21 @@ public RestrictCanUse(client, weapon, dummy1, dummy2, dummy3, dummy4)
     // If weapon is a knife, then allow pickup.
     if (StrEqual(weaponname, "knife"))
     {
-        return Hacks_Continue;
+        return ZRTools_Continue;
     }
     
     // If the weapon is restricted, then prevent pickup.
     if (RestrictIsWeaponRestricted(weaponname))
     {
-        return 0;
+        return ZRTools_Handled;
     }
     
     // If the player is a zombie, then prevent pickup.
     if (InfectIsClientInfected(client))
     {
-        return 0;
+        return ZRTools_Handled;
     }
     
     // Allow pickup.
-    return Hacks_Continue;
+    return ZRTools_Continue;
 }
