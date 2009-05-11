@@ -15,6 +15,30 @@
 				"windows"	"206"
 				"linux"		"207"
 			}
+
+			"TraceAttack"
+			{
+				"windows"	"58"
+				"linux"		"59"
+			}
+		
+			"OnTakeDamage"
+			{
+				"windows"	"60"
+				"linux"		"61"
+			}
+
+			"Weapon_CanUse"
+			{
+				"windows"	"216"
+				"linux"		"217"
+			}
+
+			"Weapon_Drop"
+			{
+				"windows"	"219"
+				"linux"		"220"
+			}
 		}
 
 		"Signatures"
