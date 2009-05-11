@@ -23,24 +23,42 @@
  */
 ClassClientInit(client)
 {
-    if (ZRIsClientValid(client))
+    // Check if there are valid classes and the client is valid.
+    if (ClassValidated && ZRIsClientValid(client))
     {
         // Set default class indexes on the player.
         ClassClientSetDefaultIndexes(client);
     }
 }
 
+/**
+ * Called when all modules are done loading.
+ */
+ClassOnModulesLoaded()
+{
+    // Set default classes on all player slots.
+    ClassClientSetDefaultIndexes();
+}
+
 ClassOnClientDisconnect(client)
 {
-    // Stop timers related to class attributes.
+    // Disable class attributes with timers.
+    ClassHealthRegenStop(client);
     ClassOverlayStop(client);
 }
 
 ClassOnClientSpawn(client)
 {
+    // Check if the player is alive.
     if (!IsPlayerAlive(client))
     {
-        // The client isn't alive.
+        return;
+    }
+    
+    // Check if there are valid classes. Block this event if classes aren't
+    // done loading.
+    if (!ClassValidated)
+    {
         return;
     }
     
@@ -97,7 +115,7 @@ ClassOnClientSpawn(client)
 
 ClassOnClientDeath(client)
 {
-    // Reset certain attributes to not make spectating disorted.
+    // Disable class attributes with timers.
     ClassHealthRegenStop(client);
     ClassOverlayStop(client);
     
@@ -109,17 +127,13 @@ ClassOnClientInfected(client, bool:motherzombie = false)
 {
     new classindex = ClassGetActiveIndex(client);
     
+    // Disable class attributes with timers.
+    ClassHealthRegenStop(client);
+    ClassOverlayStop(client);
+    
     // Update the players cache with zombie attributes.
     ClassReloadPlayerCache(client, classindex);
     
     // Apply the new attributes.
     ClassApplyAttributes(client, motherzombie);
 }
-
-/* ------------------------------------
- *
- * PLAYER COMMANDS
- *
- * ------------------------------------
- */
-

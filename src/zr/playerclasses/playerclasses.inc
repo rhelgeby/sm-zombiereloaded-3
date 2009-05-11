@@ -156,39 +156,43 @@
 #define ZR_CLASS_KNOCKBACK_MAX              30.0
 #define ZR_CLASS_JUMP_HEIGHT_MIN            -500.0
 #define ZR_CLASS_JUMP_HEIGHT_MAX            500.0
-#define ZR_CLASS_JUMP_DISTANCE_MIN          -500.0
-#define ZR_CLASS_JUMP_DISTANCE_MAX          500.0
+#define ZR_CLASS_JUMP_DISTANCE_MIN          -5.0
+#define ZR_CLASS_JUMP_DISTANCE_MAX          5.0
 /**
  * @endsection
  */
 
 /**
- * @section Error flags for invalid class attributes.
+ * @section Flags used for specifying one or more attributes.
  */
-#define ZR_CLASS_FLAG_NAME                  (1<<0)
-#define ZR_CLASS_FLAG_DESCRIPTION           (1<<1)
-#define ZR_CLASS_FLAG_MODEL_PATH            (1<<2)
-#define ZR_CLASS_FLAG_ALPHA_INITIAL         (1<<3)
-#define ZR_CLASS_FLAG_ALPHA_DAMAGED         (1<<4)
-#define ZR_CLASS_FLAG_ALPHA_DAMAGE          (1<<5)
-#define ZR_CLASS_FLAG_OVERLAY_PATH          (1<<6)
-#define ZR_CLASS_FLAG_FOV                   (1<<7)
-#define ZR_CLASS_FLAG_NAPALM_TIME           (1<<8)
-#define ZR_CLASS_FLAG_IMMUNITY_MODE         (1<<9)
-#define ZR_CLASS_FLAG_IMMUNITY_AMOUNT       (1<<10)
-#define ZR_CLASS_FLAG_HEALTH                (1<<11)
-#define ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL (1<<12)
-#define ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT   (1<<13)
-#define ZR_CLASS_FLAG_INFECT_GAIN           (1<<14)
-#define ZR_CLASS_FLAG_KILL_BONUS            (1<<15)
-#define ZR_CLASS_FLAG_SPEED                 (1<<16)
-#define ZR_CLASS_FLAG_KNOCKBACK             (1<<17)
-#define ZR_CLASS_FLAG_JUMP_HEIGHT           (1<<18)
-#define ZR_CLASS_FLAG_JUMP_DISTANCE         (1<<19)
+#define ZR_CLASS_FLAG_ENABLED               (1<<0)
+#define ZR_CLASS_FLAG_TEAM                  (1<<1)
+#define ZR_CLASS_FLAG_TEAM_DEFAULT          (1<<2)
+#define ZR_CLASS_FLAG_NAME                  (1<<3)
+#define ZR_CLASS_FLAG_DESCRIPTION           (1<<4)
+#define ZR_CLASS_FLAG_MODEL_PATH            (1<<5)
+#define ZR_CLASS_FLAG_ALPHA_INITIAL         (1<<6)
+#define ZR_CLASS_FLAG_ALPHA_DAMAGED         (1<<7)
+#define ZR_CLASS_FLAG_ALPHA_DAMAGE          (1<<8)
+#define ZR_CLASS_FLAG_OVERLAY_PATH          (1<<9)
+#define ZR_CLASS_FLAG_NVGS                  (1<<10)
+#define ZR_CLASS_FLAG_FOV                   (1<<11)
+#define ZR_CLASS_FLAG_NAPALM_TIME           (1<<12)
+#define ZR_CLASS_FLAG_IMMUNITY_MODE         (1<<13)
+#define ZR_CLASS_FLAG_IMMUNITY_AMOUNT       (1<<14)
+#define ZR_CLASS_FLAG_NO_FALL_DAMAGE        (1<<15)
+#define ZR_CLASS_FLAG_HEALTH                (1<<16)
+#define ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL (1<<17)
+#define ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT   (1<<18)
+#define ZR_CLASS_FLAG_HEALTH_INFECT_GAIN    (1<<19)
+#define ZR_CLASS_FLAG_KILL_BONUS            (1<<20)
+#define ZR_CLASS_FLAG_SPEED                 (1<<21)
+#define ZR_CLASS_FLAG_KNOCKBACK             (1<<22)
+#define ZR_CLASS_FLAG_JUMP_HEIGHT           (1<<23)
+#define ZR_CLASS_FLAG_JUMP_DISTANCE         (1<<24)
 /**
  * @endsection
  */
-
 
 /**
  * Generic player attributes.
@@ -231,7 +235,19 @@ enum ClassAttributes
     Float:class_speed,
     Float:class_knockback,
     Float:class_jump_height,
-    Float:class_jump_distance,
+    Float:class_jump_distance
+}
+
+/**
+ * Data types used in class attributes.
+ */
+enum ClassDataTypes
+{
+    ClassDataType_InvalidType,  /** Invalid type */
+    ClassDataType_Boolean,      /** Boolean value */
+    ClassDataType_Integer,      /** Integer value */
+    ClassDataType_Float,        /** Floating point value */
+    ClassDataType_String        /** String value */
 }
 
 /**
@@ -263,6 +279,12 @@ new ClassPlayerCache[MAXPLAYERS + 1][ClassAttributes];
  * Number of classes loaded.
  */
 new ClassCount;
+
+/**
+ * Specifies wether the class team requirement and attributes are valid or not.
+ * Used to block events that happend before the module is done loading.
+ */
+new bool:ClassValidated;
 
 /**
  * Stores what class that the player have selected, for each team.
@@ -300,6 +322,9 @@ new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
  */
 ClassLoad()
 {
+    // Initialize log boolean.
+    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS);
+    
     // Make sure kvClassData is ready to use.
     if (kvClassData != INVALID_HANDLE)
     {
@@ -314,13 +339,15 @@ ClassLoad()
     // If file doesn't exist, then log and stop.
     if (!exists)
     {
-        // Log failure.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
-        {
-            LogMessageFormatted(-1, "Classes", "Config Validation", "Missing playerclasses config file: %s", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
-        }
+        LogMessageFormatted(-1, "Classes", "Load", "Fatal error: Missing playerclasses config file \"%s\"", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
         
         return;
+    }
+    
+    // Log what class file that is loaded.
+    if (enablelog)
+    {
+        LogMessageFormatted(-1, "Classes", "Load", "Loading classes from file \"%s\".", LOG_FORMAT_TYPE_SIMPLE, pathclasses);
     }
     
     // Put file data into memory.
@@ -330,7 +357,7 @@ ClassLoad()
     KvRewind(kvClassData);
     if (!KvGotoFirstSubKey(kvClassData))
     {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "Can't find any classes in %s", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
+        LogMessageFormatted(-1, "Classes", "Load", "Fatal error: Can't find any classes in \"%s\"", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
     }
     
     decl String:name[64];
@@ -339,6 +366,7 @@ ClassLoad()
     decl String:overlay_path[PLATFORM_MAX_PATH];
     
     ClassCount = 0;
+    new failedcount;
     new ClassErrorFlags;
     
     // Loop through all classes and store attributes in the ClassData array.
@@ -347,7 +375,7 @@ ClassLoad()
         if (ClassCount > ZR_CLASS_MAX)
         {
             // Maximum classes reached. Write a warning and exit the loop.
-            if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+            if (enablelog)
             {
                 LogMessageFormatted(-1, "Classes", "Load", "Warning: Maximum classes reached (%d). Skipping other classes.", _, ZR_CLASS_MAX + 1);
             }
@@ -411,10 +439,12 @@ ClassLoad()
             // There's one or more invalid class attributes. Disable the class
             // and log an error message.
             ClassData[ClassCount][class_enabled] = false;
-            if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+            if (enablelog)
             {
                 LogMessageFormatted(-1, "Classes", "Config Validation", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
             }
+            
+            failedcount++;
         }
         
         // Update the counter.
@@ -424,17 +454,26 @@ ClassLoad()
     // Validate team requirements.
     if (!ClassValidateTeamRequirements())
     {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "The class configuration doesn't match the team requirements.", LOG_FORMAT_TYPE_FATALERROR);
+        LogMessageFormatted(-1, "Classes", "Config Validation", "Fatal error: The class configuration doesn't match the team requirements.", LOG_FORMAT_TYPE_FATALERROR);
     }
     
     // Validate team default requirements.
     if (!ClassValidateTeamDefaults())
     {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "Couldn't find a default class for one or more teams. At least one class per team must be marked as default.", LOG_FORMAT_TYPE_FATALERROR);
+        LogMessageFormatted(-1, "Classes", "Config Validation", "Fatal error: Couldn't find a default class for one or more teams. At least one class per team must be marked as default.", LOG_FORMAT_TYPE_FATALERROR);
     }
     
     // Cache class data.
     ClassReloadDataCache();
+    
+    // Mark classes as valid.
+    ClassValidated = true;
+    
+    // Log summary.
+    if (enablelog)
+    {
+        LogMessageFormatted(-1, "Classes", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", _, ClassCount, ClassCount - failedcount, failedcount);
+    }
 }
 
 /**

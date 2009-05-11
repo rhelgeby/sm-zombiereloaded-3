@@ -200,6 +200,9 @@ public OnConfigsExecuted()
     VEffectsLoad();
     SEffectsLoad();
     ClassLoad();
+    
+    ConfigOnModulesLoaded();
+    ClassOnModulesLoaded();
 }
 
 /**

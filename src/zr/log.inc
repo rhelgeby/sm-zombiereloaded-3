@@ -92,6 +92,7 @@ LogInit()
  *                  LOG_FORMAT_TYPE_SIMPLE - Simple, no module or block info.
  *                  LOG_FORMAT_TYPE_FULL - Full, with module and block info, printed in normal log.
  *                  LOG_FORMAT_TYPE_ERROR - Full, printed in error log.
+ *                  LOG_FORMAT_TYPE_FATALERROR - Full, stops the plugin.
  * @param any...    Formatting parameters.
  */
 LogMessageFormatted(client, const String:module[], const String:block[], const String:message[], type = LOG_FORMAT_TYPE_FULL, any:...)

@@ -26,7 +26,9 @@ CreateCommands()
     RegAdminCmd("zr_anticamp_list", Command_AnticampList, ADMFLAG_GENERIC, "List current volumes.");
     
     RegConsoleCmd("zr_log_flags", Command_LogFlags, "List available logging flags.");
+    
     RegConsoleCmd("zr_class_dump", Command_ClassDump, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
+    RegAdminCmd("zr_class_modify", Command_ClassModify, ADMFLAG_GENERIC, "Modify class data on one or more classes. Usage: zr_class_modify <classname|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
 }
 
 public Action:Command_Infect(client, argc)
@@ -229,60 +231,6 @@ public Action:Command_Unrestrict(client, argc)
     return Plugin_Handled;
 }
 
-/*public Action:Command_SetClassKnockback(client, argc)
-{
-    if (argc < 2)
-    {
-        ReplyToCommand(client, "Sets the specified class knockback. Usage: zr_set_class_knockback <classname> <knockback>");
-        return Plugin_Handled;
-    }
-
-    decl String:classname[64];
-    decl String:knockback_arg[8];
-    new classindex;
-    new Float:knockback;
-
-    GetCmdArg(1, classname, sizeof(classname));
-    GetCmdArg(2, knockback_arg, sizeof(knockback_arg));
-    classindex = GetClassIndex(classname);
-    knockback = StringToFloat(knockback_arg);
-
-    if (classindex < 0)
-    {
-        ReplyToCommand(client, "Could not find the class %s.", classname);
-        return Plugin_Handled;
-    }
-
-    arrayClasses[classindex][data_knockback] = knockback;
-    return Plugin_Handled;
-}
-
-public Action:Command_GetClassKnockback(client, argc)
-{
-    if (argc < 1)
-    {
-        ReplyToCommand(client, "Gets the specified class knockback. Usage: zr_get_class_knockback <classname>");
-        return Plugin_Handled;
-    }
-
-    decl String:classname[64];
-    new classindex;
-    new Float:knockback;
-
-    GetCmdArg(1, classname, sizeof(classname));
-    classindex = GetClassIndex(classname);
-
-    if (classindex < 0)
-    {
-        ReplyToCommand(client, "Could not find the class %s.", classname);
-        return Plugin_Handled;
-    }
-
-    knockback = arrayClasses[classindex][data_knockback];
-    ReplyToCommand(client, "Current knockback for %s: %f", classname, knockback);
-    
-    return Plugin_Handled;
-}*/
 
 public Action:Command_AdminMenu(client, argc)
 {

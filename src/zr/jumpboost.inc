@@ -28,13 +28,13 @@ JumpBoostOnClientJump(client)
     // Apply jump values.
     vecVelocity[0] *= distance;
     vecVelocity[1] *= distance;
-    vecVelocity[2] = height;
+    vecVelocity[2] += height;
     
     JumpBoostSetClientVelocity(client, vecVelocity);
 }
 
 /**
- * Apply jump boost force on client. (Special method separate from ToolsClientVelocity)
+ * Set new velocity on client. (Special method separate from ToolsClientVelocity)
  * 
  * @param client        The client index.
  * @param vecVelocity   Velocity to set on client.

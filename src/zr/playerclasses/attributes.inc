@@ -875,3 +875,177 @@ Float:ClassGetJumpDistance(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     }
     return -1.0;
 }
+
+/**
+ * Gets the attribute flag that represent the specified attribute.
+ *
+ * @param attributename     The attribute name.
+ * @return                  The flag that reporesent the specified attribute.
+ *                          -1 on error.
+ */
+ClassAttributeNameToFlag(const String:attributename[])
+{
+    // Check attribute names.
+    if (StrEqual(attributename, "enabled", false))
+    {
+        return ZR_CLASS_FLAG_ENABLED;
+    }
+    else if (StrEqual(attributename, "team", false))
+    {
+        return ZR_CLASS_FLAG_TEAM;
+    }
+    else if (StrEqual(attributename, "team_default", false))
+    {
+        return ZR_CLASS_FLAG_TEAM_DEFAULT;
+    }
+    else if (StrEqual(attributename, "name", false))
+    {
+        return ZR_CLASS_FLAG_NAME;
+    }
+    else if (StrEqual(attributename, "description", false))
+    {
+        return ZR_CLASS_FLAG_DESCRIPTION;
+    }
+    else if (StrEqual(attributename, "model_path", false))
+    {
+        return ZR_CLASS_FLAG_MODEL_PATH;
+    }
+    else if (StrEqual(attributename, "alpha_initial", false))
+    {
+        return ZR_CLASS_FLAG_ALPHA_INITIAL;
+    }
+    else if (StrEqual(attributename, "alpha_damaged", false))
+    {
+        return ZR_CLASS_FLAG_ALPHA_DAMAGED;
+    }
+    else if (StrEqual(attributename, "alpha_damage", false))
+    {
+        return ZR_CLASS_FLAG_ALPHA_DAMAGE;
+    }
+    else if (StrEqual(attributename, "overlay_path", false))
+    {
+        return ZR_CLASS_FLAG_OVERLAY_PATH;
+    }
+    else if (StrEqual(attributename, "nvgs", false))
+    {
+        return ZR_CLASS_FLAG_NVGS;
+    }
+    else if (StrEqual(attributename, "fov", false))
+    {
+        return ZR_CLASS_FLAG_FOV;
+    }
+    else if (StrEqual(attributename, "napalm_time", false))
+    {
+        return ZR_CLASS_FLAG_NAPALM_TIME;
+    }
+    else if (StrEqual(attributename, "immunity_mode", false))
+    {
+        return ZR_CLASS_FLAG_IMMUNITY_MODE;
+    }
+    else if (StrEqual(attributename, "immunity_amount", false))
+    {
+        return ZR_CLASS_FLAG_IMMUNITY_AMOUNT;
+    }
+    else if (StrEqual(attributename, "no_fall_damage", false))
+    {
+        return ZR_CLASS_FLAG_NO_FALL_DAMAGE;
+    }
+    else if (StrEqual(attributename, "health", false))
+    {
+        return ZR_CLASS_FLAG_HEALTH;
+    }
+    else if (StrEqual(attributename, "health_regen_interval", false))
+    {
+        return ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL;
+    }
+    else if (StrEqual(attributename, "health_regen_amount", false))
+    {
+        return ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT;
+    }
+    else if (StrEqual(attributename, "health_infect_gain", false))
+    {
+        return ZR_CLASS_FLAG_HEALTH_INFECT_GAIN;
+    }
+    else if (StrEqual(attributename, "kill_bonus", false))
+    {
+        return ZR_CLASS_FLAG_KILL_BONUS;
+    }
+    else if (StrEqual(attributename, "speed", false))
+    {
+        return ZR_CLASS_FLAG_SPEED;
+    }
+    else if (StrEqual(attributename, "knockback", false))
+    {
+        return ZR_CLASS_FLAG_KNOCKBACK;
+    }
+    else if (StrEqual(attributename, "jump_height", false))
+    {
+        return ZR_CLASS_FLAG_JUMP_HEIGHT;
+    }
+    else if (StrEqual(attributename, "jump_distance", false))
+    {
+        return ZR_CLASS_FLAG_JUMP_DISTANCE;
+    }
+    
+    // Invalid attribute name.
+    return -1;
+}
+
+/**
+ * Returns the datatype used in the specified attribute.
+ *
+ * @param attributeflag     A flag specifying the attribute to check.
+ * @return      The data type used in the specified attribute, or
+ *              ClassType_InvalidType if failed.
+ */
+ClassDataTypes:ClassGetAttributeType(attributeflag)
+{
+    switch (attributeflag)
+    {
+        // Boolean.
+        case ZR_CLASS_FLAG_ENABLED,
+              ZR_CLASS_FLAG_NVGS,
+              ZR_CLASS_FLAG_NO_FALL_DAMAGE:
+        {
+            return ClassDataType_Boolean;
+        }
+        
+        // Integer.
+        case ZR_CLASS_FLAG_ALPHA_INITIAL,
+              ZR_CLASS_FLAG_ALPHA_DAMAGED,
+              ZR_CLASS_FLAG_ALPHA_DAMAGE,
+              ZR_CLASS_FLAG_FOV,
+              ZR_CLASS_FLAG_IMMUNITY_MODE,
+              ZR_CLASS_FLAG_HEALTH,
+              ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT,
+              ZR_CLASS_FLAG_HEALTH_INFECT_GAIN,
+              ZR_CLASS_FLAG_KILL_BONUS:
+        {
+            return ClassDataType_Integer;
+        }
+        
+        // Float.
+        case ZR_CLASS_FLAG_NAPALM_TIME,
+              ZR_CLASS_FLAG_IMMUNITY_AMOUNT,
+              ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL,
+              ZR_CLASS_FLAG_SPEED,
+              ZR_CLASS_FLAG_KNOCKBACK,
+              ZR_CLASS_FLAG_JUMP_HEIGHT,
+              ZR_CLASS_FLAG_JUMP_DISTANCE:
+        {
+            return ClassDataType_Float;
+        }
+        
+        // String.
+        case ZR_CLASS_FLAG_NAME,
+              ZR_CLASS_FLAG_DESCRIPTION,
+              ZR_CLASS_FLAG_MODEL_PATH,
+              ZR_CLASS_FLAG_OVERLAY_PATH:
+        {
+            return ClassDataType_String;
+        }
+    }
+    
+    // Invalid flag or multiple flags combined.
+    return ClassDataType_InvalidType;
+}

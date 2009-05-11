@@ -57,6 +57,9 @@ bool:AmbientSoundsValidateConfig()
         return false;
     }
     
+    // Initialize log boolean.
+    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_AMBIENTSOUNDS);
+    
     // Get ambient sound file.
     decl String:sound[SOUND_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE], sound, sizeof(sound));
@@ -66,7 +69,7 @@ bool:AmbientSoundsValidateConfig()
     if (!FileExists(sound, true))
     {
         // Log invalid sound file error.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_AMBIENTSOUNDS))
+        if (enablelog)
         {
             LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Invalid sound file specified in zr_ambientsounds_file.", LOG_FORMAT_TYPE_ERROR);
         }
@@ -79,7 +82,7 @@ bool:AmbientSoundsValidateConfig()
     if (ambientvolume <= 0.0)
     {
         // Log invalid ambient sound volume error.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_AMBIENTSOUNDS))
+        if (enablelog)
         {
             LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Ambient sound is either muted or invalid.", LOG_FORMAT_TYPE_ERROR);
         }
@@ -92,9 +95,9 @@ bool:AmbientSoundsValidateConfig()
     if (ambientlength <= 0.0)
     {
         // Log invalid ambient sound length error.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_AMBIENTSOUNDS))
+        if (enablelog)
         {
-            LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Ambient sound length is invalid.", LOG_FORMAT_TYPE_ERROR);
+            LogMessageFormatted(-1, "Ambient Sounds", "Config Validation", "Specified ambient sound length is invalid.", LOG_FORMAT_TYPE_ERROR);
         }
         
         return false;

@@ -24,7 +24,7 @@ MenuMain(client)
     SetGlobalTransTarget(client);
     
     // Set menu title.
-    SetMenuTitle(menu_main, "%t\n ", "!zmenu title");
+    SetMenuTitle(menu_main, "%t\n ", "Menu main title");
     
     // Initialize menu lines.
     decl String:zadmin[64];
