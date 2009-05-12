@@ -141,7 +141,7 @@ ToolsClientScore(client, bool:score = true, bool:apply = true, value = 0)
  * @param alpha     The alpha value to set client's alpha to. (0-255)
  * @param weapons   Apply alpha to all client's weapons.
  */
-ToolsSetClientAlpha(client, alpha, bool:bWeapons = true)
+ToolsSetClientAlpha(client, alpha)
 {
     // Turn rendermode on, on the client.
     SetEntityRenderMode(client, RENDER_TRANSALPHA);
@@ -149,12 +149,36 @@ ToolsSetClientAlpha(client, alpha, bool:bWeapons = true)
     // Set alpha value on the client.
     SetEntityRenderColor(client, _, _, _, alpha);
     
-    // If bWeapons is false, then stop.
-    if (!bWeapons)
-    {
-        return;
-    }
-    
-    // Set client's weapons' alpha.
-    WeaponSetWeaponAlpha(client, alpha);
+    // Forward event to modules.
+    WeaponAlphaOnClientAlphaChanged(client, alpha);
+}
+
+/**
+ * Sets an entity's color. (This is the "get" version of SetEntityRenderColor)
+ *
+ * @param client	The client index.
+ * @return          The alpha value of the client. (0-255)
+ */
+ToolsGetEntityAlpha(entity)
+{
+	static bool:gotconfig = false;
+	static String:prop[32];
+	
+	if (!gotconfig)
+	{
+		new Handle:gc = LoadGameConfigFile("core.games");
+		new bool:exists = GameConfGetKeyValue(gc, "m_clrRender", prop, sizeof(prop));
+		CloseHandle(gc);
+		
+		if (!exists)
+		{
+			strcopy(prop, sizeof(prop), "m_clrRender");
+		}
+		
+		gotconfig = true;
+	}
+	
+	new offset = GetEntSendPropOffs(entity, prop);
+	
+	return GetEntData(entity, offset + 3, 1);
 }

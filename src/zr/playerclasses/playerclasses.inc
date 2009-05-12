@@ -323,7 +323,7 @@ new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
 ClassLoad()
 {
     // Initialize log boolean.
-    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS);
+    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES);
     
     // Make sure kvClassData is ready to use.
     if (kvClassData != INVALID_HANDLE)

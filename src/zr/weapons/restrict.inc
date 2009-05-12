@@ -208,7 +208,7 @@ RestrictWeaponUnrestrictAll()
  */
 RestrictClientInit(client)
 {
-    // Hook "canuse" on client.
+    // Hook "Weapon_CanUse" on client.
     gCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
 }
 
@@ -219,7 +219,7 @@ RestrictClientInit(client)
  */
 RestrictOnClientDisconnect(client)
 {
-    // Unhook "canuse" on client.
+    // Unhook "Weapon_CanUse" on client.
     ZRTools_UnhookWeapon_CanUse(gCanUseHookID[client]);
 }
 
@@ -347,7 +347,7 @@ WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[] = "")
     }
     
     // Get display name of the weapon.
-    WeaponGetDisplayName(weapon, display);
+    WeaponsGetDisplayName(weapon, display);
     
     // Return restrict failed if weapon is already restricted.
     if (RestrictIsWeaponRestricted(weapon))
@@ -432,7 +432,7 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[] = ""
     }
     
     // Get display name of the weapon.
-    WeaponGetDisplayName(weapon, display);
+    WeaponsGetDisplayName(weapon, display);
     
     // Return unrestrict failed if weapon isn't restricted.
     if (!RestrictIsWeaponRestricted(weapon))
@@ -896,6 +896,9 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
     {
         return ZRTools_Handled;
     }
+    
+    // Forward event to modules. (item pickup)
+    WeaponAlphaOnItemPickup(client, weapon);
     
     // Allow pickup.
     return ZRTools_Continue;

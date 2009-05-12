@@ -505,7 +505,7 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
             }
             
             // Force client to drop weapon.
-            WeaponForceClientDrop(client, weapons[x]);
+            WeaponsForceClientDrop(client, weapons[x]);
         }
         else
         {

@@ -43,6 +43,7 @@ enum WeaponsType
  */
 
 #include "zr/weapons/restrict"
+#include "zr/weapons/weaponalpha"
 #include "zr/weapons/markethandler"
 #include "zr/weapons/menu_weapons"
 
@@ -137,6 +138,7 @@ WeaponsClientInit(client)
 {
     // Forward event to sub-module.
     RestrictClientInit(client);
+    WeaponAlphaClientInit(client);
 }
 
 /**
@@ -148,6 +150,7 @@ WeaponsOnClientDisconnect(client)
 {
     // Forward event to sub-module.
     RestrictOnClientDisconnect(client);
+    WeaponAlphaOnClientDisconnect(client);
 }
 
 /**
@@ -219,7 +222,7 @@ bool:WeaponsIsValidWeapon(const String:weapon[])
  * @param weapon    The weapon name.
  * @param display   Returns with the display name, is not changed if weapon is invalid. 
  */
-WeaponGetDisplayName(const String:weapon[], String:display[])
+WeaponsGetDisplayName(const String:weapon[], String:display[])
 {
     // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);
@@ -373,38 +376,8 @@ WeaponsType:WeaponsGetDeployedWeaponSlot(client)
  * @param client    The client index.
  * @param weapon    The weapon index to force client to drop.
  */
-WeaponForceClientDrop(client, weapon)
+WeaponsForceClientDrop(client, weapon)
 {
     // Force client to drop weapon.
     SDKCall(g_hToolsCSWeaponDrop, client, weapon, true, false);
-}
-
-/**
- * Set's the alpha on a client's weapons.
- * 
- * @param client    The client index.
- * @param alpha     The alpha to set the weapons to.
- */
-WeaponSetWeaponAlpha(client, alpha)
-{
-    // Get client's list of weapons.
-    new weapons[WeaponsType];
-    WeaponsGetClientWeapons(client, weapons);
-    
-    // Loop through array slots and set alpha.
-    // x = weapon slot.
-    for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
-    {
-        // If weapon is invalid, then stop.
-        if (weapons[x] == -1)
-        {
-            continue;
-        }
-        
-        // Turn rendermode on, on the weapon.
-        SetEntityRenderMode(weapons[x], RENDER_TRANSALPHA);
-        
-        // Set alpha value on the weapon.
-        SetEntityRenderColor(weapons[x], _, _, _, alpha);
-    }
 }
