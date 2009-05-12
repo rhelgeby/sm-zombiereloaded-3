@@ -26,6 +26,7 @@
 #include "zr/log"
 #include "zr/cvars"
 #include "zr/config"
+#include "zr/serial"
 #include "zr/translation"
 #include "zr/sayhooks"
 #include "zr/tools"
@@ -169,6 +170,7 @@ public OnLibraryAdded(const String:name[])
 public OnMapStart()
 {
     // Forward event to modules.
+    SerialOnMapStart();
     RoundEndOnMapStart();
     InfectOnMapStart();
     SEffectsOnMapStart();

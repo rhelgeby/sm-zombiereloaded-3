@@ -16,11 +16,6 @@
 new Handle:tZSpawn = INVALID_HANDLE;
 
 /**
- * Array to block zspawn for a unique client serial number.
- */
-new bool:g_bZSpawnBlock[MAXPLAYERS + 1];
-
-/**
  * Map is starting.
  */
 ZSpawnOnMapStart()
@@ -42,11 +37,8 @@ ZSpawnOnClientDisconnect(client)
         return;
     }
     
-    // Get client's unique serial number.
-    new serial = GetClientSerial(client);
-    
-    // Block zspawn.
-    g_bZSpawnBlock[serial] = true;
+    // Add client serial to global array.
+    SerialAddClient(client);
 }
 
 /**
@@ -56,11 +48,8 @@ ZSpawnOnClientDisconnect(client)
  */
 ZSpawnOnClientDeath(client)
 {
-    // Get client's unique serial number.
-    new serial = GetClientSerial(client);
-    
-    // Block zspawn.
-    g_bZSpawnBlock[serial] = true;
+    // Add client serial to global array.
+    SerialAddClient(client);
 }
 
 /**
@@ -68,13 +57,8 @@ ZSpawnOnClientDeath(client)
  */
 ZSpawnOnRoundStart()
 {
-    // Disable flag that blocks zspawn for all clients.
-    // x = client index.
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        // Unblock zspawn.
-        g_bZSpawnBlock[x] = false;
-    }
+    // Reset serial number array.
+    SerialReset();
     
     // If zspawn timer is running, then kill it.
     if (tZSpawn != INVALID_HANDLE)
@@ -169,8 +153,7 @@ bool:ZSpawnClient(client)
     }
     
     // Block if client has already played during this round.
-    new serial = GetClientSerial(client);
-    if (g_bZSpawnBlock[serial])
+    if (SerialClientExists(client))
     {
         // Tell client the command may only be used when joining late.
         ZR_PrintToChat(client, "ZSpawn double spawn");
