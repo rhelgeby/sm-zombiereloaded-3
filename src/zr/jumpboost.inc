@@ -11,6 +11,11 @@
  */
 
 /**
+ * The maximum forward velocity client can have for any additional push to be applied.
+ */
+#define JUMPBOOST_FORWARD_VEL_MAX 275.0
+
+/**
  * Client is jumping.
  * 
  * @param client    The client index.
@@ -25,11 +30,22 @@ JumpBoostOnClientJump(client)
     new Float:vecVelocity[3];
     ToolsClientVelocity(client, vecVelocity, false);
     
-    // Apply jump values.
+    // Protect against bunnyhopping.
+    new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
+    if (magnitude >= JUMPBOOST_FORWARD_VEL_MAX)
+    {
+        // Set distance multiplier to 0.
+        distance = 0.0;
+    }
+    
+    // Apply forward jump boost.
     vecVelocity[0] *= distance;
     vecVelocity[1] *= distance;
+    
+    // Apply vertical jump boost.
     vecVelocity[2] += height;
     
+    // Apply velocity.
     JumpBoostSetClientVelocity(client, vecVelocity);
 }
 
