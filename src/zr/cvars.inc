@@ -97,9 +97,11 @@ enum CvarsList
     Handle:CVAR_SPAWNPROTECT_ALPHA,
     Handle:CVAR_RESPAWN,
     Handle:CVAR_RESPAWN_DELAY,
-    Handle:CVAR_RESPAWN_ZOMBIE,
-    Handle:CVAR_RESPAWN_ZOMBIE_WORLD,
+    Handle:CVAR_RESPAWN_TEAM_ZOMBIE,
+    Handle:CVAR_RESPAWN_TEAM_ZOMBIE_WORLD,
     Handle:CVAR_ZSPAWN,
+    Handle:CVAR_ZSPAWN_TEAM_OVERRIDE,
+    Handle:CVAR_ZSPAWN_TEAM_ZOMBIE,
     Handle:CVAR_ZSPAWN_TIMELIMIT,
     Handle:CVAR_ZSPAWN_TIMELIMIT_TIME,
     Handle:CVAR_ZTELE_ZOMBIE,
@@ -431,9 +433,9 @@ CvarsCreate()
     // Old Desc: When player is killed,  player will respawn
     g_hCvarsList[CVAR_RESPAWN_DELAY]                    =    CreateConVar("zr_respawn_delay", "1", "");
     // Old Desc: How long to wait after death to respawn,  in seconds
-    g_hCvarsList[CVAR_RESPAWN_ZOMBIE]                   =    CreateConVar("zr_respawn_zombie", "1", "");
+    g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]                   =    CreateConVar("zr_respawn_team_zombie", "1", "");
     // Old Desc: Respawn player as zombie (0: Respawn as human)
-    g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]             =    CreateConVar("zr_respawn_zombie_world", "1", "");
+    g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]             =    CreateConVar("zr_respawn_team_zombie_world", "1", "");
     // Old Desc: Respawn zombies as zombies if they were killed by the world, like elevators, doors and lasers. (0: Disable)
     
     // ===========================
@@ -448,6 +450,9 @@ CvarsCreate()
     
     g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn", "1", "");
     // Old Desc: Allow players to spawn if they just joined the game (0: Disable)
+    
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override", "1", "");
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie", "0", "");
     
     g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit", "1", "");
     g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time", "120", "");

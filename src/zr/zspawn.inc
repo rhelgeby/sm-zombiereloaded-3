@@ -175,8 +175,12 @@ bool:ZSpawnClient(client)
         }
     }
     
+    // Check if zspawn override is enabled, and if so get overidden value.
+    new bool:teamoverride = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]);
+    new bool:teamzombie = teamoverride ? GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]) : GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+    
     // Tell respawn module to respawn client.
-    RespawnSpawnClient(client);
+    RespawnSpawnClient(client, teamzombie);
     
     return true;
 }

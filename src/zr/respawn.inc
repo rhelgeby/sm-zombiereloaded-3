@@ -124,7 +124,7 @@ RespawnOnRoundEnd()
 RespawnKilledByWorld(client)
 {
     // Return true if both the cvar is enabled and the player was killed by world.
-    return (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && bKilledByWorld[client]);
+    return (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]) && bKilledByWorld[client]);
 }
 
 /**
@@ -132,7 +132,7 @@ RespawnKilledByWorld(client)
  * 
  * @param client    The client index.
  */
-RespawnSpawnClient(client)
+RespawnSpawnClient(client, bool:zombie = false)
 {
     // If client isn't in-game, then stop.
     if (!IsClientInGame(client))
@@ -149,17 +149,14 @@ RespawnSpawnClient(client)
         return;
     }
     
-    // Get respawn team.
-    new bool:respawn_zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE]);
-    
-    // Get suicide respawn cvar
-    if (respawn_zombie)
+    // Infect if zombie is true.
+    if (zombie)
     {
         InfectClient(client);
         return;
     }
     
-    if (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_ZOMBIE_WORLD]) && bKilledByWorld[client])
+    if (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]) && bKilledByWorld[client])
     {
         InfectClient(client);
         bKilledByWorld[client] = false;
@@ -198,6 +195,9 @@ public Action:RespawnTimer(Handle:timer, any:client)
         return;
     }
     
+    // Get respawn team.
+    new bool:respawn_zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+    
     // Spawn player.
-    RespawnSpawnClient(client);
+    RespawnSpawnClient(client, respawn_zombie);
 }
