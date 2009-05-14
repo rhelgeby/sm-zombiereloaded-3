@@ -94,12 +94,12 @@ ClassOnClientSpawn(client)
         // Mark zombie class as selected.
         ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = randomzombie;
         ClassGetName(randomzombie, classname, sizeof(classname), ZR_CLASS_TEAM_ZOMBIES);
-        ZR_PrintToChat(client, "Classes random assignment", classname);
+        TranslationPrintToChat(client, "Classes random assignment", classname);
         
         // Mark human class as selected.
         ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = randomhuman;
         ClassGetName(randomhuman, classname, sizeof(classname), ZR_CLASS_TEAM_HUMANS);
-        ZR_PrintToChat(client, "Classes random assignment", classname);
+        TranslationPrintToChat(client, "Classes random assignment", classname);
         
         // Update player cache with the human class data, and apply it.
         ClassReloadPlayerCache(client, randomhuman);

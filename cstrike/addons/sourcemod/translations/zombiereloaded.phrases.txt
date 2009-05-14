@@ -22,6 +22,13 @@
 
 	// General
 
+	"Literal text"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1}"
+	}
+	// Set string to "{1}" for all languages.
+
 	"Feature is disabled"
 	{
 		"en"		"This feature is currently disabled by the server host."
@@ -173,31 +180,37 @@
 
 	"Menu main zadmin"
 	{
+		"#format"	"{1:s}"
 		"en"		"ZAdmin ({1}) - Open admin menu."
 	}
 
 	"Menu main zclass"
 	{
+		"#format"	"{1:s}"
 		"en"		"ZClass ({1}) - Configure your class settings."
 	}
 
 	"Menu main zspawn"
 	{
+		"#format"	"{1:s}"
 		"en"		"ZSpawn ({1}) - Join late?  Use this to spawn."
 	}
 
 	"Menu main ztele"
 	{
+		"#format"	"{1:s}"
 		"en"		"ZTele ({1}) - Teleport back to your spawn location."
 	}
 
 	"Menu main zhp"
 	{
+		"#format"	"{1:s}"
 		"en"		"ZHP ({1}) - Toggle real HP display when infected."
 	}
 
 	"Menu main zmarket"
 	{
+		"#format"	"{1:s}"
 		"en"		"ZMarket ({1}) - Need a weapon?  Buy them here."
 	}
 

@@ -91,10 +91,10 @@ SpawnProtectOnClientSpawn(client)
         pSpawnProtectTime[client] = protect_time;
         
         // Tell client they are being protected.
-        ZR_PrintToChat(client, "Spawn protection begin", protect_time);
+        TranslationPrintToChat(client, "Spawn protection begin", protect_time);
         
         // Send time left in a hud message.
-        ZR_HudHint(client, "Spawn Protect", pSpawnProtectTime[client]);
+        TranslationPrintHUDText(client, "Spawn Protect", pSpawnProtectTime[client]);
         
         // Start repeating timer.
         tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -142,7 +142,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
     pSpawnProtectTime[client]--;
     
     // Print time left to client.
-    ZR_HudHint(client, "Spawn Protect", pSpawnProtectTime[client]);
+    TranslationPrintHUDText(client, "Spawn Protect", pSpawnProtectTime[client]);
     
     // Time has expired.
     if (pSpawnProtectTime[client] <= 0)
@@ -151,7 +151,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
         bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
         
         // Tell client spawn protection is over.
-        ZR_HudHint(client, "Spawn protection end");
+        TranslationPrintHUDText(client, "Spawn protection end");
         
         // Fix attributes.
         ToolsSetClientAlpha(client, ClassGetAlphaInitial(client));

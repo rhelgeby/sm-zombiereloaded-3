@@ -322,9 +322,6 @@ new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
  */
 ClassLoad()
 {
-    // Initialize log boolean.
-    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES);
-    
     // Make sure kvClassData is ready to use.
     if (kvClassData != INVALID_HANDLE)
     {
@@ -339,16 +336,12 @@ ClassLoad()
     // If file doesn't exist, then log and stop.
     if (!exists)
     {
-        LogMessageFormatted(-1, "Classes", "Load", "Fatal error: Missing playerclasses config file \"%s\"", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
-        
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Classes", "Config Validation", "Fatal Error: Missing playerclasses config file \"%s\"", pathclasses);
         return;
     }
     
     // Log what class file that is loaded.
-    if (enablelog)
-    {
-        LogMessageFormatted(-1, "Classes", "Load", "Loading classes from file \"%s\".", LOG_FORMAT_TYPE_SIMPLE, pathclasses);
-    }
+    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Classes", "Config Validation", "Loading classes from file \"%s\".", pathclasses);
     
     // Put file data into memory.
     FileToKeyValues(kvClassData, pathclasses);
@@ -357,7 +350,7 @@ ClassLoad()
     KvRewind(kvClassData);
     if (!KvGotoFirstSubKey(kvClassData))
     {
-        LogMessageFormatted(-1, "Classes", "Load", "Fatal error: Can't find any classes in \"%s\"", LOG_FORMAT_TYPE_FATALERROR, pathclasses);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Classes", "Config Validation", "Fatal Error: Can't find any classes in \"%s\"", pathclasses);
     }
     
     decl String:name[64];
@@ -375,10 +368,7 @@ ClassLoad()
         if (ClassCount > ZR_CLASS_MAX)
         {
             // Maximum classes reached. Write a warning and exit the loop.
-            if (enablelog)
-            {
-                LogMessageFormatted(-1, "Classes", "Load", "Warning: Maximum classes reached (%d). Skipping other classes.", _, ZR_CLASS_MAX + 1);
-            }
+            LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Classes", "Config Validation", "Warning: Maximum classes reached (%d). Skipping other classes.", ZR_CLASS_MAX + 1);
             
             break;
         }
@@ -439,10 +429,7 @@ ClassLoad()
             // There's one or more invalid class attributes. Disable the class
             // and log an error message.
             ClassData[ClassCount][class_enabled] = false;
-            if (enablelog)
-            {
-                LogMessageFormatted(-1, "Classes", "Config Validation", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", LOG_FORMAT_TYPE_ERROR, ClassCount, ClassErrorFlags);
-            }
+            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Classes", "Config Validation", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", ClassCount, ClassErrorFlags);
             
             failedcount++;
         }
@@ -454,13 +441,13 @@ ClassLoad()
     // Validate team requirements.
     if (!ClassValidateTeamRequirements())
     {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "Fatal error: The class configuration doesn't match the team requirements.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Classes", "Config Validation", "Fatal Error: The class configuration doesn't match the team requirements.");
     }
     
     // Validate team default requirements.
     if (!ClassValidateTeamDefaults())
     {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "Fatal error: Couldn't find a default class for one or more teams. At least one class per team must be marked as default.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Classes", "Config Validation", "Fatal Error: Couldn't find a default class for one or more teams. At least one class per team must be marked as default.");
     }
     
     // Cache class data.
@@ -470,10 +457,7 @@ ClassLoad()
     ClassValidated = true;
     
     // Log summary.
-    if (enablelog)
-    {
-        LogMessageFormatted(-1, "Classes", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", _, ClassCount, ClassCount - failedcount, failedcount);
-    }
+    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Classes", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", ClassCount, ClassCount - failedcount, failedcount);
 }
 
 
@@ -657,10 +641,7 @@ ClassClientSetDefaultIndexes(client = -1)
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
-        {
-            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".", LOG_FORMAT_TYPE_ERROR);
-        }
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Classes", "Set Default Indexes", "Warning: Failed to get default zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".");
         
         // Use default class.
         zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES);
@@ -671,10 +652,7 @@ ClassClientSetDefaultIndexes(client = -1)
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
-        {
-            LogMessageFormatted(-1, "Classes", "SetDefaultIndexes", "Warning: Failed to get default human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".", LOG_FORMAT_TYPE_ERROR);
-        }
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Classes", "Set Default Indexes", "Warning: Failed to get default human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".");
         
         // Use default class.
         humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS);

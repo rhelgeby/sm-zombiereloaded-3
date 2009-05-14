@@ -180,7 +180,7 @@ InfectOnClientDisconnect(client)
     InfectClient(randclient);
     
     // Tell client they have been randomly been chosen to replace disconnecting zombie.
-    ZR_PrintToChat(randclient, "Infect disconnect");
+    TranslationPrintToChat(randclient, "Infect disconnect");
     
     // Destroy handle.
     CloseHandle(arrayEligibleClients);
@@ -569,7 +569,7 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
     SetGlobalTransTarget(client);
     
     // Print message to client.
-    ZR_PrintToChat(client, "Infect infected");
+    TranslationPrintToChat(client, "Infect infected");
     
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);

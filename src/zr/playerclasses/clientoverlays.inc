@@ -81,7 +81,7 @@ ClassOverlayOnClientSpawn(client)
         decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
         GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
         
-        ZR_HudHint(client, "Classes overlay toggle", togglecmds);
+        TranslationPrintHUDText(client, "Classes overlay toggle", togglecmds);
     }
 }
 
@@ -103,7 +103,7 @@ ClassOverlayOnClientInfected(client)
         decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
         GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
         
-        ZR_PrintCenterText(client, "Classes overlay toggle", togglecmds);
+        TranslationPrintCenterText(client, "Classes overlay toggle", togglecmds);
     }
 }
 

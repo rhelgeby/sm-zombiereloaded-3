@@ -92,10 +92,20 @@ public Action:Command_ClassDump(client, argc)
     // Dump the specified cache.
     ReplyToCommand(client, "DUMPING CACHE: \"%s\" (%d classes total)\n========================================\n", type, ClassCount);
     ClassDumpData(index, cachetype, buffer, sizeof(buffer));
-    ZR_ReplyToCommandLong(client, buffer);
+    
+    // Print all data to client.
+    decl String:partbuffer[1024];
+    new pos;
+    new cellswritten = 1;   // Initialize for the loop.
+
+    while (cellswritten)
+    {
+        cellswritten = strcopy(partbuffer, sizeof(partbuffer), buffer[pos]);
+        ReplyToCommand(client, partbuffer);
+        pos += cellswritten;
+    }
     
     return Plugin_Handled;
-
 }
 
 /**

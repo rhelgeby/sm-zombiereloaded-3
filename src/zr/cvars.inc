@@ -25,6 +25,15 @@
 enum CvarsList
 {
     Handle:CVAR_ENABLE,
+    Handle:CVAR_LOG,
+    Handle:CVAR_LOG_LOAD,
+    Handle:CVAR_LOG_CORE,
+    Handle:CVAR_LOG_FILTER_MODULES,
+    Handle:CVAR_LOG_FILTER_DESCRIPTION,
+    Handle:CVAR_LOG_FILTER_DEBUG,
+    Handle:CVAR_LOG_PRINT_ADMINS,
+    Handle:CVAR_LOG_PRINT_CHAT,
+    Handle:CVAR_LOG_PRINT_CONSOLE,
     Handle:CVAR_CONFIG_PATH_MODELS,
     Handle:CVAR_CONFIG_PATH_DOWNLOADS,
     Handle:CVAR_CONFIG_PATH_PLAYERCLASSES,
@@ -157,6 +166,11 @@ CvarsInit()
     // Hook cvars.
     CvarsHook();
     
+    // Create public cvar for tracking.
+    decl String:description[64];
+    Format(description, sizeof(description), "%s Current version of this plugin", TRANSLATION_PHRASE_PREFIX);
+    CreateConVar("gs_zombiereloaded_version", VERSION, description, FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
+    
     // Forward event to modules.
     VEffectsOnCvarInit();
 }
@@ -191,7 +205,13 @@ CvarsCreate()
     // Log (core)
     // ===========================
     
-    // Cvars created in log.inc, because of compilation problems when creating them here.
+    g_hCvarsList[CVAR_LOG]                       =    CreateConVar("zr_log",                    "1",    "Logs key actions performed by the plugin, including errors and debug.");
+    g_hCvarsList[CVAR_LOG_FILTER_MODULES]        =    CreateConVar("zr_log_filter_modules",     "",     "If any log module name is withinin this string, log will be suppressed.");
+    g_hCvarsList[CVAR_LOG_FILTER_DESCRIPTION]    =    CreateConVar("zr_log_filter_description", "",     "If any log description is within this string, log will be suppressed.");
+    g_hCvarsList[CVAR_LOG_FILTER_DEBUG]          =    CreateConVar("zr_log_filter_debug",       "1",    "Supresses debug messages.");
+    g_hCvarsList[CVAR_LOG_PRINT_ADMINS]          =    CreateConVar("zr_log_print_admins",       "0",    "Print all logs to currently connected admins.");
+    g_hCvarsList[CVAR_LOG_PRINT_CHAT]            =    CreateConVar("zr_log_print_chat",         "1",    "Print log to admin's chat area.");
+    g_hCvarsList[CVAR_LOG_PRINT_CONSOLE]         =    CreateConVar("zr_log_print_console",      "1",    "Print log to admin's console.");
     
     // ===========================
     // Translations (core)
@@ -203,12 +223,12 @@ CvarsCreate()
     // Config (core)
     // ===========================
     
-    g_hCvarsList[CVAR_CONFIG_PATH_MODELS]        =    CreateConVar("zr_config_path_models", "configs/zr/models.txt", "");
-    g_hCvarsList[CVAR_CONFIG_PATH_DOWNLOADS]     =    CreateConVar("zr_config_path_downloads", "configs/zr/downloads.txt");
-    g_hCvarsList[CVAR_CONFIG_PATH_PLAYERCLASSES] =    CreateConVar("zr_config_path_playerclasses", "configs/zr/playerclasses.txt");
-    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons", "configs/zr/weapons/weapons.txt");
-    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONGROUPS]  =    CreateConVar("zr_config_path_weapongroups", "configs/zr/weapons/weapongroups.txt");
-    g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]     =    CreateConVar("zr_config_path_hitgroups", "configs/zr/hitgroups.txt");
+    g_hCvarsList[CVAR_CONFIG_PATH_MODELS]        =    CreateConVar("zr_config_path_models",         "configs/zr/models.txt",                "Path to models config file. [Relative to root sourcemod directory]");
+    g_hCvarsList[CVAR_CONFIG_PATH_DOWNLOADS]     =    CreateConVar("zr_config_path_downloads",      "configs/zr/downloads.txt",             "Path to downloads file. [Relative to root sourcemod directory]");
+    g_hCvarsList[CVAR_CONFIG_PATH_PLAYERCLASSES] =    CreateConVar("zr_config_path_playerclasses",  "configs/zr/playerclasses.txt",         "Path to playerclasses config file. [Relative to root sourcemod directory]");
+    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons",        "configs/zr/weapons/weapons.txt",       "Path to weapons config file. [Relative to root sourcemod directory]");
+    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONGROUPS]  =    CreateConVar("zr_config_path_weapongroups",   "configs/zr/weapons/weapongroups.txt",  "Path to weapongroups config file. [Relative to root sourcemod directory]");
+    g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]     =    CreateConVar("zr_config_path_hitgroups",      "configs/zr/hitgroups.txt",             "Path to hitgroups config file. [Relative to root sourcemod directory]");
     
     // ===========================
     // Tools (core)
@@ -228,24 +248,17 @@ CvarsCreate()
     
     // General
     
-    g_hCvarsList[CVAR_CLASSES_SPAWN]                    =    CreateConVar("zr_classes_spawn", "0", "");
-    // Old Desc: Classmenu is re-displayed every spawn (0: Disable)
-    g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random", "0", "");
-    // Old Desc: A random class is assigned to each player every round. Overrides zr_classes_spawn and default classes. (0: Disable)
-    g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE]           =    CreateConVar("zr_classes_default_zombie", "random", "");
-    // Old Desc: Default zombie class selected for all players when they connect. Use \"random\" to select a random class, or blank to use class config defaults.
-    g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]            =    CreateConVar("zr_classes_default_human", "random", "");
-    // Old Desc: 
-    g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin", "random", "");
-    // Old Desc: Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.
+    g_hCvarsList[CVAR_CLASSES_SPAWN]                    =    CreateConVar("zr_classes_spawn",           "0",        "Re-display class selection menu every spawn.");
+    g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random",          "0",        "Player is assigned a random class every spawn [Override: zr_classes_spawn & zr_classes_default_*]");
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE]           =    CreateConVar("zr_classes_default_zombie",  "random",   "Zombie class assigned to players on connect ['random' = Random class | '""' = Class config default]");
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]            =    CreateConVar("zr_classes_default_human",   "random",   "Human class assigned to players on connect ['random' = Random class | '""' = Class config default]");");
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin",   "random",   "Admin class assigned to admins on connect ['random' = Random class | '""' = Class config default]");");
     
     // Overlays
     
-    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]           =    CreateConVar("zr_classes_overlay_toggle", "1", "");
-    // Desc: Allow clients to toggle class overlay, zr_classes_overlay_default will be applied on connect.
-    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds", "nightvision", "");
-    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default", "0", "");
-    // Desc: Default toggle value of class overlay. [Ignored when zr_classes_overlay_toggle is disabled.]
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]           =    CreateConVar("zr_classes_overlay_toggle",      "1",            "Allow players to toggle class overlay.");
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds",  "nightvision",  "List of commands to hook that players can use to toggle class overlay. [Reliance: zr_classes_overlay_toggle | Delimited by \", \"]");
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default",     "0",            "Default class overlay toggle state [Reliance: zr_classes_overlay_toggle]");
     
     // ===========================
     // Weapons (core)
@@ -537,10 +550,6 @@ CvarsHook(bool:unhook = false)
     HookConVarChange(g_hAutoTeamBalance, CvarsHookLocked);
     HookConVarChange(g_hLimitTeams, CvarsHookLocked);
     HookConVarChange(g_hRestartGame, CvarsHookRestartGame);
-    
-    // Anticamp shtuff. (needs to be moved to anticamp if these hooks are necessary)
-    HookConVarChange(g_hCvarsList[CVAR_ANTICAMP], AnticampHook);
-    HookConVarChange(g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL], UpdateIntervalHook);
 }
 
 /**
@@ -566,10 +575,7 @@ public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newval
         SetConVarInt(g_hAutoTeamBalance, CVARS_AUTOTEAMBALANCE_LOCKED);
         
         // If log flag check fails, then don't log.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CORE))
-        {
-            LogMessageFormatted(-1, "Cvars", "Cvar Locked", "Cvar \"mp_autoteambalance\" was reverted back to \"CVARS_AUTOTEAMBALANCE_LOCKED\".", LOG_FORMAT_TYPE_FULL);
-        }
+        LogPrintToLog(_, "Cvars", "Cvar Locked", "Cvar \"mp_autoteambalance\" was reverted back to \"CVARS_AUTOTEAMBALANCE_LOCKED\".");
     }
     // If cvar is mp_limitteams, then continue.
     else if (cvar == g_hLimitTeams)
@@ -584,10 +590,7 @@ public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newval
         SetConVarInt(g_hLimitTeams, CVARS_LIMITTEAMS_LOCKED);
         
         // If log flag check fails, then don't log.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CORE))
-        {
-            LogMessageFormatted(-1, "Cvars", "Cvar Locked", "Cvar \"mp_limitteams\" was reverted back to \"CVARS_LIMITTEAMS_LOCKED\".", LOG_FORMAT_TYPE_FULL);
-        }
+        LogPrintToLog(_, "Cvars", "Cvar Locked", "Cvar \"mp_limitteams\" was reverted back to \"CVARS_LIMITTEAMS_LOCKED\".");
     }
 }
 
@@ -615,8 +618,5 @@ public CvarsHookRestartGame(Handle:cvar, const String:oldvalue[], const String:n
     RoundEndTerminateRound(delay);
     
     // If log flag check fails, then don't log.
-    if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CORE))
-    {
-        LogMessageFormatted(-1, "Cvars", "Restart Game", "\"mp_restartgame\" was caught and blocked, commencing round.", LOG_FORMAT_TYPE_FULL);
-    }
+    LogPrintToLog(_, "Cvars", "Restart Game", "\"mp_restartgame\" was caught and blocked, commencing round.");
 }

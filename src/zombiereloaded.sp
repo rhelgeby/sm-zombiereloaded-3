@@ -23,11 +23,11 @@
 
 // Core includes.
 #include "zr/zombiereloaded"
-#include "zr/log"
+#include "zr/translation"
 #include "zr/cvars"
+#include "zr/log"
 #include "zr/config"
 #include "zr/serial"
-#include "zr/translation"
 #include "zr/sayhooks"
 #include "zr/tools"
 #include "zr/models"
@@ -57,7 +57,7 @@
 #include "zr/ztele"
 #include "zr/zhp"
 #include "zr/jumpboost"
-#include "zr/anticamp"
+//#include "zr/anticamp"
 
 // Almost replaced! :)
 #include "zr/zombie"
@@ -95,36 +95,15 @@ public bool:AskPluginLoad(Handle:myself, bool:late, String:error[], err_max)
  */
 public OnPluginStart()
 {
-    // Load translations phrases used by plugin.
-    LoadTranslations("common.phrases.txt");
-    LoadTranslations("zombiereloaded.phrases.txt");
-    
-    // Log
-    LogInit();
-    
-    // Cvars
+    // Forward event to modules.
+    TranslationInit();
     CvarsInit();
-    
-    // Tools
     ToolsInit();
-    
-    // Commands
     CommandsInit();
-    
-    // Weapons
     WeaponsInit();
-    
-    // Say Hooks
     SayHooksInit();
-    
-    // Event
     EventInit();
-    
-    // Set market variable to true if market is installed.
-    g_bMarket = LibraryExists("market");
-    
-    // Create public cvar for tracking.
-    CreateConVar("gs_zombiereloaded_version", VERSION, "[ZR] Current version of this plugin", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
+    MarketInit();
 }
 
 /**
@@ -168,7 +147,6 @@ public OnMapStart()
     SEffectsOnMapStart();
     AntiStickOnMapStart();
     ZSpawnOnMapStart();
-    Anticamp_Startup();
 }
 
 /**
@@ -177,7 +155,6 @@ public OnMapStart()
 public OnMapEnd()
 {
     // Forward event to modules.
-    Anticamp_Disable();
 }
 
 /**

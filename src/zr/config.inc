@@ -89,10 +89,7 @@ ConfigLoad()
     ServerCommand("exec %s", mapconfig);
     
     // Log action.
-    if (LogCheckFlag(LOG_CORE_EVENTS))
-    {
-        LogMessageFormatted(-1, "", "", "Executed map config file: %s.", LOG_FORMAT_TYPE_SIMPLE, mapconfig);
-    }
+    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Config", "Map Configs", "Executed map config file: %s", path);
 }
 
 /**
@@ -106,7 +103,6 @@ ConfigOnModulesLoaded()
     decl String:mapname[256];
     decl String:mapconfig[PLATFORM_MAX_PATH];
     decl String:path[PLATFORM_MAX_PATH];
-    new bool:cfgexists;
     
     // Get map name and format into config path.
     GetCurrentMap(mapname, sizeof(mapname));
@@ -120,7 +116,7 @@ ConfigOnModulesLoaded()
     // boolean first works.
     
     // Check if the file exist.
-    cfgexists = FileExists(path);
+    new bool:cfgexists = FileExists(path);
     if (!cfgexists)
     {
         // File doesn't exist, then stop.
@@ -131,10 +127,7 @@ ConfigOnModulesLoaded()
     ServerCommand("exec %s", mapconfig);
     
     // Log action.
-    if (LogCheckFlag(LOG_CORE_EVENTS))
-    {
-        LogMessageFormatted(-1, "", "", "Executed post map config file: %s.", LOG_FORMAT_TYPE_SIMPLE, mapconfig);
-    }
+    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Config", "Map Configs", "Executed post map config file: %s", path);
 }
 
 /**
@@ -154,7 +147,6 @@ bool:ConfigGetFilePath(CvarsList:cvar, String:path[])
     
     return FileExists(path);
 }
-
 
 /**
  * Creates, deletes, sets, or gets any key/setting of any ZR config keyvalue file in memory.

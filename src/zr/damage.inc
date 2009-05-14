@@ -275,14 +275,6 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
  */     
 public Action:DamageSuicideIntercept(client, argc)
 {
-    // Disabled.
-    /**
-    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
-    if (!enabled)
-    {
-        return Plugin_Continue;
-    }*/
-    
     // If zombie hasn't spawned, then stop.
     if (!g_bZombieSpawned)
     {
@@ -318,13 +310,10 @@ public Action:DamageSuicideIntercept(client, argc)
     }
     
     // Tell client their command has been intercepted.
-    ZR_ReplyToCommand(client, "Damage suicide intercept");
+    TranslationReplyToCommand(client, "Damage suicide intercept");
     
-    // Log attempt.
-    if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_DAMAGE))
-    {
-        LogMessageFormatted(client, "Damage", "Suicide Intercept", "Player %N attempted suicide.", LOG_FORMAT_TYPE_FULL, client);
-    }
+    // Log suicide interception
+    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Damage", "Suicide Intercept", "\"%L\" attempted suicide.", client);
     
     // Block command.
     return Plugin_Handled;

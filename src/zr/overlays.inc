@@ -183,7 +183,7 @@ OverlaysClientUpdateOverlay(client, OverlaysChannel:channel = OVERLAYS_CHANNEL_N
     // If client doesn't meet DXLevel requirement, then tell client, then stop.
     if (g_iOverlaysDXL[client] < OVERLAYS_DXL_MIN)
     {
-        ZR_PrintCenterText(client, "Overlays not supported", g_iOverlaysDXL[client], OVERLAYS_DXL_MIN);
+        TranslationPrintCenterText(client, "Overlays not supported", g_iOverlaysDXL[client], OVERLAYS_DXL_MIN);
         return;
     }
     

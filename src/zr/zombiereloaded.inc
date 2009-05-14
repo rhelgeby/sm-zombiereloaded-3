@@ -11,6 +11,11 @@
  */
 
 /**
+ * Index of server console.
+ */
+#define ZR_CONSOLE_INDEX 0
+
+/**
  * @section Conversion factors.
  */
 #define CONVERSION_UNITS_TO_FEET    16.000
@@ -43,7 +48,7 @@ Float:ZRConvertUnitsFloat(Float:number, Float:conversion)
  *                              on it when finished!
  * @param immunity              True to ignore clients immune from mother infect, false to count them.
  */  
-ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false)
+stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false)
 {
     // Create array.
     arrayEligibleClients = CreateArray();
@@ -90,7 +95,7 @@ ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool
  * @param console   True to include console (index 0), false if not.
  * @return          True if client is valid, false otherwise. 
  */    
-bool:ZRIsClientValid(client, bool:console = false)
+stock bool:ZRIsClientValid(client, bool:console = false)
 {
     // If index is greater than max number of clients, then return false.
     if (client > MaxClients)
@@ -103,6 +108,19 @@ bool:ZRIsClientValid(client, bool:console = false)
 }
 
 /**
+ * Check if a given index is console.
+ * 
+ * @param client    The client index.
+ * @param console   True to include console (index 0), false if not.
+ * @return          True if client is valid, false otherwise. 
+ */    
+stock bool:ZRIsConsole(index)
+{
+    // Return true if index is = to console's index.
+    return (index == ZR_CONSOLE_INDEX);
+}
+
+/**
  * Count clients on each team.
  * 
  * @param zombies   This is set to the number of clients that are zombies.
@@ -110,7 +128,7 @@ bool:ZRIsClientValid(client, bool:console = false)
  * @param alive     If true it will only count live players, false will count alive and dead.
  * @return          True if successful (zombie has spawned), false otherwise.
  */
-bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true, bool:ignorezombiespawned = false)
+stock bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true, bool:ignorezombiespawned = false)
 {
     // If zombie hasn't spawned and were not only counting humans, then stop.
     if (!g_bZombieSpawned && !ignorezombiespawned)
@@ -161,7 +179,7 @@ bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true, b
  * @param team      Team to check if player is on, -1 to check both. 
  * @return          True if client is on a team, false otherwise. 
  */    
-bool:ZRIsClientOnTeam(client, team = -1)
+stock bool:ZRIsClientOnTeam(client, team = -1)
 {
     // If index is invalid, then stop.
     if (!ZRIsClientValid(client))
@@ -185,7 +203,7 @@ bool:ZRIsClientOnTeam(client, team = -1)
  * 
  * @param team      (Optional) Team to check if there are clients on.
  */
-bool:ZRTeamHasClients(team = -1)
+stock bool:ZRTeamHasClients(team = -1)
 {
     // If team is
     if (team == -1)
@@ -204,7 +222,7 @@ bool:ZRTeamHasClients(team = -1)
  * @param client    The client index.
  * @return          True if generic admin, false otherwise.
  */
-bool:ZRIsClientAdmin(client)
+stock bool:ZRIsClientAdmin(client)
 {
     // If index is invalid, then stop.
     if (!ZRIsClientValid(client))

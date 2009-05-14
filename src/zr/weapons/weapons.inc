@@ -93,10 +93,7 @@ WeaponsLoad()
     if (!exists)
     {
         // Log failure.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
-        {
-            LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing weapons config file: %s", LOG_FORMAT_TYPE_ERROR, pathweapons);
-        }
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapons", "Config Validation", "Missing weapons config file: %s", pathweapons);
         
         return;
     }
@@ -116,16 +113,10 @@ WeaponsLoad()
  */
 WeaponsValidateConfig()
 {
-    // If log flag check fails, then don't log.
-    if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
-    {
-        return;
-    }
-    
     KvRewind(kvWeapons);
     if (!KvGotoFirstSubKey(kvWeapons))
     {
-        LogMessageFormatted(-1, "Weapons", "Config Validation", "No weapons listed in weapons.txt.", LOG_FORMAT_TYPE_ERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapons", "Config Validation", "No weapons listed in weapons.txt.");
     }
 }
 

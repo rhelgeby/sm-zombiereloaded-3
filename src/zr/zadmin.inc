@@ -17,7 +17,7 @@ bool:ZRAdminMenu(client)
 {
     if (!ZRIsClientAdmin(client))
     {
-        ZR_PrintToChat(client, "Must be admin");
+        TranslationPrintToChat(client, "Must be admin");
         return false;
     }
     
@@ -504,76 +504,14 @@ ZRLogFlagsMenu(client)
     
     SetMenuTitle(menu_log_flags, "%t\n ", "!zadmin log flags title");
     
-    new client_flags = GetUserFlagBits(client);
-    new item_state = (client_flags & ADMFLAG_ROOT) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    //new client_flags = GetUserFlagBits(client);
+    //new item_state = (client_flags & ADMFLAG_ROOT) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
 
-    decl String:z_log_core[64];
-    decl String:z_log_game[64];
-    decl String:z_log_player[64];
-    decl String:z_log_debug[64];
-    decl String:z_log_debug_detail[64];
-    decl String:z_log_debug_max[64];
-    decl String:z_log_admins[64];
-    decl String:z_log_client[64];
-    decl String:z_log_ignore_console[64];
-    decl String:z_log_modules_enabled[64];
-    decl String:z_log_module_zombie[64];
-    decl String:z_log_module_ambientsounds[64];
-    decl String:z_log_module_overlays[64];
-    decl String:z_log_module_saytriggers[64];
-    decl String:z_log_module_teleport[64];
-    decl String:z_log_module_classes[64];
-    decl String:z_log_module_weapons[64];
-    decl String:z_log_module_hitgroups[64];
-    decl String:z_log_module_commands[64];
-    decl String:z_log_module_anticamp[64];
-    decl String:z_log_module_damage[64];
-    decl String:z_log_module_offsets[64];
-
-    Format(z_log_core, sizeof(z_log_core), "Log core events (%d)", LogCheckFlag(LOG_CORE_EVENTS));
-    Format(z_log_game, sizeof(z_log_game), "Log game events (%d)", LogCheckFlag(LOG_GAME_EVENTS));
-    Format(z_log_player, sizeof(z_log_player), "Log player commands (%d)", LogCheckFlag(LOG_PLAYER_COMMANDS));
-    Format(z_log_debug, sizeof(z_log_debug), "Log debug messages (%d)", LogCheckFlag(LOG_DEBUG));
-    Format(z_log_debug_detail, sizeof(z_log_debug_detail), "Log detailed debug messages (%d)", LogCheckFlag(LOG_DEBUG_DETAIL));
-    Format(z_log_debug_max, sizeof(z_log_debug_max), "Log low level debug messages (%d)", LogCheckFlag(LOG_DEBUG_MAX_DETAIL));
-    Format(z_log_admins, sizeof(z_log_admins), "Also log to admin chat (%d)", LogCheckFlag(LOG_TO_ADMINS));
-    Format(z_log_client, sizeof(z_log_client), "Also log to client console (%d)", LogCheckFlag(LOG_TO_CLIENT));
-    Format(z_log_ignore_console, sizeof(z_log_ignore_console), "Don't log messages from the console (%d)", LogCheckFlag(LOG_IGNORE_CONSOLE));
-    Format(z_log_modules_enabled, sizeof(z_log_modules_enabled), "Module based log control (%d)", LogCheckFlag(LOG_MODULES_ENABLED));
-    Format(z_log_module_zombie, sizeof(z_log_module_zombie), "Zombie (%d)", LogCheckFlag(LOG_MODULE_ZOMBIE));
-    Format(z_log_module_ambientsounds, sizeof(z_log_module_ambientsounds), "Ambient Sounds (%d)", LogCheckFlag(LOG_MODULE_AMBIENTSOUNDS));
-    Format(z_log_module_overlays, sizeof(z_log_module_overlays), "Overlays (%d)", LogCheckFlag(LOG_MODULE_OVERLAYS));
-    Format(z_log_module_saytriggers, sizeof(z_log_module_saytriggers), "Chat commands (%d)", LogCheckFlag(LOG_MODULE_SAYTRIGGERS));
-    Format(z_log_module_teleport, sizeof(z_log_module_teleport), "Teleporter (%d)", LogCheckFlag(LOG_MODULE_TELEPORT));
-    Format(z_log_module_classes, sizeof(z_log_module_classes), "Classes (%d)", LogCheckFlag(LOG_MODULE_CLASSES));
-    Format(z_log_module_weapons, sizeof(z_log_module_weapons), "Weapons (%d)", LogCheckFlag(LOG_MODULE_WEAPONS));
-    Format(z_log_module_hitgroups, sizeof(z_log_module_hitgroups), "Hitgroups (%d)", LogCheckFlag(LOG_MODULE_HITGROUPS));
-    Format(z_log_module_commands, sizeof(z_log_module_commands), "Admin commands (%d)", LogCheckFlag(LOG_MODULE_COMMANDS));
-    Format(z_log_module_anticamp, sizeof(z_log_module_anticamp), "Anticamp (%d)", LogCheckFlag(LOG_MODULE_ANTICAMP));
-    Format(z_log_module_damage, sizeof(z_log_module_damage), "Damage (Suicide Intercept) (%d)", LogCheckFlag(LOG_MODULE_DAMAGE));
-    Format(z_log_module_offsets, sizeof(z_log_module_offsets), "Offsets (properties) (%d)", LogCheckFlag(LOG_MODULE_OFFSETS));
+    //decl String:z_log_core[64];
     
-    AddMenuItem(menu_log_flags, z_log_core, z_log_core, item_state);
-    AddMenuItem(menu_log_flags, z_log_game, z_log_game, item_state);
-    AddMenuItem(menu_log_flags, z_log_player, z_log_player, item_state);
-    AddMenuItem(menu_log_flags, z_log_debug, z_log_debug, item_state);
-    AddMenuItem(menu_log_flags, z_log_debug_detail, z_log_debug_detail, item_state);
-    AddMenuItem(menu_log_flags, z_log_debug_max, z_log_debug_max, item_state);
-    AddMenuItem(menu_log_flags, z_log_admins, z_log_admins);
-    AddMenuItem(menu_log_flags, z_log_client, z_log_client);
-    AddMenuItem(menu_log_flags, z_log_ignore_console, z_log_ignore_console, item_state);
-    AddMenuItem(menu_log_flags, z_log_modules_enabled, z_log_modules_enabled, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_zombie, z_log_module_zombie, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_ambientsounds, z_log_module_ambientsounds, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_overlays, z_log_module_overlays, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_saytriggers, z_log_module_saytriggers, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_teleport, z_log_module_teleport, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_classes, z_log_module_classes, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_weapons, z_log_module_weapons, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_commands, z_log_module_commands, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_anticamp, z_log_module_anticamp, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_damage, z_log_module_damage, item_state);
-    AddMenuItem(menu_log_flags, z_log_module_offsets, z_log_module_offsets, item_state);
+    //Format(z_log_core, sizeof(z_log_core), "Log core events (%d)", LogCheckFlag(LOG_CORE_EVENTS));
+    
+    //AddMenuItem(menu_log_flags, z_log_core, z_log_core, item_state);
     
     SetMenuExitBackButton(menu_log_flags, true);
     DisplayMenu(menu_log_flags, client, MENU_TIME_FOREVER);
@@ -585,116 +523,6 @@ public ZRLogFlagsMenuHandle(Handle:menu_log_flags, MenuAction:action, client, sl
     {
         switch(slot)
         {
-            case 0:
-            {
-                LogToggleFlag(LOG_CORE_EVENTS);
-                ZRLogFlagsMenu(client);
-            }
-            case 1:
-            {
-                LogToggleFlag(LOG_GAME_EVENTS);
-                ZRLogFlagsMenu(client);
-            }
-            case 2:
-            {
-                LogToggleFlag(LOG_PLAYER_COMMANDS);
-                ZRLogFlagsMenu(client);
-            }
-            case 3:
-            {
-                LogToggleFlag(LOG_DEBUG);
-                ZRLogFlagsMenu(client);
-            }
-            case 4:
-            {
-                LogToggleFlag(LOG_DEBUG_DETAIL);
-                ZRLogFlagsMenu(client);
-            }
-            case 5:
-            {
-                LogToggleFlag(LOG_DEBUG_MAX_DETAIL);
-                ZRLogFlagsMenu(client);
-            }
-            case 6:
-            {
-                LogToggleFlag(LOG_TO_ADMINS);
-                ZRLogFlagsMenu(client);
-            }
-            case 7:
-            {
-                LogToggleFlag(LOG_TO_CLIENT);
-                ZRLogFlagsMenu(client);
-            }
-            case 8:
-            {
-                LogToggleFlag(LOG_IGNORE_CONSOLE);
-                ZRLogFlagsMenu(client);
-            }
-            case 9:
-            {
-                LogToggleFlag(LOG_MODULES_ENABLED);
-                ZRLogFlagsMenu(client);
-            }
-            case 10:
-            {
-                LogToggleFlag(LOG_MODULE_ZOMBIE);
-                ZRLogFlagsMenu(client);
-            }
-            case 11:
-            {
-                LogToggleFlag(LOG_MODULE_AMBIENTSOUNDS);
-                ZRLogFlagsMenu(client);
-            }
-            case 12:
-            {
-                LogToggleFlag(LOG_MODULE_OVERLAYS);
-                ZRLogFlagsMenu(client);
-            }
-            case 13:
-            {
-                LogToggleFlag(LOG_MODULE_SAYTRIGGERS);
-                ZRLogFlagsMenu(client);
-            }
-            case 14:
-            {
-                LogToggleFlag(LOG_MODULE_TELEPORT);
-                ZRLogFlagsMenu(client);
-            }
-            case 15:
-            {
-                LogToggleFlag(LOG_MODULE_CLASSES);
-                ZRLogFlagsMenu(client);
-            }
-            case 16:
-            {
-                LogToggleFlag(LOG_MODULE_WEAPONS);
-                ZRLogFlagsMenu(client);
-            }
-            case 17:
-            {
-                LogToggleFlag(LOG_MODULE_HITGROUPS);
-                ZRLogFlagsMenu(client);
-            }
-            case 18:
-            {
-                LogToggleFlag(LOG_MODULE_COMMANDS);
-                ZRLogFlagsMenu(client);
-            }
-            case 19:
-            {
-                LogToggleFlag(LOG_MODULE_ANTICAMP);
-                ZRLogFlagsMenu(client);
-            }
-            case 20:
-            {
-                LogToggleFlag(LOG_MODULE_DAMAGE);
-                ZRLogFlagsMenu(client);
-            }
-            case 21:
-            {
-                LogToggleFlag(LOG_MODULE_OFFSETS);
-                ZRLogFlagsMenu(client);
-            }
         }
     }
     if (action == MenuAction_Cancel)

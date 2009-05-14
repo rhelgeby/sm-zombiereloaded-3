@@ -66,7 +66,8 @@ EventHook(bool:unhook = false)
  */
 public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    ZR_PrintToChat(0, "General round objective");
+    // Print round objective to all clients.
+    TranslationPrintToChatAll(true, false, "General round objective");
     
     // Forward event to sub-modules.
     OverlaysOnRoundStart();
@@ -183,7 +184,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     ZTeleOnClientSpawn(index);
     ZHPOnClientSpawn(index);
     
-    ZR_PrintToChat(index, "General zmenu reminder");
+    TranslationPrintToChat(index, "General zmenu reminder");
 }
 
 /**

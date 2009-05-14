@@ -62,70 +62,70 @@ ToolsFindOffsets()
     g_iToolsVelocity = FindSendPropInfo("CBasePlayer", "m_vecVelocity[0]");
     if (g_iToolsVelocity == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CBasePlayer::m_vecVelocity[0]\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBasePlayer::m_vecVelocity[0]\" was not found.");
     }
     
     // If offset "m_vecBaseVelocity" can't be found, then stop the plugin.
     g_iToolsBaseVelocity = FindSendPropInfo("CBasePlayer", "m_vecBaseVelocity");
     if (g_iToolsBaseVelocity == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CBasePlayer::m_vecBaseVelocity\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBasePlayer::m_vecBaseVelocity\" was not found.");
     }
     
     // If offset "m_flLaggedMovementValue" can't be found, then stop the plugin.
     g_iToolsLMV = FindSendPropInfo("CCSPlayer", "m_flLaggedMovementValue");
     if (g_iToolsLMV == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CCSPlayer::m_flLaggedMovementValue\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_flLaggedMovementValue\" was not found.");
     }
     
     // If offset "m_bHasNightVision" can't be found, then stop the plugin.
     g_iToolsHasNightVision = FindSendPropInfo("CCSPlayer", "m_bHasNightVision");
     if (g_iToolsHasNightVision == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CCSPlayer::m_bHasNightVision\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_bHasNightVision\" was not found.");
     }
     
     // If offset "m_bNightVisionOn" can't be found, then stop the plugin.
     g_iToolsNightVisionOn = FindSendPropInfo("CCSPlayer", "m_bNightVisionOn");
     if (g_iToolsNightVisionOn == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CCSPlayer::m_bNightVisionOn\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_bNightVisionOn\" was not found.");
     }
     
     // If offset "m_CollisionGroup" can't be found, then stop the plugin.
     g_iToolsCollisionGroup = FindSendPropInfo("CBaseEntity", "m_CollisionGroup");
     if (g_iToolsCollisionGroup == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CBaseEntity::m_CollisionGroup\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBaseEntity::m_CollisionGroup\" was not found.");
     }
     
     // If offset "m_iAccount" can't be found, then stop the plugin.
     g_iToolsAccount = FindSendPropInfo("CCSPlayer", "m_iAccount");
     if (g_iToolsAccount == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CCSPlayer::m_iAccount\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_iAccount\" was not found.");
     }
     
     // If offset "m_iDefaultFOV" can't be found, then stop the plugin.
     g_iToolsDefaultFOV = FindSendPropInfo("CBasePlayer", "m_iDefaultFOV");
     if (g_iToolsDefaultFOV == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CBasePlayer::m_iDefaultFOV\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBasePlayer::m_iDefaultFOV\" was not found.");
     }
     
     // If offset "m_bInBuyZone" can't be found, then stop the plugin.
     g_iToolsInBuyZone = FindSendPropInfo("CCSPlayer", "m_bInBuyZone");
     if (g_iToolsInBuyZone == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CCSPlayer::m_bInBuyZone\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_bInBuyZone\" was not found.");
     }
     
     // If offset "m_hActiveWeapon" can't be found, then stop the plugin.
     g_iToolsActiveWeapon = FindSendPropInfo("CBasePlayer", "m_hActiveWeapon");
     if (g_iToolsActiveWeapon == -1)
     {
-        LogMessageFormatted(-1, "Tools", "Offsets", "Offset \"CBasePlayer::m_hActiveWeapon\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBasePlayer::m_hActiveWeapon\" was not found.");
     }
 }
 
@@ -140,7 +140,7 @@ ToolsSetupGameData()
     // If gamedata file can't be loaded, then stop the plugin.
     if (g_hToolsGameConfig == INVALID_HANDLE)
     {
-        LogMessageFormatted(-1, "Tools", "GameData", "Can't load game config file (plugin.zombiereloaded.txt) from the gamedata directory.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "GameData", "Can't load game config file (plugin.zombiereloaded.txt) from the gamedata directory.");
     }
     
     // Prep the SDKCall for "EyeAngles."
@@ -152,7 +152,7 @@ ToolsSetupGameData()
     // If offset "EyeAngles" can't be found, then stop the plugin.
     if(g_hToolsEyeAngles == INVALID_HANDLE)
     {
-        LogMessageFormatted(-1, "Tools", "GameData", "Offset \"EyeAngles\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "GameData", "Offset \"EyeAngles\" was not found.");
     }
     
     // Prep the SDKCall for "TerminateRound."
@@ -165,7 +165,7 @@ ToolsSetupGameData()
     // If offset "TerminateRound" can't be found, then stop the plugin.
     if(g_hToolsTerminateRound == INVALID_HANDLE)
     {
-        LogMessageFormatted(-1, "Tools", "GameData", "Signature \"CGameRules::TerminateRound\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "GameData", "Signature \"CGameRules::TerminateRound\" was not found.");
     }
     
     // Prep the SDKCall for "CSWeaponDrop."
@@ -179,6 +179,6 @@ ToolsSetupGameData()
     // If offset "CSWeaponDrop" can't be found, then stop the plugin.
     if(g_hToolsCSWeaponDrop == INVALID_HANDLE)
     {
-        LogMessageFormatted(-1, "Tools", "GameData", "Signature \"CBasePlaye::CSWeaponDrop\" was not found.", LOG_FORMAT_TYPE_FATALERROR);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "GameData", "Signature \"CBasePlaye::CSWeaponDrop\" was not found.");
     }
 }

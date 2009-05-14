@@ -132,7 +132,7 @@ bool:ZHPToggle(client)
     if (!zhp)
     {
         // Tell client feature is disabled.
-        ZR_PrintToChat(client, "Feature is disabled");
+        TranslationPrintToChat(client, "Feature is disabled");
         
         // Stop.
         return false;
@@ -141,12 +141,12 @@ bool:ZHPToggle(client)
     // If ZHP is enabled, then tell client it's being disabled.
     if (pZHP[client])
     {
-        ZR_PrintToChat(client, "ZHP disable");
+        TranslationPrintToChat(client, "ZHP disable");
     }
     // If ZHP is disabled, then tell client it's being enabled.
     else
     {
-        ZR_PrintToChat(client, "ZHP enable");
+        TranslationPrintToChat(client, "ZHP enable");
         
         // Update HP display.
         ZHPUpdateHUD(client);
@@ -186,7 +186,7 @@ ZHPUpdateHUD(client)
     }
     
     // Display HP
-    ZR_HudHint(client, "Display HP", health);
+    TranslationPrintHUDText(client, "Display HP", health);
 }
 
 /**
