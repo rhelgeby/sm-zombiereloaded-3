@@ -29,6 +29,18 @@ ClassClientInit(client)
         // Set default class indexes on the player.
         ClassClientSetDefaultIndexes(client);
     }
+    
+    // Forward event to sub-modules
+    ClassOverlayClientInit(client);
+}
+
+/**
+ * Hook commands related to classes here.
+ */
+ClassOnCommandsHook()
+{
+    // Forward event to sub-modules.
+    ClassOverlayOnCommandsHook();
 }
 
 /**
@@ -44,9 +56,13 @@ ClassOnClientDisconnect(client)
 {
     // Disable class attributes with timers.
     ClassHealthRegenStop(client);
-    ClassOverlayStop(client);
 }
 
+/**
+ * Client is spawning into the game.
+ * 
+ * @param client    The client index.
+ */
 ClassOnClientSpawn(client)
 {
     // Check if the player is alive.
@@ -78,12 +94,12 @@ ClassOnClientSpawn(client)
         // Mark zombie class as selected.
         ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = randomzombie;
         ClassGetName(randomzombie, classname, sizeof(classname), ZR_CLASS_TEAM_ZOMBIES);
-        ZR_PrintToChat(client, "Auto-assign", classname);
+        ZR_PrintToChat(client, "Classes random assignment", classname);
         
         // Mark human class as selected.
         ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = randomhuman;
         ClassGetName(randomhuman, classname, sizeof(classname), ZR_CLASS_TEAM_HUMANS);
-        ZR_PrintToChat(client, "Auto-assign", classname);
+        ZR_PrintToChat(client, "Classes random assignment", classname);
         
         // Update player cache with the human class data, and apply it.
         ClassReloadPlayerCache(client, randomhuman);
@@ -111,13 +127,18 @@ ClassOnClientSpawn(client)
         ClassReloadPlayerCache(client, ClassGetActiveIndex(client));
         ClassApplyAttributes(client);
     }
+    
+    // Forward event to sub-modules.
+    ClassOverlayOnClientSpawn(client);
 }
 
 ClassOnClientDeath(client)
 {
     // Disable class attributes with timers.
     ClassHealthRegenStop(client);
-    ClassOverlayStop(client);
+    
+    // Disable overlay.
+    OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
     
     // Set client's FOV back to normal.
     ToolsSetClientDefaultFOV(client, 90);
@@ -129,11 +150,13 @@ ClassOnClientInfected(client, bool:motherzombie = false)
     
     // Disable class attributes with timers.
     ClassHealthRegenStop(client);
-    ClassOverlayStop(client);
     
     // Update the players cache with zombie attributes.
     ClassReloadPlayerCache(client, classindex);
     
     // Apply the new attributes.
     ClassApplyAttributes(client, motherzombie);
+    
+    // Forward event to sub-modules.
+    ClassOverlayOnClientInfected(client);
 }

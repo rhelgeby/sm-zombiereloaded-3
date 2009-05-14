@@ -4,34 +4,15 @@
 	// General
 	// ===========================
 
-	"Round objective"
+	"General round objective"
 	{
 		"en"		"The game is @greenHumans vs. Zombies@default, the goal for zombies is to infect all humans by knifing them."
 		"ru"		"Битва @greenЛюдей против Зомби@default, цель для зомби - инфицировать всех людей."
 	}
 
-	"You are a zombie"
+	"General zmenu reminder"
 	{
-		"en"		"You have been infected!  Now go pass it on to as many people as you can."
-		"ru"		"Вы были инфицированы! Теперь вы охотитесь за людьми."
-	}
-
-	"Zombie replacement"
-	{
-		"en"		"The last zombie has left the game, and has passed the infection on to you."
-		"ru"		"Последний зомби покинул игру и передал свою инфекцию вам."
-	}
-
-	"Auto-assign"
-	{
-		"#format"	"{1:s}"
-		"en"		"You have randomly been assigned to the @green\"{1}\" @defaultclass."
-		"ru"		"Вам был случайным образом установлен класс \"{1}\"."
-	}
-
-	"!zmenu reminder"
-	{
-		"en"		"Type !zmenu in chat to view all ZR commands."
+		"en"		"For help on Zombie:Reloaded commands, type !zmenu in chat."
 		"ru"		"Напишите !zmenu в чате для просмотра всех команд."
 	}
 
@@ -94,36 +75,88 @@
 
 	// General
 
-	"!zclass admin mode enabled"
+	"Classes admin mode enabled"
 	{
 		"en"		"Admin mode is enabled!"
 	}
 
+	"Classes random assignment"
+	{
+		"#format"	"{1:s}"
+		"en"		"You have randomly been assigned to the @green\"{1}\" @defaultclass."
+		"ru"		"Вам был случайным образом установлен класс \"{1}\"."
+	}
+
+	// Center Text/HUD
+
+	"Classes overlay toggle"
+	{
+		"#format"	"{1:s}"
+		"en"		"Class overlay toggle commands: {1}"
+	}
+
 	// Menu
 
-	"!zclass title"
+	"Classes menu title"
 	{
 		"en"		"Class Selection:"
 	}
 
-	"!zclass zombie"
+	"Classes menu zombie"
 	{
 		"en"		"Select Zombie Class"
 	}
 
-	"!zclass human"
+	"Classes menu human"
 	{
 		"en"		"Select Human Class"
 	}
 
-	"!zclass admin"
+	"Classes menu admin"
 	{
 		"en"		"Select Admin Class"
 	}
 
-	"!zclass admin mode toggle"
+	"Classes menu admin mode toggle"
 	{
 		"en"		"Toggle Admin Mode"
+	}
+
+	// ===========================
+	// (core) Overlays
+	// ===========================
+
+	"Overlays not supported"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"Blocking Overlay - DX{1} Detected (DX{2} Required)"
+		"ru"		"Оверлей Отключен - Обнаружен DX{1} (Необходим DX{2})"
+	}
+
+	// ===========================
+	// (core) Infect
+	// ===========================
+
+	// General
+
+	"Infect infected"
+	{
+		"en"		"You have been infected!  Go pass it on to as many other players as you can."
+	}
+
+	"Infect disconnect"
+	{
+		"en"		"The last zombie has left the game, and has passed the infection on to you."
+		"ru"		"Последний зомби покинул игру и передал свою инфекцию вам."
+	}
+
+	// ===========================
+	// (core) Damage
+	// ===========================
+
+	"Damage suicide intercept"
+	{
+		"en"		"Suicide attempt intercepted."
 	}
 
 	// ===========================
@@ -168,15 +201,6 @@
 		"en"		"ZMarket ({1}) - Need a weapon?  Buy them here."
 	}
 
-	// ===========================
-	// (core) Damage
-	// ===========================
-
-	"Damage suicide intercept"
-	{
-		"en"		"Suicide attempt intercepted."
-	}
-	
 	// ===========================
 	// (core) Weapons
 	// ===========================
@@ -460,13 +484,6 @@
 		"en"		"Player {1} has been slayed for camping in a restricted area. (ID: {2})"
 	}
 
-	"DX90 not supported"
-	{
-		"#format"	"{1:d},{2:d}"
-		"en"		"Blocking Overlay - DX{1} Detected (DX{2} Required)"
-		"ru"		"Оверлей Отключен - Обнаружен DX{1} (Необходим DX{2})"
-	}
-
 	// ===========================
 	// ZAdmin Menu
 	// ===========================
@@ -616,27 +633,5 @@
 	"!zadmin log flags title"
 	{
 		"en"		"Toggle Logging Flags:"
-	}
-
-	// ===========================
-	// Server Messages
-	// ===========================
-
-	"ZR"
-	{
-		"en"		"ZR"
-		"ru"		"ZR"
-	}
-
-	"Plugin loading"
-	{
-		"en"		"-----------|         Zombie:Reloaded Loading         |----------"
-		"ru"		"-----------|       Zombie:Reloaded Загружается	      |----------"
-	}
-
-	"Plugin loaded"
-	{
-		"en"		"-----------|         Zombie:Reloaded Loaded         |----------"
-		"ru"		"-----------|        Zombie:Reloaded Загружен        |----------"
 	}
 }

@@ -72,7 +72,7 @@ ZHPOnClientDeath(client)
 }
 
 /**
- * Player has been infected.
+ * Client has been infected.
  * 
  * @param client    The client index.
  */

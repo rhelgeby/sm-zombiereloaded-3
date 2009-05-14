@@ -66,9 +66,10 @@ EventHook(bool:unhook = false)
  */
 public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    ZR_PrintToChat(0, "Round objective");
+    ZR_PrintToChat(0, "General round objective");
     
     // Forward event to sub-modules.
+    OverlaysOnRoundStart();
     RoundEndOnRoundStart();
     InfectOnRoundStart();
     SEffectsOnRoundStart();
@@ -182,7 +183,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     ZTeleOnClientSpawn(index);
     ZHPOnClientSpawn(index);
     
-    ZR_PrintToChat(index, "!zmenu reminder");
+    ZR_PrintToChat(index, "General zmenu reminder");
 }
 
 /**

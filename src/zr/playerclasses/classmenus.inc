@@ -27,7 +27,7 @@ ClassMenuMain(client)
     new Handle:menu = CreateMenu(ClassMenuMainHandle);
     
     SetGlobalTransTarget(client);
-    SetMenuTitle(menu, "%t\n", "!zclass title");
+    SetMenuTitle(menu, "%t\n", "Classes menu title");
     
     decl String:zombieclass[128];
     decl String:humanclass[128];
@@ -55,18 +55,18 @@ ClassMenuMain(client)
     if (ClassPlayerInAdminMode[client])
     {
         // Notify the player.
-        Format(inadminmnode, sizeof(inadminmnode), "%t\n", "!zclass admin mode enabled");
+        Format(inadminmnode, sizeof(inadminmnode), "%t\n", "Classes admin mode enabled");
         AddMenuItem(menu, "", inadminmnode, ITEMDRAW_RAWLINE);
     }
     
     // List zombie class options.
     ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES], zombieclass, sizeof(zombieclass), ZR_CLASS_CACHE_MODIFIED);
-    Format(zombieselect, sizeof(zombieselect), "%t\n    %s", "!zclass zombie", zombieclass);
+    Format(zombieselect, sizeof(zombieselect), "%t\n    %s", "Classes menu zombie", zombieclass);
     AddMenuItem(menu, "", zombieselect, zombie_itemdraw);
     
     // List human class options.
     ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_HUMANS], humanclass, sizeof(humanclass), ZR_CLASS_CACHE_MODIFIED);
-    Format(humanselect, sizeof(humanselect), "%t\n    %s", "!zclass human", humanclass);
+    Format(humanselect, sizeof(humanselect), "%t\n    %s", "Classes menu human", humanclass);
     AddMenuItem(menu, "", humanselect, human_itemdraw);
     
     // Only display admin class options for admins, and if admin classes exist.
@@ -74,7 +74,7 @@ ClassMenuMain(client)
     {
         // List admin class options.
         ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ADMINS], adminclass, sizeof(adminclass), ZR_CLASS_CACHE_MODIFIED);
-        Format(adminselect, sizeof(adminselect), "%t\n    %s", "!zclass admin", adminclass);
+        Format(adminselect, sizeof(adminselect), "%t\n    %s", "Classes menu admin", adminclass);
         AddMenuItem(menu, "", adminselect, admin_itemdraw);
         
         // Set admin mode status string.
@@ -91,7 +91,7 @@ ClassMenuMain(client)
         AddMenuItem(menu, "", " ", ITEMDRAW_RAWLINE);
         
         // Show admin mode toggle option.
-        Format(toggleadminmode, sizeof(toggleadminmode), "%t\n    %s", "!zclass admin mode toggle", adminmode);
+        Format(toggleadminmode, sizeof(toggleadminmode), "%t\n    %s", "Classes menu admin mode toggle", adminmode);
         AddMenuItem(menu, "", toggleadminmode, admin_itemdraw);
     }
     
@@ -174,15 +174,15 @@ ClassMenuSelect(client, teamid)
     {
         case ZR_CLASS_TEAM_ZOMBIES:
         {
-            Format(title, sizeof(title), "%t\n", "!zclass zombie");
+            Format(title, sizeof(title), "%t\n", "Classes menu zombie");
         }
         case ZR_CLASS_TEAM_HUMANS:
         {
-            Format(title, sizeof(title), "%t\n", "!zclass human");
+            Format(title, sizeof(title), "%t\n", "Classes menu human");
         }
         case ZR_CLASS_TEAM_ADMINS:
         {
-            Format(title, sizeof(title), "%t\n", "!zclass admin");
+            Format(title, sizeof(title), "%t\n", "Classes menu admin");
         }
     }
     SetMenuTitle(menu, title);
@@ -213,7 +213,8 @@ ClassMenuSelect(client, teamid)
     {
         // No classes found. Display message. The main class menu should
         // prevent this from happening, but we print a message just in case.
-        Format(menuitem, sizeof(menuitem), "%t\n", "!zclass not found");
+        // THIS TRANSLATION PHRASES IS NOT IN FILE.
+        Format(menuitem, sizeof(menuitem), "%t\n", "Classes menu not found");
         AddMenuItem(menu, classname, menuitem, ITEMDRAW_RAWLINE);
     }
     

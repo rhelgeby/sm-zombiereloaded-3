@@ -13,22 +13,22 @@
 /**
  * @section All round end reasons.
  */
-#define ROUNDEND_TARGET_BOMBED                            1        // Target Successfully Bombed!
+#define ROUNDEND_TARGET_BOMBED                          1        // Target Successfully Bombed!
 #define ROUNDEND_VIP_ESCAPED                            2        // The VIP has escaped!
-#define ROUNDEND_VIP_ASSASSINATED                        3        // VIP has been assassinated!
-#define ROUNDEND_TERRORISTS_ESCAPED                        4        // The terrorists have escaped!
-#define ROUNDEND_CTS_PREVENTESCAPE                        5        // The CT's have prevented most of the terrorists from escaping!
+#define ROUNDEND_VIP_ASSASSINATED                       3        // VIP has been assassinated!
+#define ROUNDEND_TERRORISTS_ESCAPED                     4        // The terrorists have escaped!
+#define ROUNDEND_CTS_PREVENTESCAPE                      5        // The CT's have prevented most of the terrorists from escaping!
 #define ROUNDEND_ESCAPING_TERRORISTS_NEUTRALIZED        6        // Escaping terrorists have all been neutralized!
-#define ROUNDEND_BOMB_DEFUSED                            7        // The bomb has been defused!
+#define ROUNDEND_BOMB_DEFUSED                           7        // The bomb has been defused!
 #define ROUNDEND_CTS_WIN                                8        // Counter-Terrorists Win!
-#define ROUNDEND_TERRORISTS_WIN                            9        // Terrorists Win!
-#define ROUNDEND_ROUND_DRAW                                10        // Round Draw!
-#define ROUNDEND_ALL_HOSTAGES_RESCUED                    11        // All Hostages have been rescued!
-#define ROUNDEND_TARGET_SAVED                            12        // Target has been saved!
-#define ROUNDEND_HOSTAGES_NOT_RESCUED                    13        // Hostages have not been rescued!
-#define ROUNDEND_TERRORISTS_NOT_ESCAPED                    14        // Terrorists have not escaped!
-#define ROUNDEND_VIP_NOT_ESCAPED                        15        // VIP has not escaped!
-#define ROUNDEND_GAME_COMMENCING                        16        // Game Commencing!
+#define ROUNDEND_TERRORISTS_WIN                         9        // Terrorists Win!
+#define ROUNDEND_ROUND_DRAW                             10       // Round Draw!
+#define ROUNDEND_ALL_HOSTAGES_RESCUED                   11       // All Hostages have been rescued!
+#define ROUNDEND_TARGET_SAVED                           12       // Target has been saved!
+#define ROUNDEND_HOSTAGES_NOT_RESCUED                   13       // Hostages have not been rescued!
+#define ROUNDEND_TERRORISTS_NOT_ESCAPED                 14       // Terrorists have not escaped!
+#define ROUNDEND_VIP_NOT_ESCAPED                        15       // VIP has not escaped!
+#define ROUNDEND_GAME_COMMENCING                        16       // Game Commencing!
 /**
  * @endsection
  */
@@ -55,28 +55,12 @@ enum RoundEndOutcome
 new Handle:tRoundEnd = INVALID_HANDLE;
 
 /**
- * Global variable to store a convar query cookie
- */ 
-new QueryCookie:mat_dxlevel;
-
-/**
  * Map is starting.
  */ 
 RoundEndOnMapStart()
 {
     // Reset timer handle.
     tRoundEnd = INVALID_HANDLE;
-}
-
-/**
- * Client is joining the server.
- * 
- * @param client    The client index.  
- */ 
-RoundEndClientInit(client)
-{
-    // Get client's DX level.
-    RoundEndGetClientDXLevel(client);
 }
 
 /**
@@ -165,53 +149,6 @@ RoundEndOnRoundEnd(reason)
     
     // Balance teams.    
     RoundEndBalanceTeams();
-}
-
-/**
- * Finds DX level of a client.
- * 
- * @param client    The client index.  
- */
-RoundEndGetClientDXLevel(client)
-{
-    // If client is fake (or bot), then stop.
-    if (IsFakeClient(client))
-    {
-        return;
-    }
-    
-    // Query mat_dxlevel on client.
-    mat_dxlevel = QueryClientConVar(client, "mat_dxlevel", RoundEndQueryClientDXLevel);
-}
-
-/**
- * Query callback function.
- *
- * @param cookie    Unique cookie of the query.
- * @param client    The client index.
- * @param result    The result of the query (see console.inc enum ConVarQueryResult)
- * @param cvarName  Name of the cvar.
- * @param cvarValue Value of the cvar.
- */       
-public RoundEndQueryClientDXLevel(QueryCookie:cookie, client, ConVarQueryResult:result, const String:cvarName[], const String:cvarValue[])
-{
-    // If query cookie does not match cookie given by mat_dxlevel query, then stop, this isn't our query.
-    if (cookie != mat_dxlevel)
-    {
-        return;
-    }
-    
-    // Reset dxLevel.
-    dxLevel[client] = 0;
-    
-    // If result is any other than ConVarQuery_Okay, then stop.
-    if (result != ConVarQuery_Okay)
-    {   
-        return;
-    }
-    
-    // Copy cvar value to dxLevel array.
-    dxLevel[client] = StringToInt(cvarValue);
 }
 
 /**
@@ -398,34 +335,6 @@ RoundEndBalanceTeams()
 }
 
 /**
- * Displays overlay to client, or prints unsupported message on client's screen.
- * 
- * @param client    The client index.
- * @param overlay   The overlay path.
- */    
-RoundEndDisplayClientOverlay(client, const String:overlay[])
-{
-    // If dxLevel is 0, then query on client failed, so try again, then stop.
-    if (!dxLevel[client])
-    {
-        // Query dxlevel cvar.
-        RoundEndGetClientDXLevel(client);
-        return;
-    }
-    
-    // If dxLevel is above or equal to minimum requirement, then display overlay.
-    if (dxLevel[client] >= GENERAL_DXLEVEL_MIN)
-    {
-        ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
-    }
-    // If client doesn't meet minimum requirement, then print unsupported text.
-    else
-    {
-        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], GENERAL_DXLEVEL_MIN);
-    }
-}
-
-/**
  * Displays overlays to clients, depending on the outcome.
  * 
  * @param time      Time to display overlays.
@@ -470,7 +379,14 @@ RoundEndOverlayStart(Float:time, RoundEndOutcome:outcome)
             continue;
         }
         
-        RoundEndDisplayClientOverlay(x, overlaypath);
+        // If client is fake (or bot), then stop.
+        if (IsFakeClient(x))
+        {
+            continue;
+        }
+        
+        OverlaysClientSetChannelPath(x, OVERLAYS_CHANNEL_ROUNDEND, overlaypath);
+        OverlaysClientSetChannelState(x, OVERLAYS_CHANNEL_ROUNDEND, true, false, true);
     }
     
     CreateTimer(time, RoundEndOverlayTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -487,8 +403,14 @@ RoundEndOverlayStop()
             continue;
         }
         
-        // Removes overlay from client's screen.
-        ClientCommand(x, "r_screenoverlay \"\"");
+        // If client is fake (or bot), then stop.
+        if (IsFakeClient(x))
+        {
+            continue;
+        }
+        
+        // Disable roundend overlay channel.
+        OverlaysClientSetChannelState(x, OVERLAYS_CHANNEL_ROUNDEND, true, false, false, true);
     }
 }
 

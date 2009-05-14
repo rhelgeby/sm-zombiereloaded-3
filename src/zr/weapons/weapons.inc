@@ -129,6 +129,12 @@ WeaponsValidateConfig()
     }
 }
 
+WeaponsOnCommandsCreate()
+{
+    // Forward event to sub-modules.
+    RestrictOnCommandsCreate();
+}
+
 /**
  * Client is joining the server.
  * 

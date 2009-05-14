@@ -11,46 +11,100 @@
  */
 
 /**
- * Timer handles for redisplaying overlays on clients.
+ * @section Suicide intercept defines.
  */
-new Handle:tOverlay[MAXPLAYERS + 1];
+#define CLASSOVERLAY_TOGGLE_MAX_CMDS 5
+#define CLASSOVERLAY_TOGGLE_MAX_LENGTH 16
+/**
+ * @endsection
+ */
+ 
+/**
+ * Array to store default class overlay enable flag.
+ */
+new bool:h_bClassOverlay[MAXPLAYERS + 1];
 
 /**
- * Specifies if a client have a overlay.
+ * Client is joining the server.
+ * 
+ * @param client    The client index.  
  */
-new bool:bClientHasOverlay[MAXPLAYERS + 1];
-
-/**
- * Tells whether the overlay is on or not.
- */
-new bool:bClientOverlayOn[MAXPLAYERS + 1];
-
-/**
- * Path to the currently active overlay.
- */
-new String:ActiveOverlay[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
-
-
-/**
- * Returns if the have a overlay path specified.
- *
- * @param client    The client index.
- * @return          True if a overlay path is specified, false otherwise.
- */
-bool:ClassClientHasOverlay(client)
+ClassOverlayClientInit(client)
 {
-    return bClientHasOverlay[client];
+    // Get overlay toggle cvar values.
+    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+    new bool:overlaydefault = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]);
+    
+    // Apply default value if toggle is enabled, default to true if toggle is disabled.
+    h_bClassOverlay[client] = overlaytoggle ? overlaydefault : true;
 }
 
 /**
- * Returns if the overlay is currently on or not.
- *
- * @param client    The client index.
- * @return          True if on, false otherwise.
+ * Hook commands related to overlay here.
  */
-bool:ClassOverlayIsOn(client)
+ClassOverlayOnCommandsHook()
 {
-    return bClientOverlayOn[client];
+    // Create command callbacks (intercepts) for listed suicide commands.
+    decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+    GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
+    
+    // Create array to store cmds
+    new String:arrayCmds[CLASSOVERLAY_TOGGLE_MAX_CMDS][CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+    
+    // Explode string into array indexes.
+    new cmdcount = ExplodeString(togglecmds, ", ", arrayCmds, CLASSOVERLAY_TOGGLE_MAX_CMDS, CLASSOVERLAY_TOGGLE_MAX_LENGTH);
+    
+    // x = array index.
+    // arrayCmds[x] = suicide command.
+    for (new x = 0; x <= cmdcount - 1; x++)
+    {
+        // Prepare intercept for this command.
+        RegConsoleCmd(arrayCmds[x], ClassOverlayEnableCommand);
+    }
+}
+
+/**
+ * Client is spawning into the game.
+ * 
+ * @param client    The client index.
+ */
+ClassOverlayOnClientSpawn(client)
+{
+    // If overlay toggle is enabled and class has an overlay, then send center text.
+    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+    
+    decl String:overlaypath[PLATFORM_MAX_PATH];
+    ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath));
+    
+    if (overlaytoggle && overlaypath[0])
+    {
+        decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+        GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
+        
+        ZR_HudHint(client, "Classes overlay toggle", togglecmds);
+    }
+}
+
+/**
+ * Client has been infected.
+ * 
+ * @param client    The client index.
+ */
+ClassOverlayOnClientInfected(client)
+{
+    // If overlay toggle is enabled and class has an overlay, then send center text.
+    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+    
+    decl String:overlaypath[PLATFORM_MAX_PATH];
+    ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath));
+    
+    if (overlaytoggle && overlaypath[0])
+    {
+        decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+        GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
+        
+        ZR_PrintCenterText(client, "Classes overlay toggle", togglecmds);
+    }
 }
 
 ClassOverlayInitialize(client, const String:overlay[])
@@ -60,57 +114,34 @@ ClassOverlayInitialize(client, const String:overlay[])
         return;
     }
     
-    if (strlen(overlay) == 0)
+    // If overlay path is empty, then disable channel, then stop.
+    if (!overlay[0])
     {
-        bClientHasOverlay[client] = false;
+        OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
+        return;
     }
-    else
-    {
-        bClientHasOverlay[client] = true;
-        strcopy(ActiveOverlay[client], PLATFORM_MAX_PATH, overlay);
-        
-        ClassOverlayStart(client);
-    }
+    
+    // Display class overlays.
+    OverlaysClientSetChannelPath(client, OVERLAYS_CHANNEL_CLASSES, overlay);
+    OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, h_bClassOverlay[client]);
 }
 
-ClassOverlayStart(client)
+/**
+ * Command callback (See zr_classes_overlay_togglecmds)
+ * Toggles nightvision of a client.
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ClassOverlayEnableCommand(client, argc)
 {
-    // Kill timer if it exist.
-    if (tOverlay[client] != INVALID_HANDLE)
+    // If overlay toggle is disabled, then stop.
+    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+    if (!overlaytoggle)
     {
-        KillTimer(tOverlay[client]);
-        tOverlay[client] = INVALID_HANDLE;
+        return;
     }
     
-    ClientCommand(client, "r_screenoverlay \"%s\"", ActiveOverlay[client]);
-    bClientOverlayOn[client] = true;
-    
-    new Float:redisplay = GetConVarFloat(g_hCvarsList[CVAR_OVERLAY_REDISPLAY]);
-    tOverlay[client] = CreateTimer(redisplay, ClassOverlayTimer, client, TIMER_REPEAT);
-}
-
-ClassOverlayStop(client)
-{
-    // Kill timer if it exist.
-    if (tOverlay[client] != INVALID_HANDLE)
-    {
-        KillTimer(tOverlay[client]);
-        tOverlay[client] = INVALID_HANDLE;
-    }
-    
-    // Disable client overlay.
-    ClientCommand(client, "r_screenoverlay \"\"");
-    bClientOverlayOn[client] = false;
-}
-
-public Action:ClassOverlayTimer(Handle:timer, any:client)
-{
-    if (!IsClientInGame(client) || !InfectIsClientInfected(client))
-    {
-        tOverlay[client] = INVALID_HANDLE;
-        return Plugin_Stop;
-    }
-    
-    ClientCommand(client, "r_screenoverlay \"%s\"", ActiveOverlay[client]);
-    return Plugin_Continue;
+    // Toggle current overlay channel, and retrieve new value.
+    h_bClassOverlay[client] = OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, true);
 }

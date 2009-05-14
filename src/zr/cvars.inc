@@ -36,6 +36,9 @@ enum CvarsList
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
     Handle:CVAR_CLASSES_DEFAULT_ADMIN,
+    Handle:CVAR_CLASSES_OVERLAY_TOGGLE,
+    Handle:CVAR_CLASSES_OVERLAY_TOGGLECMDS,
+    Handle:CVAR_CLASSES_OVERLAY_DEFAULT,
     Handle:CVAR_WEAPONS,
     Handle:CVAR_WEAPONS_RESTRICT,
     Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
@@ -49,6 +52,7 @@ enum CvarsList
     Handle:CVAR_SAYHOOKS_QUIET,
     Handle:CVAR_SAYHOOKS_QUIET_FILTER,
     Handle:CVAR_SAYHOOKS_QUIET_FLAGS,
+    Handle:CVAR_OVERLAYS_UPDATE_TIME,
     Handle:CVAR_ROUNDEND_OVERLAY,
     Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
     Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
@@ -117,8 +121,6 @@ enum CvarsList
     Handle:CVAR_ZHP_DEFAULT,
     
     // To be modulized/recoded.
-    Handle:CVAR_OVERLAY_REDISPLAY,
-    Handle:CVAR_ZVISION_ALLOW_DISABLE,
     Handle:CVAR_MENU_AUTOCLOSE,
     Handle:CVAR_ANTICAMP,
     Handle:CVAR_ANTICAMP_UPDATE_INTERVAL,
@@ -224,6 +226,8 @@ CvarsCreate()
     // Classes (core)
     // ===========================
     
+    // General
+    
     g_hCvarsList[CVAR_CLASSES_SPAWN]                    =    CreateConVar("zr_classes_spawn", "0", "");
     // Old Desc: Classmenu is re-displayed every spawn (0: Disable)
     g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random", "0", "");
@@ -234,6 +238,14 @@ CvarsCreate()
     // Old Desc: 
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin", "random", "");
     // Old Desc: Default admin-only class selected for admins when they connect. Use \"random\" to select a random class, or blank to use class config defaults.
+    
+    // Overlays
+    
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]           =    CreateConVar("zr_classes_overlay_toggle", "1", "");
+    // Desc: Allow clients to toggle class overlay, zr_classes_overlay_default will be applied on connect.
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds", "nightvision", "");
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default", "0", "");
+    // Desc: Default toggle value of class overlay. [Ignored when zr_classes_overlay_toggle is disabled.]
     
     // ===========================
     // Weapons (core)
@@ -261,17 +273,6 @@ CvarsCreate()
     
     g_hCvarsList[CVAR_HITGROUPS]                        =    CreateConVar("zr_hitgroups", "1", "");
     // Note make config file cvar.
-    
-    // ===========================
-    // Round End (core)
-    // ===========================
-    
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]                 =    CreateConVar("zr_roundend_overlay", "1", "");
-    // Old Desc: Shows an overlay to all clients when a team wins. (0: Disable)
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]           =    CreateConVar("zr_roundend_overlays_human", "overlays/zr/humans_win");
-    // Old Desc: overlays/zr/humans_win", "Path to \"humans win\" overlay
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]          =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "");
-    // Old Desc: Path to \"zombies win\" overlay
     
     // ===========================
     // Infect (core)
@@ -336,6 +337,23 @@ CvarsCreate()
     // 16   Quiet "!ztele" say hook.
     // 32   Quiet "!zhp" say hook.
     // 64   Quiet "!zmarket" say hook.
+    
+    // ===========================
+    // Overlays (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_OVERLAYS_UPDATE_TIME]             =    CreateConVar("zr_overlays_update_time", "1.0", "");
+    
+    // ===========================
+    // Round End (core)
+    // ===========================
+    
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]                 =    CreateConVar("zr_roundend_overlay", "1", "");
+    // Old Desc: Shows an overlay to all clients when a team wins. (0: Disable)
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]           =    CreateConVar("zr_roundend_overlays_human", "overlays/zr/humans_win");
+    // Old Desc: overlays/zr/humans_win", "Path to \"humans win\" overlay
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]          =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "");
+    // Old Desc: Path to \"zombies win\" overlay
     
     // ===========================
     // Account (module)
@@ -480,10 +498,6 @@ CvarsCreate()
     // Old Desc: The default value of zombie health display to new clients (1: On,  0: Off)
     
     
-    // TO BE MODULIZED/RECODED.
-    g_hCvarsList[CVAR_OVERLAY_REDISPLAY]                =    CreateConVar("zr_overlay_redisplay", "3", "");
-    // Old Desc: Frequency, in seconds, to display overlay on the client's screen (Never go below 0.1, 0.2 seems safe)
-    g_hCvarsList[CVAR_ZVISION_ALLOW_DISABLE]            =    CreateConVar("zr_zvision_allow_disable", "1", "");
     // Old Desc: Allow users to disable ZVision with their nightvision key (0: Disable)
     g_hCvarsList[CVAR_MENU_AUTOCLOSE]                   =    CreateConVar("zr_menu_autoclose", "0", "");
     // Old Desc: Automatically close menus on selection. If disabled the menu will remain open.

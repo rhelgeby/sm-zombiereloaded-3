@@ -1,19 +1,33 @@
-/**
- * ====================
+/*
+ * ============================================================================
+ *
  *   Zombie:Reloaded
- *   File: commands.inc
- *   Author: Greyscale
- * ====================
+ *
+ *   File:          commands.inc
+ *   Type:          Core
+ *   Description:   Console command creation and hooking.
+ *
+ * ============================================================================
  */
- 
-CreateCommands()
+
+/**
+ * Commands are created/hooked.
+ */
+CommandsInit()
+{
+    // Forward event to modules. (create commands)
+    WeaponsOnCommandsCreate();
+    
+    // Forward event to modules. (hook commands)
+    ClassOnCommandsHook();
+    DamageOnCommandsHook();
+}
+
+/*CreateCommands()
 {
     RegAdminCmd("zr_infect", Command_Infect, ADMFLAG_GENERIC, "Infects the specified player");
     RegAdminCmd("zr_spawn", Command_Respawn, ADMFLAG_GENERIC, "Respawns the specified player following auto-respawning rules");
     
-    // Weapon restrict commands
-    RegAdminCmd("zr_restrict", Command_Restrict, ADMFLAG_GENERIC, "Restrict a specified weapon");
-    RegAdminCmd("zr_unrestrict", Command_Unrestrict, ADMFLAG_GENERIC, "Unrestrict a specified weapon");
     
     //RegAdminCmd("zr_set_class_knockback", Command_SetClassKnockback, ADMFLAG_GENERIC, "Sets the knockback to the specified class. Usage: zr_set_class_knockback <class name> <value>");
     //RegAdminCmd("zr_get_class_knockback", Command_GetClassKnockback, ADMFLAG_GENERIC, "Gets the knockback to the specified class. Usage: zr_get_class_knockback <class name>");
@@ -29,9 +43,10 @@ CreateCommands()
     
     RegConsoleCmd("zr_class_dump", Command_ClassDump, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
     RegAdminCmd("zr_class_modify", Command_ClassModify, ADMFLAG_GENERIC, "Modify class data on one or more classes. Usage: zr_class_modify <classname|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
-}
+    
+}*/
 
-public Action:Command_Infect(client, argc)
+/*public Action:Command_Infect(client, argc)
 {
     new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
     if (argc < 1 || !enabled)
@@ -129,110 +144,9 @@ public Action:Command_Respawn(client, argc)
     }
     
     return Plugin_Handled;
-}
+}*/
 
-/**
- * Command callback (zr_restrict)
- * Restricts a weapon or group
- *   
- * @param client    The client index.
- * @param argc      Argument count.
-*/
-public Action:Command_Restrict(client, argc)
-{
-    // Disabled.
-    // If plugin is disabled then stop
-    /**new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
-    if (argc < 1 || !enabled)
-    {
-        return Plugin_Handled;
-    }*/
-    
-    // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
-    if (!weapons)
-    {
-        // Tell client command is disabled.
-        ZR_ReplyToCommand(client, "Feature is disabled");
-        return Plugin_Handled;
-    }
-    
-    // If restrict module is disabled, then stop.
-    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
-    if (!restrict)
-    {
-        // Tell client command is disabled.
-        ZR_ReplyToCommand(client, "Feature is disabled");
-        return Plugin_Handled;
-    }
-    
-    // arg1 = weapon being restricted
-    decl String:arg1[32];
-    GetCmdArg(1, arg1, sizeof(arg1));
-    
-    // Strip "weapon_" from entity name
-    ReplaceString(arg1, sizeof(arg1), "weapon_", "");
-    
-    decl String:display[WEAPONS_MAX_LENGTH];
-    
-    new WpnRestrictQuery:output = RestrictRestrict(arg1, display);
-    RestrictPrintRestrictOutput(client, output, display, true);
-    
-    return Plugin_Handled;
-}
-
-/**
- * Command callback (zr_unrestrict)
- * Unrestricts a weapon or group
- *   
- * @param client    The client index.
- * @param argc      Argument count.
-*/
-public Action:Command_Unrestrict(client, argc)
-{
-    // Disabled.
-    // If plugin is disabled then stop
-    /**new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
-    if (argc < 1 || !enabled)
-    {
-        return Plugin_Handled;
-    }*/
-    
-    // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
-    if (!weapons)
-    {
-        // Tell client command is disabled.
-        ZR_ReplyToCommand(client, "Feature is disabled");
-        return Plugin_Handled;
-    }
-    
-    // If restrict module is disabled, then stop.
-    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
-    if (!restrict)
-    {
-        // Tell client command is disabled.
-        ZR_ReplyToCommand(client, "Feature is disabled");
-        return Plugin_Handled;
-    }
-    
-    // arg1 = weapon being restricted
-    decl String:arg1[32];
-    GetCmdArg(1, arg1, sizeof(arg1));
-    
-    // Strip "weapon_" from entity name
-    ReplaceString(arg1, sizeof(arg1), "weapon_", "");
-    
-    decl String:display[WEAPONS_MAX_LENGTH];
-    
-    new WpnRestrictQuery:output = RestrictUnrestrict(arg1, display);
-    RestrictPrintUnrestrictOutput(client, output, display, true);
-    
-    return Plugin_Handled;
-}
-
-
-public Action:Command_AdminMenu(client, argc)
+/*public Action:Command_AdminMenu(client, argc)
 {
     if (ZRIsClientValid(client))
     {
@@ -308,4 +222,4 @@ public Action:Command_LogFlags(client, argc)
     
     ReplyToCommand(client, message);
     return Plugin_Handled;
-}
+}*/

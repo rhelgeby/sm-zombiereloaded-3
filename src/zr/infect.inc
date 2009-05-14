@@ -180,7 +180,7 @@ InfectOnClientDisconnect(client)
     InfectClient(randclient);
     
     // Tell client they have been randomly been chosen to replace disconnecting zombie.
-    ZR_PrintToChat(randclient, "Zombie replacement");
+    ZR_PrintToChat(randclient, "Infect disconnect");
     
     // Destroy handle.
     CloseHandle(arrayEligibleClients);
@@ -564,6 +564,12 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
     // Switch the player to terrorists.
     // TODO: A solution to stop confusing bots? Respawn and teleport?
     CS_SwitchTeam(client, CS_TEAM_T);
+    
+    // Format infection message.
+    SetGlobalTransTarget(client);
+    
+    // Print message to client.
+    ZR_PrintToChat(client, "Infect infected");
     
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);

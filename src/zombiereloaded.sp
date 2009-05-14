@@ -31,6 +31,7 @@
 #include "zr/sayhooks"
 #include "zr/tools"
 #include "zr/models"
+#include "zr/overlays"
 #include "zr/playerclasses/playerclasses"
 #include "zr/weapons/weapons"
 #include "zr/hitgroups"
@@ -98,9 +99,6 @@ public OnPluginStart()
     LoadTranslations("common.phrases.txt");
     LoadTranslations("zombiereloaded.phrases.txt");
     
-    // Start loading ZR init functions.
-    ZR_PrintToServer("Plugin loading");
-    
     // Log
     LogInit();
     
@@ -110,15 +108,11 @@ public OnPluginStart()
     // Tools
     ToolsInit();
     
-    // TODO: Be modulized/recoded.
-    CreateCommands();
-    HookCommands();
+    // Commands
+    CommandsInit();
     
     // Weapons
     WeaponsInit();
-    
-    // Damage
-    DamageInit();
     
     // Say Hooks
     SayHooksInit();
@@ -131,9 +125,6 @@ public OnPluginStart()
     
     // Create public cvar for tracking.
     CreateConVar("gs_zombiereloaded_version", VERSION, "[ZR] Current version of this plugin", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
-    
-    // Finish loading ZR init functions.
-    ZR_PrintToServer("Plugin loaded");
 }
 
 /**
@@ -171,6 +162,7 @@ public OnMapStart()
 {
     // Forward event to modules.
     SerialOnMapStart();
+    OverlaysOnMapStart();
     RoundEndOnMapStart();
     InfectOnMapStart();
     SEffectsOnMapStart();
@@ -216,8 +208,8 @@ public OnClientPutInServer(client)
 {
     // Forward event to modules.
     ClassClientInit(client);
+    OverlaysClientInit(client);
     WeaponsClientInit(client);
-    RoundEndClientInit(client);
     InfectClientInit(client);
     DamageClientInit(client);
     SEffectsClientInit(client);

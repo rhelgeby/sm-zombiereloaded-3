@@ -11,11 +11,6 @@
  */
 
 /**
- * Minimum dx level required to see overlays.
- */
-#define GENERAL_DXLEVEL_MIN 90
-
-/**
  * @section Conversion factors.
  */
 #define CONVERSION_UNITS_TO_FEET    16.000
@@ -23,11 +18,6 @@
 /**
  * @endsection
  */
-
-/**
- * The DirectX level of a client.
- */
-new dxLevel[MAXPLAYERS + 1];
 
 /**
  * Global variable set to true when the first zombie(s) is/are spawned.

@@ -156,7 +156,7 @@ LogMessageFormatted(client, const String:module[], const String:block[], const S
         SetGlobalTransTarget(client);
         
         // Print to client.
-        PrintToConsole(client, "%t %s", "ZR", logtext);
+        PrintToConsole(client, "[ZR] %s", logtext);
     }
 }
 
@@ -183,7 +183,7 @@ LogToAdmins(String:message[])
         SetGlobalTransTarget(x);
         
         // Format message to admin, then print.
-        Format(buffer, sizeof(buffer), "%t %s", "ZR", message);
+        Format(buffer, sizeof(buffer), "[ZR] %s", message);
         PrintToChat(x, buffer);
     }
 }

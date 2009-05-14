@@ -12,7 +12,7 @@
 
 FormatTextString(String:text[], maxlen)
 {
-    Format(text, maxlen, "@green[%t] @default%s", "ZR", text);
+    Format(text, maxlen, "@green[ZR] @default%s", text);
     
     ReplaceString(text, maxlen, "@default","\x01");
     ReplaceString(text, maxlen, "@lgreen","\x03");
@@ -92,7 +92,7 @@ stock ZR_PrintToServer(any:...)
     decl String:buffer[192];
     
     VFormat(phrase, sizeof(phrase), "%t", 1);
-    Format(buffer, sizeof(buffer), "[%t] %s", "ZR", phrase);
+    Format(buffer, sizeof(buffer), "[ZR] %s", phrase);
     
     PrintToServer(buffer);
 }

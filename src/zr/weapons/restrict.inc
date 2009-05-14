@@ -24,7 +24,7 @@ new Handle:gRestrictedWeapons = INVALID_HANDLE;
 /**
  * Array that stores the "HookID" to be later unhooked on player disconnect.
  */
-new gCanUseHookID[MAXPLAYERS + 1];
+new g_iCanUseHookID[MAXPLAYERS + 1] = {-1, ...};
 
 /**
  * Query results returned when (un)restricting a weapon.
@@ -50,6 +50,16 @@ RestrictInit()
     RegConsoleCmd("buy", RestrictBuyCommand);
     RegConsoleCmd("autobuy", RestrictBuyCommand);
     RegConsoleCmd("rebuy", RestrictBuyCommand);
+}
+
+/**
+ * Hook commands related to restrict here.
+ */
+RestrictOnCommandsCreate()
+{
+    // Create admin commands.
+    RegAdminCmd("zr_restrict", RestrictRestrictCommand, ADMFLAG_GENERIC, "zr_restrict <weapon> - Restrict a weapon.");
+    RegAdminCmd("zr_unrestrict", RestrictUnrestrictCommand, ADMFLAG_GENERIC, "zr_unrestrict <weapon> - Unrestrict a weapon.");
 }
 
 /**
@@ -209,7 +219,7 @@ RestrictWeaponUnrestrictAll()
 RestrictClientInit(client)
 {
     // Hook "Weapon_CanUse" on client.
-    gCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
 }
 
 /**
@@ -219,8 +229,13 @@ RestrictClientInit(client)
  */
 RestrictOnClientDisconnect(client)
 {
-    // Unhook "Weapon_CanUse" on client.
-    ZRTools_UnhookWeapon_CanUse(gCanUseHookID[client]);
+    // Unhook "Weapon_CanUse" callback, and reset variable.
+    
+    if (g_iCanUseHookID[client] != -1)
+    {
+        ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
+        g_iCanUseHookID[client] = -1;
+    }
 }
 
 /**
@@ -231,8 +246,8 @@ RestrictOnClientDisconnect(client)
 RestrictOnClientSpawn(client)
 {
     // Re-hook "canuse" on client.
-    ZRTools_UnhookWeapon_CanUse(gCanUseHookID[client]);
-    gCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
+    g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
 }
 
 /**
@@ -902,4 +917,88 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
     
     // Allow pickup.
     return ZRTools_Continue;
+}
+
+/**
+ * Command callback (zr_restrict)
+ * Restricts a weapon or group
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:RestrictRestrictCommand(client, argc)
+{
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        // Tell client command is disabled.
+        ZR_ReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // If restrict module is disabled, then stop.
+    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    if (!restrict)
+    {
+        // Tell client command is disabled.
+        ZR_ReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // arg1 = weapon being restricted
+    decl String:arg1[32];
+    GetCmdArg(1, arg1, sizeof(arg1));
+    
+    // Strip "weapon_" from entity name
+    ReplaceString(arg1, sizeof(arg1), "weapon_", "");
+    
+    decl String:display[WEAPONS_MAX_LENGTH];
+    
+    new WpnRestrictQuery:output = RestrictRestrict(arg1, display);
+    RestrictPrintRestrictOutput(client, output, display, true);
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback (zr_unrestrict)
+ * Unrestricts a weapon or group
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:RestrictUnrestrictCommand(client, argc)
+{
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        // Tell client command is disabled.
+        ZR_ReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // If restrict module is disabled, then stop.
+    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    if (!restrict)
+    {
+        // Tell client command is disabled.
+        ZR_ReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // arg1 = weapon being restricted
+    decl String:arg1[32];
+    GetCmdArg(1, arg1, sizeof(arg1));
+    
+    // Strip "weapon_" from entity name
+    ReplaceString(arg1, sizeof(arg1), "weapon_", "");
+    
+    decl String:display[WEAPONS_MAX_LENGTH];
+    
+    new WpnRestrictQuery:output = RestrictUnrestrict(arg1, display);
+    RestrictPrintUnrestrictOutput(client, output, display, true);
+    
+    return Plugin_Handled;
 }
