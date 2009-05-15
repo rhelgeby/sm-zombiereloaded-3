@@ -170,7 +170,7 @@ bool:ZTeleClient(client)
         // Tell client how much time is left until teleport.
         TranslationPrintCenterText(client, "ZTele countdown", g_iZTeleTimeLeft[client]);
         
-        // Start repeating timer.
+        // Start timer.
         tZTele[client] = CreateTimer(1.0, ZTeleTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
     }
     else
@@ -178,8 +178,8 @@ bool:ZTeleClient(client)
         // Reset timer handle.
         tZTele[client] = INVALID_HANDLE;
         
-        // Teleport client.
-        TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, NULL_VECTOR);
+        // Teleport client to spawn.
+        ZTeleTeleportClient(client);
         
         // Tell client they've been teleported.
         TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
@@ -189,6 +189,17 @@ bool:ZTeleClient(client)
     }
     
     return true;
+}
+
+/**
+ * Teleport client to their spawn location.
+ * 
+ * @param client    The client index.
+ */
+ZTeleTeleportClient(client)
+{
+    // Teleport client.
+    TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, NULL_VECTOR);
 }
 
 /**
