@@ -45,6 +45,7 @@ enum CvarsList
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
     Handle:CVAR_CLASSES_DEFAULT_ADMIN,
+    Handle:CVAR_CLASSES_MENU_AUTOCLOSE,
     Handle:CVAR_CLASSES_OVERLAY_TOGGLE,
     Handle:CVAR_CLASSES_OVERLAY_TOGGLECMDS,
     Handle:CVAR_CLASSES_OVERLAY_DEFAULT,
@@ -112,6 +113,7 @@ enum CvarsList
     Handle:CVAR_RESPAWN_DELAY,
     Handle:CVAR_RESPAWN_TEAM_ZOMBIE,
     Handle:CVAR_RESPAWN_TEAM_ZOMBIE_WORLD,
+    Handle:CVAR_JUMPBOOST_BUNNYHOP_PROTECT,
     Handle:CVAR_ZSPAWN,
     Handle:CVAR_ZSPAWN_TEAM_OVERRIDE,
     Handle:CVAR_ZSPAWN_TEAM_ZOMBIE,
@@ -128,11 +130,6 @@ enum CvarsList
     Handle:CVAR_ZTELE_AUTOCANCEL_DISTANCE,
     Handle:CVAR_ZHP,
     Handle:CVAR_ZHP_DEFAULT,
-    
-    // To be modulized/recoded.
-    Handle:CVAR_MENU_AUTOCLOSE,
-    Handle:CVAR_ANTICAMP,
-    Handle:CVAR_ANTICAMP_UPDATE_INTERVAL,
 }
 
 /**
@@ -180,21 +177,6 @@ CvarsInit()
  */
 CvarsCreate()
 {
-    // Cvar naming guidelines:
-    // 1. Prefix: "zr_"
-    // 2. Module name next. "zr_modulename_"
-    // 3. (If applys) Submodule name next. "zr_modulename_submodulename_" Ex "zr_weapons_restrict_"
-    // 4. Name last part to be defaulted to "1" (if boolean cvar) Ex "zr_damage_suicide_zombie",
-    //    because it will be defaulted to "1".  "zr_damage_suicide_zombie_disable" = bad.  Because we want
-    //    to try to default everything to "1" and let hosts disable what they don't want.
-    //
-    // Cvar description guidelines
-    // Assume cvar is enabled.
-    // Ex. "zr_roundend_overlay" "1" "Display round win overlays to all clients."
-    // Explain (additional) options in brackets.
-    // Ex. "zr_classes_default_zombie" "" "Default zombie class. ['""' = Class config defaults.  'random' = Give client random class on connect.]"
-    // Any thing else?
-    
     // ===========================
     // General (Core)
     // ===========================
@@ -206,12 +188,12 @@ CvarsCreate()
     // ===========================
     
     g_hCvarsList[CVAR_LOG]                       =    CreateConVar("zr_log",                    "1",    "Logs key actions performed by the plugin, including errors and debug.");
-    g_hCvarsList[CVAR_LOG_FILTER_MODULES]        =    CreateConVar("zr_log_filter_modules",     "",     "If any log module name is withinin this string, log will be suppressed.");
-    g_hCvarsList[CVAR_LOG_FILTER_DESCRIPTION]    =    CreateConVar("zr_log_filter_description", "",     "If any log description is within this string, log will be suppressed.");
-    g_hCvarsList[CVAR_LOG_FILTER_DEBUG]          =    CreateConVar("zr_log_filter_debug",       "1",    "Supresses debug messages.");
-    g_hCvarsList[CVAR_LOG_PRINT_ADMINS]          =    CreateConVar("zr_log_print_admins",       "0",    "Print all logs to currently connected admins.");
-    g_hCvarsList[CVAR_LOG_PRINT_CHAT]            =    CreateConVar("zr_log_print_chat",         "1",    "Print log to admin's chat area.");
-    g_hCvarsList[CVAR_LOG_PRINT_CONSOLE]         =    CreateConVar("zr_log_print_console",      "1",    "Print log to admin's console.");
+    g_hCvarsList[CVAR_LOG_FILTER_MODULES]        =    CreateConVar("zr_log_filter_modules",     "",     "If any log module name is within this string, log will be suppressed. [Dependency: zr_log]");
+    g_hCvarsList[CVAR_LOG_FILTER_DESCRIPTION]    =    CreateConVar("zr_log_filter_description", "",     "If any log description is within this string, log will be suppressed. [Dependency: zr_log]");
+    g_hCvarsList[CVAR_LOG_FILTER_DEBUG]          =    CreateConVar("zr_log_filter_debug",       "1",    "Supresses debug messages. [Dependency: zr_log]");
+    g_hCvarsList[CVAR_LOG_PRINT_ADMINS]          =    CreateConVar("zr_log_print_admins",       "0",    "Print all logs to currently connected admins. [Dependency: zr_log]");
+    g_hCvarsList[CVAR_LOG_PRINT_CHAT]            =    CreateConVar("zr_log_print_chat",         "1",    "Print log to admin's chat area. [Dependency: zr_log & zr_log_print_admins]");
+    g_hCvarsList[CVAR_LOG_PRINT_CONSOLE]         =    CreateConVar("zr_log_print_console",      "1",    "Print log to admin's console. [Dependency: zr_log & zr_log_print_admins]");
     
     // ===========================
     // Translations (core)
@@ -223,12 +205,12 @@ CvarsCreate()
     // Config (core)
     // ===========================
     
-    g_hCvarsList[CVAR_CONFIG_PATH_MODELS]        =    CreateConVar("zr_config_path_models",         "configs/zr/models.txt",                "Path to models config file. [Relative to root sourcemod directory]");
-    g_hCvarsList[CVAR_CONFIG_PATH_DOWNLOADS]     =    CreateConVar("zr_config_path_downloads",      "configs/zr/downloads.txt",             "Path to downloads file. [Relative to root sourcemod directory]");
-    g_hCvarsList[CVAR_CONFIG_PATH_PLAYERCLASSES] =    CreateConVar("zr_config_path_playerclasses",  "configs/zr/playerclasses.txt",         "Path to playerclasses config file. [Relative to root sourcemod directory]");
-    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons",        "configs/zr/weapons/weapons.txt",       "Path to weapons config file. [Relative to root sourcemod directory]");
-    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONGROUPS]  =    CreateConVar("zr_config_path_weapongroups",   "configs/zr/weapons/weapongroups.txt",  "Path to weapongroups config file. [Relative to root sourcemod directory]");
-    g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]     =    CreateConVar("zr_config_path_hitgroups",      "configs/zr/hitgroups.txt",             "Path to hitgroups config file. [Relative to root sourcemod directory]");
+    g_hCvarsList[CVAR_CONFIG_PATH_MODELS]        =    CreateConVar("zr_config_path_models",         "configs/zr/models.txt",                "Path, relative to root sourcemod directory, to models config file.");
+    g_hCvarsList[CVAR_CONFIG_PATH_DOWNLOADS]     =    CreateConVar("zr_config_path_downloads",      "configs/zr/downloads.txt",             "Path, relative to root sourcemod directory, to downloads file.");
+    g_hCvarsList[CVAR_CONFIG_PATH_PLAYERCLASSES] =    CreateConVar("zr_config_path_playerclasses",  "configs/zr/playerclasses.txt",         "Path, relative to root sourcemod directory, to playerclasses config file.");
+    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons",        "configs/zr/weapons/weapons.txt",       "Path, relative to root sourcemod directory, to weapons config file.");
+    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONGROUPS]  =    CreateConVar("zr_config_path_weapongroups",   "configs/zr/weapons/weapongroups.txt",  "Path, relative to root sourcemod directory, to weapongroups config file.");
+    g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]     =    CreateConVar("zr_config_path_hitgroups",      "configs/zr/hitgroups.txt",             "Path, relative to root sourcemod directory, to hitgroups config file.");
     
     // ===========================
     // Tools (core)
@@ -248,17 +230,21 @@ CvarsCreate()
     
     // General
     
-    g_hCvarsList[CVAR_CLASSES_SPAWN]                    =    CreateConVar("zr_classes_spawn",           "0",        "Re-display class selection menu every spawn.");
-    g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random",          "0",        "Player is assigned a random class every spawn [Override: zr_classes_spawn & zr_classes_default_*]");
-    g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE]           =    CreateConVar("zr_classes_default_zombie",  "random",   "Zombie class assigned to players on connect ['random' = Random class | '""' = Class config default]");
-    g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]            =    CreateConVar("zr_classes_default_human",   "random",   "Human class assigned to players on connect ['random' = Random class | '""' = Class config default]");");
-    g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin",   "random",   "Admin class assigned to admins on connect ['random' = Random class | '""' = Class config default]");");
+    g_hCvarsList[CVAR_CLASSES_SPAWN]                    =    CreateConVar("zr_classes_spawn",               "0",            "Re-display class selection menu every spawn.");
+    g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random",              "0",            "Player is assigned a random class every spawn. [Override: zr_classes_spawn & zr_classes_default_*]");
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE]           =    CreateConVar("zr_classes_default_zombie",      "random",       "Zombie class assigned to players on connect. ['random' = Random class | '\"\"' = Class config default]");
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]            =    CreateConVar("zr_classes_default_human",       "random",       "Human class assigned to players on connect. ['random' = Random class | '\"\"' = Class config default]");
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin",       "random",       "Admin class assigned to admins on connect. ['random' = Random class | '\"\"' = Class config default]");
+    
+    // Menu
+    
+    g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]           =    CreateConVar("zr_classes_menu_autoclose",      "0",            "Automatically close class selection menu.");
     
     // Overlays
     
     g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]           =    CreateConVar("zr_classes_overlay_toggle",      "1",            "Allow players to toggle class overlay.");
-    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds",  "nightvision",  "List of commands to hook that players can use to toggle class overlay. [Reliance: zr_classes_overlay_toggle | Delimited by \", \"]");
-    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default",     "0",            "Default class overlay toggle state [Reliance: zr_classes_overlay_toggle]");
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds",  "nightvision",  "List of commands to hook that players can use to toggle class overlay. [Dependency: zr_classes_overlay_toggle | Delimiter: \", \"]");
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default",     "0",            "Default class overlay toggle state set on connecting player. [Dependency: zr_classes_overlay_toggle]");
     
     // ===========================
     // Weapons (core)
@@ -266,49 +252,44 @@ CvarsCreate()
     
     // General
     
-    g_hCvarsList[CVAR_WEAPONS]                          =    CreateConVar("zr_weapons", "1", "");
-    // Note make config file cvar.
-    // Note this disables restrict submodule.
+    g_hCvarsList[CVAR_WEAPONS]                          =    CreateConVar("zr_weapons",                 "1",    "Enable weapons module, disabling this will disable any weapons-related features. (weapon restrictions, weapon knockback multipliers, etc)");
     
     // Restrict
     
-    g_hCvarsList[CVAR_WEAPONS_RESTRICT]                 =    CreateConVar("zr_weapons_restrict", "1", "");
-    // Note make config file cvar.
+    g_hCvarsList[CVAR_WEAPONS_RESTRICT]                 =    CreateConVar("zr_weapons_restrict",        "1",    "Enable weapon restriction module, disabling this will disable weapon restriction commands.");
     
     // Market Handler
     
-    g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]          =    CreateConVar("zr_weapons_zmarket_buyzone", "1", "");
-    // Old Desc: Must be in buyzone to access !zmarket, if Market is installed (0: Can be used anywhere)
+    g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]          =    CreateConVar("zr_weapons_zmarket_buyzone", "1",    "Requires player to be inside a buyzone to use ZMarket.");
     
     // ===========================
     // Hitgroups (core)
     // ===========================
     
-    g_hCvarsList[CVAR_HITGROUPS]                        =    CreateConVar("zr_hitgroups", "1", "");
-    // Note make config file cvar.
+    g_hCvarsList[CVAR_HITGROUPS]                        =    CreateConVar("zr_hitgroups",   "1",    "Enable hitgroups module, disabling this will disable hitgroup-related features. (hitgroup knockback multipliers, hitgroup damage control)");
     
     // ===========================
     // Infect (core)
     // ===========================
     
-    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]             =    CreateConVar("zr_infect_mzombie_ratio", "5", "");
-    g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]           =    CreateConVar("zr_infect_mzombie_respawn", "0", "");
-    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]             =    CreateConVar("zr_infect_spawntime_min", "30.0", "");
-    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]             =    CreateConVar("zr_infect_spawntime_max", "50.0", "");
-    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block", "1", "");
-    g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]              =    CreateConVar("zr_infect_weapons_drop", "1", "");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]             =    CreateConVar("zr_infect_mzombie_ratio",        "5",                                "Number of mother zombies to infect (when infect timer is up) in proportion to number of humans on the server.");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]           =    CreateConVar("zr_infect_mzombie_respawn",      "0",                                "Teleport mother zombies back to spawn on infect.");
+    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]             =    CreateConVar("zr_infect_spawntime_min",        "30.0",                             "Minimum time from the start of the round until picking the mother zombie(s).");
+    g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]             =    CreateConVar("zr_infect_spawntime_max",        "50.0",                             "Maximum time from the start of the round until picking the mother zombie(s).");
+    g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block",    "1",                                "Prevent a player from being chosen as mother zombie two rounds in a row.");
+    g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]              =    CreateConVar("zr_infect_weapons_drop",         "1",                                "Force player to drop all weapons on infect, disabling this will strip weapons instead.");
     
     // Effects
     
-    g_hCvarsList[CVAR_INFECT_FIREBALL]                  =    CreateConVar("zr_infect_fireball", "1", "");
-    g_hCvarsList[CVAR_INFECT_SMOKE]                     =    CreateConVar("zr_infect_smoke", "1", "");
-    g_hCvarsList[CVAR_INFECT_SPARKS]                    =    CreateConVar("zr_infect_sparks", "1", "");
-    g_hCvarsList[CVAR_INFECT_SOUND]                     =    CreateConVar("zr_infect_sound", "npc/fast_zombie/fz_scream1.wav", "");
-    g_hCvarsList[CVAR_INFECT_ESPLASH]                   =    CreateConVar("zr_infect_esplash", "1", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE]                     =    CreateConVar("zr_infect_shake", "1", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]                 =    CreateConVar("zr_infect_shake_amp", "15.0", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]           =    CreateConVar("zr_infect_shake_frequency", "1.0", "");
-    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]            =    CreateConVar("zr_infect_shake_duration", "5.0", ""); 
+    g_hCvarsList[CVAR_INFECT_FIREBALL]                  =    CreateConVar("zr_infect_fireball",             "1",                                "Spawn a fireball effect around player on infection.");
+    g_hCvarsList[CVAR_INFECT_SMOKE]                     =    CreateConVar("zr_infect_smoke",                "1",                                "Spawn a smoke cloud effect around player on infection.");
+    g_hCvarsList[CVAR_INFECT_SPARKS]                    =    CreateConVar("zr_infect_sparks",               "1",                                "Emit sparks from player on infection.");
+    g_hCvarsList[CVAR_INFECT_SOUND]                     =    CreateConVar("zr_infect_sound",                "npc/fast_zombie/fz_scream1.wav",   "Sound, relative to \"sounds\" folder, to play from player on infection. ['\"\"' = No sound]");
+    g_hCvarsList[CVAR_INFECT_ESPLASH]                   =    CreateConVar("zr_infect_esplash",              "1",                                "Emit an energy splash from player on infection.");
+    g_hCvarsList[CVAR_INFECT_SHAKE]                     =    CreateConVar("zr_infect_shake",                "1",                                "Shake player's view on infect.");
+    g_hCvarsList[CVAR_INFECT_SHAKE_AMP]                 =    CreateConVar("zr_infect_shake_amp",            "15.0",                             "Amplitude of shaking effect. [Dependency: zr_infect_shake]");
+    g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]           =    CreateConVar("zr_infect_shake_frequency",      "1.0",                              "Frequency of shaking effect. [Dependency: zr_infect_shake]");
+    g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]            =    CreateConVar("zr_infect_shake_duration",       "5.0",                              "Duration of shaking effect. [Dependency: zr_infect_shake]"); 
     
     // ===========================
     // Damage (core)
@@ -316,66 +297,48 @@ CvarsCreate()
     
     // Hitgroup Damage
     
-    g_hCvarsList[CVAR_DAMAGE_HITGROUPS]                 =    CreateConVar("zr_damage_hitgroups", "1", "");
+    g_hCvarsList[CVAR_DAMAGE_HITGROUPS]                 =    CreateConVar("zr_damage_hitgroups",        "1",                            "Read hitgroup damage control from hitgroup config file, disabling this allows all zombie hitgroups to be shot.");
     
     // Block Damage Types
     
-    g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]                  =    CreateConVar("zr_damage_block_ff", "1", "");
-    // note overrides mp_friendlyfire
-    g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]               =    CreateConVar("zr_damage_block_blast", "1", "");
+    g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]                  =    CreateConVar("zr_damage_block_ff",         "1",                            "Block friendly fire.");
+    g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]               =    CreateConVar("zr_damage_block_blast",      "1",                            "Block blast damage inflicted on self or teammates.");
     
     // Suicide Intercept
     
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie", "1", "");
-    // Old Desc: Intercept human suicide attempts.
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human", "1", "");
-    // Old Desc: Intercept zombie suicide attempts.
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds", "kill, spectate, jointeam", "");
-    // Old Desc: List of suicide commands to intercept. (Delimited by \", \"
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie",   "1",                            "Intercept suicide commands attempted by zombies.");
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human",    "1",                            "Intercept suicide commands attempted by humans.");
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds",     "kill, spectate, jointeam",     "List of client commands to intercept as suicide attempts. [Delimiter: \", \"]");
     
     // ===========================
     // Say Hooks (core)
     // ===========================
     
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET]                   =    CreateConVar("zr_sayhooks_quiet", "1", "");
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FILTER]            =    CreateConVar("zr_sayhooks_quiet_filter", "1", "");
-    // when enabled it filters out failed sayhooks
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FLAGS]             =    CreateConVar("zr_sayhooks_quiet_flags", "58", "");
+    g_hCvarsList[CVAR_SAYHOOKS_QUIET]                   =    CreateConVar("zr_sayhooks_quiet",          "1",    "Stop certain in-game commands from appearing in chat. [See zr_sayhooks_quiet_filter & zr_sayhooks_quiet_flags]");
+    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FILTER]            =    CreateConVar("zr_sayhooks_quiet_filter",   "1",    "Stops any failed in-game command from showing in chat.  Ex: Typing !zspawn while alive. [Dependency: zr_sayhooks_quiet]");
+    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FLAGS]             =    CreateConVar("zr_sayhooks_quiet_flags",    "58",   "Flag separate in-game commands to always hide from chat. [Dependency: zr_sayhooks_quiet]\n In-Game Command Flags:\n * Add numbers of desired flags together to produce final flag value.\n --------------------------------------------------------------------\n 1:  !zmenu\n 2:  !zadmin\n 4:  !zclass\n 8:  !zspawn\n 16: !ztele\n 32: !zhp\n 64: !zmarket");
     // Flags (default: 2 + 8 + 16 + 32)
-    // 0    Allow all.
-    // 1    Quiet "!zmenu" say hook.
-    // 2    Quiet "!zadmin" say hook.
-    // 4    Quiet "!zclass" say hook.
-    // 8    Quiet "!zspawn" say hook.
-    // 16   Quiet "!ztele" say hook.
-    // 32   Quiet "!zhp" say hook.
-    // 64   Quiet "!zmarket" say hook.
     
     // ===========================
     // Overlays (core)
     // ===========================
     
-    g_hCvarsList[CVAR_OVERLAYS_UPDATE_TIME]             =    CreateConVar("zr_overlays_update_time", "1.0", "");
+    g_hCvarsList[CVAR_OVERLAYS_UPDATE_TIME]             =    CreateConVar("zr_overlays_update_time",    "1.0",      "How often to update overlays on players. [0.0 = Disabled]");
     
     // ===========================
     // Round End (core)
     // ===========================
     
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]                 =    CreateConVar("zr_roundend_overlay", "1", "");
-    // Old Desc: Shows an overlay to all clients when a team wins. (0: Disable)
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]           =    CreateConVar("zr_roundend_overlays_human", "overlays/zr/humans_win");
-    // Old Desc: overlays/zr/humans_win", "Path to \"humans win\" overlay
-    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]          =    CreateConVar("zr_roundend_overlays_zombie", "overlays/zr/zombies_win", "");
-    // Old Desc: Path to \"zombies win\" overlay
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY]                 =    CreateConVar("zr_roundend_overlay",            "1",                            "Show specified overlay to players depending on winner when the round ends.");
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]           =    CreateConVar("zr_roundend_overlays_human",     "overlays/zr/humans_win",       "Overlay, relative to \"materials\" folder, to display when humans win the round. [Dependency: zr_roundend_overlay]");
+    g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]          =    CreateConVar("zr_roundend_overlays_zombie",    "overlays/zr/zombies_win",      "Overlay, relative to \"materials\" folder, to display when zombies win the round. [Dependency: zr_roundend_overlay]");
     
     // ===========================
     // Account (module)
     // ===========================
     
-    g_hCvarsList[CVAR_ACCOUNT_CASHFILL]                 =    CreateConVar("zr_account_cashfill", "1", "");
-    // Old Desc: Enable the mod to set the players cash to zr_cashamount (0: Disabled)
-    g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]           =    CreateConVar("zr_account_cashfill_value", "12000", "");
-    // Old Desc: How much money players will have when they spawn when zr_cashfill is 1
+    g_hCvarsList[CVAR_ACCOUNT_CASHFILL]                 =    CreateConVar("zr_account_cashfill",            "1",        "Reset player's cash each spawn.");
+    g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]           =    CreateConVar("zr_account_cashfill_value",      "12000",    "Amount of cash to set player's account to. [Dependency: zr_account_cashfill]");
     
     // ===========================
     // Visual Effects (module)
@@ -383,30 +346,28 @@ CvarsCreate()
     
     // Lightstyle
     
-    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]              =    CreateConVar("zr_veffects_lightstyle", "1", "");
-    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE]        =    CreateConVar("zr_veffects_lightstyle_value", "b", "");
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]              =    CreateConVar("zr_veffects_lightstyle",         "1",                    "Change lightstyle (brightness) of the map.");
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE]        =    CreateConVar("zr_veffects_lightstyle_value",   "b",                    "Lightstyle value. ['a' = Darkest | 'z' = Brightest | Dependency: zr_veffects_lightstyle]");
     
     // Sky
     
-    g_hCvarsList[CVAR_VEFFECTS_SKY]                     =    CreateConVar("zr_veffects_sky", "1", "");
-    g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path", "sky_borealis01up.vmt", "");
+    g_hCvarsList[CVAR_VEFFECTS_SKY]                     =    CreateConVar("zr_veffects_sky",                "1",                    "Change map skybox.");
+    g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path",           "sky_borealis01up.vmt", "Skybox file, relative to \"materials/skybox\" folder, to change map skybox to. [Dependency: zr_veffects_sky]");
     
     // Sun
     
-    g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]             =    CreateConVar("zr_veffects_sun_disable", "1", "");
+    g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]             =    CreateConVar("zr_veffects_sun_disable",        "1",                    "Disable sun rendering on map.");
     
     // Fog
     
-    g_hCvarsList[CVAR_VEFFECTS_FOG]                     =    CreateConVar("zr_veffects_fog", "0", "");
-    // NOTE DISABLE. SOURCEMOD DOESNT SUPPORT THIS YET.
-    g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE]            =    CreateConVar("zr_veffects_fog_override", "0", "");
-    // NOTE DISABLE. SOURCEMOD DOESNT SUPPORT THIS YET.
-    g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR]              =    CreateConVar("zr_veffects_fog_pcolor", "255 255 255", "");
-    g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR]              =    CreateConVar("zr_veffects_fog_scolor", "255 255 255", "");
-    g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY]             =    CreateConVar("zr_veffects_fog_density", "0.8", "");
-    g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST]           =    CreateConVar("zr_veffects_fog_startdist", "0", "");
-    g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST]             =    CreateConVar("zr_veffects_fog_enddist", "400", "");
-    g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ]                =    CreateConVar("zr_veffects_fog_farz", "2000", "");
+    g_hCvarsList[CVAR_VEFFECTS_FOG]                     =    CreateConVar("zr_veffects_fog",                "0",                    "(UNSUPPORTED) Enable fog rendering on the map.");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE]            =    CreateConVar("zr_veffects_fog_override",       "0",                    "(UNSUPPORTED) If fog exists already on the map, then replace with new modified fog. [Dependency: zr_veffects_fog]");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR]              =    CreateConVar("zr_veffects_fog_pcolor",         "255 255 255",          "(UNSUPPORTED) Primary color of the fog. [Dependency: zr_veffects_fog]");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR]              =    CreateConVar("zr_veffects_fog_scolor",         "255 255 255",          "(UNSUPPORTED) Secondary color of the fog. [Dependency: zr_veffects_fog]");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY]             =    CreateConVar("zr_veffects_fog_density",        "0.8",                  "(UNSUPPORTED) Density (thickness) of the fog. [Dependency: zr_veffects_fog]");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST]           =    CreateConVar("zr_veffects_fog_startdist",      "0",                    "(UNSUPPORTED) Distance from player to start rendering foremost fog. [Dependency: zr_veffects_fog]");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST]             =    CreateConVar("zr_veffects_fog_enddist",        "400",                  "(UNSUPPORTED) Distance from player to stop rendering fog. [Dependency: zr_veffects_fog]");
+    g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ]                =    CreateConVar("zr_veffects_fog_farz",           "2000",                 "(UNSUPPORTED) Vertical clipping plane.");
     
     // ===========================
     // Sound Effects (module)
@@ -414,32 +375,23 @@ CvarsCreate()
     
     // Zombie Sounds
     
-    g_hCvarsList[CVAR_SEFFECTS_MOAN]                    =    CreateConVar("zr_seffects_moan", "30", "");
-    // Old Desc: How often, in seconds, a zombie moans (0: Disable)
-    g_hCvarsList[CVAR_SEFFECTS_GROAN]                   =    CreateConVar("zr_seffects_groan", "5", "");
-    // Old Desc: Chance factor a zombie will groan when shot (Lower: More often, 0: Disable)
-    g_hCvarsList[CVAR_SEFFECTS_DEATH]                   =    CreateConVar("zr_seffects_death", "1", "");
-    // Old Desc: Zombie will emit a death sound when killed (0: Disable)
+    g_hCvarsList[CVAR_SEFFECTS_MOAN]                    =    CreateConVar("zr_seffects_moan",           "30.0",                         "Time between emission of a moan sound from a zombie.");
+    g_hCvarsList[CVAR_SEFFECTS_GROAN]                   =    CreateConVar("zr_seffects_groan",          "5",                            "The probability that a groan sound will be emitted from a zombie when shot. ['100' = 1% chance | '50' = 2% chance | '1' = 100% chance]");
+    g_hCvarsList[CVAR_SEFFECTS_DEATH]                   =    CreateConVar("zr_seffects_death",          "1",                            "Emit a death sound when a zombie dies.");
     
     // Ambient Sounds
     
-    g_hCvarsList[CVAR_AMBIENTSOUNDS]                    =    CreateConVar("zr_ambientsounds", "1", "");
-    // Old Desc: Enable creepy ambience to be played throughout the game (0: Disable)
-    g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE]               =    CreateConVar("zr_ambientsounds_file", "ambient/zr/zr_ambience.mp3", "");
-    // Old Desc: Path to ambient sound file that will be played throughout the game, when zr_ambience is 1
-    g_hCvarsList[CVAR_AMBIENTSOUNDS_LENGTH]             =    CreateConVar("zr_ambientsounds_length", "60.0", "");
-    // Old Desc: The length, in seconds, of the ambient sound file
-    g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]             =    CreateConVar("zr_ambientsounds_volume", "1.0", "");
-    // Old Desc: Volume of ambient sounds when zr_ambience is 1 (0.0: Unhearable,  1.0: Max volume)
+    g_hCvarsList[CVAR_AMBIENTSOUNDS]                    =    CreateConVar("zr_ambientsounds",           "1",                            "Play an ambient sound to all players during gameplay.");
+    g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE]               =    CreateConVar("zr_ambientsounds_file",      "ambient/zr/zr_ambience.mp3",   "Sound file, relative to \"sounds\" folder, to play as ambience. [Dependency: zr_ambientsounds]");
+    g_hCvarsList[CVAR_AMBIENTSOUNDS_LENGTH]             =    CreateConVar("zr_ambientsounds_length",    "60.0",                         "Length of the ambient sound. [Dependency: zr_ambientsounds]");
+    g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]             =    CreateConVar("zr_ambientsounds_volume",    "0.8",                          "Volume of the ambient sound. [1.0 = Max volume | 0.0001 = Not audible | Dependency: zr_ambientsounds]");
     
     // ===========================
     // Antistick (module)
     // ===========================
     
-    g_hCvarsList[CVAR_ANTISTICK]                        =    CreateConVar("zr_antistick", "1", "");
-    // Old Desc: Enable the anti-stick module, which will automatically unstick players stuck within each other. (0:Disable)
-    g_hCvarsList[CVAR_ANTISTICK_INTERVAL]               =    CreateConVar("zr_antistick_interval", "0.5", "");
-    // Old Desc: How often, in seconds, the anti-stick module checks each player for being stuck. (1.0: Default)
+    g_hCvarsList[CVAR_ANTISTICK]                        =    CreateConVar("zr_antistick",               "1",        "Automatically unstick players when stuck within each others' collision hull.");
+    g_hCvarsList[CVAR_ANTISTICK_INTERVAL]               =    CreateConVar("zr_antistick_interval",      "0.5",      "Time between each check for stuck players. [Dependency: zr_antistick]");
     
     // ===========================
     // Knockback (module)
@@ -460,14 +412,10 @@ CvarsCreate()
     // Respawn (module)
     // ===========================
     
-    g_hCvarsList[CVAR_RESPAWN]                          =    CreateConVar("zr_respawn", "0", "");
-    // Old Desc: When player is killed,  player will respawn
-    g_hCvarsList[CVAR_RESPAWN_DELAY]                    =    CreateConVar("zr_respawn_delay", "1", "");
-    // Old Desc: How long to wait after death to respawn,  in seconds
-    g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]                   =    CreateConVar("zr_respawn_team_zombie", "1", "");
-    // Old Desc: Respawn player as zombie (0: Respawn as human)
-    g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]             =    CreateConVar("zr_respawn_team_zombie_world", "1", "");
-    // Old Desc: Respawn zombies as zombies if they were killed by the world, like elevators, doors and lasers. (0: Disable)
+    g_hCvarsList[CVAR_RESPAWN]                          =    CreateConVar("zr_respawn",                     "0",    "Respawn players after death. [Recommended: (Enable) zr_zspawn*]");
+    g_hCvarsList[CVAR_RESPAWN_DELAY]                    =    CreateConVar("zr_respawn_delay",               "1",    "Time after death to delay player respawn. [Dependency: zr_respawn]");
+    g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]              =    CreateConVar("zr_respawn_team_zombie",         "1",    "Respawn player as a zombie. [Dependency: zr_respawn]");
+    g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]        =    CreateConVar("zr_respawn_team_zombie_world",   "1",    "Respawn player as a zombie if player was killed by the world. [Override: zr_respawn_team_zombie]");
     
     // ===========================
     // Napalm (module)
@@ -476,48 +424,42 @@ CvarsCreate()
     // (None)
     
     // ===========================
+    // Jump Boost (module)
+    // ===========================
+    
+    g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_PROTECT]       =    CreateConVar("zr_jumpboost_bunnyhop_protect",  "1",    "Prevent players from using forward jump boost multipliers to bunny hop.");
+    
+    // ===========================
     // ZSpawn (module)
     // ===========================
     
-    g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn", "1", "");
-    // Old Desc: Allow players to spawn if they just joined the game (0: Disable)
+    g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn",                  "1", "Allow players to spawn into the game late.");
     
-    g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override", "1", "");
-    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie", "0", "");
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override",    "1", "Override spawn team when spawning by means of ZSpawn.");
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie",      "0", "Spawn player on zombie team when spawning by means of ZSpawn. [Dependency: zr_zspawn_team_override | Override: zr_respawn_zombie]");
     
-    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit", "1", "");
-    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time", "120", "");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit",        "1", "Put a time limit on the use of ZSpawn.");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time",   "120.0", "Time from the start of the round to allow ZSpawn. [Dependency: zr_zspawn_timelimit]");
     // ===========================
     // ZTele (module)
     // ===========================
     
-    g_hCvarsList[CVAR_ZTELE_ZOMBIE]                     =    CreateConVar("zr_ztele_zombie", "1", "");
-    g_hCvarsList[CVAR_ZTELE_HUMAN_BEFORE]               =    CreateConVar("zr_ztele_human_before", "1", "");
-    g_hCvarsList[CVAR_ZTELE_HUMAN_AFTER]                =    CreateConVar("zr_ztele_human_after", "0", "");
-    g_hCvarsList[CVAR_ZTELE_DELAY_ZOMBIE]               =    CreateConVar("zr_ztele_delay_zombie", "3", "");
-    g_hCvarsList[CVAR_ZTELE_DELAY_HUMAN]                =    CreateConVar("zr_ztele_delay_human", "3", "");
-    g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]                 =    CreateConVar("zr_ztele_max_zombie", "3", "");
-    g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]                  =    CreateConVar("zr_ztele_max_human", "1", "");
-    g_hCvarsList[CVAR_ZTELE_AUTOCANCEL]                 =    CreateConVar("zr_ztele_autocancel", "1", "");
-    g_hCvarsList[CVAR_ZTELE_AUTOCANCEL_DISTANCE]        =    CreateConVar("zr_ztele_autocancel_distance", "20", "");
+    g_hCvarsList[CVAR_ZTELE_ZOMBIE]                     =    CreateConVar("zr_ztele_zombie",                "1",    "Allow zombies to use ZTele.");
+    g_hCvarsList[CVAR_ZTELE_HUMAN_BEFORE]               =    CreateConVar("zr_ztele_human_before",          "1",    "Allow humans to use ZTele before the mother zombie has spawned.");
+    g_hCvarsList[CVAR_ZTELE_HUMAN_AFTER]                =    CreateConVar("zr_ztele_human_after",           "0",    "Allow humans to use ZTele after the mother zombie has spawned.");
+    g_hCvarsList[CVAR_ZTELE_DELAY_ZOMBIE]               =    CreateConVar("zr_ztele_delay_zombie",          "3.0",  "Time between using ZTele command and teleportation for zombies. [Dependency: zr_ztele_zombie]");
+    g_hCvarsList[CVAR_ZTELE_DELAY_HUMAN]                =    CreateConVar("zr_ztele_delay_human",           "3.0",  "Time between using ZTele command and teleportation for humans. [Dependency: zr_ztele_human_(before)/(after)]");
+    g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]                 =    CreateConVar("zr_ztele_max_zombie",            "3",    "Max number of times a zombie is allowed to use ZTele per round. [Dependency: zr_ztele_zombie]");
+    g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]                  =    CreateConVar("zr_ztele_max_human",             "1",    "Max number of times a human is allowed to use ZTele per round. [Dependency: zr_ztele_human_(before)/(after)]");
+    g_hCvarsList[CVAR_ZTELE_AUTOCANCEL]                 =    CreateConVar("zr_ztele_autocancel",            "1",    "Automatically cancel ZTele if player moves out of a set boundary. [Dependency: zr_ztele_(zombie)/(human)[_(before)/(after)]]");
+    g_hCvarsList[CVAR_ZTELE_AUTOCANCEL_DISTANCE]        =    CreateConVar("zr_ztele_autocancel_distance",   "20",   "Maximum distance, in feet, player is allowed to travel before teleport is cancelled. [Dependency: zr_ztele_autocancel]");
     
     // ===========================
     // ZHP (module)
     // ===========================
     
-    g_hCvarsList[CVAR_ZHP]                              =    CreateConVar("zr_zhp", "1", "");
-    // Old Desc: Allows clients to enable/disable zombie health display (1: On,  0: Off)
-    g_hCvarsList[CVAR_ZHP_DEFAULT]                       =    CreateConVar("zr_zhp_default", "1", "");
-    // Old Desc: The default value of zombie health display to new clients (1: On,  0: Off)
-    
-    
-    // Old Desc: Allow users to disable ZVision with their nightvision key (0: Disable)
-    g_hCvarsList[CVAR_MENU_AUTOCLOSE]                   =    CreateConVar("zr_menu_autoclose", "0", "");
-    // Old Desc: Automatically close menus on selection. If disabled the menu will remain open.
-    g_hCvarsList[CVAR_ANTICAMP]                         =    CreateConVar("zr_anticamp", "1", "");
-    // Old Desc:  Enables or disables hurt volumes for preventing unfair camping. (0: Disable)
-    g_hCvarsList[CVAR_ANTICAMP_UPDATE_INTERVAL]         =    CreateConVar("zr_anticamp_update_interval", "1", "");
-    // Old Desc: How often to update player locations (in seconds).
+    g_hCvarsList[CVAR_ZHP]                              =    CreateConVar("zr_zhp",             "1",    "Allow player to toggle real HP display as a zombie.");
+    g_hCvarsList[CVAR_ZHP_DEFAULT]                      =    CreateConVar("zr_zhp_default",     "1",    "Default ZHP toggle state set on connecting player. [Dependency: zr_zhp]");
     
     // Auto-generate config file if it doesn't exist, then execute.
     AutoExecConfig(true, "zombiereloaded", "sourcemod/zombiereloaded");

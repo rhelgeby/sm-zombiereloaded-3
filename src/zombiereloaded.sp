@@ -53,10 +53,10 @@
 #include "zr/spawnprotect"
 #include "zr/respawn"
 #include "zr/napalm"
+#include "zr/jumpboost"
 #include "zr/zspawn"
 #include "zr/ztele"
 #include "zr/zhp"
-#include "zr/jumpboost"
 //#include "zr/anticamp"
 
 // Almost replaced! :)

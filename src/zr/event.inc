@@ -185,6 +185,23 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     ZHPOnClientSpawn(index);
     
     TranslationPrintToChat(index, "General zmenu reminder");
+    
+    // Fire post player_spawn event.
+    CreateTimer(0.0, EventPlayerSpawnPost, index);
+}
+
+/**
+ * Event callback (player_spawn)
+ * Client is spawning into the game. *Post
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventPlayerSpawnPost(Handle:timer, any:index)
+{
+    // Forward event to modules.
+    SpawnProtectOnClientSpawnPost(index);
 }
 
 /**

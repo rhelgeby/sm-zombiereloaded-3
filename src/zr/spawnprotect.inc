@@ -35,7 +35,7 @@ SpawnProtectClientInit(client)
  * Client is spawning into the game.
  * 
  * @param client    The client index.
- */   
+ */
 SpawnProtectOnClientSpawn(client)
 {
     // Disable spawn protection on client.
@@ -49,10 +49,17 @@ SpawnProtectOnClientSpawn(client)
     
     // Reset timer handle.
     tSpawnProtect[client] = INVALID_HANDLE;
-    
+}
+
+/**
+ * Client is spawning into the game. *Post
+ * 
+ * @param client    The client index.
+ */   
+SpawnProtectOnClientSpawnPost(client)
+{
     // If client isn't on a team, then stop.
-    new team = GetClientTeam(client);
-    if (team != CS_TEAM_T && team != CS_TEAM_CT)
+    if (!ZRIsClientOnTeam(client))
     {
         return;
     }
@@ -70,35 +77,35 @@ SpawnProtectOnClientSpawn(client)
         return;
     }
     
-    // If player respawns as human, and either cvar zr_suicide_world_damage or the client
-    // wasn't killed by world is false, then continue on to protect client.
-    new bool:respawn_zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
-    if (!respawn_zombie && !RespawnKilledByWorld(client))
+    // If client is a zombie, then stop.
+    if (InfectIsClientInfected(client))
     {
-        // Set spawn protect flag on client.
-        bInfectImmune[client][INFECT_TYPE_NORMAL] = true;
-        
-        // Get spawn protect attribute cvars.
-        new Float:speed = GetConVarFloat(g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]);
-        new alpha = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]);
-        
-        // Set spawn protect attributes.
-        ToolsSetClientLMV(client, speed);
-        ToolsSetClientAlpha(client, alpha);
-        
-        // Set time left to zr_protect_time's value.
-        new protect_time = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_TIME]);
-        pSpawnProtectTime[client] = protect_time;
-        
-        // Tell client they are being protected.
-        TranslationPrintToChat(client, "Spawn protection begin", protect_time);
-        
-        // Send time left in a hud message.
-        TranslationPrintHUDText(client, "Spawn Protect", pSpawnProtectTime[client]);
-        
-        // Start repeating timer.
-        tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+        return;
     }
+    
+    // Set spawn protect flag on client.
+    bInfectImmune[client][INFECT_TYPE_NORMAL] = true;
+    
+    // Get spawn protect attribute cvars.
+    new Float:speed = GetConVarFloat(g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]);
+    new alpha = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]);
+    
+    // Set spawn protect attributes.
+    ToolsSetClientLMV(client, speed);
+    ToolsSetClientAlpha(client, alpha);
+    
+    // Set time left to zr_protect_time's value.
+    new protect_time = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_TIME]);
+    pSpawnProtectTime[client] = protect_time;
+    
+    // Tell client they are being protected.
+    TranslationPrintToChat(client, "Spawn protection begin", protect_time);
+    
+    // Send time left in a hud message.
+    TranslationPrintHUDText(client, "Spawn Protect", pSpawnProtectTime[client]);
+    
+    // Start repeating timer.
+    tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
 /**

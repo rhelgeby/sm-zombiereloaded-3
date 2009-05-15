@@ -230,7 +230,7 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
     decl String:classname[64];
     new classindex;
     new teamid;
-    new bool:autoclose = GetConVarBool(g_hCvarsList[CVAR_MENU_AUTOCLOSE]);
+    new bool:autoclose = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]);
     
     switch (action)
     {

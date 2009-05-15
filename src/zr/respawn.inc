@@ -116,18 +116,6 @@ RespawnOnRoundEnd()
 }
 
 /**
- * Returns if a player is to be respawned as a zombie, because they were killed by world.
- * 
- * @param client    The client index.
- * @return          True if they were killed by world, false if not or cvar is disabled.
- */
-RespawnKilledByWorld(client)
-{
-    // Return true if both the cvar is enabled and the player was killed by world.
-    return (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]) && bKilledByWorld[client]);
-}
-
-/**
  * Spawns a player into the round.
  * 
  * @param client    The client index.
