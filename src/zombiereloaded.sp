@@ -57,6 +57,7 @@
 #include "zr/zhp"
 #include "zr/jumpboost"
 #include "zr/anticamp"
+#include "zr/volfeatures/volfeatures"
 
 // Almost replaced! :)
 #include "zr/zombie"

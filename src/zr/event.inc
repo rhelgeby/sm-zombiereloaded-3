@@ -74,6 +74,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     SEffectsOnRoundStart();
     AntiStickOnRoundStart();
     ZSpawnOnRoundStart();
+    VolOnRoundStart();
 }
 
 /**
@@ -113,6 +114,7 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     SEffectsOnRoundEnd();
     RespawnOnRoundEnd();
     ZSpawnOnRoundEnd();
+    VolOnRoundEnd();
 }
 
 /**
