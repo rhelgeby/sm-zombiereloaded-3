@@ -24,7 +24,7 @@ new Handle:gRestrictedWeapons = INVALID_HANDLE;
 /**
  * Array that stores the "HookID" to be later unhooked on player disconnect.
  */
-new gCanUseHookID[MAXPLAYERS + 1];
+new g_iCanUseHookID[MAXPLAYERS + 1] = {-1, ...};
 
 /**
  * Query results returned when (un)restricting a weapon.
@@ -50,6 +50,16 @@ RestrictInit()
     RegConsoleCmd("buy", RestrictBuyCommand);
     RegConsoleCmd("autobuy", RestrictBuyCommand);
     RegConsoleCmd("rebuy", RestrictBuyCommand);
+}
+
+/**
+ * Hook commands related to restrict here.
+ */
+RestrictOnCommandsCreate()
+{
+    // Create admin commands.
+    RegAdminCmd("zr_restrict", RestrictRestrictCommand, ADMFLAG_GENERIC, "zr_restrict <weapon> - Restrict a weapon.");
+    RegAdminCmd("zr_unrestrict", RestrictUnrestrictCommand, ADMFLAG_GENERIC, "zr_unrestrict <weapon> - Unrestrict a weapon.");
 }
 
 /**
@@ -95,10 +105,7 @@ RestrictOnMapStart()
     if (!exists)
     {
         // Log failure.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
-        {
-            LogMessageFormatted(-1, "Weapons", "Config Validation", "Missing weapon groups config file: %s", LOG_FORMAT_TYPE_ERROR, pathweapongroups);
-        }
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapon Restrict", "Config Validation", "Missing weapon groups config file: %s", pathweapongroups);
         
         return;
     }
@@ -149,12 +156,6 @@ RestrictDefaultRestrictions()
  */ 
 RestrictValidateWeaponGroups()
 {
-    // If log flag check fails, then don't log.
-    if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_WEAPONS))
-    {
-        return;
-    }
-    
     // Reset keygroup's traversal stack.
     KvRewind(kvWeaponGroups);
     
@@ -178,7 +179,7 @@ RestrictValidateWeaponGroups()
                     // If weapon is invalid, then log it.
                     if (!WeaponsIsValidWeapon(groupweapon))
                     {
-                        LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "Invalid weapon \"%s\" in group \"%s\" configured in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, groupweapon, weapongroup);
+                        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapon Restrict", "Config Validation", "Invalid weapon \"%s\" in group \"%s\" configured in weapongroups.txt.", groupweapon, weapongroup);
                     }
                 } while (KvGotoNextKey(kvWeaponGroups));
                 
@@ -187,7 +188,7 @@ RestrictValidateWeaponGroups()
             // If it couldn't traverse to the weapons, then log no weapons within group.
             else
             {
-                LogMessageFormatted(-1, "Weapon Restrict", "Config Validation", "No weapons listed in weapon group \"%s\" in weapongroups.txt.", LOG_FORMAT_TYPE_ERROR, weapongroup);
+                LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapon Restrict", "Config Validation", "No weapons listed in weapon group \"%s\" in weapongroups.txt.", weapongroup);
             }
         } while (KvGotoNextKey(kvWeaponGroups));
     }
@@ -209,7 +210,7 @@ RestrictWeaponUnrestrictAll()
 RestrictClientInit(client)
 {
     // Hook "Weapon_CanUse" on client.
-    gCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
 }
 
 /**
@@ -219,8 +220,13 @@ RestrictClientInit(client)
  */
 RestrictOnClientDisconnect(client)
 {
-    // Unhook "Weapon_CanUse" on client.
-    ZRTools_UnhookWeapon_CanUse(gCanUseHookID[client]);
+    // Unhook "Weapon_CanUse" callback, and reset variable.
+    
+    if (g_iCanUseHookID[client] != -1)
+    {
+        ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
+        g_iCanUseHookID[client] = -1;
+    }
 }
 
 /**
@@ -231,8 +237,8 @@ RestrictOnClientDisconnect(client)
 RestrictOnClientSpawn(client)
 {
     // Re-hook "canuse" on client.
-    ZRTools_UnhookWeapon_CanUse(gCanUseHookID[client]);
-    gCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
+    g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
 }
 
 /**
@@ -244,19 +250,10 @@ RestrictOnClientSpawn(client)
  */
 public Action:RestrictBuyCommand(client, argc)
 {
-    // If plugin is disabled then stop.
-    /*new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
-    if (!enabled)
-    {
-        // Allow command.
-        return Plugin_Continue;
-    }*/
-    // Disabled
-    
     // If player is a zombie, then block command.
     if (InfectIsClientInfected(client))
     {
-        ZR_PrintToChat(client, "Zombie cant use weapon");
+        TranslationPrintToChat(client, "Zombie cant use weapon");
         
         // Block command
         return Plugin_Handled;
@@ -270,7 +267,7 @@ public Action:RestrictBuyCommand(client, argc)
     // Check if the weapon is restricted, if so then block command.
     if (RestrictIsWeaponRestricted(weapon))
     {
-        ZR_PrintToChat(client, "Weapon is restricted", weapon);
+        TranslationPrintToChat(client, "Weapon is restricted", weapon);
         
         // Block command.
         return Plugin_Handled;
@@ -465,12 +462,8 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
         // Weapon was successfully restricted.
         case Successful_Weapon:
         {
-            ZR_PrintToChat(0, "Restrict weapon", weapon);
-            
-            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
-            {
-                LogMessageFormatted(client, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
-            }
+            TranslationPrintToChatAll(true, false, "Restrict weapon", weapon);
+            LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon: \"%s\".", client, weapon);
         }
         // Weapon group was successfully restricted.
         case Successful_Group:
@@ -478,23 +471,19 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
             decl String:weaponlist[128];
             RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
             
-            ZR_PrintToChat(0, "Restrict custom weapon group", weapon, weaponlist);
-            
-            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
-            {
-                LogMessageFormatted(client, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon group: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
-            }
+            TranslationPrintToChatAll(true, false, "Restrict custom weapon group", weapon, weaponlist);
+            LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Weapon Restrict", "Restrict", "\"%L\" restricted weapon group: \"%s\".", client, weapon);
         }
         // Weapon was already restricted.
         case Failed_Weapon:
         {
             if (reply)
             {
-                ZR_ReplyToCommand(client, "Restrict weapon failed", weapon);
+                TranslationReplyToCommand(client, "Restrict weapon failed", weapon);
             }
             else
             {
-                ZR_PrintToChat(client, "Restrict weapon failed", weapon);
+                TranslationPrintToChat(client, "Restrict weapon failed", weapon);
             }
         }
         // Weapon group was already restricted.
@@ -505,11 +494,11 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
             
             if (reply)
             {
-                ZR_ReplyToCommand(client, "Restrict custom weapon group failed", weapon, weaponlist);
+                TranslationReplyToCommand(client, "Restrict custom weapon group failed", weapon, weaponlist);
             }
             else
             {
-                ZR_PrintToChat(client, "Restrict custom weapon group failed", weapon, weaponlist);
+                TranslationPrintToChat(client, "Restrict custom weapon group failed", weapon, weaponlist);
             }
         }
         // Weapon name was invalid.
@@ -517,11 +506,11 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
         {
             if (reply)
             {
-                ZR_ReplyToCommand(client, "Weapon invalid", weapon);
+                TranslationReplyToCommand(client, "Weapon invalid", weapon);
             }
             else
             {
-                ZR_PrintToChat(client, "Weapon invalid", weapon);
+                TranslationPrintToChat(client, "Weapon invalid", weapon);
             }
         }
     }
@@ -541,12 +530,9 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
         // Weapon was successfully unrestricted.
         case Successful_Weapon:
         {
-            ZR_PrintToChat(0, "Unrestrict weapon", weapon);
+            TranslationPrintToChatAll(true, false, "Unrestrict weapon", weapon);
+            LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon: \"%s\".", client, weapon);
             
-            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
-            {
-                LogMessageFormatted(client, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
-            }
         }
         // Weapon group was successfully unrestricted.
         case Successful_Group:
@@ -554,23 +540,19 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
             decl String:weaponlist[128];
             RestrictGetGroupWeapons(weapon, weaponlist, sizeof(weaponlist), ", ");
             
-            ZR_PrintToChat(0, "Unrestrict custom weapon group", weapon, weaponlist);
-            
-            if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_WEAPONS))
-            {
-                LogMessageFormatted(client, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon group: \"%s\".", LOG_FORMAT_TYPE_FULL, client, weapon);
-            }
+            TranslationPrintToChatAll(true, false, "Unrestrict custom weapon group", weapon, weaponlist);
+            LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Weapon Restrict", "Unrestrict", "\"%L\" unrestricted weapon group: \"%s\".", client, weapon);
         }
         // Weapon wasn't restricted.
         case Failed_Weapon:
         {
             if (reply)
             {
-                ZR_ReplyToCommand(client, "Unrestrict weapon failed", weapon);
+                TranslationReplyToCommand(client, "Unrestrict weapon failed", weapon);
             }
             else
             {
-                ZR_PrintToChat(client, "Unrestrict weapon failed", weapon);
+                TranslationPrintToChat(client, "Unrestrict weapon failed", weapon);
             }
         }
         // Weapon group wasn't restricted.
@@ -581,11 +563,11 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
             
             if (reply)
             {
-                ZR_ReplyToCommand(client, "Unrestrict custom weapon group failed", weapon, weaponlist);
+                TranslationReplyToCommand(client, "Unrestrict custom weapon group failed", weapon, weaponlist);
             }
             else
             {
-                ZR_PrintToChat(client, "Unrestrict custom weapon group failed", weapon, weaponlist);
+                TranslationPrintToChat(client, "Unrestrict custom weapon group failed", weapon, weaponlist);
             }
         }
         // Weapon name was invalid.
@@ -593,11 +575,11 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
         {
             if (reply)
             {
-                ZR_ReplyToCommand(client, "Weapon invalid", weapon);
+                TranslationReplyToCommand(client, "Weapon invalid", weapon);
             }
             else
             {
-                ZR_PrintToChat(client, "Weapon invalid", weapon);
+                TranslationPrintToChat(client, "Weapon invalid", weapon);
             }
         }
     }
@@ -902,4 +884,88 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
     
     // Allow pickup.
     return ZRTools_Continue;
+}
+
+/**
+ * Command callback (zr_restrict)
+ * Restricts a weapon or group
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:RestrictRestrictCommand(client, argc)
+{
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        // Tell client command is disabled.
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // If restrict module is disabled, then stop.
+    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    if (!restrict)
+    {
+        // Tell client command is disabled.
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // arg1 = weapon being restricted
+    decl String:arg1[32];
+    GetCmdArg(1, arg1, sizeof(arg1));
+    
+    // Strip "weapon_" from entity name
+    ReplaceString(arg1, sizeof(arg1), "weapon_", "");
+    
+    decl String:display[WEAPONS_MAX_LENGTH];
+    
+    new WpnRestrictQuery:output = RestrictRestrict(arg1, display);
+    RestrictPrintRestrictOutput(client, output, display, true);
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback (zr_unrestrict)
+ * Unrestricts a weapon or group
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:RestrictUnrestrictCommand(client, argc)
+{
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        // Tell client command is disabled.
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // If restrict module is disabled, then stop.
+    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    if (!restrict)
+    {
+        // Tell client command is disabled.
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // arg1 = weapon being restricted
+    decl String:arg1[32];
+    GetCmdArg(1, arg1, sizeof(arg1));
+    
+    // Strip "weapon_" from entity name
+    ReplaceString(arg1, sizeof(arg1), "weapon_", "");
+    
+    decl String:display[WEAPONS_MAX_LENGTH];
+    
+    new WpnRestrictQuery:output = RestrictUnrestrict(arg1, display);
+    RestrictPrintUnrestrictOutput(client, output, display, true);
+    
+    return Plugin_Handled;
 }

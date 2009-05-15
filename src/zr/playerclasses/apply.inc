@@ -136,21 +136,6 @@ bool:ClassApplyAlpha(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
  */
 bool:ClassApplyOverlay(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
-    // If dxLevel is 0, then query on client failed, so try again, then stop.
-    if (!dxLevel[client])
-    {
-        // Query dxlevel cvar.
-        RoundEndGetClientDXLevel(client);
-        return false;
-    }
-    
-    // If client doesn't meet minimum requirement, then print unsupported text.
-    if (dxLevel[client] < GENERAL_DXLEVEL_MIN)
-    {
-        ZR_PrintCenterText(client, "DX90 not supported", dxLevel[client], GENERAL_DXLEVEL_MIN);
-        return false;
-    }
-    
     decl String:overlaypath[PLATFORM_MAX_PATH];
     
     // Get the overlay path from the specified cache.

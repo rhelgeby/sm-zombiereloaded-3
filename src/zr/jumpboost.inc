@@ -30,12 +30,16 @@ JumpBoostOnClientJump(client)
     new Float:vecVelocity[3];
     ToolsClientVelocity(client, vecVelocity, false);
     
-    // Protect against bunnyhopping.
-    new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
-    if (magnitude >= JUMPBOOST_FORWARD_VEL_MAX)
+    // Protect against bunnyhopping, if cvar is enabled.
+    new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_PROTECT]);
+    if (bunnyhopprotect)
     {
-        // Set distance multiplier to 0.
-        distance = 0.0;
+        new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
+        if (magnitude >= JUMPBOOST_FORWARD_VEL_MAX)
+        {
+            // Set distance multiplier to 0.
+            distance = 0.0;
+        }
     }
     
     // Apply forward jump boost.

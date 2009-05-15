@@ -282,6 +282,17 @@ VEffectsApplySunDisable(bool:disable = false)
 
 VEffectsApplyFog(bool:override = false)
 {
+    // If fog is disabled, then stop.
+    new bool:fog = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG]);
+    
+    // DUE TO SOURCEMOD NOT SUPPORT FOG, DISABLE.
+    fog = false;
+    
+    if (!fog)
+    {
+        return;
+    }
+    
     // Find current fog index
     new fogindex = FindEntityByClassname(-1, "env_fog_controller");
     
@@ -294,13 +305,6 @@ VEffectsApplyFog(bool:override = false)
             // Delete fog.
             RemoveEdict(fogindex);
         }
-    }
-    
-    // If fog is disabled, then stop.
-    new bool:fog = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG]);
-    if (!fog)
-    {
-        return;
     }
     
     // If there is no fog on the map, create new fog.

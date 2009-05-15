@@ -352,7 +352,7 @@ HurtPlayersInVolume(volume_index)
         {
             if (IsPlayerInVolume(x, volume_index))
             {
-                ZR_PrintToChat(x, "Unfair camping");
+                TranslationPrintToChat(x, "Unfair camping");
                 client_health = GetClientHealth(x) - volumes[volume_index][volume_damage];
                 if (client_health > 0)
                 {

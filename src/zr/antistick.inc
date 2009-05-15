@@ -31,12 +31,12 @@
 
 /**
  * Handle to keep track of AntiStickTimer.
-*/
+ */
 new Handle:tAntiStick = INVALID_HANDLE;
 
 /**
  * Map is starting.
-*/
+ */
 AntiStickOnMapStart()
 {
     // Reset timer handle.
@@ -71,7 +71,7 @@ AntiStickOnRoundStart()
  * @param client    The client index.
  * @return          The client index of the other stuck player, -1 when
  *                  player is not stuck.
-*/
+ */
 AntiStickIsStuck(client)
 {
     new Float:clientloc[3];
@@ -116,7 +116,7 @@ AntiStickIsStuck(client)
 
 /**
  * Timer callback, automatically unsticks players that are stuck together. 
-*/
+ */
 public Action:AntiStickTimer(Handle:timer)
 {
     // x = client index
@@ -155,7 +155,7 @@ public Action:AntiStickTimer(Handle:timer)
  *
  * @param timer     The timer handle. 
  * @param client    The client index.
-*/
+ */
 public Action:AntiStickSolidify(Handle:timer, any:client)
 {
     // Validate player is in-game, alive, and is being unstuck.

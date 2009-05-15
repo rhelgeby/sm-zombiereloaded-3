@@ -16,6 +16,15 @@
 new bool:g_bMarket;
 
 /**
+ * Set global market flag variable
+ */
+MarketInit()
+{
+    // Set market variable to true if market is installed.
+    g_bMarket = LibraryExists("market");
+}
+
+/**
  * Sends market menu to client.
  * 
  * @param client    The client index.
@@ -26,7 +35,7 @@ bool:ZMarketMenu(client)
     if (!g_bMarket)
     {
         // Tell client market is disabled.
-        ZR_PrintToChat(client, "Feature is disabled");
+        TranslationPrintToChat(client, "Feature is disabled");
         return false;
     }
     
@@ -34,7 +43,7 @@ bool:ZMarketMenu(client)
     if (!IsPlayerAlive(client))
     {
         // Tell player they must be alive.
-        ZR_PrintToChat(client, "Must be alive");
+        TranslationPrintToChat(client, "Must be alive");
         return false;
     }
     
@@ -43,7 +52,7 @@ bool:ZMarketMenu(client)
     if (!ZMarketIsClientInBuyZone(client) && buyzone)
     {
         // Tell client they must be in a buyzone.
-        ZR_PrintCenterText(client, "Market out of buyzone");
+        TranslationPrintCenterText(client, "Market out of buyzone");
         return false;
     }
     
@@ -93,7 +102,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     // If player is a zombie, then stop.
     if (InfectIsClientInfected(client))
     {
-        ZR_PrintToChat(client, "Zombie cant use weapon");
+        TranslationPrintToChat(client, "Zombie cant use weapon");
         
         return false;
     }
@@ -120,7 +129,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     // If the weapon is restricted, then stop.
     if (RestrictIsWeaponRestricted(weapon))
     {
-        ZR_PrintToChat(client, "Weapon is restricted", weapon);
+        TranslationPrintToChat(client, "Weapon is restricted", weapon);
         
         return false;
     }
@@ -129,7 +138,7 @@ public bool:Market_OnWeaponSelected(client, String:weaponid[])
     new bool:buyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]); 
     if (!ZMarketIsClientInBuyZone(client) && buyzone)
     {
-        ZR_PrintCenterText(client, "Market out of buyzone");
+        TranslationPrintCenterText(client, "Market out of buyzone");
         
         return false;
     }

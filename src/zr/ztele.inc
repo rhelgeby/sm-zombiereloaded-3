@@ -124,7 +124,7 @@ bool:ZTeleClient(client)
     if (infected && !ztelezombie)
     {
         // Tell client they must be human to use this feature.
-        ZR_PrintToChat(client, "Must be human");
+        TranslationPrintToChat(client, "Must be human");
         return false;
     }
     
@@ -134,7 +134,7 @@ bool:ZTeleClient(client)
     if (!infected && !ztelehuman)
     {
         // Tell client that feature is restricted at this time.
-        ZR_PrintToChat(client, "ZTele restricted human");
+        TranslationPrintToChat(client, "ZTele restricted human");
         return false;
     }
     
@@ -143,14 +143,14 @@ bool:ZTeleClient(client)
     if (g_iZTeleCount[client] >= ztelemax)
     {
         // Tell client that they have already reached their limit.
-        ZR_PrintToChat(client, "ZTele max", ztelemax);
+        TranslationPrintToChat(client, "ZTele max", ztelemax);
         return false;
     }
     
     // If teleport is already in progress, then stop.
     if (tZTele[client] != INVALID_HANDLE)
     {
-        ZR_PrintToChat(client, "ZTele in progress");
+        TranslationPrintToChat(client, "ZTele in progress");
         return false;
     }
     
@@ -168,9 +168,9 @@ bool:ZTeleClient(client)
     if (g_iZTeleTimeLeft[client] > 0)
     {
         // Tell client how much time is left until teleport.
-        ZR_PrintCenterText(client, "ZTele countdown", g_iZTeleTimeLeft[client]);
+        TranslationPrintCenterText(client, "ZTele countdown", g_iZTeleTimeLeft[client]);
         
-        // Start repeating timer.
+        // Start timer.
         tZTele[client] = CreateTimer(1.0, ZTeleTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
     }
     else
@@ -178,17 +178,28 @@ bool:ZTeleClient(client)
         // Reset timer handle.
         tZTele[client] = INVALID_HANDLE;
         
-        // Teleport client.
-        TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, NULL_VECTOR);
+        // Teleport client to spawn.
+        ZTeleTeleportClient(client);
         
         // Tell client they've been teleported.
-        ZR_PrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
+        TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
         
         // Increment teleport count.
         g_iZTeleCount[client]++;
     }
     
     return true;
+}
+
+/**
+ * Teleport client to their spawn location.
+ * 
+ * @param client    The client index.
+ */
+ZTeleTeleportClient(client)
+{
+    // Teleport client.
+    TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, NULL_VECTOR);
 }
 
 /**
@@ -225,8 +236,8 @@ public Action:ZTeleTimer(Handle:timer, any:client)
             tZTele[client] = INVALID_HANDLE;
             
             // Tell client teleport has been cancelled.
-            ZR_PrintCenterText(client, "ZTele autocancel centertext");
-            ZR_PrintToChat(client, "ZTele autocancel text", RoundToNearest(autocanceldistance));
+            TranslationPrintCenterText(client, "ZTele autocancel centertext");
+            TranslationPrintToChat(client, "ZTele autocancel text", RoundToNearest(autocanceldistance));
             
             // Stop timer.
             return Plugin_Stop;
@@ -237,7 +248,7 @@ public Action:ZTeleTimer(Handle:timer, any:client)
     g_iZTeleTimeLeft[client]--;
     
     // Tell client how much time is left until teleport.
-    ZR_PrintCenterText(client, "ZTele countdown", g_iZTeleTimeLeft[client]);
+    TranslationPrintCenterText(client, "ZTele countdown", g_iZTeleTimeLeft[client]);
     
     // Time has expired.
     if (g_iZTeleTimeLeft[client] <= 0)
@@ -252,7 +263,7 @@ public Action:ZTeleTimer(Handle:timer, any:client)
         new ztelemax = InfectIsClientInfected(client) ? GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]) : GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]);
         
         // Tell client spawn protection is over.
-        ZR_PrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
+        TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
         
         // Clear timer handle.
         tZTele[client] = INVALID_HANDLE;

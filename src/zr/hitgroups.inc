@@ -69,11 +69,7 @@ HitgroupsLoad()
     if (!exists)
     {
         // Log failure.
-        if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
-        {
-            LogMessageFormatted(-1, "Hitgroups", "Config Validation", "Missing hitgroups config file: %s", LOG_FORMAT_TYPE_ERROR, pathhitgroups);
-        }
-        
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Missing hitgroups config file: %s", pathhitgroups);
         return;
     }
     
@@ -89,16 +85,11 @@ HitgroupsLoad()
  */ 
 HitgroupsValidateConfig()
 {
-    // If log flag check fails, then don't log.
-    if (!LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_HITGROUPS))
-    {
-        return;
-    }
-    
     KvRewind(kvHitgroups);
     if (!KvGotoFirstSubKey(kvHitgroups))
     {
-        LogMessageFormatted(-1, "Hitgroups", "Config Validation", "No hitgroups listed in hitgroups.txt, disabling hitgroup-based modules.", LOG_FORMAT_TYPE_FULL);
+        // Log that no data was loaded from hitgroup file.
+        LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Hitgroups", "Config Validation", "No hitgroups listed in hitgroups.txt, disabling hitgroup-based modules.");
     }
 }
 

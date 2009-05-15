@@ -23,14 +23,15 @@
 
 // Core includes.
 #include "zr/zombiereloaded"
-#include "zr/log"
+#include "zr/translation"
 #include "zr/cvars"
+#include "zr/log"
 #include "zr/config"
 #include "zr/serial"
-#include "zr/translation"
 #include "zr/sayhooks"
 #include "zr/tools"
 #include "zr/models"
+#include "zr/overlays"
 #include "zr/playerclasses/playerclasses"
 #include "zr/weapons/weapons"
 #include "zr/hitgroups"
@@ -52,11 +53,11 @@
 #include "zr/spawnprotect"
 #include "zr/respawn"
 #include "zr/napalm"
+#include "zr/jumpboost"
 #include "zr/zspawn"
 #include "zr/ztele"
 #include "zr/zhp"
 #include "zr/jumpboost"
-#include "zr/anticamp"
 #include "zr/volfeatures/volfeatures"
 
 // Almost replaced! :)
@@ -95,46 +96,15 @@ public bool:AskPluginLoad(Handle:myself, bool:late, String:error[], err_max)
  */
 public OnPluginStart()
 {
-    // Load translations phrases used by plugin.
-    LoadTranslations("common.phrases.txt");
-    LoadTranslations("zombiereloaded.phrases.txt");
-    
-    // Start loading ZR init functions.
-    ZR_PrintToServer("Plugin loading");
-    
-    // Log
-    LogInit();
-    
-    // Cvars
+    // Forward event to modules.
+    TranslationInit();
     CvarsInit();
-    
-    // Tools
     ToolsInit();
-    
-    // TODO: Be modulized/recoded.
-    CreateCommands();
-    HookCommands();
-    
-    // Weapons
+    CommandsInit();
     WeaponsInit();
-    
-    // Damage
-    DamageInit();
-    
-    // Say Hooks
     SayHooksInit();
-    
-    // Event
     EventInit();
-    
-    // Set market variable to true if market is installed.
-    g_bMarket = LibraryExists("market");
-    
-    // Create public cvar for tracking.
-    CreateConVar("gs_zombiereloaded_version", VERSION, "[ZR] Current version of this plugin", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
-    
-    // Finish loading ZR init functions.
-    ZR_PrintToServer("Plugin loaded");
+    MarketInit();
 }
 
 /**
@@ -172,12 +142,12 @@ public OnMapStart()
 {
     // Forward event to modules.
     SerialOnMapStart();
+    OverlaysOnMapStart();
     RoundEndOnMapStart();
     InfectOnMapStart();
     SEffectsOnMapStart();
     AntiStickOnMapStart();
     ZSpawnOnMapStart();
-    Anticamp_Startup();
 }
 
 /**
@@ -186,7 +156,6 @@ public OnMapStart()
 public OnMapEnd()
 {
     // Forward event to modules.
-    Anticamp_Disable();
 }
 
 /**
@@ -217,8 +186,8 @@ public OnClientPutInServer(client)
 {
     // Forward event to modules.
     ClassClientInit(client);
+    OverlaysClientInit(client);
     WeaponsClientInit(client);
-    RoundEndClientInit(client);
     InfectClientInit(client);
     DamageClientInit(client);
     SEffectsClientInit(client);

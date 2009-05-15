@@ -40,9 +40,6 @@ ModelsLoad()
  */
 ModelsPrepModels()
 {
-    // Initialize log boolean.
-    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CORE);
-    
     // Get models file path.
     decl String:pathmodels[PLATFORM_MAX_PATH];
     new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_MODELS, pathmodels);
@@ -51,7 +48,7 @@ ModelsPrepModels()
     if (!exists)
     {
         // Log failure and stop plugin.
-        LogMessageFormatted(-1, "Models", "Config Validation", "Fatal error: Missing models file: \"%s\"", LOG_FORMAT_TYPE_FATALERROR, pathmodels);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: Missing models file: \"%s\"", pathmodels);
     }
     
     // If model array exists, then destroy it.
@@ -65,7 +62,7 @@ ModelsPrepModels()
     // If array couldn't be created, then fail.
     if (arrayModelsList == INVALID_HANDLE)
     {
-        LogMessageFormatted(-1, "Models", "Config Validation", "Fatal error: Error parsing \"%s\"", LOG_FORMAT_TYPE_FATALERROR, pathmodels);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: Error parsing \"%s\"", pathmodels);
     }
     
     new modelcount;
@@ -155,26 +152,17 @@ ModelsPrepModels()
             x--;
             
             // Log missing model files.
-            if (enablelog)
-            {
-                LogMessageFormatted(-1, "Models", "Config Validation", "Missing model files on server (%s)", LOG_FORMAT_TYPE_ERROR, modelbase);
-            }
+            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Models", "Config Validation", "Missing model files on server (%s)", modelbase);
         }
     }
     
     // Log model validation info.
-    if (enablelog)
-    {
-        LogMessageFormatted(-1, "Models", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", LOG_FORMAT_TYPE_FULL, modelcount, modelvalidcount, modelcount - modelvalidcount);
-    }
+    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Models", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", modelcount, modelvalidcount, modelcount - modelvalidcount);
     
     // If none of the model paths are valid, then log and fail.
     if (!modelvalidcount)
     {
-        if (enablelog)
-        {
-            LogMessageFormatted(-1, "Models", "Config Validation", "No usable model paths in %s", LOG_FORMAT_TYPE_FATALERROR, pathmodels);
-        }
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: No usable model paths in %s", pathmodels);
     }
 }
 
@@ -183,9 +171,6 @@ ModelsPrepModels()
  */
 ModelsPrepDownloads()
 {
-    // Initialize log boolean.
-    new bool:enablelog = LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CORE);
-    
     // Get downloads file path.
     decl String:pathdownloads[PLATFORM_MAX_PATH];
     new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_DOWNLOADS, pathdownloads);
@@ -194,10 +179,7 @@ ModelsPrepDownloads()
     if (!exists)
     {
         // Log error, then stop.
-        if (enablelog)
-        {
-            LogMessageFormatted(-1, "Downloads", "Config Validation", "Missing downloads file: \"%s\"", LOG_FORMAT_TYPE_ERROR, pathdownloads);
-        }
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Missing downloads file: \"%s\"", pathdownloads);
         
         return;
     }
@@ -207,10 +189,7 @@ ModelsPrepDownloads()
     // If array couldn't be created, then fail.
     if (arrayModelsList == INVALID_HANDLE)
     {
-        if (enablelog)
-        {
-            LogMessageFormatted(-1, "Downloads", "Config Validation", "Error parsing \"%s\"", LOG_FORMAT_TYPE_ERROR, pathdownloads);
-        }
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Error parsing \"%s\"", pathdownloads);
     }
     
     new downloadcount;
@@ -238,11 +217,7 @@ ModelsPrepDownloads()
             // Backtrack one index, because we deleted it out from under the loop.
             x--;
             
-            if (enablelog)
-            {
-                LogMessageFormatted(-1, "Downloads", "Config Validation", "Missing file \"%s\"", LOG_FORMAT_TYPE_ERROR, downloadpath);
-            }
-            
+            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Missing file \"%s\"", downloadpath);
             continue;
         }
         
@@ -254,8 +229,5 @@ ModelsPrepDownloads()
     }
     
     // Log model validation info.
-    if (enablelog)
-    {
-        LogMessageFormatted(-1, "Downloads", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", LOG_FORMAT_TYPE_FULL, downloadcount, downloadvalidcount, downloadcount - downloadvalidcount);
-    }
+    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Downloads", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", downloadcount, downloadvalidcount, downloadcount - downloadvalidcount);
 }

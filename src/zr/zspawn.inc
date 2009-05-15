@@ -132,7 +132,7 @@ bool:ZSpawnClient(client)
     new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
     if (!zspawn)
     {
-        ZR_PrintToChat(client, "Feature is disabled");
+        TranslationPrintToChat(client, "Feature is disabled");
         return false;
     }
     
@@ -140,7 +140,7 @@ bool:ZSpawnClient(client)
     if (!ZRIsClientOnTeam(client))
     {
         // Tell client the command may only be used when on a team.
-        ZR_PrintToChat(client, "Must be on team");
+        TranslationPrintToChat(client, "Must be on team");
         return false;
     }
     
@@ -148,7 +148,7 @@ bool:ZSpawnClient(client)
     if (IsPlayerAlive(client))
     {
         // Tell client the command may only be used when dead.
-        ZR_PrintToChat(client, "Must be dead");
+        TranslationPrintToChat(client, "Must be dead");
         return false;
     }
     
@@ -156,7 +156,7 @@ bool:ZSpawnClient(client)
     if (SerialClientExists(client))
     {
         // Tell client the command may only be used when joining late.
-        ZR_PrintToChat(client, "ZSpawn double spawn");
+        TranslationPrintToChat(client, "ZSpawn double spawn");
         return false;
     }
     
@@ -170,7 +170,7 @@ bool:ZSpawnClient(client)
             new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
             
             // Tell client the timelimit for this command has expired.
-            ZR_PrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
+            TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
             return false;
         }
     }

@@ -24,23 +24,22 @@
  */
 
 /**
- * List of damage-related hooks.
+ * Array to store TraceAttack HookIDs.
  */
-enum DamageHooks
-{
-    Hook_TraceAttack, /** TraceAttack HookID */
-    Hook_OnTakeDamage, /** OnTakeDamage HookID */
-}
-
-new g_iDamageHookID[MAXPLAYERS + 1][DamageHooks];
+new g_iDamageTraceAttackHookID[MAXPLAYERS + 1] = {-1, ...};
 
 /**
- * Damage module init function.
+ * Array to store OnTakeDamage HookIDs.
  */
-DamageInit()
+new g_iDamageOnTakeDamageHookID[MAXPLAYERS + 1] = {-1, ...};
+
+/**
+ * Hook commands related to damage here.
+ */
+DamageOnCommandsHook()
 {
     // Create command callbacks (intercepts) for listed suicide commands.
-    decl String:suicidecmds[64];
+    decl String:suicidecmds[DAMAGE_SUICIDE_MAX_CMDS * DAMAGE_SUICIDE_MAX_LENGTH];
     GetConVarString(g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS], suicidecmds, sizeof(suicidecmds));
     
     // Create array to store cmds
@@ -66,8 +65,8 @@ DamageInit()
 DamageClientInit(client)
 {
     // Hook damage callbacks.
-    g_iDamageHookID[client][Hook_TraceAttack] = ZRTools_HookTraceAttack(client, DamageTraceAttack);
-    g_iDamageHookID[client][Hook_OnTakeDamage] = ZRTools_HookOnTakeDamage(client, DamageOnTakeDamage);
+    g_iDamageTraceAttackHookID[client] = ZRTools_HookTraceAttack(client, DamageTraceAttack);
+    g_iDamageOnTakeDamageHookID[client] = ZRTools_HookOnTakeDamage(client, DamageOnTakeDamage);
 }
 
 /**
@@ -77,9 +76,19 @@ DamageClientInit(client)
  */
 DamageOnClientDisconnect(client)
 {
-    // Unhook damage callbacks.
-    ZRTools_UnhookTraceAttack(g_iDamageHookID[client][Hook_TraceAttack]);
-    ZRTools_UnhookOnTakeDamage(g_iDamageHookID[client][Hook_OnTakeDamage]);
+    // Unhook damage callbacks, and reset variables.
+    
+    if (g_iDamageTraceAttackHookID[client] != -1)
+    {
+        ZRTools_UnhookTraceAttack(g_iDamageTraceAttackHookID[client]);
+        g_iDamageTraceAttackHookID[client] = -1;
+    }
+    
+    if (g_iDamageOnTakeDamageHookID[client] != -1)
+    {
+        ZRTools_UnhookOnTakeDamage(g_iDamageOnTakeDamageHookID[client]);
+        g_iDamageOnTakeDamageHookID[client] = -1;
+    }
 }
 
 /**
@@ -266,14 +275,6 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
  */     
 public Action:DamageSuicideIntercept(client, argc)
 {
-    // Disabled.
-    /**
-    new bool:enabled = GetConVarBool(g_hCvarsList[CVAR_ENABLE]);
-    if (!enabled)
-    {
-        return Plugin_Continue;
-    }*/
-    
     // If zombie hasn't spawned, then stop.
     if (!g_bZombieSpawned)
     {
@@ -309,13 +310,10 @@ public Action:DamageSuicideIntercept(client, argc)
     }
     
     // Tell client their command has been intercepted.
-    ZR_ReplyToCommand(client, "Damage suicide intercept");
+    TranslationReplyToCommand(client, "Damage suicide intercept");
     
-    // Log attempt.
-    if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_DAMAGE))
-    {
-        LogMessageFormatted(client, "Damage", "Suicide Intercept", "Player %N attempted suicide.", LOG_FORMAT_TYPE_FULL, client);
-    }
+    // Log suicide interception
+    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Damage", "Suicide Intercept", "\"%L\" attempted suicide.", client);
     
     // Block command.
     return Plugin_Handled;

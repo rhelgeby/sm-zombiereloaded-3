@@ -66,9 +66,11 @@ EventHook(bool:unhook = false)
  */
 public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    ZR_PrintToChat(0, "Round objective");
+    // Print round objective to all clients.
+    TranslationPrintToChatAll(true, false, "General round objective");
     
     // Forward event to sub-modules.
+    OverlaysOnRoundStart();
     RoundEndOnRoundStart();
     InfectOnRoundStart();
     SEffectsOnRoundStart();
@@ -184,7 +186,24 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     ZTeleOnClientSpawn(index);
     ZHPOnClientSpawn(index);
     
-    ZR_PrintToChat(index, "!zmenu reminder");
+    TranslationPrintToChat(index, "General zmenu reminder");
+    
+    // Fire post player_spawn event.
+    CreateTimer(0.0, EventPlayerSpawnPost, index);
+}
+
+/**
+ * Event callback (player_spawn)
+ * Client is spawning into the game. *Post
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventPlayerSpawnPost(Handle:timer, any:index)
+{
+    // Forward event to modules.
+    SpawnProtectOnClientSpawnPost(index);
 }
 
 /**
