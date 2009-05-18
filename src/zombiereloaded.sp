@@ -65,7 +65,7 @@
 #include "zr/zombie"
 
 /**
- * Tell SM ZR's info.
+ * Record plugin info.
  */
 public Plugin:myinfo =
 {
