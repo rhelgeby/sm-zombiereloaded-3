@@ -77,7 +77,48 @@
 	}
 
 	// ===========================
-	// Player Classes
+	// Config (core)
+	// ===========================
+
+	// Commands
+
+	"Config command reload syntax"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s}"
+		"en"		"Syntax: zr_reloadconfig <file alias> - Reloads a config file.\n File Aliases:\n * \"{1}\"\n * \"{2}\"\n * \"{3}\"\n * \"{4}\"\n * \"{5}\"\n * \"{6}\""
+	}
+
+	"Config command reload invalid"
+	{
+		"#format"	"{1:s}"
+		"en"		"Invalid file alias: \"{1}\""
+	}
+
+	"Config command reload not loaded"
+	{
+		"#format"	"{1:s}"
+		"en"		"File failed to load: \"{1}\" (Either disabled or invalid file content.)"
+	}
+
+	"Config command reload all stats begin"
+	{
+		"en"		"Reloading all Zombie:Reloaded config files...\n ------------------------------------------"
+	}
+
+	"Config command reload all stats successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"\"{1}\" - Successful."
+	}
+
+	"Config command reload all stats failed"
+	{
+		"#format"	"{1:s}"
+		"en"		"\"{1}\" - Failed. (Either disabled or invalid file content.)"
+	}
+
+	// ===========================
+	// Classes (core)
 	// ===========================
 
 	// General
@@ -130,7 +171,7 @@
 	}
 
 	// ===========================
-	// (core) Overlays
+	// Overlays (core)
 	// ===========================
 
 	"Overlays not supported"
@@ -141,7 +182,7 @@
 	}
 
 	// ===========================
-	// (core) Infect
+	// Infect (core)
 	// ===========================
 
 	// General
@@ -158,7 +199,7 @@
 	}
 
 	// ===========================
-	// (core) Damage
+	// Damage (core)
 	// ===========================
 
 	"Damage suicide intercept"
@@ -215,7 +256,7 @@
 	}
 
 	// ===========================
-	// (core) Weapons
+	// Weapons (core)
 	// ===========================
 
 	// General
@@ -310,6 +351,18 @@
 		"ru"		"Купить снова"
 	}
 
+	// Commands
+
+	"Weapons command restrict syntax"
+	{
+		"en"		"Syntax: zr_restrict <weapon> (\"weapon_\" prefix is ignored)"
+	}
+
+	"Weapons command unrestrict syntax"
+	{
+		"en"		"Syntax: zr_unrestrict <weapon> (\"weapon_\" prefix is ignored)"
+	}
+
 	// Menu
 
 	"Weapons menu main title"
@@ -370,7 +423,7 @@
 	}
 
 	// ===========================
-	// Spawn Protect
+	// Spawn Protect (module)
 	// ===========================
 
 	// General
@@ -397,7 +450,7 @@
 	}
 
 	// ===========================
-	// ZSpawn
+	// ZSpawn (module)
 	// ===========================
 
 	"ZSpawn double spawn"
@@ -412,7 +465,7 @@
 	}
 
 	// ===========================
-	// ZTele
+	// ZTele (module)
 	// ===========================
 
 	// General
@@ -459,7 +512,7 @@
 	}
 
 	// ===========================
-	// ZHP
+	// ZHP (module)
 	// ===========================
 
 	// General

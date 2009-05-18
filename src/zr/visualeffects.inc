@@ -11,11 +11,6 @@
  */
 
 /**
- * Handle of cvar "sv_skyname."
- */
-new Handle:g_hSkyname = INVALID_HANDLE;
-
-/**
  * Default sky of current map.
  */
 new String:g_VEffectsDefaultSky[PLATFORM_MAX_PATH];
@@ -25,17 +20,16 @@ new String:g_VEffectsDefaultSky[PLATFORM_MAX_PATH];
  */
 VEffectsLoad()
 {
-    // Get sv_skyname's convar handle, if invalid, log error, then stop.
-    g_hSkyname = FindConVar("sv_skyname");
-    if (g_hSkyname == INVALID_HANDLE)
-    {
-        // TODO LOG.
-        
-        return;
-    }
+    // Apply all visual effects now
+    VEffectsApplyAll();
     
-    // Store map's default sky before applying new one.
-    GetConVarString(g_hSkyname, g_VEffectsDefaultSky, sizeof(g_VEffectsDefaultSky));
+    // Find map's default sky.
+    new Handle:hSkyname = FindConVar("sv_skyname");
+    if (hSkyname != INVALID_HANDLE)
+    {
+        // Store map's default sky before applying new one.
+        GetConVarString(hSkyname, g_VEffectsDefaultSky, sizeof(g_VEffectsDefaultSky));
+    }
     
     // If sky is disabled, then stop.
     new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
@@ -55,9 +49,6 @@ VEffectsLoad()
     
     // Add skybox file to downloads table.
     AddFileToDownloadsTable(downloadpath);
-    
-    // Apply all visual effects now
-    VEffectsApplyAll();
 }
 
 /**
@@ -239,11 +230,20 @@ VEffectsApplyLightStyle(bool:disable = false)
 
 VEffectsApplySky(bool:disable = false)
 {
+    // if we can't find the sv_skyname cvar, then stop.
+    new Handle:hSkyname = FindConVar("sv_skyname");
+    if (hSkyname == INVALID_HANDLE)
+    {
+        return;
+    }
+    
     // If default, then set to default sky.
     if (disable)
     {
-        // Set new sky on all clients.
-        SetConVarString(g_hSkyname, g_VEffectsDefaultSky, true);
+        if (g_VEffectsDefaultSky[0])
+        {
+            SetConVarString(hSkyname, g_VEffectsDefaultSky, true);
+        }
         
         return;
     }
@@ -253,7 +253,7 @@ VEffectsApplySky(bool:disable = false)
     GetConVarString(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], skypath, sizeof(skypath));
     
     // Set new sky on all clients.
-    SetConVarString(g_hSkyname, skypath, true);
+    SetConVarString(hSkyname, skypath, true);
 }
 
 VEffectsApplySunDisable(bool:disable = false)

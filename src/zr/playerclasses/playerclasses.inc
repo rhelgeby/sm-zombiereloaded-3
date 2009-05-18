@@ -318,7 +318,7 @@ new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
 
 /**
  * Loads class attributes from the class file into ClassData array. If any
- * error occour the plugin load will fail, and errors will be logged.
+ * error occur the plugin load will fail, and errors will be logged.
  */
 ClassLoad()
 {
@@ -331,7 +331,10 @@ ClassLoad()
     
     // Get weapons config path.
     decl String:pathclasses[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_PLAYERCLASSES, pathclasses);
+    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_CLASSES, pathclasses);
+    
+    // Register config info.
+    ConfigRegisterConfig(ConfigClasses, false, GetFunctionByName(GetMyHandle(), "ClassOnConfigReload"), _, pathclasses, CONFIG_FILE_ALIAS_CLASSES);
     
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -458,9 +461,24 @@ ClassLoad()
     
     // Log summary.
     LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Classes", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", ClassCount, ClassCount - failedcount, failedcount);
+    
+    // Set config data.
+    ConfigSetConfigLoaded(ConfigClasses, true);
+    ConfigSetConfigHandle(ConfigClasses, kvClassData);
 }
 
-
+/**
+ * Called when configs are being reloaded.
+ * 
+ * @param config    The config being reloaded. (only if 'all' is false)
+ */
+public ClassOnConfigReload(ConfigFile:config)
+{
+    // Reload class config.
+    if (config == ConfigClasses)
+    {
+    }
+}
 
 /**
  * Updates the class data cache. Original values are retrieved from ClassData.

@@ -54,16 +54,19 @@ HitgroupsLoad()
     // Clear hitgroup data
     HitgroupsClearData();
     
+    // Get hitgroups config path.
+    decl String:pathhitgroups[PLATFORM_MAX_PATH];
+    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
+    
+    // Register config info.
+    ConfigRegisterConfig(ConfigHitgroups, false, GetFunctionByName(GetMyHandle(), "HitgroupsOnConfigReload"), _, pathhitgroups, CONFIG_FILE_ALIAS_HITGROUPS);
+    
     // If module is disabled, then stop.
     new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
     if (!hitgroups)
     {
         return;
     }
-    
-    // Get hitgroups config path.
-    decl String:pathhitgroups[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
     
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -78,6 +81,24 @@ HitgroupsLoad()
     
     // Validate hitgroups config.
     HitgroupsValidateConfig();
+    
+    // Set config data.
+    ConfigSetConfigLoaded(ConfigHitgroups, true);
+    ConfigSetConfigHandle(ConfigHitgroups, kvHitgroups);
+}
+
+/**
+ * Called when configs are being reloaded.
+ * 
+ * @param config    The config being reloaded. (only if 'all' is false)
+ */
+public HitgroupsOnConfigReload(ConfigFile:config)
+{
+    // Reload hitgroups config.
+    if (config == ConfigHitgroups)
+    {
+        HitgroupsLoad();
+    }
 }
 
 /**

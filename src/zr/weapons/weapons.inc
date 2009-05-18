@@ -57,6 +57,15 @@ WeaponsInit()
 }
 
 /**
+ * Create commands related to weapons here.
+ */
+WeaponsOnCommandsCreate()
+{
+    // Forward event to sub-modules.
+    RestrictOnCommandsCreate();
+}
+
+/**
  * Clears weapon data.
  */
 WeaponsClearData()
@@ -78,16 +87,19 @@ WeaponsLoad()
     // Clear weapon data.
     WeaponsClearData();
     
+    // Get weapons config path.
+    decl String:pathweapons[PLATFORM_MAX_PATH];
+    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_WEAPONS, pathweapons);
+    
+    // Register config info.
+    ConfigRegisterConfig(ConfigWeapons, false, GetFunctionByName(GetMyHandle(), "WeaponsOnConfigReload"), _, pathweapons, CONFIG_FILE_ALIAS_WEAPONS);
+    
     // If module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
     {
         return;
     }
-    
-    // Get weapons config path.
-    decl String:pathweapons[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_WEAPONS, pathweapons);
     
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -104,8 +116,26 @@ WeaponsLoad()
     // Validate weapons config.
     WeaponsValidateConfig();
     
+    // Set config data.
+    ConfigSetConfigLoaded(ConfigWeapons, true);
+    ConfigSetConfigHandle(ConfigWeapons, kvWeapons);
+    
     // Forward event to sub-module.
-    RestrictOnMapStart();
+    RestrictLoad();
+}
+
+/**
+ * Called when configs are being reloaded.
+ * 
+ * @param config    The config being reloaded. (only if 'all' is false)
+ */
+public WeaponsOnConfigReload(ConfigFile:config)
+{
+    // Reload weapons config.
+    if (config == ConfigWeapons)
+    {
+        WeaponsLoad();
+    }
 }
 
 /**
@@ -118,12 +148,6 @@ WeaponsValidateConfig()
     {
         LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapons", "Config Validation", "No weapons listed in weapons.txt.");
     }
-}
-
-WeaponsOnCommandsCreate()
-{
-    // Forward event to sub-modules.
-    RestrictOnCommandsCreate();
 }
 
 /**
@@ -156,7 +180,7 @@ WeaponsOnClientDisconnect(client)
  *                      on it when finished!
  * @return              The size of the array.
  */
-WeaponsCreateWeaponArray(&Handle:arrayWeapons, maxlen = WEAPONS_MAX_LENGTH)
+stock WeaponsCreateWeaponArray(&Handle:arrayWeapons, maxlen = WEAPONS_MAX_LENGTH)
 {
     // Initialize array handle.
     arrayWeapons = CreateArray(maxlen);
@@ -189,7 +213,7 @@ WeaponsCreateWeaponArray(&Handle:arrayWeapons, maxlen = WEAPONS_MAX_LENGTH)
  * @param weapon    The weapon name.
  * @return          Returns true if valid, false it not.
  */
-bool:WeaponsIsValidWeapon(const String:weapon[])
+stock bool:WeaponsIsValidWeapon(const String:weapon[])
 {
     // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);
@@ -219,7 +243,7 @@ bool:WeaponsIsValidWeapon(const String:weapon[])
  * @param weapon    The weapon name.
  * @param display   Returns with the display name, is not changed if weapon is invalid. 
  */
-WeaponsGetDisplayName(const String:weapon[], String:display[])
+stock WeaponsGetDisplayName(const String:weapon[], String:display[])
 {
     // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);
@@ -246,7 +270,7 @@ WeaponsGetDisplayName(const String:weapon[], String:display[])
  * @param weapon    The weapon name.
  * @return          Returns true if restricted, false it not.
  */
-bool:WeaponsIsWeaponMenu(const String:weapon[])
+stock bool:WeaponsIsWeaponMenu(const String:weapon[])
 {
     // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);
@@ -278,7 +302,7 @@ bool:WeaponsIsWeaponMenu(const String:weapon[])
  * @param weapon    The weapon name.
  * @return          The float value of the knockback multiplier, 1.0 if not found.
  */
-Float:WeaponGetWeaponKnockback(const String:weapon[])
+stock Float:WeaponGetWeaponKnockback(const String:weapon[])
 {
     // Reset keyvalue's traversal stack.
     KvRewind(kvWeapons);
@@ -312,7 +336,7 @@ Float:WeaponGetWeaponKnockback(const String:weapon[])
  * @param weapons   The weapon index array.
  *                  -1 if no weapon in slot. 
  */
-WeaponsGetClientWeapons(client, weapons[WeaponsType])
+stock WeaponsGetClientWeapons(client, weapons[WeaponsType])
 {
     // x = weapon slot.
     for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
@@ -328,7 +352,7 @@ WeaponsGetClientWeapons(client, weapons[WeaponsType])
  * @return          The weapon index of the deployed weapon.
  *                  -1 if no weapon is deployed. 
  */
-WeaponsGetDeployedWeaponIndex(client)
+stock WeaponsGetDeployedWeaponIndex(client)
 {
     // Return the client's active weapon.
     return GetEntDataEnt2(client, offsActiveWeapon);
@@ -340,7 +364,7 @@ WeaponsGetDeployedWeaponIndex(client)
  * @param client    The client index.
  * @return          The slot number of deployed weapon.
  */
-WeaponsType:WeaponsGetDeployedWeaponSlot(client)
+stock WeaponsType:WeaponsGetDeployedWeaponSlot(client)
 {
     // Get all client's weapon indexes.
     new weapons[WeaponsType];
@@ -373,7 +397,7 @@ WeaponsType:WeaponsGetDeployedWeaponSlot(client)
  * @param client    The client index.
  * @param weapon    The weapon index to force client to drop.
  */
-WeaponsForceClientDrop(client, weapon)
+stock WeaponsForceClientDrop(client, weapon)
 {
     // Force client to drop weapon.
     SDKCall(g_hToolsCSWeaponDrop, client, weapon, true, false);

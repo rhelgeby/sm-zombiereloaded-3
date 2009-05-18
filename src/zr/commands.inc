@@ -16,6 +16,7 @@
 CommandsInit()
 {
     // Forward event to modules. (create commands)
+    ConfigOnCommandsCreate();
     WeaponsOnCommandsCreate();
     
     // Forward event to modules. (hook commands)

@@ -31,6 +31,7 @@
 #include "zr/sayhooks"
 #include "zr/tools"
 #include "zr/models"
+#include "zr/downloads"
 #include "zr/overlays"
 #include "zr/playerclasses/playerclasses"
 #include "zr/weapons/weapons"
@@ -165,6 +166,7 @@ public OnConfigsExecuted()
     // Forward event to modules.
     ConfigLoad();
     ModelsLoad();
+    DownloadsLoad();
     WeaponsLoad();
     HitgroupsLoad();
     InfectLoad();

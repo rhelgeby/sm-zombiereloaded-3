@@ -11,58 +11,83 @@
  */
 
 /**
- * @section List of config files under this modules control.
+ * The max length of any config string value.
  */
-#define CONFIG_FILE_MODELS         0
-#define CONFIG_FILE_DOWNLOADS      1
-#define CONFIG_FILE_PLAYERCLASSES  2
-#define CONFIG_FILE_WEAPONS        3
-#define CONFIG_FILE_WEAPONGROUPS   4
-#define CONFIG_FILE_HITGROUPS      5
+#define CONFIG_MAX_LENGTH 32
+
+/**
+ * @section Config file reference aliases.
+ */
+#define CONFIG_FILE_ALIAS_MODELS        "models"
+#define CONFIG_FILE_ALIAS_DOWNLOADS     "downloads"
+#define CONFIG_FILE_ALIAS_CLASSES       "classes"
+#define CONFIG_FILE_ALIAS_WEAPONS       "weapons"
+#define CONFIG_FILE_ALIAS_WEAPONGROUPS  "weapongroups"
+#define CONFIG_FILE_ALIAS_HITGROUPS     "hitgroups"
 /**
  * @endsection
  */
 
 /**
- * @section Config file flags.
+ * List of config files used by the plugin.
  */
-#define CONFIG_FILE_FLAG_MODELS         1
-#define CONFIG_FILE_FLAG_DOWNLOADS      2
-#define CONFIG_FILE_FLAG_PLAYERCLASSES  4
-#define CONFIG_FILE_FLAG_WEAPONS        8
-#define CONFIG_FILE_FLAG_WEAPONGROUPS   16
-#define CONFIG_FILE_FLAG_HITGROUPS      32
-/**
- * @endsection
- */
+enum ConfigFile
+{
+    ConfigInvalid = -1, /** Invalid config file. */
+    ConfigModels,       /** <sourcemod root>/configs/zr/models.txt (default) */
+    ConfigDownloads,    /** <sourcemod root>/configs/zr/downloads.txt (default) */
+    ConfigClasses,      /** <sourcemod root>/configs/zr/playerclasses.txt (default) */
+    ConfigWeapons,      /** <sourcemod root>/configs/zr/weapons/weapons.txt/weapongroups.txt (default) */
+    ConfigHitgroups,    /** <sourcemod root>/configs/zr/hitgroups.txt (default) */
+}
 
 /**
- * The max length of a config/value string.
+ * Data container for each config file.
  */
-#define CONFIG_OPTION_MAX_LENGTH 32
+enum ConfigData
+{
+    bool:ConfigLoaded,                      /** True if config is loaded, false if not. */
+    Function:ConfigReloadFunc,              /** Function to call to reload config. */
+    Handle:ConfigHandle,                    /** Handle of the config file. */
+    String:ConfigPath[PLATFORM_MAX_PATH],   /** Full path to config file. */
+    String:ConfigAlias[CONFIG_MAX_LENGTH],  /** Config file alias, used for client interaction. */
+}
+
+/**
+ * Stores all config data.
+ */
+new g_ConfigData[ConfigFile][ConfigData];
 
 /**
  * Actions to use when working on key/values.
  */
 enum ConfigKeyvalueAction
 {
-    Create, /** Create a key. */
-    Delete, /** Delete a key. */
-    Set, /** Modify setting of a key. */
-    Get, /** Get setting of a key. */
+    ConfigKVCreate, /** Create a key. */
+    ConfigKVDelete, /** Delete a key. */
+    ConfigKVSet,    /** Modify setting of a key. */
+    ConfigKVGet,    /** Get setting of a key. */
 }
-/**
- * @endsection
- */
 
 /**
  * @section Global data handle initializations.
  */
 new Handle:arrayModelsList = INVALID_HANDLE;
+new Handle:arrayDownloadsList = INVALID_HANDLE;
 new Handle:kvClassData = INVALID_HANDLE;
 new Handle:kvWeapons = INVALID_HANDLE;
 new Handle:kvWeaponGroups = INVALID_HANDLE;
 new Handle:kvHitgroups = INVALID_HANDLE;
+
+/**
+ * Create commands related to config here.
+ */
+ConfigOnCommandsCreate()
+{
+    // Create config admin commands.
+    RegAdminCmd("zr_reloadconfig", ConfigReloadCommand, ADMFLAG_GENERIC, "zr_reloadconfig <file alias> - Reloads a config file.");
+    RegAdminCmd("zr_reloadconfigall", ConfigReloadAllCommand, ADMFLAG_GENERIC, "zr_reloadconfigall - Reloads all config files.");
+}
 
 /**
  * Load plugin configs.
@@ -131,12 +156,186 @@ ConfigOnModulesLoaded()
 }
 
 /**
+ * Used by modules that rely on configs to register their config file info.
+ *
+ * @param file      Config file entry to register.
+ * @param loaded    True if the config should be loaded, false if not.
+ * @param path      (Optional) Full path to config file.
+ * @param alias     (Optional) Config file alias, used for client interaction.
+ */
+stock ConfigRegisterConfig(ConfigFile:file, bool:loaded, Function:reloadfunc, Handle:filehandle = INVALID_HANDLE, const String:path[] = "", const String:alias[] = "")
+{
+    // Copy file info to data container.
+    g_ConfigData[file][ConfigLoaded] = loaded;
+    g_ConfigData[file][ConfigHandle] = filehandle;
+    g_ConfigData[file][ConfigReloadFunc] = reloadfunc;
+    strcopy(g_ConfigData[file][ConfigPath], PLATFORM_MAX_PATH, path);
+    strcopy(g_ConfigData[file][ConfigAlias], CONFIG_MAX_LENGTH, alias);
+}
+
+/**
+ * Set the loaded state of a config file entry.
+ * 
+ * @param config    Config file to set load state of.
+ * @param loaded    True to set as loaded, false to set as unloaded.
+ */
+stock ConfigSetConfigLoaded(ConfigFile:config, bool:loaded)
+{
+    // Set load state.
+    g_ConfigData[config][ConfigLoaded] = loaded;
+}
+
+/**
+ * Set the reload function of a config file entry.
+ * 
+ * @param config        Config file to set reload function of.
+ * @param reloadfunc    Reload function.
+ */
+stock ConfigSetConfigReloadFunc(ConfigFile:config, Function:reloadfunc)
+{
+    // Set reload function.
+    g_ConfigData[config][ConfigReloadFunc] = reloadfunc;
+}
+
+/**
+ * Set the file handle of a config file entry.
+ * 
+ * @param config    Config file to set handle of.
+ * @param loaded    Config file handle.
+ */
+stock ConfigSetConfigHandle(ConfigFile:config, Handle:file)
+{
+    // Set file handle.
+    g_ConfigData[config][ConfigHandle] = file;
+}
+
+/**
+ * Set the config file path of a config file entry.
+ * 
+ * @param config    Config file to set file path of.
+ * @param loaded    File path.
+ */
+stock ConfigSetConfigPath(ConfigFile:config, const String:path[])
+{
+    // Set config file path.
+    strcopy(g_ConfigData[config][ConfigPath], PLATFORM_MAX_PATH, path);
+}
+
+/**
+ * Set the alias of a config file entry.
+ * 
+ * @param config    Config file to set alias of.
+ * @param loaded    Alias of the config file entry.
+ */
+stock ConfigSetConfigAlias(ConfigFile:config, const String:alias[])
+{
+    // Set config alias.
+    strcopy(g_ConfigData[config][ConfigAlias], CONFIG_MAX_LENGTH, alias);
+}
+
+/**
+ * Returns if a config was successfully loaded.
+ * 
+ * @param config    Config file to check load status of.
+ * @return          True if config is loaded, false otherwise.
+ */
+stock bool:ConfigIsConfigLoaded(ConfigFile:config)
+{
+    // Return load status.
+    return g_ConfigData[config][ConfigLoaded];
+}
+
+/**
+ * Returns config's reload function.
+ * 
+ * @param config    Config file to get reload function of.
+ * @return          Config reload function.
+ */
+stock Function:ConfigGetConfigReloadFunc(ConfigFile:config)
+{
+    // Return load status.
+    return g_ConfigData[config][ConfigReloadFunc];
+}
+
+/**
+ * Returns config's file handle.
+ * 
+ * @param config    Config file to get file handle of.
+ * @return          Config file handle.
+ */
+stock Handle:ConfigGetConfigHandle(ConfigFile:config)
+{
+    // Return load status.
+    return g_ConfigData[config][ConfigHandle];
+}
+
+/**
+ * Returns the path for a given config file entry.
+ * 
+ * @param config    Config file to get path of. (see ConfigFile enum)
+ */
+stock ConfigGetConfigPath(ConfigFile:config, String:path[], maxlen)
+{
+    // Copy path to return string.
+    strcopy(path, maxlen, g_ConfigData[config][ConfigPath]);
+}
+
+/**
+ * Returns the alias for a given config file entry.
+ * 
+ * @param config    Config file to get alias of. (see ConfigFile enum)
+ */
+stock ConfigGetConfigAlias(ConfigFile:config, String:alias[], maxlen)
+{
+    // Copy alias to return string.
+    strcopy(alias, maxlen, g_ConfigData[config][ConfigAlias]);
+}
+
+/**
+ * Reload a config file.
+ * 
+ * @param config    The config file entry to reload.
+ * @return          True if the config is loaded, false if not.
+ */
+stock bool:ConfigReloadFile(ConfigFile:config)
+{
+    // If file isn't loaded, then stop.
+    new bool:loaded = ConfigIsConfigLoaded(config);
+    if (!loaded)
+    {
+        return false;
+    }
+    
+    // Call reload function
+    new Function:reloadfunc = ConfigGetConfigReloadFunc(config);
+    
+    if (reloadfunc == INVALID_FUNCTION)
+    {
+        // Get config alias.
+        decl String:configalias[CONFIG_MAX_LENGTH];
+        ConfigGetConfigAlias(config, configalias, sizeof(configalias));
+        
+        // Print reload failure to logs.
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Config", "Reload Function", "Invalid reload function for config: \"%s\"", configalias);
+        
+        return true;
+    }
+    
+    // Call reload function.
+    Call_StartFunction(GetMyHandle(), reloadfunc);
+    Call_PushCell(config);
+    Call_Finish();
+    
+    return true;
+}
+
+/**
  * Load config file.
  * 
  * @param file  The cvar define of the path to the file.
  * @return      True if the file exists, false if not.
  */
-bool:ConfigGetFilePath(CvarsList:cvar, String:path[])
+stock bool:ConfigGetCvarFilePath(CvarsList:cvar, String:path[])
 {
     // Get cvar's path.
     decl String:filepath[PLATFORM_MAX_PATH];
@@ -146,6 +345,36 @@ bool:ConfigGetFilePath(CvarsList:cvar, String:path[])
     BuildPath(Path_SM, path, PLATFORM_MAX_PATH, filepath);
     
     return FileExists(path);
+}
+
+/**
+ * Finds a config file entry, (see ConfigFile enum) for a given alias.
+ * 
+ * @param alias     The alias to find config file entry of.
+ * @return          Config file entry, ConfigInvalid is returned if alias was not found.
+ */
+stock ConfigFile:ConfigAliasToConfigFile(const String:alias[])
+{
+    decl String:checkalias[CONFIG_MAX_LENGTH];
+    
+    // x = config file entry index.
+    for (new x = 0; x < sizeof(g_ConfigData); x++)
+    {
+        // Get config alias.
+        ConfigGetConfigAlias(ConfigFile:x, checkalias, sizeof(checkalias));
+        
+        // If alias doesn't match, then stop.
+        if (!StrEqual(alias, checkalias, false))
+        {
+            continue;
+        }
+        
+        // Return config file entry.
+        return ConfigFile:x;
+    }
+    
+    // Invalid config file.
+    return ConfigInvalid;
 }
 
 /**
@@ -162,10 +391,10 @@ bool:ConfigGetFilePath(CvarsList:cvar, String:path[])
  * @param maxlen        (Optional) The maxlength of the gotten value.
  * @return              True if the change was made successfully, false otherwise. 
  */
-bool:ConfigKeyvalueTreeSetting(config, ConfigKeyvalueAction:action = Create, const String:keys[][], keysMax, const String:setting[] = "", String:value[] = "", maxlen = 0)
+stock bool:ConfigKeyvalueTreeSetting(config, ConfigKeyvalueAction:action = ConfigKVCreate, const String:keys[][], keysMax, const String:setting[] = "", String:value[] = "", maxlen = 0)
 {
     // Retrieve handle of the keyvalue tree.
-    new Handle:hConfig = ConfigGetFileHandle(config);
+    new Handle:hConfig = ConfigGetConfigHandle(config);
     
     // If handle is invalid, then stop.
     if (hConfig == INVALID_HANDLE)
@@ -199,7 +428,7 @@ bool:ConfigKeyvalueTreeSetting(config, ConfigKeyvalueAction:action = Create, con
     
     switch(action)
     {
-        case Create:
+        case ConfigKVCreate:
         {
             if (!setting[0] || !value[0])
             {
@@ -210,17 +439,17 @@ bool:ConfigKeyvalueTreeSetting(config, ConfigKeyvalueAction:action = Create, con
             // Set new value.
             KvSetString(hConfig, setting, value);
         }
-        case Delete:
+        case ConfigKVDelete:
         {
             // Return deletion result.
             return KvDeleteKey(hConfig, setting);
         }
-        case Set:
+        case ConfigKVSet:
         {
             // Set new value.
             KvSetString(hConfig, setting, value);
         }
-        case Get:
+        case ConfigKVGet:
         {
             // Get current value.
             KvGetString(hConfig, setting, value, maxlen);
@@ -232,48 +461,82 @@ bool:ConfigKeyvalueTreeSetting(config, ConfigKeyvalueAction:action = Create, con
 }
 
 /**
- * Return handle to array or keygroup for globally stored data.
+ * Command callback (zr_reloadconfig)
+ * Reloads a config file and forwards event to modules.
  * 
- * @param configindex   Index of the config. (see CONFIG_FILE_* defines)
+ * @param client    The client index.
+ * @param argc      Argument count.
  */
-Handle:ConfigGetFileHandle(config)
+public Action:ConfigReloadCommand(client, argc)
 {
-    switch(config)
+    // If not enough arguments given, then stop.
+    if (argc < 1)
     {
-        case CONFIG_FILE_MODELS:
-        {
-            // Return model list array handle.
-            return arrayModelsList;
-        }
-        case CONFIG_FILE_DOWNLOADS:
-        {
-            // We don't store download data.
-            return INVALID_HANDLE;
-        }
-        case CONFIG_FILE_PLAYERCLASSES:
-        {
-            // Return class config keyvalue file handle.
-            return kvClassData;
-        }
-        case CONFIG_FILE_WEAPONS:
-        {
-            // Return weapon config keyvalue file handle.
-            return kvWeapons;
-        }
-        case CONFIG_FILE_WEAPONGROUPS:
-        {
-            // Return weapon groups config keyvalue file handle.
-            return kvWeaponGroups;
-        }
-        case CONFIG_FILE_HITGROUPS:
-        {
-            // Return hitgroups config keyvalue file handle.
-            return kvHitgroups;
-        }
+        TranslationReplyToCommand(client, "Config command reload syntax", CONFIG_FILE_ALIAS_MODELS, CONFIG_FILE_ALIAS_DOWNLOADS, CONFIG_FILE_ALIAS_CLASSES, CONFIG_FILE_ALIAS_WEAPONS, CONFIG_FILE_ALIAS_WEAPONGROUPS, CONFIG_FILE_ALIAS_HITGROUPS);
+        return Plugin_Handled;
     }
     
-    // Invalid config index.
-    return INVALID_HANDLE;
+    // arg1 = file alias being reloaded.
+    decl String:arg1[32];
+    GetCmdArg(1, arg1, sizeof(arg1));
+    
+    // If alias is invalid, then stop.
+    new ConfigFile:config = ConfigAliasToConfigFile(arg1);
+    if (config == ConfigInvalid)
+    {
+        TranslationReplyToCommand(client, "Config command reload invalid", arg1);
+        return Plugin_Handled;
+    }
+    
+    // Reload config file.
+    new bool:loaded = ConfigReloadFile(config);
+    
+    // Get config file path.
+    decl String:path[PLATFORM_MAX_PATH];
+    ConfigGetConfigPath(config, path, sizeof(path));
+    
+    // If file isn't loaded then tell client, then stop.
+    if (!loaded)
+    {
+        TranslationReplyToCommand(client, "Config command reload not loaded", path);
+        return Plugin_Handled;
+    }
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback (zr_reloadconfigall)
+ * Reloads all config files and forwards event to all modules.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ConfigReloadAllCommand(client, argc)
+{
+    // Begin statistics.
+    TranslationReplyToCommand(client, "Config command reload all stats begin");
+    
+    decl String:configalias[CONFIG_MAX_LENGTH];
+    
+    // x = config file entry index.
+    for (new x = 0; x < sizeof(g_ConfigData); x++)
+    {
+        // Reload config file.
+        new bool:successful = ConfigReloadFile(ConfigFile:x);
+        
+        // Get config's alias.
+        ConfigGetConfigAlias(ConfigFile:x, configalias, sizeof(configalias));
+        
+        if (successful)
+        {
+            TranslationReplyToCommand(client, "Config command reload all stats successful", configalias);
+        }
+        else
+        {
+            TranslationReplyToCommand(client, "Config command reload all stats failed", configalias);
+        }
+    }
 }
 
 /**

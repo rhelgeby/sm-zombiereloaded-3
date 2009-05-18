@@ -5,7 +5,7 @@
  *
  *   File:          models.inc
  *   Type:          Core
- *   Description:   Model validation and API
+ *   Description:   Model validation.
  *
  * ============================================================================
  */
@@ -26,23 +26,17 @@
  * @redir   config.inc
  */
 
-ModelsLoad()
-{
-    // Add models to downloads table and validate.
-    ModelsPrepModels();
-    
-    // Add download entries to downloads table and validate.
-    ModelsPrepDownloads();
-}
-
 /**
- * Validate model paths and add to downloads table.
+ * Prepare all model/download data.
  */
-ModelsPrepModels()
+ModelsLoad()
 {
     // Get models file path.
     decl String:pathmodels[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_MODELS, pathmodels);
+    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_MODELS, pathmodels);
+    
+    // Register config info.
+    ConfigRegisterConfig(ConfigModels, false, GetFunctionByName(GetMyHandle(), "ModelsOnConfigReload"), _, pathmodels, CONFIG_FILE_ALIAS_MODELS);
     
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -164,70 +158,22 @@ ModelsPrepModels()
     {
         LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: No usable model paths in %s", pathmodels);
     }
+    
+    // Set config data.
+    ConfigSetConfigLoaded(ConfigModels, true);
+    ConfigSetConfigHandle(ConfigModels, arrayModelsList);
 }
 
 /**
- * Validate custom download paths and add to downloads table.
+ * Called when configs are being reloaded.
+ * 
+ * @param config    The config being reloaded. (only if 'all' is false)
  */
-ModelsPrepDownloads()
+public ModelsOnConfigReload(ConfigFile:config)
 {
-    // Get downloads file path.
-    decl String:pathdownloads[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_DOWNLOADS, pathdownloads);
-    
-    // If file doesn't exist, then log.
-    if (!exists)
+    // Reload model config.
+    if (config == ConfigModels)
     {
-        // Log error, then stop.
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Missing downloads file: \"%s\"", pathdownloads);
-        
-        return;
+        ModelsLoad();
     }
-    
-    new Handle:arrayDownloadsList = ConfigLinesToArray(pathdownloads);
-    
-    // If array couldn't be created, then fail.
-    if (arrayModelsList == INVALID_HANDLE)
-    {
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Error parsing \"%s\"", pathdownloads);
-    }
-    
-    new downloadcount;
-    new downloadvalidcount;
-    
-    decl String:downloadpath[PLATFORM_MAX_PATH];
-    
-    new downloads = downloadcount = GetArraySize(arrayDownloadsList);
-    
-    // x = download array index.
-    for (new x = 0; x < downloads; x++)
-    {
-        // Get base model path (rawline in models.txt)
-        GetArrayString(arrayDownloadsList, x, downloadpath, sizeof(downloadpath));
-        
-        // If file doesn't exist, then remove, log, and stop.
-        if (!FileExists(downloadpath))
-        {
-            // Remove client from array.
-            RemoveFromArray(arrayDownloadsList, x);
-            
-            // Subtract one from count.
-            downloads--;
-            
-            // Backtrack one index, because we deleted it out from under the loop.
-            x--;
-            
-            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Missing file \"%s\"", downloadpath);
-            continue;
-        }
-        
-        // Increment downloadvalidcount
-        downloadvalidcount++;
-        
-        // Precache model file and add to downloads table.
-        AddFileToDownloadsTable(downloadpath);
-    }
-    
-    // Log model validation info.
-    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Downloads", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", downloadcount, downloadvalidcount, downloadcount - downloadvalidcount);
 }

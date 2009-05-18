@@ -18,7 +18,7 @@
 /**
  * Array that stores the "HookID" to be later unhooked on player disconnect.
  */
-new g_iWeaponDropHookID[MAXPLAYERS + 1];
+new g_iWeaponDropHookID[MAXPLAYERS + 1] = {-1, ...};
 
 /**
  * Client is joining the server.
@@ -32,14 +32,18 @@ WeaponAlphaClientInit(client)
 }
 
 /**
- * Unhook Weapon_CanUse function on a client.
+ * Client is leaving the server.
  * 
  * @param client    The client index.
  */
 WeaponAlphaOnClientDisconnect(client)
 {
-    // Unhook "Weapon_Drop" on client.
-    ZRTools_UnhookWeapon_Drop(g_iWeaponDropHookID[client]);
+    // Unhook "Weapon_Drop" callback, and reset variable.
+    if (g_iWeaponDropHookID[client] != -1)
+    {
+        ZRTools_UnhookWeapon_Drop(g_iWeaponDropHookID[client]);
+        g_iWeaponDropHookID[client] = -1;
+    }
 }
 
 /**

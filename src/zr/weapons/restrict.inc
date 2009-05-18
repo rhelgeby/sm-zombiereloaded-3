@@ -35,7 +35,7 @@ enum WpnRestrictQuery
     Successful_Group,  /** Group (un)restrict query was successful. */
     Failed_Weapon, /** Weapon (un)restrict was unsuccessful */
     Failed_Group, /** Group (un)restrict was unsuccessful */
-    Invalid,  /** Weapon/Group invalid */
+    WeaponInvalid,  /** Weapon/Group invalid */
 }
 
 /**
@@ -57,7 +57,7 @@ RestrictInit()
  */
 RestrictOnCommandsCreate()
 {
-    // Create admin commands.
+    // Create weapon admin commands.
     RegAdminCmd("zr_restrict", RestrictRestrictCommand, ADMFLAG_GENERIC, "zr_restrict <weapon> - Restrict a weapon.");
     RegAdminCmd("zr_unrestrict", RestrictUnrestrictCommand, ADMFLAG_GENERIC, "zr_unrestrict <weapon> - Unrestrict a weapon.");
 }
@@ -82,7 +82,7 @@ RestrictClearData()
 /**
  * Loads weapon data from file.
  */
-RestrictOnMapStart()
+RestrictLoad()
 {
     // Clear weapon restrict data.
     RestrictClearData();
@@ -99,7 +99,7 @@ RestrictOnMapStart()
     
     // Get weapon groups config path.
     decl String:pathweapongroups[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetFilePath(CVAR_CONFIG_PATH_WEAPONGROUPS, pathweapongroups);
+    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_WEAPONGROUPS, pathweapongroups);
     
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -221,7 +221,6 @@ RestrictClientInit(client)
 RestrictOnClientDisconnect(client)
 {
     // Unhook "Weapon_CanUse" callback, and reset variable.
-    
     if (g_iCanUseHookID[client] != -1)
     {
         ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
@@ -287,7 +286,7 @@ public Action:RestrictBuyCommand(client, argc)
  *                  Successful_Group: The call successfully restricted a weapon group.
  *                  Failed_Weapon: The call failed to restrict a weapon.
  *                  Failed_Group: The call failed to restrict a weapon group.
- *                  Invalid: The call was unsuccessful due to invalid weapon.
+ *                  WeaponInvalid: The call was unsuccessful due to invalid weapon.
  */
 WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[] = "")
 {
@@ -340,7 +339,7 @@ WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[] = "")
         strcopy(display, WEAPONS_MAX_LENGTH, weapon);
         
         // Weapon name was invalid.
-        return Invalid;
+        return WeaponInvalid;
     }
     
     // Get display name of the weapon.
@@ -368,7 +367,7 @@ WpnRestrictQuery:RestrictRestrict(const String:weapon[], String:display[] = "")
  *                  Successful_Group: The call successfully restricted a weapon group.
  *                  Failed_Weapon: The call failed to restrict a weapon.
  *                  Failed_Group: The call failed to restrict a weapon group. 
- *                  Invalid: The call was unsuccessful due to invalid weapon.
+ *                  WeaponInvalid: The call was unsuccessful due to invalid weapon.
  */
 WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[] = "")
 {
@@ -425,7 +424,7 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[] = ""
     {
         strcopy(display, WEAPONS_MAX_LENGTH, weapon);
         
-        return Invalid;
+        return WeaponInvalid;
     }
     
     // Get display name of the weapon.
@@ -502,7 +501,7 @@ RestrictPrintRestrictOutput(client, WpnRestrictQuery:output, const String:weapon
             }
         }
         // Weapon name was invalid.
-        case Invalid:
+        case WeaponInvalid:
         {
             if (reply)
             {
@@ -571,7 +570,7 @@ RestrictPrintUnrestrictOutput(client, WpnRestrictQuery:output, const String:weap
             }
         }
         // Weapon name was invalid.
-        case Invalid:
+        case WeaponInvalid:
         {
             if (reply)
             {
@@ -887,6 +886,10 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
 }
 
 /**
+ * Command callbacks.
+ */
+
+/**
  * Command callback (zr_restrict)
  * Restricts a weapon or group
  *   
@@ -895,6 +898,13 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
  */
 public Action:RestrictRestrictCommand(client, argc)
 {
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "Weapons command restrict syntax");
+        return Plugin_Handled;
+    }
+    
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
@@ -937,6 +947,13 @@ public Action:RestrictRestrictCommand(client, argc)
  */
 public Action:RestrictUnrestrictCommand(client, argc)
 {
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "Weapons command unrestrict syntax");
+        return Plugin_Handled;
+    }
+    
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
