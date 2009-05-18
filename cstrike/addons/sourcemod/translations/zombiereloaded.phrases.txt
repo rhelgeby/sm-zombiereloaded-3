@@ -351,6 +351,18 @@
 		"ru"		"Купить снова"
 	}
 
+	// Commands
+
+	"Weapons command restrict syntax"
+	{
+		"en"		"Syntax: zr_restrict <weapon> (\"weapon_\" prefix is ignored)"
+	}
+
+	"Weapons command unrestrict syntax"
+	{
+		"en"		"Syntax: zr_unrestrict <weapon> (\"weapon_\" prefix is ignored)"
+	}
+
 	// Menu
 
 	"Weapons menu main title"
