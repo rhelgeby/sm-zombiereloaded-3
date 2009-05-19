@@ -71,6 +71,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     
     // Forward event to sub-modules.
     OverlaysOnRoundStart();
+    WeaponsOnRoundStart();
     RoundEndOnRoundStart();
     InfectOnRoundStart();
     SEffectsOnRoundStart();
@@ -111,6 +112,7 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     new reason = GetEventInt(event, "reason");
     
     // Forward event to modules.
+    WeaponsOnRoundEnd();
     RoundEndOnRoundEnd(reason);
     InfectOnRoundEnd();
     SEffectsOnRoundEnd();
@@ -202,6 +204,12 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
  */
 public Action:EventPlayerSpawnPost(Handle:timer, any:index)
 {
+    // If client isn't in-game, then stop.
+    if (!IsClientInGame(index))
+    {
+        return;
+    }
+    
     // Forward event to modules.
     SpawnProtectOnClientSpawnPost(index);
 }

@@ -175,6 +175,26 @@ WeaponsOnClientDisconnect(client)
 }
 
 /**
+ * The round is starting.
+ */
+WeaponsOnRoundStart()
+{
+    // Forward event to sub-modules
+    WeaponAlphaOnRoundStart();
+}
+
+/**
+ * The round is ending.
+ * 
+ * @param reason    Reason the round has ended.
+ */
+WeaponsOnRoundEnd()
+{
+    // Forward event to sub-modules
+    WeaponAlphaOnRoundEnd();
+}
+
+/**
  * Creates an array of all listed weapons in weapons.txt.
  * @param arrayWeapons  The handle of the array, don't forget to call CloseHandle
  *                      on it when finished!

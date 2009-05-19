@@ -374,18 +374,18 @@ WpnRestrictQuery:RestrictUnrestrict(const String:weapon[], String:display[] = ""
     // Check if weapon is a custom group name.
     if (RestrictIsWeaponGroup(weapon))
     {
-        // Return restrict failed if group isn't restricted.
-        if (RestrictIsGroupUnrestricted(weapon))
-        {
-            return Failed_Group;
-        }
-        
         // Jump to weapon group key.
         KvRewind(kvWeaponGroups);
         KvJumpToKey(kvWeaponGroups, weapon);
         
         // Get display name of the weapon group.
         KvGetSectionName(kvWeaponGroups, display, WEAPONS_MAX_LENGTH);
+        
+        // Return restrict failed if group isn't restricted.
+        if (RestrictIsGroupUnrestricted(weapon))
+        {
+            return Failed_Group;
+        }
         
         // Traverse into the group's weapons.
         if (KvGotoFirstSubKey(kvWeaponGroups))
