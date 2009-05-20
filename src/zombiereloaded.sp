@@ -36,6 +36,7 @@
 #include "zr/playerclasses/playerclasses"
 #include "zr/weapons/weapons"
 #include "zr/hitgroups"
+#include "zr/roundstart"
 #include "zr/roundend"
 #include "zr/infect"
 #include "zr/damage"
@@ -60,9 +61,6 @@
 #include "zr/zhp"
 #include "zr/jumpboost"
 #include "zr/volfeatures/volfeatures"
-
-// Almost replaced! :)
-#include "zr/zombie"
 
 /**
  * Record plugin info.

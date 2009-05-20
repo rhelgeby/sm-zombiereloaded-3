@@ -72,6 +72,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     // Forward event to sub-modules.
     OverlaysOnRoundStart();
     WeaponsOnRoundStart();
+    RoundStartOnRoundStart();
     RoundEndOnRoundStart();
     InfectOnRoundStart();
     SEffectsOnRoundStart();
@@ -90,8 +91,6 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
  */
 public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    RemoveObjectives();
-    
     // Forward events to modules.
     RoundEndOnRoundFreezeEnd();
     InfectOnRoundFreezeEnd();
