@@ -83,6 +83,20 @@ ClassOverlayOnClientSpawn(client)
         
         TranslationPrintHUDText(client, "Classes overlay toggle", togglecmds);
     }
+    
+    // Update class overlay.
+    OverlaysClientUpdateOverlay(client, OVERLAYS_CHANNEL_CLASSES);
+}
+
+/**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ */
+ClassOverlayOnClientDeath(client)
+{
+    // Disable overlay.
+    OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
 }
 
 /**
@@ -127,7 +141,7 @@ ClassOverlayInitialize(client, const String:overlay[])
 }
 
 /**
- * Command callback (See zr_classes_overlay_togglecmds)
+ * Command callback. (See zr_classes_overlay_togglecmds)
  * Toggles nightvision of a client.
  *   
  * @param client    The client index.

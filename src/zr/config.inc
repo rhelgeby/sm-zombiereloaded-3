@@ -85,8 +85,8 @@ new Handle:kvHitgroups = INVALID_HANDLE;
 ConfigOnCommandsCreate()
 {
     // Create config admin commands.
-    RegAdminCmd("zr_reloadconfig", ConfigReloadCommand, ADMFLAG_GENERIC, "zr_reloadconfig <file alias> - Reloads a config file.");
-    RegAdminCmd("zr_reloadconfigall", ConfigReloadAllCommand, ADMFLAG_GENERIC, "zr_reloadconfigall - Reloads all config files.");
+    RegAdminCmd("zr_config_reload", ConfigReloadCommand, ADMFLAG_GENERIC, "Reloads a config file. Usage: zr_config_reload <file alias>");
+    RegAdminCmd("zr_config_reloadall", ConfigReloadAllCommand, ADMFLAG_GENERIC, "Reloads all config files. Usage: zr_config_reloadall");
 }
 
 /**

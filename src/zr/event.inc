@@ -154,8 +154,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
     // Forward event to modules.
-    InfectOnClientSpawn(index);     // Multiple modules depend on this to finish first.
-    OverlaysOnClientSpawn(index);
+    InfectOnClientSpawn(index);     // Some modules depend on this to finish first.
     ClassOnClientSpawn(index);
     RestrictOnClientSpawn(index);
     SEffectsOnClientSpawn(index);

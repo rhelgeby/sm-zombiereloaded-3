@@ -9,10 +9,30 @@
  * ============================================================================
  */
 
+ClassOnCommandsCreate()
+{
+    // Create base class commands.
+    RegConsoleCmd("zr_class_dump", ClassDumpCommand, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
+    RegAdminCmd("zr_class_modify", ClassModifyCommand, ADMFLAG_GENERIC, "Modify class data on one or more classes. Usage: zr_class_modify <classname|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
+}
+
 /**
- * Dumps class data at a specified index in the specified cache.
+ * Hook commands related to classes here.
  */
-public Action:Command_ClassDump(client, argc)
+ClassOnCommandsHook()
+{
+    // Forward event to sub-modules.
+    ClassOverlayOnCommandsHook();
+}
+
+/**
+ * Command callback. (zr_class_dump)
+ * Dumps class data at a specified index in the specified cache.
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ClassDumpCommand(client, argc)
 {
     decl String:syntax[1024];
     syntax[0] = 0;
@@ -124,7 +144,7 @@ public Action:Command_ClassDump(client, argc)
  * Note: Original values are retrieved from the original class cache, not the
  *       modified class cache.
  */
-public Action:Command_ClassModify(client, argc)
+public Action:ClassModifyCommand(client, argc)
 {
     decl String:syntax[1024];
     syntax[0] = 0;
@@ -335,7 +355,7 @@ public Action:Command_ClassModify(client, argc)
  * @param value             New value to set.
  * @return                  True on success, false otherwise.
  */
-bool:ClassModifyBoolean(classindex, attributeflag, bool:value)
+stock bool:ClassModifyBoolean(classindex, attributeflag, bool:value)
 {
     // Validate class index.
     if (!ClassValidateIndex(classindex))
@@ -378,7 +398,7 @@ bool:ClassModifyBoolean(classindex, attributeflag, bool:value)
  *                          disable. Value is ignored if this is non-zero.
  * @return                  True on success, false otherwise.
  */
-ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.0)
+stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.0)
 {
     // Validate class index.
     if (!ClassValidateIndex(classindex))
@@ -481,7 +501,7 @@ ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.0)
  *                          Not all attributes support multipliers.
  * @return                  True on success, false otherwise.
  */
-ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier = false)
+stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier = false)
 {
     // Validate class index.
     if (!ClassValidateIndex(classindex))
@@ -568,7 +588,7 @@ ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier = fal
  * @param value             New value to set.
  * @return                  True on success, false otherwise.
  */
-ClassModifyString(classindex, attributeflag, const String:value[])
+stock ClassModifyString(classindex, attributeflag, const String:value[])
 {
     // Validate class index.
     if (!ClassValidateIndex(classindex))

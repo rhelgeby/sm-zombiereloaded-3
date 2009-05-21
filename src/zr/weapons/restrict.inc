@@ -58,8 +58,8 @@ RestrictInit()
 RestrictOnCommandsCreate()
 {
     // Create weapon admin commands.
-    RegAdminCmd("zr_restrict", RestrictRestrictCommand, ADMFLAG_GENERIC, "zr_restrict <weapon> - Restrict a weapon.");
-    RegAdminCmd("zr_unrestrict", RestrictUnrestrictCommand, ADMFLAG_GENERIC, "zr_unrestrict <weapon> - Unrestrict a weapon.");
+    RegAdminCmd("zr_restrict", RestrictRestrictCommand, ADMFLAG_GENERIC, "Restrict a weapon. Usage: zr_restrict <weapon>");
+    RegAdminCmd("zr_unrestrict", RestrictUnrestrictCommand, ADMFLAG_GENERIC, "Unrestrict a weapon. Usage: zr_unrestrict <weapon>");
 }
 
 /**
