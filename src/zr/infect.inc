@@ -225,6 +225,38 @@ InfectOnClientSpawn(client)
     }
 }
 
+/**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ * @param attacker  The attacker index.
+ */
+InfectOnClientDeath(client, attacker)
+{
+    // If attacker isn't valid, then stop.
+    if (!ZRIsValidClient(attacker))
+    {
+        return;
+    }
+    
+    // If attacker isn't a human, then stop.
+    if (!InfectIsClientHuman(attacker))
+    {
+        return;
+    }
+    
+    // If client isn't a zombie, then stop.
+    if (!InfectIsClientInfected(client))
+    {
+        return;
+    }
+    
+    // Add kill bonus to attacker's score.
+    new bonus = ClassGetKillBonus(index);
+    new score = ToolsClientScore(attacker, true, false);
+    ToolsClientScore(attacker, true, true, score + bonus);
+}
+
 /** Client has been hurt.
  *
  * @param client        The client index.

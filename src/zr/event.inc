@@ -241,29 +241,15 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-
-    // Extinguish any flames to stop burning sounds.
-    ExtinguishEntity(index);
     
-    // If the attacker is valid, then continue.
-    if (ZRIsClientValid(attacker))
-    {
-        // If the client is a zombie, then continue.
-        if (InfectIsClientInfected(index))
-        {
-            // Add kill bonus to attacker's score.
-            new bonus = ClassGetKillBonus(attacker);
-            new score = ToolsClientScore(index, true, false);
-            ToolsClientScore(index, true, true, score + bonus);
-        }
-    }
-        
     // Forward event to modules.
     ClassOnClientDeath(index);
     RoundEndOnClientDeath();
+    InfectOnClientDeath();
     SEffectsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
     RespawnOnClientDeath(index, attacker, weapon);
+    NapalmOnClientDeath(index);
     ZSpawnOnClientDeath(index);
     ZTeleOnClientDeath(index);
     ZHPOnClientDeath(index);
