@@ -245,7 +245,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     // Forward event to modules.
     ClassOnClientDeath(index);
     RoundEndOnClientDeath();
-    InfectOnClientDeath();
+    InfectOnClientDeath(index, attacker);
     SEffectsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
     RespawnOnClientDeath(index, attacker, weapon);

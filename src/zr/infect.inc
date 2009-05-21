@@ -234,7 +234,7 @@ InfectOnClientSpawn(client)
 InfectOnClientDeath(client, attacker)
 {
     // If attacker isn't valid, then stop.
-    if (!ZRIsValidClient(attacker))
+    if (!ZRIsClientValid(attacker))
     {
         return;
     }
@@ -252,7 +252,7 @@ InfectOnClientDeath(client, attacker)
     }
     
     // Add kill bonus to attacker's score.
-    new bonus = ClassGetKillBonus(index);
+    new bonus = ClassGetKillBonus(client);
     new score = ToolsClientScore(attacker, true, false);
     ToolsClientScore(attacker, true, true, score + bonus);
 }
