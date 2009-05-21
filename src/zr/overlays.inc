@@ -130,6 +130,17 @@ public OverlaysQueryClientDXLevel(QueryCookie:cookie, client, ConVarQueryResult:
 }
 
 /**
+ * Client is spawning into the game.
+ * 
+ * @param client    The client index.
+ */
+OverlaysOnClientSpawn(client)
+{
+    // Update overlay.
+    OverlaysClientUpdateOverlay(client);
+}
+
+/**
  * The round is starting.
  */
 OverlaysOnRoundStart()

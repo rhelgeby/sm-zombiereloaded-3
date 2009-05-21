@@ -153,32 +153,10 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
-    // Reset FOV and overlay.
-    ToolsSetClientDefaultFOV(index, 90);
-    ClientCommand(index, "r_screenoverlay \"\"");
-    
-    // Check if client is on a team.
-    if (ZRIsClientOnTeam(index))
-    {
-        // Turn off nightvision.
-        ToolsClientNightVision(index, false, false);
-        
-        // Take nightvision away.
-        ToolsClientNightVision(index, false);
-        
-        if (g_bZombieSpawned)
-        {
-            if (ZRIsClientOnTeam(index, CS_TEAM_T))
-            {
-                CS_SwitchTeam(index, CS_TEAM_CT);
-                CS_RespawnPlayer(index);
-            }
-        }
-    }
-    
     // Forward event to modules.
-    InfectOnClientSpawn(index);
-    ClassOnClientSpawn(index);      // Module event depends on infect module.
+    InfectOnClientSpawn(index);     // Multiple modules depend on this to finish first.
+    OverlaysOnClientSpawn(index);
+    ClassOnClientSpawn(index);
     RestrictOnClientSpawn(index);
     SEffectsOnClientSpawn(index);
     AccountOnClientSpawn(index);
