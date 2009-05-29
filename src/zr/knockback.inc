@@ -70,14 +70,22 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
         TR_GetEndPosition(clientloc);
     }
     
-    // Retrieve weapon knockback boost.
-    new Float:boostWeapon = WeaponGetWeaponKnockback(weapon);
+    new weaponindex = WeaponsNameToIndex(weapon);
+    if (weaponindex != -1)
+    {
+        // Apply weapon knockback multiplier.
+        knockback *= WeaponsGetKnockback(weaponindex);
+    }
     
-    // Retrieve hitgroup knockback boost.
-    new Float:boostHitgroup = HitgroupsGetHitgroupKnockback(hitgroup);
+    new hitgroupindex = HitgroupToIndex(hitgroup);
+    if (hitgroupindex != -1)
+    {
+        // Apply hitgroup knockback multiplier.
+        knockback *= HitgroupsGetKnockback(hitgroupindex);
+    }
     
-    // Apply all knockback multipliers.
-    knockback *= float(dmg_health) * boostWeapon * boostHitgroup;
+    // Apply damage knockback multiplier.
+    knockback *= float(dmg_health);
     
     // Apply knockback.
     KnockbackSetVelocity(client, attackerloc, clientloc, knockback);

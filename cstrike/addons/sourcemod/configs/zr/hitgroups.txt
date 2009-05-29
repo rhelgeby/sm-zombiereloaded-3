@@ -4,7 +4,7 @@
 //
 // "hitgroup index" // Index of the hitgroup (listed below)
 // {
-//	"name"			"name of hitgroup" // Redundant as of now, used for readability.
+//	"index"			"name of hitgroup" // Redundant as of now, used for readability.
 //	"knockback"		"1.0" (default) // The knockback multiplier for the hitgroup.
 //	"damage"		"yes" (default // Toggle damage on and off for this hitgroup.
 // }
@@ -13,68 +13,130 @@
 //
 // A missing config setting will be assumed to be its default value (documented above).
 
+// ============================================================================
+//
+//                              ZOMBIE:RELOADED
+//                          Hitgroup configurations
+//
+// Check the hitgroup configuration section in the manual for detailed info.
+//
+// ============================================================================
+//
+// SHORT DESCRIPTIONS
+//
+// Attribute:               Values:     Description:
+// ----------------------------------------------------------------------------
+// index                    number      The hitgroup index 
+// damage                   yes/no      Allow damage to be done on this hitgroup for zombies.
+// knockback                decimal     The knockback multiplier for this hitgroup.
+
 "hitgroups" // Counter-Strike: Source hitgroups
 {
-	"0"
+	"Generic"
 	{
-		"name"		"Generic"
-		"knockback"	"1.0"
+		// General
+		"index"		"0"
+
+		// Damage
 		"damage"	"yes"
+
+		// Knockback
+		"knockback"	"1.0"
 	}
 
-	"1"
+	"Head"
 	{
-		"name"		"Head"
+		// General
+		"index"		"1"
+
+		// Damage
+		"damage"	"yes"
+
+		// Knockback
 		"knockback"	"2.0"
-		"damage"	"yes"
 	}
 
-	"2"
+	"Chest"
 	{
-		"name"		"Chest"
+		// General
+		"index"		"2"
+
+		// Damage
+		"damage"	"yes"
+
+		// Knockback
 		"knockback"	"1.3"
-		"damage"	"yes"
 	}
 
-	"3"
+	"Stomach"
 	{
-		"name"		"Stomach"
+		// General
+		"index"		"3"
+
+		// Damage
+		"damage"	"yes"
+
+		// Knockback
 		"knockback"	"1.2"
-		"damage"	"yes"
 	}
 
-	"4"
+	"Left Arm"
 	{
-		"name"		"Left Arm"
+		// General
+		"index"		"4"
+
+		// Damage
+		"damage"	"yes"
+
+		// Knockback
 		"knockback"	"1.0"
-		"damage"	"yes"
 	}
 
-	"5"
+	"Right Arm"
 	{
-		"name"		"Right Arm"
+		// General
+		"index"		"5"
+
+		// Damage
+		"damage"	"yes"
+
+		// Knockback
 		"knockback"	"1.0"
-		"damage"	"yes"
 	}
 
-	"6"
+	"Left Leg"
 	{
-		"name"		"Left Leg"
+		// General
+		"index"		"6"
+
+		// Damage
+		"damage"	"yes"
+
+		// Knockback
 		"knockback"	"0.9"
-		"damage"	"yes"
 	}
 
-	"7"
+	"Right Leg"
 	{
-		"name"		"Right Leg"
+		// General
+		"index"		"7"
+
+		// Damage
+		"damage"	"yes"
+
+		// Knockback
 		"knockback"	"0.9"
-		"damage"	"yes"
 	}
 
-	"10"
+	"Gear"
 	{
-		"name"		"Gear"
-		"knockback"	"1.0"
+		// General
+		"index"		"8"
+
+		// Damage
 		"damage"	"yes"
+
+		// Knockback
+		"knockback"	"1.0"
 	}
 }

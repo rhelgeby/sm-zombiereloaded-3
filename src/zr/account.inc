@@ -16,6 +16,24 @@
 #define ACCOUNT_CASH_MAX 16000
 
 /**
+ * Variable to store account offset value.
+ */
+new g_iToolsAccount;
+
+/**
+ * Find account-specific offsets here.
+ */
+AccountOnOffsetsFound()
+{
+    // If offset "m_iAccount" can't be found, then stop the plugin.
+    g_iToolsAccount = FindSendPropInfo("CCSPlayer", "m_iAccount");
+    if (g_iToolsAccount == -1)
+    {
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Account", "Offsets", "Offset \"CCSPlayer::m_iAccount\" was not found.");
+    }
+}
+
+/**
  * Client is spawning into the game.
  * 
  * @param client    The client index.

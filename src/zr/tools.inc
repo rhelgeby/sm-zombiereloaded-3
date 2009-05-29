@@ -18,11 +18,8 @@ new g_iToolsBaseVelocity;
 new g_iToolsLMV;
 new g_iToolsHasNightVision;
 new g_iToolsNightVisionOn;
-new g_iToolsCollisionGroup;
-new g_iToolsAccount;
 new g_iToolsDefaultFOV;
-new g_iToolsInBuyZone;
-new g_iToolsActiveWeapon;
+
 /**
  * @endsection
  */
@@ -93,20 +90,6 @@ ToolsFindOffsets()
         LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_bNightVisionOn\" was not found.");
     }
     
-    // If offset "m_CollisionGroup" can't be found, then stop the plugin.
-    g_iToolsCollisionGroup = FindSendPropInfo("CBaseEntity", "m_CollisionGroup");
-    if (g_iToolsCollisionGroup == -1)
-    {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBaseEntity::m_CollisionGroup\" was not found.");
-    }
-    
-    // If offset "m_iAccount" can't be found, then stop the plugin.
-    g_iToolsAccount = FindSendPropInfo("CCSPlayer", "m_iAccount");
-    if (g_iToolsAccount == -1)
-    {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_iAccount\" was not found.");
-    }
-    
     // If offset "m_iDefaultFOV" can't be found, then stop the plugin.
     g_iToolsDefaultFOV = FindSendPropInfo("CBasePlayer", "m_iDefaultFOV");
     if (g_iToolsDefaultFOV == -1)
@@ -114,19 +97,11 @@ ToolsFindOffsets()
         LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBasePlayer::m_iDefaultFOV\" was not found.");
     }
     
-    // If offset "m_bInBuyZone" can't be found, then stop the plugin.
-    g_iToolsInBuyZone = FindSendPropInfo("CCSPlayer", "m_bInBuyZone");
-    if (g_iToolsInBuyZone == -1)
-    {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_bInBuyZone\" was not found.");
-    }
-    
-    // If offset "m_hActiveWeapon" can't be found, then stop the plugin.
-    g_iToolsActiveWeapon = FindSendPropInfo("CBasePlayer", "m_hActiveWeapon");
-    if (g_iToolsActiveWeapon == -1)
-    {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBasePlayer::m_hActiveWeapon\" was not found.");
-    }
+    // Forward event to modules.
+    WeaponsOnOffsetsFound();
+    AccountOnOffsetsFound();
+    AntiStickOnOffsetsFound();
+    ZMarketOnOffsetsFound();
 }
 
 /**

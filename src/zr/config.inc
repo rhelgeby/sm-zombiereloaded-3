@@ -22,23 +22,31 @@
 #define CONFIG_FILE_ALIAS_DOWNLOADS     "downloads"
 #define CONFIG_FILE_ALIAS_CLASSES       "classes"
 #define CONFIG_FILE_ALIAS_WEAPONS       "weapons"
-#define CONFIG_FILE_ALIAS_WEAPONGROUPS  "weapongroups"
 #define CONFIG_FILE_ALIAS_HITGROUPS     "hitgroups"
 /**
  * @endsection
  */
 
 /**
+ * List of config formats used by the plugin.
+ */
+enum ConfigStructure
+{
+    Structure_List,     /** Config is structured as a simple list of strings. */
+    Structure_Keyvalue, /** Config is a keyvalue structure */
+}
+
+/**
  * List of config files used by the plugin.
  */
 enum ConfigFile
 {
-    ConfigInvalid = -1, /** Invalid config file. */
-    ConfigModels,       /** <sourcemod root>/configs/zr/models.txt (default) */
-    ConfigDownloads,    /** <sourcemod root>/configs/zr/downloads.txt (default) */
-    ConfigClasses,      /** <sourcemod root>/configs/zr/playerclasses.txt (default) */
-    ConfigWeapons,      /** <sourcemod root>/configs/zr/weapons/weapons.txt/weapongroups.txt (default) */
-    ConfigHitgroups,    /** <sourcemod root>/configs/zr/hitgroups.txt (default) */
+    File_Invalid = -1,  /** Invalid config file. */
+    File_Models,        /** <sourcemod root>/configs/zr/models.txt (default) */
+    File_Downloads,     /** <sourcemod root>/configs/zr/downloads.txt (default) */
+    File_Classes,       /** <sourcemod root>/configs/zr/playerclasses.txt (default) */
+    File_Weapons,       /** <sourcemod root>/configs/zr/weapons.txt (default) */
+    File_Hitgroups,     /** <sourcemod root>/configs/zr/hitgroups.txt (default) */
 }
 
 /**
@@ -46,11 +54,12 @@ enum ConfigFile
  */
 enum ConfigData
 {
-    bool:ConfigLoaded,                      /** True if config is loaded, false if not. */
-    Function:ConfigReloadFunc,              /** Function to call to reload config. */
-    Handle:ConfigHandle,                    /** Handle of the config file. */
-    String:ConfigPath[PLATFORM_MAX_PATH],   /** Full path to config file. */
-    String:ConfigAlias[CONFIG_MAX_LENGTH],  /** Config file alias, used for client interaction. */
+    bool:               Data_Loaded,                    /** True if config is loaded, false if not. */
+    ConfigStructure:    Data_Structure,                 /** Format of the config */
+    Function:           Data_ReloadFunc,                /** Function to call to reload config. */
+    Handle:             Data_Handle,                    /** Handle of the config file. */
+    String:             Data_Path[PLATFORM_MAX_PATH],   /** Full path to config file. */
+    String:             Data_Alias[CONFIG_MAX_LENGTH],  /** Config file alias, used for client interaction. */
 }
 
 /**
@@ -61,23 +70,13 @@ new g_ConfigData[ConfigFile][ConfigData];
 /**
  * Actions to use when working on key/values.
  */
-enum ConfigKeyvalueAction
+enum ConfigKvAction
 {
-    ConfigKVCreate, /** Create a key. */
-    ConfigKVDelete, /** Delete a key. */
-    ConfigKVSet,    /** Modify setting of a key. */
-    ConfigKVGet,    /** Get setting of a key. */
+    KvAction_Create, /** Create a key. */
+    KvAction_KVDelete, /** Delete a key. */
+    KvAction_KVSet,    /** Modify setting of a key. */
+    KvAction_KVGet,    /** Get setting of a key. */
 }
-
-/**
- * @section Global data handle initializations.
- */
-new Handle:arrayModelsList = INVALID_HANDLE;
-new Handle:arrayDownloadsList = INVALID_HANDLE;
-new Handle:kvClassData = INVALID_HANDLE;
-new Handle:kvWeapons = INVALID_HANDLE;
-new Handle:kvWeaponGroups = INVALID_HANDLE;
-new Handle:kvHitgroups = INVALID_HANDLE;
 
 /**
  * Create commands related to config here.
@@ -157,20 +156,20 @@ ConfigOnModulesLoaded()
 
 /**
  * Used by modules that rely on configs to register their config file info.
+ * (Don't forget to set 'loaded' to 'true' (ConfigSetConfigLoaded) in config load function)
  *
  * @param file      Config file entry to register.
- * @param loaded    True if the config should be loaded, false if not.
- * @param path      (Optional) Full path to config file.
- * @param alias     (Optional) Config file alias, used for client interaction.
+ * @param alias     Config file alias, used for client interaction.
  */
-stock ConfigRegisterConfig(ConfigFile:file, bool:loaded, Function:reloadfunc, Handle:filehandle = INVALID_HANDLE, const String:path[] = "", const String:alias[] = "")
+stock ConfigRegisterConfig(ConfigFile:file, ConfigStructure:structure, const String:alias[] = "")
 {
     // Copy file info to data container.
-    g_ConfigData[file][ConfigLoaded] = loaded;
-    g_ConfigData[file][ConfigHandle] = filehandle;
-    g_ConfigData[file][ConfigReloadFunc] = reloadfunc;
-    strcopy(g_ConfigData[file][ConfigPath], PLATFORM_MAX_PATH, path);
-    strcopy(g_ConfigData[file][ConfigAlias], CONFIG_MAX_LENGTH, alias);
+    g_ConfigData[file][Data_Loaded] = false;
+    g_ConfigData[file][Data_Structure] = structure;
+    g_ConfigData[file][Data_Handle] = INVALID_HANDLE;
+    g_ConfigData[file][Data_ReloadFunc] = INVALID_FUNCTION;
+    strcopy(g_ConfigData[file][Data_Path], PLATFORM_MAX_PATH, "");
+    strcopy(g_ConfigData[file][Data_Alias], CONFIG_MAX_LENGTH, alias);
 }
 
 /**
@@ -182,7 +181,19 @@ stock ConfigRegisterConfig(ConfigFile:file, bool:loaded, Function:reloadfunc, Ha
 stock ConfigSetConfigLoaded(ConfigFile:config, bool:loaded)
 {
     // Set load state.
-    g_ConfigData[config][ConfigLoaded] = loaded;
+    g_ConfigData[config][Data_Loaded] = loaded;
+}
+
+/**
+ * Set the structure type of a config file entry.
+ * 
+ * @param config    Config file to set structure type of.
+ * @param structure Structure to set as.
+ */
+stock ConfigSetConfigStructure(ConfigFile:config, ConfigStructure:structure)
+{
+    // Set load state.
+    g_ConfigData[config][Data_Structure] = structure;
 }
 
 /**
@@ -194,7 +205,7 @@ stock ConfigSetConfigLoaded(ConfigFile:config, bool:loaded)
 stock ConfigSetConfigReloadFunc(ConfigFile:config, Function:reloadfunc)
 {
     // Set reload function.
-    g_ConfigData[config][ConfigReloadFunc] = reloadfunc;
+    g_ConfigData[config][Data_ReloadFunc] = reloadfunc;
 }
 
 /**
@@ -206,7 +217,7 @@ stock ConfigSetConfigReloadFunc(ConfigFile:config, Function:reloadfunc)
 stock ConfigSetConfigHandle(ConfigFile:config, Handle:file)
 {
     // Set file handle.
-    g_ConfigData[config][ConfigHandle] = file;
+    g_ConfigData[config][Data_Handle] = file;
 }
 
 /**
@@ -218,7 +229,7 @@ stock ConfigSetConfigHandle(ConfigFile:config, Handle:file)
 stock ConfigSetConfigPath(ConfigFile:config, const String:path[])
 {
     // Set config file path.
-    strcopy(g_ConfigData[config][ConfigPath], PLATFORM_MAX_PATH, path);
+    strcopy(g_ConfigData[config][Data_Path], PLATFORM_MAX_PATH, path);
 }
 
 /**
@@ -230,7 +241,7 @@ stock ConfigSetConfigPath(ConfigFile:config, const String:path[])
 stock ConfigSetConfigAlias(ConfigFile:config, const String:alias[])
 {
     // Set config alias.
-    strcopy(g_ConfigData[config][ConfigAlias], CONFIG_MAX_LENGTH, alias);
+    strcopy(g_ConfigData[config][Data_Alias], CONFIG_MAX_LENGTH, alias);
 }
 
 /**
@@ -242,7 +253,19 @@ stock ConfigSetConfigAlias(ConfigFile:config, const String:alias[])
 stock bool:ConfigIsConfigLoaded(ConfigFile:config)
 {
     // Return load status.
-    return g_ConfigData[config][ConfigLoaded];
+    return g_ConfigData[config][Data_Loaded];
+}
+
+/**
+ * Returns config's structure type.
+ * 
+ * @param config    Config file to get structure type of.
+ * @return          Config structure type.
+ */
+stock ConfigStructure:ConfigGetConfigStructure(ConfigFile:config)
+{
+    // Return load status.
+    return g_ConfigData[config][Data_Structure];
 }
 
 /**
@@ -254,7 +277,7 @@ stock bool:ConfigIsConfigLoaded(ConfigFile:config)
 stock Function:ConfigGetConfigReloadFunc(ConfigFile:config)
 {
     // Return load status.
-    return g_ConfigData[config][ConfigReloadFunc];
+    return g_ConfigData[config][Data_ReloadFunc];
 }
 
 /**
@@ -266,7 +289,7 @@ stock Function:ConfigGetConfigReloadFunc(ConfigFile:config)
 stock Handle:ConfigGetConfigHandle(ConfigFile:config)
 {
     // Return load status.
-    return g_ConfigData[config][ConfigHandle];
+    return g_ConfigData[config][Data_Handle];
 }
 
 /**
@@ -277,7 +300,7 @@ stock Handle:ConfigGetConfigHandle(ConfigFile:config)
 stock ConfigGetConfigPath(ConfigFile:config, String:path[], maxlen)
 {
     // Copy path to return string.
-    strcopy(path, maxlen, g_ConfigData[config][ConfigPath]);
+    strcopy(path, maxlen, g_ConfigData[config][Data_Path]);
 }
 
 /**
@@ -288,7 +311,133 @@ stock ConfigGetConfigPath(ConfigFile:config, String:path[], maxlen)
 stock ConfigGetConfigAlias(ConfigFile:config, String:alias[], maxlen)
 {
     // Copy alias to return string.
-    strcopy(alias, maxlen, g_ConfigData[config][ConfigAlias]);
+    strcopy(alias, maxlen, g_ConfigData[config][Data_Alias]);
+}
+
+/**
+ * Loads a config file and sets up a nested array type data storage.
+ * 
+ * @param config        The config file to load.
+ * @param arrayConfig   Handle of the main array containing file data.
+ * @return              True if file was loaded successfuly, false otherwise.
+ */
+stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
+{
+    // Get config's structure.
+    new ConfigStructure:structure = ConfigGetConfigStructure(config);
+    
+    // Get config's alias
+    decl String:configalias[CONFIG_MAX_LENGTH];
+    ConfigGetConfigAlias(config, configalias, sizeof(configalias));
+    
+    // Get config's file path.
+    decl String:configpath[PLATFORM_MAX_PATH];
+    ConfigGetConfigPath(config, configpath, sizeof(configpath));
+    
+    // If handle is still open, then close it before creating a new one.
+    if (arrayConfig != INVALID_HANDLE)
+    {
+        CloseHandle(arrayConfig);
+    }
+    
+    // Create array in handle.
+    arrayConfig = CreateArray(CONFIG_MAX_LENGTH);
+    
+    switch(structure)
+    {
+        case Structure_List:
+        {
+            // Open file.
+            new Handle:hFile;
+            new success = ConfigOpenConfigFile(config, hFile);
+            
+            // If config file failed to open, then stop.
+            if (!success)
+            {
+                return false;
+            }
+            
+            // Clear out array.
+            ClearArray(arrayConfig);
+            
+            decl String:line[PLATFORM_MAX_PATH];
+            
+            while(!IsEndOfFile(hFile))
+            {
+                // Get current line text.
+                ReadFileLine(hFile, line, sizeof(line));
+                
+                // If line contains a ";", then stop.
+                if (StrContains(line, ";") > -1)
+                {
+                    continue;
+                }
+                
+                // Cut out comments at the end of a line.
+                if (StrContains(line, "//") > -1)
+                {
+                    SplitString(line, "//", line, sizeof(line));
+                }
+                
+                // Trim off whitespace.
+                TrimString(line);
+                
+                // If line is empty, then stop.
+                if (!line[0])
+                {
+                    continue;
+                }
+                
+                // Push line into array.
+                PushArrayString(arrayConfig, line);
+            }
+            
+            // We're done this file, so now we can destory it from memory. 
+            CloseHandle(hFile);
+            
+            return true;
+        }
+        case Structure_Keyvalue:
+        {
+            // Open file.
+            new Handle:hKeyvalue;
+            new success = ConfigOpenConfigFile(config, hKeyvalue);
+            
+            // If config file failed to open, then stop.
+            if (!success)
+            {
+                return false;
+            }
+            
+            // Destroy all old data.
+            ConfigClearKvArray(arrayConfig);
+            
+            if (KvGotoFirstSubKey(hKeyvalue))
+            {
+                do
+                {
+                    // Create new array to store information for config entry.
+                    new Handle:arrayConfigEntry = CreateArray(CONFIG_MAX_LENGTH);
+                    
+                    // Push the key name into the config entry's array.
+                    decl String:keyname[CONFIG_MAX_LENGTH];
+                    KvGetSectionName(hKeyvalue, keyname, sizeof(keyname));
+                    
+                    PushArrayString(arrayConfigEntry, keyname); // Index: 0
+                    
+                    // Store this handle in the main array.
+                    PushArrayCell(arrayConfig, arrayConfigEntry);
+                } while(KvGotoNextKey(hKeyvalue));
+            }
+            
+            // We're done this file for now, so now we can destory it from memory. 
+            CloseHandle(hKeyvalue);
+            
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 /**
@@ -297,7 +446,7 @@ stock ConfigGetConfigAlias(ConfigFile:config, String:alias[], maxlen)
  * @param config    The config file entry to reload.
  * @return          True if the config is loaded, false if not.
  */
-stock bool:ConfigReloadFile(ConfigFile:config)
+stock bool:ConfigReloadConfig(ConfigFile:config)
 {
     // If file isn't loaded, then stop.
     new bool:loaded = ConfigIsConfigLoaded(config);
@@ -309,6 +458,7 @@ stock bool:ConfigReloadFile(ConfigFile:config)
     // Call reload function
     new Function:reloadfunc = ConfigGetConfigReloadFunc(config);
     
+    // This should never be true unless someone has tampered with the code.
     if (reloadfunc == INVALID_FUNCTION)
     {
         // Get config alias.
@@ -323,10 +473,167 @@ stock bool:ConfigReloadFile(ConfigFile:config)
     
     // Call reload function.
     Call_StartFunction(GetMyHandle(), reloadfunc);
-    Call_PushCell(config);
     Call_Finish();
     
     return true;
+}
+
+/**
+ * Opens a config file with appropriate method.
+ * 
+ * @param config    The config file.
+ * @param structure The structure of the config file.
+ * @param hConfig   The handle of the opened file.
+ */
+stock bool:ConfigOpenConfigFile(ConfigFile:config, &Handle:hConfig)
+{
+    // Get config's structure
+    new ConfigStructure:structure = ConfigGetConfigStructure(config);
+    
+    // Get config's file path.
+    decl String:configpath[PLATFORM_MAX_PATH];
+    ConfigGetConfigPath(config, configpath, sizeof(configpath));
+    
+    // Get config's alias
+    decl String:configalias[CONFIG_MAX_LENGTH];
+    ConfigGetConfigAlias(config, configalias, sizeof(configalias));
+    
+    switch(structure)
+    {
+        case Structure_List:
+        {
+            // Open file.
+            hConfig = OpenFile(configpath, "r");
+            
+            // If file couldn't be opened, then stop.
+            if (hConfig == INVALID_HANDLE)
+            {
+                return false;
+            }
+            
+            return true;
+        }
+        case Structure_Keyvalue:
+        {
+            hConfig = CreateKeyValues(configalias);
+            return FileToKeyValues(hConfig, configpath);
+        }
+    }
+    
+    return false;
+}
+
+/**
+ * Creates, deletes, sets, or gets any key/setting of any ZR config keyvalue file in memory.
+ * Only use when interacting with a command or manipulating single keys/values,
+ * using this function everywhere would be EXTREMELY inefficient.
+ * 
+ * @param config        Config file to modify.
+ * @param action        Action to perform on keyvalue tree. (see enum ConfigKeyvalueAction)
+ * @param keys          Array containing keys to traverse into.
+ * @param keysMax       The size of the 'keys' array.
+ * @param setting       (Optional) The name of the setting to modify.
+ * @param value         (Optional) The new value to set.
+ * @param maxlen        (Optional) The maxlength of the retrieved value.
+ * @return              True if the change was made successfully, false otherwise. 
+ */
+stock bool:ConfigKeyvalueTreeSetting(ConfigFile:config, ConfigKvAction:action = KvAction_Create, const String:keys[][], keysMax, const String:setting[] = "", String:value[] = "", maxlen = 0)
+{
+    // Get config file's structure.
+    new ConfigStructure:structure = ConfigGetConfigStructure(config);
+    
+    // If the config is any other structure beside keyvalue, then stop.
+    if (structure != Structure_Keyvalue)
+    {
+        return false;
+    }
+    
+    // Retrieve handle of the keyvalue tree.
+    new Handle:hConfig;
+    new bool:success = ConfigOpenConfigFile(config, hConfig);
+    
+    // If the file couldn't be opened, then stop.
+    if (!success)
+    {
+        return false;
+    }
+    
+    // Rewind keyvalue tree.
+    KvRewind(hConfig);
+    
+    // x = keys index.
+    // Traverse into the keygroup, stop if it fails.
+    for (new x = 0; x < keysMax; x++)
+    {
+        // If key is empty, then break the loop.
+        if (!keys[x][0])
+        {
+            break;
+        }
+        
+        // Try to jump to next level in the transversal stack, create key if specified.
+        new bool:exists = KvJumpToKey(hConfig, keys[x], (action == KvAction_Create));
+        
+        // If exists is false, then stop.
+        if (!exists)
+        {
+            // Key doesn't exist.
+            return false;
+        }
+    }
+    
+    switch(action)
+    {
+        case KvAction_Create:
+        {
+            if (!setting[0] || !value[0])
+            {
+                // We created the key already, so return true.
+                return true;
+            }
+            
+            // Set new value.
+            KvSetString(hConfig, setting, value);
+        }
+        case KvAction_Delete:
+        {
+            // Return deletion result.
+            return KvDeleteKey(hConfig, setting);
+        }
+        case KvAction_Set:
+        {
+            // Set new value.
+            KvSetString(hConfig, setting, value);
+        }
+        case KvAction_Get:
+        {
+            // Get current value.
+            KvGetString(hConfig, setting, value, maxlen);
+        }
+    }
+    
+    // We successfully set or got the value.
+    return true;
+}
+
+/**
+ * Destroy all array handles within an array, and clear main array.
+ * 
+ * @param arrayKv   The array converted from a keyvalue structure.
+ */
+ConfigClearKvArray(Handle:arrayKv)
+{
+    //  x = array index
+    new size = GetArraySize(arrayKv);
+    for (new x = 0; x < size; x++)
+    {
+        // Destroy nested arrays.
+        new Handle:arrayKvKey = GetArrayCell(arrayKv, x);
+        CloseHandle(arrayKvKey);
+    }
+    
+    // Now that all data within has been destroyed, we can clear the main array.
+    ClearArray(arrayKv);
 }
 
 /**
@@ -374,94 +681,11 @@ stock ConfigFile:ConfigAliasToConfigFile(const String:alias[])
     }
     
     // Invalid config file.
-    return ConfigInvalid;
+    return File_Invalid;
 }
 
 /**
- * Creates, deletes, sets, or gets any key/setting of any ZR config keyvalue file in memory.
- * Only use when interacting with a command or manipulating single keys/values,
- * using this function everywhere would be EXTREMELY inefficient.
- * 
- * @param config        Config index of config to modify. (see CONFIG_FILE_* defines)
- * @param action        Action to perform on keyvalue tree. (see enum ConfigKeyvalueAction)
- * @param keys          Array containing keys to traverse into.
- * @param keysMax       The size of the 'keys' array.
- * @param setting       (Optional) The name of the setting to modify.
- * @param value         (Optional) The new value to set.
- * @param maxlen        (Optional) The maxlength of the gotten value.
- * @return              True if the change was made successfully, false otherwise. 
- */
-stock bool:ConfigKeyvalueTreeSetting(config, ConfigKeyvalueAction:action = ConfigKVCreate, const String:keys[][], keysMax, const String:setting[] = "", String:value[] = "", maxlen = 0)
-{
-    // Retrieve handle of the keyvalue tree.
-    new Handle:hConfig = ConfigGetConfigHandle(config);
-    
-    // If handle is invalid, then stop.
-    if (hConfig == INVALID_HANDLE)
-    {
-        return false;
-    }
-    
-    // Rewind keyvalue tree.
-    KvRewind(hConfig);
-    
-    // x = keys index.
-    // Traverse into the keygroup, stop if it fails.
-    for (new x = 0; x < keysMax; x++)
-    {
-        // If key is empty, then break the loop.
-        if (!keys[x][0])
-        {
-            break;
-        }
-        
-        // Try to jump to next level in the transversal stack, create key if specified.
-        new bool:exists = KvJumpToKey(hConfig, keys[x], (action == Create));
-        
-        // If exists is false, then stop.
-        if (!exists)
-        {
-            // Key doesn't exist.
-            return false;
-        }
-    }
-    
-    switch(action)
-    {
-        case ConfigKVCreate:
-        {
-            if (!setting[0] || !value[0])
-            {
-                // We created the key already, so return true.
-                return true;
-            }
-            
-            // Set new value.
-            KvSetString(hConfig, setting, value);
-        }
-        case ConfigKVDelete:
-        {
-            // Return deletion result.
-            return KvDeleteKey(hConfig, setting);
-        }
-        case ConfigKVSet:
-        {
-            // Set new value.
-            KvSetString(hConfig, setting, value);
-        }
-        case ConfigKVGet:
-        {
-            // Get current value.
-            KvGetString(hConfig, setting, value, maxlen);
-        }
-    }
-    
-    // We successfully set or got the value.
-    return true;
-}
-
-/**
- * Command callback (zr_reloadconfig)
+ * Command callback (zr_config_reload)
  * Reloads a config file and forwards event to modules.
  * 
  * @param client    The client index.
@@ -472,7 +696,7 @@ public Action:ConfigReloadCommand(client, argc)
     // If not enough arguments given, then stop.
     if (argc < 1)
     {
-        TranslationReplyToCommand(client, "Config command reload syntax", CONFIG_FILE_ALIAS_MODELS, CONFIG_FILE_ALIAS_DOWNLOADS, CONFIG_FILE_ALIAS_CLASSES, CONFIG_FILE_ALIAS_WEAPONS, CONFIG_FILE_ALIAS_WEAPONGROUPS, CONFIG_FILE_ALIAS_HITGROUPS);
+        TranslationReplyToCommand(client, "Config command reload syntax", CONFIG_FILE_ALIAS_MODELS, CONFIG_FILE_ALIAS_DOWNLOADS, CONFIG_FILE_ALIAS_CLASSES, CONFIG_FILE_ALIAS_WEAPONS, CONFIG_FILE_ALIAS_HITGROUPS);
         return Plugin_Handled;
     }
     
@@ -482,14 +706,14 @@ public Action:ConfigReloadCommand(client, argc)
     
     // If alias is invalid, then stop.
     new ConfigFile:config = ConfigAliasToConfigFile(arg1);
-    if (config == ConfigInvalid)
+    if (config == File_Invalid)
     {
         TranslationReplyToCommand(client, "Config command reload invalid", arg1);
         return Plugin_Handled;
     }
     
     // Reload config file.
-    new bool:loaded = ConfigReloadFile(config);
+    new bool:loaded = ConfigReloadConfig(config);
     
     // Get config file path.
     decl String:path[PLATFORM_MAX_PATH];
@@ -506,7 +730,7 @@ public Action:ConfigReloadCommand(client, argc)
 }
 
 /**
- * Command callback (zr_reloadconfigall)
+ * Command callback (zr_config_reloadall)
  * Reloads all config files and forwards event to all modules.
  * 
  * @param client    The client index.
@@ -523,7 +747,7 @@ public Action:ConfigReloadAllCommand(client, argc)
     for (new x = 0; x < sizeof(g_ConfigData); x++)
     {
         // Reload config file.
-        new bool:successful = ConfigReloadFile(ConfigFile:x);
+        new bool:successful = ConfigReloadConfig(ConfigFile:x);
         
         // Get config's alias.
         ConfigGetConfigAlias(ConfigFile:x, configalias, sizeof(configalias));
@@ -540,70 +764,12 @@ public Action:ConfigReloadAllCommand(client, argc)
 }
 
 /**
- * Iterate through a file and store each line in an array.
- * 
- * @param path  Path to the file to iterate through.
- * @return      The handle of the array, don't forget to call CloseHandle
- *              on it when finished!
- */
-Handle:ConfigLinesToArray(const String:path[])
-{
-    new Handle:arrayLines = CreateArray(PLATFORM_MAX_PATH);
-    decl String:line[PLATFORM_MAX_PATH];
-    
-    // Open file.
-    new Handle:hFile = OpenFile(path, "r");
-    
-    // If file couldn't be opened, then stop.
-    if (hFile == INVALID_HANDLE)
-    {
-        return INVALID_HANDLE;
-    }
-    
-    while(!IsEndOfFile(hFile))
-    {
-        // Get current line text.
-        ReadFileLine(hFile, line, sizeof(line));
-        
-        // If line contains a ";", then stop.
-        if (StrContains(line, ";") > -1)
-        {
-            continue;
-        }
-        
-        // Cut out comments at the end of a line.
-        if (StrContains(line, "//") > -1)
-        {
-            SplitString(line, "//", line, sizeof(line));
-        }
-        
-        // Trim off whitespace.
-        TrimString(line);
-        
-        // If line is empty, then stop.
-        if (!line[0])
-        {
-            continue;
-        }
-        
-        // Push line into array.
-        PushArrayString(arrayLines, line);
-    }
-    
-    // Close file handle.
-    CloseHandle(hFile);
-    
-    // Return array handle.
-    return arrayLines;
-}
-
-/**
  * Converts string of "yes" or "no" to a boolean value.
  * 
  * @param option    "yes" or "no" string to be converted.
  * @return          True if string is "yes", false otherwise.
  */
-bool:ConfigSettingToBool(const String:option[])
+stock bool:ConfigSettingToBool(const String:option[])
 {
     // If option is equal to "yes," then return true.
     if (StrEqual(option, "yes", false))
@@ -620,9 +786,9 @@ bool:ConfigSettingToBool(const String:option[])
  * 
  * @param bOption   True/false value to be converted to "yes"/"no", respectively.
  * @param option    Destination string buffer to store "yes" or "no" in.
- * @param maxlen    Length of destination string buffer (can't be more than 4).
+ * @param maxlen    Length of destination string buffer (wont't be more than 4).
  */
-ConfigBoolToSetting(bool:bOption, String:option[], maxlen)
+stock ConfigBoolToSetting(bool:bOption, String:option[], maxlen)
 {
     // If option is true, then copy "yes" to return string.
     if (bOption)
@@ -634,4 +800,12 @@ ConfigBoolToSetting(bool:bOption, String:option[], maxlen)
     {
         strcopy(option, maxlen, "no");
     }
+}
+
+stock bool:ConfigKvGetStringBool(Handle:kv, const String:key[], const String:defaultvalue[] = "yes")
+{
+    decl String:value[CONFIG_MAX_LENGTH];
+    KvGetString(kv, key, value, sizeof(value), defaultvalue);
+    
+    return ConfigSettingToBool(value);
 }

@@ -54,7 +54,7 @@ ClassOverlayOnCommandsHook()
     // Explode string into array indexes.
     new cmdcount = ExplodeString(togglecmds, ", ", arrayCmds, CLASSOVERLAY_TOGGLE_MAX_CMDS, CLASSOVERLAY_TOGGLE_MAX_LENGTH);
     
-    // x = array index.
+    // x = Array index.
     // arrayCmds[x] = suicide command.
     for (new x = 0; x <= cmdcount - 1; x++)
     {

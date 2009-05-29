@@ -16,9 +16,6 @@
 #include <cstrike>
 #include <zrtools>
 
-#undef REQUIRE_PLUGIN
-#include <market>
-
 #define VERSION "3.0-dev"
 
 // Core includes.
@@ -103,35 +100,7 @@ public OnPluginStart()
     WeaponsInit();
     SayHooksInit();
     EventInit();
-    MarketInit();
-}
-
-/**
- * Library is being removed.
- * 
- * @param name  The name of the library.
- */
-public OnLibraryRemoved(const String:name[])
-{
-    // If market is being removed, then set variable to false.
-    if (StrEqual(name, "market", false))
-    {
-        g_bMarket = false;
-    }
-}
-
-/**
- * Library is being added.
- * 
- * @param name  The name of the library.
- */
-public OnLibraryAdded(const String:name[])
-{
-    // If market is being added, then set variable to true.
-    if (StrEqual(name, "market", false))
-    {
-        g_bMarket = true;
-    }
+    ZMarketInit();
 }
 
 /**
@@ -162,7 +131,7 @@ public OnMapEnd()
  */
 public OnConfigsExecuted()
 {
-    // Forward event to modules.
+    // Forward event to modules. (OnConfigsExecuted)
     ConfigLoad();
     ModelsLoad();
     DownloadsLoad();
@@ -173,6 +142,7 @@ public OnConfigsExecuted()
     SEffectsLoad();
     ClassLoad();
     
+    // Forward event to modules. (OnModulesLoaded)
     ConfigOnModulesLoaded();
     ClassOnModulesLoaded();
 }

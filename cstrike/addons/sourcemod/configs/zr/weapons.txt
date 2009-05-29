@@ -1,0 +1,713 @@
+// ============================================================================
+//
+//                              ZOMBIE:RELOADED
+//                           Weapon configurations
+//
+// Check the weapon configuration section in the manual for detailed info.
+//
+// ============================================================================
+//
+// SHORT DESCRIPTIONS
+//
+// Attribute:               Values:     Description:
+// ----------------------------------------------------------------------------
+// weapontype               text        The type of weapon it is. (List types, separate by ", "
+// restrictdefault          yes/no      The default restricted status of the weapon on map start.
+// toggleable               yes/no      Enable weapon to have restrictions toggled mid-game.
+// ammotype                 text        Ammo entity that belongs to weapons. (Don't change this)
+// ammoprice                number      Price of ammo for this weapon.
+// knockback                decimal     The knockback multiplier for the weapon. ['0.5' = half knockback | 2.0 = double]
+// zmarketprice             number      The price of the weapon in ZMarket. (Defaulted to CS:S buymenu price)
+
+"weapons" // Counter-Strike: Source weapons
+{
+	"Glock"
+	{
+		// General
+
+		"weapontype"		"All, Pistol"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_9mm"
+		"ammoprice"		"100"
+
+		// Knockback (module)
+
+		"knockback"		"0.8"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"400"
+	}
+
+	"USP"
+	{
+		// General
+
+		"weapontype"		"All, Pistol"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_45acp"
+		"ammoprice"		"100"
+
+		// Knockback (module)
+
+		"knockback"		"0.8"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"500"
+	}
+
+	"P228"
+	{
+		// General
+
+		"weapontype"		"All, Pistol"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_357sig"
+		"ammoprice"		"100"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"600"
+
+	}
+
+	"Deagle"
+	{
+		// General
+
+		"weapontype"		"All, Pistol"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_50ae"
+		"ammoprice"		"100"
+
+		// Knockback (module)
+
+		"knockback"		"1.2"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"650"
+
+	}
+
+	"Elite"
+	{
+		// General
+
+		"weapontype"		"All, Pistol"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_9mm"
+		"ammoprice"		"100"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"800"
+
+	}
+
+	"Fiveseven"
+	{
+		// General
+
+		"weapontype"		"All, Pistol"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_57mm"
+		"ammoprice"		"100"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"750"
+
+	}
+
+	"M3"
+	{
+		// General
+
+		"weapontype"		"All, Shotgun"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_buckshot"
+		"ammoprice"		"300"
+
+		// Knockback (module)
+
+		"knockback"		"0.9" // Remember that there are 8 pellets in 1 shot.
+
+		// ZMarket (module)
+
+		"zmarketprice"		"1700"
+
+	}
+
+	"XM1014"
+	{
+		// General
+
+		"weapontype"		"All, Shotgun"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_buckshot"
+		"ammoprice"		"300"
+
+		// Knockback (module)
+
+		"knockback"		"0.8" // See above comment.
+
+		// ZMarket (module)
+
+		"zmarketprice"		"3000"
+
+	}
+
+	"Mac10"
+	{
+		// General
+
+		"weapontype"		"All, SMG"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_45acp"
+		"ammoprice"		"300"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"1400"
+	}
+
+	"TMP"
+	{
+		// General
+
+		"weapontype"		"All, SMG"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_9mm"
+		"ammoprice"		"300"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"1250"
+	}
+
+	"MP5Navy"
+	{
+		// General
+
+		"weapontype"		"All, SMG"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_9mm"
+		"ammoprice"		"300"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"1500"
+	}
+
+	"UMP45"
+	{
+		// General
+
+		"weapontype"		"All, SMG"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_45acp"
+		"ammoprice"		"300"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"1700"
+	}
+
+	"P90"
+	{
+		// General
+
+		"weapontype"		"All, SMG"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_57mm"
+		"ammoprice"		"300"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"2350"
+	}
+
+	"Galil"
+	{
+		// General
+
+		"weapontype"		"All, Rifle"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_556mm"
+		"ammoprice"		"500"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"2000"
+	}
+
+	"Famas"
+	{
+		// General
+
+		"weapontype"		"All, Rifle"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_556mm"
+		"ammoprice"		"500"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"2250"
+	}
+
+	"AK47"
+	{
+		// General
+
+		"weapontype"		"All, Rifle"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_762mm"
+		"ammoprice"		"500"
+
+		// Knockback (module)
+
+		"knockback"		"1.2"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"2500"
+	}
+
+	"M4A1"
+	{
+		// General
+
+		"weapontype"		"All, Rifle"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_556mm"
+		"ammoprice"		"500"
+
+		// Knockback (module)
+
+		"knockback"		"1.1"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"3100"
+	}
+
+	"SG552"
+	{
+		// General
+
+		"weapontype"		"All, Rifle"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_556mm"
+		"ammoprice"		"500"
+
+		// Knockback (module)
+
+		"knockback"		"1.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"3500"
+	}
+
+	"AUG"
+	{
+		// General
+
+		"weapontype"		"All, Rifle"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_762mm"
+		"ammoprice"		"500"
+
+		// Knockback (module)
+
+		"knockback"		"1.1"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"3500"
+	}
+
+	"Scout"
+	{
+		// General
+
+		"weapontype"		"All, Sniper"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_762mm"
+		"ammoprice"		"750"
+
+		// Knockback (module)
+
+		"knockback"		"1.5"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"2750"
+	}
+
+	"SG550"
+	{
+		// General
+
+		"weapontype"		"All, Sniper"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_556mm"
+		"ammoprice"		"1000"
+
+		// Knockback (module)
+
+		"knockback"		"1.3"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"4200"
+	}
+
+	"G3SG1"
+	{
+		// General
+
+		"weapontype"		"All, Sniper"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_762mm"
+		"ammoprice"		"1000"
+
+		// Knockback (module)
+
+		"knockback"		"1.3"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"5000"
+	}
+
+	"AWP"
+	{
+		// General
+
+		"weapontype"		"All, Sniper"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_338mag"
+		"ammoprice"		"1000"
+
+		// Knockback (module)
+
+		"knockback"		"1.8"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"4750"
+	}
+
+	"M249"
+	{
+		// General
+
+		"weapontype"		"All, Machine Gun"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_556mm_box"
+		"ammoprice"		"1500"
+
+		// Knockback (module)
+
+		"knockback"		"1.2"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"5750"
+	}
+
+	"Knife"
+	{
+		// General
+
+		"weapontype"		"All, Melee"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"no"
+
+		// Knockback (module)
+
+		"knockback"		"10.0"
+	}
+
+	"HEGrenade"
+	{
+		// General
+
+		"weapontype"		"All, Projectile"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Knockback (module)
+
+		"knockback"		"6.0"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"300"
+	}
+
+	"Flashbang"
+	{
+		// General
+
+		"weapontype"		"All, Projectile"
+
+		// Restrict (core)
+
+		"restrictdefault"	"yes"
+		"toggleable"		"yes"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"300"
+	}
+
+	"Smokegrenade"
+	{
+		// General
+
+		"weapontype"		"All, Projectile"
+
+		// Restrict (core)
+
+		"restrictdefault"	"yes"
+		"toggleable"		"yes"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"300"
+	}
+
+	"NVGs"
+	{
+		// General
+
+		"weapontype"		"All, Equipment"
+
+		// Restrict (core)
+
+		"restrictdefault"	"yes"
+		"toggleable"		"yes"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"1000"
+	}
+}

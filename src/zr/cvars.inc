@@ -38,7 +38,6 @@ enum CvarsList
     Handle:CVAR_CONFIG_PATH_DOWNLOADS,
     Handle:CVAR_CONFIG_PATH_CLASSES,
     Handle:CVAR_CONFIG_PATH_WEAPONS,
-    Handle:CVAR_CONFIG_PATH_WEAPONGROUPS,
     Handle:CVAR_CONFIG_PATH_HITGROUPS,
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
@@ -51,6 +50,7 @@ enum CvarsList
     Handle:CVAR_CLASSES_OVERLAY_DEFAULT,
     Handle:CVAR_WEAPONS,
     Handle:CVAR_WEAPONS_RESTRICT,
+    Handle:CVAR_WEAPONS_ZMARKET,
     Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
     Handle:CVAR_HITGROUPS,
     Handle:CVAR_DAMAGE_HITGROUPS,
@@ -207,9 +207,8 @@ CvarsCreate()
     
     g_hCvarsList[CVAR_CONFIG_PATH_MODELS]        =    CreateConVar("zr_config_path_models",         "configs/zr/models.txt",                "Path, relative to root sourcemod directory, to models config file.");
     g_hCvarsList[CVAR_CONFIG_PATH_DOWNLOADS]     =    CreateConVar("zr_config_path_downloads",      "configs/zr/downloads.txt",             "Path, relative to root sourcemod directory, to downloads file.");
-    g_hCvarsList[CVAR_CONFIG_PATH_CLASSES] =    CreateConVar("zr_config_path_playerclasses",  "configs/zr/playerclasses.txt",         "Path, relative to root sourcemod directory, to playerclasses config file.");
-    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons",        "configs/zr/weapons/weapons.txt",       "Path, relative to root sourcemod directory, to weapons config file.");
-    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONGROUPS]  =    CreateConVar("zr_config_path_weapongroups",   "configs/zr/weapons/weapongroups.txt",  "Path, relative to root sourcemod directory, to weapongroups config file.");
+    g_hCvarsList[CVAR_CONFIG_PATH_CLASSES]       =    CreateConVar("zr_config_path_playerclasses",  "configs/zr/playerclasses.txt",         "Path, relative to root sourcemod directory, to playerclasses config file.");
+    g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons",        "configs/zr/weapons.txt",               "Path, relative to root sourcemod directory, to weapons config file.");
     g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]     =    CreateConVar("zr_config_path_hitgroups",      "configs/zr/hitgroups.txt",             "Path, relative to root sourcemod directory, to hitgroups config file.");
     
     // ===========================
@@ -258,9 +257,10 @@ CvarsCreate()
     
     g_hCvarsList[CVAR_WEAPONS_RESTRICT]                 =    CreateConVar("zr_weapons_restrict",        "1",    "Enable weapon restriction module, disabling this will disable weapon restriction commands.");
     
-    // Market Handler
+    // ZMarket
     
-    g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]          =    CreateConVar("zr_weapons_zmarket_buyzone", "1",    "Requires player to be inside a buyzone to use ZMarket.");
+    g_hCvarsList[CVAR_WEAPONS_ZMARKET]                  =    CreateConVar("zr_weapons_zmarket", "1",            "Allow player to buy from a list of weapons in the weapons config.");
+    g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]          =    CreateConVar("zr_weapons_zmarket_buyzone", "1",    "Requires player to be inside a buyzone to use ZMarket. [Dependency: zr_weapons_zmarket]");
     
     // ===========================
     // Hitgroups (core)

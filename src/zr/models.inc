@@ -22,21 +22,20 @@
 
 /**
  * Array that stores a list of validated models.
- * 
- * @redir   config.inc
  */
+new Handle:arrayModels = INVALID_HANDLE;
 
 /**
  * Prepare all model/download data.
  */
 ModelsLoad()
 {
+    // Register config file.
+    ConfigRegisterConfig(File_Models, Structure_List, CONFIG_FILE_ALIAS_MODELS);
+    
     // Get models file path.
     decl String:pathmodels[PLATFORM_MAX_PATH];
     new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_MODELS, pathmodels);
-    
-    // Register config info.
-    ConfigRegisterConfig(ConfigModels, false, GetFunctionByName(GetMyHandle(), "ModelsOnConfigReload"), _, pathmodels, CONFIG_FILE_ALIAS_MODELS);
     
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -45,18 +44,16 @@ ModelsLoad()
         LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: Missing models file: \"%s\"", pathmodels);
     }
     
-    // If model array exists, then destroy it.
-    if (arrayModelsList != INVALID_HANDLE)
-    {
-        CloseHandle(arrayModelsList);
-    }
+    // Set the path to the config file.
+    ConfigSetConfigPath(File_Models, pathmodels);
     
-    arrayModelsList = ConfigLinesToArray(pathmodels);
+    // Load config from file and create array structure.
+    new bool:success = ConfigLoadConfig(File_Models, arrayModels);
     
-    // If array couldn't be created, then fail.
-    if (arrayModelsList == INVALID_HANDLE)
+    // Unexpected error, stop plugin.
+    if (!success)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: Error parsing \"%s\"", pathmodels);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: Unexpected error encountered loading: %s", pathmodels);
     }
     
     new modelcount;
@@ -74,13 +71,13 @@ ModelsLoad()
     
     new FileType:type;
     
-    new models = modelcount = GetArraySize(arrayModelsList);
+    new models = modelcount = GetArraySize(arrayModels);
     
     // x = model array index.
     for (new x = 0; x < models; x++)
     {
         // Get base model path (rawline in models.txt)
-        GetArrayString(arrayModelsList, x, modelbase, sizeof(modelbase));
+        GetArrayString(arrayModels, x, modelbase, sizeof(modelbase));
         
         // Explode path into pieces. (separated by "/")
         new strings = ExplodeString(modelbase, "/", baseexploded, MODELS_PATH_MAX_DEPTH, MODELS_PATH_DIR_MAX_LENGTH);
@@ -137,7 +134,7 @@ ModelsLoad()
         else
         {
             // Remove client from array.
-            RemoveFromArray(arrayModelsList, x);
+            RemoveFromArray(arrayModels, x);
             
             // Subtract one from count.
             models--;
@@ -160,20 +157,16 @@ ModelsLoad()
     }
     
     // Set config data.
-    ConfigSetConfigLoaded(ConfigModels, true);
-    ConfigSetConfigHandle(ConfigModels, arrayModelsList);
+    ConfigSetConfigLoaded(File_Models, true);
+    ConfigSetConfigReloadFunc(File_Models, GetFunctionByName(GetMyHandle(), "ModelsOnConfigReload"));
+    ConfigSetConfigHandle(File_Models, arrayModels);
 }
 
 /**
- * Called when configs are being reloaded.
- * 
- * @param config    The config being reloaded. (only if 'all' is false)
+ * Called when config is being reloaded.
  */
 public ModelsOnConfigReload(ConfigFile:config)
 {
-    // Reload model config.
-    if (config == ConfigModels)
-    {
-        ModelsLoad();
-    }
+    // Reload models config.
+    ModelsLoad();
 }
