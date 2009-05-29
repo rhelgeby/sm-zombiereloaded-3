@@ -206,21 +206,21 @@ public Action:RestrictBuyCommand(client, argc)
  */
 RestrictQuery:RestrictWeapon(bool:restrict, const String:target[], &bool:single = true, String:returntarget[], maxlen)
 {
-    // Strip "weapon_" from target.
-    ReplaceString(target, WEAPONS_MAX_LENGTH, "weapon_", "");
-    
     // Copy 'target' to 'returntarget' to be possibly changed later.
     strcopy(returntarget, maxlen, target);
     
+    // Strip "weapon_" from target.
+    ReplaceString(returntarget, maxlen, "weapon_", "");
+    
     // Find index of the given weapon type.
-    new typeindex = RestrictTypeToIndex(target);
+    new typeindex = RestrictTypeToIndex(returntarget);
     
     // Single weapon.
     if (typeindex == -1)
     {
         single = true;
         
-        new weaponindex = WeaponsNameToIndex(target);
+        new weaponindex = WeaponsNameToIndex(returntarget);
         
         // If weapon index is invalid, then return invalid.
         if (weaponindex == -1)
