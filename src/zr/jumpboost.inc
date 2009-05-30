@@ -11,40 +11,68 @@
  */
 
 /**
- * The maximum forward velocity client can have for any additional push to be applied.
- */
-#define JUMPBOOST_FORWARD_VEL_MAX 275.0
-
-/**
  * Client is jumping.
  * 
  * @param client    The client index.
  */
 JumpBoostOnClientJump(client)
 {
+    new Float:vecVelocity[3];
+    new Float:vecBuffer[3];
+    new Float:magnitude;
+    
     // Get class jump multipliers.
     new Float:distance = ClassGetJumpDistance(client);
     new Float:height = ClassGetJumpHeight(client);
     
     // Do not apply jump boost if class jump boost multiplier is 1.0.
-    if (height == 1.0)
+    if (height == 1.0 && distance == 1.0)
     {
         return;
     }
     
     // Get client's current velocity.
-    new Float:vecVelocity[3];
     ToolsClientVelocity(client, vecVelocity, false);
     
-    // Protect against bunnyhopping, if cvar is enabled.
+    // Get bunny hop setting.
     new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_PROTECT]);
+    
+    // Check if bunny hop protection is enabled.
     if (bunnyhopprotect)
     {
-        new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
-        if (magnitude >= JUMPBOOST_FORWARD_VEL_MAX)
+        // Get jump boost settings.
+        new bool:bunnyhopreset = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_RESET]);
+        new Float:bunnyhopmax = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_MAX]);
+        
+        // Get movement distance.
+        magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
+        
+        // Check if maximum speed is reached and reset setting is set.
+        if ((magnitude > bunnyhopmax) && bunnyhopreset)
         {
-            // Set distance multiplier to 0.
+            // Reset horizontal velocity.
             distance = 0.0;
+        }
+        
+        // Check if maximum speed is reached and reset setting is disabled.
+        else if ((magnitude > bunnyhopmax) && !bunnyhopreset)
+        {
+            // Set horizontal velocity to maximum allowed.
+            
+            // Copy to buffer.
+            vecBuffer[0] = vecVelocity[0];
+            vecBuffer[1] = vecVelocity[1];
+            vecBuffer[2] = 1.0;                 // Dummy value.
+            
+            // Normalize buffer vector to make it a unit vector.
+            NormalizeVector(vecBuffer, vecBuffer);
+            
+            // Restore horizontal axis in buffer to velocity vector.
+            vecVelocity[0] = vecBuffer[0];
+            vecVelocity[1] = vecBuffer[1];
+            
+            // Set distance to maximum speed.
+            distance = bunnyhopmax;
         }
     }
     

@@ -114,6 +114,8 @@ enum CvarsList
     Handle:CVAR_RESPAWN_TEAM_ZOMBIE,
     Handle:CVAR_RESPAWN_TEAM_ZOMBIE_WORLD,
     Handle:CVAR_JUMPBOOST_BUNNYHOP_PROTECT,
+    Handle:CVAR_JUMPBOOST_BUNNYHOP_MAX,
+    Handle:CVAR_JUMPBOOST_BUNNYHOP_RESET,
     Handle:CVAR_VOL,
     Handle:CVAR_VOL_UPDATE_INTERVAL,
     Handle:CVAR_VOL_TRIGGER_INTERVAL,
@@ -424,6 +426,8 @@ CvarsCreate()
     // Jump Boost (module)
     // ===========================
     g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_PROTECT]       =    CreateConVar("zr_jumpboost_bunnyhop_protect",  "1",    "Prevent players from using forward jump boost multipliers to bunny hop.");
+    g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_MAX]           =    CreateConVar("zr_jumpboost_bunnyhop_max",      "275",  "The maximum horizontal velocity a player can have for any additional push to be applied, when bunny hop prevention is enabled.");
+    g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_RESET]         =    CreateConVar("zr_jumpboost_bunnyhop_reset",    "1",    "Specifies whether the speed should be reset, or limited to maximum when the limit is reached.");
     
     
     // ===========================
