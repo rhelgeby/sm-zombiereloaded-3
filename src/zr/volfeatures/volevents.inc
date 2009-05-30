@@ -1,11 +1,26 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
- *   File:          volevents.inc
- *   Type:          Module
- *   Description:   Handles volumetric feature events.
+ *  File:           volevents.inc
+ *  Type:           Module
+ *  Description:    Handles generic events for volumetric features.
+ *
+ *  Copyright (C) 2009  Greyscale, Richard Helgeby
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * ============================================================================
  */
@@ -18,7 +33,12 @@
  */
 VolOnPlayerEnter(client, volumeIndex)
 {
-    // TODO: Check if volfeatures is enabled first.
+    // Check if volumetric features is enabled.
+    if (!VolEnabled)
+    {
+        // Volumetric features disabled.
+        return;
+    }
 
     // Forward event to features.
     // VolAnticampStart(client, volume);
@@ -32,7 +52,12 @@ VolOnPlayerEnter(client, volumeIndex)
  */
 VolOnPlayerLeave(client, volumeIndex)
 {
-    // TODO: Check if volfeatures is enabled first.
+    // Check if volumetric features is enabled.
+    if (!VolEnabled)
+    {
+        // Volumetric features disabled.
+        return;
+    }
     
     // Forward event to features.
     // VolAnticampStop(client, volume);
@@ -45,7 +70,26 @@ VolOnPlayerLeave(client, volumeIndex)
  */
 VolOnPlayerSpawn(client)
 {
+    // Check if volumetric features is enabled.
+    if (!VolEnabled)
+    {
+        // Volumetric features disabled.
+        return;
+    }
+    
+    // Cache player location.
     VolUpdatePlayerLocation(client);
+}
+
+/**
+ * Called when a player disconnects.
+ *
+ * @param client    The client index.
+ */
+VolOnPlayerDisconnect(client)
+{
+    // Disable trigger delay counters.
+    VolResetCountDown(client);
 }
 
 /**
@@ -53,6 +97,13 @@ VolOnPlayerSpawn(client)
  */
 VolOnRoundStart()
 {
+    // Check if volumetric features is enabled.
+    if (!VolEnabled)
+    {
+        // Volumetric features disabled.
+        return;
+    }
+    
     // Start main timer.
     VolStartUpdateTimer();
 }
@@ -67,4 +118,24 @@ VolOnRoundEnd()
     
     // Forward stop event to features.
     // VolAnticampStop();
+}
+
+/**
+ * Called when a volume is disabled.
+ * @param volumeIndex   The volume index.
+ */
+VolOnVolumeDisabled(volumeIndex)
+{
+    // Forward stop event to features.
+    
+}
+
+/**
+ * Called when a volume is enabled.
+ * @param volumeIndex   The volume index.
+ */
+VolOnVolumeEnabled(volumeIndex)
+{
+    // Forward start event to features.
+    
 }

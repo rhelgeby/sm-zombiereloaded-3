@@ -537,14 +537,3 @@ public ZRLogFlagsMenuHandle(Handle:menu_log_flags, MenuAction:action, client, sl
         CloseHandle(menu_log_flags);
     }
 }
-
-AddToKnockbackMultiplier(Float:value)
-{
-    new Float:current_val = GetConVarFloat(g_hCvarsList[CVAR_ZOMBIE_KNOCKBACK]);
-    SetConVarFloat(g_hCvarsList[CVAR_ZOMBIE_KNOCKBACK], current_val + value);
-}
-
-AddToClassKnockback(classindex, Float:value)
-{
-    arrayClasses[classindex][data_knockback] = arrayClasses[classindex][data_knockback] + value;
-}

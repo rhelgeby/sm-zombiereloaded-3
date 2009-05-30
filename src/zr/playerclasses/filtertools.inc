@@ -20,7 +20,7 @@
  *                  ZR_CLASS_CACHE_MODIFIED (modified class data).
  * @return          True if validation was successful, false otherwise.
  */
-bool:ClassValidateTeamRequirements(cachetype = ZR_CLASS_CACHE_ORIGINAL)
+stock bool:ClassValidateTeamRequirements(cachetype = ZR_CLASS_CACHE_ORIGINAL)
 {
     new zombieindex;
     new humanindex;
@@ -52,7 +52,7 @@ bool:ClassValidateTeamRequirements(cachetype = ZR_CLASS_CACHE_ORIGINAL)
  *                  ZR_CLASS_CACHE_MODIFIED (modified class data).
  * @return          True if validation was successful, false otherwise.
  */
-bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
+stock bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
 {
     new zombieindex;
     new humanindex;
@@ -85,7 +85,7 @@ bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
  * @param classindex    The index of the class to validate.
  * @return              A value with attribute error flags.
  */
-ClassValidateAttributes(classindex)
+stock ClassValidateAttributes(classindex)
 {
     // TODO: Validate immunity mode and amount.
     
@@ -257,7 +257,7 @@ ClassValidateAttributes(classindex)
  * @param classindex    The class index to validate.
  * @return              True if the class exist, false otherwise.
  */
-bool:ClassValidateIndex(classindex)
+stock bool:ClassValidateIndex(classindex)
 {
     if (classindex >= 0 && classindex < ClassCount)
     {
@@ -284,7 +284,7 @@ bool:ClassValidateIndex(classindex)
  *                  index will be used as a client index.
  * @return          True if equal, false otherwise.
  */
-bool:ClassTeamCompare(index, teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock bool:ClassTeamCompare(index, teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     switch (cachetype)
     {
@@ -324,7 +324,7 @@ bool:ClassTeamCompare(index, teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
  *                  data.
  * @return          The class index if successful, -1 otherwise.
  */
-ClassGetIndex(const String:name[], cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetIndex(const String:name[], cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     decl String:current_name[64];
 
@@ -356,7 +356,7 @@ ClassGetIndex(const String:name[], cachetype = ZR_CLASS_CACHE_MODIFIED)
  * @param client    The client index.
  * @return  The active class index. -1 on error or if a spectactor.
  */
-ClassGetActiveIndex(client)
+stock ClassGetActiveIndex(client)
 {
     new teamid = GetClientTeam(client);
     
@@ -405,7 +405,7 @@ ClassGetActiveIndex(client)
  * @return  True on success. False on error or if no classes were added or
  *          found.
  */
-bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Validate the array.
     if (array == INVALID_HANDLE)
@@ -476,7 +476,7 @@ bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = false, 
  *                          class data.
  * @return  Number of total classes or classes in the specified team.
  */
-ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Check if there are no classes.
     if (ClassCount == 0)
@@ -533,7 +533,7 @@ ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS
  *                      class data.
  * @return  The class index if successful, or -1 on error.
  */
-ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     new Handle:classarray;
     new arraycount;
@@ -574,7 +574,7 @@ ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_
  * @return  The first class index, or the first class index with the specified
  *          team ID. -1 on error.
  */
-ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Check if there are no classes.
     if (ClassCount == 0)
@@ -623,7 +623,7 @@ ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_C
  *                      class data.
  * @return  The first default class index. -1 on error.
  */
-ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     new Handle:classarray;
     new arraycount;
@@ -669,7 +669,7 @@ ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CA
  *          successful. -1 on critical errors. Otherwise it will try to fall
  *          back on the first class in the specified team.
  */
-ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     decl String:classname[64];
     new classindex;

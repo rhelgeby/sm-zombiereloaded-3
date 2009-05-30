@@ -30,6 +30,7 @@
 #include "zr/serial"
 #include "zr/sayhooks"
 #include "zr/tools"
+#include "zr/paramtools"
 #include "zr/models"
 #include "zr/downloads"
 #include "zr/overlays"
@@ -73,7 +74,7 @@ public Plugin:myinfo =
     author = "Greyscale | Richard Helgeby",
     description = "Infection/survival style gameplay",
     version = VERSION,
-    url = ""
+    url = "http://www.zombiereloaded.com"
 };
 
 /**
@@ -174,6 +175,7 @@ public OnConfigsExecuted()
     VEffectsLoad();
     SEffectsLoad();
     ClassLoad();
+    VolLoad();
     
     ConfigOnModulesLoaded();
     ClassOnModulesLoaded();
@@ -212,4 +214,5 @@ public OnClientDisconnect(client)
     InfectOnClientDisconnect(client);
     DamageOnClientDisconnect(client);
     ZSpawnOnClientDisconnect(client);
+    VolOnPlayerDisconnect(client);
 }

@@ -116,7 +116,7 @@ stock bool:ZRIsClientValid(client, bool:console = false)
  */    
 stock bool:ZRIsConsole(index)
 {
-    // Return true if index is = to console's index.
+    // Return true if index is equal to console's index.
     return (index == ZR_CONSOLE_INDEX);
 }
 
