@@ -26,6 +26,12 @@ JumpBoostOnClientJump(client)
     new Float:distance = ClassGetJumpDistance(client);
     new Float:height = ClassGetJumpHeight(client);
     
+    // Do not apply jump boost if class jump boost multiplier is 1.0.
+    if (height == 1.0)
+    {
+        return;
+    }
+    
     // Get client's current velocity.
     new Float:vecVelocity[3];
     ToolsClientVelocity(client, vecVelocity, false);
