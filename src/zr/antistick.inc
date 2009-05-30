@@ -30,9 +30,27 @@
 */
 
 /**
+ * Variable to store antistick offset value.
+ */
+new g_iToolsCollisionGroup;
+
+/**
  * Handle to keep track of AntiStickTimer.
  */
 new Handle:tAntiStick = INVALID_HANDLE;
+
+/**
+ * Find antistick-specific offsets here.
+ */
+AntiStickOnOffsetsFound()
+{
+    // If offset "m_CollisionGroup" can't be found, then stop the plugin.
+    g_iToolsCollisionGroup = FindSendPropInfo("CBaseEntity", "m_CollisionGroup");
+    if (g_iToolsCollisionGroup == -1)
+    {
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBaseEntity::m_CollisionGroup\" was not found.");
+    }
+}
 
 /**
  * Map is starting.

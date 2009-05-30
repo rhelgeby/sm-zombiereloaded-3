@@ -48,6 +48,17 @@ NapalmOnClientHurt(client, const String:weapon[])
 }
 
 /**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ */
+NapalmOnClientDeath(client)
+{
+    // Extinguish any flames to stop burning sounds.
+    ExtinguishEntity(client);
+}
+
+/**
  *  Weapon has been fired.
  *
  * @param weapon       The weapon name. 

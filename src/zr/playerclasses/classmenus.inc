@@ -209,14 +209,6 @@ ClassMenuSelect(client, teamid)
             AddMenuItem(menu, classname, menuitem);
         }
     }
-    else
-    {
-        // No classes found. Display message. The main class menu should
-        // prevent this from happening, but we print a message just in case.
-        // THIS TRANSLATION PHRASES IS NOT IN FILE.
-        Format(menuitem, sizeof(menuitem), "%t\n", "Classes menu not found");
-        AddMenuItem(menu, classname, menuitem, ITEMDRAW_RAWLINE);
-    }
     
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);

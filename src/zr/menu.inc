@@ -52,7 +52,7 @@ MenuMain(client)
     AddMenuItem(menu_main, "zspawn", zspawn);
     AddMenuItem(menu_main, "ztele", ztele);
     AddMenuItem(menu_main, "zhp", zhp);
-    AddMenuItem(menu_main, "zmarket", zmarket, MenuGetItemDraw(g_bMarket));
+    AddMenuItem(menu_main, "zmarket", zmarket);
     
     // Display menu to client.
     DisplayMenu(menu_main, client, MENU_TIME_FOREVER);
@@ -113,8 +113,6 @@ public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             // Select zmarket.
             case 5:
             {
-                // Copy return to resend variable.
-                resend = !ZMarketMenu(client);
             }
         }
         

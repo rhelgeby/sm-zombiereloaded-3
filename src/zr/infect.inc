@@ -213,6 +213,48 @@ InfectOnClientSpawn(client)
 {
     // Disable zombie flag on client.
     bZombie[client] = false;
+    
+    // Check if client is spawning on the terrorist team.
+    if (ZRIsClientOnTeam(client, CS_TEAM_T))
+    {
+        if (g_bZombieSpawned)
+        {
+            CS_SwitchTeam(client, CS_TEAM_CT);
+            CS_RespawnPlayer(client);
+        }
+    }
+}
+
+/**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ * @param attacker  The attacker index.
+ */
+InfectOnClientDeath(client, attacker)
+{
+    // If attacker isn't valid, then stop.
+    if (!ZRIsClientValid(attacker))
+    {
+        return;
+    }
+    
+    // If attacker isn't a human, then stop.
+    if (!InfectIsClientHuman(attacker))
+    {
+        return;
+    }
+    
+    // If client isn't a zombie, then stop.
+    if (!InfectIsClientInfected(client))
+    {
+        return;
+    }
+    
+    // Add kill bonus to attacker's score.
+    new bonus = ClassGetKillBonus(client);
+    new score = ToolsClientScore(attacker, true, false);
+    ToolsClientScore(attacker, true, true, score + bonus);
 }
 
 /** Client has been hurt.
@@ -348,7 +390,7 @@ public Action:InfectMotherZombie(Handle:timer)
     new client;
     
     // Prune list of immune clients.
-    // x = array index.
+    // x = Array index.
     // client = client index.
     for (new x = 0; x < eligibleclients; x++)
     {
@@ -480,7 +522,7 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
     bZombie[client] = true;
     
     // Get a list of all client's weapon indexes.
-    new weapons[WeaponsType];
+    new weapons[WeaponsSlot];
     WeaponsGetClientWeapons(client, weapons);
     
     // Check if weapons drop is enabled.
@@ -499,7 +541,7 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
         if (weaponsdrop)
         {
             // If this is the knife slot, then stop.
-            if (WeaponsType:x == Type_Melee)
+            if (WeaponsSlot:x == Slot_Melee)
             {
                 continue;
             }
@@ -515,7 +557,7 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
     }
     
     // If client has no knife, give them one.
-    if (GetPlayerWeaponSlot(client, _:Type_Melee) == -1)
+    if (GetPlayerWeaponSlot(client, _:Slot_Melee) == -1)
     {
         GivePlayerItem(client, "weapon_knife");
     }

@@ -153,8 +153,8 @@ stock TranslationPrintToChatAll(bool:server, bool:admin, any:...)
             continue;
         }
         
-        // Set translation target
-        SetGlobalTransTarget(LANG_SERVER);
+        // Set translation target to client.
+        SetGlobalTransTarget(x);
         
         // Translate phrase.
         VFormat(translation, sizeof(translation), "%t", 3);
@@ -327,9 +327,20 @@ stock TranslationReplyToCommand(client, any:...)
     decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
     VFormat(translation, sizeof(translation), "%t", 2);
     
-    // Format string to create plugin style.
-    TranslationPluginFormatString(translation, sizeof(translation));
-    
-    // Print translated phrase to client.
-    ReplyToCommand(client, translation);
+    if (ZRIsClientValid(client))
+    {
+        // Format string to create plugin style. (color)
+        TranslationPluginFormatString(translation, sizeof(translation));
+        
+        // Print translated phrase to client's chat/console.
+        PrintToChat(client, translation);
+    }
+    else
+    {
+        // Format string to create plugin style. (no color)
+        TranslationPluginFormatString(translation, sizeof(translation), false);
+        
+        // Print to server.
+        PrintToServer(translation);
+    }
 }

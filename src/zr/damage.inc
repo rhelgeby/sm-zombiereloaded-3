@@ -48,7 +48,7 @@ DamageOnCommandsHook()
     // Explode string into array indexes.
     new cmdcount = ExplodeString(suicidecmds, ", ", arrayCmds, DAMAGE_SUICIDE_MAX_CMDS, DAMAGE_SUICIDE_MAX_LENGTH);
     
-    // x = array index.
+    // x = Array index.
     // arrayCmds[x] = suicide command.
     for (new x = 0; x <= cmdcount - 1; x++)
     {
@@ -147,7 +147,16 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     }
     
     // If damage is disabled for this hitgroup, then stop.
-    new bool:candamage = HitgroupsCanDamageHitgroup(hitgroup);
+    new index = HitgroupToIndex(hitgroup);
+    
+    // If index can't be found, then allow damage.
+    if (index == -1)
+    {
+        // Allow damage.
+        return ZRTools_Continue;
+    }
+    
+    new bool:candamage = HitgroupsCanDamage(index);
     if (!candamage)
     {
         // Stop bullet from hurting client.

@@ -252,9 +252,8 @@ enum ClassDataTypes
 
 /**
  * Keyvalue handle to store class data.
- * 
- * @redir   config.inc
  */
+new Handle:kvClassData = INVALID_HANDLE;
 
 /**
  * The original class data. This array only changed when class data is loaded.
@@ -322,19 +321,19 @@ new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
  */
 ClassLoad()
 {
+    // Register config file.
+    ConfigRegisterConfig(File_Classes, Structure_Keyvalue, CONFIG_FILE_ALIAS_CLASSES);
+    
     // Make sure kvClassData is ready to use.
     if (kvClassData != INVALID_HANDLE)
     {
         CloseHandle(kvClassData);
     }
-    kvClassData = CreateKeyValues("classes");
+    kvClassData = CreateKeyValues(CONFIG_FILE_ALIAS_CLASSES);
     
     // Get weapons config path.
     decl String:pathclasses[PLATFORM_MAX_PATH];
     new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_CLASSES, pathclasses);
-    
-    // Register config info.
-    ConfigRegisterConfig(ConfigClasses, false, GetFunctionByName(GetMyHandle(), "ClassOnConfigReload"), _, pathclasses, CONFIG_FILE_ALIAS_CLASSES);
     
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -463,8 +462,10 @@ ClassLoad()
     LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Classes", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", ClassCount, ClassCount - failedcount, failedcount);
     
     // Set config data.
-    ConfigSetConfigLoaded(ConfigClasses, true);
-    ConfigSetConfigHandle(ConfigClasses, kvClassData);
+    ConfigSetConfigLoaded(File_Classes, true);
+    ConfigSetConfigReloadFunc(File_Classes, GetFunctionByName(GetMyHandle(), "ClassOnConfigReload"));
+    // ConfigSetConfigHandle(File_Classes, INVALID_HANDLE);
+    ConfigSetConfigPath(File_Classes, pathclasses);
 }
 
 /**
@@ -475,9 +476,6 @@ ClassLoad()
 public ClassOnConfigReload(ConfigFile:config)
 {
     // Reload class config.
-    if (config == ConfigClasses)
-    {
-    }
 }
 
 /**

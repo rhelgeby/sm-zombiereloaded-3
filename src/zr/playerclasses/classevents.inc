@@ -35,15 +35,6 @@ ClassClientInit(client)
 }
 
 /**
- * Hook commands related to classes here.
- */
-ClassOnCommandsHook()
-{
-    // Forward event to sub-modules.
-    ClassOverlayOnCommandsHook();
-}
-
-/**
  * Called when all modules are done loading.
  */
 ClassOnModulesLoaded()
@@ -108,7 +99,6 @@ ClassOnClientSpawn(client)
     
     // Check if the player should spawn in admin mode.
     if (ClassPlayerAdminMode[client])
-
     {
         // Mark player as in admin mode.
         ClassPlayerInAdminMode[client] = true;
@@ -137,11 +127,11 @@ ClassOnClientDeath(client)
     // Disable class attributes with timers.
     ClassHealthRegenStop(client);
     
-    // Disable overlay.
-    OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
-    
     // Set client's FOV back to normal.
     ToolsSetClientDefaultFOV(client, 90);
+    
+    // Forward event to sub-modules.
+    ClassOverlayOnClientDeath(client);
 }
 
 ClassOnClientInfected(client, bool:motherzombie = false)

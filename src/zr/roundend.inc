@@ -306,7 +306,7 @@ RoundEndBalanceTeams()
     
     // Move all clients to T
     
-    // x = array index.
+    // x = Array index.
     // client = client index.
     for (new x = 0; x < eligibleclients; x++)
     {

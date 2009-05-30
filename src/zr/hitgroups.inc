@@ -11,10 +11,9 @@
  */
 
 /**
- * Keyvalue handle to store hitgroups data.
- * 
- * @redir   config.inc
+ * Maximum length for a hitgroup name
  */
+#define HITGROUPS_MAX_LENGTH 32
 
 /**
  * @section Player hitgroup values.
@@ -33,33 +32,28 @@
  */
 
 /**
- * Clears hitgroup data.
- */ 
-HitgroupsClearData()
+ * Hitgroup config data indexes.
+ */
+enum HitgroupsData
 {
-    // Load hitgroup data.
-    if (kvHitgroups != INVALID_HANDLE)
-    {
-        CloseHandle(kvHitgroups);
-    }
-    
-    kvHitgroups = CreateKeyValues("hitgroups");
+    HITGROUPS_DATA_NAME = 0,
+    HITGROUPS_DATA_INDEX,
+    HITGROUPS_DATA_DAMAGE,
+    HITGROUPS_DATA_KNOCKBACK,
 }
+
+/**
+ * Array handle to store hitgroups data.
+ */
+new Handle:arrayHitgroups = INVALID_HANDLE;
 
 /**
  * Loads hitgroup data from file.
  */ 
 HitgroupsLoad()
 {
-    // Clear hitgroup data
-    HitgroupsClearData();
-    
-    // Get hitgroups config path.
-    decl String:pathhitgroups[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
-    
-    // Register config info.
-    ConfigRegisterConfig(ConfigHitgroups, false, GetFunctionByName(GetMyHandle(), "HitgroupsOnConfigReload"), _, pathhitgroups, CONFIG_FILE_ALIAS_HITGROUPS);
+    // Register config file.
+    ConfigRegisterConfig(File_Hitgroups, Structure_Keyvalue, CONFIG_FILE_ALIAS_HITGROUPS);
     
     // If module is disabled, then stop.
     new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
@@ -68,23 +62,101 @@ HitgroupsLoad()
         return;
     }
     
+    // Get hitgroups config path.
+    decl String:pathhitgroups[PLATFORM_MAX_PATH];
+    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
+    
     // If file doesn't exist, then log and stop.
     if (!exists)
     {
         // Log failure.
         LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Missing hitgroups config file: %s", pathhitgroups);
+        
         return;
     }
     
-    // Put file data into memory.
-    FileToKeyValues(kvHitgroups, pathhitgroups);
+    // Set the path to the config file.
+    ConfigSetConfigPath(File_Hitgroups, pathhitgroups);
+    
+    // Load config from file and create array structure.
+    new bool:success = ConfigLoadConfig(File_Hitgroups, arrayHitgroups);
+    
+    // Unexpected error, stop plugin.
+    if (!success)
+    {
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Unexpected error encountered loading: %s", pathhitgroups);
+        
+        return;
+    }
     
     // Validate hitgroups config.
-    HitgroupsValidateConfig();
+    new size = GetArraySize(arrayHitgroups);
+    if (!size)
+    {
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "No usable data found in hitgroups config file: %s", pathhitgroups);
+    }
+    
+    // Now copy data to array structure.
+    HitgroupsCacheData();
     
     // Set config data.
-    ConfigSetConfigLoaded(ConfigHitgroups, true);
-    ConfigSetConfigHandle(ConfigHitgroups, kvHitgroups);
+    ConfigSetConfigLoaded(File_Hitgroups, true);
+    ConfigSetConfigReloadFunc(File_Hitgroups, GetFunctionByName(GetMyHandle(), "HitgroupsOnConfigReload"));
+    ConfigSetConfigHandle(File_Hitgroups, arrayHitgroups);
+}
+
+/**
+ * Caches hitgroup data from file into arrays.
+ * Make sure the file is loaded before (ConfigLoadConfig) to prep array structure.
+ */
+HitgroupsCacheData()
+{
+    // Get config's file path.
+    decl String:pathhitgroups[PLATFORM_MAX_PATH];
+    ConfigGetConfigPath(File_Hitgroups, pathhitgroups, sizeof(pathhitgroups));
+    
+    new Handle:kvHitgroups;
+    new bool:success = ConfigOpenConfigFile(File_Hitgroups, kvHitgroups);
+    
+    if (!success)
+    {
+        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Unexpected error caching data from hitgroups config file: %s", pathhitgroups);
+    }
+    
+    decl String:hitgroupname[HITGROUPS_MAX_LENGTH];
+    
+    // x = array index
+    new size = GetArraySize(arrayHitgroups);
+    for (new x = 0; x < size; x++)
+    {
+        HitgroupsGetName(x, hitgroupname, sizeof(hitgroupname));
+        
+        KvRewind(kvHitgroups);
+        if (!KvJumpToKey(kvHitgroups, hitgroupname))
+        {
+            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Couldn't cache hitgroup data for: %s (check hitgroup config)", hitgroupname);
+            continue;
+        }
+        
+        // General
+        new index = KvGetNum(kvHitgroups, "index", -1);
+        
+        // Damage
+        new bool:damage = ConfigKvGetStringBool(kvHitgroups, "damage", "yes");
+        
+        // Knockback (module)
+        new Float:knockback = KvGetFloat(kvHitgroups, "knockback", 1.0);
+        
+        new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, x);
+        
+        // Push data into array.
+        PushArrayCell(arrayHitgroup, index);        // Index: 1
+        PushArrayCell(arrayHitgroup, damage);       // Index: 2
+        PushArrayCell(arrayHitgroup, knockback);    // Index: 3
+    }
+    
+    // We're done with this file now, so we can close it.
+    CloseHandle(kvHitgroups);
 }
 
 /**
@@ -95,85 +167,91 @@ HitgroupsLoad()
 public HitgroupsOnConfigReload(ConfigFile:config)
 {
     // Reload hitgroups config.
-    if (config == ConfigHitgroups)
-    {
-        HitgroupsLoad();
-    }
+    HitgroupsLoad();
 }
 
 /**
- * Validate hitgroup config file and settings.
- */ 
-HitgroupsValidateConfig()
-{
-    KvRewind(kvHitgroups);
-    if (!KvGotoFirstSubKey(kvHitgroups))
-    {
-        // Log that no data was loaded from hitgroup file.
-        LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Hitgroups", "Config Validation", "No hitgroups listed in hitgroups.txt, disabling hitgroup-based modules.");
-    }
-}
-
-/**
- * Retrieve hitgroup knockback value.
+ * Find the array index at which the hitgroup index is at.
  * 
- * @param hitgroup  The hitgroup index.
- * @return          The knockback multiplier of the hitgroup. 
+ * @param hitgroup  The hitgroup index to search for.
+ * @return          The array index that contains the given hitgroup index.
  */
-Float:HitgroupsGetHitgroupKnockback(hitgroup)
+stock HitgroupToIndex(hitgroup)
 {
-    // Reset keyvalue's traversal stack.
-    KvRewind(kvHitgroups);
-    if (KvGotoFirstSubKey(kvHitgroups))
+    // x = Array index.
+    new size = GetArraySize(arrayHitgroups);
+    for (new x = 0; x < size; x++)
     {
-        decl String:sHitgroup[4];
+        // Get hitgroup index at this array index.
+        new index = HitgroupsGetIndex(x);
         
-        do
+        // If hitgroup indexes match, then return array index.
+        if (hitgroup == index)
         {
-            KvGetSectionName(kvHitgroups, sHitgroup, sizeof(sHitgroup));
-            
-            // If this is the right hitgroup, then return knockback for it.
-            if (hitgroup == StringToInt(sHitgroup))
-            {
-                return KvGetFloat(kvHitgroups, "knockback", 1.0);
-            }
-        } while (KvGotoNextKey(kvHitgroups));
+            return x;
+        }
     }
     
-    return 1.0;
+    // Hitgroup index doesn't exist.
+    return -1;
+}
+
+/**
+ * Gets the name of a hitgroup at a given index.
+ * @param index     The hitgroup index.
+ * @param hitgroup  The string to return name in.
+ * @param maxlen    The max length of the string.
+ */
+stock HitgroupsGetName(index, String:hitgroup[], maxlen)
+{
+    // Get array handle of hitgroup at given index.
+    new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+    
+    // Get hitgroup name.
+    GetArrayString(arrayHitgroup, _:HITGROUPS_DATA_NAME, hitgroup, maxlen);
+}
+
+/**
+ * Retrieve hitgroup index.
+ * 
+ * @param index     The array index.
+ * @return          The hitgroup index.
+ */
+stock HitgroupsGetIndex(index)
+{
+    // Get array handle of hitgroup at given index.
+    new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+    
+    // Return hitgroup index of the hitgroup.
+    return GetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_INDEX);
 }
 
 /**
  * Retrieve hitgroup damage value.
  * 
- * @param hitgroup  The hitgroup index.
+ * @param index     The array index.
  * @return          True if hitgroup can be damaged, false if not.
  */
-bool:HitgroupsCanDamageHitgroup(hitgroup)
+stock bool:HitgroupsCanDamage(index)
 {
-    // Reset keyvalue's traversal stack.
-    KvRewind(kvHitgroups);
-    if (KvGotoFirstSubKey(kvHitgroups))
-    {
-        decl String:sHitgroup[4];
-        decl String:damage[8];
-        
-        do
-        {
-            KvGetSectionName(kvHitgroups, sHitgroup, sizeof(sHitgroup));
-            
-            // If this is the right hitgroup, then return knockback for it.
-            if (hitgroup == StringToInt(sHitgroup))
-            {
-                // Get config setting string.
-                KvGetString(kvHitgroups, "damage", damage, sizeof(damage), "yes");
-                
-                // Return hitgroup's damage setting.
-                return ConfigSettingToBool(damage);
-            }
-        } while (KvGotoNextKey(kvHitgroups));
-    }
+    // Get array handle of hitgroup at given index.
+    new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
     
-    // If hitgroup is missing, then default to "yes."
-    return true;
+    // Return true if hitgroup can be damaged, false if not.
+    return bool:GetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_DAMAGE);
+}
+
+/**
+ * Retrieve hitgroup knockback value.
+ * 
+ * @param index     The array index.
+ * @return          The knockback multiplier of the hitgroup.
+ */
+stock Float:HitgroupsGetKnockback(index)
+{
+    // Get array handle of hitgroup at given index.
+    new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+    
+    // Return the knockback multiplier for the hitgroup.
+    return Float:GetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_KNOCKBACK);
 }

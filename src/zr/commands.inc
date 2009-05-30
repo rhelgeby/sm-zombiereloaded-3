@@ -17,6 +17,7 @@ CommandsInit()
 {
     // Forward event to modules. (create commands)
     ConfigOnCommandsCreate();
+    ClassOnCommandsCreate();
     WeaponsOnCommandsCreate();
     VolOnCommandsCreate();
     
@@ -42,10 +43,6 @@ CommandsInit()
     RegAdminCmd("zr_anticamp_list", Command_AnticampList, ADMFLAG_GENERIC, "List current volumes.");
     
     RegConsoleCmd("zr_log_flags", Command_LogFlags, "List available logging flags.");
-    
-    RegConsoleCmd("zr_class_dump", Command_ClassDump, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
-    RegAdminCmd("zr_class_modify", Command_ClassModify, ADMFLAG_GENERIC, "Modify class data on one or more classes. Usage: zr_class_modify <classname|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
-    
 }*/
 
 /*public Action:Command_Infect(client, argc)

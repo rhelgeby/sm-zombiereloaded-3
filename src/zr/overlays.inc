@@ -164,11 +164,18 @@ OverlaysClientUpdateOverlay(client, OverlaysChannel:channel = OVERLAYS_CHANNEL_N
     {
         channel = OverlaysClientFindChannel(client);
     }
+    
     // Stop here if client has no overlay channel enabled.
     if (channel == OVERLAYS_CHANNEL_NONE)
     {
         // Clear any existing overlay from screen.
         ClientCommand(client, "r_screenoverlay \"\"");
+        return;
+    }
+    
+    // If channel we are updating is disabled, then stop.
+    if (!g_bOverlayChannel[client][channel])
+    {
         return;
     }
     

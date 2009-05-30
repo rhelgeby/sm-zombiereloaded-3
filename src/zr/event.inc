@@ -72,6 +72,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     // Forward event to sub-modules.
     OverlaysOnRoundStart();
     WeaponsOnRoundStart();
+    RoundStartOnRoundStart();
     RoundEndOnRoundStart();
     InfectOnRoundStart();
     SEffectsOnRoundStart();
@@ -90,8 +91,6 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
  */
 public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    RemoveObjectives();
-    
     // Forward events to modules.
     RoundEndOnRoundFreezeEnd();
     InfectOnRoundFreezeEnd();
@@ -154,32 +153,9 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
-    // Reset FOV and overlay.
-    ToolsSetClientDefaultFOV(index, 90);
-    ClientCommand(index, "r_screenoverlay \"\"");
-    
-    // Check if client is on a team.
-    if (ZRIsClientOnTeam(index))
-    {
-        // Turn off nightvision.
-        ToolsClientNightVision(index, false, false);
-        
-        // Take nightvision away.
-        ToolsClientNightVision(index, false);
-        
-        if (g_bZombieSpawned)
-        {
-            if (ZRIsClientOnTeam(index, CS_TEAM_T))
-            {
-                CS_SwitchTeam(index, CS_TEAM_CT);
-                CS_RespawnPlayer(index);
-            }
-        }
-    }
-    
     // Forward event to modules.
-    InfectOnClientSpawn(index);
-    ClassOnClientSpawn(index);      // Module event depends on infect module.
+    InfectOnClientSpawn(index);     // Some modules depend on this to finish first.
+    ClassOnClientSpawn(index);
     RestrictOnClientSpawn(index);
     SEffectsOnClientSpawn(index);
     AccountOnClientSpawn(index);
@@ -266,29 +242,15 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-
-    // Extinguish any flames to stop burning sounds.
-    ExtinguishEntity(index);
     
-    // If the attacker is valid, then continue.
-    if (ZRIsClientValid(attacker))
-    {
-        // If the client is a zombie, then continue.
-        if (InfectIsClientInfected(index))
-        {
-            // Add kill bonus to attacker's score.
-            new bonus = ClassGetKillBonus(attacker);
-            new score = ToolsClientScore(index, true, false);
-            ToolsClientScore(index, true, true, score + bonus);
-        }
-    }
-        
     // Forward event to modules.
     ClassOnClientDeath(index);
     RoundEndOnClientDeath();
+    InfectOnClientDeath(index, attacker);
     SEffectsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
     RespawnOnClientDeath(index, attacker, weapon);
+    NapalmOnClientDeath(index);
     ZSpawnOnClientDeath(index);
     ZTeleOnClientDeath(index);
     ZHPOnClientDeath(index);

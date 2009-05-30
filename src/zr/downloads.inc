@@ -12,43 +12,38 @@
 
 /**
  * Array that stores a list of downloadable files.
- * 
- * @redir   config.inc
  */
+new Handle:arrayDownloads = INVALID_HANDLE;
 
 /**
  * Prepare all model/download data.
  */
 DownloadsLoad()
 {
+    // Register config file.
+    ConfigRegisterConfig(File_Downloads, Structure_List, CONFIG_FILE_ALIAS_DOWNLOADS);
+    
     // Get downloads file path.
     decl String:pathdownloads[PLATFORM_MAX_PATH];
     new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_DOWNLOADS, pathdownloads);
     
-    // Register config info.
-    ConfigRegisterConfig(ConfigDownloads, false, GetFunctionByName(GetMyHandle(), "DownloadsOnConfigReload"), _, pathdownloads, CONFIG_FILE_ALIAS_DOWNLOADS);
-    
-    // If file doesn't exist, then log.
+    // If file doesn't exist, then log and stop.
     if (!exists)
     {
-        // Log error, then stop.
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Missing downloads file: \"%s\"", pathdownloads);
-        
-        return;
+        // Log failure and stop plugin.
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Downloads", "Config Validation", "Fatal Error: Missing downloads file: \"%s\"", pathdownloads);
     }
     
-    // If download array exists, then destroy it.
-    if (arrayDownloadsList != INVALID_HANDLE)
-    {
-        CloseHandle(arrayDownloadsList);
-    }
+    // Set the path to the config file.
+    ConfigSetConfigPath(File_Downloads, pathdownloads);
     
-    arrayDownloadsList = ConfigLinesToArray(pathdownloads);
+    // Load config from file and create array structure.
+    new bool:success = ConfigLoadConfig(File_Downloads, arrayDownloads);
     
-    // If array couldn't be created, then fail.
-    if (arrayDownloadsList == INVALID_HANDLE)
+    // Unexpected error, stop plugin.
+    if (!success)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Error parsing \"%s\"", pathdownloads);
+        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Downloads", "Config Validation", "Fatal Error: Unexpected error encountered loading: %s", pathdownloads);
     }
     
     new downloadcount;
@@ -56,19 +51,19 @@ DownloadsLoad()
     
     decl String:downloadpath[PLATFORM_MAX_PATH];
     
-    new downloads = downloadcount = GetArraySize(arrayDownloadsList);
+    new downloads = downloadcount = GetArraySize(arrayDownloads);
     
     // x = download array index.
     for (new x = 0; x < downloads; x++)
     {
-        // Get base model path (rawline in models.txt)
-        GetArrayString(arrayDownloadsList, x, downloadpath, sizeof(downloadpath));
+        // Get download path
+        GetArrayString(arrayDownloads, x, downloadpath, sizeof(downloadpath));
         
         // If file doesn't exist, then remove, log, and stop.
         if (!FileExists(downloadpath))
         {
             // Remove client from array.
-            RemoveFromArray(arrayDownloadsList, x);
+            RemoveFromArray(arrayDownloads, x);
             
             // Subtract one from count.
             downloads--;
@@ -91,8 +86,9 @@ DownloadsLoad()
     LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Downloads", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", downloadcount, downloadvalidcount, downloadcount - downloadvalidcount);
     
     // Set config data.
-    ConfigSetConfigLoaded(ConfigDownloads, true);
-    ConfigSetConfigHandle(ConfigDownloads, arrayDownloadsList);
+    ConfigSetConfigLoaded(File_Downloads, true);
+    ConfigSetConfigReloadFunc(File_Downloads, GetFunctionByName(GetMyHandle(), "DownloadsOnConfigReload"));
+    ConfigSetConfigHandle(File_Downloads, arrayDownloads);
 }
 
 /**
@@ -103,8 +99,5 @@ DownloadsLoad()
 public DownloadsOnConfigReload(ConfigFile:config)
 {
     // Reload download config.
-    if (config == ConfigDownloads)
-    {
-        DownloadsLoad();
-    }
+    DownloadsLoad();
 }

@@ -84,8 +84,8 @@
 
 	"Config command reload syntax"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s}"
-		"en"		"Syntax: zr_reloadconfig <file alias> - Reloads a config file.\n File Aliases:\n * \"{1}\"\n * \"{2}\"\n * \"{3}\"\n * \"{4}\"\n * \"{5}\"\n * \"{6}\""
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
+		"en"		"Syntax: zr_reloadconfig <file alias> - Reloads a config file.\n File Aliases:\n * \"{1}\"\n * \"{2}\"\n * \"{3}\"\n * \"{4}\"\n * \"{5}\""
 	}
 
 	"Config command reload invalid"
@@ -289,46 +289,52 @@
 		"en"		"Weapon @green\"{1}\" @defaulthas been unrestricted."
 	}
 
-	"Restrict weapon failed"
+	"Restrict weapon stopped"
 	{
 		"#format"	"{1:s}"
 		"en"		"Weapon @green\"{1}\" @defaultis already restricted."
 	}
 
-	"Unrestrict weapon failed"
+	"Unrestrict weapon stopped"
 	{
 		"#format"	"{1:s}"
 		"en"		"Weapon @green\"{1}\" @default has no restrictions set."
 	}
 
-	"Restrict custom weapon group"
+	"Restrict weapon type"
 	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Weapon group @green\"{1}\" ({2}) @defaulthas been restricted."
+		"#format"	"{1:s}"
+		"en"		"Weapons of type @green\"{1}\" @defaulthave been restricted."
 	}
 
-	"Unrestrict custom weapon group"
+	"Unrestrict weapon type"
 	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Weapon group @green\"{1}\" ({2}) @defaulthas been unrestricted."
+		"#format"	"{1:s}"
+		"en"		"Weapons of type @green\"{1}\" @defaulthave been unrestricted."
 	}
 
-	"Restrict custom weapon group failed"
+	"Restrict weapon type stopped"
 	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Weapon group @green\"{1}\" ({2}) @defaultis already restricted."
+		"#format"	"{1:s}"
+		"en"		"Weapons of type @green\"{1}\" @defaultare all already restricted."
 	}
 
-	"Unrestrict custom weapon group failed"
+	"Unrestrict weapon type stopped"
 	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Weapon group @green\"{1}\" ({2}) @defaulthas no restrictions set."
+		"#format"	"{1:s}"
+		"en"		"Weapons of type @green\"{1}\" @defaulthave no restrictions set."
+	}
+
+	"Restrict weapon untoggleable"
+	{
+		"#format"	"{1:s}"
+		"en"		"Weapon @green\"{1}\" @defaultmay not have its restrictions toggled."
 	}
 
 	"Weapon invalid"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaultis an invalid weapon name."
+		"en"		"Weapon @green\"{1}\" @defaultis an invalid weapon (type) name."
 	}
 
 	"Weapon is restricted"
@@ -338,29 +344,28 @@
 		"ru"		"Оружие @green{1} @default запрещено."
 	}
 
-	// Market
+	// ZMarket
 
 	"Market title"
 	{
-		"en"		"Available Weapons:"
+		"en"		""
 	}
 
 	"Market rebuy"
 	{
-		"en"		"Rebuy"
-		"ru"		"Купить снова"
+		"en"		""
 	}
 
 	// Commands
 
 	"Weapons command restrict syntax"
 	{
-		"en"		"Syntax: zr_restrict <weapon> (\"weapon_\" prefix is ignored)"
+		"en"		"Restricts a weapon or a weapon type. Usage: zr_restrict <weapon|weapon type> [weapon2|weapontype2] ..."
 	}
 
 	"Weapons command unrestrict syntax"
 	{
-		"en"		"Syntax: zr_unrestrict <weapon> (\"weapon_\" prefix is ignored)"
+		"en"		"Unrestricts a weapon or a weapon type. Usage: zr_unrestrict <weapon|weapon type> [weapon2|weapontype2] ..."
 	}
 
 	// Menu
@@ -370,56 +375,48 @@
 		"en"		"Weapons Management"
 	}
 
-	"Weapons menu main toggle weapon restrict"
+	"Weapons menu main restrict"
 	{
-		"en"		"Toggle Weapon Restriction"
+		"en"		"Weapon Restrictions"
 	}
 
-	"Weapons menu main toggle weapon group restrict"
+	"Weapons menu main market"
 	{
-		"en"		"Toggle Weapon Group Restriction"
+		"en"		"ZMarket"
 	}
 
-	"Weapons menu main market" // Option disabled if ZMarket isn't installed
+	"Weapons menu types title"
 	{
-		"en"		"ZMarket Options"
+		"en"		"Weapon Restrictions\nSelect Weapon Type:"
 	}
 
-	"Weapons menu weapons weapon title"
-	{
-		"en"		"Toggle Restrictions:\n * = restricted"
-	}
-
-	"Weapons menu weapons group title"
-	{
-		"en"		"Access Weapon Group:\n * = Partially restricted\n ** = Fully restricted"
-	}
-
-	"Weapons menu weapon group title"
+	"Weapons menu types type title"
 	{
 		"#format"	"{1:s}"
-		"en"		"Modify Restrictions:\n Current Weapon Group: {1}\n * = restricted"
+		"en"		"Weapon Restrictions\nWeapon Type: {1}\n[] = Restricted"
 	}
 
-	"Weapons menu market title"
-	{
-		"en"		"Toggle Market Settings:"
-	}
-
-	"Weapons menu market toggle buyzone"
+	"Weapons menu types restrict all"
 	{
 		"#format"	"{1:s}"
-		"en"		"Buyzone Only (Current: {1})"
+		"en"		"Restrict weapon type {1}"
 	}
 
-	"Weapons menu weapon group restrict all"
+	"Weapons menu types unrestrict all"
 	{
-		"en"		"Restrict All Group Weapons"
+		"#format"	"{1:s}"
+		"en"		"Unrestrict weapon type {1}\n "
 	}
 
-	"Weapons menu weapon group unrestrict all"
+	"Weapons menu zmarket title"
 	{
-		"en"		"Unrestrict All Group Weapons"
+		"en"		"ZMarket\nSelect Setting:"
+	}
+
+	"Weapons menu zmarket buyzone"
+	{
+		"#format"	"{1:s}"
+		"en"		"Buyzone Only - {1}"
 	}
 
 	// ===========================
@@ -556,37 +553,7 @@
 
 	"!zadmin main title"
 	{
-		"en"		"ZAdmin Menu:"
-	}
-
-	"!zadmin main knockbackm"
-	{
-		"en"		"Modify Knockback Multiplier"
-	}
-
-	"!zadmin main knockback"
-	{
-		"en"		"Modify Class Knockback"
-	}
-
-	"!zadmin main nvgs"
-	{
-		"en"		"Modify Nightvision Options"
-	}
-
-	"!zadmin main infect"
-	{
-		"en"		"Infect a Player"
-	}
-
-	"!zadmin main spawn"
-	{
-		"en"		"Spawn All Players"
-	}
-
-	"!zadmin main tele"
-	{
-		"en"		"ZTele Commands"
+		"en"		"ZAdmin\n Select Category:"
 	}
 
 	"!zadmin main weapons"
