@@ -10,6 +10,94 @@
  * ============================================================================
  */
 
+/*
+    Using config API:
+    
+    -Before any of these helper functions can be used on a config file you must
+     "register" the module handling the data.
+    
+    Example:
+    
+    ConfigRegisterConfig(File_Example, Structure_List, "example");
+    
+    * The first parameter of this call is the config file we want to register.
+      this needs to be listed in the "ConfigFile" enum in config.inc.
+      
+    * The second parameter is the structure of the config file we are loading.
+      The supported structures are listed in the "ConfigStructure" enum in config.inc
+      
+    * The last parameter is the file's alias.  Or what we use to refer to the
+      config file from a non-developer's point of view.  For example zr_config_reload
+      requires the file alias to identify the config file the user wants to reload.
+    
+    -Next we need to define the config file's path.  To do this we first need to
+     retrieve the path file from cvar.
+     
+     Example:
+     
+     new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_EXAMPLE, pathexample);
+     
+     * The first parameter is the cvar handle we are looking into.
+       
+     * The second parameter is the string to store the path in.
+       
+     * The return value is true if the file exists on the server, false if not.
+       If the file doesn't exist, handle it.  (Print log, stop plugin, etc)     
+    
+     Then store it in the config file data.
+     
+     Example:
+    
+    ConfigSetConfigPath(File_Example, pathexample);
+    
+    * The first parameter is the config file we want to set path to.
+      
+    * The second parameter is the path we want to set to the config file.
+    
+    -Next we load config file and prepare its nested array structure.
+    
+    Example:
+    
+    new bool:success = ConfigLoadConfig(File_Example, arrayExample);
+    
+    * The first parameter is the config file we want to load.
+      
+    * The second parameter is the array handle we want to prepare data structure in.
+      
+    * The return value is true if the file was successfully loaded, false if the
+      config file couldn't be loaded.  (Invalid data, missing quotes, brackets, etc)
+    
+    -Next validate the config so far, stopping if no data was found or if ConfigLoadConfig
+     returned false.
+    
+    -Then cache the config file data into the arrays (only for Keyvalue structures)
+     by iterating through the data and pushing the values into the array.
+    
+    -Validate the values of the data.
+    
+    -Lastly we need to set specific info to the module now that it has successfully
+     loaded.
+    
+    Example:
+    
+    ConfigSetConfigLoaded(File_Example, true);
+    ConfigSetConfigReloadFunc(File_Example, GetFunctionByName(GetMyHandle(), "ExampleOnConfigReload"));
+    ConfigSetConfigHandle(File_Example, arrayExample);
+    
+    These functions will modify the config file data for other things to use.
+    (such as zr_config_reload)
+    
+    * The first function call will set the loaded state of the config file to
+      true, failing to do this will cause the config module to think your
+      config file isn't loaded, therefore causing some undesired erroring.
+      
+    * The second function sets the reload function of the config file.  This
+      function will be called upon its config file being reloaded.
+      
+    * The third function stores the array handle for use by other parts of the
+      module.
+*/
+
 /**
  * The max length of any config string value.
  */
@@ -335,13 +423,11 @@ stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
     ConfigGetConfigPath(config, configpath, sizeof(configpath));
     
     // If handle is still open, then close it before creating a new one.
-    if (arrayConfig != INVALID_HANDLE)
+    if (arrayConfig == INVALID_HANDLE)
     {
-        CloseHandle(arrayConfig);
+        // Create array in handle.
+        arrayConfig = CreateArray(CONFIG_MAX_LENGTH);
     }
-    
-    // Create array in handle.
-    arrayConfig = CreateArray(CONFIG_MAX_LENGTH);
     
     switch(structure)
     {
