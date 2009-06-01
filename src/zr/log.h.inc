@@ -5,7 +5,7 @@
  *
  *   File:          log.h.inc
  *   Type:          Core
- *   Description:   Log header. Types an defines.
+ *   Description:   Log header. Types and defines.
  *
  * ============================================================================
  */
