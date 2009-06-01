@@ -28,14 +28,14 @@ WeaponAmmoOnOffsetsFound()
     g_iToolsClip1 = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
     if (g_iToolsClip1 == -1)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBaseCombatWeapon::m_iClip1\" was not found.");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Offsets", "Offset \"CBaseCombatWeapon::m_iClip1\" was not found.");
     }
     
     // If offset "m_iClip2" can't be found, then stop the plugin.
     g_iToolsClip2 = FindSendPropInfo("CBaseCombatWeapon", "m_iClip2");
     if (g_iToolsClip2 == -1)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBaseCombatWeapon::m_iClip2\" was not found.");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Offsets", "Offset \"CBaseCombatWeapon::m_iClip2\" was not found.");
     }
 }
 

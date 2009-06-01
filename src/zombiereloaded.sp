@@ -18,6 +18,9 @@
 
 #define VERSION "3.0-dev"
 
+// Header includes.
+#include "zr/log.h"
+
 // Core includes.
 #include "zr/zombiereloaded"
 #include "zr/translation"

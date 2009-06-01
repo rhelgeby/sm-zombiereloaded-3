@@ -48,7 +48,7 @@ AntiStickOnOffsetsFound()
     g_iToolsCollisionGroup = FindSendPropInfo("CBaseEntity", "m_CollisionGroup");
     if (g_iToolsCollisionGroup == -1)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBaseEntity::m_CollisionGroup\" was not found.");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Antistick, "Offsets", "Offset \"CBaseEntity::m_CollisionGroup\" was not found.");
     }
 }
 

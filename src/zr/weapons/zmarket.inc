@@ -31,7 +31,7 @@ ZMarketOnOffsetsFound()
     g_iToolsInBuyZone = FindSendPropInfo("CCSPlayer", "m_bInBuyZone");
     if (g_iToolsInBuyZone == -1)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CCSPlayer::m_bInBuyZone\" was not found.");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Offsets", "Offset \"CCSPlayer::m_bInBuyZone\" was not found.");
     }
 }
 

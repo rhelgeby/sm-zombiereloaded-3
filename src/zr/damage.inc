@@ -322,7 +322,7 @@ public Action:DamageSuicideIntercept(client, argc)
     TranslationReplyToCommand(client, "Damage suicide intercept");
     
     // Log suicide interception
-    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Damage", "Suicide Intercept", "\"%L\" attempted suicide.", client);
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Damage, "Suicide Intercept", "Player \"%L\" attempted suicide.", client);
     
     // Block command.
     return Plugin_Handled;

@@ -41,7 +41,7 @@ ModelsLoad()
     if (!exists)
     {
         // Log failure and stop plugin.
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: Missing models file: \"%s\"", pathmodels);
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Missing models file: \"%s\"", pathmodels);
     }
     
     // Set the path to the config file.
@@ -53,7 +53,7 @@ ModelsLoad()
     // Unexpected error, stop plugin.
     if (!success)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: Unexpected error encountered loading: %s", pathmodels);
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Unexpected error encountered loading: %s", pathmodels);
     }
     
     new modelcount;
@@ -143,17 +143,17 @@ ModelsLoad()
             x--;
             
             // Log missing model files.
-            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Models", "Config Validation", "Missing model files on server (%s)", modelbase);
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Missing model files on server (%s)", modelbase);
         }
     }
     
     // Log model validation info.
-    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Models", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", modelcount, modelvalidcount, modelcount - modelvalidcount);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", modelcount, modelvalidcount, modelcount - modelvalidcount);
     
     // If none of the model paths are valid, then log and fail.
     if (!modelvalidcount)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Models", "Config Validation", "Fatal Error: No usable model paths in %s", pathmodels);
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "No usable model paths in %s", pathmodels);
     }
     
     // Set config data.

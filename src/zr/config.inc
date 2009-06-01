@@ -201,7 +201,7 @@ ConfigLoad()
     ServerCommand("exec %s", mapconfig);
     
     // Log action.
-    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Config", "Map Configs", "Executed map config file: %s", path);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Config, "Map Configs", "Executed map config file: %s", path);
 }
 
 /**
@@ -239,7 +239,7 @@ ConfigOnModulesLoaded()
     ServerCommand("exec %s", mapconfig);
     
     // Log action.
-    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Config", "Map Configs", "Executed post map config file: %s", path);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Config, "Executed post map config file: %s", path);
 }
 
 /**
@@ -552,7 +552,7 @@ stock bool:ConfigReloadConfig(ConfigFile:config)
         ConfigGetConfigAlias(config, configalias, sizeof(configalias));
         
         // Print reload failure to logs.
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Config", "Reload Function", "Invalid reload function for config: \"%s\"", configalias);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Config, "Reload Function", "Invalid reload function for config: \"%s\"", configalias);
         
         return true;
     }

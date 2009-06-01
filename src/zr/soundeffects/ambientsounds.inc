@@ -66,7 +66,7 @@ bool:AmbientSoundsValidateConfig()
     if (!FileExists(sound, true))
     {
         // Log invalid sound file error.
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Ambient Sounds", "Config Validation", "Invalid sound file specified in \"zr_ambientsounds_file\".");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Soundeffects, "Config Validation", "Invalid sound file specified in \"zr_ambientsounds_file\": %s", sound);
         return false;
     }
     
@@ -75,7 +75,7 @@ bool:AmbientSoundsValidateConfig()
     if (ambientvolume <= 0.0)
     {
         // Log invalid ambient sound volume error.
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Ambient Sounds", "Config Validation", "Ambient sound is either muted or invalid.");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Soundeffects, "Config Validation", "Ambient sound volume specified in \"zr_ambientsounds_volume\"is either muted or invalid.");
         
         return false;
     }
@@ -85,7 +85,7 @@ bool:AmbientSoundsValidateConfig()
     if (ambientlength <= 0.0)
     {
         // Log invalid ambient sound length error.
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Ambient Sounds", "Config Validation", "Specified ambient sound length is invalid.");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Soundeffects, "Config Validation", "Ambient sound length specified in \"zr_ambientsounds_length\" is invalid.");
         
         return false;
     }

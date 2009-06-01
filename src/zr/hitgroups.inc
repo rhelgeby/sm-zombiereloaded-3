@@ -70,7 +70,7 @@ HitgroupsLoad()
     if (!exists)
     {
         // Log failure.
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Missing hitgroups config file: %s", pathhitgroups);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Hitgroups, "Config Validation", "Missing hitgroups config file: %s", pathhitgroups);
         
         return;
     }
@@ -84,7 +84,7 @@ HitgroupsLoad()
     // Unexpected error, stop plugin.
     if (!success)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Unexpected error encountered loading: %s", pathhitgroups);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Hitgroups, "Config Validation", "Unexpected error encountered loading: %s", pathhitgroups);
         
         return;
     }
@@ -93,7 +93,7 @@ HitgroupsLoad()
     new size = GetArraySize(arrayHitgroups);
     if (!size)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "No usable data found in hitgroups config file: %s", pathhitgroups);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Hitgroups, "Config Validation", "No usable data found in hitgroups config file: %s", pathhitgroups);
     }
     
     // Now copy data to array structure.
@@ -120,7 +120,7 @@ HitgroupsCacheData()
     
     if (!success)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Unexpected error caching data from hitgroups config file: %s", pathhitgroups);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Hitgroups, "Config Validation", "Unexpected error caching data from hitgroups config file: %s", pathhitgroups);
     }
     
     decl String:hitgroupname[HITGROUPS_MAX_LENGTH];
@@ -134,7 +134,7 @@ HitgroupsCacheData()
         KvRewind(kvHitgroups);
         if (!KvJumpToKey(kvHitgroups, hitgroupname))
         {
-            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Hitgroups", "Config Validation", "Couldn't cache hitgroup data for: %s (check hitgroup config)", hitgroupname);
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Hitgroups, "Config Validation", "Couldn't cache hitgroup data for: %s (check hitgroup config)", hitgroupname);
             continue;
         }
         

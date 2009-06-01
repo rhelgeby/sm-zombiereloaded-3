@@ -31,7 +31,7 @@ DownloadsLoad()
     if (!exists)
     {
         // Log failure and stop plugin.
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Downloads", "Config Validation", "Fatal Error: Missing downloads file: \"%s\"", pathdownloads);
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Downloads, "Config Validation", "Missing downloads file: \"%s\"", pathdownloads);
     }
     
     // Set the path to the config file.
@@ -43,7 +43,7 @@ DownloadsLoad()
     // Unexpected error, stop plugin.
     if (!success)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Downloads", "Config Validation", "Fatal Error: Unexpected error encountered loading: %s", pathdownloads);
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Downloads, "Config Validation", "Unexpected error encountered loading: %s", pathdownloads);
     }
     
     new downloadcount;
@@ -71,7 +71,7 @@ DownloadsLoad()
             // Backtrack one index, because we deleted it out from under the loop.
             x--;
             
-            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Downloads", "Config Validation", "Missing file \"%s\"", downloadpath);
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Downloads, "Config Validation", "Missing file \"%s\"", downloadpath);
             continue;
         }
         
@@ -83,7 +83,7 @@ DownloadsLoad()
     }
     
     // Log model validation info.
-    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Downloads", "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", downloadcount, downloadvalidcount, downloadcount - downloadvalidcount);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Downloads, "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", downloadcount, downloadvalidcount, downloadcount - downloadvalidcount);
     
     // Set config data.
     ConfigSetConfigLoaded(File_Downloads, true);

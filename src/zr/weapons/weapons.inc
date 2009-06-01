@@ -87,7 +87,7 @@ WeaponsOnOffsetsFound()
     g_iToolsActiveWeapon = FindSendPropInfo("CBasePlayer", "m_hActiveWeapon");
     if (g_iToolsActiveWeapon == -1)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_FATALERROR, "Tools", "Offsets", "Offset \"CBasePlayer::m_hActiveWeapon\" was not found.");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Offsets", "Offset \"CBasePlayer::m_hActiveWeapon\" was not found.");
     }
     
     // Forward event to sub-modules
@@ -126,7 +126,7 @@ WeaponsLoad()
     if (!exists)
     {
         // Log failure.
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapons", "Config Validation", "Missing weapons config file: %s", pathweapons);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "Missing weapons config file: %s", pathweapons);
         
         return;
     }
@@ -140,7 +140,7 @@ WeaponsLoad()
     // Unexpected error, stop plugin.
     if (!success)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapons", "Config Validation", "Unexpected error encountered loading: %s", pathweapons);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "Unexpected error encountered loading: %s", pathweapons);
         
         return;
     }
@@ -149,7 +149,7 @@ WeaponsLoad()
     new size = GetArraySize(arrayWeapons);
     if (!size)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapons", "Config Validation", "No usable data found in weapons config file: %s", pathweapons);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "No usable data found in weapons config file: %s", pathweapons);
     }
     
     // Now copy data to array structure.
@@ -179,7 +179,7 @@ WeaponsCacheData()
     
     if (!success)
     {
-        LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapons", "Config Validation", "Unexpected error caching data from weapons config file: %s", pathweapons);
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "Unexpected error caching data from weapons config file: %s", pathweapons);
     }
     
     decl String:weaponname[WEAPONS_MAX_LENGTH];
@@ -192,7 +192,7 @@ WeaponsCacheData()
         KvRewind(kvWeapons);
         if (!KvJumpToKey(kvWeapons, weaponname))
         {
-            LogPrintToLog(LOG_FORMAT_TYPE_ERROR, "Weapons", "Config Validation", "Couldn't cache weapon data for: %s (check weapons config)", weaponname);
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "Couldn't cache weapon data for: %s (check weapons config)", weaponname);
             continue;
         }
         

@@ -737,13 +737,13 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                 // in the specified team, and log a warning.
                 classindex = ClassGetFirstClass(teamid, _, cachetype);
                 
-                LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Classes", "Default Spawn Class", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", classname, teamid);
+                LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Default Spawn Class", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", classname, teamid);
                 
                 // Validate the new index.
                 if (ClassValidateIndex(classindex))
                 {
                     // Log a warning.
-                    LogPrintToLog(LOG_FORMAT_TYPE_NORMAL, "Classes", "Default Spawn Class", "Warning: The default class name \"%s\" does not exist or matches the team ID.", classname);
+                    LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Default Spawn Class", "Warning: The default class name \"%s\" does not exist or matches the team ID.", classname);
                     return classindex;
                 }
                 else

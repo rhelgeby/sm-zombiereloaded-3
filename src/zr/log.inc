@@ -10,113 +10,225 @@
  * ============================================================================
  */
 
-/**
- * @section Log message max lengths.
- */
-#define LOG_MAX_LENGTH_FILE 2048
-#define LOG_MAX_LENGTH_CHAT 192
-/**
- * @endsection
+/*
+ * Note: See log.h.inc for header types and defines.
  */
 
 /**
- * @section Log format types
+ * Handle for dynamic string array for module filtering.
  */
-#define LOG_FORMAT_TYPE_NORMAL      1      /** Printed in normal log. */
-#define LOG_FORMAT_TYPE_DEBUG       2      /** Printed in normal log, flagged as debug. */
-#define LOG_FORMAT_TYPE_ERROR       3      /** Printed in error log. */
-#define LOG_FORMAT_TYPE_FATALERROR  4      /** Stops the plugin + LOG_FORMAT_TYPE_ERROR */
-/**
- * @endsection
- */
+new Handle:LogModuleFilter;
 
 /**
- * Print a formatted message to logs or error logs.
+ * Cache of current module filter settings. For fast and easy access.
+ */
+new LogModuleFilterCache[LogModules];
+
+/**
+ * Gets a module type as a human readable string.
  *
- * @param type          (Optional) Logging type. (See LOG_FORMAT_TYPE_* defines)
- * @param module        Module the log belongs to.
- * @param description   Short descriptive phrase to group together similar logs.
- * @param text          Text to print to log.
+ * @param buffer    Destination string buffer.
+ * @param maxlen    Size of destination buffer.
+ * @param module    Module type to convert.
+ *
+ * @return      Number of cells written.
+ */
+LogGetModuleNameString(String:buffer[], maxlen, LogModules:module)
+{
+    switch (module)
+    {
+        case LogModule_Antistick:
+        {
+            return strcopy(buffer, maxlen, "Anti-Stick");
+        }
+        case LogModule_Config:
+        {
+            return strcopy(buffer, maxlen, "Config");
+        }
+        case LogModule_Cvars:
+        {
+            return strcopy(buffer, maxlen, "CVARs");
+        }
+        case LogModule_Damage:
+        {
+            return strcopy(buffer, maxlen, "Damage");
+        }
+        case LogModule_Downloads:
+        {
+            return strcopy(buffer, maxlen, "Downloads");
+        }
+        case LogModule_Hitgroups:
+        {
+            return strcopy(buffer, maxlen, "Hit Groups");
+        }
+        case LogModule_Infect:
+        {
+            return strcopy(buffer, maxlen, "Infect");
+        }
+        case LogModule_Models:
+        {
+            return strcopy(buffer, maxlen, "Models");
+        }
+        case LogModule_Playerclasses:
+        {
+            return strcopy(buffer, maxlen, "Player Classes");
+        }
+        case LogModule_Soundeffects:
+        {
+            return strcopy(buffer, maxlen, "Sound Effects");
+        }
+        case LogModule_Tools:
+        {
+            return strcopy(buffer, maxlen, "Tools");
+        }
+        case LogModule_Volfetures:
+        {
+            return strcopy(buffer, maxlen, "Volumetric Features");
+        }
+        case LogModule_Weapons:
+        {
+            return strcopy(buffer, maxlen, "Weapons");
+        }
+        case LogModule_Weaponrestrict:
+        {
+            return strcopy(buffer, maxlen, "Weapon Restrictions");
+        }
+    }
+    
+    // Module mismatch.
+    return 0;
+}
+
+/**
+ * Check if the specified log flag is set.
+ *
+ * @param eventType     The log flag to check.
+ * @return              True if set, false otherwise.
+ */
+bool:LogCheckFlag(eventType)
+{
+    // Check if eventType is set.
+    if (GetConVarInt(g_hCvarsList[CVAR_LOG_FLAGS]) & eventType)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+/**
+ * Check if the specified module is enabled in the log module filter cache.
+ *
+ * @param module        Module to check.
+ * @return              True if enabled, false otherwise. 
+ */
+bool:LogCheckModuleFilter(LogModules:module)
+{
+    if (LogModuleFilterCache[module])
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+/**
+ * Print a formatted message to logs depending on log settings.
+ *
+ * @param isConsole     Optional. Specifies whether the log event came from
+ *                      client 0. Used in console commands, do not mix with
+ *                      regular log events. Default is false.
+ * @param logType       Optional. Log type and action. Default is
+ *                      LogType_Normal.
+ * @param eventType     Optional. A log flag describing What kind of log event
+ *                      it is. Default is LOG_CORE_EVENTS.
+ * @param module        Module the log event were executed in.
+ * @param description   Event type or function name. A short descriptive phrase
+ *                      to group together similar logs.
+ * @param text          Log message. Can be formatted.
  * @param ...           Formatting parameters.
  */
-LogPrintToLog(type = LOG_FORMAT_TYPE_NORMAL, const String:module[], const String:description[], const String:text[], any:...)
+LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = LOG_CORE_EVENTS, LogModules:module, const String:description[], const String:text[], any:...)
 {
-    // If logging is disabled, then stop.
-    new bool:log = GetConVarBool(g_hCvarsList[CVAR_LOG]);
-    if (!log)
+    // Only do filter and flag checks if the log type isn't a fatal error.
+    if (logType != LogType_Fatal)
     {
-        return;
-    }
-    
-    // If module is filtered, then stop.
-    decl String:filtermodules[256];
-    GetConVarString(g_hCvarsList[CVAR_LOG_FILTER_MODULES], filtermodules, sizeof(filtermodules));
-    
-    if (StrContains(filtermodules, module, false) > -1)
-    {
-        return;
-    }
-    
-    // If description is filtered, then stop.
-    decl String:filterdescription[256];
-    GetConVarString(g_hCvarsList[CVAR_LOG_FILTER_DESCRIPTION], filterdescription, sizeof(filterdescription));
-    
-    if (StrContains(filterdescription, description, false) > -1)
-    {
-        return;
-    }
-    
-    // If debug is disabled, then stop.
-    new bool:filterdebug = GetConVarBool(g_hCvarsList[CVAR_LOG_FILTER_DEBUG]);
-    if (filterdebug && type == LOG_FORMAT_TYPE_DEBUG)
-    {
-        return;
+        // Check if logging is disabled.
+        if (!GetConVarBool(g_hCvarsList[CVAR_LOG]))
+        {
+            return;
+        }
+        
+        // Check if console is ignored.
+        if (isConsole && GetConVarBool(g_hCvarsList[CVAR_LOG_IGNORE_CONSOLE]))
+        {
+            return;
+        }
+        
+        // Check event type (log flag).
+        if (!LogCheckFlag(eventType))
+        {
+            return;
+        }
+        
+        // Check if module filtering is enabled.
+        if (GetConVarBool(g_hCvarsList[CVAR_LOG_MODULE_FILTER]))
+        {
+            // Check if the specified module is enabled.
+            if (!LogCheckModuleFilter(module))
+            {
+                return;
+            }
+        }
     }
     
     // Format extra parameters into the log buffer.
     decl String:logbuffer[LOG_MAX_LENGTH_FILE];
     VFormat(logbuffer, sizeof(logbuffer), text, 5);
     
+    // Get human readable module name.
+    new String:modulename[64];
+    LogGetModuleNameString(modulename, sizeof(modulename), module);
+    
     // Format 
-    Format(logbuffer, sizeof(logbuffer), "[%s]|[%s]: %s", module, description, logbuffer);
+    Format(logbuffer, sizeof(logbuffer), "[%s] - [%s]: %s", modulename, description, logbuffer);
     
     // Format other parameters onto the log text.
-    switch (type)
+    switch (logType)
     {
         // Log type is normal.
-        case LOG_FORMAT_TYPE_NORMAL:
+        case LogType_Normal:
         {
             LogMessage(logbuffer);
         }
         // Log type is error.
-        case LOG_FORMAT_TYPE_ERROR:
+        case LogType_Error:
         {
             LogError(logbuffer);
         }
         // Log type is fatal error.
-        case LOG_FORMAT_TYPE_FATALERROR:
+        case LogType_Fatal:
         {
             SetFailState(logbuffer);
         }
     }
     
-    // If print to admin cvar is enabled, then print to all connect admins.
-    new bool:printadmins = GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_ADMINS]);
-    if (printadmins)
+    // Note: The phrase "Literal text" is a blank phrase to pass any string we want into it.
+    
+    // Check if printing log events to admins is enabled.
+    if (GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_ADMINS]))
     {
         // Print text to admins.
-        // Note: The phrase "Literal text" is a blank phrase to pass any string we want into it.
-        
-        new bool:printchat = GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_CHAT]);
-        if (printchat)
-        {
-            TranslationPrintToChatAll(false, true, "Literal text", logbuffer);
-        }
-        
-        new bool:printconsole = GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_CONSOLE]);
-        if (printconsole)
-        {
-            TranslationPrintToConsoleAll(false, true, "Literal text", logbuffer);
-        }
+        TranslationPrintToChatAll(false, true, "Literal text", logbuffer);
+    }
+    
+    // Check if printing log events to public chat is enabled.
+    if (GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_CHAT]))
+    {
+        TranslationPrintToChatAll(false, false, "Literal text", logbuffer);
     }
 }
