@@ -281,7 +281,7 @@ VolResetCountDown(client = -1)
     else
     {
         // Reset all volume counters.
-        for (new clientIndex = 0; clientIndex <= MAXPLAYERS + 1; clientIndex++)
+        for (new clientIndex = 0; clientIndex < MAXPLAYERS + 1; clientIndex++)
         {
             for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX; volumeIndex++)
             {
