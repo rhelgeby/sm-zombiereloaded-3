@@ -90,7 +90,7 @@
 	"Config command reload syntax"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"en"		"Syntax: zr_reloadconfig <file alias> - Reloads a config file.\n File Aliases:\n * \"{1}\"\n * \"{2}\"\n * \"{3}\"\n * \"{4}\"\n * \"{5}\""
+		"en"		"Syntax: zr_reloadconfig <file alias1> [file alias2] ... - Reloads a config file.\n File Aliases:\n * \"{1}\"\n * \"{2}\"\n * \"{3}\"\n * \"{4}\"\n * \"{5}\""
 	}
 
 	"Config command reload invalid"
@@ -102,12 +102,12 @@
 	"Config command reload not loaded"
 	{
 		"#format"	"{1:s}"
-		"en"		"File failed to load: \"{1}\" (Either disabled or invalid file content.)"
+		"en"		"Config file \"{1}\" failed to load. (Either disabled or invalid file content.)"
 	}
 
 	"Config command reload all stats begin"
 	{
-		"en"		"Reloading all Zombie:Reloaded config files...\n ------------------------------------------"
+		"en"		"Reloading all Zombie:Reloaded config files...\n ------------------------------------------------"
 	}
 
 	"Config command reload all stats successful"

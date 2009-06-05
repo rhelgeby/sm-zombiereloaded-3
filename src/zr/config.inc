@@ -786,30 +786,34 @@ public Action:ConfigReloadCommand(client, argc)
         return Plugin_Handled;
     }
     
-    // arg1 = file alias being reloaded.
-    decl String:arg1[32];
-    GetCmdArg(1, arg1, sizeof(arg1));
-    
-    // If alias is invalid, then stop.
-    new ConfigFile:config = ConfigAliasToConfigFile(arg1);
-    if (config == File_Invalid)
-    {
-        TranslationReplyToCommand(client, "Config command reload invalid", arg1);
-        return Plugin_Handled;
-    }
-    
-    // Reload config file.
-    new bool:loaded = ConfigReloadConfig(config);
-    
-    // Get config file path.
+    decl String:filealias[CONFIG_MAX_LENGTH];
     decl String:path[PLATFORM_MAX_PATH];
-    ConfigGetConfigPath(config, path, sizeof(path));
     
-    // If file isn't loaded then tell client, then stop.
-    if (!loaded)
+    new args = GetCmdArgs();
+    for (new x = 1; x <= args; x++)
     {
-        TranslationReplyToCommand(client, "Config command reload not loaded", path);
-        return Plugin_Handled;
+        // Get alias to restrict.
+        GetCmdArg(x, filealias, sizeof(filealias));
+        
+        // If alias is invalid, then stop.
+        new ConfigFile:config = ConfigAliasToConfigFile(filealias);
+        if (config == File_Invalid)
+        {
+            TranslationReplyToCommand(client, "Config command reload invalid", filealias);
+            return Plugin_Handled;
+        }
+        
+        // Reload config file.
+        new bool:loaded = ConfigReloadConfig(config);
+        
+        // Get config file path.
+        ConfigGetConfigPath(config, path, sizeof(path));
+        
+        // If file isn't loaded then tell client, then stop.
+        if (!loaded)
+        {
+            TranslationReplyToCommand(client, "Config command reload not loaded", filealias);
+        }
     }
     
     return Plugin_Handled;

@@ -597,7 +597,6 @@ public Action:RestrictCommand(client, argc)
         return Plugin_Handled;
     }
     
-    // arg1 = weapon being restricted
     decl String:target[WEAPONS_MAX_LENGTH];
     
     new args = GetCmdArgs();
