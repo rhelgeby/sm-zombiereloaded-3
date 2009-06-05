@@ -121,6 +121,7 @@ public Action:SayHooksCmdSay(client, argc)
         // Client triggered ZMarket flag.
         case SAYHOOKS_KEYWORD_FLAG_ZMARKET:
         {
+            success = ZMarketMenuTypes(client);
         }
     }
     

@@ -34,6 +34,11 @@
 		"en"		"This feature is currently disabled by the server host."
 	}
 
+	"Not enough money"
+	{
+		"en"		"You do not have enough money to buy this item."
+	}
+
 	"Must be player"
 	{
 		"en"		"This feature is reserved for players only."
@@ -267,14 +272,6 @@
 		"ru"		"Зомби не могут использовать оружие!"
 	}
 
-	// Market
-
-	"Market out of buyzone"
-	{
-		"en"		"You are not in a buyzone."
-		"ru"		"Вы вне зоны покупки."
-	}
-
 	// Restrict
 
 	"Restrict weapon"
@@ -346,14 +343,21 @@
 
 	// ZMarket
 
-	"Market title"
+	"Weapons zmarket buyzone"
 	{
-		"en"		""
+		"en"		"You must be in a buyzone to use ZMarket."
 	}
 
-	"Market rebuy"
+	"Weapons zmarket purchase"
 	{
-		"en"		""
+		"#format"	"{1:s}"
+		"en"		"You have purchased weapon @green{1}. @defaultSelect item again to buy ammo if you are low."
+	}
+
+	"Weapons zmarket purchase max"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"Weapon @green{1} @defaulthas a purchase limit of @green{2}@default.  Wait until you respawn to try again."
 	}
 
 	// Commands
@@ -368,55 +372,90 @@
 		"en"		"Unrestricts a weapon or a weapon type. Usage: zr_unrestrict <weapon|weapon type> [weapon2|weapontype2] ..."
 	}
 
-	// Menu
+	// Menu (Restrict)
 
-	"Weapons menu main title"
+	"Weapons menu restrict main title"
 	{
 		"en"		"Weapons Management"
 	}
 
-	"Weapons menu main restrict"
+	"Weapons menu restrict main restrict"
 	{
 		"en"		"Weapon Restrictions"
 	}
 
-	"Weapons menu main market"
+	"Weapons menu restrict main market"
 	{
 		"en"		"ZMarket"
 	}
 
-	"Weapons menu types title"
+	"Weapons menu restrict types title"
 	{
 		"en"		"Weapon Restrictions\nSelect Weapon Type:"
 	}
 
-	"Weapons menu types type title"
+	"Weapons menu restrict types weapon type title"
 	{
 		"#format"	"{1:s}"
 		"en"		"Weapon Restrictions\nWeapon Type: {1}\n[] = Restricted"
 	}
 
-	"Weapons menu types restrict all"
+	"Weapons menu restrict types restrict all"
 	{
 		"#format"	"{1:s}"
 		"en"		"Restrict weapon type {1}"
 	}
 
-	"Weapons menu types unrestrict all"
+	"Weapons menu restrict types unrestrict all"
 	{
 		"#format"	"{1:s}"
 		"en"		"Unrestrict weapon type {1}\n "
 	}
 
-	"Weapons menu zmarket title"
+	"Weapons menu restrict zmarket title"
 	{
 		"en"		"ZMarket\nSelect Setting:"
 	}
 
-	"Weapons menu zmarket buyzone"
+	"Weapons menu restrict zmarket buyzone"
 	{
 		"#format"	"{1:s}"
 		"en"		"Buyzone Only - {1}"
+	}
+
+	// Menu (ZMarket)
+
+	"Weapons menu zmarket types title"
+	{
+		"en"		"ZMarket\nSelect Weapon Type:"
+	}
+
+	"Weapons menu zmarket types rebuy"
+	{
+		"en"		"Rebuy (1 weapon per slot)"
+	}
+
+        "Weapons menu zmarket types auto-rebuy"
+	{
+		"#format"	"{1:s}"
+		"en"		"Auto-Rebuy: {1}\n "
+	}
+
+	"Weapons menu zmarket types weapon type title"
+	{
+		"#format"	"{1:s}"
+		"en"		"ZMarket\nWeapon Type: {1}\n[] = Restricted"
+	}
+
+	"Weapons menu zmarket types weapon info"
+	{
+		"#format"	"{1:s},{2:d},{3:d}"
+		"en"		"{1} (${2})\nPurchases Left: {3}"
+	}
+
+	"Weapons menu zmarket types weapon ammo"
+	{
+		"en"		"Ammo"
 	}
 
 	// ===========================

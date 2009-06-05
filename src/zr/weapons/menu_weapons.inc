@@ -3,9 +3,24 @@
  *
  *   Zombie:Reloaded
  *
- *   File:          menu_weapons.inc
- *   Type:          Core
- *   Description:   Handles weapons management menu.
+ *  File:          menu_weapons.inc
+ *  Type:          Core
+ *  Description:   Handles weapons management menu.
+ *
+ *  Copyright (C) 2009  Greyscale, Richard Helgeby
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * ============================================================================
  */
@@ -13,7 +28,7 @@
 /**
  * Array to store the client's current weapon type within menu.
  */
-new g_iCurWeaponType[MAXPLAYERS + 1];
+new g_iWeaponsCurType[MAXPLAYERS + 1];
 
 /**
  * Sends main weapon menu to client.
@@ -26,13 +41,13 @@ WeaponsMenuMain(client)
     
     SetGlobalTransTarget(client);
     
-    SetMenuTitle(menu_weapons_main, "%t\n ", "Weapons menu main title");
+    SetMenuTitle(menu_weapons_main, "%t\n ", "Weapons menu restrict main title");
     
     decl String:restrict[64];
     decl String:zmarket[64];
     
-    Format(restrict, sizeof(restrict), "%t", "Weapons menu main restrict");
-    Format(zmarket, sizeof(zmarket), "%t", "Weapons menu main market");
+    Format(restrict, sizeof(restrict), "%t", "Weapons menu restrict main restrict");
+    Format(zmarket, sizeof(zmarket), "%t", "Weapons menu restrict main market");
     
     // Draw items, make unselectable if module is disabled.
     AddMenuItem(menu_weapons_main, "restrict", restrict, MenuGetItemDraw(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT])));
@@ -98,8 +113,8 @@ WeaponsMenuTypes(client)
     
     SetGlobalTransTarget(client);
     
-    SetMenuTitle(menu_weapons_types, "%t\n ", "Weapons menu types title");
-            
+    SetMenuTitle(menu_weapons_types, "%t\n ", "Weapons menu restrict types title");
+    
     decl String:typename[WEAPONS_MAX_LENGTH];
     
     // x = Array index.
@@ -141,7 +156,7 @@ public WeaponsMenuTypesHandle(Handle:menu_weapons_types, MenuAction:action, clie
     if (action == MenuAction_Select)
     {
         // Menu slot index is = weapon type index.
-        g_iCurWeaponType[client] = slot;
+        g_iWeaponsCurType[client] = slot;
         
         // Send weapons of the selected type in a menu to client.
         WeaponsMenuTypeWeapons(client);
@@ -172,26 +187,26 @@ WeaponsMenuTypeWeapons(client)
     new Handle:menu_weapons_typeweapons = CreateMenu(WeaponsMenuTypeWeaponsHandle);
     
     decl String:typename[WEAPONS_MAX_LENGTH];
-    RestrictWeaponTypeGetName(g_iCurWeaponType[client], typename, sizeof(typename));
+    RestrictWeaponTypeGetName(g_iWeaponsCurType[client], typename, sizeof(typename));
     
-    SetMenuTitle(menu_weapons_typeweapons, "%t\n ", "Weapons menu types type title", typename);
+    SetMenuTitle(menu_weapons_typeweapons, "%t\n ", "Weapons menu restrict types weapon type title", typename);
     
     decl String:restrictall[64];
     decl String:unrestrictall[64];
     
-    Format(restrictall, sizeof(restrictall), "%t", "Weapons menu types restrict all", typename);
-    Format(unrestrictall, sizeof(unrestrictall), "%t", "Weapons menu types unrestrict all", typename);
+    Format(restrictall, sizeof(restrictall), "%t", "Weapons menu restrict types restrict all", typename);
+    Format(unrestrictall, sizeof(unrestrictall), "%t", "Weapons menu restrict types unrestrict all", typename);
     
     // Draw items as selectable only if not all weapons within the type are restricted or unrestricted.
-    AddMenuItem(menu_weapons_typeweapons, "restrictall", restrictall, MenuGetItemDraw(!RestrictIsTypeUniform(true, g_iCurWeaponType[client])));
-    AddMenuItem(menu_weapons_typeweapons, "unrestrictall", unrestrictall, MenuGetItemDraw(!RestrictIsTypeUniform(false, g_iCurWeaponType[client])));
+    AddMenuItem(menu_weapons_typeweapons, "restrictall", restrictall, MenuGetItemDraw(!RestrictIsTypeUniform(true, g_iWeaponsCurType[client])));
+    AddMenuItem(menu_weapons_typeweapons, "unrestrictall", unrestrictall, MenuGetItemDraw(!RestrictIsTypeUniform(false, g_iWeaponsCurType[client])));
     
     decl String:typeweapon[WEAPONS_MAX_LENGTH];
     decl String:display[WEAPONS_MAX_LENGTH];
     
     // Get an array populated with all weapons of the given type.
     new Handle:arrayTypeWeapons;
-    new count = RestrictGetTypeWeapons(g_iCurWeaponType[client], arrayTypeWeapons);
+    new count = RestrictGetTypeWeapons(g_iWeaponsCurType[client], arrayTypeWeapons);
     
     // x = Array index.
     for (new x = 0; x < count; x++)
@@ -236,7 +251,7 @@ public WeaponsMenuTypeWeaponsHandle(Handle:menu_weapons_typeweapons, MenuAction:
     {
         // Get name of current weapon type.
         decl String:typename[WEAPONS_MAX_LENGTH];
-        RestrictWeaponTypeGetName(g_iCurWeaponType[client], typename, sizeof(typename));
+        RestrictWeaponTypeGetName(g_iWeaponsCurType[client], typename, sizeof(typename));
         
         new RestrictQuery:query;
         new bool:single;
@@ -270,6 +285,7 @@ public WeaponsMenuTypeWeaponsHandle(Handle:menu_weapons_typeweapons, MenuAction:
                 if (weaponindex == -1)
                 {
                     CloseHandle(menu_weapons_typeweapons);
+                    return;
                 }
                 
                 // If weapon isn't restricted, then restrict it.
@@ -321,7 +337,7 @@ WeaponsMenuZMarket(client)
     
     SetGlobalTransTarget(client);
     
-    SetMenuTitle(menu_weapons_market, "%t\n ", "Weapons menu zmarket title");
+    SetMenuTitle(menu_weapons_market, "%t\n ", "Weapons menu restrict zmarket title");
     
     decl String:buyzone[64];
     decl String:buyzonesetting[8];
@@ -330,7 +346,7 @@ WeaponsMenuZMarket(client)
     ConfigBoolToSetting(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]), buyzonesetting, sizeof(buyzonesetting));
     
     // Add options to menu.
-    Format(buyzone, sizeof(buyzone), "%t", "Weapons menu zmarket buyzone", buyzonesetting);
+    Format(buyzone, sizeof(buyzone), "%t", "Weapons menu restrict zmarket buyzone", buyzonesetting);
     AddMenuItem(menu_weapons_market, "buyzone", buyzone);
     
     // Create a "Back" button to the weapons main menu.

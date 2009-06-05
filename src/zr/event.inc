@@ -155,10 +155,10 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     
     // Forward event to modules.
     InfectOnClientSpawn(index);     // Some modules depend on this to finish first.
+    AccountOnClientSpawn(index);    // Some modules depend on this to finish first.
     ClassOnClientSpawn(index);
-    RestrictOnClientSpawn(index);
+    WeaponsOnClientSpawn(index);
     SEffectsOnClientSpawn(index);
-    AccountOnClientSpawn(index);
     SpawnProtectOnClientSpawn(index);
     RespawnOnClientSpawn(index);
     ZTeleOnClientSpawn(index);

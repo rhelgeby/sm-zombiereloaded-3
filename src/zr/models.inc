@@ -92,6 +92,12 @@ ModelsLoad()
         // Open dir containing model files.
         new Handle:modeldir = OpenDirectory(modelpath);
         
+        if (modeldir == INVALID_HANDLE)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Error opening model path directory: %s", modelpath);
+            continue;
+        }
+        
         // Reset model file count.
         modelfilecount = 0;
         

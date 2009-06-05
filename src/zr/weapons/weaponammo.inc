@@ -47,7 +47,7 @@ WeaponAmmoOnOffsetsFound()
  * @param value     The amount of ammo to set to.
  * @param add       (Optional) If true, the value is added to the weapon's current ammo count.
  */
-stock WeaponAmmoSetClientAmmo(weapon, bool:clip, value, bool:add = false)
+stock WeaponAmmoSetAmmo(weapon, bool:clip, value, bool:add = false)
 {
     // Set variable to offset we are changing.
     new ammooffset = clip ? g_iToolsClip1 : g_iToolsClip2;
@@ -58,7 +58,7 @@ stock WeaponAmmoSetClientAmmo(weapon, bool:clip, value, bool:add = false)
     // If we are adding, then update variable with current ammo value.
     if (add)
     {
-        ammovalue = WeaponAmmoGetClientAmmo(weapon, clip);
+        ammovalue = WeaponAmmoGetAmmo(weapon, clip);
     }
     
     // Return ammo offset value.
@@ -71,7 +71,7 @@ stock WeaponAmmoSetClientAmmo(weapon, bool:clip, value, bool:add = false)
  * @param weapon    The weapon index.
  * @param clip      True gets clip ammo, false gets reserve.
  */
-stock WeaponAmmoGetClientAmmo(weapon, bool:clip)
+stock WeaponAmmoGetAmmo(weapon, bool:clip)
 {
     // Set variable to offset we are changing.
     new ammooffset = clip ? g_iToolsClip1 : g_iToolsClip2;

@@ -188,7 +188,7 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
     
     // Format extra parameters into the log buffer.
     decl String:logbuffer[LOG_MAX_LENGTH_FILE];
-    VFormat(logbuffer, sizeof(logbuffer), text, 5);
+    VFormat(logbuffer, sizeof(logbuffer), text, 7);
     
     // Get human readable module name.
     new String:modulename[64];

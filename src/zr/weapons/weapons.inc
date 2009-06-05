@@ -27,12 +27,14 @@ enum WeaponsData
 {
     WEAPONS_DATA_NAME = 0,
     WEAPONS_DATA_TYPE,
+    WEAPONS_DATA_SLOT,
     WEAPONS_DATA_RESTRICTDEFAULT,
     WEAPONS_DATA_TOGGLEABLE,
     WEAPONS_DATA_AMMOTYPE,
     WEAPONS_DATA_AMMOPRICE,
     WEAPONS_DATA_KNOCKBACK,
     WEAPONS_DATA_ZMARKETPRICE,
+    WEAPONS_DATA_ZMARKETPURCHASEMAX,
     WEAPONS_DATA_RESTRICTED,
 }
 
@@ -203,6 +205,7 @@ WeaponsCacheData()
         
         // General
         KvGetString(kvWeapons, "weapontype", weapontype, sizeof(weapontype));
+        new WeaponsSlot:weaponslot = WeaponsSlot:KvGetNum(kvWeapons, "weaponslot", -1);
         
         // Restrict (core)
         new bool:restrictdefault = ConfigKvGetStringBool(kvWeapons, "restrictdefault", "no");
@@ -210,27 +213,30 @@ WeaponsCacheData()
         
         // Weapon Ammo (core)
     	KvGetString(kvWeapons, "ammotype", ammotype, sizeof(ammotype));
-    	new ammoprice = KvGetNum(kvWeapons, "ammoprice");
+    	new ammoprice = KvGetNum(kvWeapons, "ammoprice", -1);
     	
         // Knockback (module)
         new Float:knockback = KvGetFloat(kvWeapons, "knockback", 1.0);
         
         // ZMarket (module)
         new zmarketprice = KvGetNum(kvWeapons, "zmarketprice", -1);
+        new zmarketpurchasemax = KvGetNum(kvWeapons, "zmarketpurchasemax", 0);
         
         new Handle:arrayWeapon = GetArrayCell(arrayWeapons, x);
         
         // Push data into array.
-        PushArrayString(arrayWeapon, weapontype);       // Index: 1
-        PushArrayCell(arrayWeapon, restrictdefault);    // Index: 2
-        PushArrayCell(arrayWeapon, toggleable);         // Index: 3
-        PushArrayString(arrayWeapon, ammotype);         // Index: 4
-        PushArrayCell(arrayWeapon, ammoprice);          // Index: 5
-        PushArrayCell(arrayWeapon, knockback);          // Index: 6
-        PushArrayCell(arrayWeapon, zmarketprice);       // Index: 7
+        PushArrayString(arrayWeapon, weapontype);           // Index: 1
+        PushArrayCell(arrayWeapon, weaponslot);             // Index: 2
+        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 3
+        PushArrayCell(arrayWeapon, toggleable);             // Index: 4
+        PushArrayString(arrayWeapon, ammotype);             // Index: 5
+        PushArrayCell(arrayWeapon, ammoprice);              // Index: 6
+        PushArrayCell(arrayWeapon, knockback);              // Index: 7
+        PushArrayCell(arrayWeapon, zmarketprice);           // Index: 8
+        PushArrayCell(arrayWeapon, zmarketpurchasemax);    // Index: 9
         
         // Initialize other stored weapon info here.
-        PushArrayCell(arrayWeapon, restrictdefault);    // Index: 8
+        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 10
     }
     
     // We're done with this file now, so we can close it.
@@ -253,21 +259,35 @@ public WeaponsOnConfigReload()
  */
 WeaponsClientInit(client)
 {
-    // Forward event to sub-module.
+    // Forward event to sub-modules.
     RestrictClientInit(client);
     WeaponAlphaClientInit(client);
+    ZMarketClientInit(client);
 }
 
 /**
  * Client is leaving the server.
  * 
  * @param client    The client index.
- */ 
+ */
 WeaponsOnClientDisconnect(client)
 {
-    // Forward event to sub-module.
+    // Forward event to sub-modules.
     RestrictOnClientDisconnect(client);
     WeaponAlphaOnClientDisconnect(client);
+    ZMarketOnClientDisconnect(client);
+}
+
+/**
+ * Client is spawning into the game.
+ * 
+ * @param client    The client index.
+ */
+WeaponsOnClientSpawn(client)
+{
+    // Forward event to sub-modules.
+    RestrictOnClientSpawn(client);
+    ZMarketOnClientSpawn(client);
 }
 
 /**
@@ -376,6 +396,20 @@ stock WeaponsGetType(index, String:type[], maxlen)
 }
 
 /**
+ * Gets the slot index of a weapon at a given index.
+ * @param index     The weapon index.
+ * @return          The slot index of the weapon.
+ */
+stock WeaponsSlot:WeaponsGetSlot(index)
+{
+    // Get array handle of weapon at given index.
+    new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
+    
+    // Return default restriction status.
+    return WeaponsSlot:GetArrayCell(arrayWeapon, _:WEAPONS_DATA_SLOT);
+}
+
+/**
  * Gets if a weapon is restricted by default.
  * @param index     The weapon index.
  * @return          True if the weapon is restricted by default, false if not.
@@ -415,7 +449,7 @@ stock WeaponsGetAmmoType(index, String:ammotype[], maxlen)
     new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
     
     // Get ammo type of the weapon.
-    GetArrayString(arrayWeapon, _:WEAPONS_DATA_AMMOTYPE, type, maxlen);
+    GetArrayString(arrayWeapon, _:WEAPONS_DATA_AMMOTYPE, ammotype, maxlen);
 }
 
 /**
@@ -461,8 +495,57 @@ stock WeaponsGetZMarketPrice(index)
 }
 
 /**
+ * Gets the max purchases from ZMarket per round per client of a weapon.
+ * @param index     The weapon index.
+ * @return          The max purchases of the weapon.
+ */
+stock WeaponsGetZMarketPurchaseMax(index)
+{
+    // Get array handle of weapon at given index.
+    new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
+    
+    // Return the ZMarket price of the weapon.
+    return GetArrayCell(arrayWeapon, _:WEAPONS_DATA_ZMARKETPURCHASEMAX);
+}
+
+/**
  * General weapon API.
  */
+
+/**
+ * Checks if a client has a specific weapon.
+ * 
+ * @param client    The client index.
+ * @param weapon    The weapon classname.
+ */
+stock bool:WeaponsClientHasWeapon(client, const String:weapon[])
+{
+    // Get all of client's current weapons.
+    new weapons[WeaponsSlot];
+    WeaponsGetClientWeapons(client, weapons);
+    
+    decl String:classname[64];
+    
+    // x = slot index
+    for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
+    {
+        // If slot is empty, then stop.
+        if (weapons[x] == -1)
+        {
+            continue;
+        }
+        
+        // If the weapon's classname matches, then return true.
+        GetEdictClassname(weapons[x], classname, sizeof(classname));
+        ReplaceString(classname, sizeof(classname), "weapon_", "");
+        if (StrEqual(weapon, classname, false))
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
 
 /**
  * Return an array that contains all client's weapon indexes.
@@ -473,7 +556,7 @@ stock WeaponsGetZMarketPrice(index)
  */
 stock WeaponsGetClientWeapons(client, weapons[WeaponsSlot])
 {
-    // x = weapon slot.
+    // x = Weapon slot.
     for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
     {
         weapons[x] = GetPlayerWeaponSlot(client, x);

@@ -72,7 +72,7 @@ RestrictLoad()
     decl String:weapontype[WEAPONS_MAX_LENGTH];
     new String:weapontypes[WEAPONS_RESTRICT_MAX_TYPES][WEAPONS_MAX_LENGTH];
     
-    // x = array index
+    // x = Array index.
     new size = GetArraySize(arrayWeapons);
     for (new x = 0; x < size; x++)
     {

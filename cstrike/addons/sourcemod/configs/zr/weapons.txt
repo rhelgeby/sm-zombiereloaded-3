@@ -11,13 +11,18 @@
 //
 // Attribute:               Values:     Description:
 // ----------------------------------------------------------------------------
-// weapontype               text        The type of weapon it is. (List types, separate by ", "
+// weapontype               text        The type of weapon it is. [List types, separate by ", "]
+// weaponslot               number      The slot index the weapon resides in. (Don't change this)
 // restrictdefault          yes/no      The default restricted status of the weapon on map start.
 // toggleable               yes/no      Enable weapon to have restrictions toggled mid-game.
 // ammotype                 text        Ammo entity that belongs to weapons. (Don't change this)
 // ammoprice                number      Price of ammo for this weapon.
 // knockback                decimal     The knockback multiplier for the weapon. ['0.5' = half knockback | 2.0 = double]
-// zmarketprice             number      The price of the weapon in ZMarket. (Defaulted to CS:S buymenu price)
+// zmarketprice             number      The price of the weapon in ZMarket. [Default: CS:S buymenu price]
+// zmarketpurchasemax       number      The max number of purchases allowed per spawn for the weapon.
+//
+// Notes:
+// * Omitting and option will disable the feature for the weapon.
 
 "weapons" // Counter-Strike: Source weapons
 {
@@ -26,6 +31,7 @@
 		// General
 
 		"weapontype"		"All, Pistol"
+		"weaponslot"		"1"
 
 		// Restrict (core)
 
@@ -51,6 +57,7 @@
 		// General
 
 		"weapontype"		"All, Pistol"
+		"weaponslot"		"1"
 
 		// Restrict (core)
 
@@ -76,6 +83,7 @@
 		// General
 
 		"weapontype"		"All, Pistol"
+		"weaponslot"		"1"
 
 		// Restrict (core)
 
@@ -102,6 +110,7 @@
 		// General
 
 		"weapontype"		"All, Pistol"
+		"weaponslot"		"1"
 
 		// Restrict (core)
 
@@ -128,6 +137,7 @@
 		// General
 
 		"weapontype"		"All, Pistol"
+		"weaponslot"		"1"
 
 		// Restrict (core)
 
@@ -154,6 +164,7 @@
 		// General
 
 		"weapontype"		"All, Pistol"
+		"weaponslot"		"1"
 
 		// Restrict (core)
 
@@ -180,6 +191,7 @@
 		// General
 
 		"weapontype"		"All, Shotgun"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -206,6 +218,7 @@
 		// General
 
 		"weapontype"		"All, Shotgun"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -219,7 +232,7 @@
 
 		// Knockback (module)
 
-		"knockback"		"0.8" // See above comment.
+		"knockback"		"0.9" // See above comment.
 
 		// ZMarket (module)
 
@@ -232,6 +245,7 @@
 		// General
 
 		"weapontype"		"All, SMG"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -257,6 +271,7 @@
 		// General
 
 		"weapontype"		"All, SMG"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -282,6 +297,7 @@
 		// General
 
 		"weapontype"		"All, SMG"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -307,6 +323,7 @@
 		// General
 
 		"weapontype"		"All, SMG"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -332,6 +349,7 @@
 		// General
 
 		"weapontype"		"All, SMG"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -357,6 +375,7 @@
 		// General
 
 		"weapontype"		"All, Rifle"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -382,6 +401,7 @@
 		// General
 
 		"weapontype"		"All, Rifle"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -407,6 +427,7 @@
 		// General
 
 		"weapontype"		"All, Rifle"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -432,6 +453,7 @@
 		// General
 
 		"weapontype"		"All, Rifle"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -457,6 +479,7 @@
 		// General
 
 		"weapontype"		"All, Rifle"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -482,6 +505,7 @@
 		// General
 
 		"weapontype"		"All, Rifle"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -507,6 +531,7 @@
 		// General
 
 		"weapontype"		"All, Sniper"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -532,6 +557,7 @@
 		// General
 
 		"weapontype"		"All, Sniper"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -557,6 +583,7 @@
 		// General
 
 		"weapontype"		"All, Sniper"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -582,6 +609,7 @@
 		// General
 
 		"weapontype"		"All, Sniper"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -607,6 +635,7 @@
 		// General
 
 		"weapontype"		"All, Machine Gun"
+		"weaponslot"		"0"
 
 		// Restrict (core)
 
@@ -632,6 +661,7 @@
 		// General
 
 		"weapontype"		"All, Melee"
+		"weaponslot"		"2"
 
 		// Restrict (core)
 
@@ -648,6 +678,7 @@
 		// General
 
 		"weapontype"		"All, Projectile"
+		"weaponslot"		"3"
 
 		// Restrict (core)
 
@@ -661,6 +692,7 @@
 		// ZMarket (module)
 
 		"zmarketprice"		"300"
+		"zmarketpurchasemax"	"1"
 	}
 
 	"Flashbang"
@@ -668,6 +700,7 @@
 		// General
 
 		"weapontype"		"All, Projectile"
+		"weaponslot"		"3"
 
 		// Restrict (core)
 
@@ -676,7 +709,8 @@
 
 		// ZMarket (module)
 
-		"zmarketprice"		"300"
+		"zmarketprice"		"200"
+		"zmarketpurchasemax"	"1"
 	}
 
 	"Smokegrenade"
@@ -684,6 +718,7 @@
 		// General
 
 		"weapontype"		"All, Projectile"
+		"weaponslot"		"3"
 
 		// Restrict (core)
 
@@ -693,6 +728,7 @@
 		// ZMarket (module)
 
 		"zmarketprice"		"300"
+		"zmarketpurchasemax"	"1"
 	}
 
 	"NVGs"

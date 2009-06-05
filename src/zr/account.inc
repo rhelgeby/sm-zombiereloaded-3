@@ -55,12 +55,24 @@ AccountOnClientSpawn(client)
 }
 
 /**
+ * Get's a client's account value (cash)
+ * 
+ * @param client    The client index.
+ * @return          The client's current account value.
+ */
+stock AccountGetClientCash(client)
+{
+    // Set client's cash.
+    return GetEntData(client, g_iToolsAccount, 4);
+}
+
+/**
  * Set's a client's account value (cash)
  * 
  * @param client    The client index.
  * @param value    The value to set to.
  */
-AccountSetClientCash(client, value)
+stock AccountSetClientCash(client, value)
 {
     // If value if below 0, then set to 0.
     if (value < 0)

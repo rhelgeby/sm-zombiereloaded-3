@@ -113,6 +113,8 @@ public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             // Select zmarket.
             case 5:
             {
+                // Send ZMarket menu.
+                resend = !ZMarketMenuTypes(client);
             }
         }
         
