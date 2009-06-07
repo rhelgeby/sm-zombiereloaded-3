@@ -49,7 +49,7 @@
 
 // Modules
 #include "zr/account"
-#include "zr/visualeffects"
+#include "zr/visualeffects/visualeffects"
 #include "zr/soundeffects/soundeffects"
 #include "zr/antistick"
 #include "zr/knockback"

@@ -1,0 +1,112 @@
+/*
+ * ============================================================================
+ *
+ *   Zombie:Reloaded
+ *
+ *   File:          visualeffects.inc
+ *   Type:          Module
+ *   Description:   Visual effects API.
+ *
+ * ============================================================================
+ */
+
+#include "zr/visualeffects/visualambience"
+
+/**
+ * Visual effect loading.
+ */
+VEffectsLoad()
+{
+    // Forward event to sub-modules.
+    VAmbienceLoad();
+}
+
+/**
+ * Plugin has just finished creating/hooking cvars.
+ */
+VEffectsOnCvarInit()
+{
+    // Hook zr_veffects_* cvars.
+    VAmbienceCvarsHook();
+}
+
+/**
+ * Create an energy splash effect.
+ * 
+ * @param client        The client index.
+ * @param origin        The origin of the effect.
+ * @param direction     The direction of the effect.
+ */
+VEffectsCreateEnergySplash(const Float:origin[3], const Float:direction[3], bool:explosive)
+{
+    TE_SetupEnergySplash(origin, direction, explosive);
+    TE_SendToAll();
+}
+
+/**
+ * Create an explosion effect with strict flags.
+ * 
+ * @param origin    The (x, y, z) coordinate of the explosion.
+ * @param flags     The flags to set on the explosion.
+ */
+VEffectsCreateExplosion(const Float:origin[3], flags)
+{
+    // Create an explosion entity.
+    new explosion = CreateEntityByName("env_explosion");
+    
+    // If explosion entity isn't valid, then stop.
+    if (explosion == -1)
+    {
+        return;
+    }
+    
+    // Get and modify flags on explosion.
+    new spawnflags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
+    spawnflags = spawnflags | EXP_NODAMAGE | EXP_NODECAL | flags;
+    
+    // Set modified flags on entity.
+    SetEntProp(explosion, Prop_Data, "m_spawnflags", spawnflags);
+    
+    // Spawn the entity into the world.
+    DispatchSpawn(explosion);
+    
+    // Set the origin of the explosion.
+    DispatchKeyValueVector(explosion, "origin", origin);
+    
+    // Set fireball material.
+    PrecacheModel("materials/sprites/xfireball3.vmt");
+    DispatchKeyValue(explosion, "fireballsprite", "materials/sprites/xfireball3.vmt");
+    
+    // Tell the entity to explode.
+    AcceptEntityInput(explosion, "Explode");
+    
+    // Remove entity from world.
+    RemoveEdict(explosion);
+}
+
+/**
+ * Shake a client's screen with specific parameters.
+ * 
+ * @param client        The client index.
+ * @param amplitude     The amplitude (intensity) of the shaking.
+ * @param frequency     The frequency (speed) of the shaking.
+ * @param duration      The duration (time) of the shaking.
+ */
+VEffectsShakeClientScreen(client, Float:amplitude, Float:frequency, Float:duration)
+{
+    // If shake usermsg isn't invalid, then stop.
+    new Handle:hShake = StartMessageOne("Shake", client);
+    if (hShake == INVALID_HANDLE)
+    {
+        return;
+    }
+    
+    // Write shake information to usermsg handle.
+    BfWriteByte(hShake, 0);
+    BfWriteFloat(hShake, amplitude);
+    BfWriteFloat(hShake, frequency);
+    BfWriteFloat(hShake, duration);
+    
+    // End usermsg and send to client.
+    EndMessage();
+}
