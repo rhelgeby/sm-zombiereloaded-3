@@ -151,7 +151,12 @@
 
 	"Log Module Filtering"
 	{
-		"en"		"Module filtering:"
+		"en"		"Module Filtering:"
+	}
+
+	"Log Module Short Name"
+	{
+		"en"		"Short Name:"
 	}
 
 	// ===========================

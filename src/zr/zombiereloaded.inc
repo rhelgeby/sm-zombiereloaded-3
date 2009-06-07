@@ -238,3 +238,34 @@ stock bool:ZRIsClientAdmin(client)
     // Client is an admin.
     return true;
 }
+
+/**
+ * Adds support for printing strings longer than 1 KB to console. Max 4 KB.
+ *
+ * Note: 1024 characters is max for the console, including newline and null
+ *       terminator.
+ *
+ * @param client        The client index.
+ * @param text          Long text to write.
+ * @param splitsize     Optional. Sets the split size. 1022 is default.
+ *                      Allowed range: 128 to 1022.
+ */
+stock ZRPrintToConsoleLong(client, const String:text[], splitsize = 1022)
+{
+    // Validate split size.
+    if (splitsize < 128 || splitsize > 1022)
+    {
+        return;
+    }
+    
+    decl String:partbuffer[splitsize];
+    new pos;
+    new cellswritten = 1;           // Initialize for the loop.
+
+    while (cellswritten)
+    {
+        cellswritten = strcopy(partbuffer, splitsize, text[pos]);
+        (client > 0) ? PrintToConsole(client, partbuffer) : PrintToServer(partbuffer);
+        pos += cellswritten;
+    }
+}

@@ -14,84 +14,176 @@
  * Note: See log.h.inc for header types and defines.
  */
 
+LogInit()
+{
+    // Destroy existing handle to prevent memory leak.
+    if (hLogModuleFilter != INVALID_HANDLE)
+    {
+        CloseHandle(hLogModuleFilter);
+    }
+    
+    // Initialize module filter array.
+    hLogModuleFilter = CreateArray(32);
+}
 
 /**
- * Gets a module type as a human readable string.
+ * Convert module type to a string.
  *
- * @param buffer    Destination string buffer.
- * @param maxlen    Size of destination buffer.
- * @param module    Module type to convert.
- *
- * @return      Number of cells written.
+ * @param buffer        Destination string buffer.
+ * @param maxlen        Size of destination buffer.
+ * @param module        Module type to convert.
+ * @param shortName     Optional. Use short name instead of human readable
+ *                      names. Default is false
+ * @return              Number of cells written.
  */
-LogGetModuleNameString(String:buffer[], maxlen, LogModules:module)
+LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortName = false)
 {
     switch (module)
     {
         case LogModule_Account:
         {
-            return strcopy(buffer, maxlen, "Account");
+            return shortName ? strcopy(buffer, maxlen, "account") : strcopy(buffer, maxlen, "Account");
         }
         case LogModule_Antistick:
         {
-            return strcopy(buffer, maxlen, "Anti-Stick");
+            return shortName ? strcopy(buffer, maxlen, "antistick") : strcopy(buffer, maxlen, "Anti-Stick");
         }
         case LogModule_Config:
         {
-            return strcopy(buffer, maxlen, "Config");
+            return shortName ? strcopy(buffer, maxlen, "config") : strcopy(buffer, maxlen, "Config");
         }
         case LogModule_Cvars:
         {
-            return strcopy(buffer, maxlen, "CVARs");
+            return shortName ? strcopy(buffer, maxlen, "cvars") : strcopy(buffer, maxlen, "CVARs");
         }
         case LogModule_Damage:
         {
-            return strcopy(buffer, maxlen, "Damage");
+            return shortName ? strcopy(buffer, maxlen, "damage") : strcopy(buffer, maxlen, "Damage");
         }
         case LogModule_Downloads:
         {
-            return strcopy(buffer, maxlen, "Downloads");
+            return shortName ? strcopy(buffer, maxlen, "downloads") : strcopy(buffer, maxlen, "Downloads");
         }
         case LogModule_Hitgroups:
         {
-            return strcopy(buffer, maxlen, "Hit Groups");
+            return shortName ? strcopy(buffer, maxlen, "hitgroups") : strcopy(buffer, maxlen, "Hit Groups");
         }
         case LogModule_Infect:
         {
-            return strcopy(buffer, maxlen, "Infect");
+            return shortName ? strcopy(buffer, maxlen, "infect") : strcopy(buffer, maxlen, "Infect");
         }
         case LogModule_Models:
         {
-            return strcopy(buffer, maxlen, "Models");
+            return shortName ? strcopy(buffer, maxlen, "models") : strcopy(buffer, maxlen, "Models");
         }
         case LogModule_Playerclasses:
         {
-            return strcopy(buffer, maxlen, "Player Classes");
+            return shortName ? strcopy(buffer, maxlen, "playerclasses") : strcopy(buffer, maxlen, "Player Classes");
         }
         case LogModule_Soundeffects:
         {
-            return strcopy(buffer, maxlen, "Sound Effects");
+            return shortName ? strcopy(buffer, maxlen, "soundeffects") : strcopy(buffer, maxlen, "Sound Effects");
         }
         case LogModule_Tools:
         {
-            return strcopy(buffer, maxlen, "Tools");
+            return shortName ? strcopy(buffer, maxlen, "tools") : strcopy(buffer, maxlen, "Tools");
         }
         case LogModule_Volfetures:
         {
-            return strcopy(buffer, maxlen, "Volumetric Features");
+            return shortName ? strcopy(buffer, maxlen, "volfeatures") : strcopy(buffer, maxlen, "Volumetric Features");
         }
         case LogModule_Weapons:
         {
-            return strcopy(buffer, maxlen, "Weapons");
+            return shortName ? strcopy(buffer, maxlen, "weapons") : strcopy(buffer, maxlen, "Weapons");
         }
         case LogModule_Weaponrestrict:
         {
-            return strcopy(buffer, maxlen, "Weapon Restrictions");
+            return shortName ? strcopy(buffer, maxlen, "weaponrestrict") : strcopy(buffer, maxlen, "Weapon Restrictions");
         }
     }
     
     // Module mismatch.
     return 0;
+}
+
+/**
+ * Converts a string module name into a module type.
+ *
+ * @param moduleName    A string with the short module name. Case insensitive,
+ *                      but not trimmed for white space.
+ * @return              The matcing module type or LogModules_Invalid if failed.
+ */
+LogModules:LogGetModule(const String:moduleName[])
+{
+    // Check if empty.
+    if (strlen(moduleName) == 0)
+    {
+        return LogModule_Invalid;
+    }
+    
+    if (strcmp(moduleName, "account", false))
+    {
+        return LogModule_Account;
+    }
+    else if (strcmp(moduleName, "antistick", false))
+    {
+        return LogModule_Antistick;
+    }
+    else if (strcmp(moduleName, "config", false))
+    {
+        return LogModule_Config;
+    }
+    else if (strcmp(moduleName, "cvars", false))
+    {
+        return LogModule_Cvars;
+    }
+    else if (strcmp(moduleName, "damage", false))
+    {
+        return LogModule_Damage;
+    }
+    else if (strcmp(moduleName, "downloads", false))
+    {
+        return LogModule_Downloads;
+    }
+    else if (strcmp(moduleName, "hitgroups", false))
+    {
+        return LogModule_Hitgroups;
+    }
+    else if (strcmp(moduleName, "infect", false))
+    {
+        return LogModule_Infect;
+    }
+    else if (strcmp(moduleName, "models", false))
+    {
+        return LogModule_Models;
+    }
+    else if (strcmp(moduleName, "playerclasses", false))
+    {
+        return LogModule_Playerclasses;
+    }
+    else if (strcmp(moduleName, "soundeffects", false))
+    {
+        return LogModule_Soundeffects;
+    }
+    else if (strcmp(moduleName, "tools", false))
+    {
+        return LogModule_Tools;
+    }
+    else if (strcmp(moduleName, "volfeatures", false))
+    {
+        return LogModule_Volfetures;
+    }
+    else if (strcmp(moduleName, "weapons", false))
+    {
+        return LogModule_Weapons;
+    }
+    else if (strcmp(moduleName, "weaponrestrict", false))
+    {
+        return LogModule_Weaponrestrict;
+    }
+    
+    // No match.
+    return LogModule_Invalid;
 }
 
 /**
@@ -229,11 +321,115 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
 }
 
 /**
+ * Adds a module to the module filter and updates the cache. If it already
+ * exist the command is ignored.
+ *
+ * @param module    The module to add.
+ * @return          True if added, false otherwise.
+ */
+bool:LogModuleFilterAdd(LogModules:module)
+{
+    decl String:modulename[64];
+    
+    // Check if empty.
+    if (strlen(modulename) == 0)
+    {
+        return false;
+    }
+    
+    // Convert module name.
+    LogGetModuleNameString(modulename, sizeof(modulename), module, true);
+    
+    // Check if the module isn't already is listed.
+    if (FindStringInArray(hLogModuleFilter, modulename) >= 0)
+    {
+        // Add module to filter.
+        PushArrayString(hLogModuleFilter, modulename);
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Removes a module to the module filter and updates the cache. If it doesn't
+ * exist the command is ignored.
+ *
+ * @param module    The module to remove.
+ * @return          True if removed, false otherwise.
+ */
+bool:LogModuleFilterRemove(LogModules:module)
+{
+    decl String:modulename[64];
+    new moduleindex;
+    
+    // Check if empty.
+    if (strlen(modulename) == 0)
+    {
+        return false;
+    }
+    
+    // Convert module name.
+    LogGetModuleNameString(modulename, sizeof(modulename), module, true);
+    
+    // Get the module index.
+    moduleindex = FindStringInArray(hLogModuleFilter, modulename);
+    
+    // Check if successful.
+    if (moduleindex >= 0)
+    {
+        // Remove module from filter.
+        RemoveFromArray(hLogModuleFilter, moduleindex);
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Update module filter cache.
+ */
+LogModuleFilterCacheUpdate()
+{
+    decl String:modulename[64];
+    new LogModules:moduletype;
+    new modulecount;
+    new filtersize;
+    
+    // Clear all entries in module cache.
+    modulecount = sizeof(LogModuleFilterCache);
+    for (new module = 1; module < modulecount; module++)
+    {
+        LogModuleFilterCache[LogModules:module] = false;
+    }
+    
+    // Loop through the module array.
+    filtersize = GetArraySize(hLogModuleFilter);
+    for (new index = 0; index < filtersize; index++)
+    {
+        // Get the module name.
+        GetArrayString(hLogModuleFilter, index, modulename, sizeof(modulename));
+        
+        // Convert to type.
+        moduletype = LogGetModule(modulename);
+        
+        // Validate type.
+        if (moduletype != LogModule_Invalid)
+        {
+            // Set value in cache.
+            LogModuleFilterCache[moduletype] = true;
+        }
+    }
+}
+
+/**
  * Creates commands for logging module. Called when commands are created.
  */
 LogOnCommandsCreate()
 {
     RegConsoleCmd("zr_log_list", Command_LogList, "List available logging flags and modules with their status values.");
+    RegConsoleCmd("zr_log_add_module", Command_LogAddModule, "Add one or more modules to the module filter. Usage: zr_log_add_module <module> [module] ...");
+    RegConsoleCmd("zr_log_remove_module", Command_LogRemoveModule, "Remove one or more modules from the module filter. Usage: zr_log_remove_module <module> [module] ...");
 }
 
 /**
@@ -246,15 +442,32 @@ public Action:Command_LogList(client, argc)
 {
     decl String:buffer[2048];
     decl String:linebuffer[96];
-    decl String:module[64];
+    decl String:modulename[64];
+    decl String:modulenameshort[64];
     
+    new modulecount;
+    
+    // Strings to store translated phrases. Because formatting width settings
+    // doesn't work with "%t", but "%s".
+    decl String:phrasegenericflag[32];
+    decl String:phrasevalue[32];
+    decl String:phrasemodule[32];
+    decl String:phraseshortname[32];
+    
+    // Quick initialize string buffer.
     buffer[0] = 0;
     
     // Set language.
     SetGlobalTransTarget(client);
     
+    // Get phrases.
+    Format(phrasegenericflag, sizeof(phrasegenericflag), "%t", "Log Generic Flag");
+    Format(phrasevalue, sizeof(phrasevalue), "%t", "Log Value");
+    Format(phrasemodule, sizeof(phrasemodule), "%t", "Log Module");
+    Format(phraseshortname, sizeof(phraseshortname), "%t", "Log Module Short Name");
+    
     // Log flags:
-    Format(linebuffer, sizeof(linebuffer), "%-19t %-7t %t\n", "Log Generic Flag", "Log Value", "Log Status");
+    Format(linebuffer, sizeof(linebuffer), "%-19s %-7s %t\n", phrasegenericflag, phrasevalue, "Log Status");
     StrCat(buffer, sizeof(buffer), linebuffer);
     StrCat(buffer, sizeof(buffer), "--------------------------------------------------------------------------------\n");
     
@@ -270,79 +483,134 @@ public Action:Command_LogList(client, argc)
     Format(linebuffer, sizeof(linebuffer), "LOG_DEBUG           8       %t\n", LogCheckFlag(LOG_DEBUG) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
     
-    Format(linebuffer, sizeof(linebuffer), "LOG_DEBUG_DETAIL    16      %t\n\n", LogCheckFlag(LOG_DEBUG_DETAIL) ? "On" : "Off");
+    Format(linebuffer, sizeof(linebuffer), "LOG_DEBUG_DETAIL    16      %t\n", LogCheckFlag(LOG_DEBUG_DETAIL) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    ReplyToCommand(client, buffer);
+    buffer[0] = 0;
     
     // Module filtering status:
     Format(linebuffer, sizeof(linebuffer), "%t %t\n\n", "Log Module Filtering", GetConVarBool(g_hCvarsList[CVAR_LOG_MODULE_FILTER]) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
     
-    Format(linebuffer, sizeof(linebuffer), "%-23t %t\n", "Log Module", "Log Status");
+    Format(linebuffer, sizeof(linebuffer), "%-23s %-19s %t\n", phrasemodule, phraseshortname, "Log Status");
     StrCat(buffer, sizeof(buffer), linebuffer);
-    StrCat(buffer, sizeof(buffer), "--------------------------------------------------------------------------------\n");
-    
-    // Module status:
-    LogGetModuleNameString(module, sizeof(module), LogModule_Account);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Account] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Antistick);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Antistick] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Config);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Config] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Cvars);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Cvars] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Damage);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Damage] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Downloads);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Downloads] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Hitgroups);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Hitgroups] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Infect);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Infect] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Models);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Models] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Playerclasses);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Playerclasses] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Soundeffects);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Soundeffects] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Tools);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Tools] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Volfetures);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Volfetures] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Weapons);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Weapons] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    LogGetModuleNameString(module, sizeof(module), LogModule_Weaponrestrict);
-    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Weaponrestrict] ? "On" : "Off");
-    StrCat(buffer, sizeof(buffer), linebuffer);
+    StrCat(buffer, sizeof(buffer), "--------------------------------------------------------------------------------");
     
     ReplyToCommand(client, buffer);
+    buffer[0] = 0;
+    
+    // Module status:
+    modulecount = sizeof(LogModuleFilterCache);
+    for (new module = 1; module < modulecount; module++)
+    {
+        LogGetModuleNameString(modulename, sizeof(modulename), LogModules:module);
+        LogGetModuleNameString(modulenameshort, sizeof(modulenameshort), LogModules:module, true);
+        Format(linebuffer, sizeof(linebuffer), "%-23s %-19s %t", modulename, modulenameshort, LogModuleFilterCache[LogModules:module] ? "On" : "Off");
+        ReplyToCommand(client, linebuffer);
+    }
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Handles the zr_log_add_module command. Add one or modules to module filter.
+ *
+ * @param client    The client that executed the command.
+ * @param argc      Number of arguments passed.
+ */
+public Action:Command_LogAddModule(client, argc)
+{
+    decl String:buffer[256];
+    decl String:argument[32];
+    buffer[0] = 0;
+    
+    new LogModules:logmodule;
+    
+    // Check if no arguments.
+    if (argc < 1)
+    {
+        // Display syntax info.
+        StrCat(buffer, sizeof(buffer), "Add one or more modules to the module filter. Usage: zr_log_add_module <module> [module] ...\n");
+        StrCat(buffer, sizeof(buffer), "See zr_log_list to list available module names (short names).");
+        ReplyToCommand(client, buffer);
+    }
+    
+    // Loop through each argument.
+    for (new arg = 1; arg <= argc; arg++)
+    {
+        // Get argument string.
+        GetCmdArg(arg, argument, sizeof(argument));
+        
+        // Convert to module type.
+        logmodule = LogGetModule(argument);
+        
+        // Check if invalid.
+        if (logmodule == LogModule_Invalid)
+        {
+            ReplyToCommand(client, "Invalid module name: \"%s\"", argument);
+            
+            // Skip to next argument.
+            continue;
+        }
+        
+        LogModuleFilterAdd(logmodule);
+        ReplyToCommand(client, "Added \"%s\" to module filter.", argument);
+    }
+    
+    // Update cache.
+    LogModuleFilterCacheUpdate();
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Handles the zr_log_add_module command. Remove one or modules to module filter.
+ *
+ * @param client    The client that executed the command.
+ * @param argc      Number of arguments passed.
+ */
+public Action:Command_LogRemoveModule(client, argc)
+{
+    decl String:buffer[256];
+    decl String:argument[32];
+    buffer[0] = 0;
+    
+    new LogModules:logmodule;
+    
+    // Check if no arguments.
+    if (argc < 1)
+    {
+        // Display syntax info.
+        StrCat(buffer, sizeof(buffer), "Add one or more modules to the module filter. Usage: zr_log_add_module <module> [module] ...\n");
+        StrCat(buffer, sizeof(buffer), "See zr_log_list to list available module names (short names).");
+        ReplyToCommand(client, buffer);
+    }
+    
+    // Loop through each argument.
+    for (new arg = 1; arg <= argc; arg++)
+    {
+        // Get argument string.
+        GetCmdArg(arg, argument, sizeof(argument));
+        
+        // Convert to module type.
+        logmodule = LogGetModule(argument);
+        
+        // Check if invalid.
+        if (logmodule == LogModule_Invalid)
+        {
+            ReplyToCommand(client, "Invalid module name: \"%s\"", argument);
+            
+            // Skip to next argument.
+            continue;
+        }
+        
+        LogModuleFilterRemove(logmodule);
+        ReplyToCommand(client, "Removed \"%s\" from module filter.", argument);
+    }
+    
+    // Update cache.
+    LogModuleFilterCacheUpdate();
     
     return Plugin_Handled;
 }

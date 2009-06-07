@@ -49,9 +49,12 @@ enum LogTypes
  * - Admin log flag menu
  * - Command_LogList
  * - LogGetModuleNameString
+ * - LogGetModule
  */
 enum LogModules
 {
+    bool:LogModule_Invalid = 0,         /** Used as return value when an error occoured.*/
+    
     bool:LogModule_Account,
     bool:LogModule_Antistick,
     bool:LogModule_Config,
@@ -72,7 +75,7 @@ enum LogModules
 /**
  * Handle for dynamic string array for module filtering.
  */
-new Handle:LogModuleFilter;
+new Handle:hLogModuleFilter;
 
 /**
  * Cache of current module filter settings. For fast and easy access.

@@ -99,6 +99,7 @@ public OnPluginStart()
     // Forward event to modules.
     TranslationInit();
     CvarsInit();
+    LogInit();
     ToolsInit();
     CommandsInit();
     WeaponsInit();
