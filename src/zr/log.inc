@@ -14,15 +14,6 @@
  * Note: See log.h.inc for header types and defines.
  */
 
-/**
- * Handle for dynamic string array for module filtering.
- */
-new Handle:LogModuleFilter;
-
-/**
- * Cache of current module filter settings. For fast and easy access.
- */
-new LogModuleFilterCache[LogModules];
 
 /**
  * Gets a module type as a human readable string.
@@ -37,6 +28,10 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module)
 {
     switch (module)
     {
+        case LogModule_Account:
+        {
+            return strcopy(buffer, maxlen, "Account");
+        }
         case LogModule_Antistick:
         {
             return strcopy(buffer, maxlen, "Anti-Stick");
@@ -231,4 +226,123 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
     {
         TranslationPrintToChatAll(false, false, "Literal text", logbuffer);
     }
+}
+
+/**
+ * Creates commands for logging module. Called when commands are created.
+ */
+LogOnCommandsCreate()
+{
+    RegConsoleCmd("zr_log_list", Command_LogList, "List available logging flags and modules with their status values.");
+}
+
+/**
+ * Handles the zr_log_list command. Displays flags and module filter cache.
+ *
+ * @param client    The client that executed the command.
+ * @param argc      Number of arguments passed.
+ */
+public Action:Command_LogList(client, argc)
+{
+    decl String:buffer[2048];
+    decl String:linebuffer[96];
+    decl String:module[64];
+    
+    buffer[0] = 0;
+    
+    // Set language.
+    SetGlobalTransTarget(client);
+    
+    // Log flags:
+    Format(linebuffer, sizeof(linebuffer), "%-19t %-7t %t\n", "Log Generic Flag", "Log Value", "Log Status");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    StrCat(buffer, sizeof(buffer), "--------------------------------------------------------------------------------\n");
+    
+    Format(linebuffer, sizeof(linebuffer), "LOG_CORE_EVENTS     1       %t\n", LogCheckFlag(LOG_CORE_EVENTS) ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    Format(linebuffer, sizeof(linebuffer), "LOG_GAME_EVENTS     2       %t\n", LogCheckFlag(LOG_GAME_EVENTS) ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    Format(linebuffer, sizeof(linebuffer), "LOG_PLAYER_COMMANDS 4       %t\n", LogCheckFlag(LOG_PLAYER_COMMANDS) ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    Format(linebuffer, sizeof(linebuffer), "LOG_DEBUG           8       %t\n", LogCheckFlag(LOG_DEBUG) ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    Format(linebuffer, sizeof(linebuffer), "LOG_DEBUG_DETAIL    16      %t\n\n", LogCheckFlag(LOG_DEBUG_DETAIL) ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    // Module filtering status:
+    Format(linebuffer, sizeof(linebuffer), "%t %t\n\n", "Log Module Filtering", GetConVarBool(g_hCvarsList[CVAR_LOG_MODULE_FILTER]) ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    Format(linebuffer, sizeof(linebuffer), "%-23t %t\n", "Log Module", "Log Status");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    StrCat(buffer, sizeof(buffer), "--------------------------------------------------------------------------------\n");
+    
+    // Module status:
+    LogGetModuleNameString(module, sizeof(module), LogModule_Account);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Account] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Antistick);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Antistick] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Config);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Config] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Cvars);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Cvars] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Damage);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Damage] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Downloads);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Downloads] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Hitgroups);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Hitgroups] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Infect);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Infect] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Models);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Models] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Playerclasses);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Playerclasses] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Soundeffects);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Soundeffects] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Tools);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Tools] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Volfetures);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Volfetures] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Weapons);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Weapons] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    LogGetModuleNameString(module, sizeof(module), LogModule_Weaponrestrict);
+    Format(linebuffer, sizeof(linebuffer), "%-19s %t\n", module, LogModuleFilterCache[LogModule_Weaponrestrict] ? "On" : "Off");
+    StrCat(buffer, sizeof(buffer), linebuffer);
+    
+    ReplyToCommand(client, buffer);
+    
+    return Plugin_Handled;
 }

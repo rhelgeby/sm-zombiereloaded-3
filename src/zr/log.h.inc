@@ -44,6 +44,11 @@ enum LogTypes
 /**
  * List of modules that write log events. Add new modules if needed (in
  * alphabetical order).
+ * 
+ * Update following when adding modules:
+ * - Admin log flag menu
+ * - Command_LogList
+ * - LogGetModuleNameString
  */
 enum LogModules
 {
@@ -63,3 +68,13 @@ enum LogModules
     bool:LogModule_Weapons,
     bool:LogModule_Weaponrestrict
 }
+
+/**
+ * Handle for dynamic string array for module filtering.
+ */
+new Handle:LogModuleFilter;
+
+/**
+ * Cache of current module filter settings. For fast and easy access.
+ */
+new LogModuleFilterCache[LogModules];

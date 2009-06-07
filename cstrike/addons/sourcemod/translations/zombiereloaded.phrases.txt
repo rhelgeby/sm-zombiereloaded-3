@@ -123,6 +123,38 @@
 	}
 
 	// ===========================
+	// Log (core)
+	// ===========================
+
+	"Log Generic Flag"
+	{
+		// Max length: 19 characters.
+		"en"		"Generic Flag:"
+	}
+
+	"Log Value"
+	{
+		// Max length: 7 characters:
+		"en"		"Value:"
+	}
+
+	"Log Module"
+	{
+		// Max length: 23 characters:
+		"en"		"Module:"
+	}
+
+	"Log Status"
+	{
+		"en"		"Filter Status:"
+	}
+
+	"Log Module Filtering"
+	{
+		"en"		"Module filtering:"
+	}
+
+	// ===========================
 	// Classes
 	// ===========================
 

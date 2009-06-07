@@ -17,6 +17,7 @@ CommandsInit()
 {
     // Forward event to modules. (create commands)
     ConfigOnCommandsCreate();
+    LogOnCommandsCreate();
     ClassOnCommandsCreate();
     WeaponsOnCommandsCreate();
     VolOnCommandsCreate();
