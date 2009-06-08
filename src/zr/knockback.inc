@@ -71,23 +71,25 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
     }
     
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
-    if (!weapons)
+    if (weapons)
     {
-        return;
+        new weaponindex = WeaponsNameToIndex(weapon);
+        if (weaponindex != -1)
+        {
+            // Apply weapon knockback multiplier.
+            knockback *= WeaponsGetKnockback(weaponindex);
+        }
     }
     
-    new weaponindex = WeaponsNameToIndex(weapon);
-    if (weaponindex != -1)
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (hitgroups)
     {
-        // Apply weapon knockback multiplier.
-        knockback *= WeaponsGetKnockback(weaponindex);
-    }
-    
-    new hitgroupindex = HitgroupToIndex(hitgroup);
-    if (hitgroupindex != -1)
-    {
-        // Apply hitgroup knockback multiplier.
-        knockback *= HitgroupsGetKnockback(hitgroupindex);
+        new hitgroupindex = HitgroupToIndex(hitgroup);
+        if (hitgroupindex != -1)
+        {
+            // Apply hitgroup knockback multiplier.
+            knockback *= HitgroupsGetKnockback(hitgroupindex);
+        }
     }
     
     // Apply damage knockback multiplier.
