@@ -61,16 +61,23 @@ public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
+        // Create variable to possible resend menu later.
+        new bool:resend = true;
+        
         switch(slot)
         {
             // Weapon management.
             case 0:
             {
-                WeaponsMenuMain(client);
+                resend = !WeaponsMenuMain(client);
             }
         }
         
-        // TODO: Resend menu if feature is disabled or unopenable.
+        // Re-send menu if selection failed.
+        if (resend)
+        {
+            ZRAdminMenu(client);
+        }
     }
     
     if (action == MenuAction_Cancel)

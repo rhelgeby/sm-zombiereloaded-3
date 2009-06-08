@@ -80,15 +80,19 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
         {
             return shortName ? strcopy(buffer, maxlen, "playerclasses") : strcopy(buffer, maxlen, "Player Classes");
         }
-        case LogModule_Soundeffects:
+        case LogModule_VEffects:
         {
-            return shortName ? strcopy(buffer, maxlen, "soundeffects") : strcopy(buffer, maxlen, "Sound Effects");
+            return shortName ? strcopy(buffer, maxlen, "veffects") : strcopy(buffer, maxlen, "Visual Effects");
+        }
+        case LogModule_SEffects:
+        {
+            return shortName ? strcopy(buffer, maxlen, "seffects") : strcopy(buffer, maxlen, "Sound Effects");
         }
         case LogModule_Tools:
         {
             return shortName ? strcopy(buffer, maxlen, "tools") : strcopy(buffer, maxlen, "Tools");
         }
-        case LogModule_Volfetures:
+        case LogModule_Volfeatures:
         {
             return shortName ? strcopy(buffer, maxlen, "volfeatures") : strcopy(buffer, maxlen, "Volumetric Features");
         }
@@ -115,69 +119,67 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
  */
 LogModules:LogGetModule(const String:moduleName[])
 {
-    // Check if empty.
-    if (strlen(moduleName) == 0)
-    {
-        return LogModule_Invalid;
-    }
-    
-    if (strcmp(moduleName, "account", false))
+    if (StrEqual(moduleName, "account", false))
     {
         return LogModule_Account;
     }
-    else if (strcmp(moduleName, "antistick", false))
+    else if (StrEqual(moduleName, "antistick", false))
     {
         return LogModule_Antistick;
     }
-    else if (strcmp(moduleName, "config", false))
+    else if (StrEqual(moduleName, "config", false))
     {
         return LogModule_Config;
     }
-    else if (strcmp(moduleName, "cvars", false))
+    else if (StrEqual(moduleName, "cvars", false))
     {
         return LogModule_Cvars;
     }
-    else if (strcmp(moduleName, "damage", false))
+    else if (StrEqual(moduleName, "damage", false))
     {
         return LogModule_Damage;
     }
-    else if (strcmp(moduleName, "downloads", false))
+    else if (StrEqual(moduleName, "downloads", false))
     {
         return LogModule_Downloads;
     }
-    else if (strcmp(moduleName, "hitgroups", false))
+    else if (StrEqual(moduleName, "hitgroups", false))
     {
         return LogModule_Hitgroups;
     }
-    else if (strcmp(moduleName, "infect", false))
+    else if (StrEqual(moduleName, "infect", false))
     {
         return LogModule_Infect;
     }
-    else if (strcmp(moduleName, "models", false))
+    else if (StrEqual(moduleName, "models", false))
     {
         return LogModule_Models;
     }
-    else if (strcmp(moduleName, "playerclasses", false))
+    else if (StrEqual(moduleName, "playerclasses", false))
     {
         return LogModule_Playerclasses;
     }
-    else if (strcmp(moduleName, "soundeffects", false))
+    else if (StrEqual(moduleName, "veffects", false))
     {
-        return LogModule_Soundeffects;
+        return LogModule_VEffects;
     }
-    else if (strcmp(moduleName, "tools", false))
+    else if (StrEqual(moduleName, "seffects", false))
+    {
+        return LogModule_SEffects;
+    }
+    else if (StrEqual(moduleName, "tools", false))
     {
         return LogModule_Tools;
     }
-    else if (strcmp(moduleName, "volfeatures", false))
+    else if (StrEqual(moduleName, "volfeatures", false))
     {
-        return LogModule_Volfetures;
+        return LogModule_Volfeatures;
     }
-    else if (strcmp(moduleName, "weapons", false))
+    else if (StrEqual(moduleName, "weapons", false))
     {
         return LogModule_Weapons;
     }
-    else if (strcmp(moduleName, "weaponrestrict", false))
+    else if (StrEqual(moduleName, "weaponrestrict", false))
     {
         return LogModule_Weaponrestrict;
     }

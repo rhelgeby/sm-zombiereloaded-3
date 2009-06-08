@@ -95,6 +95,9 @@ enum CvarsList
     Handle:CVAR_VEFFECTS_FOG_STARTDIST,
     Handle:CVAR_VEFFECTS_FOG_ENDDIST,
     Handle:CVAR_VEFFECTS_FOG_FARZ,
+    Handle:CVAR_VEFFECTS_RAGDOLL_REMOVE,
+    Handle:CVAR_VEFFECTS_RAGDOLL_DISSOLVE,
+    Handle:CVAR_VEFFECTS_RAGDOLL_DELAY,
     Handle:CVAR_SEFFECTS_MOAN,
     Handle:CVAR_SEFFECTS_GROAN,
     Handle:CVAR_SEFFECTS_DEATH,
@@ -366,6 +369,11 @@ CvarsCreate()
     g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST]             =    CreateConVar("zr_veffects_fog_enddist",        "400",                  "(UNSUPPORTED) Distance from player to stop rendering fog. [Dependency: zr_veffects_fog]");
     g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ]                =    CreateConVar("zr_veffects_fog_farz",           "2000",                 "(UNSUPPORTED) Vertical clipping plane.");
     
+    // Ragdoll
+    
+    g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]          =    CreateConVar("zr_veffects_ragdoll_remove",     "1",                    "Remove players' ragdolls from the game after a delay.");
+    g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]        =    CreateConVar("zr_veffects_ragdoll_dissolve",   "1",                    "The ragdoll removal effect. [-1: Effectless removal | 0: Energy dissolve | 1: Heavy electrical dissolve | 2: Light electrical dissolve | 3: Core dissolve | Dependency: zr_veffects_ragdoll_remove]");
+    g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DELAY]           =    CreateConVar("zr_veffects_ragdoll_delay",      "0.5",                  "Time to wait before removing the ragdoll. [Dependency: zr_veffects_ragdoll_remove]");
     
     // ===========================
     // Sound Effects (module)

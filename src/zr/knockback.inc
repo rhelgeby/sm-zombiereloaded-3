@@ -70,6 +70,12 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
         TR_GetEndPosition(clientloc);
     }
     
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        return;
+    }
+    
     new weaponindex = WeaponsNameToIndex(weapon);
     if (weaponindex != -1)
     {

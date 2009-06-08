@@ -47,7 +47,6 @@ enum LogTypes
  * 
  * Update following when adding modules:
  * - Admin log flag menu
- * - Command_LogList
  * - LogGetModuleNameString
  * - LogGetModule
  */
@@ -65,9 +64,10 @@ enum LogModules
     bool:LogModule_Infect,
     bool:LogModule_Models,
     bool:LogModule_Playerclasses,
-    bool:LogModule_Soundeffects,
+    bool:LogModule_VEffects,
+    bool:LogModule_SEffects,
     bool:LogModule_Tools,
-    bool:LogModule_Volfetures,
+    bool:LogModule_Volfeatures,
     bool:LogModule_Weapons,
     bool:LogModule_Weaponrestrict
 }

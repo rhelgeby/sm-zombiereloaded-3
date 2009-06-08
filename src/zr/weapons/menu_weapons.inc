@@ -34,8 +34,15 @@ new g_iWeaponsCurType[MAXPLAYERS + 1];
  * Sends main weapon menu to client.
  * @param client    The client index.
  */
-WeaponsMenuMain(client)
+bool:WeaponsMenuMain(client)
 {
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        return false;
+    }
+    
     // Create menu handle.
     new Handle:menu_weapons_main = CreateMenu(WeaponsMenuMainHandle);
     
@@ -58,6 +65,8 @@ WeaponsMenuMain(client)
     
     // Send menu.
     DisplayMenu(menu_weapons_main, client, MENU_TIME_FOREVER);
+    
+    return true;
 }
 
 /**

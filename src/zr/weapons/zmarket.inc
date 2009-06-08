@@ -190,6 +190,16 @@ ZMarketGetPurchaseCount(client, const String:weapon[])
  */
 bool:ZMarketMenuTypes(client)
 {
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        // Telle client feature is disabled.
+        TranslationPrintToChat(client, "Feature is disabled");
+        return false;
+    }
+    
+    // If ZMarket module is disabled, then stop.
     new bool:zmarket = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET]);
     if (!zmarket)
     {

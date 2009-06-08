@@ -422,7 +422,7 @@ stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
     decl String:configpath[PLATFORM_MAX_PATH];
     ConfigGetConfigPath(config, configpath, sizeof(configpath));
     
-    // If handle is still open, then close it before creating a new one.
+    // If array hasn't been created, then create.
     if (arrayConfig == INVALID_HANDLE)
     {
         // Create array in handle.

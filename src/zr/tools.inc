@@ -100,6 +100,7 @@ ToolsFindOffsets()
     // Forward event to modules.
     WeaponsOnOffsetsFound();
     AccountOnOffsetsFound();
+    VEffectsOnOffsetsFound();
     AntiStickOnOffsetsFound();
     ZMarketOnOffsetsFound();
 }

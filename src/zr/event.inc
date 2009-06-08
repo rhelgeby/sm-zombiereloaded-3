@@ -247,6 +247,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     ClassOnClientDeath(index);
     RoundEndOnClientDeath();
     InfectOnClientDeath(index, attacker);
+    VEffectsOnClientDeath(index);
     SEffectsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);
     RespawnOnClientDeath(index, attacker, weapon);

@@ -530,6 +530,20 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
         return ZRTools_Continue;
     }
     
+    // If weapons module is disabled, then stop.
+    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    if (!weapons)
+    {
+        return ZRTools_Continue;
+    }
+    
+    // If restrict module is disabled, then stop.
+    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    if (!restrict)
+    {
+        return ZRTools_Continue;
+    }
+    
     // If the weapon is restricted, then prevent pickup.
     new index = WeaponsNameToIndex(weaponname);
     
@@ -572,13 +586,6 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
  */
 public Action:RestrictCommand(client, argc)
 {
-    // If not enough arguments given, then stop.
-    if (argc < 1)
-    {
-        TranslationReplyToCommand(client, "Weapons command restrict syntax");
-        return Plugin_Handled;
-    }
-    
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
@@ -594,6 +601,13 @@ public Action:RestrictCommand(client, argc)
     {
         // Tell client command is disabled.
         TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "Weapons command restrict syntax");
         return Plugin_Handled;
     }
     
@@ -626,13 +640,6 @@ public Action:RestrictCommand(client, argc)
  */
 public Action:UnrestrictCommand(client, argc)
 {
-    // If not enough arguments given, then stop.
-    if (argc < 1)
-    {
-        TranslationReplyToCommand(client, "Weapons command unrestrict syntax");
-        return Plugin_Handled;
-    }
-    
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
@@ -648,6 +655,13 @@ public Action:UnrestrictCommand(client, argc)
     {
         // Tell client command is disabled.
         TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "Weapons command unrestrict syntax");
         return Plugin_Handled;
     }
     

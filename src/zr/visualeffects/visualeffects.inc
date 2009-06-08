@@ -11,6 +11,7 @@
  */
 
 #include "zr/visualeffects/visualambience"
+#include "zr/visualeffects/ragdoll"
 
 /**
  * Visual effect loading.
@@ -28,6 +29,26 @@ VEffectsOnCvarInit()
 {
     // Hook zr_veffects_* cvars.
     VAmbienceCvarsHook();
+}
+
+/**
+ * Find VEffects-specific offsets here.
+ */
+VEffectsOnOffsetsFound()
+{
+    // Forward event to sub-modules
+    RagdollOnOffsetsFound();
+}
+
+/**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ */
+VEffectsOnClientDeath(client)
+{
+    // Forward event to sub-modules.
+    RagdollOnClientDeath(client);
 }
 
 /**
