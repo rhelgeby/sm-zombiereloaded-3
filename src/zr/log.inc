@@ -358,7 +358,7 @@ bool:LogModuleFilterAdd(LogModules:module)
     LogGetModuleNameString(modulename, sizeof(modulename), module, true);
     
     // Check if the module isn't already is listed.
-    if (FindStringInArray(hLogModuleFilter, modulename) >= 0)
+    if (FindStringInArray(hLogModuleFilter, modulename) < 0)
     {
         // Add module to filter.
         PushArrayString(hLogModuleFilter, modulename);
