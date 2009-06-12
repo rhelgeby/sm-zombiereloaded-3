@@ -3,9 +3,24 @@
  *
  *   Zombie:Reloaded
  *
- *   File:          cvars.inc
- *   Type:          Core
- *   Description:   Config creation and cvar control.
+ *  File:          cvars.inc
+ *  Type:          Core
+ *  Description:   Config creation and cvar control.
+ *
+ *  Copyright (C) 2009  Greyscale, Richard Helgeby
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * ============================================================================
  */
@@ -434,8 +449,8 @@ CvarsCreate()
     // Jump Boost (module)
     // ===========================
     g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_PROTECT]       =    CreateConVar("zr_jumpboost_bunnyhop_protect",  "1",    "Prevent players from using forward jump boost multipliers to bunny hop.");
-    g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_MAX]           =    CreateConVar("zr_jumpboost_bunnyhop_max",      "275",  "The maximum horizontal velocity a player can have for any additional push to be applied, when bunny hop prevention is enabled.");
-    g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_RESET]         =    CreateConVar("zr_jumpboost_bunnyhop_reset",    "1",    "Specifies whether the speed should be reset, or limited to maximum when the limit is reached.");
+    g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_MAX]           =    CreateConVar("zr_jumpboost_bunnyhop_max",      "275",  "The maximum horizontal velocity a player can have for any additional push to be applied. [Dependency: zr_jumpboost_bunnyhop_protect]");
+    g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_RESET]         =    CreateConVar("zr_jumpboost_bunnyhop_reset",    "1",    "Specifies whether the speed should be reset, or limited to maximum when the limit is reached. [Dependency: zr_jumpboost_bunnyhop_protect&zr_jumpboost_bunnyhop_max]");
     
     
     // ===========================

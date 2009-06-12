@@ -3,9 +3,9 @@
  *
  *   Zombie:Reloaded
  *
- *   File:          zmarket.inc
- *   Type:          Module
- *   Description:   ZMarket module, provides menu of weapons to buy from.
+ *  File:          zmarket.inc
+ *  Type:          Module
+ *  Description:   ZMarket module, provides menu of weapons to buy from.
  *
  *  Copyright (C) 2009  Greyscale, Richard Helgeby
  *

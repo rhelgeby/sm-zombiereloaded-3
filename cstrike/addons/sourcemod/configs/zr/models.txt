@@ -1,6 +1,6 @@
 // ====================
 //   Zombie:Reloaded
-//   File: models.txt
+//  File: models.txt
 //   Author: Greyscale
 // ====================
 //
