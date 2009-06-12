@@ -1,13 +1,15 @@
-// ====================
-//   Zombie:Reloaded
-//  File: downloads.txt
-//   Author: Greyscale
-// ====================
+// ============================================================================
 //
-// Add files you want clients to download here
-
-// ** DEFAULTS **
-
+//                              ZOMBIE:RELOADED
+//                           Downloads configuration
+//
+// Check the downloads configuration section in the manual for detailed info.
+//
+// ============================================================================
+// * Each uncommented line will be used as a file path for clients to download.
+// ----------------------------------------------------------------------------
+// Defaults:
+// ----------------------------------------------------------------------------
 materials/models/player/zh/Zombie_Classic_sheet.vmt
 materials/models/player/zh/corpse1.vmt
 materials/models/player/zh/Charple1_sheet.vmt
@@ -28,5 +30,3 @@ materials/overlays/zr/humans_win.vmt
 // zvision
 materials/overlays/zr/zvision.vtf
 materials/overlays/zr/zvision.vmt
-
-// ** END DEFAULTS **

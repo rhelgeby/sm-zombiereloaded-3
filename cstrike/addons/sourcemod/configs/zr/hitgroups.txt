@@ -1,22 +1,7 @@
-// Hitgroups
-//
-// Format
-//
-// "hitgroup index" // Index of the hitgroup (listed below)
-// {
-//	"index"			"name of hitgroup" // Redundant as of now, used for readability.
-//	"knockback"		"1.0" (default) // The knockback multiplier for the hitgroup.
-//	"damage"		"yes" (default // Toggle damage on and off for this hitgroup.
-// }
-//
-// Notes:
-//
-// A missing config setting will be assumed to be its default value (documented above).
-
 // ============================================================================
 //
 //                              ZOMBIE:RELOADED
-//                          Hitgroup configurations
+//                          Hitgroup configuration
 //
 // Check the hitgroup configuration section in the manual for detailed info.
 //
@@ -26,7 +11,7 @@
 //
 // Attribute:               Values:     Description:
 // ----------------------------------------------------------------------------
-// index                    number      The hitgroup index 
+// index                    number      The hitgroup index.
 // damage                   yes/no      Allow damage to be done on this hitgroup for zombies.
 // knockback                decimal     The knockback multiplier for this hitgroup.
 

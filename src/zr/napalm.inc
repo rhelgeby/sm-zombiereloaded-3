@@ -80,6 +80,13 @@ NapalmOnClientDeath(client)
  */
 NapalmOnWeaponFire(const String:weapon[])
 {
+    // If grenade fire is disabled, then stop.
+    new bool:napalmignite = GetConVarBool(g_hCvarsList[CVAR_NAPALM_IGNITE]);
+    if (!napalmignite)
+    {
+        return;
+    }
+    
     // If human class can't throw napalm grenades, then stop. (TODO)
     /*if ()
     {

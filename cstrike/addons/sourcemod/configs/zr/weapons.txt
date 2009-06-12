@@ -1,7 +1,7 @@
 // ============================================================================
 //
 //                              ZOMBIE:RELOADED
-//                           Weapon configurations
+//                            Weapon configuration
 //
 // Check the weapon configuration section in the manual for detailed info.
 //

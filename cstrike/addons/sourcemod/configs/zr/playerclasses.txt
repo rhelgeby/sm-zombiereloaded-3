@@ -1,7 +1,7 @@
 // ============================================================================
 //
 //                              ZOMBIE:RELOADED
-//                           Class configurations
+//                           Class configuration
 //
 // Check the class configuration section in the manual for detailed info.
 //
@@ -26,6 +26,7 @@
 // overlay_path             text        Overlay displayed at the player.
 // nvgs                     0/1         Give night vision.
 // fov                      number      Field of view value. 90 is default.
+// napalm_time              decimal     Napalm burn duration. Zombies only.
 // immunity_mode            number      Sets the immunity mode.
 // immunity_amount          decimal     Sets the immunity value.
 // no_fall_damage           0/1         Disables fall damage.

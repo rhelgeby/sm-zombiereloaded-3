@@ -1,17 +1,17 @@
-// ====================
-//   Zombie:Reloaded
-//  File: models.txt
-//   Author: Greyscale
-// ====================
+// ============================================================================
 //
-// Add paths to models here
-// They will automatically be downloaded to the client
-
-// ** DEFAULTS
-
+//                              ZOMBIE:RELOADED
+//                            Model configuration
+//
+// Check the weapon configuration section in the manual for detailed info.
+//
+// ============================================================================
+// * Each uncommented line will be used as a model path for clients to download,
+//   and classes to utilize.
+// ----------------------------------------------------------------------------
+// Defaults:
+// ----------------------------------------------------------------------------
 models/player/zh/zh_charple001
 models/player/zh/zh_zombie003
 models/player/zh/zh_corpse002
 models/player/ics/hellknight_red/t_guerilla
-
-// ** END DEFAULTS **

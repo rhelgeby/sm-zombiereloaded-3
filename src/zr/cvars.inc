@@ -130,6 +130,7 @@ enum CvarsList
     Handle:CVAR_RESPAWN_DELAY,
     Handle:CVAR_RESPAWN_TEAM_ZOMBIE,
     Handle:CVAR_RESPAWN_TEAM_ZOMBIE_WORLD,
+    Handle:CVAR_NAPALM_IGNITE,
     Handle:CVAR_JUMPBOOST_BUNNYHOP_PROTECT,
     Handle:CVAR_JUMPBOOST_BUNNYHOP_MAX,
     Handle:CVAR_JUMPBOOST_BUNNYHOP_RESET,
@@ -200,12 +201,6 @@ CvarsInit()
 CvarsCreate()
 {
     // ===========================
-    // General (Core)
-    // ===========================
-    g_hCvarsList[CVAR_ENABLE]                    =    CreateConVar("zr_enable", "1", "");
-    
-    
-    // ===========================
     // Log (core)
     // ===========================
     g_hCvarsList[CVAR_LOG]                       =    CreateConVar("zr_log",                    "1",    "Enable logging of events in the plugin. Fatal errors are logged independent on this setting.");
@@ -214,14 +209,6 @@ CvarsCreate()
     g_hCvarsList[CVAR_LOG_IGNORE_CONSOLE]        =    CreateConVar("zr_log_ignore_console",     "1",    "Don't log events triggered by console commands that are executed by the console itself, like commands in configs. Enable this command to avoid spamming logs with events like weapon restrictions.");
     g_hCvarsList[CVAR_LOG_PRINT_ADMINS]          =    CreateConVar("zr_log_print_admins",       "0",    "Print log events to admin chat in addition to the log file.");
     g_hCvarsList[CVAR_LOG_PRINT_CHAT]            =    CreateConVar("zr_log_print_chat",         "0",    "Print log events to public chat in addition to the log file.");
-    
-    
-    // ===========================
-    // Translations (core)
-    // ===========================
-    
-    // (None)
-    
     
     // ===========================
     // Config (core)
@@ -232,28 +219,13 @@ CvarsCreate()
     g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons",        "configs/zr/weapons.txt",               "Path, relative to root sourcemod directory, to weapons config file.");
     g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]     =    CreateConVar("zr_config_path_hitgroups",      "configs/zr/hitgroups.txt",             "Path, relative to root sourcemod directory, to hitgroups config file.");
     
-    
-    // ===========================
-    // Tools (core)
-    // ===========================
-    
-    // (None)
-    
-    
-    // ===========================
-    // Models (core)
-    // ===========================
-    
-    // TODO: config file path.
-    
-    
     // ===========================
     // Classes (core)
     // ===========================
     
     // General
     g_hCvarsList[CVAR_CLASSES_SPAWN]                    =    CreateConVar("zr_classes_spawn",               "0",            "Re-display class selection menu every spawn.");
-    g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random",              "0",            "Player is assigned a random class every spawn. [Override: zr_classes_spawn & zr_classes_default_*]");
+    g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random",              "0",            "Player is assigned a random class every spawn. [Override: zr_classes_spawn&zr_classes_default_*]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE]           =    CreateConVar("zr_classes_default_zombie",      "random",       "Zombie class assigned to players on connect. ['random' = Random class | '\"\"' = Class config default]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]            =    CreateConVar("zr_classes_default_human",       "random",       "Human class assigned to players on connect. ['random' = Random class | '\"\"' = Class config default]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin",       "random",       "Admin class assigned to admins on connect. ['random' = Random class | '\"\"' = Class config default]");
@@ -289,10 +261,11 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_HITGROUPS]                        =    CreateConVar("zr_hitgroups",   "1",    "Enable hitgroups module, disabling this will disable hitgroup-related features. (hitgroup knockback multipliers, hitgroup damage control)");
     
-    
     // ===========================
     // Infect (core)
     // ===========================
+    
+    // General
     g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]             =    CreateConVar("zr_infect_mzombie_ratio",        "5",                                "Number of mother zombies to infect (when infect timer is up) in proportion to number of humans on the server.");
     g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]           =    CreateConVar("zr_infect_mzombie_respawn",      "0",                                "Teleport mother zombies back to spawn on infect.");
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]             =    CreateConVar("zr_infect_spawntime_min",        "30.0",                             "Minimum time from the start of the round until picking the mother zombie(s).");
@@ -332,7 +305,7 @@ CvarsCreate()
     // ===========================
     // Say Hooks (core)
     // ===========================
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET]                   =    CreateConVar("zr_sayhooks_quiet",          "1",    "Stop certain in-game commands from appearing in chat. [See zr_sayhooks_quiet_filter & zr_sayhooks_quiet_flags]");
+    g_hCvarsList[CVAR_SAYHOOKS_QUIET]                   =    CreateConVar("zr_sayhooks_quiet",          "1",    "Stop certain in-game commands from appearing in chat. [See zr_sayhooks_quiet_filter&zr_sayhooks_quiet_flags]");
     g_hCvarsList[CVAR_SAYHOOKS_QUIET_FILTER]            =    CreateConVar("zr_sayhooks_quiet_filter",   "1",    "Stops any failed in-game command from showing in chat.  Ex: Typing !zspawn while alive. [Dependency: zr_sayhooks_quiet]");
     g_hCvarsList[CVAR_SAYHOOKS_QUIET_FLAGS]             =    CreateConVar("zr_sayhooks_quiet_flags",    "58",   "Flag separate in-game commands to always hide from chat. [Dependency: zr_sayhooks_quiet]\n In-Game Command Flags:\n * Add numbers of desired flags together to produce final flag value.\n --------------------------------------------------------------------\n 1:  !zmenu\n 2:  !zadmin\n 4:  !zclass\n 8:  !zspawn\n 16: !ztele\n 32: !zhp\n 64: !zmarket");
     // Flags (default: 2 + 8 + 16 + 32)
@@ -407,26 +380,18 @@ CvarsCreate()
     
     
     // ===========================
-    // Antistick (module)
+    // Anti-Stick (module)
     // ===========================
     g_hCvarsList[CVAR_ANTISTICK]                        =    CreateConVar("zr_antistick",               "1",        "Automatically unstick players when stuck within each others' collision hull.");
     g_hCvarsList[CVAR_ANTISTICK_INTERVAL]               =    CreateConVar("zr_antistick_interval",      "0.5",      "Time between each check for stuck players. [Dependency: zr_antistick]");
     
-    
-    // ===========================
-    // Knockback (module)
-    // ===========================
-    
-    // (None)
-    
-    
     // ===========================
     // Spawn Protect (module)
     // ===========================
-    g_hCvarsList[CVAR_SPAWNPROTECT]                     =    CreateConVar("zr_spawnprotect", "1", "");
-    g_hCvarsList[CVAR_SPAWNPROTECT_TIME]                =    CreateConVar("zr_spawnprotect_time", "10", "");
-    g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]               =    CreateConVar("zr_spawnprotect_speed", "600.0", "");
-    g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]               =    CreateConVar("zr_spawnprotect_alpha", "0", "");
+    g_hCvarsList[CVAR_SPAWNPROTECT]                     =    CreateConVar("zr_spawnprotect",        "1",            "Player will be protected from infection when spawning into the game late.");
+    g_hCvarsList[CVAR_SPAWNPROTECT_TIME]                =    CreateConVar("zr_spawnprotect_time",   "10",           "Amount of time to protect player. [Dependency: zr_spawnprotect]");
+    g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]               =    CreateConVar("zr_spawnprotect_speed",  "600.0",        "Speed of the player during protection. ['300.0' = Normal | '600.0' = Double speed | Dependency: zr_spawnprotect]");
+    g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]               =    CreateConVar("zr_spawnprotect_alpha",  "0",            "Alpha of the player during protection. ['255' = Fully visible | '0' = Completely invisible | Dependency: zr_spawnprotect]");
     
     
     // ===========================
@@ -442,8 +407,7 @@ CvarsCreate()
     // Napalm (module)
     // ===========================
     
-    // (None)
-    
+    g_hCvarsList[CVAR_NAPALM_IGNITE]                    =    CreateConVar("zr_napalm_ignite",       "1",    "Ignite grenade in mid-air after player throws it. [Dependency: Human Attribute 'napalm']");
     
     // ===========================
     // Jump Boost (module)
@@ -454,7 +418,7 @@ CvarsCreate()
     
     
     // ===========================
-    // Volumetric features (module)
+    // Volumetric Features (module)
     // ===========================
     g_hCvarsList[CVAR_VOL]                              =    CreateConVar("zr_vol",                     "1",    "Enables volumetric features.");
     g_hCvarsList[CVAR_VOL_UPDATE_INTERVAL]              =    CreateConVar("zr_vol_update_interval",     "1.0",  "How often to update player positions and trigger events, in seconds.");
