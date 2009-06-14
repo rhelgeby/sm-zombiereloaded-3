@@ -258,8 +258,8 @@ bool:LogCheckModuleFilter(LogModules:module)
  */
 LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = LOG_CORE_EVENTS, LogModules:module, const String:description[], const String:text[], any:...)
 {
-    // Only do filter and flag checks if the log type isn't a fatal error.
-    if (logType != LogType_Fatal)
+    // Check filter overrides. Always log fatal errors, and check error override setting on error log types.
+    if ((logType != LogType_Fatal && logType != LogType_Error) || (logType == LogType_Error && !GetConVarBool(g_hCvarsList[CVAR_LOG_ERROR_OVERRIDE])))
     {
         // Check if logging is disabled.
         if (!GetConVarBool(g_hCvarsList[CVAR_LOG]))
@@ -333,6 +333,7 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
     // Check if printing log events to public chat is enabled.
     if (GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_CHAT]))
     {
+        // Print text to public chat.
         TranslationPrintToChatAll(false, false, "Literal text", logbuffer);
     }
 }

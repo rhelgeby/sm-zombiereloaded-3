@@ -69,6 +69,7 @@
         "fov"                   "90"
         
         // Effects
+        "has_napalm"            "0"
         "napalm_time"           "10.0"
         
         // Player behaviour
@@ -110,6 +111,7 @@
         "fov"                   "90"
         
         // Effects
+        "has_napalm"            "0"
         "napalm_time"           "5.0"
         
         // Player behaviour
@@ -151,6 +153,7 @@
         "fov"                   "90"
         
         // Effects
+        "has_napalm"            "0"
         "napalm_time"           "15.0"
         
         // Player behaviour
@@ -192,6 +195,7 @@
         "fov"                   "90"
         
         // Effects
+        "has_napalm"            "0"
         "napalm_time"           "20.0"
         
         // Player behaviour
@@ -239,6 +243,7 @@
         "fov"                   "90"
         
         // Effects
+        "has_napalm"            "1"
         "napalm_time"           "0.0"
         
         // Player behaviour
@@ -280,6 +285,7 @@
         "fov"                   "90"
         
         // Effects
+        "has_napalm"            "0"
         "napalm_time"           "0.0"
         
         // Player behaviour
@@ -321,6 +327,7 @@
         "fov"                   "90"
         
         // Effects
+        "has_napalm"            "1"
         "napalm_time"           "0.0"
         
         // Player behaviour

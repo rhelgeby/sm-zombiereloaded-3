@@ -230,7 +230,7 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
     InfectOnClientHurt(index, attacker, weapon);
     SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
-    NapalmOnClientHurt(index, weapon);
+    NapalmOnClientHurt(index, attacker, weapon);
     ZHPOnClientHurt(index);
 }
 
@@ -300,9 +300,10 @@ public Action:EventPlayerJump(Handle:event, const String:name[], bool:dontBroadc
 public Action:EventWeaponFire(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
+    new index = GetClientOfUserId(GetEventInt(event, "userid"));
     decl String:weapon[32];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     
     // Forward event to modules.
-    NapalmOnWeaponFire(weapon);
+    NapalmOnWeaponFire(index, weapon);
 }

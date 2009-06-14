@@ -112,9 +112,9 @@ public bool:AskPluginLoad(Handle:myself, bool:late, String:error[], err_max)
 public OnPluginStart()
 {
     // Forward event to modules.
+    LogInit();          // Doesn't depend on CVARs.
     TranslationInit();
     CvarsInit();
-    LogInit();
     ToolsInit();
     CommandsInit();
     WeaponsInit();

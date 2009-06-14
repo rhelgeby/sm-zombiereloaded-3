@@ -121,6 +121,7 @@
 #define ZR_CLASS_DEFAULT_OVERLAY_PATH           "overlays/zr/zvision"
 #define ZR_CLASS_DEFAULT_NVGS                   true
 #define ZR_CLASS_DEFAULT_FOV                    90
+#define ZR_CLASS_DEFAULT_HAS_NAPALM             1
 #define ZR_CLASS_DEFAULT_NAPALM_TIME            10.0
 #define ZR_CLASS_DEFAULT_IMMUNITY_MODE          ZR_CLASS_IMMUNITY_DISABLED
 #define ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT        0.0
@@ -141,6 +142,8 @@
 /**
  * @section Attribute limit values. Used when validating.
  */
+#define ZR_CLASS_TEAM_MIN                   0
+#define ZR_CLASS_TEAM_MAX                   2
 #define ZR_CLASS_NAME_MIN                   1
 #define ZR_CLASS_DESCRIPTION_MIN            1
 /** Model path is checked for existance. */
@@ -192,19 +195,20 @@
 #define ZR_CLASS_FLAG_OVERLAY_PATH          (1<<9)
 #define ZR_CLASS_FLAG_NVGS                  (1<<10)
 #define ZR_CLASS_FLAG_FOV                   (1<<11)
-#define ZR_CLASS_FLAG_NAPALM_TIME           (1<<12)
-#define ZR_CLASS_FLAG_IMMUNITY_MODE         (1<<13)
-#define ZR_CLASS_FLAG_IMMUNITY_AMOUNT       (1<<14)
-#define ZR_CLASS_FLAG_NO_FALL_DAMAGE        (1<<15)
-#define ZR_CLASS_FLAG_HEALTH                (1<<16)
-#define ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL (1<<17)
-#define ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT   (1<<18)
-#define ZR_CLASS_FLAG_HEALTH_INFECT_GAIN    (1<<19)
-#define ZR_CLASS_FLAG_KILL_BONUS            (1<<20)
-#define ZR_CLASS_FLAG_SPEED                 (1<<21)
-#define ZR_CLASS_FLAG_KNOCKBACK             (1<<22)
-#define ZR_CLASS_FLAG_JUMP_HEIGHT           (1<<23)
-#define ZR_CLASS_FLAG_JUMP_DISTANCE         (1<<24)
+#define ZR_CLASS_FLAG_HAS_NAPALM            (1<<12)
+#define ZR_CLASS_FLAG_NAPALM_TIME           (1<<13)
+#define ZR_CLASS_FLAG_IMMUNITY_MODE         (1<<14)
+#define ZR_CLASS_FLAG_IMMUNITY_AMOUNT       (1<<15)
+#define ZR_CLASS_FLAG_NO_FALL_DAMAGE        (1<<16)
+#define ZR_CLASS_FLAG_HEALTH                (1<<17)
+#define ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL (1<<18)
+#define ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT   (1<<19)
+#define ZR_CLASS_FLAG_HEALTH_INFECT_GAIN    (1<<20)
+#define ZR_CLASS_FLAG_KILL_BONUS            (1<<21)
+#define ZR_CLASS_FLAG_SPEED                 (1<<22)
+#define ZR_CLASS_FLAG_KNOCKBACK             (1<<23)
+#define ZR_CLASS_FLAG_JUMP_HEIGHT           (1<<24)
+#define ZR_CLASS_FLAG_JUMP_DISTANCE         (1<<25)
 /**
  * @endsection
  */
@@ -234,6 +238,7 @@ enum ClassAttributes
     class_fov,
     
     /* Effects */
+    bool:class_has_napalm,
     Float:class_napalm_time,
     
     /* Player behaviour */
@@ -420,6 +425,7 @@ ClassLoad()
         
         
         /* Effects */
+        ClassData[ClassCount][class_has_napalm] = bool:KvGetNum(kvClassData, "have_napalm", ZR_CLASS_DEFAULT_HAS_NAPALM);
         ClassData[ClassCount][class_napalm_time] = KvGetFloat(kvClassData, "napalm_time", ZR_CLASS_DEFAULT_NAPALM_TIME);
         
         
@@ -528,6 +534,7 @@ bool:ClassReloadDataCache()
         ClassDataCache[classindex][class_fov] = ClassData[classindex][class_fov];
         
         /* Effects */
+        ClassDataCache[classindex][class_has_napalm] = ClassData[classindex][class_has_napalm];
         ClassDataCache[classindex][class_napalm_time] = ClassData[classindex][class_napalm_time];
         
         /* Player behaviour */
@@ -591,6 +598,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             ClassPlayerCache[client][class_fov] = ClassData[classindex][class_fov];
             
             /* Effects */
+            ClassPlayerCache[client][class_has_napalm] = ClassData[classindex][class_has_napalm];
             ClassPlayerCache[client][class_napalm_time] = ClassData[classindex][class_napalm_time];
             
             /* Player behaviour */
@@ -628,6 +636,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             ClassPlayerCache[client][class_fov] = ClassDataCache[classindex][class_fov];
             
             /* Effects */
+            ClassPlayerCache[client][class_has_napalm] = ClassDataCache[classindex][class_has_napalm];
             ClassPlayerCache[client][class_napalm_time] = ClassDataCache[classindex][class_napalm_time];
             
             /* Player behaviour */
@@ -792,6 +801,9 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
     cellcount += StrCat(buffer, maxlen, attribute);
     
     Format(attribute, sizeof(attribute), "fov:                   \"%d\"\n", ClassGetFOV(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "has_napalm:            \"%d\"\n", ClassGetHasNapalm(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
     
     Format(attribute, sizeof(attribute), "napalm_time:           \"%f\"\n", ClassGetNapalmTime(index, cachetype));

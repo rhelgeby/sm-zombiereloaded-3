@@ -34,9 +34,10 @@
  *  Client has been hurt.
  * 
  * @param client    The client index.
+ * @param attacker  The attacker index.
  * @param weapon    The weapon name. 
  */
-NapalmOnClientHurt(client, const String:weapon[])
+NapalmOnClientHurt(client, attacker, const String:weapon[])
 {
     // If player isn't a zombie, then stop.
     if (!InfectIsClientInfected(client))
@@ -47,6 +48,12 @@ NapalmOnClientHurt(client, const String:weapon[])
     // If napalm time is invalid or 0, then stop.
     new Float:napalm_time = ClassGetNapalmTime(client);
     if (napalm_time <= 0.0)
+    {
+        return;
+    }
+    
+    // If the attacker can't throw napalm grenades, then stop.
+    if (ClassGetHasNapalm(attacker))
     {
         return;
     }
@@ -76,9 +83,10 @@ NapalmOnClientDeath(client)
 /**
  *  Weapon has been fired.
  *
- * @param weapon       The weapon name. 
+ * @param client       The client index.
+ * @param weapon       The weapon name.
  */
-NapalmOnWeaponFire(const String:weapon[])
+NapalmOnWeaponFire(client, const String:weapon[])
 {
     // If grenade fire is disabled, then stop.
     new bool:napalmignite = GetConVarBool(g_hCvarsList[CVAR_NAPALM_IGNITE]);
@@ -87,11 +95,11 @@ NapalmOnWeaponFire(const String:weapon[])
         return;
     }
     
-    // If human class can't throw napalm grenades, then stop. (TODO)
-    /*if ()
+    // If human class can't throw napalm grenades, then stop.
+    if (!ClassGetHasNapalm(client))
     {
         return;
-    }*/
+    }
     
     // If weapon isn't a grenade, then stop.
     if (!StrEqual(weapon, "hegrenade", false))

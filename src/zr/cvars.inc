@@ -44,6 +44,7 @@ enum CvarsList
     Handle:CVAR_LOG_FLAGS,
     Handle:CVAR_LOG_MODULE_FILTER,
     Handle:CVAR_LOG_IGNORE_CONSOLE,
+    Handle:CVAR_LOG_ERROR_OVERRIDE,
     Handle:CVAR_LOG_PRINT_ADMINS,
     Handle:CVAR_LOG_PRINT_CHAT,
     Handle:CVAR_CONFIG_PATH_MODELS,
@@ -207,6 +208,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_LOG_FLAGS]                 =    CreateConVar("zr_log_flags",              "3",    "A bit field that specify what event types to log. See logging section (3.3) in manual for details.");
     g_hCvarsList[CVAR_LOG_MODULE_FILTER]         =    CreateConVar("zr_log_module_filter",      "0",    "Enable module filtering. Only log events from listed modules will be logged.");
     g_hCvarsList[CVAR_LOG_IGNORE_CONSOLE]        =    CreateConVar("zr_log_ignore_console",     "1",    "Don't log events triggered by console commands that are executed by the console itself, like commands in configs. Enable this command to avoid spamming logs with events like weapon restrictions.");
+    g_hCvarsList[CVAR_LOG_ERROR_OVERRIDE]        =    CreateConVar("zr_log_error_override",     "1",    "Always log error messages. Overrides module filter and logging flags.");
     g_hCvarsList[CVAR_LOG_PRINT_ADMINS]          =    CreateConVar("zr_log_print_admins",       "0",    "Print log events to admin chat in addition to the log file.");
     g_hCvarsList[CVAR_LOG_PRINT_CHAT]            =    CreateConVar("zr_log_print_chat",         "0",    "Print log events to public chat in addition to the log file.");
     
@@ -518,7 +520,7 @@ public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newval
         SetConVarInt(g_hAutoTeamBalance, CVARS_AUTOTEAMBALANCE_LOCKED);
         
         // If log flag check fails, then don't log.
-        LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Cvars, "Cvar Locked", "Cvar \"mp_autoteambalance\" was reverted back to \"CVARS_AUTOTEAMBALANCE_LOCKED\".");
+        LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Cvars, "Cvar Locked", "Cvar \"mp_autoteambalance\" was reverted back to %d.", CVARS_AUTOTEAMBALANCE_LOCKED);
     }
     // If cvar is mp_limitteams, then continue.
     else if (cvar == g_hLimitTeams)
@@ -533,7 +535,7 @@ public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newval
         SetConVarInt(g_hLimitTeams, CVARS_LIMITTEAMS_LOCKED);
         
         // If log flag check fails, then don't log.
-        LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Cvars, "Cvar Locked", "Cvar \"mp_limitteams\" was reverted back to \"CVARS_LIMITTEAMS_LOCKED\".");
+        LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Cvars, "Cvar Locked", "Cvar \"mp_limitteams\" was reverted back to %d.", CVARS_LIMITTEAMS_LOCKED);
     }
 }
 

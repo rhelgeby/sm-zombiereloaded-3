@@ -396,6 +396,11 @@ stock bool:ClassModifyBoolean(classindex, attributeflag, bool:value)
             ClassDataCache[classindex][class_no_fall_damage] = bool:value;
             return true;
         }
+        case ZR_CLASS_FLAG_HAS_NAPALM:
+        {
+            ClassDataCache[classindex][class_has_napalm] = bool:value;
+            return true;
+        }
     }
     
     // Invalid flag or multiple flags combined.

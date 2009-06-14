@@ -106,6 +106,12 @@ stock ClassValidateAttributes(classindex)
     
     new flags;
     
+    // Team.
+    if (ClassData[classindex][class_team] < ZR_CLASS_TEAM_MIN || ClassData[classindex][class_team] > ZR_CLASS_TEAM_MAX)
+    {
+        flags += ZR_CLASS_FLAG_TEAM;
+    }
+    
     // Name.
     if (strlen(ClassData[classindex][class_name]) < ZR_CLASS_NAME_MIN)
     {
@@ -116,7 +122,7 @@ stock ClassValidateAttributes(classindex)
         decl String:name[64];
         strcopy(name, sizeof(name), ClassData[classindex][class_name]);
         
-        // Check for reserved name keyworks.
+        // Check for reserved name keyworks. These aren't allowed as names.
         if (StrEqual(name, "all", false) ||
             StrEqual(name, "humans", false) ||
             StrEqual(name, "zombies", false) ||

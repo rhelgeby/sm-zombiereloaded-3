@@ -462,6 +462,38 @@ stock ClassGetFOV(index, cachetype = ZR_CLASS_CACHE_PLAYER)
  */
 
 /**
+ * Gets the napalm setting from the specified class.
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
+ *                  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
+ *                  is used, index will be used as a client index.
+ * @return  True if the class has napalm grenades, false otherwise.
+ */
+stock bool:ClassGetHasNapalm(index, cachetype = ZR_CLASS_CACHE_PLAYER)
+{
+    switch (cachetype)
+    {
+        case ZR_CLASS_CACHE_ORIGINAL:
+        {
+            return ClassData[index][class_has_napalm];
+        }
+        case ZR_CLASS_CACHE_MODIFIED:
+        {
+            return ClassDataCache[index][class_has_napalm];
+        }
+        case ZR_CLASS_CACHE_PLAYER:
+        {
+            return ClassPlayerCache[index][class_has_napalm];
+        }
+    }
+    return false;
+}
+
+/**
  * Gets the napalm grenades time from the specified class.
  *
  * @param index     Index of the class in a class cache or a client index,

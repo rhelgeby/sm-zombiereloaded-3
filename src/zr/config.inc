@@ -192,7 +192,7 @@ ConfigOnCommandsCreate()
 }
 
 /**
- * Load plugin configs.
+ * Load plugin configs. Executes map configs.
  */
 ConfigLoad()
 {
