@@ -234,10 +234,56 @@
 		"en"		"You have been infected!  Go pass it on to as many other players as you can."
 	}
 
+	"Infect human"
+	{
+		"en"		"The merciful gods (known as admins) have resurrected your soul, find some cover!"
+	}
+
 	"Infect disconnect"
 	{
 		"en"		"The last zombie has left the game, and has passed the infection on to you."
 		"ru"		"Последний зомби покинул игру и передал свою инфекцию вам."
+	}
+
+	// Commands
+
+	"Infect command infect syntax"
+	{
+		"en"		"Infect a client. Usage: zr_infect <filter> [respawn - 1/0]"
+	}
+
+	"Infect command human syntax"
+	{
+		"en"		"Turn a client into a human. Usage: zr_human <filter> [respawn - 1/0] [protect - 1/0]"
+	}
+
+	"Infect command infect successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaulthas been successfully infected."
+	}
+
+	"Infect command infect unsuccessful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaultis already a zombie."
+	}
+
+	"Infect command human successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaulthas been successfully brought back as a human."
+	}
+
+	"Infect command human unsuccessful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaultis already a human."
+	}
+
+	"Infect command zombie has not spawned"
+	{
+		"en"		"The mother zombie must spawn before player infection states can be changed."
 	}
 
 	// ===========================

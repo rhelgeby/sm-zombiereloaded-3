@@ -333,7 +333,7 @@ public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
          {
              decl String:name[64];
              GetClientName(target, name, sizeof(name));
-             InfectClient(target);
+             InfectHumanToZombie(target);
              ShowActivity2(client, "[ZR] ", "Infected %s", name);
              ZRInfectMenu(client);
          }

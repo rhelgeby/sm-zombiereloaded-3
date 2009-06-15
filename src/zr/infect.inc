@@ -101,6 +101,15 @@ InfectLoad()
 }
 
 /**
+ * Create commands specific to infect here.
+ */
+InfectOnCommandsCreate()
+{
+    RegAdminCmd("zr_infect", InfectInfectCommand, ADMFLAG_GENERIC, "Infect a client. Usage: zr_infect <filter> [respawn - 1/0]");
+    RegAdminCmd("zr_human", InfectHumanCommand, ADMFLAG_GENERIC, "Turn a client into a human. Usage: zr_human <filter> [respawn - 1/0]");
+}
+
+/**
  * Client is joining the server.
  * 
  * @param client    The client index.  
@@ -192,7 +201,7 @@ InfectOnClientDisconnect(client)
     new randclient = GetArrayCell(arrayEligibleClients, randindex);
     
     // Infect player.
-    InfectClient(randclient);
+    InfectHumanToZombie(randclient);
     
     // Tell client they have been randomly been chosen to replace disconnecting zombie.
     TranslationPrintToChat(randclient, "Infect disconnect");
@@ -311,7 +320,7 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
     }
     
     // Infect client.
-    InfectClient(client, attacker);
+    InfectHumanToZombie(client, attacker);
 }
 
 /**
@@ -470,7 +479,7 @@ public Action:InfectMotherZombie(Handle:timer)
         client = GetArrayCell(arrayEligibleClients, randindex);
         
         // Infect player.
-        InfectClient(client, _, true);
+        InfectHumanToZombie(client, _, true);
     }
     else
     {
@@ -509,7 +518,7 @@ public Action:InfectMotherZombie(Handle:timer)
             client = GetArrayCell(arrayEligibleClients, randindex);
             
             // Infect player.
-            InfectClient(client, _, true);
+            InfectHumanToZombie(client, _, true);
             
             // Remove player from eligible zombie list.
             RemoveFromArray(arrayEligibleClients, randindex);
@@ -524,14 +533,16 @@ public Action:InfectMotherZombie(Handle:timer)
 }
 
 /**
- * Infects a player. Execute events, sets attributes and flags that indicate
- * that the player is a zombie.
+ * Infects a client. Execute events, sets attributes and flags that indicate
+ * that the client is a zombie.
  *
- * @param client        The player to infect.
- * @param attacker      (Optional) The attacker who did the infect.
- * @param motherinfect  (Optional) Indicates a mother zombie infect.
+ * @param client            The client to infect.
+ * @param attacker          (Optional) The attacker who did the infect.
+ * @param motherinfect      (Optional) Indicates a mother zombie infect.
+ * @param respawnoverride   (Optional) Set to true to override respawn cvar.
+ * @param respawn           (Optional) Value to override with.
  */
-InfectClient(client, attacker = -1, bool:motherinfect = false)
+InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respawnoverride = false, bool:respawn = false)
 {
     // Mark player as zombie.
     bZombie[client] = true;
@@ -631,8 +642,16 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
             ZTeleTeleportClient(client);
         }
     }
+    // Check override.
+    else
+    {
+        if (respawnoverride && respawn)
+        {
+            ZTeleTeleportClient(client);
+        }
+    }
     
-    // Format infection message.
+    // Set client as translation target.
     SetGlobalTransTarget(client);
     
     // Print message to client.
@@ -644,6 +663,46 @@ InfectClient(client, attacker = -1, bool:motherinfect = false)
     SEffectsOnClientInfected(client);
     ZTeleOnClientInfected(client);
     ZHPOnClientInfected(client);
+}
+
+/**
+ * Turns a zombie back into a human. Execute events, sets attributes and flags that indicate
+ * that the client is a human.
+ *
+ * @param client        The client to make human.
+ * @param respawn       Teleport client back to spawn if true.
+ * @param protect       Start spawn protection on new human.
+ */
+InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
+{
+    // Mark player as human.
+    bZombie[client] = false;
+    
+    // Switch the player to counter-terrorists.
+    CS_SwitchTeam(client, CS_TEAM_CT);
+    
+    // Set client as translation target.
+    SetGlobalTransTarget(client);
+    
+    // Print message to client.
+    TranslationPrintToChat(client, "Infect human");
+    
+    // Forward event to modules.
+    ClassOnClientInfected(client, false);
+    RoundEndOnClientInfected();
+    ZTeleOnClientInfected(client);
+    
+    // Check if we should respawn the client.
+    if (respawn)
+    {
+        ZTeleTeleportClient(client);
+    }
+    
+    // Check if we should spawn protect the client.
+    if (protect)
+    {
+        SpawnProtectStart(client);
+    }
 }
 
 /**
@@ -753,4 +812,140 @@ bool:InfectIsClientHuman(client)
     
     // Return opposite of client's zombie flag.
     return !bZombie[client];
+}
+
+/**
+ * Command callback (zr_infect)
+ * Infects a client.
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:InfectInfectCommand(client, argc)
+{
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "Infect command infect syntax");
+        return Plugin_Handled;
+    }
+    
+    if (!g_bZombieSpawned)
+    {
+        TranslationReplyToCommand(client, "Infect command zombie has not spawned");
+        return Plugin_Handled;
+    }
+    
+    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
+    new targets[MAXPLAYERS], bool:tn_is_ml, result;
+    
+    // Get targetname.
+    GetCmdArg(1, target, sizeof(target));
+    
+    // Find a target.
+    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE | COMMAND_FILTER_NO_MULTI, targetname, sizeof(targetname), tn_is_ml);
+        
+    // Check if there was a problem finding a client.
+    if (result <= 0)
+    {
+        ZRReplyToTargetError(client, result);
+        return Plugin_Handled;
+    }
+    
+    // Check if client is a human before turning into zombie.
+    if (InfectIsClientHuman(targets[0]))
+    {
+        new bool:respawnoverride, bool:respawn;
+        decl String:strRespawn[8];
+        
+        // Get respawn parameter.
+        GetCmdArg(2, strRespawn, sizeof(strRespawn));
+        
+        // If parameter exists then cast it into a bool and feed it to infect function.
+        if (strRespawn[0])
+        {
+            respawnoverride = true;
+            respawn = bool:StringToInt(strRespawn);
+        }
+        
+        // Turn client into a zombie.
+        InfectHumanToZombie(targets[0], _, _, respawnoverride, respawn);
+        
+        // Tell admin command was successful.
+        TranslationReplyToCommand(client, "Infect command infect successful", targetname);
+    }
+    else
+    {
+        // Tell admin command was unsuccessful.
+        TranslationReplyToCommand(client, "Infect command infect unsuccessful", targetname);
+    }
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback (zr_human)
+ * Turns a client into a human.
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:InfectHumanCommand(client, argc)
+{
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "Infect command human syntax");
+        return Plugin_Handled;
+    }
+    
+    if (!g_bZombieSpawned)
+    {
+        TranslationReplyToCommand(client, "Infect command zombie has not spawned");
+        return Plugin_Handled;
+    }
+    
+    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
+    new targets[MAXPLAYERS], bool:tn_is_ml, result;
+    
+    // Get targetname.
+    GetCmdArg(1, target, sizeof(target));
+    
+    // Find a target.
+    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE | COMMAND_FILTER_NO_MULTI, targetname, sizeof(targetname), tn_is_ml);
+        
+    // Check if there was a problem finding a client.
+    if (result <= 0)
+    {
+        ZRReplyToTargetError(client, result);
+        return Plugin_Handled;
+    }
+    
+    // Check if client is a human before turning into zombie.
+    if (InfectIsClientInfected(targets[0]))
+    {
+        new bool:respawn, bool:protect;
+        decl String:strRespawn[8], String:strProtect[8];
+        
+        // Get respawn&protect parameters
+        GetCmdArg(2, strRespawn, sizeof(strRespawn));
+        GetCmdArg(3, strProtect, sizeof(strProtect));
+        
+        // If parameter exists then cast it into a bool and feed it to "humanize" function.
+        respawn = (strRespawn[0]) ? (bool:StringToInt(strRespawn)) : false;
+        protect = (strProtect[0]) ? (bool:StringToInt(strProtect)) : false;
+        
+        // Turn client into a zombie.
+        InfectZombieToHuman(targets[0], respawn, protect);
+        
+        // Tell admin command was successful.
+        TranslationReplyToCommand(client, "Infect command human successful", targetname);
+    }
+    else
+    {
+        // Tell admin command was unsuccessful.
+        TranslationReplyToCommand(client, "Infect command human unsuccessful", targetname);
+    }
+    
+    return Plugin_Handled;
 }

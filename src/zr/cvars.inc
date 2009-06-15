@@ -143,6 +143,7 @@ enum CvarsList
     Handle:CVAR_ZSPAWN_TEAM_ZOMBIE,
     Handle:CVAR_ZSPAWN_TIMELIMIT,
     Handle:CVAR_ZSPAWN_TIMELIMIT_TIME,
+    Handle:CVAR_ZSPAWN_TIMELIMIT_ZOMBIE,
     Handle:CVAR_ZTELE_ZOMBIE,
     Handle:CVAR_ZTELE_HUMAN_BEFORE,
     Handle:CVAR_ZTELE_HUMAN_AFTER,
@@ -430,13 +431,14 @@ CvarsCreate()
     // ===========================
     // ZSpawn (module)
     // ===========================
-    g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn",                  "1", "Allow players to spawn into the game late.");
+    g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn",                      "1",        "Allow players to spawn into the game late.");
     
-    g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override",    "1", "Override spawn team when spawning by means of ZSpawn.");
-    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie",      "0", "Spawn player on zombie team when spawning by means of ZSpawn. [Dependency: zr_zspawn_team_override | Override: zr_respawn_zombie]");
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override",        "1",        "Override spawn team when spawning by means of ZSpawn.");
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie",          "0",        "Spawn player on zombie team when spawning by means of ZSpawn. [Dependency: zr_zspawn_team_override | Override: zr_respawn_zombie]");
     
-    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit",        "1", "Put a time limit on the use of ZSpawn.");
-    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time",   "120.0", "Time from the start of the round to allow ZSpawn. [Dependency: zr_zspawn_timelimit]");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit",            "1",        "Put a time limit on the use of ZSpawn.");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time",       "120.0",    "Time from the start of the round to allow ZSpawn. [Dependency: zr_zspawn_timelimit]");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]          =    CreateConVar("zr_zspawn_timelimit_zombie",      "1",        "Spawn player on the zombie team AFTER the timelimit is up. ['-1' = Block ZSpawn | '0' = Spawn as human | '1' = Spawn as zombie | Dependency: zr_zspawn_timelimit]");
     
     
     // ===========================
