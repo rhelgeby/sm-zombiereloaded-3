@@ -409,7 +409,7 @@ CvarsCreate()
     // Napalm (module)
     // ===========================
     
-    g_hCvarsList[CVAR_NAPALM_IGNITE]                    =    CreateConVar("zr_napalm_ignite",       "1",    "Ignite grenade in mid-air after player throws it. [Dependency: Human Attribute 'napalm']");
+    g_hCvarsList[CVAR_NAPALM_IGNITE]                    =    CreateConVar("zr_napalm_ignite",       "1",    "Ignite grenade in mid-air after player throws it. [Dependency: Human Attribute 'hasnapalm']");
     
     // ===========================
     // Jump Boost (module)
