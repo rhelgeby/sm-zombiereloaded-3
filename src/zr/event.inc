@@ -86,7 +86,6 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     
     // Forward event to sub-modules.
     OverlaysOnRoundStart();
-    WeaponsOnRoundStart();
     RoundStartOnRoundStart();
     RoundEndOnRoundStart();
     InfectOnRoundStart();
@@ -94,6 +93,23 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     AntiStickOnRoundStart();
     ZSpawnOnRoundStart();
     VolOnRoundStart();
+    
+    // Fire post round_start event.
+    CreateTimer(0.0, EventRoundStartPost);
+}
+
+/**
+ * Event callback (round_start)
+ * The round is starting. *Post
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventRoundStartPost(Handle:timer, any:index)
+{
+    // Forward event to modules.
+    WeaponsOnRoundStartPost();
 }
 
 /**
@@ -228,6 +244,7 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
     // Forward event to modules.
     ClassAlphaUpdate(index);
     InfectOnClientHurt(index, attacker, weapon);
+    AccountOnClientHurt(attacker, dmg_health);
     SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
     NapalmOnClientHurt(index, attacker, weapon);

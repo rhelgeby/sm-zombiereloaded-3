@@ -37,7 +37,7 @@
 /**
  * @section Offsets relating to player hull dimensions.
 */
-#define ANTISTICK_PLAYER_HULL_XY_OFFSET 32
+#define ANTISTICK_PLAYER_HULL_XY_OFFSET 33
 #define ANTISTICK_PLAYER_HULL_Z_OFFSET 12
 #define ANTISTICK_PLAYER_HULL_STACK_OFFSET 14
 /**
@@ -168,13 +168,13 @@ public Action:AntiStickTimer(Handle:timer)
             continue;
         }
         
-        if (AntiStickClientCollisionGroup(x, false))
+        if (AntiStickClientCollisionGroup(x, false) == ANTISTICK_COLLISIONS_ON)
         {
             AntiStickClientCollisionGroup(x, true, ANTISTICK_COLLISIONS_OFF);
             CreateTimer(0.5, AntiStickSolidify, x, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
         }
         
-        if (AntiStickClientCollisionGroup(stuckindex, false))
+        if (AntiStickClientCollisionGroup(stuckindex, false) == ANTISTICK_COLLISIONS_ON)
         {
             AntiStickClientCollisionGroup(stuckindex, true, ANTISTICK_COLLISIONS_OFF);
             CreateTimer(0.5, AntiStickSolidify, stuckindex, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);

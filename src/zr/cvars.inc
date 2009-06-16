@@ -98,6 +98,7 @@ enum CvarsList
     Handle:CVAR_INFECT_SHAKE_DURATION,
     Handle:CVAR_ACCOUNT_CASHFILL,
     Handle:CVAR_ACCOUNT_CASHFILL_VALUE,
+    Handle:CVAR_ACCOUNT_CASHDMG,
     Handle:CVAR_VEFFECTS_LIGHTSTYLE,
     Handle:CVAR_VEFFECTS_LIGHTSTYLE_VALUE,
     Handle:CVAR_VEFFECTS_SKY,
@@ -333,6 +334,7 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_ACCOUNT_CASHFILL]                 =    CreateConVar("zr_account_cashfill",            "1",        "Reset player's cash each spawn.");
     g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]           =    CreateConVar("zr_account_cashfill_value",      "12000",    "Amount of cash to set player's account to. [Dependency: zr_account_cashfill]");
+    g_hCvarsList[CVAR_ACCOUNT_CASHDMG]                  =    CreateConVar("zr_account_cashdmg",             "0",        "Attacker receives amount of cash equivalent to the damage that was inflicted.");
     
     
     // ===========================
@@ -363,7 +365,7 @@ CvarsCreate()
     // Ragdoll
     
     g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]          =    CreateConVar("zr_veffects_ragdoll_remove",     "1",                    "Remove players' ragdolls from the game after a delay.");
-    g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]        =    CreateConVar("zr_veffects_ragdoll_dissolve",   "1",                    "The ragdoll removal effect. [-1: Effectless removal | 0: Energy dissolve | 1: Heavy electrical dissolve | 2: Light electrical dissolve | 3: Core dissolve | Dependency: zr_veffects_ragdoll_remove]");
+    g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]        =    CreateConVar("zr_veffects_ragdoll_dissolve",   "-1",                   "The ragdoll removal effect. ['-2' = Effectless removal | '-1' = Random effect | '0' = Energy dissolve | '1' = Heavy electrical dissolve | '2' = Light electrical dissolve | '3' = Core dissolve | Dependency: zr_veffects_ragdoll_remove]");
     g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DELAY]           =    CreateConVar("zr_veffects_ragdoll_delay",      "0.5",                  "Time to wait before removing the ragdoll. [Dependency: zr_veffects_ragdoll_remove]");
     
     // ===========================
