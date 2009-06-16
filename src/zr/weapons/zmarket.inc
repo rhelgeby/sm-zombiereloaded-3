@@ -136,7 +136,7 @@ ZMarketOnClientSpawn(client)
     // If auto-rebuy is enabled, then force client to rebuy weapons.
     if (g_bZMarketAutoRebuy[client])
     {
-        ZMarketRebuy(client);
+        ZMarketRebuy(client, true);
     }
 }
 
@@ -525,7 +525,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     }
     
     new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]);
-    if (zmarketbuyzone && !ZMarketIsClientInBuyZone(client))
+    if (!rebuy && zmarketbuyzone && !ZMarketIsClientInBuyZone(client))
     {
         TranslationPrintToChat(client, "Weapons zmarket buyzone");
         return false;
@@ -625,8 +625,11 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         // Add 1 to the client's purchase count.
         ZMarketSetPurchaseCount(client, weapon, 1, true);
         
-        // Tell client they bought a weapon.
-        TranslationPrintToChat(client, "Weapons zmarket purchase", weapon);
+        if (slot != Slot_Invalid && slot != Slot_Projectile)
+        {
+            // Tell client they bought a weapon.
+            TranslationPrintToChat(client, "Weapons zmarket purchase", weapon);
+        }
     }
     else if (!rebuy)
     {
@@ -652,7 +655,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
  * 
  * @param client    The client index.
  */
-ZMarketRebuy(client)
+ZMarketRebuy(client, bool:rebuy = false)
 {
     // If client is a zombie, then stop.
     if (InfectIsClientInfected(client))
@@ -662,7 +665,7 @@ ZMarketRebuy(client)
     }
     
     new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]);
-    if (zmarketbuyzone && !ZMarketIsClientInBuyZone(client))
+    if (!rebuy && zmarketbuyzone && !ZMarketIsClientInBuyZone(client))
     {
         TranslationPrintToChat(client, "Weapons zmarket buyzone");
         return;

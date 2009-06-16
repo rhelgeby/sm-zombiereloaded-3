@@ -250,7 +250,6 @@ VAmbienceApplySky(bool:disable = false)
     // If default, then set to default sky.
     if (disable)
     {
-        PrintToServer("+===============+++++ %s", g_VAmbienceDefaultSky);
         if (g_VAmbienceDefaultSky[0])
         {
             SetConVarString(hSkyname, g_VAmbienceDefaultSky, true);
