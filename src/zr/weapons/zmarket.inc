@@ -114,7 +114,12 @@ ZMarketClientInit(client)
 ZMarketOnClientDisconnect(client)
 {
     // Destroy ZMarket array data for client.
-    CloseHandle(g_hZMarketPurchaseCount[client]);
+    if (g_hZMarketPurchaseCount[client] != INVALID_HANDLE)
+    {
+        CloseHandle(g_hZMarketPurchaseCount[client]);
+    }
+    
+    // Reset handle.
     g_hZMarketPurchaseCount[client] = INVALID_HANDLE;
 }
 
