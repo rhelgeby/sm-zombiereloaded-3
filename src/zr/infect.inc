@@ -128,6 +128,12 @@ InfectClientInit(client)
  */
 InfectOnClientDisconnect(client)
 {
+    // If client is still connecting, then stop.
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+    
     // If zombie hasn't spawned, then stop.
     if (!g_bZombieSpawned)
     {
