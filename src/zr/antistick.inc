@@ -37,7 +37,7 @@
 /**
  * @section Offsets relating to player hull dimensions.
 */
-#define ANTISTICK_PLAYER_HULL_XY_OFFSET 33
+#define ANTISTICK_PLAYER_HULL_XY_OFFSET 32
 #define ANTISTICK_PLAYER_HULL_Z_OFFSET 12
 #define ANTISTICK_PLAYER_HULL_STACK_OFFSET 14
 /**
@@ -192,7 +192,7 @@ public Action:AntiStickTimer(Handle:timer)
 public Action:AntiStickSolidify(Handle:timer, any:client)
 {
     // Validate player is in-game, alive, and is being unstuck.
-    if (!IsClientInGame(client) || !IsPlayerAlive(client) || AntiStickClientCollisionGroup(client, false))
+    if (!IsClientInGame(client) || !IsPlayerAlive(client) || AntiStickClientCollisionGroup(client, false) == ANTISTICK_COLLISIONS_ON)
     {
         return Plugin_Stop;
     }
