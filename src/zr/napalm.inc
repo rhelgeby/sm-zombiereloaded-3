@@ -53,7 +53,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
     }
     
     // If the attacker can't throw napalm grenades, then stop.
-    if (ClassGetHasNapalm(attacker))
+    if (!ClassGetHasNapalm(attacker))
     {
         return;
     }
