@@ -118,6 +118,7 @@ WeaponsOnCommandsCreate()
 {
     // Forward event to sub-modules.
     RestrictOnCommandsCreate();
+    ZMarketOnCommandsCreate();
 }
 
 /**

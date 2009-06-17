@@ -36,6 +36,15 @@ new Handle:tZHP[MAXPLAYERS + 1];
 new bool:pZHP[MAXPLAYERS + 1];
 
 /**
+ * Create commands specific to ZHP.
+ */
+ZHPOnCommandsCreate()
+{
+    // Register ZHP command.
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZHP, ZHPCommand, "Shows real HP as zombie.");
+}
+
+/**
  * Client is joining the server.
  * 
  * @param client    The client index.
@@ -202,6 +211,29 @@ ZHPUpdateHUD(client)
     
     // Display HP
     TranslationPrintHUDText(client, "Display HP", health);
+}
+
+/**
+ * Command callback (zhp)
+ * Shows real HP as zombie.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZHPCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Toggle ZHP setting.
+    ZHPToggle(client);
+    
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
 }
 
 /**

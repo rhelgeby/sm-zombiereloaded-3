@@ -7,13 +7,12 @@
 	"General round objective"
 	{
 		"en"		"The game is @greenHumans vs. Zombies@default, the goal for zombies is to infect all humans by knifing them."
-		"ru"		"Битва @greenЛюдей против Зомби@default, цель для зомби - инфицировать всех людей."
 	}
 
 	"General zmenu reminder"
 	{
-		"en"		"For help on Zombie:Reloaded commands, type !zmenu in chat."
-		"ru"		"Напишите !zmenu в чате для просмотра всех команд."
+		"#format"	"{1:s},{2:s}"
+		"en"		"For help on Zombie:Reloaded commands, type \"{1}{2}\" in chat."
 	}
 
 	// ===========================
@@ -303,44 +302,44 @@
 
 	"Menu main title"
 	{
-		"en"		"ZR Commands:"
-		"ru"		"ZR Команды:"
+		"#format"	"{1:s},{2:s}"
+		"en"		"ZR Commands:\nPrefix command with \"{1}\" or \"{2}\" (quiet) when typing in chat."
 	}
 
 	"Menu main zadmin"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZAdmin ({1}) - Open admin menu."
+		"en"		"ZAdmin - Open admin menu. (Command: {1})"
 	}
 
 	"Menu main zclass"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZClass ({1}) - Configure your class settings."
+		"en"		"ZClass - Configure your class settings.(Command: {1})"
 	}
 
 	"Menu main zspawn"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZSpawn ({1}) - Join late?  Use this to spawn."
+		"en"		"ZSpawn - Join late?  Use this to spawn.(Command: {1})"
 	}
 
 	"Menu main ztele"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZTele ({1}) - Teleport back to your spawn location."
+		"en"		"ZTele - Teleport back to your spawn location.(Command: {1})"
 	}
 
 	"Menu main zhp"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZHP ({1}) - Toggle real HP display when infected."
+		"en"		"ZHP - Toggle real HP display when infected.(Command: {1})"
 	}
 
 	"Menu main zmarket"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZMarket ({1}) - Need a weapon?  Buy them here."
+		"en"		"ZMarket - Need a weapon?  Buy them here.(Command: {1})"
 	}
 
 	// ===========================

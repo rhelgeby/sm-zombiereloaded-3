@@ -31,6 +31,15 @@
 new Handle:tZSpawn = INVALID_HANDLE;
 
 /**
+ * Create commands specific to ZSpawn.
+ */
+ZSpawnOnCommandsCreate()
+{
+    // Register ZSpawn command.
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZSPAWN, ZSpawnCommand, "Spawn into the game after joining late.");
+}
+
+/**
  * Map is starting.
  */
 ZSpawnOnMapStart()
@@ -213,6 +222,29 @@ bool:ZSpawnClient(client)
     RespawnSpawnClient(client, teamzombie);
     
     return true;
+}
+
+/**
+ * Command callback (zspawn)
+ * Spawn into the game after joining late.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZSpawnCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Spawn client.
+    ZSpawnClient(client);
+    
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
 }
 
 /**

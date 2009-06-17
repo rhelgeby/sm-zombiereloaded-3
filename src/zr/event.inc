@@ -81,9 +81,6 @@ EventHook(bool:unhook = false)
  */
 public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    // Print round objective to all clients.
-    TranslationPrintToChatAll(true, false, "General round objective");
-    
     // Forward event to sub-modules.
     OverlaysOnRoundStart();
     RoundStartOnRoundStart();
@@ -196,7 +193,15 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     ZHPOnClientSpawn(index);
     VolOnPlayerSpawn(index);
     
-    TranslationPrintToChat(index, "General zmenu reminder");
+    // Get public chat trigger prefix.
+    decl String:publictrigger[4];
+    SayHooksGetPublicChatTrigger(publictrigger, sizeof(publictrigger));
+    
+    // If public chat trigger is disabled, then don't print message.
+    if (!StrEqual(publictrigger, "N/A", false))
+    {
+        TranslationPrintToChat(index, "General zmenu reminder", publictrigger, SAYHOOKS_KEYWORD_ZMENU);
+    }
     
     // Fire post player_spawn event.
     CreateTimer(0.0, EventPlayerSpawnPost, index);

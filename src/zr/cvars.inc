@@ -305,16 +305,6 @@ CvarsCreate()
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human",    "1",                            "Intercept suicide commands attempted by humans.");
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds",     "kill, spectate, jointeam",     "List of client commands to intercept as suicide attempts. [Delimiter: \", \"]");
     
-    
-    // ===========================
-    // Say Hooks (core)
-    // ===========================
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET]                   =    CreateConVar("zr_sayhooks_quiet",          "1",    "Stop certain in-game commands from appearing in chat. [See zr_sayhooks_quiet_filter&zr_sayhooks_quiet_flags]");
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FILTER]            =    CreateConVar("zr_sayhooks_quiet_filter",   "1",    "Stops any failed in-game command from showing in chat.  Ex: Typing !zspawn while alive. [Dependency: zr_sayhooks_quiet]");
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FLAGS]             =    CreateConVar("zr_sayhooks_quiet_flags",    "58",   "Flag separate in-game commands to always hide from chat. [Dependency: zr_sayhooks_quiet]\n In-Game Command Flags:\n * Add numbers of desired flags together to produce final flag value.\n --------------------------------------------------------------------\n 1:  !zmenu\n 2:  !zadmin\n 4:  !zclass\n 8:  !zspawn\n 16: !ztele\n 32: !zhp\n 64: !zmarket");
-    // Flags (default: 2 + 8 + 16 + 32)
-    
-    
     // ===========================
     // Overlays (core)
     // ===========================

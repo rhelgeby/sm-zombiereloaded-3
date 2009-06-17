@@ -36,6 +36,11 @@ CommandsInit()
     ClassOnCommandsCreate();
     WeaponsOnCommandsCreate();
     InfectOnCommandsCreate();
+    MenuOnCommandsCreate();
+    ZAdminOnCommandsCreate();
+    ZSpawnOnCommandsCreate();
+    ZTeleOnCommandsCreate();
+    ZHPOnCommandsCreate();
     VolOnCommandsCreate();
     
     // Forward event to modules. (hook commands)

@@ -175,10 +175,10 @@ new g_ConfigData[ConfigFile][ConfigData];
  */
 enum ConfigKvAction
 {
-    KvAction_Create, /** Create a key. */
-    KvAction_KVDelete, /** Delete a key. */
-    KvAction_KVSet,    /** Modify setting of a key. */
-    KvAction_KVGet,    /** Get setting of a key. */
+    KvAction_Create,    /** Create a key. */
+    KvAction_KVDelete,  /** Delete a key. */
+    KvAction_KVSet,     /** Modify setting of a key. */
+    KvAction_KVGet,     /** Get setting of a key. */
 }
 
 /**

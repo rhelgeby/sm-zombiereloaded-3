@@ -25,16 +25,56 @@
  * ============================================================================
  */
 
+/**
+ * Create commands specific to ZAdmin.
+ */
+ZAdminOnCommandsCreate()
+{
+    // Register ZAdmin command.
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZADMIN, ZAdminCommand, "Opens ZR admin menu.");
+}
+
+/**
+ * Command callback (zadmin)
+ * Opens ZR admin menu.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZAdminCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Send admin menu.
+    ZRAdminMenu(client);
+    
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
+}
+
+/**
+ * Main admin menu.
+ * 
+ * @param client    The client index.
+ */
 bool:ZRAdminMenu(client)
 {
+    // If client isn't an admin, then stop.
     if (!ZRIsClientAdmin(client))
     {
         TranslationPrintToChat(client, "Must be admin");
         return false;
     }
     
+    // Create menu handle.
     new Handle:menu_zadmin = CreateMenu(ZRAdminMenuHandle);
     
+    // Set translation target as the client.
     SetGlobalTransTarget(client);
     
     SetMenuTitle(menu_zadmin, "%t\n ", "!zadmin main title");
@@ -72,6 +112,15 @@ bool:ZRAdminMenu(client)
     return true;
 }
 
+/**
+ * Menu callback (zadmin)
+ * Handles options selected in the admin menu.
+ * 
+ * @param menu      The menu handle.
+ * @param action    Action client is doing in menu.
+ * @param client    The client index.
+ * @param slot      The menu slot selected. (starting from 0)
+ */
 public ZRAdminMenuHandle(Handle:menu_admin, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)

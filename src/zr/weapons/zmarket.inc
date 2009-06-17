@@ -25,22 +25,6 @@
  * ============================================================================
  */
 
-/* *  Copyright (C) 2009  Greyscale, Richard Helgeby
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **/
-
 /**
  * Variable to store buyzone offset value.
  */
@@ -67,10 +51,12 @@ new String:g_strZMarketLastWeapon[MAXPLAYERS + 1][WeaponsSlot][WEAPONS_MAX_LENGT
 new bool:g_bZMarketAutoRebuy[MAXPLAYERS + 1];
 
 /**
- * Initialize market data.
+ * Create commands specific to ZMarket.
  */
-ZMarketInit()
+ZMarketOnCommandsCreate()
 {
+    // Register ZMarket command.
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZMARKET, ZMarketCommand, "Opens custom buymenu.");
 }
 
 /**
@@ -682,6 +668,29 @@ ZMarketRebuy(client, bool:rebuy = false)
             strcopy(g_strZMarketLastWeapon[client][x], sizeof(g_strZMarketLastWeapon), "");
         }
     }
+}
+
+/**
+ * Command callback (zmarket)
+ * Opens custom buymenu.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZMarketCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Send ZMarket menu.
+    ZMarketMenuTypes(client);
+    
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
 }
 
 /**
