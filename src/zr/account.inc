@@ -119,11 +119,6 @@ stock AccountSetClientCash(client, value)
     {
         value = 0;
     }
-    // If value is above max, then set to max.
-    else if (value > ACCOUNT_CASH_MAX)
-    {
-        value = ACCOUNT_CASH_MAX;
-    }
     
     // Set client's cash.
     SetEntData(client, g_iToolsAccount, value, 4);
