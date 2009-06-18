@@ -694,7 +694,7 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     TranslationPrintToChat(client, "Infect human");
     
     // Forward event to modules.
-    ClassOnClientInfected(client, false);
+    ClassReloadPlayer(client);
     RoundEndOnClientInfected();
     ZTeleOnClientInfected(client);
     
