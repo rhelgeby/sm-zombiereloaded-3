@@ -836,12 +836,6 @@ public Action:InfectInfectCommand(client, argc)
         return Plugin_Handled;
     }
     
-    if (!g_bZombieSpawned)
-    {
-        TranslationReplyToCommand(client, "Infect command zombie has not spawned");
-        return Plugin_Handled;
-    }
-    
     decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
     new targets[MAXPLAYERS], bool:tn_is_ml, result;
     
@@ -849,7 +843,7 @@ public Action:InfectInfectCommand(client, argc)
     GetCmdArg(1, target, sizeof(target));
     
     // Find a target.
-    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE | COMMAND_FILTER_NO_MULTI, targetname, sizeof(targetname), tn_is_ml);
+    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE , targetname, sizeof(targetname), tn_is_ml);
         
     // Check if there was a problem finding a client.
     if (result <= 0)
@@ -858,9 +852,57 @@ public Action:InfectInfectCommand(client, argc)
         return Plugin_Handled;
     }
     
-    // Check if client is a human before turning into zombie.
-    if (InfectIsClientHuman(targets[0]))
+    new bool:zombiespawned = g_bZombieSpawned;
+    
+    // If zombie hasn't spawned, then make targetted player(s) mother zombies.
+    if (!zombiespawned)
     {
+        // Stop mother infect timer.
+        if (tInfect != INVALID_HANDLE)
+        {
+            KillTimer(tInfect);
+            tInfect = INVALID_HANDLE;
+        }
+        
+        // Move all clients to CT
+        for (new x = 1; x <= MaxClients; x++)
+        {
+            // If client isn't in-game, then stop.
+            if (!IsClientInGame(x))
+            {
+                continue;
+            }
+            
+            // If client is dead, then stop.
+            if (!IsPlayerAlive(x))
+            {
+                continue;
+            }
+            
+            // Switch client to CT team.
+            CS_SwitchTeam(x, CS_TEAM_CT);
+        }
+        
+        // Tell the plugin a mother zombie has spawned.
+        g_bZombieSpawned = true;
+    }
+    
+    // x = Client index.
+    for (new x = 0; x < result; x++)
+    {
+        // Check if client is a human before turning into zombie.
+        if (!InfectIsClientHuman(targets[x]))
+        {
+            // If there was only 1 player targetted, then let admin know the command was unsuccessful.
+            if (result == 1)
+            {
+                // Tell admin command was unsuccessful.
+                TranslationReplyToCommand(client, "Infect command infect unsuccessful", targetname);
+            }
+            
+            continue;
+        }
+        
         new bool:respawnoverride, bool:respawn;
         decl String:strRespawn[8];
         
@@ -874,16 +916,29 @@ public Action:InfectInfectCommand(client, argc)
             respawn = bool:StringToInt(strRespawn);
         }
         
-        // Turn client into a zombie.
-        InfectHumanToZombie(targets[0], _, _, respawnoverride, respawn);
+        // If zombie hasn't spawned, then make targetted player(s) mother zombies.
+        if (!zombiespawned)
+        {
+            // Turn client into a mother zombie.
+            InfectHumanToZombie(targets[x], _, true, respawnoverride, respawn);
+            
+            // If there was only 1 player targetted, then let admin know the outcome of the command.
+            if (result == 1)
+            {
+                TranslationReplyToCommand(client, "Infect command infect mother successful", targetname);
+            }
+            
+            continue;
+        }
         
-        // Tell admin command was successful.
-        TranslationReplyToCommand(client, "Infect command infect successful", targetname);
-    }
-    else
-    {
-        // Tell admin command was unsuccessful.
-        TranslationReplyToCommand(client, "Infect command infect unsuccessful", targetname);
+        // Turn client into a zombie.
+        InfectHumanToZombie(targets[x], _, false, respawnoverride, respawn);
+        
+        // If there was only 1 player targetted, then let admin know the outcome of the command.
+        if (result == 1)
+        {
+            TranslationReplyToCommand(client, "Infect command infect successful", targetname);
+        }
     }
     
     return Plugin_Handled;
@@ -905,12 +960,6 @@ public Action:InfectHumanCommand(client, argc)
         return Plugin_Handled;
     }
     
-    if (!g_bZombieSpawned)
-    {
-        TranslationReplyToCommand(client, "Infect command zombie has not spawned");
-        return Plugin_Handled;
-    }
-    
     decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
     new targets[MAXPLAYERS], bool:tn_is_ml, result;
     
@@ -918,7 +967,7 @@ public Action:InfectHumanCommand(client, argc)
     GetCmdArg(1, target, sizeof(target));
     
     // Find a target.
-    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE | COMMAND_FILTER_NO_MULTI, targetname, sizeof(targetname), tn_is_ml);
+    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE , targetname, sizeof(targetname), tn_is_ml);
         
     // Check if there was a problem finding a client.
     if (result <= 0)
@@ -927,30 +976,42 @@ public Action:InfectHumanCommand(client, argc)
         return Plugin_Handled;
     }
     
-    // Check if client is a human before turning into zombie.
-    if (InfectIsClientInfected(targets[0]))
+    // x = Client index.
+    for (new x = 0; x < result; x++)
     {
-        new bool:respawn, bool:protect;
-        decl String:strRespawn[8], String:strProtect[8];
-        
-        // Get respawn&protect parameters
-        GetCmdArg(2, strRespawn, sizeof(strRespawn));
-        GetCmdArg(3, strProtect, sizeof(strProtect));
-        
-        // If parameter exists then cast it into a bool and feed it to "humanize" function.
-        respawn = (strRespawn[0]) ? (bool:StringToInt(strRespawn)) : false;
-        protect = (strProtect[0]) ? (bool:StringToInt(strProtect)) : false;
-        
-        // Turn client into a zombie.
-        InfectZombieToHuman(targets[0], respawn, protect);
-        
-        // Tell admin command was successful.
-        TranslationReplyToCommand(client, "Infect command human successful", targetname);
-    }
-    else
-    {
-        // Tell admin command was unsuccessful.
-        TranslationReplyToCommand(client, "Infect command human unsuccessful", targetname);
+        // Check if client is a human before turning into zombie.
+        if (InfectIsClientInfected(targets[x]))
+        {
+            new bool:respawn, bool:protect;
+            decl String:strRespawn[8], String:strProtect[8];
+            
+            // Get respawn&protect parameters
+            GetCmdArg(2, strRespawn, sizeof(strRespawn));
+            GetCmdArg(3, strProtect, sizeof(strProtect));
+            
+            // If parameter exists then cast it into a bool and feed it to "humanize" function.
+            respawn = (strRespawn[0]) ? (bool:StringToInt(strRespawn)) : false;
+            protect = (strProtect[0]) ? (bool:StringToInt(strProtect)) : false;
+            
+            // Turn client into a zombie.
+            InfectZombieToHuman(targets[x], respawn, protect);
+            
+            // If there was only 1 player targetted, then let admin know the outcome of the command.
+            if (result == 1)
+            {
+                // Tell admin command was successful.
+                TranslationReplyToCommand(client, "Infect command human successful", targetname);
+            }
+        }
+        else
+        {
+            // If there was only 1 player targetted, then let admin know the command was unsuccessful.
+            if (result == 1)
+            {
+                // Tell admin command was unsuccessful.
+                TranslationReplyToCommand(client, "Infect command human unsuccessful", targetname);
+            }
+        }
     }
     
     return Plugin_Handled;

@@ -351,6 +351,12 @@
 		"en"		"Player @green{1} @defaulthas been successfully infected."
 	}
 
+	"Infect command infect mother successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaulthas been successfully infected as the mother zombie."
+	}
+
 	"Infect command infect unsuccessful"
 	{
 		"#format"	"{1:s}"
@@ -367,11 +373,6 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Player @green{1} @defaultis already a human."
-	}
-
-	"Infect command zombie has not spawned"
-	{
-		"en"		"The mother zombie must spawn before player infection states can be changed."
 	}
 
 	// ===========================

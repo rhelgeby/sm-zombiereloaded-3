@@ -335,7 +335,7 @@ WeaponsOnRoundEnd()
  * 
  * @param index     The weapon index.
  */
-WeaponsClearCache(index)
+stock WeaponsClearCache(index)
 {
     // Get array handle of weapon at given index.
     new Handle:hWeapon = GetArrayCell(arrayWeapons, index);
