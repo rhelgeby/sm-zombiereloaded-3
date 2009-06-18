@@ -234,7 +234,7 @@ bool:RoundEndGetRoundStatus(&RoundEndOutcome:outcome)
     new humancount;
     
     // Count valid clients. (true to only allow living clients)
-    ZRCountValidClients(zombiecount, humancount);
+    ZRCountValidClients(zombiecount, humancount, true);
     
     // If there are no clients on either teams, then stop.
     if (!zombiecount && !humancount)

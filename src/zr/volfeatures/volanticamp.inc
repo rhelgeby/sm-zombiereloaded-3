@@ -33,7 +33,7 @@ enum VolTypeAnticamp
     Float:anticamp_interval,                    /** How often to trigger an action. */
     Handle:anticamp_timer,                      /** Action timer handle. */
     
-    VolAnticampAction:antivamp_action,          /** What to do with players in anti-camp volumes */
+    VolAnticampAction:anticamp_action,          /** What to do with players in anti-camp volumes */
     Float:anticamp_amount,                      /** Amount depending on action type. Usually time in seconds or damage amount. */
     
     VolAnticampeWarningType:anticamp_warning,   /** How to warn the player. */
