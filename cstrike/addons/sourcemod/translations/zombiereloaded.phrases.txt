@@ -7,13 +7,12 @@
 	"General round objective"
 	{
 		"en"		"The game is @greenHumans vs. Zombies@default, the goal for zombies is to infect all humans by knifing them."
-		"ru"		"Битва @greenЛюдей против Зомби@default, цель для зомби - инфицировать всех людей."
 	}
 
 	"General zmenu reminder"
 	{
-		"en"		"For help on Zombie:Reloaded commands, type !zmenu in chat."
-		"ru"		"Напишите !zmenu в чате для просмотра всех команд."
+		"#format"	"{1:s},{2:s}"
+		"en"		"For help on Zombie:Reloaded commands, type \"{1}{2}\" in chat."
 	}
 
 	// ===========================
@@ -323,10 +322,56 @@
 		"en"		"You have been infected!  Go pass it on to as many other players as you can."
 	}
 
+	"Infect human"
+	{
+		"en"		"The merciful gods (known as admins) have resurrected your soul, find some cover!"
+	}
+
 	"Infect disconnect"
 	{
 		"en"		"The last zombie has left the game, and has passed the infection on to you."
 		"ru"		"Последний зомби покинул игру и передал свою инфекцию вам."
+	}
+
+	// Commands
+
+	"Infect command infect syntax"
+	{
+		"en"		"Infect a client. Usage: zr_infect <filter> [respawn - 1/0]"
+	}
+
+	"Infect command human syntax"
+	{
+		"en"		"Turn a client into a human. Usage: zr_human <filter> [respawn - 1/0] [protect - 1/0]"
+	}
+
+	"Infect command infect successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaulthas been successfully infected."
+	}
+
+	"Infect command infect unsuccessful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaultis already a zombie."
+	}
+
+	"Infect command human successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaulthas been successfully brought back as a human."
+	}
+
+	"Infect command human unsuccessful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player @green{1} @defaultis already a human."
+	}
+
+	"Infect command zombie has not spawned"
+	{
+		"en"		"The mother zombie must spawn before player infection states can be changed."
 	}
 
 	// ===========================
@@ -346,44 +391,44 @@
 
 	"Menu main title"
 	{
-		"en"		"ZR Commands:"
-		"ru"		"ZR Команды:"
+		"#format"	"{1:s},{2:s}"
+		"en"		"ZR Commands:\nPrefix command with \"{1}\" or \"{2}\" (quiet) when typing in chat."
 	}
 
 	"Menu main zadmin"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZAdmin ({1}) - Open admin menu."
+		"en"		"ZAdmin - Open admin menu. (Command: {1})"
 	}
 
 	"Menu main zclass"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZClass ({1}) - Configure your class settings."
+		"en"		"ZClass - Configure your class settings.(Command: {1})"
 	}
 
 	"Menu main zspawn"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZSpawn ({1}) - Join late?  Use this to spawn."
+		"en"		"ZSpawn - Join late?  Use this to spawn.(Command: {1})"
 	}
 
 	"Menu main ztele"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZTele ({1}) - Teleport back to your spawn location."
+		"en"		"ZTele - Teleport back to your spawn location.(Command: {1})"
 	}
 
 	"Menu main zhp"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZHP ({1}) - Toggle real HP display when infected."
+		"en"		"ZHP - Toggle real HP display when infected.(Command: {1})"
 	}
 
 	"Menu main zmarket"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZMarket ({1}) - Need a weapon?  Buy them here."
+		"en"		"ZMarket - Need a weapon?  Buy them here.(Command: {1})"
 	}
 
 	// ===========================

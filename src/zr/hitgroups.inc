@@ -212,7 +212,7 @@ stock HitgroupToIndex(hitgroup)
 }
 
 /**
- * Gets the name of a hitgroup at a given index.
+ * Gets the name of a hitgroup at a given index. (static)
  * @param index     The hitgroup index.
  * @param hitgroup  The string to return name in.
  * @param maxlen    The max length of the string.
@@ -227,7 +227,7 @@ stock HitgroupsGetName(index, String:hitgroup[], maxlen)
 }
 
 /**
- * Retrieve hitgroup index.
+ * Retrieve hitgroup index. (static)
  * 
  * @param index     The array index.
  * @return          The hitgroup index.
@@ -242,7 +242,22 @@ stock HitgroupsGetIndex(index)
 }
 
 /**
- * Retrieve hitgroup damage value.
+ * Set hitgroup damage value. (dynamic)
+ * 
+ * @param index     The array index.
+ * @param candamage True to allow damage to hitgroup, false to block damage.
+ */
+stock HitgroupsSetDamage(index, bool:candamage)
+{
+    // Get array handle of hitgroup at given index.
+    new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+    
+    // Return true if hitgroup can be damaged, false if not.
+    SetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_DAMAGE, candamage);
+}
+
+/**
+ * Retrieve hitgroup damage value. (dynamic)
  * 
  * @param index     The array index.
  * @return          True if hitgroup can be damaged, false if not.
@@ -257,7 +272,22 @@ stock bool:HitgroupsCanDamage(index)
 }
 
 /**
- * Retrieve hitgroup knockback value.
+ * Set hitgroup knockback value. (dynamic)
+ * 
+ * @param index     The array index.
+ * @param knockback The knockback multiplier for the hitgroup.
+ */
+stock HitgroupsSetKnockback(index, Float:knockback)
+{
+    // Get array handle of hitgroup at given index.
+    new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+    
+    // Return the knockback multiplier for the hitgroup.
+    SetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_KNOCKBACK, knockback);
+}
+
+/**
+ * Retrieve hitgroup knockback value. (dynamic)
  * 
  * @param index     The array index.
  * @return          The knockback multiplier of the hitgroup.

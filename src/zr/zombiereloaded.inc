@@ -256,6 +256,54 @@ stock bool:ZRIsClientAdmin(client, AdminFlag:flag = Admin_Generic)
 }
 
 /**
+ * Replies to a client with a given message describing a targetting 
+ * failure reason. (formatted for ZR)
+ *
+ * Note: The translation phrases are found in common.phrases.txt.
+ *
+ * @param client		Client index, or 0 for server.
+ * @param reason		COMMAND_TARGET reason.
+ */
+stock ZRReplyToTargetError(client, reason)
+{
+	switch (reason)
+	{
+		case COMMAND_TARGET_NONE:
+		{
+			TranslationReplyToCommand(client, "No matching client");
+		}
+		case COMMAND_TARGET_NOT_ALIVE:
+		{
+			TranslationReplyToCommand(client, "Target must be alive");
+		}
+		case COMMAND_TARGET_NOT_DEAD:
+		{
+			TranslationReplyToCommand(client, "Target must be dead");
+		}
+		case COMMAND_TARGET_NOT_IN_GAME:
+		{
+			TranslationReplyToCommand(client, "Target is not in game");
+		}
+		case COMMAND_TARGET_IMMUNE:
+		{
+			TranslationReplyToCommand(client, "Unable to target");
+		}
+		case COMMAND_TARGET_EMPTY_FILTER:
+		{
+			TranslationReplyToCommand(client, "No matching clients");
+		}
+		case COMMAND_TARGET_NOT_HUMAN:
+		{
+			TranslationReplyToCommand(client, "Cannot target bot");
+		}
+		case COMMAND_TARGET_AMBIGUOUS:
+		{
+			TranslationReplyToCommand(client, "More than one client matched");
+		}
+	}
+}
+
+/**
  * Adds support for printing strings longer than 1 KB to console. Max 4 KB.
  *
  * Note: 1024 characters is max for the console, including newline and null

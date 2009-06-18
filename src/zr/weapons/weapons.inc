@@ -118,6 +118,7 @@ WeaponsOnCommandsCreate()
 {
     // Forward event to sub-modules.
     RestrictOnCommandsCreate();
+    ZMarketOnCommandsCreate();
 }
 
 /**
@@ -308,10 +309,10 @@ WeaponsOnClientSpawn(client)
 /**
  * The round is starting.
  */
-WeaponsOnRoundStart()
+WeaponsOnRoundStartPost()
 {
     // Forward event to sub-modules
-    WeaponAlphaOnRoundStart();
+    WeaponAlphaOnRoundStartPost();
 }
 
 /**

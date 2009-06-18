@@ -31,6 +31,15 @@
 new Handle:tZSpawn = INVALID_HANDLE;
 
 /**
+ * Create commands specific to ZSpawn.
+ */
+ZSpawnOnCommandsCreate()
+{
+    // Register ZSpawn command.
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZSPAWN, ZSpawnCommand, "Spawn into the game after joining late.");
+}
+
+/**
  * Map is starting.
  */
 ZSpawnOnMapStart()
@@ -175,29 +184,67 @@ bool:ZSpawnClient(client)
         return false;
     }
     
+    // Check if zspawn override is enabled, and if so get overidden value.
+    new bool:teamoverride = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]);
+    new bool:teamzombie = teamoverride ? GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]) : GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+    
     // Block is the time limit is up.
     new bool:zspawntimelimit = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]);
     if (zspawntimelimit)
     {
         if (tZSpawn == INVALID_HANDLE)
         {
-            // Get timelimit
-            new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
-            
-            // Tell client the timelimit for this command has expired.
-            TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
-            return false;
+            new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
+            switch(zspawntimelimitzombie)
+            {
+                case -1:
+                {
+                    // Get timelimit
+                    new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
+                    
+                    // Tell client the timelimit for this command has expired.
+                    TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
+                    return false;
+                }
+                case 0:
+                {
+                    teamzombie = false;
+                }
+                case 1:
+                {
+                    teamzombie = true;
+                }
+            }
         }
     }
-    
-    // Check if zspawn override is enabled, and if so get overidden value.
-    new bool:teamoverride = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]);
-    new bool:teamzombie = teamoverride ? GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]) : GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
     
     // Tell respawn module to respawn client.
     RespawnSpawnClient(client, teamzombie);
     
     return true;
+}
+
+/**
+ * Command callback (zspawn)
+ * Spawn into the game after joining late.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZSpawnCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Spawn client.
+    ZSpawnClient(client);
+    
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
 }
 
 /**

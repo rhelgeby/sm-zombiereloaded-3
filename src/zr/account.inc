@@ -69,6 +69,31 @@ AccountOnClientSpawn(client)
     AccountSetClientCash(client, cash);
 }
 
+/** Client has been hurt.
+ *
+ * @param attacker  The attacker index.
+ * @param dmg       The amount of damage inflicted.
+ */
+AccountOnClientHurt(attacker, dmg_health)
+{
+    // If attacker isn't valid, then stop.
+    if (!ZRIsClientValid(attacker))
+    {
+        return;
+    }
+    
+    // If cashdmg cvar is disabled, then stop.
+    new bool:accountcashdmg = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHDMG]);
+    if (!accountcashdmg)
+    {
+        return;
+    }
+    
+    // Get current cash, add the damage done to it, then set new value.
+    new cash = AccountGetClientCash(attacker);
+    AccountSetClientCash(attacker, cash + dmg_health);
+}
+
 /**
  * Get's a client's account value (cash)
  * 
@@ -93,11 +118,6 @@ stock AccountSetClientCash(client, value)
     if (value < 0)
     {
         value = 0;
-    }
-    // If value is above max, then set to max.
-    else if (value > ACCOUNT_CASH_MAX)
-    {
-        value = ACCOUNT_CASH_MAX;
     }
     
     // Set client's cash.

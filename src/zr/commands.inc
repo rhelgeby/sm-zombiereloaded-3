@@ -35,6 +35,12 @@ CommandsInit()
     LogOnCommandsCreate();
     ClassOnCommandsCreate();
     WeaponsOnCommandsCreate();
+    InfectOnCommandsCreate();
+    MenuOnCommandsCreate();
+    ZAdminOnCommandsCreate();
+    ZSpawnOnCommandsCreate();
+    ZTeleOnCommandsCreate();
+    ZHPOnCommandsCreate();
     VolOnCommandsCreate();
     
     // Forward event to modules. (hook commands)
@@ -97,7 +103,7 @@ CommandsInit()
 
     for (new x = 0; x < tcount; x++)
     {
-        InfectClient(targets[x]);
+        InfectHumanToZombie(targets[x]);
         if (LogCheckFlag(LOG_GAME_EVENTS, LOG_MODULE_COMMANDS))
         {
             GetClientName(targets[x], target_name, sizeof(target_name));

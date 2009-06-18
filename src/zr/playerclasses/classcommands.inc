@@ -27,6 +27,9 @@
 
 ClassOnCommandsCreate()
 {
+    // Register ZClass command.
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZCLASS, ZClassCommand, "Opens class selection menu.");
+    
     // Create base class commands.
     RegConsoleCmd("zr_class_dump", ClassDumpCommand, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
     RegConsoleCmd("zr_class_dump_multipliers", ClassDumpMultipliersCommand, "Dumps class attribute multipliers for the specified team. Usage: zr_class_dump_multipliers <\"zombies\"|\"humans\">");
@@ -41,6 +44,29 @@ ClassOnCommandsHook()
 {
     // Forward event to sub-modules.
     ClassOverlayOnCommandsHook();
+}
+
+/**
+ * Command callback (zclass)
+ * Opens class selection menu.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZClassCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Send class menu.
+    ClassMenuMain(client);
+    
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
 }
 
 /**

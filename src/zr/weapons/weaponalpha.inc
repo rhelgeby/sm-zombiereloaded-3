@@ -69,7 +69,7 @@ WeaponAlphaOnClientDisconnect(client)
 /**
  * The round is starting.
  */
-WeaponAlphaOnRoundStart()
+WeaponAlphaOnRoundStartPost()
 {
     // Allow weapon render mode to be modified.
     g_bWeaponAlpha = true;

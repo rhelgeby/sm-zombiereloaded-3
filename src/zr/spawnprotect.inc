@@ -73,21 +73,49 @@ SpawnProtectOnClientSpawn(client)
  */   
 SpawnProtectOnClientSpawnPost(client)
 {
-    // If client isn't on a team, then stop.
-    if (!ZRIsClientOnTeam(client))
+    // If protect cvar is disabled, then stop.
+    new bool:protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
+    if (!protect)
+    {
+        return;
+    }
+    
+    // Start spawn protection.
+    SpawnProtectStart(client);
+}
+
+/**
+ * Client has been killed.
+ * 
+ * @param client    The client index.
+ */
+SpawnProtectOnClientDeath(client)
+{
+    // If timer is running, kill it.
+    if (tSpawnProtect[client] != INVALID_HANDLE)
+    {
+        KillTimer(tSpawnProtect[client]);
+    }
+    
+    // Reset timer handle.
+    tSpawnProtect[client] = INVALID_HANDLE;
+}
+
+/**
+ * Start spawn protection on a client.
+ * 
+ * @param client    The client index.
+ */
+SpawnProtectStart(client)
+{
+    // If client is dead, then stop.
+    if (!IsPlayerAlive(client))
     {
         return;
     }
     
     // If zombie hasn't spawned, then stop.
     if (!g_bZombieSpawned)
-    {
-        return;
-    }
-    
-    // If protect cvar is disabled, then stop.
-    new bool:protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
-    if (!protect)
     {
         return;
     }
@@ -121,23 +149,6 @@ SpawnProtectOnClientSpawnPost(client)
     
     // Start repeating timer.
     tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-}
-
-/**
- * Client has been killed.
- * 
- * @param client    The client index.
- */
-SpawnProtectOnClientDeath(client)
-{
-    // If timer is running, kill it.
-    if (tSpawnProtect[client] != INVALID_HANDLE)
-    {
-        KillTimer(tSpawnProtect[client]);
-    }
-    
-    // Reset timer handle.
-    tSpawnProtect[client] = INVALID_HANDLE;
 }
 
 /**

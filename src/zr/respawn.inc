@@ -155,13 +155,13 @@ RespawnSpawnClient(client, bool:zombie = false)
     // Infect if zombie is true.
     if (zombie)
     {
-        InfectClient(client);
+        InfectHumanToZombie(client);
         return;
     }
     
     if (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]) && bKilledByWorld[client])
     {
-        InfectClient(client);
+        InfectHumanToZombie(client);
         bKilledByWorld[client] = false;
     }
 }

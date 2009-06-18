@@ -118,9 +118,7 @@ public OnPluginStart()
     ToolsInit();
     CommandsInit();
     WeaponsInit();
-    SayHooksInit();
     EventInit();
-    ZMarketInit();
 }
 
 /**

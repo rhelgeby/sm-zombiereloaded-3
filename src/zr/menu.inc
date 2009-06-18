@@ -26,6 +26,38 @@
  */
 
 /**
+ * Create commands specific to ZMenu.
+ */
+MenuOnCommandsCreate()
+{
+    // Register ZMenu command.
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZMENU, ZMenuCommand, "Opens ZR's main menu.");
+}
+
+/**
+ * Command callback (zmenu)
+ * Opens ZR's main menu.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZMenuCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Send main menu.
+    MenuMain(client);
+    
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
+}
+
+/**
  * Show main menu to client.
  * 
  * @param client    The client index.
@@ -38,16 +70,23 @@ MenuMain(client)
     // Make client global translations target.
     SetGlobalTransTarget(client);
     
+    decl String:publictrigger[4];
+    decl String:silenttrigger[4];
+    
+    // Get public/silent chat triggers.
+    SayHooksGetPublicChatTrigger(publictrigger, sizeof(publictrigger));
+    SayHooksGetSilentChatTrigger(silenttrigger, sizeof(silenttrigger));
+    
     // Set menu title.
-    SetMenuTitle(menu_main, "%t\n ", "Menu main title");
+    SetMenuTitle(menu_main, "%t\n ", "Menu main title", publictrigger, silenttrigger);
     
     // Initialize menu lines.
-    decl String:zadmin[64];
-    decl String:zclass[64];
-    decl String:zspawn[64];
-    decl String:ztele[64];
-    decl String:zhp[64];
-    decl String:zmarket[64];
+    decl String:zadmin[256];
+    decl String:zclass[256];
+    decl String:zspawn[256];
+    decl String:ztele[256];
+    decl String:zhp[256];
+    decl String:zmarket[256];
     
     // Translate each line into client's language.
     Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin", SAYHOOKS_KEYWORD_ZMENU);

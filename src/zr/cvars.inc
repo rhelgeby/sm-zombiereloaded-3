@@ -98,6 +98,7 @@ enum CvarsList
     Handle:CVAR_INFECT_SHAKE_DURATION,
     Handle:CVAR_ACCOUNT_CASHFILL,
     Handle:CVAR_ACCOUNT_CASHFILL_VALUE,
+    Handle:CVAR_ACCOUNT_CASHDMG,
     Handle:CVAR_VEFFECTS_LIGHTSTYLE,
     Handle:CVAR_VEFFECTS_LIGHTSTYLE_VALUE,
     Handle:CVAR_VEFFECTS_SKY,
@@ -143,6 +144,7 @@ enum CvarsList
     Handle:CVAR_ZSPAWN_TEAM_ZOMBIE,
     Handle:CVAR_ZSPAWN_TIMELIMIT,
     Handle:CVAR_ZSPAWN_TIMELIMIT_TIME,
+    Handle:CVAR_ZSPAWN_TIMELIMIT_ZOMBIE,
     Handle:CVAR_ZTELE_ZOMBIE,
     Handle:CVAR_ZTELE_HUMAN_BEFORE,
     Handle:CVAR_ZTELE_HUMAN_AFTER,
@@ -303,16 +305,6 @@ CvarsCreate()
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human",    "1",                            "Intercept suicide commands attempted by humans.");
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds",     "kill, spectate, jointeam",     "List of client commands to intercept as suicide attempts. [Delimiter: \", \"]");
     
-    
-    // ===========================
-    // Say Hooks (core)
-    // ===========================
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET]                   =    CreateConVar("zr_sayhooks_quiet",          "1",    "Stop certain in-game commands from appearing in chat. [See zr_sayhooks_quiet_filter&zr_sayhooks_quiet_flags]");
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FILTER]            =    CreateConVar("zr_sayhooks_quiet_filter",   "1",    "Stops any failed in-game command from showing in chat.  Ex: Typing !zspawn while alive. [Dependency: zr_sayhooks_quiet]");
-    g_hCvarsList[CVAR_SAYHOOKS_QUIET_FLAGS]             =    CreateConVar("zr_sayhooks_quiet_flags",    "58",   "Flag separate in-game commands to always hide from chat. [Dependency: zr_sayhooks_quiet]\n In-Game Command Flags:\n * Add numbers of desired flags together to produce final flag value.\n --------------------------------------------------------------------\n 1:  !zmenu\n 2:  !zadmin\n 4:  !zclass\n 8:  !zspawn\n 16: !ztele\n 32: !zhp\n 64: !zmarket");
-    // Flags (default: 2 + 8 + 16 + 32)
-    
-    
     // ===========================
     // Overlays (core)
     // ===========================
@@ -332,6 +324,7 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_ACCOUNT_CASHFILL]                 =    CreateConVar("zr_account_cashfill",            "1",        "Reset player's cash each spawn.");
     g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]           =    CreateConVar("zr_account_cashfill_value",      "12000",    "Amount of cash to set player's account to. [Dependency: zr_account_cashfill]");
+    g_hCvarsList[CVAR_ACCOUNT_CASHDMG]                  =    CreateConVar("zr_account_cashdmg",             "0",        "Attacker receives amount of cash equivalent to the damage that was inflicted.");
     
     
     // ===========================
@@ -362,7 +355,7 @@ CvarsCreate()
     // Ragdoll
     
     g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]          =    CreateConVar("zr_veffects_ragdoll_remove",     "1",                    "Remove players' ragdolls from the game after a delay.");
-    g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]        =    CreateConVar("zr_veffects_ragdoll_dissolve",   "1",                    "The ragdoll removal effect. [-1: Effectless removal | 0: Energy dissolve | 1: Heavy electrical dissolve | 2: Light electrical dissolve | 3: Core dissolve | Dependency: zr_veffects_ragdoll_remove]");
+    g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]        =    CreateConVar("zr_veffects_ragdoll_dissolve",   "-1",                   "The ragdoll removal effect. ['-2' = Effectless removal | '-1' = Random effect | '0' = Energy dissolve | '1' = Heavy electrical dissolve | '2' = Light electrical dissolve | '3' = Core dissolve | Dependency: zr_veffects_ragdoll_remove]");
     g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DELAY]           =    CreateConVar("zr_veffects_ragdoll_delay",      "0.5",                  "Time to wait before removing the ragdoll. [Dependency: zr_veffects_ragdoll_remove]");
     
     // ===========================
@@ -409,7 +402,7 @@ CvarsCreate()
     // Napalm (module)
     // ===========================
     
-    g_hCvarsList[CVAR_NAPALM_IGNITE]                    =    CreateConVar("zr_napalm_ignite",       "1",    "Ignite grenade in mid-air after player throws it. [Dependency: Human Attribute 'napalm']");
+    g_hCvarsList[CVAR_NAPALM_IGNITE]                    =    CreateConVar("zr_napalm_ignite",       "1",    "Ignite grenade in mid-air after player throws it. [Dependency: Human Attribute 'hasnapalm']");
     
     // ===========================
     // Jump Boost (module)
@@ -430,13 +423,14 @@ CvarsCreate()
     // ===========================
     // ZSpawn (module)
     // ===========================
-    g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn",                  "1", "Allow players to spawn into the game late.");
+    g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn",                      "1",        "Allow players to spawn into the game late.");
     
-    g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override",    "1", "Override spawn team when spawning by means of ZSpawn.");
-    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie",      "0", "Spawn player on zombie team when spawning by means of ZSpawn. [Dependency: zr_zspawn_team_override | Override: zr_respawn_zombie]");
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override",        "1",        "Override spawn team when spawning by means of ZSpawn.");
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie",          "0",        "Spawn player on zombie team when spawning by means of ZSpawn. [Dependency: zr_zspawn_team_override | Override: zr_respawn_zombie]");
     
-    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit",        "1", "Put a time limit on the use of ZSpawn.");
-    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time",   "120.0", "Time from the start of the round to allow ZSpawn. [Dependency: zr_zspawn_timelimit]");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit",            "1",        "Put a time limit on the use of ZSpawn.");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time",       "120.0",    "Time from the start of the round to allow ZSpawn. [Dependency: zr_zspawn_timelimit]");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]          =    CreateConVar("zr_zspawn_timelimit_zombie",      "1",        "Spawn player on the zombie team AFTER the timelimit is up. ['-1' = Block ZSpawn | '0' = Spawn as human | '1' = Spawn as zombie | Dependency: zr_zspawn_timelimit]");
     
     
     // ===========================

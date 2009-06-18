@@ -35,6 +35,9 @@
  */
 RoundStartOnRoundStart()
 {
+    // Print round objective to all clients.
+    TranslationPrintToChatAll(true, false, "General round objective");
+    
     // Kill all objective entities.
     RoundStartKillObjectives();
 }

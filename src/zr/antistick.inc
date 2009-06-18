@@ -168,13 +168,13 @@ public Action:AntiStickTimer(Handle:timer)
             continue;
         }
         
-        if (AntiStickClientCollisionGroup(x, false))
+        if (AntiStickClientCollisionGroup(x, false) == ANTISTICK_COLLISIONS_ON)
         {
             AntiStickClientCollisionGroup(x, true, ANTISTICK_COLLISIONS_OFF);
             CreateTimer(0.5, AntiStickSolidify, x, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
         }
         
-        if (AntiStickClientCollisionGroup(stuckindex, false))
+        if (AntiStickClientCollisionGroup(stuckindex, false) == ANTISTICK_COLLISIONS_ON)
         {
             AntiStickClientCollisionGroup(stuckindex, true, ANTISTICK_COLLISIONS_OFF);
             CreateTimer(0.5, AntiStickSolidify, stuckindex, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -192,7 +192,7 @@ public Action:AntiStickTimer(Handle:timer)
 public Action:AntiStickSolidify(Handle:timer, any:client)
 {
     // Validate player is in-game, alive, and is being unstuck.
-    if (!IsClientInGame(client) || !IsPlayerAlive(client) || AntiStickClientCollisionGroup(client, false))
+    if (!IsClientInGame(client) || !IsPlayerAlive(client) || AntiStickClientCollisionGroup(client, false) == ANTISTICK_COLLISIONS_ON)
     {
         return Plugin_Stop;
     }

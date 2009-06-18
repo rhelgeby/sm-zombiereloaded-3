@@ -28,7 +28,8 @@
 /**
  * @section Different dissolve types.
  */
-#define VEFFECTS_RAGDOLL_DISSOLVE_EFFECTLESS    -1
+#define VEFFECTS_RAGDOLL_DISSOLVE_EFFECTLESS    -2
+#define VEFFECTS_RAGDOLL_DISSOLVE_RANDOM        -1
 #define VEFFECTS_RAGDOLL_DISSOLVE_ENERGY        0
 #define VEFFECTS_RAGDOLL_DISSOLVE_ELECTRICALH   1
 #define VEFFECTS_RAGDOLL_DISSOLVE_ELECTRICALL   2
@@ -99,6 +100,12 @@ RagdollRemove(ragdoll)
         // Remove entity from world.
         RemoveEdict(ragdoll);
         return;
+    }
+    
+    // If random, set value to any between "energy" effect and "core" effect.
+    if (dissolve == VEFFECTS_RAGDOLL_DISSOLVE_RANDOM)
+    {
+        dissolve = GetRandomInt(VEFFECTS_RAGDOLL_DISSOLVE_ENERGY, VEFFECTS_RAGDOLL_DISSOLVE_CORE);
     }
     
     // Prep the ragdoll for dissolving.

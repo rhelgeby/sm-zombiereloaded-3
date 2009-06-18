@@ -81,12 +81,8 @@ EventHook(bool:unhook = false)
  */
 public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    // Print round objective to all clients.
-    TranslationPrintToChatAll(true, false, "General round objective");
-    
     // Forward event to sub-modules.
     OverlaysOnRoundStart();
-    WeaponsOnRoundStart();
     RoundStartOnRoundStart();
     RoundEndOnRoundStart();
     InfectOnRoundStart();
@@ -94,6 +90,23 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     AntiStickOnRoundStart();
     ZSpawnOnRoundStart();
     VolOnRoundStart();
+    
+    // Fire post round_start event.
+    CreateTimer(0.0, EventRoundStartPost);
+}
+
+/**
+ * Event callback (round_start)
+ * The round is starting. *Post
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventRoundStartPost(Handle:timer, any:index)
+{
+    // Forward event to modules.
+    WeaponsOnRoundStartPost();
 }
 
 /**
@@ -180,7 +193,15 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     ZHPOnClientSpawn(index);
     VolOnPlayerSpawn(index);
     
-    TranslationPrintToChat(index, "General zmenu reminder");
+    // Get public chat trigger prefix.
+    decl String:publictrigger[4];
+    SayHooksGetPublicChatTrigger(publictrigger, sizeof(publictrigger));
+    
+    // If public chat trigger is disabled, then don't print message.
+    if (!StrEqual(publictrigger, "N/A", false))
+    {
+        TranslationPrintToChat(index, "General zmenu reminder", publictrigger, SAYHOOKS_KEYWORD_ZMENU);
+    }
     
     // Fire post player_spawn event.
     CreateTimer(0.0, EventPlayerSpawnPost, index);
@@ -228,6 +249,7 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
     // Forward event to modules.
     ClassAlphaUpdate(index);
     InfectOnClientHurt(index, attacker, weapon);
+    AccountOnClientHurt(attacker, dmg_health);
     SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
     NapalmOnClientHurt(index, attacker, weapon);

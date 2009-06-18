@@ -51,6 +51,15 @@ new Handle:tZTele[MAXPLAYERS + 1];
 new g_iZTeleTimeLeft[MAXPLAYERS + 1];
 
 /**
+ * Create commands specific to ZTele.
+ */
+ZTeleOnCommandsCreate()
+{
+    // Register ZMenu command.
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZTELE, ZTeleCommand, "Teleport back to spawn if you are stuck.");
+}
+
+/**
  * Client is joining the server.
  * 
  * @param client    The client index.
@@ -215,6 +224,29 @@ ZTeleTeleportClient(client)
 {
     // Teleport client.
     TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, NULL_VECTOR);
+}
+
+/**
+ * Command callback (zmenu)
+ * Teleport back to spawn if you are stuck.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZTeleCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Start teleportation process.
+    ZTeleClient(client);
+    
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
 }
 
 /**

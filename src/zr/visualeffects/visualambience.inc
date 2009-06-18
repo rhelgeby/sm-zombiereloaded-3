@@ -35,9 +35,6 @@ new String:g_VAmbienceDefaultSky[PLATFORM_MAX_PATH];
  */
 VAmbienceLoad()
 {
-    // Apply all visual effects now
-    VAmbienceApplyAll();
-    
     // Find map's default sky.
     new Handle:hSkyname = FindConVar("sv_skyname");
     if (hSkyname != INVALID_HANDLE)
@@ -45,6 +42,13 @@ VAmbienceLoad()
         // Store map's default sky before applying new one.
         GetConVarString(hSkyname, g_VAmbienceDefaultSky, sizeof(g_VAmbienceDefaultSky));
     }
+    else
+    {
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_VEffects, "Sky Caching", "Couldn't find handle to cvar: \"sv_skyname\"");
+    }
+    
+    // Apply all visual effects now
+    VAmbienceApplyAll();
     
     // If sky is disabled, then stop.
     new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
