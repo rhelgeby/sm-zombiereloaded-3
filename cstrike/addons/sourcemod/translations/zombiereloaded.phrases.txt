@@ -73,6 +73,23 @@
 	{
 		"en"		"This feature requires that you are a human."
 	}
+	
+	"Increase by"
+	{
+		"#format"	"{1:s}"
+		"en"		"Increase by {1}"
+	}
+
+	"Decrease by"
+	{
+		"#format"	"{1:s}"
+		"en"		"Decrease by {1}"
+	}
+
+	"Current Value"
+	{
+		"en"		"Current value:"
+	}
 
 	// Menu
 
@@ -210,6 +227,78 @@
 	"Classes menu admin mode toggle"
 	{
 		"en"		"Toggle Admin Mode"
+	}
+	
+	"Classes Menu Team Select Title"
+	{
+		"en"		"Select Team:"
+	}
+	
+	"Classes Menu Zombies"
+	{
+		"en"		"Zombies"
+	}
+	
+	"Classes Menu Humans"
+	{
+		"en"		"Humans"
+	}
+	
+	"Classes Menu Multiplier Select Title"
+	{
+		"en"		"Select Multiplier:"
+	}
+
+	"Classes Menu Adjust Value"
+	{
+		"en"		"Adjust Value:"
+	}
+	
+	// Attributes
+	
+	"Classes Attrib Napalm Time"
+	{
+		"en"		"Napalm Time"
+	}
+	
+	"Classes Attrib Health"
+	{
+		"en"		"Health"
+	}
+	
+	"Classes Attrib Regen Interval"
+	{
+		"en"		"Health Regeneration Interval"
+	}
+	
+	"Classes Attrib Regen Amount"
+	{
+		"en"		"Health Regeneration Amount"
+	}
+	
+	"Classes Attrib Infect Gain"
+	{
+		"en"		"Infection Health Gain"
+	}
+	
+	"Classes Attrib Speed"
+	{
+		"en"		"Running Speed"
+	}
+	
+	"Classes Attrib Knockback"
+	{
+		"en"		"Knock back"
+	}
+	
+	"Classes Attrib Jump Height"
+	{
+		"en"		"Jump Height"
+	}
+	
+	"Classes Attrib Jump Distance"
+	{
+		"en"		"Jump Distance"
 	}
 
 	// ===========================
@@ -627,12 +716,17 @@
 	// ZAdmin Menu
 	// ===========================
 
-	"!zadmin main title"
+	"!zadmin title"
 	{
 		"en"		"ZAdmin\n Select Category:"
 	}
 
-	"!zadmin main weapons"
+	"!zadmin class multipliers"
+	{
+		"en"		"Class Multipliers"
+	}
+
+	"!zadmin weapons"
 	{
 		"en"		"Weapon Management"
 	}
@@ -640,73 +734,6 @@
 	"!zadmin main logflags"
 	{
 		"en"		"Logging Flags"
-	}
-
-	"!zadmin class title"
-	{
-		"en"		"Select Class to Modify:"
-	}
-
-	"!zadmin knockbackm title"
-	{
-		"#format"	"{1:f}"
-		"en"		"Modify Knockback Multiplier\nCurrent Knockback: {1}"
-	}
-
-	"!zadmin knockbackm increase"
-	{
-		"#format"	"{1:s}"
-		"en"		"Increase Knockback Multiplier (+{1})"
-	}
-
-	"!zadmin knockbackm decrease"
-	{
-		"#format"	"{1:s}"
-		"en"		"Decrease Knockback Multiplier (-{1})"
-	}
-
-	"!zadmin knockback title"
-	{
-		"#format"	"{1:s},{2:f}"
-		"en"		"Modify Knockback\nClass: {1}\nCurrent Knockback: {2}"
-	}
-
-	"!zadmin knockback increase"
-	{
-		"#format"	"{1:s}"
-		"en"		"Increase Knockback (+{1})"
-	}
-
-	"!zadmin knockback decrease"
-	{
-		"#format"	"{1:s}"
-		"en"		"Decrease Knockback (-{1})"
-	}
-
-	"!zadmin nvgs title"
-	{
-		"#format"	"{1:d}"
-		"en"		"Override NVG Cvar\nCurrent Setting: {1}"
-	}
-
-	"!zadmin nvgs decrease"
-	{
-		"en"		"Decrease Knockback"
-	}
-
-	"!zadmin nvgs no override"
-	{
-		"en"		"No Override/Class Specific"
-	}
-
-	"!zadmin nvgs disable"
-	{
-		"en"		"Disable NVGs"
-	}
-
-	"!zadmin nvgs enable"
-	{
-		"en"		"Enable NVGs"
 	}
 
 	"!zadmin infect title"

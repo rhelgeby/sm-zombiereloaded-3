@@ -24,6 +24,8 @@
 ClassClientInit(client)
 {
     // Check if there are valid classes and the client is valid.
+    // To prevent bots or SourceTV causing errors. If classes are invalid this
+    // event was executed before classes were loaded. 
     if (ClassValidated && ZRIsClientValid(client))
     {
         // Set default class indexes on the player.
@@ -68,6 +70,9 @@ ClassOnClientSpawn(client)
     {
         return;
     }
+    
+    // Reset attributes by triggering death event.
+    ClassOnClientDeath(client);
     
     new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
 

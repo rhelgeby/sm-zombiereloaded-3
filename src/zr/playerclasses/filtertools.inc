@@ -146,8 +146,8 @@ stock ClassValidateAttributes(classindex)
     }
     else
     {
-        // Check if default or random model is specified.
-        if (strcmp(model_path, "random", false) != 0 && strcmp(model_path, "default", false) != 0)
+        // Check if a model different from default or random is specified.
+        if (!StrEqual(model_path, "random", false) && !StrEqual(model_path, "default", false))
         {
             // Check if the file exists.
             if (!FileExists(model_path))
@@ -217,13 +217,13 @@ stock ClassValidateAttributes(classindex)
     if (!(regen_interval >= ZR_CLASS_HEALTH_REGEN_INTERVAL_MIN && regen_interval <= ZR_CLASS_HEALTH_REGEN_INTERVAL_MAX))
     {
         flags += ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL;
-        
-        // Health regen amount. Only validating if interval is set.
-        new regen_amount = ClassData[classindex][class_health_regen_amount];
-        if (!(regen_amount >= ZR_CLASS_HEALTH_REGEN_AMOUNT_MIN && regen_amount <= ZR_CLASS_HEALTH_REGEN_AMOUNT_MAX))
-        {
-            flags += ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT;
-        }
+    }
+    
+    // Health regen amount.
+    new regen_amount = ClassData[classindex][class_health_regen_amount];
+    if (!(regen_amount >= ZR_CLASS_HEALTH_REGEN_AMOUNT_MIN && regen_amount <= ZR_CLASS_HEALTH_REGEN_AMOUNT_MAX))
+    {
+        flags += ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT;
     }
     
     // Health infect gain.
@@ -407,6 +407,41 @@ stock ClassGetActiveIndex(client)
     
     // Return the active class for the active team.
     return ClassSelected[client][teamid];
+}
+
+/**
+ * Gets the multiplier for the specified team and attribute.
+ *
+ * @param client        The client index.
+ * @param attribute     Specifies what attribute multiplier to get.
+ * @return      Multiplier for the specified team and attribute. 1.0 if the
+ *              client is in admin mode.
+ */
+stock Float:ClassGetAttributeMultiplier(client, ClassMultipliers:attribute)
+{
+    new teamid;
+    
+    // Check if player is not in admin mode.
+    if (!ClassPlayerInAdminMode[client])
+    {
+        // Not in admin mode, check if player is human or zombie.
+        if (InfectIsClientHuman(client))
+        {
+            teamid = ZR_CLASS_TEAM_HUMANS;
+        }
+        else
+        {
+            teamid = ZR_CLASS_TEAM_ZOMBIES;
+        }
+        
+        // Get multiplier for the specified team and attribute.
+        return Float:ClassMultiplierCache[teamid][attribute];
+    }
+    else
+    {
+        // Do not use multipliers on admin classes.
+        return 1.0;
+    }
 }
 
 /**

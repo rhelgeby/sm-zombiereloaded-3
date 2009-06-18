@@ -187,8 +187,8 @@ enum ConfigKvAction
 ConfigOnCommandsCreate()
 {
     // Create config admin commands.
-    RegAdminCmd("zr_config_reload", ConfigReloadCommand, ADMFLAG_GENERIC, "Reloads a config file. Usage: zr_config_reload <file alias>");
-    RegAdminCmd("zr_config_reloadall", ConfigReloadAllCommand, ADMFLAG_GENERIC, "Reloads all config files. Usage: zr_config_reloadall");
+    RegAdminCmd("zr_config_reload", ConfigReloadCommand, ADMFLAG_CONFIG, "Reloads a config file. Usage: zr_config_reload <file alias>");
+    RegAdminCmd("zr_config_reloadall", ConfigReloadAllCommand, ADMFLAG_CONFIG, "Reloads all config files. Usage: zr_config_reloadall");
 }
 
 /**

@@ -496,6 +496,8 @@ stock bool:ClassGetHasNapalm(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 /**
  * Gets the napalm grenades time from the specified class.
  *
+ * Note: Multiplier is used if cache type is player cache.
+ *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
  * @param cachetype Optional. Specifies what class cache to read from. Options:
@@ -519,7 +521,7 @@ stock Float:ClassGetNapalmTime(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_napalm_time];
+            return ClassPlayerCache[index][class_napalm_time] * ClassGetAttributeMultiplier(index, ClassM_NapalmTime);
         }
     }
     return -1.0;
@@ -635,6 +637,8 @@ stock bool:ClassGetNoFallDamage(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 /**
  * Gets the health points from the specified class.
  *
+ * Note: Multiplier is used if cache type is player cache.
+ *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
  * @param cachetype Optional. Specifies what class cache to read from. Options:
@@ -658,7 +662,7 @@ stock ClassGetHealth(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_health];
+            return RoundToCeil(ClassPlayerCache[index][class_health] * ClassGetAttributeMultiplier(index, ClassM_Health));
         }
     }
     return -1;
@@ -666,6 +670,8 @@ stock ClassGetHealth(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 
 /**
  * Gets the health regen interval time from the specified class.
+ *
+ * Note: Multiplier is used if cache type is player cache.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -691,7 +697,7 @@ stock Float:ClassGetHealthRegenInterval(index, cachetype = ZR_CLASS_CACHE_PLAYER
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_health_regen_interval];
+            return ClassPlayerCache[index][class_health_regen_interval] * ClassGetAttributeMultiplier(index, ClassM_HealthRegenInterval);
         }
     }
     return -1.0;
@@ -699,6 +705,8 @@ stock Float:ClassGetHealthRegenInterval(index, cachetype = ZR_CLASS_CACHE_PLAYER
 
 /**
  * Gets the health regen amount value from the specified class.
+ *
+ * Note: Multiplier is used if cache type is player cache.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -724,7 +732,7 @@ stock ClassGetHealthRegenAmount(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_health_regen_amount];
+            return RoundToCeil(ClassPlayerCache[index][class_health_regen_amount] * ClassGetAttributeMultiplier(index, ClassM_HealthRegenAmount));
         }
     }
     return -1;
@@ -732,6 +740,8 @@ stock ClassGetHealthRegenAmount(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 
 /**
  * Gets the health infect gain value from the specified class.
+ *
+ * Note: Multiplier is used if cache type is player cache.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -757,7 +767,7 @@ stock ClassGetHealthInfectGain(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_health_infect_gain];
+            return RoundToCeil(ClassPlayerCache[index][class_health_infect_gain] * ClassGetAttributeMultiplier(index, ClassM_HealthInfectGain));
         }
     }
     return -1;
@@ -798,6 +808,8 @@ stock ClassGetKillBonus(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 /**
  * Gets the running speed value from the specified class.
  *
+ * Note: Multiplier is used if cache type is player cache.
+ *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
  * @param cachetype Optional. Specifies what class cache to read from. Options:
@@ -821,7 +833,7 @@ stock Float:ClassGetSpeed(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_speed];
+            return ClassPlayerCache[index][class_speed] * ClassGetAttributeMultiplier(index, ClassM_Speed);
         }
     }
     return -1.0;
@@ -829,6 +841,8 @@ stock Float:ClassGetSpeed(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 
 /**
  * Gets the knock back boost from the specified class.
+ *
+ * Note: Multiplier is used if cache type is player cache.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -853,7 +867,7 @@ stock Float:ClassGetKnockback(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_knockback];
+            return ClassPlayerCache[index][class_knockback] * ClassGetAttributeMultiplier(index, ClassM_Knockback);
         }
     }
     return 0.0;
@@ -861,6 +875,8 @@ stock Float:ClassGetKnockback(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 
 /**
  * Gets the jump height boost from the specified class.
+ *
+ * Note: Multiplier is used if cache type is player cache.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -885,7 +901,7 @@ stock Float:ClassGetJumpHeight(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_jump_height];
+            return ClassPlayerCache[index][class_jump_height] * ClassGetAttributeMultiplier(index, ClassM_JumpHeight);
         }
     }
     return -1.0;
@@ -893,6 +909,8 @@ stock Float:ClassGetJumpHeight(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 
 /**
  * Gets the jump distance boost from the specified class.
+ *
+ * Note: Multiplier is used if cache type is player cache.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -917,7 +935,7 @@ stock Float:ClassGetJumpDistance(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_jump_distance];
+            return ClassPlayerCache[index][class_jump_distance] * ClassGetAttributeMultiplier(index, ClassM_JumpDistance);
         }
     }
     return -1.0;
@@ -927,7 +945,7 @@ stock Float:ClassGetJumpDistance(index, cachetype = ZR_CLASS_CACHE_PLAYER)
  * Gets the attribute flag that represent the specified attribute.
  *
  * @param attributename     The attribute name.
- * @return                  The flag that reporesent the specified attribute.
+ * @return                  The flag that represent the specified attribute.
  *                          -1 on error.
  */
 stock ClassAttributeNameToFlag(const String:attributename[])
@@ -1036,6 +1054,57 @@ stock ClassAttributeNameToFlag(const String:attributename[])
     
     // Invalid attribute name.
     return -1;
+}
+
+/**
+ * Converts a attribute name to a multiplier type.
+ *
+ * @param attributename     The attribute name.
+ * @return                  The multiplier that represent the specified attribute.
+ *                          ClassM_Invalid if failed.
+ */
+stock ClassMultipliers:ClassAttributeNameToMultiplier(const String:attributename[])
+{
+    // Check attribute names.
+    if (StrEqual(attributename, "napalm_time", false))
+    {
+        return ClassM_NapalmTime;
+    }
+    else if (StrEqual(attributename, "health", false))
+    {
+        return ClassM_Health;
+    }
+    else if (StrEqual(attributename, "health_regen_interval", false))
+    {
+        return ClassM_HealthRegenInterval;
+    }
+    else if (StrEqual(attributename, "health_regen_interval", false))
+    {
+        return ClassM_HealthRegenAmount;
+    }
+    else if (StrEqual(attributename, "health_infect_gain", false))
+    {
+        return ClassM_HealthInfectGain;
+    }
+    else if (StrEqual(attributename, "speed", false))
+    {
+        return ClassM_Speed;
+    }
+    else if (StrEqual(attributename, "knockback", false))
+    {
+        return ClassM_Knockback;
+    }
+    else if (StrEqual(attributename, "jump_height", false))
+    {
+        return ClassM_JumpHeight;
+    }
+    else if (StrEqual(attributename, "jump_distance", false))
+    {
+        return ClassM_JumpDistance;
+    }
+    
+    // Invalid attribute name or not a multiplier.
+    return ClassM_Invalid;
 }
 
 /**

@@ -25,6 +25,7 @@
  * ============================================================================
  */
 
+
 /* ------------------------------------
  *
  * MAIN CLASS MENU
@@ -115,7 +116,7 @@ ClassMenuMain(client)
 }
 
 /**
- * Main class menu handle.
+ * Main class menu handler.
  */
 public ClassMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
 {
@@ -230,7 +231,7 @@ ClassMenuSelect(client, teamid)
 }
 
 /**
- * Class selection menu handle.
+ * Class selection menu handler.
  */
 public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
 {
@@ -290,7 +291,358 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
     }
 }
 
-ClassToggleAdminMode(client)
+/* ------------------------------------
+ *
+ * TEAM SELECT MENU (ADMIN)
+ *
+ * ------------------------------------
+ */
+
+/**
+ * Displays the team selection admin menu.
+ *
+ * @param client    The client index.
+ * @return          True if displayed, false otherwise.
+ */
+bool:ClassTeamSelect(client)
 {
-    // TODO: Move to new file, adminmode.inc.
+    // Validate client.
+    if (!ZRIsClientValid(client, false))
+    {
+        return false;
+    }
+    
+    // Validate permissions.
+    if (!ZRIsClientAdmin(client, Admin_Config))
+    {
+        return false;
+    }
+    
+    // Create menu.
+    new Handle:menu = CreateMenu(ClassTeamSelectHandle);
+    
+    decl String:title[64];
+    decl String:zombies[16];
+    decl String:humans[16];
+    
+    // Set translation language.
+    SetGlobalTransTarget(client);
+    
+    // Translate phrases.
+    Format(title, sizeof(title), "%t", "Classes Menu Team Select Title");
+    Format(zombies, sizeof(zombies), "%t", "Classes Menu Zombies");
+    Format(humans, sizeof(humans), "%t", "Classes Menu Humans");
+    
+    SetMenuTitle(menu, title);
+    
+    AddMenuItem(menu, "zombies", zombies);
+    AddMenuItem(menu, "humans", humans);
+    
+    SetMenuExitBackButton(menu, true);
+    DisplayMenu(menu, client, MENU_TIME_FOREVER);
+    
+    return true;
+}
+
+/**
+ * Team selection menu handler.
+ */
+public ClassTeamSelectHandle(Handle:menu, MenuAction:action, client, slot)
+{
+    switch (action)
+    {
+        case MenuAction_Select:
+        {
+            switch(slot)
+            {
+                case 0:
+                {
+                    ClassAdminTeamSelected[client] = ZR_CLASS_TEAM_ZOMBIES;
+                }
+                case 1:
+                {
+                    ClassAdminTeamSelected[client] = ZR_CLASS_TEAM_HUMANS;
+                }
+            }
+            
+            // Display multiplier menu.
+            ClassMultiplierSelectMenu(client);
+        }
+        case MenuAction_End:
+        {
+            CloseHandle(menu);
+        }
+        case MenuAction_Cancel:
+        {
+            if (slot == MenuCancel_ExitBack)
+            {
+                ZRAdminMenu(client);
+            }
+        }
+    }
+}
+
+/* ------------------------------------
+ *
+ * MULTIPLIER SELECT MENU (ADMIN)
+ *
+ * ------------------------------------
+ */
+
+/**
+ * Displays the multiplier selection admin menu.
+ *
+ * @param client    The client index.
+ */
+ClassMultiplierSelectMenu(client)
+{
+    // Create menu.
+    new Handle:menu = CreateMenu(ClassMultiplierSelectHandle);
+    
+    new teamid = ClassAdminTeamSelected[client];
+    new bool:zombiesselected = bool:(teamid == ZR_CLASS_TEAM_ZOMBIES);
+    
+    decl String:title[64];
+    decl String:napalmtime[48];
+    decl String:health[48];
+    decl String:regeninterval[48];
+    decl String:regenamount[48];
+    decl String:infectgain[48];
+    decl String:speed[48];
+    decl String:knockback[48];
+    decl String:jumpheight[48];
+    decl String:jumpdistance[48];
+    
+    new Float:currentnapalmtime;
+    new Float:currenthealth;
+    new Float:currentregeninterval;
+    new Float:currentregenamount;
+    new Float:currentinfectgain;
+    new Float:currentspeed;
+    new Float:currentknockback;
+    new Float:currentjumpheight;
+    new Float:currentjumpdistance;
+    
+    // Set translation language.
+    SetGlobalTransTarget(client);
+    
+    // Get current multipliers.
+    currentnapalmtime = Float:ClassMultiplierCache[teamid][ClassM_NapalmTime];
+    currenthealth = Float:ClassMultiplierCache[teamid][ClassM_Health];
+    currentregeninterval = Float:ClassMultiplierCache[teamid][ClassM_HealthRegenInterval];
+    currentregenamount = Float:ClassMultiplierCache[teamid][ClassM_HealthRegenAmount];
+    currentinfectgain = Float:ClassMultiplierCache[teamid][ClassM_HealthInfectGain];
+    currentspeed = Float:ClassMultiplierCache[teamid][ClassM_Speed];
+    currentknockback = Float:ClassMultiplierCache[teamid][ClassM_Knockback];
+    currentjumpheight = Float:ClassMultiplierCache[teamid][ClassM_JumpHeight];
+    currentjumpdistance = Float:ClassMultiplierCache[teamid][ClassM_JumpDistance];
+    
+    // Translate phrases.
+    Format(title, sizeof(title), "%t\n", "Classes Menu Multiplier Select Title");
+    Format(health, sizeof(health), "%t\n    %.2f", "Classes Attrib Health", currenthealth);
+    Format(regeninterval, sizeof(regeninterval), "%t\n    %.2f", "Classes Attrib Regen Interval", currentregeninterval);
+    Format(regenamount, sizeof(regenamount), "%t\n    %.2f", "Classes Attrib Regen Amount", currentregenamount);
+    Format(speed, sizeof(speed), "%t\n    %.2f", "Classes Attrib Speed", currentspeed);
+    Format(jumpheight, sizeof(jumpheight), "%t\n    %.2f", "Classes Attrib Jump Height", currentjumpheight);
+    Format(jumpdistance, sizeof(jumpdistance), "%t\n    %.2f", "Classes Attrib Jump Distance", currentjumpdistance);
+    
+    // Only translate zombie phrases if zombie team is selected.
+    if (zombiesselected)
+    {
+        Format(napalmtime, sizeof(napalmtime), "%t\n    %.2f", "Classes Attrib Napalm Time", currentnapalmtime);
+        Format(infectgain, sizeof(infectgain), "%t\n    %.2f", "Classes Attrib Infect Gain", currentinfectgain);
+        Format(knockback, sizeof(knockback), "%t\n    %.2f", "Classes Attrib Knockback", currentknockback);
+    }
+    
+    SetMenuTitle(menu, title);
+    
+    // Add items. Don't add zombie attributes if human team is selected.
+    if (zombiesselected) AddMenuItem(menu, "napalmtime", napalmtime);
+    AddMenuItem(menu, "health", health);
+    AddMenuItem(menu, "regeninterval", regeninterval);
+    AddMenuItem(menu, "regenamount", regenamount);
+    if (zombiesselected) AddMenuItem(menu, "infectgain", infectgain);
+    AddMenuItem(menu, "speed", speed);
+    if (zombiesselected) AddMenuItem(menu, "knockback", knockback);
+    AddMenuItem(menu, "jumpheight", jumpheight);
+    AddMenuItem(menu, "jumpdistance", jumpdistance);
+    
+    SetMenuExitBackButton(menu, true);
+    DisplayMenu(menu, client, MENU_TIME_FOREVER);
+}
+
+/**
+ * Multiplier select menu handler.
+ */
+public ClassMultiplierSelectHandle(Handle:menu, MenuAction:action, client, slot)
+{
+    decl String:attributename[48];
+    new ClassMultipliers:attribute;
+    
+    switch (action)
+    {
+        case MenuAction_Select:
+        {
+            // Get attribute name.
+            GetMenuItem(menu, slot, attributename, sizeof(attributename));
+            
+            // Initialize in case of errors.
+            attribute = ClassM_Knockback;
+            
+            // Convert type.
+            if (StrEqual(attributename, "napalmtime", false))
+            {
+                attribute = ClassM_NapalmTime;
+            }
+            else if (StrEqual(attributename, "health", false))
+            {
+                attribute = ClassM_Health;
+            }
+            else if (StrEqual(attributename, "regeninterval", false))
+            {
+                attribute = ClassM_HealthRegenInterval;
+            }
+            else if (StrEqual(attributename, "regenamount", false))
+            {
+                attribute = ClassM_HealthRegenAmount;
+            }
+            else if (StrEqual(attributename, "infectgain", false))
+            {
+                attribute = ClassM_HealthInfectGain;
+            }
+            else if (StrEqual(attributename, "speed", false))
+            {
+                attribute = ClassM_Speed;
+            }
+            else if (StrEqual(attributename, "knockback", false))
+            {
+                attribute = ClassM_Knockback;
+            }
+            else if (StrEqual(attributename, "jumpheight", false))
+            {
+                attribute = ClassM_JumpHeight;
+            }
+            else if (StrEqual(attributename, "jumpdistance", false))
+            {
+                attribute = ClassM_JumpDistance;
+            }
+            
+            // Display multiplier menu for the selected attribute.
+            ClassMultiplierMenu(client, attribute);
+        }
+        case MenuAction_End:
+        {
+            CloseHandle(menu);
+        }
+        case MenuAction_Cancel:
+        {
+            if (slot == MenuCancel_ExitBack)
+            {
+                ClassTeamSelect(client);
+            }
+        }
+    }
+}
+
+/* ------------------------------------
+ *
+ * MULTIPLIER MENU (ADMIN)
+ *
+ * ------------------------------------
+ */
+
+/**
+ * Displays multiplier menu for the specified attribute.
+ */
+ClassMultiplierMenu(client, ClassMultipliers:attribute)
+{
+    // Cache selected attribute.
+    ClassAdminAttributeSelected[client] = attribute;
+    
+    new Handle:menu = CreateMenu(ClassMultiplierHandle);
+    
+    decl String:title[64];
+    decl String:attributename[48];
+    decl String:linebuffer[48];
+    
+    // Set translation language.
+    SetGlobalTransTarget(client);
+    
+    // Get attribute string.
+    ClassMultiplierToString(attribute, attributename, sizeof(attributename));
+    
+    Format(title, sizeof(title), "%t %s\n%t %.2f\n", "Classes Menu Adjust Value", attributename, "Current Value", Float:ClassMultiplierCache[ClassAdminTeamSelected[client]][attribute]);
+    SetMenuTitle(menu, title);
+    
+    Format(linebuffer, sizeof(linebuffer), "%t", "Increase by", "0.5");
+    AddMenuItem(menu, "increasehalf", linebuffer);
+    Format(linebuffer, sizeof(linebuffer), "%t", "Increase by", "0.1");
+    AddMenuItem(menu, "increasedeci", linebuffer);
+    Format(linebuffer, sizeof(linebuffer), "%t", "Decrease by", "0.1");
+    AddMenuItem(menu, "decreasedeci", linebuffer);
+    Format(linebuffer, sizeof(linebuffer), "%t", "Decrease by", "0.5");
+    AddMenuItem(menu, "decreasehalf", linebuffer);
+    
+    SetMenuExitBackButton(menu, true);
+    DisplayMenu(menu, client, MENU_TIME_FOREVER);
+}
+
+public ClassMultiplierHandle(Handle:menu, MenuAction:action, client, slot)
+{
+    new Float:value;
+    
+    switch (action)
+    {
+        case MenuAction_Select:
+        {
+            switch (slot)
+            {
+                case 0:
+                {
+                    value = 0.5;
+                }
+                case 1:
+                {
+                    value = 0.1;
+                }
+                case 2:
+                {
+                    value = -0.1;
+                }
+                case 3:
+                {
+                    value = -0.5;
+                }
+            }
+            
+            // Update multiplier.
+            ClassAddToMultiplier(ClassAdminTeamSelected[client], ClassAdminAttributeSelected[client], value);
+            
+            // Re-display menu.
+            ClassMultiplierMenu(client, ClassAdminAttributeSelected[client]);
+        }
+        case MenuAction_End:
+        {
+            CloseHandle(menu);
+        }
+        case MenuAction_Cancel:
+        {
+            if (slot == MenuCancel_ExitBack)
+            {
+                ClassMultiplierSelectMenu(client);
+            }
+        }
+    }
+}
+
+/**
+ * Add to the specified multiplier.
+ *
+ * @param teamid        The team to filter.
+ * @param attribute     The attribute to add to.
+ * @param value         Value to add.
+ */
+ClassAddToMultiplier(teamid, ClassMultipliers:attribute, Float:value)
+{
+    ClassMultiplierCache[teamid][attribute] = ClassMultiplierCache[teamid][attribute] + value;
 }

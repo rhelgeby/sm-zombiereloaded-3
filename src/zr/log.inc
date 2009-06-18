@@ -299,7 +299,7 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
     LogGetModuleNameString(modulename, sizeof(modulename), module);
     
     // Format 
-    Format(logbuffer, sizeof(logbuffer), "[%s] - [%s]: %s", modulename, description, logbuffer);
+    Format(logbuffer, sizeof(logbuffer), "[%s] [%s] %s", modulename, description, logbuffer);
     
     // Format other parameters onto the log text.
     switch (logType)
@@ -446,8 +446,8 @@ LogModuleFilterCacheUpdate()
 LogOnCommandsCreate()
 {
     RegConsoleCmd("zr_log_list", Command_LogList, "List available logging flags and modules with their status values.");
-    RegConsoleCmd("zr_log_add_module", Command_LogAddModule, "Add one or more modules to the module filter. Usage: zr_log_add_module <module> [module] ...");
-    RegConsoleCmd("zr_log_remove_module", Command_LogRemoveModule, "Remove one or more modules from the module filter. Usage: zr_log_remove_module <module> [module] ...");
+    RegAdminCmd("zr_log_add_module", Command_LogAddModule, ADMFLAG_CONFIG, "Add one or more modules to the module filter. Usage: zr_log_add_module <module> [module] ...");
+    RegAdminCmd("zr_log_remove_module", Command_LogRemoveModule, ADMFLAG_CONFIG, "Remove one or more modules from the module filter. Usage: zr_log_remove_module <module> [module] ...");
 }
 
 /**

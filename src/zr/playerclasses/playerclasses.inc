@@ -162,7 +162,7 @@
 #define ZR_CLASS_HEALTH_MAX                 20000
 #define ZR_CLASS_HEALTH_REGEN_INTERVAL_MIN  0.0
 #define ZR_CLASS_HEALTH_REGEN_INTERVAL_MAX  900.0
-#define ZR_CLASS_HEALTH_REGEN_AMOUNT_MIN    0.0
+#define ZR_CLASS_HEALTH_REGEN_AMOUNT_MIN    0
 #define ZR_CLASS_HEALTH_REGEN_AMOUNT_MAX    10000
 #define ZR_CLASS_HEALTH_INFECT_GAIN_MIN     0
 #define ZR_CLASS_HEALTH_INFECT_GAIN_MAX     20000
@@ -259,6 +259,34 @@ enum ClassAttributes
 }
 
 /**
+ * Class attributes that support multipliers.
+ */
+enum ClassMultipliers
+{
+    ClassM_Invalid = 0,
+    Float:ClassM_NapalmTime,
+    Float:ClassM_Health,
+    Float:ClassM_HealthRegenInterval,
+    Float:ClassM_HealthRegenAmount,
+    Float:ClassM_HealthInfectGain,
+    Float:ClassM_Speed,
+    Float:ClassM_Knockback,
+    Float:ClassM_JumpHeight,
+    Float:ClassM_JumpDistance
+}
+
+/**
+ * Available class teams, used to specify targets.
+ */
+enum ClassTeams
+{
+    ClassTeam_Zombies = 0,
+    ClassTeam_Humans,
+    ClassTeam_Admins,
+    ClassTeam_All
+}
+
+/**
  * Data types used in class attributes.
  */
 enum ClassDataTypes
@@ -295,6 +323,13 @@ new ClassDataCache[ZR_CLASS_MAX][ClassAttributes];
 new ClassPlayerCache[MAXPLAYERS + 1][ClassAttributes];
 
 /**
+ * Cache for storing global multipliers, per team and per attribute when
+ * possible. Only attributes that support multipliers will be used, others are
+ * ignored.
+ */
+new Float:ClassMultiplierCache[ZR_CLASS_TEAMCOUNT][ClassMultipliers];
+
+/**
  * Number of classes loaded.
  */
 new ClassCount;
@@ -309,6 +344,16 @@ new bool:ClassValidated;
  * Stores what class that the player have selected, for each team.
  */
 new ClassSelected[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
+
+/**
+ * Cache for the currently selected team (admin menus).
+ */
+new ClassAdminTeamSelected[MAXPLAYERS + 1];
+
+/**
+ * Cache for the currently selected attribute multiplier (admin menus).
+ */
+new ClassMultipliers:ClassAdminAttributeSelected[MAXPLAYERS + 1];
 
 /**
  * Specifies whether a player is currently in admin mode.
@@ -338,8 +383,11 @@ new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
 /**
  * Loads class attributes from the class file into ClassData array. If any
  * error occur the plugin load will fail, and errors will be logged.
+ *
+ * @param keepMultipliers   Optional. Don't reset multipliers. Default is
+ *                          false.
  */
-ClassLoad()
+ClassLoad(bool:keepMultipliers = false)
 {
     // Register config file.
     ConfigRegisterConfig(File_Classes, Structure_Keyvalue, CONFIG_FILE_ALIAS_CLASSES);
@@ -476,6 +524,12 @@ ClassLoad()
     // Cache class data.
     ClassReloadDataCache();
     
+    // Reset attribute multipliers, if not keeping.
+    if (!keepMultipliers)
+    {
+        ClassResetMultiplierCache();
+    }
+    
     // Mark classes as valid.
     ClassValidated = true;
     
@@ -497,6 +551,7 @@ ClassLoad()
 public ClassOnConfigReload(ConfigFile:config)
 {
     // Reload class config.
+    ClassLoad(true);
 }
 
 /**
@@ -556,8 +611,7 @@ bool:ClassReloadDataCache()
 }
 
 /**
- * Clears the players class data and copies data from the specified class data
- * cache.
+ * Refresh the specified player's cache from the specified class data cache.
  *
  * @param client        The client index.
  * @param classindex    The index of the class to read from.
@@ -661,6 +715,26 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
     }
     
     return true;
+}
+
+/**
+ * Reset all class attribute multipliers to 1.0.
+ */
+ClassResetMultiplierCache()
+{
+    // Loop through all teams.
+    for (new teamid = 0; teamid < ZR_CLASS_TEAMCOUNT; teamid++)
+    {
+        ClassMultiplierCache[teamid][ClassM_NapalmTime] = 1.0;
+        ClassMultiplierCache[teamid][ClassM_Health] = 1.0;
+        ClassMultiplierCache[teamid][ClassM_HealthRegenInterval] = 1.0;
+        ClassMultiplierCache[teamid][ClassM_HealthRegenAmount] = 1.0;
+        ClassMultiplierCache[teamid][ClassM_HealthInfectGain] = 1.0;
+        ClassMultiplierCache[teamid][ClassM_Speed] = 1.0;
+        ClassMultiplierCache[teamid][ClassM_Knockback] = 1.0;
+        ClassMultiplierCache[teamid][ClassM_JumpHeight] = 1.0;
+        ClassMultiplierCache[teamid][ClassM_JumpDistance] = 1.0;
+    }
 }
 
 /**
@@ -846,4 +920,68 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
     cellcount += StrCat(buffer, maxlen, attribute);
     
     return cellcount;
+}
+
+/**
+ * Converts a multiplier attribute to a human readable string.
+ *
+ * @param attribute     Attribute to convert.
+ * @param buffer        Destination string buffer.
+ * @param maxlen        Size of buffer.
+ * @return              Number of cells written.
+ */
+ClassMultiplierToString(ClassMultipliers:attribute, String:buffer[], maxlen)
+{
+    decl String:phrase[48];
+    
+    switch (attribute)
+    {
+        case ClassM_NapalmTime:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Napalm Time");
+            return strcopy(buffer, maxlen, phrase);
+        }
+        case ClassM_Health:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Health");
+            return strcopy(buffer, maxlen, phrase);
+        }
+        case ClassM_HealthRegenInterval:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Regen Interval");
+            return strcopy(buffer, maxlen, phrase);
+        }
+        case ClassM_HealthRegenAmount:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Regen Amount");
+            return strcopy(buffer, maxlen, phrase);
+        }
+        case ClassM_HealthInfectGain:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Infect Gain");
+            return strcopy(buffer, maxlen, phrase);
+        }
+        case ClassM_Speed:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Speed");
+            return strcopy(buffer, maxlen, phrase);
+        }
+        case ClassM_Knockback:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Knockback");
+            return strcopy(buffer, maxlen, phrase);
+        }
+        case ClassM_JumpHeight:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Jump Height");
+            return strcopy(buffer, maxlen, phrase);
+        }
+        case ClassM_JumpDistance:
+        {
+            Format(phrase, sizeof(phrase), "%t", "Classes Attrib Jump Distance");
+            return strcopy(buffer, maxlen, phrase);
+        }
+    }
+    
+    return 0;
 }

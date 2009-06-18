@@ -235,9 +235,10 @@ stock bool:ZRTeamHasClients(team = -1)
  * Returns whether a player is a generic admin or not.
  *
  * @param client    The client index.
+ * @param flag      Optional. Flag to check. Default is generic admin flag.
  * @return          True if generic admin, false otherwise.
  */
-stock bool:ZRIsClientAdmin(client)
+stock bool:ZRIsClientAdmin(client, AdminFlag:flag = Admin_Generic)
 {
     // If index is invalid, then stop.
     if (!ZRIsClientValid(client))
@@ -245,7 +246,7 @@ stock bool:ZRIsClientAdmin(client)
         return false;
     }
     // If client doesn't have the Admin_Generic flag, then stop.
-    if (!GetAdminFlag(GetUserAdmin(client), Admin_Generic))
+    if (!GetAdminFlag(GetUserAdmin(client), flag))
     {
         return false;
     }

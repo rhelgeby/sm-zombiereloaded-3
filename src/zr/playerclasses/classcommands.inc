@@ -29,7 +29,9 @@ ClassOnCommandsCreate()
 {
     // Create base class commands.
     RegConsoleCmd("zr_class_dump", ClassDumpCommand, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
-    RegAdminCmd("zr_class_modify", ClassModifyCommand, ADMFLAG_GENERIC, "Modify class data on one or more classes. Usage: zr_class_modify <classname|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
+    RegConsoleCmd("zr_class_dump_multipliers", ClassDumpMultipliersCommand, "Dumps class attribute multipliers for the specified team. Usage: zr_class_dump_multipliers <\"zombies\"|\"humans\">");
+    RegAdminCmd("zr_class_modify", ClassModifyCommand, ADMFLAG_CONFIG, "Modify class data on one or more classes. Usage: zr_class_modify <classname|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
+    RegAdminCmd("zr_class_set_multiplier", ClassSetMultiplierCommand, ADMFLAG_CONFIG, "Sets the multiplier on a class attribute. Usage: zr_class_set multiplier <\"zombies\"|\"humans\"> <attribute> <value>");
 }
 
 /**
@@ -50,7 +52,7 @@ ClassOnCommandsHook()
  */
 public Action:ClassDumpCommand(client, argc)
 {
-    decl String:syntax[1024];
+    decl String:syntax[320];
     syntax[0] = 0;
     
     if (argc < 2)
@@ -142,6 +144,74 @@ public Action:ClassDumpCommand(client, argc)
     }
     
     return Plugin_Handled;
+}
+
+/**
+ * Command callback. (zr_class_dump_multipliers)
+ * Dumps class attribute multipliers for the specified team.
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ClassDumpMultipliersCommand(client, argc)
+{
+    decl String:buffer[512];
+    decl String:linebuffer[128];
+    decl String:arg[16];
+    buffer[0] = 0;
+    
+    if (argc < 1)
+    {
+        // Write syntax info.
+        ReplyToCommand(client, "Dumps class attribute multipliers for the specified team. Usage: zr_class_dump_multipliers <\"zombies\"|\"humans\">");
+        return Plugin_Handled;
+    }
+    
+    new teamid = -1;
+    
+    // Get team id.
+    GetCmdArg(1, arg, sizeof(arg));
+    if (StrEqual(arg, "zombies", false))
+    {
+        teamid = ZR_CLASS_TEAM_ZOMBIES;
+    }
+    else if (StrEqual(arg, "humans", false))
+    {
+        teamid = ZR_CLASS_TEAM_HUMANS;
+    }
+    
+    if (teamid >= 0)
+    {
+        Format(linebuffer, sizeof(linebuffer), "Dumping multipliers for team: %s\n----------------------------------------\n", arg);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        
+        Format(linebuffer, sizeof(linebuffer), "Napalm time:           %f\n", ClassMultiplierCache[teamid][ClassM_NapalmTime]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        Format(linebuffer, sizeof(linebuffer), "Health:                %f\n", ClassMultiplierCache[teamid][ClassM_Health]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        Format(linebuffer, sizeof(linebuffer), "Health regen interval: %f\n", ClassMultiplierCache[teamid][ClassM_HealthRegenInterval]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        Format(linebuffer, sizeof(linebuffer), "Health regen amount:   %f\n", ClassMultiplierCache[teamid][ClassM_HealthRegenAmount]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        Format(linebuffer, sizeof(linebuffer), "Health infect gain:    %f\n", ClassMultiplierCache[teamid][ClassM_HealthInfectGain]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        Format(linebuffer, sizeof(linebuffer), "Speed:                 %f\n", ClassMultiplierCache[teamid][ClassM_Speed]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        Format(linebuffer, sizeof(linebuffer), "Knock back:            %f\n", ClassMultiplierCache[teamid][ClassM_Knockback]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        Format(linebuffer, sizeof(linebuffer), "Jump height:           %f\n", ClassMultiplierCache[teamid][ClassM_JumpHeight]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        Format(linebuffer, sizeof(linebuffer), "Jump distance:         %f", ClassMultiplierCache[teamid][ClassM_JumpDistance]);
+        StrCat(buffer, sizeof(buffer), linebuffer);
+        
+        ReplyToCommand(client, buffer);
+        return Plugin_Handled;
+    }
+    else
+    {
+        ReplyToCommand(client, "Invalid team name specified.");
+        return Plugin_Handled;
+    }
 }
 
 /**
@@ -364,6 +434,85 @@ public Action:ClassModifyCommand(client, argc)
 }
 
 /**
+ * Sets the multiplier on a class attribute.
+ *
+ * Syntax: zr_class_modify <class> <attribute> <value> [is_multiplier]
+ *
+ * class:           The class to modify. Can be any class name, or one of the
+ *                  following team names; "all", "humans", "zombies" or
+ *                  "admins".
+ * attribute:       The name of the class attribute.
+ * value:           Value to set. Use quotes if value is a string.
+ * is_multiplier:   Optional. specifies wether the original value should be
+ *                  multiplied by the specified value. Defaults to false.
+ *
+ * Note: Original values are retrieved from the original class cache, not the
+ *       modified class cache.
+ */
+public Action:ClassSetMultiplierCommand(client, argc)
+{
+    decl String:syntax[320];
+    syntax[0] = 0;
+    
+    if (argc < 3)
+    {
+        // Write syntax info.
+        StrCat(syntax, sizeof(syntax), "Sets the multiplier on a class attribute. Usage: zr_class_set multiplier <\"zombies\"|\"humans\"> <attribute> <value>\n\n");
+        StrCat(syntax, sizeof(syntax), "Valid attributes:\n----------------------------------------\n");
+        StrCat(syntax, sizeof(syntax), "napalm_time\nhealth\nhealth_regen_interval\nhealth_regen_amount\nhealth_infect_gain\nspeed\nknockback\njump_height\njump_distance");
+        ReplyToCommand(client, syntax);
+        return Plugin_Handled;
+    }
+    
+    decl String:teamname[16];
+    decl String:attributename[32];
+    decl String:multiplier[32];
+    
+    new teamid = -1;
+    new ClassMultipliers:attribute;
+    new Float:value;
+    
+    // Get arguments.
+    GetCmdArg(1, teamname, sizeof(teamname));
+    GetCmdArg(2, attributename, sizeof(attributename));
+    GetCmdArg(3, multiplier, sizeof(multiplier));
+    
+    // Get team id.
+    if (StrEqual(teamname, "zombies", false))
+    {
+        teamid = ZR_CLASS_TEAM_ZOMBIES;
+    }
+    else if (StrEqual(teamname, "humans", false))
+    {
+        teamid = ZR_CLASS_TEAM_HUMANS;
+    }
+    
+    // Validate team id.
+    if (teamid < 0)
+    {
+        ReplyToCommand(client, "Invalid team name: %s", teamname);
+        return Plugin_Handled;
+    }
+    
+    // Get attribute type.
+    attribute = ClassAttributeNameToMultiplier(attributename);
+    
+    // Validate type.
+    if (attribute == ClassM_Invalid)
+    {
+        ReplyToCommand(client, "Attribute is invalid or not a multiplier: %s", attributename);
+    }
+    
+    // Get value.
+    value = StringToFloat(multiplier);
+    
+    // Set multiplier.
+    ClassMultiplierCache[teamid][attribute] = value;
+    
+    return Plugin_Handled;
+}
+
+/**
  * Modify class boolean attribute on a class.
  *
  * @param classindex        The class index.
@@ -517,9 +666,9 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
  * @param classindex        The class index.
  * @param attributeflag     Attribute to modify (a single attribute flag).
  * @param value             New value to set, or multiply with.
- * @param ismultiplier      Optional. Specifies wether to value as a multiplier
- *                          that multiplies with the original class value.
- *                          Not all attributes support multipliers.
+ * @param ismultiplier      Optional. Specifies wether to use value as a
+ *                          multiplier that is multiplied with the original
+ *                          class value. Unsupported attributes are ignored.
  * @return                  True on success, false otherwise.
  */
 stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier = false)
