@@ -32,31 +32,10 @@
       below) they turn into zombies.
     - Fully imune to all damage. Can't take or give damage. Sould only be used
       on admin classes.
-
-    TODO: Admin command for overriding class values;
-          zr_class_ovverride <classname> <key> <value> [value_is_multiplier]
-          Either set absolute values or use it as a multiplier, if possible.
-          "classname" should support "all" to set a spesific value on all
-          classes.
-          
-          How overrides should work:
-          When a player select a class, its attributes are cached for each
-          player. On infection or spawn, the plugin will use the cached
-          values.
-          
-          When we override, the real class attributes are changed and then
-          copied to the player caches (with matching team IDs).
-          
-          There is one problem, the in-game knockback multiplier menu. It
-          depends on the original class knockback values. A solution might be
-          to have another array of class data, which is never canged.
     
     TODO: Make class attributes for for changing model render mode and colors.
     
     TODO: Make class attributes for fancy effects, like a glow (if possible).
-    
-    TODO: Make alpha settings also apply to weapons (we could use code from
-          zombie riot in this case).
     
     TODO: Make immunity settings suitable for both teams, or certain zombie-
           only/human-only settings.
