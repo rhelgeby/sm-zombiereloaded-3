@@ -18,8 +18,7 @@
  */
 
 /**
- * To be called when a client connect to the server.
- * (OnClientPutInServer)
+ * Called when a client connects to the server (OnClientPutInServer).
  */
 ClassClientInit(client)
 {
@@ -45,6 +44,9 @@ ClassOnModulesLoaded()
     ClassClientSetDefaultIndexes();
 }
 
+/**
+ * Called a client disconnects.
+ */
 ClassOnClientDisconnect(client)
 {
     // Disable class attributes with timers.
@@ -127,6 +129,12 @@ ClassOnClientSpawn(client)
     ClassOverlayOnClientSpawn(client);
 }
 
+/**
+ * Client died. Stops timers and reset certain attributes. Call this event to
+ * clean up class related stuff.
+ * 
+ * @param client    The client index.
+ */
 ClassOnClientDeath(client)
 {
     // Disable class attributes with timers.
@@ -139,6 +147,11 @@ ClassOnClientDeath(client)
     ClassOverlayOnClientDeath(client);
 }
 
+/**
+ * Client got infected. Reloads class attributes.
+ * 
+ * @param client    The client index.
+ */
 ClassOnClientInfected(client, bool:motherzombie = false)
 {
     new classindex = ClassGetActiveIndex(client);

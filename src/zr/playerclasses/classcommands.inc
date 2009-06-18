@@ -34,7 +34,8 @@ ClassOnCommandsCreate()
     RegConsoleCmd("zr_class_dump", ClassDumpCommand, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
     RegConsoleCmd("zr_class_dump_multipliers", ClassDumpMultipliersCommand, "Dumps class attribute multipliers for the specified team. Usage: zr_class_dump_multipliers <\"zombies\"|\"humans\">");
     RegAdminCmd("zr_class_modify", ClassModifyCommand, ADMFLAG_CONFIG, "Modify class data on one or more classes. Usage: zr_class_modify <classname|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
-    RegAdminCmd("zr_class_set_multiplier", ClassSetMultiplierCommand, ADMFLAG_CONFIG, "Sets the multiplier on a class attribute. Usage: zr_class_set multiplier <\"zombies\"|\"humans\"> <attribute> <value>");
+    RegAdminCmd("zr_class_set_multiplier", ClassSetMultiplierCommand, ADMFLAG_CONFIG, "Sets the multiplier on a class attribute. Usage: zr_class_set_multiplier <\"zombies\"|\"humans\"> <attribute> <value>");
+    RegAdminCmd("zr_class_reload", ClassReloadCommand, ADMFLAG_GENERIC, "Refreshes the player cache and reloads class attributes on one or more players. Usage: zr_class_reload <target>");
 }
 
 /**
@@ -483,7 +484,7 @@ public Action:ClassSetMultiplierCommand(client, argc)
     if (argc < 3)
     {
         // Write syntax info.
-        StrCat(syntax, sizeof(syntax), "Sets the multiplier on a class attribute. Usage: zr_class_set multiplier <\"zombies\"|\"humans\"> <attribute> <value>\n\n");
+        StrCat(syntax, sizeof(syntax), "Sets the multiplier on a class attribute. Usage: zr_class_set_multiplier <\"zombies\"|\"humans\"> <attribute> <value>\n\n");
         StrCat(syntax, sizeof(syntax), "Valid attributes:\n----------------------------------------\n");
         StrCat(syntax, sizeof(syntax), "napalm_time\nhealth\nhealth_regen_interval\nhealth_regen_amount\nhealth_infect_gain\nspeed\nknockback\njump_height\njump_distance");
         ReplyToCommand(client, syntax);
@@ -534,6 +535,59 @@ public Action:ClassSetMultiplierCommand(client, argc)
     
     // Set multiplier.
     ClassMultiplierCache[teamid][attribute] = value;
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback. (zr_class_reload)
+ * Dumps class data at a specified index in the specified cache.
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ClassReloadCommand(client, argc)
+{
+    decl String:arg[MAX_TARGET_LENGTH];
+    decl String:targetname[MAX_TARGET_LENGTH];
+    new targetlist[MAXPLAYERS + 1];
+    new targetcount;
+    new bool:tn_is_ml;
+    
+    if (argc < 1)
+    {
+        // Write syntax info.
+        ReplyToCommand(client, "Refreshes the player cache and reloads class attributes on one or more players. Usage: zr_class_reload <target>");
+        
+        return Plugin_Handled;
+    }
+    
+    // Get the target string.
+    GetCmdArg(1, arg, sizeof(arg));
+    
+    // Get target clients.
+    if ((targetcount = ProcessTargetString(arg, client, targetlist, sizeof(targetlist), 0, targetname, sizeof(targetname), tn_is_ml)) <= 0)
+    {
+        // Failed to get targets.
+        ReplyToTargetError(client, targetcount);
+        return Plugin_Handled;
+    }
+    
+    // Loop through each target.
+    for (new target = 0; target < targetcount; target++)
+    {
+        ClassReloadPlayer(targetlist[target]);
+    }
+    
+    // Check phrase format.
+    if (tn_is_ml)
+    {
+        ReplyToCommand(client, "Refreshed cache to %t.", targetname);
+    }
+    else
+    {
+        ReplyToCommand(client, "Refreshed cache to %s.", targetname);
+    }
     
     return Plugin_Handled;
 }

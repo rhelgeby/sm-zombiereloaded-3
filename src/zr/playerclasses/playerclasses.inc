@@ -718,6 +718,33 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
 }
 
 /**
+ * Refresh the specified player's cache and re-apply attributes.
+ *
+ * @param client        The client index.
+ * @return              True if successful, false otherwise.
+ */
+bool:ClassReloadPlayer(client)
+{
+    new activeclass;
+    
+    // Get active class index.
+    activeclass = ClassGetActiveIndex(client);
+    
+    // Validate index.
+    if (activeclass < 0)
+    {
+        return false;
+    }
+    
+    // Refresh cache and re-apply attributes.
+    ClassOnClientDeath(client);         // Dummy event to clean up stuff.
+    ClassReloadPlayerCache(client, activeclass);
+    ClassApplyAttributes(client);
+    
+    return true;
+}
+
+/**
  * Reset all class attribute multipliers to 1.0.
  */
 ClassResetMultiplierCache()
