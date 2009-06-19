@@ -133,6 +133,39 @@ stock bool:ClassGetTeamDefault(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
 }
 
 /**
+ * Checks if the specified class is for admins only or not.
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest class
+ *                  data.
+ *                  ZR_CLASS_CACHE_PLAYER - Player cache. If this one is used,
+ *                  index will be used as a client index.
+ * @return          True if it's for admins only, false otherwise.
+ */
+stock bool:ClassGetAdminOnly(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
+{
+    switch (cachetype)
+    {
+        case ZR_CLASS_CACHE_ORIGINAL:
+        {
+            return ClassData[index][class_admin_only];
+        }
+        case ZR_CLASS_CACHE_MODIFIED:
+        {
+            return ClassDataCache[index][class_admin_only];
+        }
+        case ZR_CLASS_CACHE_PLAYER:
+        {
+            return ClassPlayerCache[index][class_admin_only];
+        }
+    }
+    return false;
+}
+
+/**
  * Gets the class name to be displayed in the class menu.
  *
  * @param index     Index of the class in a class cache or a client index,
@@ -963,6 +996,10 @@ stock ClassAttributeNameToFlag(const String:attributename[])
     {
         return ZR_CLASS_FLAG_TEAM_DEFAULT;
     }
+    else if (StrEqual(attributename, "admin_only", false))
+    {
+        return ZR_CLASS_FLAG_ADMIN_ONLY;
+    }
     else if (StrEqual(attributename, "name", false))
     {
         return ZR_CLASS_FLAG_NAME;
@@ -1121,7 +1158,8 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
         // Boolean.
         case ZR_CLASS_FLAG_ENABLED,
               ZR_CLASS_FLAG_NVGS,
-              ZR_CLASS_FLAG_NO_FALL_DAMAGE:
+              ZR_CLASS_FLAG_NO_FALL_DAMAGE,
+              ZR_CLASS_FLAG_ADMIN_ONLY:
         {
             return ClassDataType_Boolean;
         }

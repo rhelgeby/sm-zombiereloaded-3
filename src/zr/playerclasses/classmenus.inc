@@ -177,6 +177,7 @@ ClassMenuSelect(client, teamid)
     new Handle:menu = CreateMenu(ClassMenuSelectHandle);
     new arraycount;
     new classindex;
+    new bool:clientisadmin = ZRIsClientAdmin(client);
     
     decl String:title[64];
     decl String:classname[64];
@@ -207,7 +208,8 @@ ClassMenuSelect(client, teamid)
     new Handle:classarray = CreateArray();
     
     // Copy all class indexes into the array, with the specified team filter.
-    if (ClassAddToArray(classarray, teamid))
+    // Also list admin-only classes if client is a admin.
+    if (ClassAddToArray(classarray, teamid, _, clientisadmin))
     {
         // Get number of classes.
         arraycount = GetArraySize(classarray);

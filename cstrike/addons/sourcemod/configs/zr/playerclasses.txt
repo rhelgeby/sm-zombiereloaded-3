@@ -54,6 +54,7 @@
         "enabled"               "1"
         "team"                  "0"
         "team_default"          "1"
+        "admin_only"            "0"
         
         "name"                  "Classic"
         "description"           "Need brains!!! Arrrrggghh!"
@@ -96,6 +97,7 @@
         "enabled"               "1"
         "team"                  "0"
         "team_default"          "0"
+        "admin_only"            "0"
         
         "name"                  "Fast"
         "description"           "-HP | +Speed | +Jump | +Knockback"
@@ -138,6 +140,7 @@
         "enabled"               "1"
         "team"                  "0"
         "team_default"          "0"
+        "admin_only"            "0"
         
         "name"                  "Mutated"
         "description"           "+HP | -Speed | +Jump | +Knockback"
@@ -180,6 +183,7 @@
         "enabled"               "1"
         "team"                  "0"
         "team_default"          "0"
+        "admin_only"            "0"
         
         "name"                  "Heavy"
         "description"           "+HP | -Speed | -Jump | -Knockback"
@@ -228,6 +232,7 @@
         "enabled"               "1"
         "team"                  "1"
         "team_default"          "1"
+        "admin_only"            "0"
         
         "name"                  "Normal Human"
         "description"           "Default Counter-Strike settings"
@@ -270,6 +275,7 @@
         "enabled"               "1"
         "team"                  "1"
         "team_default"          "0"
+        "admin_only"            "0"
         
         "name"                  "Speedy"
         "description"           "Fast human"
@@ -312,6 +318,7 @@
         "enabled"               "1"
         "team"                  "1"
         "team_default"          "0"
+        "admin_only"            "0"
         
         "name"                  "Light"
         "description"           "Regular human with improved jump skills"

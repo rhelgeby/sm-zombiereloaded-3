@@ -91,6 +91,7 @@
 #define ZR_CLASS_DEFAULT_ENABLED                true
 #define ZR_CLASS_DEFAULT_TEAM                   ZR_CLASS_TEAM_ZOMBIES
 #define ZR_CLASS_DEFAULT_TEAM_DEFAULT           true
+#define ZR_CLASS_DEFAULT_ADMIN_ONLY             false
 #define ZR_CLASS_DEFAULT_NAME                   "classic"
 #define ZR_CLASS_DEFAULT_DESCRIPTION            "Need brains!!! Arrrrggghh!"
 #define ZR_CLASS_DEFAULT_MODEL_PATH             "models/player/zh/zh_zombie003.mdl"
@@ -165,29 +166,30 @@
 #define ZR_CLASS_FLAG_ENABLED               (1<<0)
 #define ZR_CLASS_FLAG_TEAM                  (1<<1)
 #define ZR_CLASS_FLAG_TEAM_DEFAULT          (1<<2)
-#define ZR_CLASS_FLAG_NAME                  (1<<3)
-#define ZR_CLASS_FLAG_DESCRIPTION           (1<<4)
-#define ZR_CLASS_FLAG_MODEL_PATH            (1<<5)
-#define ZR_CLASS_FLAG_ALPHA_INITIAL         (1<<6)
-#define ZR_CLASS_FLAG_ALPHA_DAMAGED         (1<<7)
-#define ZR_CLASS_FLAG_ALPHA_DAMAGE          (1<<8)
-#define ZR_CLASS_FLAG_OVERLAY_PATH          (1<<9)
-#define ZR_CLASS_FLAG_NVGS                  (1<<10)
-#define ZR_CLASS_FLAG_FOV                   (1<<11)
-#define ZR_CLASS_FLAG_HAS_NAPALM            (1<<12)
-#define ZR_CLASS_FLAG_NAPALM_TIME           (1<<13)
-#define ZR_CLASS_FLAG_IMMUNITY_MODE         (1<<14)
-#define ZR_CLASS_FLAG_IMMUNITY_AMOUNT       (1<<15)
-#define ZR_CLASS_FLAG_NO_FALL_DAMAGE        (1<<16)
-#define ZR_CLASS_FLAG_HEALTH                (1<<17)
-#define ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL (1<<18)
-#define ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT   (1<<19)
-#define ZR_CLASS_FLAG_HEALTH_INFECT_GAIN    (1<<20)
-#define ZR_CLASS_FLAG_KILL_BONUS            (1<<21)
-#define ZR_CLASS_FLAG_SPEED                 (1<<22)
-#define ZR_CLASS_FLAG_KNOCKBACK             (1<<23)
-#define ZR_CLASS_FLAG_JUMP_HEIGHT           (1<<24)
-#define ZR_CLASS_FLAG_JUMP_DISTANCE         (1<<25)
+#define ZR_CLASS_FLAG_ADMIN_ONLY            (1<<3)
+#define ZR_CLASS_FLAG_NAME                  (1<<4)
+#define ZR_CLASS_FLAG_DESCRIPTION           (1<<5)
+#define ZR_CLASS_FLAG_MODEL_PATH            (1<<6)
+#define ZR_CLASS_FLAG_ALPHA_INITIAL         (1<<7)
+#define ZR_CLASS_FLAG_ALPHA_DAMAGED         (1<<8)
+#define ZR_CLASS_FLAG_ALPHA_DAMAGE          (1<<9)
+#define ZR_CLASS_FLAG_OVERLAY_PATH          (1<<10)
+#define ZR_CLASS_FLAG_NVGS                  (1<<11)
+#define ZR_CLASS_FLAG_FOV                   (1<<12)
+#define ZR_CLASS_FLAG_HAS_NAPALM            (1<<13)
+#define ZR_CLASS_FLAG_NAPALM_TIME           (1<<14)
+#define ZR_CLASS_FLAG_IMMUNITY_MODE         (1<<15)
+#define ZR_CLASS_FLAG_IMMUNITY_AMOUNT       (1<<16)
+#define ZR_CLASS_FLAG_NO_FALL_DAMAGE        (1<<17)
+#define ZR_CLASS_FLAG_HEALTH                (1<<18)
+#define ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL (1<<19)
+#define ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT   (1<<20)
+#define ZR_CLASS_FLAG_HEALTH_INFECT_GAIN    (1<<21)
+#define ZR_CLASS_FLAG_KILL_BONUS            (1<<22)
+#define ZR_CLASS_FLAG_SPEED                 (1<<23)
+#define ZR_CLASS_FLAG_KNOCKBACK             (1<<24)
+#define ZR_CLASS_FLAG_JUMP_HEIGHT           (1<<25)
+#define ZR_CLASS_FLAG_JUMP_DISTANCE         (1<<26)
 /**
  * @endsection
  */
@@ -201,6 +203,7 @@ enum ClassAttributes
     bool:class_enabled,
     class_team,
     bool:class_team_default,
+    bool:class_admin_only,
     
     String:class_name[64],
     String:class_description[256],
@@ -426,6 +429,7 @@ ClassLoad(bool:keepMultipliers = false)
         ClassData[ClassCount][class_enabled] = bool:KvGetNum(kvClassData, "enabled", ZR_CLASS_DEFAULT_ENABLED);
         ClassData[ClassCount][class_team] = KvGetNum(kvClassData, "team", ZR_CLASS_DEFAULT_TEAM);
         ClassData[ClassCount][class_team_default] = bool:KvGetNum(kvClassData, "team_default", ZR_CLASS_DEFAULT_TEAM_DEFAULT);
+        ClassData[ClassCount][class_admin_only] = bool:KvGetNum(kvClassData, "admin_only", ZR_CLASS_DEFAULT_ADMIN_ONLY);
         
         KvGetString(kvClassData, "name", name, sizeof(name), ZR_CLASS_DEFAULT_NAME);
         strcopy(ClassData[ClassCount][class_name], 64, name);
@@ -553,6 +557,7 @@ bool:ClassReloadDataCache()
         ClassDataCache[classindex][class_enabled] = ClassData[classindex][class_enabled];
         ClassDataCache[classindex][class_team] = ClassData[classindex][class_team];
         ClassDataCache[classindex][class_team_default] = ClassData[classindex][class_team_default];
+        ClassDataCache[classindex][class_admin_only] = ClassData[classindex][class_admin_only];
         strcopy(ClassDataCache[classindex][class_name], 64, ClassData[classindex][class_name]);
         strcopy(ClassDataCache[classindex][class_description], 256, ClassData[classindex][class_description]);
         
@@ -616,6 +621,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             ClassPlayerCache[client][class_enabled] = ClassData[classindex][class_enabled];
             ClassPlayerCache[client][class_team] = ClassData[classindex][class_team];
             ClassPlayerCache[client][class_team_default] = ClassData[classindex][class_team_default];
+            ClassPlayerCache[client][class_admin_only] = ClassData[classindex][class_admin_only];
             strcopy(ClassPlayerCache[client][class_name], 64, ClassData[classindex][class_name]);
             strcopy(ClassPlayerCache[client][class_description], 256, ClassData[classindex][class_description]);
             
@@ -654,6 +660,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             ClassPlayerCache[client][class_enabled] = ClassDataCache[classindex][class_enabled];
             ClassPlayerCache[client][class_team] = ClassDataCache[classindex][class_team];
             ClassPlayerCache[client][class_team_default] = ClassDataCache[classindex][class_team_default];
+            ClassPlayerCache[client][class_admin_only] = ClassDataCache[classindex][class_admin_only];
             strcopy(ClassPlayerCache[client][class_name], 64, ClassDataCache[classindex][class_name]);
             strcopy(ClassPlayerCache[client][class_description], 256, ClassDataCache[classindex][class_description]);
             
@@ -850,6 +857,9 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
     cellcount += StrCat(buffer, maxlen, attribute);
     
     Format(attribute, sizeof(attribute), "team_default:          \"%d\"\n", ClassGetTeamDefault(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "admin_only:            \"%d\"\n", ClassGetAdminOnly(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
     
     ClassGetName(index, format_buffer, sizeof(format_buffer), cachetype);

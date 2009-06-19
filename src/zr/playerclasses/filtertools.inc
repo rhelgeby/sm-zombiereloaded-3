@@ -47,8 +47,8 @@ stock bool:ClassValidateTeamRequirements(cachetype = ZR_CLASS_CACHE_ORIGINAL)
     }
     
     // Test if a zombie and human class was found.
-    zombieindex = ClassGetFirstClass(ZR_CLASS_TEAM_ZOMBIES, _, cachetype);
-    humanindex = ClassGetFirstClass(ZR_CLASS_TEAM_HUMANS, _, cachetype);
+    zombieindex = ClassGetFirstClass(ZR_CLASS_TEAM_ZOMBIES, _, _, cachetype);
+    humanindex = ClassGetFirstClass(ZR_CLASS_TEAM_HUMANS, _, _, cachetype);
     
     // Validate indexes.
     if (ClassValidateIndex(zombieindex) && ClassValidateIndex(humanindex))
@@ -79,8 +79,8 @@ stock bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
     }
     
     // Test if a default zombie and human class was found.
-    zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, _, cachetype);
-    humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, _, cachetype);
+    zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, _, _, cachetype);
+    humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, _, _, cachetype);
     
     // Validate indexes.
     if (ClassValidateIndex(zombieindex) && ClassValidateIndex(humanindex))
@@ -448,20 +448,22 @@ stock Float:ClassGetAttributeMultiplier(client, ClassMultipliers:attribute)
  * Gets all class indexes or from a specified team, and adds them to the
  * specified array.
  * 
- * @param array         The destination array to add class indexes.
- * @param teamfilter    Optional. The team ID to filter. A negative value for
- *                      no filter (default).
- * @param ignoreEnabled Optional. Ignore the class's enabled attribute. Default
- *                      is false.
- * @param cachetype     Optional. Specifies what class cache to read from.
- *                      Options:
- *                      ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
- *                      ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
- *                      class data.
+ * @param array             The destination array to add class indexes.
+ * @param teamfilter        Optional. The team ID to filter. A negative value
+ *                          for no filter (default).
+ * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
+ *                          not. Default is false.
+ * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
+ *                          only or not. Default is false.
+ * @param cachetype         Optional. Specifies what class cache to read from.
+ *                          Options:
+ *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                          ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
+ *                          class data.
  * @return  True on success. False on error or if no classes were added or
  *          found.
  */
-stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Validate the array.
     if (array == INVALID_HANDLE)
@@ -486,6 +488,13 @@ stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = f
         {
             // The class is disabled and the enabled attribute is NOT ignored.
             // Skip to the next class.
+            continue;
+        }
+        
+        if (!ignoreAdminOnly && ClassGetAdminOnly(classindex, cachetype))
+        {
+            // The class is for admins only. This attribute isn't ignored so
+            // skip to the next class.
             continue;
         }
         
@@ -524,7 +533,10 @@ stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = f
  *
  * @param teamfilter        Optional. The team ID to filter. Negative value for
  *                          no filter (default).
- * @param ignoreEnabled     Ignore the enabled attribute.
+ * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
+ *                          not. Default is false.
+ * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
+ *                          only or not. Default is false.
  * @param cachetype         Optional. Specifies what class cache to read from.
  *                          Options:
  *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
@@ -532,7 +544,7 @@ stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = f
  *                          class data.
  * @return  Number of total classes or classes in the specified team.
  */
-stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Check if there are no classes.
     if (ClassCount == 0)
@@ -551,6 +563,13 @@ stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR
         {
             // The class is disabled and the enabled attribute is NOT ignored.
             // Skip to the next class.
+            continue;
+        }
+        
+        if (!ignoreAdminOnly && ClassGetAdminOnly(classindex, cachetype))
+        {
+            // The class is for admins only. This attribute isn't ignored so
+            // skip to the next class.
             continue;
         }
         
@@ -578,18 +597,20 @@ stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR
 /**
  * Gets a random class index from a specified team or from all classes.
  *
- * @param teamfilter    Optional. The team ID to filter. A negative value for
- *                      no filter (default).
- * @param ignoreEnabled Optional. Ignore the class's enabled attribute. Default
- *                      is false.
- * @param cachetype     Optional. Specifies what class cache to read from.
- *                      Options:
- *                      ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
- *                      ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
- *                      class data.
+ * @param teamfilter        Optional. The team ID to filter. A negative value
+ *                          for no filter (default).
+ * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
+ *                          not. Default is false.
+ * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
+ *                          only or not. Default is false.
+ * @param cachetype         Optional. Specifies what class cache to read from.
+ *                          Options:
+ *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                          ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
+ *                          class data.
  * @return  The class index if successful, or -1 on error.
  */
-stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     new Handle:classarray;
     new arraycount;
@@ -598,7 +619,7 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype
     classarray = CreateArray();
     
     // Try to get a class list.
-    if (ClassAddToArray(classarray, teamfilter, ignoreEnabled, cachetype))
+    if (ClassAddToArray(classarray, teamfilter, ignoreEnabled, ignoreAdminOnly, cachetype))
     {
         // Get a random index from the new class array.
         arraycount = GetArraySize(classarray);
@@ -618,19 +639,21 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype
  * Gets the first class index, or the first class index with the specified team
  * ID.
  *
- * @param teamfilter    Optional. The team ID to filter. A negative value for
- *                      no filter (default).
- * @param ignoreEnabled Optional. Ignore the class's enabled attribute. Default
- *                      is false.
- * @param cachetype     Optional. Specifies what class cache to read from.
- *                      Options:
- *                      ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
- *                      ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
- *                      class data.
+ * @param teamfilter        Optional. The team ID to filter. A negative value
+ *                          for no filter (default).
+ * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
+ *                          not. Default is false.
+ * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
+ *                          only or not. Default is false.
+ * @param cachetype         Optional. Specifies what class cache to read from.
+ *                          Options:
+ *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                          ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
+ *                          class data.
  * @return  The first class index, or the first class index with the specified
  *          team ID. -1 on error.
  */
-stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Check if there are no classes.
     if (ClassCount == 0)
@@ -645,6 +668,15 @@ stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype 
     {
         if (!ignoreEnabled && !ClassIsEnabled(classindex, cachetype))
         {
+            // The class is disabled and the enabled attribute is NOT ignored.
+            // Skip to the next class.
+            continue;
+        }
+        
+        if (!ignoreAdminOnly && ClassGetAdminOnly(classindex, cachetype))
+        {
+            // The class is for admins only. This attribute isn't ignored so
+            // skip to the next class.
             continue;
         }
         
@@ -669,17 +701,19 @@ stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, cachetype 
 /**
  * Gets the first class marked as default for the specified team.
  *
- * @param teamid        The team ID.
- * @param ignoreEnabled Optional. Ignore the class's enabled attribute. Default
- *                      is false.
- * @param cachetype     Optional. Specifies what class cache to read from.
- *                      Options:
- *                      ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
- *                      ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
- *                      class data.
+ * @param teamid            The team ID.
+ * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
+ *                          not. Default is false.
+ * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
+ *                          only or not. Default is false.
+ * @param cachetype         Optional. Specifies what class cache to read from.
+ *                          Options:
+ *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                          ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
+ *                          class data.
  * @return  The first default class index. -1 on error.
  */
-stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     new Handle:classarray;
     new arraycount;
@@ -688,7 +722,7 @@ stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, cachetype = ZR_CL
     classarray = CreateArray();
     
     // Get all classes from the specified team.
-    if (!ClassAddToArray(classarray, teamid, ignoreEnabled, cachetype))
+    if (!ClassAddToArray(classarray, teamid, ignoreEnabled, ignoreAdminOnly, cachetype))
     {
         // Failed to get classes.
         return -1;
@@ -759,7 +793,7 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
         if (strcmp(classname, "random", false) == 0)
         {
             // Get a list of all classes with the specified team ID.
-            classindex = ClassGetRandomClass(teamid, _, cachetype);
+            classindex = ClassGetRandomClass(teamid, _, _, cachetype);
             
             // Validate the result, in case there were errors.
             if (ClassValidateIndex(classindex))
@@ -791,7 +825,7 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                 // The class index is invalid or the team IDs didn't match.
                 // Because it's user input, we'll fall back to the first class
                 // in the specified team, and log a warning.
-                classindex = ClassGetFirstClass(teamid, _, cachetype);
+                classindex = ClassGetFirstClass(teamid, _, _, cachetype);
                 
                 LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Default Spawn Class", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", classname, teamid);
                 
@@ -813,6 +847,6 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
     else
     {
         // Blank class name, get the default class and return the index.
-        return ClassGetDefaultClass(teamid, _, cachetype);
+        return ClassGetDefaultClass(teamid, _, _, cachetype);
     }
 }
