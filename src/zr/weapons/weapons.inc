@@ -372,6 +372,32 @@ stock WeaponsNameToIndex(const String:weapon[])
 }
 
 /**
+ * Takes a weapon's classname and returns the display name in weapons config file.
+ * 
+ * @param
+ */
+stock WeaponsClassnameToDisplay(String:classname[], classnamemaxlen, String:display[], displaymaxlen)
+{
+    // Strip off classnames' weapon prefix.
+    ReplaceString(classname, classnamemaxlen, "weapon_", "");
+    ReplaceString(classname, classnamemaxlen, "item_", "");
+    
+    // Get the index of the weapon.
+    new weaponindex = WeaponsNameToIndex(classname);
+    
+    // If weapon index is invalid, then return an empty string.
+    if (weaponindex == -1)
+    {
+        // Return an empty string.
+        strcopy(display, displaymaxlen, "");
+        return;
+    }
+    
+    // Return the display name.
+    WeaponsGetName(weaponindex, display, displaymaxlen);
+}
+
+/**
  * Checks if a weapon is valid. (E.G. listed in weapons.txt)
  * @param weapon    The weapon name.
  * @return          Returns true if valid, false it not.

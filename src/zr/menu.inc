@@ -168,7 +168,7 @@ public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             case 5:
             {
                 // Send ZMarket menu.
-                resend = !ZMarketMenuTypes(client);
+                resend = !ZMarketMenuMain(client);
             }
         }
         
