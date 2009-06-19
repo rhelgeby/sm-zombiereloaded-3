@@ -622,7 +622,7 @@
 		"en"		"Rebuy My Loadout"
 	}
 
-        "Weapons menu zmarket main auto-rebuy"
+	"Weapons menu zmarket main auto-rebuy"
 	{
 		"#format"	"{1:s}"
 		"en"		"Auto-Rebuy: {1}"
