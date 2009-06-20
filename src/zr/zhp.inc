@@ -26,14 +26,19 @@
  */
 
 /**
+ * Name of the cookie for toggle state of ZHP
+ */
+#define ZHP_COOKIE_ENABLED "zr_zhp"
+
+/**
  * Array for storing ZHP timer handles per client.
  */
 new Handle:tZHP[MAXPLAYERS + 1];
 
 /**
- * Array for flagging client to display HP
+ * Cookie handle for the toggle state of ZHP on a client.
  */
-new bool:pZHP[MAXPLAYERS + 1];
+new Handle:g_hZHPEnabledCookie = INVALID_HANDLE;
 
 /**
  * Create commands specific to ZHP.
@@ -42,6 +47,19 @@ ZHPOnCommandsCreate()
 {
     // Register ZHP command.
     RegConsoleCmd(SAYHOOKS_KEYWORD_ZHP, ZHPCommand, "Shows real HP as zombie.");
+}
+
+/**
+ * Create ZHP-related cookies here.
+ */
+ZHPOnCookiesCreate()
+{
+    // If cookie doesn't already exist, then create it.
+    g_hZHPEnabledCookie = FindClientCookie(ZHP_COOKIE_ENABLED);
+    if (g_hZHPEnabledCookie == INVALID_HANDLE)
+    {
+        g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP", CookieAccess_Public);
+    }
 }
 
 /**
@@ -54,8 +72,16 @@ ZHPClientInit(client)
     // Get default client setting from cvar.
     new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
     
-    // Set flag to default value.
-    pZHP[client] = zhp;
+    // Get ZHP enabled cookie value.
+    decl String:zhpenabled[8];
+    GetClientCookie(client, g_hZHPEnabledCookie, zhpenabled, sizeof(zhpenabled));
+    
+    // If the cookie is empty, then set the default value.
+    if (!zhpenabled[0])
+    {
+        // Set cookie to default value from cvar.
+        CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, zhp);
+    }
     
     // Reset timer handle.
     tZHP[client] = INVALID_HANDLE;
@@ -162,8 +188,11 @@ bool:ZHPToggle(client)
         return false;
     }
     
+    // Get the cookie value.
+    new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
+    
     // If ZHP is enabled, then tell client it's being disabled.
-    if (pZHP[client])
+    if (zhpstate)
     {
         TranslationPrintToChat(client, "ZHP disable");
     }
@@ -176,8 +205,8 @@ bool:ZHPToggle(client)
         ZHPUpdateHUD(client);
     }
     
-    // Toggle ZHP flag.
-    pZHP[client] = !pZHP[client];
+    // Toggle the value.
+    CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, !zhpstate);
     
     return true;
 }
@@ -196,8 +225,11 @@ ZHPUpdateHUD(client)
         return;
     }
     
+    // Get ZHP enabled cookie as a bool.
+    new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
+    
     // If player is a zombie, or has ZHP disabled, then stop.
-    if (!InfectIsClientInfected(client) || !pZHP[client])
+    if (!InfectIsClientInfected(client) || !zhpstate)
     {
         return;
     }

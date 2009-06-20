@@ -333,3 +333,24 @@ stock ZRPrintToConsoleLong(client, const String:text[], splitsize = 1022)
         pos += cellswritten;
     }
 }
+
+/**
+ * Converts a boolean value into a string.
+ * 
+ * @param value     The value to convert to string.
+ * @param output    The converted string.
+ * @param maxlen    The maximum length of the string.
+ */
+ZRBoolToString(bool:value, String:output[], maxlen)
+{
+    // If the value is true, then set string to "1".
+    if (value)
+    {
+        strcopy(output, maxlen, "1");
+    }
+    // If the value is false, then set string to "0".
+    else
+    {
+        strcopy(output, maxlen, "0");
+    }
+}

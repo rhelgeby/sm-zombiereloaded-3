@@ -88,7 +88,7 @@ new Handle:arrayWeapons = INVALID_HANDLE;
 
 /**
  * Weapons module init function.
- */ 
+ */
 WeaponsInit()
 {
     // Forward event to sub-modules.

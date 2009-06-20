@@ -28,6 +28,7 @@
 #pragma semicolon 1
 #include <sourcemod>
 #include <sdktools>
+#include <clientprefs>
 #include <cstrike>
 #include <zrtools>
 
@@ -45,6 +46,7 @@
 #include "zr/serial"
 #include "zr/sayhooks"
 #include "zr/tools"
+#include "zr/cookies"
 #include "zr/paramtools"
 #include "zr/models"
 #include "zr/downloads"
@@ -116,6 +118,7 @@ public OnPluginStart()
     TranslationInit();
     CvarsInit();
     ToolsInit();
+    CookiesInit();
     CommandsInit();
     WeaponsInit();
     EventInit();
@@ -164,6 +167,14 @@ public OnConfigsExecuted()
     // Forward event to modules. (OnModulesLoaded)
     ConfigOnModulesLoaded();
     ClassOnModulesLoaded();
+}
+
+/**
+ * Client cookies just finished loading from the database.
+ */
+public OnClientCookiesCached()
+{
+    // Forward event to modules.
 }
 
 /**

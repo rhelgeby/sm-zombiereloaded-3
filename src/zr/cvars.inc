@@ -430,7 +430,7 @@ CvarsCreate()
     
     g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit",            "1",        "Put a time limit on the use of ZSpawn.");
     g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time",       "120.0",    "Time from the start of the round to allow ZSpawn. [Dependency: zr_zspawn_timelimit]");
-    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]          =    CreateConVar("zr_zspawn_timelimit_zombie",      "1",        "Spawn player on the zombie team AFTER the timelimit is up. ['-1' = Block ZSpawn | '0' = Spawn as human | '1' = Spawn as zombie | Dependency: zr_zspawn_timelimit]");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]          =    CreateConVar("zr_zspawn_timelimit_zombie",      "1",       "Spawn player on the zombie team AFTER the timelimit is up. ['-1' = Block ZSpawn | '0' = Spawn as human | '1' = Spawn as zombie | Dependency: zr_zspawn_timelimit]");
     
     
     // ===========================
