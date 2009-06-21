@@ -106,31 +106,6 @@ ClassOverlayClientInit(client)
 }
 
 /**
- * Client is spawning into the game.
- * 
- * @param client    The client index.
- */
-ClassOverlayOnClientSpawn(client)
-{
-    // If overlay toggle is enabled and class has an overlay, then send center text.
-    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
-    
-    decl String:overlaypath[PLATFORM_MAX_PATH];
-    ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath));
-    
-    if (overlaytoggle && overlaypath[0])
-    {
-        decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
-        GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
-        
-        TranslationPrintHUDText(client, "Classes overlay toggle", togglecmds);
-    }
-    
-    // Update class overlay.
-    OverlaysClientUpdateOverlay(client, OVERLAYS_CHANNEL_CLASSES);
-}
-
-/**
  * Client has been killed.
  * 
  * @param client    The client index.
@@ -139,28 +114,6 @@ ClassOverlayOnClientDeath(client)
 {
     // Disable overlay.
     OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
-}
-
-/**
- * Client has been infected.
- * 
- * @param client    The client index.
- */
-ClassOverlayOnClientInfected(client)
-{
-    // If overlay toggle is enabled and class has an overlay, then send center text.
-    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
-    
-    decl String:overlaypath[PLATFORM_MAX_PATH];
-    ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath));
-    
-    if (overlaytoggle && overlaypath[0])
-    {
-        decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
-        GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
-        
-        TranslationPrintCenterText(client, "Classes overlay toggle", togglecmds);
-    }
 }
 
 ClassOverlayInitialize(client, const String:overlay[])
@@ -175,6 +128,20 @@ ClassOverlayInitialize(client, const String:overlay[])
     {
         OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
         return;
+    }
+    
+    // If overlay toggle is enabled and class has an overlay, then send center text.
+    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+    
+    decl String:overlaypath[PLATFORM_MAX_PATH];
+    ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath));
+    
+    if (overlaytoggle && overlaypath[0])
+    {
+        decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+        GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
+        
+        TranslationPrintHUDText(client, "Classes overlay toggle", togglecmds);
     }
     
     // Display class overlays.

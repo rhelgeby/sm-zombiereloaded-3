@@ -133,9 +133,6 @@ ClassOnClientSpawn(client)
         ClassReloadPlayerCache(client, ClassGetActiveIndex(client));
         ClassApplyAttributes(client);
     }
-    
-    // Forward event to sub-modules.
-    ClassOverlayOnClientSpawn(client);
 }
 
 /**
@@ -173,7 +170,4 @@ ClassOnClientInfected(client, bool:motherzombie = false)
     
     // Apply the new attributes.
     ClassApplyAttributes(client, motherzombie);
-    
-    // Forward event to sub-modules.
-    ClassOverlayOnClientInfected(client);
 }

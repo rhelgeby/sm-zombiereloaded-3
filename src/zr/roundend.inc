@@ -109,6 +109,9 @@ RoundEndOnClientInfected()
  */
 RoundEndOnRoundStart()
 {
+    // Stop all overlays.
+    RoundEndOverlayStop();
+    
     // If round end timer is running, then kill it.
     if (tRoundEnd != INVALID_HANDLE)
     {
@@ -160,7 +163,7 @@ RoundEndOnRoundEnd(reason)
     new RoundEndOutcome:outcome = RoundEndReasonToOutcome(reason);
     
     // Display the overlay to all clients.
-    RoundEndOverlayStart(ROUNDEND_DELAY, outcome);
+    RoundEndOverlayStart(outcome);
     
     // Balance teams.    
     RoundEndBalanceTeams();
@@ -355,7 +358,7 @@ RoundEndBalanceTeams()
  * @param time      Time to display overlays.
  * @param outcome   The outcome of the round.
  */
-RoundEndOverlayStart(Float:time, RoundEndOutcome:outcome)
+RoundEndOverlayStart(RoundEndOutcome:outcome)
 {
     // If round end overlays are disabled, then stop.
     new bool:overlay = GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_OVERLAY]);
@@ -403,8 +406,6 @@ RoundEndOverlayStart(Float:time, RoundEndOutcome:outcome)
         OverlaysClientSetChannelPath(x, OVERLAYS_CHANNEL_ROUNDEND, overlaypath);
         OverlaysClientSetChannelState(x, OVERLAYS_CHANNEL_ROUNDEND, true, false, true);
     }
-    
-    CreateTimer(time, RoundEndOverlayTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 RoundEndOverlayStop()
@@ -427,15 +428,4 @@ RoundEndOverlayStop()
         // Disable roundend overlay channel.
         OverlaysClientSetChannelState(x, OVERLAYS_CHANNEL_ROUNDEND, true, false, false, true);
     }
-}
-
-/**
- * Timer callback, stops overlays on all clients.
- * 
- * @param timer     The timer handle.
- */
-public Action:RoundEndOverlayTimer(Handle:timer)
-{
-    // Stop all overlays.
-    RoundEndOverlayStop();
 }
