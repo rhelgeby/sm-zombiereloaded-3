@@ -43,7 +43,7 @@
 #include "zr/cvars"
 #include "zr/log"
 #include "zr/config"
-#include "zr/serial"
+#include "zr/steamidcache"
 #include "zr/sayhooks"
 #include "zr/tools"
 #include "zr/cookies"
@@ -130,7 +130,6 @@ public OnPluginStart()
 public OnMapStart()
 {
     // Forward event to modules.
-    SerialOnMapStart();
     OverlaysOnMapStart();
     RoundEndOnMapStart();
     InfectOnMapStart();

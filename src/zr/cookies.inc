@@ -48,7 +48,7 @@ CookiesSetClientCookieBool(client, Handle:cookie, bool:cookievalue)
     ZRBoolToString(cookievalue, strCookievalue, sizeof(strCookievalue));
     
     // Set the converted string to the cookie.
-    SetClientCookie(client, cookie, cookievalue);
+    SetClientCookie(client, cookie, strCookievalue);
 }
 
 /**
