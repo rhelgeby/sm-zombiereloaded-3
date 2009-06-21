@@ -106,7 +106,6 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
 public Action:EventRoundStartPost(Handle:timer, any:index)
 {
     // Forward event to modules.
-    WeaponsOnRoundStartPost();
 }
 
 /**
@@ -139,7 +138,6 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     new reason = GetEventInt(event, "reason");
     
     // Forward event to modules.
-    WeaponsOnRoundEnd();
     RoundEndOnRoundEnd(reason);
     InfectOnRoundEnd();
     SEffectsOnRoundEnd();
@@ -224,6 +222,7 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:index)
     }
     
     // Forward event to modules.
+    WeaponsOnClientSpawnPost(index);
     SpawnProtectOnClientSpawnPost(index);
 }
 

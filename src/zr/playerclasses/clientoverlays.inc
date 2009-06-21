@@ -33,26 +33,16 @@
 /**
  * @endsection
  */
- 
-/**
- * Array to store default class overlay enable flag.
- */
-new bool:h_bClassOverlay[MAXPLAYERS + 1];
 
 /**
- * Client is joining the server.
- * 
- * @param client    The client index.  
+ * Name of the cookie for toggle state the class overlay.
  */
-ClassOverlayClientInit(client)
-{
-    // Get overlay toggle cvar values.
-    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
-    new bool:overlaydefault = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]);
-    
-    // Apply default value if toggle is enabled, default to true if toggle is disabled.
-    h_bClassOverlay[client] = overlaytoggle ? overlaydefault : true;
-}
+#define CLASSOVERLAY_COOKIE_ENABLED "zr_overlay"
+
+/**
+ * Cookie handle for the toggle state of an overlay.
+ */
+new Handle:g_hOverlayEnabledCookie = INVALID_HANDLE;
 
 /**
  * Hook commands related to overlay here.
@@ -75,6 +65,43 @@ ClassOverlayOnCommandsHook()
     {
         // Prepare intercept for this command.
         RegConsoleCmd(arrayCmds[x], ClassOverlayEnableCommand);
+    }
+}
+
+/**
+ * Create class overlay-related cookies here.
+ */
+ClassOverlayOnCookiesCreate()
+{
+    // If cookie doesn't already exist, then create it.
+    g_hOverlayEnabledCookie = FindClientCookie(CLASSOVERLAY_COOKIE_ENABLED);
+    if (g_hOverlayEnabledCookie == INVALID_HANDLE)
+    {
+        g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Public);
+    }
+}
+
+/**
+ * Client is joining the server.
+ * 
+ * @param client    The client index.  
+ */
+ClassOverlayClientInit(client)
+{
+    // Get overlay toggle cvar values.
+    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+    new bool:overlaydefault = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]);
+    
+    // Get ZHP enabled cookie value.
+    decl String:overlayenabled[8];
+    GetClientCookie(client, g_hOverlayEnabledCookie, overlayenabled, sizeof(overlayenabled));
+    
+    // If the cookie is empty, then set the default value.
+    if (!overlayenabled[0])
+    {
+        // Set cookie to default value from cvar.
+        new bool:overlayvalue = overlaytoggle ? overlaydefault : true;
+        CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayvalue);
     }
 }
 
@@ -152,7 +179,7 @@ ClassOverlayInitialize(client, const String:overlay[])
     
     // Display class overlays.
     OverlaysClientSetChannelPath(client, OVERLAYS_CHANNEL_CLASSES, overlay);
-    OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, h_bClassOverlay[client]);
+    OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie));
 }
 
 /**
@@ -171,6 +198,7 @@ public Action:ClassOverlayEnableCommand(client, argc)
         return;
     }
     
-    // Toggle current overlay channel, and retrieve new value.
-    h_bClassOverlay[client] = OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, true);
+    // Toggle current overlay channel, retrieve new value, and update cookie.
+    new bool:overlayenabled = OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, true);
+    CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayenabled);
 }

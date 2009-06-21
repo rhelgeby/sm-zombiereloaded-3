@@ -31,6 +31,8 @@
 CookiesInit()
 {
     // Forward event to modules.
+    ClassOnCookiesCreate();
+    WeaponsOnCookiesCreate();
     ZHPOnCookiesCreate();
 }
 

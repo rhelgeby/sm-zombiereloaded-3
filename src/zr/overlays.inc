@@ -236,8 +236,11 @@ OverlaysChannel:OverlaysClientFindChannel(client)
  * 
  * @param client    The client index.
  * @param channel   The channel to change state of.
- * @param toggle    Set to true to toggle state, false to use value param.
+ * @param update    (Optional) Update the overlay when this function is called. 
+ * @param toggle    (Optional) Set to true to toggle state, false to use value param.
  * @param value     (Optional) New value of the state, only used if toggle is false.
+ * @param reset     (Optional) Clears the overlay from client's screen.
+ * @return          The overlay's new state. 
  */
 bool:OverlaysClientSetChannelState(client, OverlaysChannel:channel, bool:update = false, bool:toggle = true, bool:value = false, bool:reset = false)
 {

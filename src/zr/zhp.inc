@@ -58,7 +58,7 @@ ZHPOnCookiesCreate()
     g_hZHPEnabledCookie = FindClientCookie(ZHP_COOKIE_ENABLED);
     if (g_hZHPEnabledCookie == INVALID_HANDLE)
     {
-        g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP", CookieAccess_Public);
+        g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Public);
     }
 }
 
@@ -191,12 +191,15 @@ bool:ZHPToggle(client)
     // Get the cookie value.
     new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
     
-    // If ZHP is enabled, then tell client it's being disabled.
+    // Toggle the value.
+    CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, !zhpstate);
+    
+    // If ZHP was enabled, then tell client it has been disabled.
     if (zhpstate)
     {
         TranslationPrintToChat(client, "ZHP disable");
     }
-    // If ZHP is disabled, then tell client it's being enabled.
+    // If ZHP was disabled, then tell client it has been enabled.
     else
     {
         TranslationPrintToChat(client, "ZHP enable");
@@ -204,9 +207,6 @@ bool:ZHPToggle(client)
         // Update HP display.
         ZHPUpdateHUD(client);
     }
-    
-    // Toggle the value.
-    CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, !zhpstate);
     
     return true;
 }

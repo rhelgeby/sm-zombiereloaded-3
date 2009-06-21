@@ -122,6 +122,15 @@ WeaponsOnCommandsCreate()
 }
 
 /**
+ * Create weapon-related cookies here.
+ */
+WeaponsOnCookiesCreate()
+{
+    // Forward event to sub-modules.
+    ZMarketOnCookiesCreate();
+}
+
+/**
  * Loads weapon data from file.
  */
 WeaponsLoad()
@@ -303,27 +312,67 @@ WeaponsOnClientSpawn(client)
 {
     // Forward event to sub-modules.
     RestrictOnClientSpawn(client);
-    ZMarketOnClientSpawn(client);
 }
 
 /**
- * The round is starting.
- */
-WeaponsOnRoundStartPost()
-{
-    // Forward event to sub-modules
-    WeaponAlphaOnRoundStartPost();
-}
-
-/**
- * The round is ending.
+ * Client is spawning into the game. *Post
  * 
- * @param reason    Reason the round has ended.
+ * @param client    The client index.
  */
-WeaponsOnRoundEnd()
+WeaponsOnClientSpawnPost(client)
 {
-    // Forward event to sub-modules
-    WeaponAlphaOnRoundEnd();
+    // Forward event to sub-modules.
+    ZMarketOnClientSpawnPost(client);
+}
+
+/**
+ * Called when a client picks up an item.
+ * 
+ * @param client    The client index.
+ * @param weapon    The weapon index.
+ */
+WeaponsOnItemPickup(client, weapon)
+{
+    // Forward event to sub-modules.
+    
+    // Fire post OnItemPickup event.
+    
+    // Fill datapack with event information.
+    new Handle:eventinfo = CreateDataPack();
+    WritePackCell(eventinfo, client);
+    WritePackCell(eventinfo, weapon);
+    
+    // Create post delay timer.
+    CreateTimer(0.0, WeaponsOnItemPickupPost, eventinfo);
+}
+
+/**
+ * Called when a client picks up an item. *Post
+ * 
+ * @param client    The client index.
+ * @param weapon    The weapon index.
+ */
+public Action:WeaponsOnItemPickupPost(Handle:timer, Handle:eventinfo)
+{
+    // Get event info.
+    ResetPack(eventinfo);
+    new client = ReadPackCell(eventinfo);
+    new weapon = ReadPackCell(eventinfo);
+    
+    // If client isn't in the game anymore, then stop.
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+    
+    // If the weapon entity isn't valid anymore, then stop.
+    if (!IsValidEdict(weapon))
+    {
+        return;
+    }
+    
+    // Forward event to sub-modules.
+    WeaponAlphaOnItemPickupPost(client, weapon);
 }
 
 /**
