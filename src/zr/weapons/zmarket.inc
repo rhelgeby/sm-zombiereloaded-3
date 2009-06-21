@@ -737,31 +737,38 @@ public ZMarketMenuTypeWeaponsHandle(Handle:menu_zmarket_typeweapons, MenuAction:
  */
 stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
 {
-    // If client is a zombie, then stop.
+    // Get weapon index.
+    new weaponindex = WeaponsNameToIndex(weapon);
+    
+    // Get slot index of the weapon being purchased.
+    new WeaponsSlot:slot = WeaponsGetSlot(weaponindex);
+    
+    // If weapon index is -1, then something went very wrong.
+    if (weaponindex == -1)
+    {
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "ZMarket Equip", "Invalid weapon (%s) selected from the ZMarket menu.", weapon);
+        return false;
+    }
+    
+    // If client is a zombie, then update weapon loadout and stop.
     if (InfectIsClientInfected(client))
     {
-        TranslationPrintToChat(client, "Must be human");
+        // Update cookie with new weapon.
+        ZMarketSetRebuyCookie(client, slot, weapon);
+        
+        TranslationPrintToChat(client, "Weapons zmarket updated loadout");
         return false;
     }
     
     new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]);
     if (!rebuy && zmarketbuyzone && !ZMarketIsClientInBuyZone(client))
     {
-        TranslationPrintToChat(client, "Weapons zmarket buyzone");
+        // Update cookie with new weapon.
+        ZMarketSetRebuyCookie(client, slot, weapon);
+        
+        TranslationPrintToChat(client, "Weapons zmarket updated loadout");
         return false;
     }
-    
-    // Get weapon index.
-    new weaponindex = WeaponsNameToIndex(weapon);
-    
-    // If weapon index is -1, then something went very wrong.
-    if (weaponindex == -1)
-    {
-        return false;
-    }
-    
-    // Get slot index of the weapon being purchased.
-    new WeaponsSlot:slot = WeaponsGetSlot(weaponindex);
     
     // Get the appropriate price of the item being purchased.
     new bool:hasweapon = WeaponsClientHasWeapon(client, weapon);
@@ -779,7 +786,10 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     // If client doesn't have enough money, tell them, resend menu, and then stop.
     if (cash < itemprice)
     {
-        TranslationPrintToChat(client, "Not enough money");
+        // Update cookie with new weapon.
+        ZMarketSetRebuyCookie(client, slot, weapon);
+        
+        TranslationPrintToChat(client, "Weapons zmarket updated loadout");
         return false;
     }
     

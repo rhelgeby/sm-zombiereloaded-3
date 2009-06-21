@@ -532,6 +532,11 @@
 		"en"		"Weapon @green{1} @defaulthas a purchase limit of @green{2}@default.  Wait until you respawn to try again."
 	}
 
+	"Weapons zmarket updated loadout"
+	{
+		"en"		"You are not able to purchase a weapon at this time, but your loadout has been updated with this weapon."
+	}
+
 	"Weapons zmarket get current loadout"
 	{
 		"en"		"Updated current loadout, use rebuy option to purchase these weapons again."
