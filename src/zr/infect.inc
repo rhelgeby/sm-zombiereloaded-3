@@ -726,6 +726,37 @@ InfectFireEffects(client)
     GetClientAbsOrigin(client, clientloc);
     clientloc[2] += 30;
     
+    new bool:explosion = GetConVarBool(g_hCvarsList[CVAR_INFECT_EXPLOSION]);
+    if (explosion)
+    {
+        // Initialize explosion flags variable.
+        new flags;
+        
+        // Set "nofireball" flag if fireball is disabled.
+        new bool:fireball = GetConVarBool(g_hCvarsList[CVAR_INFECT_FIREBALL]);
+        if (!fireball)
+        {
+            flags = flags | EXP_NOFIREBALL;
+        }
+        
+        // Set "nosmoke" flag if smoke is disabled.
+        new bool:smoke = GetConVarBool(g_hCvarsList[CVAR_INFECT_SMOKE]);
+        if (!smoke)
+        {
+            flags = flags | EXP_NOSMOKE;
+        }
+        
+        // Set "nosparks" flag if sparks are disabled.
+        new bool:sparks = GetConVarBool(g_hCvarsList[CVAR_INFECT_SPARKS]);
+        if (!sparks)
+        {
+            flags = flags | EXP_NOSPARKS;
+        }
+        
+        // Create explosion at client's origin.
+        VEffectsCreateExplosion(clientloc, flags);
+    }
+    
     // If cvar contains path, then continue.
     decl String:sound[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
@@ -742,33 +773,6 @@ InfectFireEffects(client)
         // Create energy splash effect.
         VEffectsCreateEnergySplash(clientloc, direction, true);
     }
-    
-    // Initialize explosion flags variable.
-    new flags;
-    
-    // Set "nofireball" flag if fireball is disabled.
-    new bool:fireball = GetConVarBool(g_hCvarsList[CVAR_INFECT_FIREBALL]);
-    if (!fireball)
-    {
-        flags = flags | EXP_NOFIREBALL;
-    }
-    
-    // Set "nosmoke" flag if smoke is disabled.
-    new bool:smoke = GetConVarBool(g_hCvarsList[CVAR_INFECT_SMOKE]);
-    if (!smoke)
-    {
-        flags = flags | EXP_NOSMOKE;
-    }
-    
-    // Set "nosparks" flag if sparks are disabled.
-    new bool:sparks = GetConVarBool(g_hCvarsList[CVAR_INFECT_SPARKS]);
-    if (!sparks)
-    {
-        flags = flags | EXP_NOSPARKS;
-    }
-    
-    // Create explosion at client's origin.
-    VEffectsCreateExplosion(clientloc, flags);
     
     // If shake effect is enabled, then continue.
     new bool:shake = GetConVarBool(g_hCvarsList[CVAR_INFECT_SHAKE]);
