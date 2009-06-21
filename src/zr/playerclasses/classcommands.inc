@@ -610,22 +610,22 @@ stock bool:ClassModifyBoolean(classindex, attributeflag, bool:value)
     
     switch (attributeflag)
     {
-        case ZR_CLASS_FLAG_ENABLED:
+        case ZR_CLASS_ENABLED:
         {
             ClassDataCache[classindex][class_enabled] = bool:value;
             return true;
         }
-        case ZR_CLASS_FLAG_NVGS:
+        case ZR_CLASS_NVGS:
         {
             ClassDataCache[classindex][class_nvgs] = bool:value;
             return true;
         }
-        case ZR_CLASS_FLAG_NO_FALL_DAMAGE:
+        case ZR_CLASS_NO_FALL_DAMAGE:
         {
             ClassDataCache[classindex][class_no_fall_damage] = bool:value;
             return true;
         }
-        case ZR_CLASS_FLAG_HAS_NAPALM:
+        case ZR_CLASS_HAS_NAPALM:
         {
             ClassDataCache[classindex][class_has_napalm] = bool:value;
             return true;
@@ -661,7 +661,12 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
     
     switch (attributeflag)
     {
-        case ZR_CLASS_FLAG_ALPHA_INITIAL:
+        case ZR_CLASS_FLAGS:
+        {
+            ClassDataCache[classindex][class_flags] = value;
+            return true;
+        }
+        case ZR_CLASS_ALPHA_INITIAL:
         {
             if (ismultiplier)
             {
@@ -670,7 +675,7 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
             ClassDataCache[classindex][class_alpha_initial] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_ALPHA_DAMAGED:
+        case ZR_CLASS_ALPHA_DAMAGED:
         {
             if (ismultiplier)
             {
@@ -679,7 +684,7 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
             ClassDataCache[classindex][class_alpha_damaged] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_ALPHA_DAMAGE:
+        case ZR_CLASS_ALPHA_DAMAGE:
         {
             if (ismultiplier)
             {
@@ -688,17 +693,17 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
             ClassDataCache[classindex][class_alpha_damage] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_FOV:
+        case ZR_CLASS_FOV:
         {
             ClassDataCache[classindex][class_fov] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_IMMUNITY_MODE:
+        case ZR_CLASS_IMMUNITY_MODE:
         {
             ClassDataCache[classindex][class_fov] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_HEALTH:
+        case ZR_CLASS_HEALTH:
         {
             if (ismultiplier)
             {
@@ -707,7 +712,7 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
             ClassDataCache[classindex][class_health] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT:
+        case ZR_CLASS_HEALTH_REGEN_AMOUNT:
         {
             if (ismultiplier)
             {
@@ -716,7 +721,7 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
             ClassDataCache[classindex][class_health_regen_amount] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_HEALTH_INFECT_GAIN:
+        case ZR_CLASS_HEALTH_INFECT_GAIN:
         {
             if (ismultiplier)
             {
@@ -725,7 +730,7 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
             ClassDataCache[classindex][class_health_infect_gain] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_KILL_BONUS:
+        case ZR_CLASS_KILL_BONUS:
         {
             if (ismultiplier)
             {
@@ -761,7 +766,7 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
     
     switch (attributeflag)
     {
-        case ZR_CLASS_FLAG_NAPALM_TIME:
+        case ZR_CLASS_NAPALM_TIME:
         {
             if (ismultiplier)
             {
@@ -770,7 +775,7 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
             ClassDataCache[classindex][class_napalm_time] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_IMMUNITY_AMOUNT:
+        case ZR_CLASS_IMMUNITY_AMOUNT:
         {
             if (ismultiplier)
             {
@@ -779,7 +784,7 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
             ClassDataCache[classindex][class_immunity_amount] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL:
+        case ZR_CLASS_HEALTH_REGEN_INTERVAL:
         {
             if (ismultiplier)
             {
@@ -788,7 +793,7 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
             ClassDataCache[classindex][class_health_regen_interval] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_SPEED:
+        case ZR_CLASS_SPEED:
         {
             if (ismultiplier)
             {
@@ -797,7 +802,7 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
             ClassDataCache[classindex][class_speed] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_KNOCKBACK:
+        case ZR_CLASS_KNOCKBACK:
         {
             if (ismultiplier)
             {
@@ -806,7 +811,7 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
             ClassDataCache[classindex][class_knockback] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_JUMP_HEIGHT:
+        case ZR_CLASS_JUMP_HEIGHT:
         {
             if (ismultiplier)
             {
@@ -815,7 +820,7 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
             ClassDataCache[classindex][class_jump_height] = value;
             return true;
         }
-        case ZR_CLASS_FLAG_JUMP_DISTANCE:
+        case ZR_CLASS_JUMP_DISTANCE:
         {
             if (ismultiplier)
             {
@@ -848,22 +853,22 @@ stock ClassModifyString(classindex, attributeflag, const String:value[])
     
     switch (attributeflag)
     {
-        case ZR_CLASS_FLAG_NAME:
+        case ZR_CLASS_NAME:
         {
             strcopy(ClassDataCache[classindex][class_name], 64, value);
             return true;
         }
-        case ZR_CLASS_FLAG_DESCRIPTION:
+        case ZR_CLASS_DESCRIPTION:
         {
             strcopy(ClassDataCache[classindex][class_description], 256, value);
             return true;
         }
-        case ZR_CLASS_FLAG_MODEL_PATH:
+        case ZR_CLASS_MODEL_PATH:
         {
             strcopy(ClassDataCache[classindex][class_model_path], PLATFORM_MAX_PATH, value);
             return true;
         }
-        case ZR_CLASS_FLAG_OVERLAY_PATH:
+        case ZR_CLASS_OVERLAY_PATH:
         {
             strcopy(ClassDataCache[classindex][class_overlay_path], PLATFORM_MAX_PATH, value);
             return true;

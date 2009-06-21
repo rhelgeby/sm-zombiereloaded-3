@@ -39,9 +39,16 @@ bool:ClassApplyAttributes(client, bool:improved = false)
 {
     new classindex = ClassGetActiveIndex(client);
     
-    if (classindex < 0)
+    // Validate class index.
+    if (!ClassValidateIndex(classindex))
     {
         return false;
+    }
+    
+    // Override improved settings if it's a mother zombie class.
+    if (ClassHasFlags(classindex, ZR_CLASS_FLAG_MOTHER_ZOMBIE))
+    {
+        improved = false;
     }
     
     ClassApplyModel(client, classindex);

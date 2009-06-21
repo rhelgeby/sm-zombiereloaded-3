@@ -47,8 +47,8 @@ stock bool:ClassValidateTeamRequirements(cachetype = ZR_CLASS_CACHE_ORIGINAL)
     }
     
     // Test if a zombie and human class was found.
-    zombieindex = ClassGetFirstClass(ZR_CLASS_TEAM_ZOMBIES, _, _, cachetype);
-    humanindex = ClassGetFirstClass(ZR_CLASS_TEAM_HUMANS, _, _, cachetype);
+    zombieindex = ClassGetFirstClass(ZR_CLASS_TEAM_ZOMBIES, _, _, ZR_CLASS_SPECIALFLAGS, cachetype);
+    humanindex = ClassGetFirstClass(ZR_CLASS_TEAM_HUMANS, _, _, ZR_CLASS_SPECIALFLAGS, cachetype);
     
     // Validate indexes.
     if (ClassValidateIndex(zombieindex) && ClassValidateIndex(humanindex))
@@ -79,8 +79,8 @@ stock bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
     }
     
     // Test if a default zombie and human class was found.
-    zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, _, _, cachetype);
-    humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, _, _, cachetype);
+    zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, _, _, _, cachetype);
+    humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, _, _, _, cachetype);
     
     // Validate indexes.
     if (ClassValidateIndex(zombieindex) && ClassValidateIndex(humanindex))
@@ -109,13 +109,19 @@ stock ClassValidateAttributes(classindex)
     // Team.
     if (ClassData[classindex][class_team] < ZR_CLASS_TEAM_MIN || ClassData[classindex][class_team] > ZR_CLASS_TEAM_MAX)
     {
-        flags += ZR_CLASS_FLAG_TEAM;
+        flags += ZR_CLASS_TEAM;
+    }
+    
+    // Class flags.
+    if (ClassData[classindex][class_flags] < ZR_CLASS_FLAGS_MIN || ClassData[classindex][class_flags] > ZR_CLASS_FLAGS_MAX)
+    {
+        flags += ZR_CLASS_FLAGS;
     }
     
     // Name.
     if (strlen(ClassData[classindex][class_name]) < ZR_CLASS_NAME_MIN)
     {
-        flags += ZR_CLASS_FLAG_NAME;
+        flags += ZR_CLASS_NAME;
     }
     else
     {
@@ -128,21 +134,21 @@ stock ClassValidateAttributes(classindex)
             StrEqual(name, "zombies", false) ||
             StrEqual(name, "admins", false))
         {
-            flags += ZR_CLASS_FLAG_NAME;
+            flags += ZR_CLASS_NAME;
         }
     }
     
     // Description.
     if (strlen(ClassData[classindex][class_description]) < ZR_CLASS_DESCRIPTION_MIN)
     {
-        flags += ZR_CLASS_FLAG_DESCRIPTION;
+        flags += ZR_CLASS_DESCRIPTION;
     }
     
     // Model path.
     decl String:model_path[PLATFORM_MAX_PATH];
     if (strcopy(model_path, sizeof(model_path), ClassData[classindex][class_model_path]) == 0)
     {
-        flags += ZR_CLASS_FLAG_MODEL_PATH;
+        flags += ZR_CLASS_MODEL_PATH;
     }
     else
     {
@@ -152,7 +158,7 @@ stock ClassValidateAttributes(classindex)
             // Check if the file exists.
             if (!FileExists(model_path))
             {
-                flags += ZR_CLASS_FLAG_MODEL_PATH;
+                flags += ZR_CLASS_MODEL_PATH;
             }
         }        
     }
@@ -161,21 +167,21 @@ stock ClassValidateAttributes(classindex)
     new alpha_initial = ClassData[classindex][class_alpha_initial];
     if (!(alpha_initial >= ZR_CLASS_ALPHA_INITIAL_MIN && alpha_initial <= ZR_CLASS_ALPHA_INITIAL_MAX))
     {
-        flags += ZR_CLASS_FLAG_ALPHA_INITIAL;
+        flags += ZR_CLASS_ALPHA_INITIAL;
     }
     
     // Alpha, damaged.
     new alpha_damaged = ClassData[classindex][class_alpha_damaged];
     if (!(alpha_damaged >= ZR_CLASS_ALPHA_DAMAGED_MIN && alpha_damaged <= ZR_CLASS_ALPHA_DAMAGED_MAX))
     {
-        flags += ZR_CLASS_FLAG_ALPHA_DAMAGED;
+        flags += ZR_CLASS_ALPHA_DAMAGED;
     }
     
     // Alpha, damage.
     new alpha_damage = ClassData[classindex][class_alpha_damage];
     if (!(alpha_damage >= ZR_CLASS_ALPHA_DAMAGE_MIN && alpha_damage <= ZR_CLASS_ALPHA_DAMAGE_MAX))
     {
-        flags += ZR_CLASS_FLAG_ALPHA_DAMAGE;
+        flags += ZR_CLASS_ALPHA_DAMAGE;
     }
     
     // Overlay path.
@@ -187,7 +193,7 @@ stock ClassValidateAttributes(classindex)
         Format(overlay, sizeof(overlay), "materials/%s.vmt", overlay_path);
         if (!FileExists(overlay))
         {
-            flags += ZR_CLASS_FLAG_OVERLAY_PATH;
+            flags += ZR_CLASS_OVERLAY_PATH;
         }
     }
     
@@ -195,85 +201,84 @@ stock ClassValidateAttributes(classindex)
     new fov = ClassData[classindex][class_fov];
     if (!(fov >= ZR_CLASS_FOV_MIN && fov <= ZR_CLASS_FOV_MAX))
     {
-        flags += ZR_CLASS_FLAG_FOV;
+        flags += ZR_CLASS_FOV;
     }
     
     // Napalm time.
     new Float:napalm_time = ClassData[classindex][class_napalm_time];
     if (!(napalm_time >= ZR_CLASS_NAPALM_TIME_MIN && napalm_time <= ZR_CLASS_NAPALM_TIME_MAX))
     {
-        flags += ZR_CLASS_FLAG_NAPALM_TIME;
+        flags += ZR_CLASS_NAPALM_TIME;
     }
     
     // Health.
     new health = ClassData[classindex][class_health];
     if (!(health >= ZR_CLASS_HEALTH_MIN && health <= ZR_CLASS_HEALTH_MAX))
     {
-        flags += ZR_CLASS_FLAG_HEALTH;
+        flags += ZR_CLASS_HEALTH;
     }
     
     // Health regen interval.
     new Float:regen_interval = ClassData[classindex][class_health_regen_interval];
-    if (!(regen_interval >= ZR_CLASS_HEALTH_REGEN_INTERVAL_MIN && regen_interval <= ZR_CLASS_HEALTH_REGEN_INTERVAL_MAX))
+    if (!(regen_interval >= ZR_CLASS_REGEN_INTERVAL_MIN && regen_interval <= ZR_CLASS_REGEN_INTERVAL_MAX))
     {
-        flags += ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL;
+        flags += ZR_CLASS_HEALTH_REGEN_INTERVAL;
     }
     
     // Health regen amount.
     new regen_amount = ClassData[classindex][class_health_regen_amount];
-    if (!(regen_amount >= ZR_CLASS_HEALTH_REGEN_AMOUNT_MIN && regen_amount <= ZR_CLASS_HEALTH_REGEN_AMOUNT_MAX))
+    if (!(regen_amount >= ZR_CLASS_REGEN_AMOUNT_MIN && regen_amount <= ZR_CLASS_REGEN_AMOUNT_MAX))
     {
-        flags += ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT;
+        flags += ZR_CLASS_HEALTH_REGEN_AMOUNT;
     }
     
     // Health infect gain.
     new infect_gain = ClassData[classindex][class_health_infect_gain];
     if (!(infect_gain >= ZR_CLASS_HEALTH_INFECT_GAIN_MIN && infect_gain <= ZR_CLASS_HEALTH_INFECT_GAIN_MAX))
     {
-        flags += ZR_CLASS_FLAG_HEALTH_INFECT_GAIN;
+        flags += ZR_CLASS_HEALTH_INFECT_GAIN;
     }
     
     // Kill bonus.
     new kill_bonus = ClassData[classindex][class_kill_bonus];
     if (!(kill_bonus >= ZR_CLASS_KILL_BONUS_MIN && kill_bonus <= ZR_CLASS_KILL_BONUS_MAX))
     {
-        flags += ZR_CLASS_FLAG_KILL_BONUS;
+        flags += ZR_CLASS_KILL_BONUS;
     }
     
     // Speed.
     new Float:speed = ClassData[classindex][class_speed];
     if (!(speed >= ZR_CLASS_SPEED_MIN && speed <= ZR_CLASS_SPEED_MAX))
     {
-        flags += ZR_CLASS_FLAG_SPEED;
+        flags += ZR_CLASS_SPEED;
     }
     
     // Knockback.
     new Float:knockback = ClassData[classindex][class_knockback];
     if (!(knockback >= ZR_CLASS_KNOCKBACK_MIN && knockback <= ZR_CLASS_KNOCKBACK_MAX))
     {
-        flags += ZR_CLASS_FLAG_KNOCKBACK;
+        flags += ZR_CLASS_KNOCKBACK;
     }
     
     // Jump height.
     new Float:jump_height = ClassData[classindex][class_jump_height];
     if (!(jump_height >= ZR_CLASS_JUMP_HEIGHT_MIN && jump_height <= ZR_CLASS_JUMP_HEIGHT_MAX))
     {
-        flags += ZR_CLASS_FLAG_JUMP_HEIGHT;
+        flags += ZR_CLASS_JUMP_HEIGHT;
     }
     
     // Jump distance.
     new Float:jump_distance = ClassData[classindex][class_jump_distance];
     if (!(jump_distance >= ZR_CLASS_JUMP_DISTANCE_MIN && jump_distance <= ZR_CLASS_JUMP_DISTANCE_MAX))
     {
-        flags += ZR_CLASS_FLAG_JUMP_DISTANCE;
+        flags += ZR_CLASS_JUMP_DISTANCE;
     }
     
     return flags;
 }
 
 /**
- * Checks if the specified class index points to a existing class in the
- * ClassData array.
+ * Checks if the specified class index is a valid index.
  *
  * @param classindex    The class index to validate.
  * @return              True if the class exist, false otherwise.
@@ -445,6 +450,73 @@ stock Float:ClassGetAttributeMultiplier(client, ClassMultipliers:attribute)
 }
 
 /**
+ * Check if a class pass the specified flag filters.
+ * 
+ * @param index         Index of the class in a class cache or a client index,
+ *                      depending on the cache type specified.
+ * @param require       Class flags to require. 0 for no filter.
+ * @param deny          Class flags to exclude. 0 for no filter.
+ * @param cachetype     Specifies what class cache to read from. Options:
+ *                      ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                      ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest
+ *                      class data.
+ *                      ZR_CLASS_CACHE_PLAYER - Player cache. If this one is
+ *                      used index will be used as a client index.
+ * @return              True if passed, false otherwise.
+ */
+stock bool:ClassFlagFilterMatch(index, require, deny, cachetype)
+{
+    new flags;
+    new bool:requirepassed;
+    new bool:denypassed;
+    
+    // Do quick check for optimization reasons: Check if no flags are specified.
+    if (require == 0 && deny == 0)
+    {
+        return true;
+    }
+    
+    // Cache flags.
+    flags = ClassGetFlags(index, cachetype);
+    
+    // Match require filter.
+    if (require == 0 || flags & require)
+    {
+        // All required flags are set.
+        requirepassed = true;
+    }
+    else
+    {
+        // Not all required flags are set.
+        requirepassed = false;
+    }
+    
+    // Match deny filter.
+    if (deny == 0 || ~flags & deny)
+    {
+        // No denied flags are set.
+        denypassed = true;
+    }
+    else
+    {
+        // It has denied flags set.
+        denypassed = false;
+    }
+    
+    // Check if required and denied flags passed the filter.
+    if (requirepassed && denypassed)
+    {
+        // The class pass the filter.
+        return true;
+    }
+    else
+    {
+        // The class didn't pass the filter.
+        return false;
+    }
+}
+
+/**
  * Gets all class indexes or from a specified team, and adds them to the
  * specified array.
  * 
@@ -453,8 +525,10 @@ stock Float:ClassGetAttributeMultiplier(client, ClassMultipliers:attribute)
  *                          for no filter (default).
  * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
  *                          not. Default is false.
- * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
- *                          only or not. Default is false.
+ * @param requireflags      Optional. Require certain class flags to be set.
+ *                          Default is no filtering.
+ * @param denyflags         Optional. Require certain class flags to be off.
+ *                          Default is no filtering.
  * @param cachetype         Optional. Specifies what class cache to read from.
  *                          Options:
  *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
@@ -463,7 +537,7 @@ stock Float:ClassGetAttributeMultiplier(client, ClassMultipliers:attribute)
  * @return  True on success. False on error or if no classes were added or
  *          found.
  */
-stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = false, requireflags = 0, denyflags = 0, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Validate the array.
     if (array == INVALID_HANDLE)
@@ -491,10 +565,10 @@ stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = f
             continue;
         }
         
-        if (!ignoreAdminOnly && ClassGetAdminOnly(classindex, cachetype))
+        // Check flag filter match.
+        if (!ClassFlagFilterMatch(classindex, requireflags, denyflags, cachetype))
         {
-            // The class is for admins only. This attribute isn't ignored so
-            // skip to the next class.
+            // The class didn't pass filter.
             continue;
         }
         
@@ -535,8 +609,10 @@ stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = f
  *                          no filter (default).
  * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
  *                          not. Default is false.
- * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
- *                          only or not. Default is false.
+ * @param requireflags      Optional. Require certain class flags to be set.
+ *                          Default is no filtering.
+ * @param denyflags         Optional. Require certain class flags to be off.
+ *                          Default is no filtering.
  * @param cachetype         Optional. Specifies what class cache to read from.
  *                          Options:
  *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
@@ -544,7 +620,7 @@ stock bool:ClassAddToArray(Handle:array, teamfilter = -1, bool:ignoreEnabled = f
  *                          class data.
  * @return  Number of total classes or classes in the specified team.
  */
-stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, requireflags = 0, denyflags = 0, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Check if there are no classes.
     if (ClassCount == 0)
@@ -566,10 +642,10 @@ stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdm
             continue;
         }
         
-        if (!ignoreAdminOnly && ClassGetAdminOnly(classindex, cachetype))
+        // Check flag filter match.
+        if (!ClassFlagFilterMatch(classindex, requireflags, denyflags, cachetype))
         {
-            // The class is for admins only. This attribute isn't ignored so
-            // skip to the next class.
+            // The class didn't pass filter.
             continue;
         }
         
@@ -601,8 +677,10 @@ stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdm
  *                          for no filter (default).
  * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
  *                          not. Default is false.
- * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
- *                          only or not. Default is false.
+ * @param requireflags      Optional. Require certain class flags to be set.
+ *                          Default is no filtering.
+ * @param denyflags         Optional. Require certain class flags to be off.
+ *                          Default is no filtering.
  * @param cachetype         Optional. Specifies what class cache to read from.
  *                          Options:
  *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
@@ -610,7 +688,7 @@ stock ClassCountTeam(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdm
  *                          class data.
  * @return  The class index if successful, or -1 on error.
  */
-stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, requireflags = 0, denyflags = 0, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     new Handle:classarray;
     new arraycount;
@@ -619,7 +697,7 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, bool:igno
     classarray = CreateArray();
     
     // Try to get a class list.
-    if (ClassAddToArray(classarray, teamfilter, ignoreEnabled, ignoreAdminOnly, cachetype))
+    if (ClassAddToArray(classarray, teamfilter, ignoreEnabled, requireflags, denyflags, cachetype))
     {
         // Get a random index from the new class array.
         arraycount = GetArraySize(classarray);
@@ -643,8 +721,10 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, bool:igno
  *                          for no filter (default).
  * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
  *                          not. Default is false.
- * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
- *                          only or not. Default is false.
+ * @param requireflags      Optional. Require certain class flags to be set.
+ *                          Default is no filtering.
+ * @param denyflags         Optional. Require certain class flags to be off.
+ *                          Default is no filtering.
  * @param cachetype         Optional. Specifies what class cache to read from.
  *                          Options:
  *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
@@ -653,7 +733,7 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, bool:igno
  * @return  The first class index, or the first class index with the specified
  *          team ID. -1 on error.
  */
-stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, requireflags = 0, denyflags = 0, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     // Check if there are no classes.
     if (ClassCount == 0)
@@ -673,10 +753,10 @@ stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, bool:ignor
             continue;
         }
         
-        if (!ignoreAdminOnly && ClassGetAdminOnly(classindex, cachetype))
+        // Check flag filter match.
+        if (!ClassFlagFilterMatch(classindex, requireflags, denyflags, cachetype))
         {
-            // The class is for admins only. This attribute isn't ignored so
-            // skip to the next class.
+            // The class didn't pass filter.
             continue;
         }
         
@@ -704,8 +784,11 @@ stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, bool:ignor
  * @param teamid            The team ID.
  * @param ignoreEnabled     Optional. Ignore whether the class is enabled or
  *                          not. Default is false.
- * @param ignoreAdminOnly   Optional. Ignore whether the class is for admins
- *                          only or not. Default is false.
+ * @param requireflags      Optional. Require certain class flags to be set.
+ *                          Default is no filtering.
+ * @param denyflags         Optional. Require certain class flags to be off.
+ *                          Default is to deny classes with special flags
+ *                          (ZR_CLASS_SPECIALFLAGS).
  * @param cachetype         Optional. Specifies what class cache to read from.
  *                          Options:
  *                          ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
@@ -713,7 +796,7 @@ stock ClassGetFirstClass(teamfilter = -1, bool:ignoreEnabled = false, bool:ignor
  *                          class data.
  * @return  The first default class index. -1 on error.
  */
-stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, bool:ignoreAdminOnly = false, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, requireflags = 0, denyflags = ZR_CLASS_SPECIALFLAGS, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     new Handle:classarray;
     new arraycount;
@@ -722,7 +805,7 @@ stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, bool:ignoreAdminO
     classarray = CreateArray();
     
     // Get all classes from the specified team.
-    if (!ClassAddToArray(classarray, teamid, ignoreEnabled, ignoreAdminOnly, cachetype))
+    if (!ClassAddToArray(classarray, teamid, ignoreEnabled, requireflags, denyflags, cachetype))
     {
         // Failed to get classes.
         return -1;
@@ -792,8 +875,9 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
         // Check if the user set "random" as default class.
         if (strcmp(classname, "random", false) == 0)
         {
-            // Get a list of all classes with the specified team ID.
-            classindex = ClassGetRandomClass(teamid, _, _, cachetype);
+            // Get a list of all classes with the specified team ID. Deny
+            // classes with special flags.
+            classindex = ClassGetRandomClass(teamid, _, _, ZR_CLASS_SPECIALFLAGS, cachetype);
             
             // Validate the result, in case there were errors.
             if (ClassValidateIndex(classindex))
@@ -847,6 +931,6 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
     else
     {
         // Blank class name, get the default class and return the index.
-        return ClassGetDefaultClass(teamid, _, _, cachetype);
+        return ClassGetDefaultClass(teamid, _, _, ZR_CLASS_SPECIALFLAGS, cachetype);
     }
 }

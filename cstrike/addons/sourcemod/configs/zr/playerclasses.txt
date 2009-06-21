@@ -12,11 +12,15 @@
 // Attribute:               Values:     Description:
 // ----------------------------------------------------------------------------
 // enabled                  0/1         Enables or disables a class.
-// team                     number      Specifies what type of class it is:
+// team                     number      Specifies what team the class belongs to:
 //                                      0 - Zombies
 //                                      1 - Humans
-//                                      2 - Admins only (incomplete feature!)
+//                                      2 - Admin mode classes (incomplete feautre!)
 // team_default             0/1         Marks the class as the default class in the team.
+// flags                    number      Special class flags (bit field). To combine multiple flags
+//                                      use a sum of the flag values. Available flags:
+//                                      1 - Admins only
+//                                      2 - Mother zombies only
 // name                     text        The class name used in class menu.
 // description              text        The class description used in class menu.
 // model_path               text        Path to model to use. Relative to cstrike folder.
@@ -26,7 +30,7 @@
 // overlay_path             text        Overlay displayed at the player.
 // nvgs                     0/1         Give night vision.
 // fov                      number      Field of view value. 90 is default.
-// has_napalm               0/1         Allows player to throw napalm grenades.  Humans only.
+// has_napalm               0/1         Allows player to throw napalm grenades. Humans only.
 // napalm_time              decimal     Napalm burn duration. Zombies only.
 // immunity_mode            number      Sets the immunity mode.
 // immunity_amount          decimal     Sets the immunity value.
@@ -54,7 +58,7 @@
         "enabled"               "1"
         "team"                  "0"
         "team_default"          "1"
-        "admin_only"            "0"
+        "flags"                 "0"
         
         "name"                  "Classic"
         "description"           "Need brains!!! Arrrrggghh!"
@@ -97,7 +101,7 @@
         "enabled"               "1"
         "team"                  "0"
         "team_default"          "0"
-        "admin_only"            "0"
+        "flags"                 "0"
         
         "name"                  "Fast"
         "description"           "-HP | +Speed | +Jump | +Knockback"
@@ -140,7 +144,7 @@
         "enabled"               "1"
         "team"                  "0"
         "team_default"          "0"
-        "admin_only"            "0"
+        "flags"                 "0"
         
         "name"                  "Mutated"
         "description"           "+HP | -Speed | +Jump | +Knockback"
@@ -183,7 +187,7 @@
         "enabled"               "1"
         "team"                  "0"
         "team_default"          "0"
-        "admin_only"            "0"
+        "flags"                 "0"
         
         "name"                  "Heavy"
         "description"           "+HP | -Speed | -Jump | -Knockback"
@@ -232,7 +236,7 @@
         "enabled"               "1"
         "team"                  "1"
         "team_default"          "1"
-        "admin_only"            "0"
+        "flags"                 "0"
         
         "name"                  "Normal Human"
         "description"           "Default Counter-Strike settings"
@@ -275,7 +279,7 @@
         "enabled"               "1"
         "team"                  "1"
         "team_default"          "0"
-        "admin_only"            "0"
+        "flags"                 "0"
         
         "name"                  "Speedy"
         "description"           "Fast human"
@@ -318,7 +322,7 @@
         "enabled"               "1"
         "team"                  "1"
         "team_default"          "0"
-        "admin_only"            "0"
+        "flags"                 "0"
         
         "name"                  "Light"
         "description"           "Regular human with improved jump skills"
