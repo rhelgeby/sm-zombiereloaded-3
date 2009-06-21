@@ -532,6 +532,16 @@
 		"en"		"Weapon @green{1} @defaulthas a purchase limit of @green{2}@default.  Wait until you respawn to try again."
 	}
 
+	"Weapons zmarket updated loadout"
+	{
+		"en"		"You are not able to purchase a weapon at this time, but your loadout has been updated with this weapon."
+	}
+
+	"Weapons zmarket get current loadout"
+	{
+		"en"		"Updated current loadout, use rebuy option to purchase these weapons again."
+	}
+
 	// Commands
 
 	"Weapons command restrict syntax"
@@ -597,20 +607,80 @@
 
 	// Menu (ZMarket)
 
+	"Weapons menu zmarket main title"
+	{
+		"en"		"ZMarket\nSelect an Option:"
+	}
+
+	"Weapons menu zmarket main get loadout"
+	{
+		"en"		"Get Current Loadout"
+	}
+
+	"Weapons menu zmarket main view loadout"
+	{
+		"en"		"View My Loadout"
+	}
+
+	"Weapons menu zmarket main rebuy"
+	{
+		"en"		"Rebuy My Loadout"
+	}
+
+	"Weapons menu zmarket main auto-rebuy"
+	{
+		"#format"	"{1:s}"
+		"en"		"Auto-Rebuy: {1}"
+	}
+
+	"Weapons menu zmarket main weapons list"
+	{
+		"en"		"View Weapons List"
+	}
+
+	"Weapons menu zmarket loadout title"
+	{
+		"en"		"ZMarket\nMy Current Loadout:\nRebuy refers to these weapons"
+	}
+
+	"Weapons menu zmarket loadout primary"
+	{
+		"#format"	"{1:s}"
+		"en"		"Primary: {1}"
+	}
+
+	"Weapons menu zmarket loadout secondary"
+	{
+		"#format"	"{1:s}"
+		"en"		"Secondary: {1}"
+	}
+
+	"Weapons menu zmarket loadout melee"
+	{
+		"#format"	"{1:s}"
+		"en"		"Melee: {1}"
+	}
+
+	"Weapons menu zmarket loadout projectile"
+	{
+		"#format"	"{1:s}"
+		"en"		"Projectile: {1}"
+	}
+
+	"Weapons menu zmarket loadout explosive"
+	{
+		"#format"	"{1:s}"
+		"en"		"Explosive: {1}"
+	}
+
+	"Weapons menu zmarket loadout empty"
+	{
+		"en"		"(None)"
+	}
+
 	"Weapons menu zmarket types title"
 	{
 		"en"		"ZMarket\nSelect Weapon Type:"
-	}
-
-	"Weapons menu zmarket types rebuy"
-	{
-		"en"		"Rebuy (1 weapon per slot)"
-	}
-
-        "Weapons menu zmarket types auto-rebuy"
-	{
-		"#format"	"{1:s}"
-		"en"		"Auto-Rebuy: {1}\n "
 	}
 
 	"Weapons menu zmarket types weapon type title"

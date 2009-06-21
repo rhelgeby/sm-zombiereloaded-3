@@ -581,8 +581,8 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
         return ZRTools_Handled;
     }
     
-    // Forward event to modules. (item pickup)
-    WeaponAlphaOnItemPickup(client, weapon);
+    // Forward event to weapons module.
+    WeaponsOnItemPickup(client, weapon);
     
     // Allow pickup.
     return ZRTools_Continue;

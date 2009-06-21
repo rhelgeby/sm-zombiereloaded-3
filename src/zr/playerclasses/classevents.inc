@@ -18,6 +18,24 @@
  */
 
 /**
+ * Create class-related cookies here.
+ */
+ClassOnCookiesCreate()
+{
+    // Forward event to sub-modules.
+    ClassOverlayOnCookiesCreate();
+}
+
+/**
+ * Called when all modules are done loading.
+ */
+ClassOnModulesLoaded()
+{
+    // Set default classes on all player slots.
+    ClassClientSetDefaultIndexes();
+}
+
+/**
  * Called when a client connects to the server (OnClientPutInServer).
  */
 ClassClientInit(client)
@@ -33,15 +51,6 @@ ClassClientInit(client)
     
     // Forward event to sub-modules
     ClassOverlayClientInit(client);
-}
-
-/**
- * Called when all modules are done loading.
- */
-ClassOnModulesLoaded()
-{
-    // Set default classes on all player slots.
-    ClassClientSetDefaultIndexes();
 }
 
 /**
@@ -124,9 +133,6 @@ ClassOnClientSpawn(client)
         ClassReloadPlayerCache(client, ClassGetActiveIndex(client));
         ClassApplyAttributes(client);
     }
-    
-    // Forward event to sub-modules.
-    ClassOverlayOnClientSpawn(client);
 }
 
 /**
@@ -206,7 +212,4 @@ ClassOnClientInfected(client, bool:motherzombie = false)
     
     // Apply the new attributes.
     ClassApplyAttributes(client, motherzombie);
-    
-    // Forward event to sub-modules.
-    ClassOverlayOnClientInfected(client);
 }

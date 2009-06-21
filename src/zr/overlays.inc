@@ -210,7 +210,7 @@ OverlaysClientUpdateOverlay(client, OverlaysChannel:channel = OVERLAYS_CHANNEL_N
     }
     
     // Display overlay to client.
-    ClientCommand(client, "r_screenoverlay %s", g_strOverlayPath[client][channel]);
+    ClientCommand(client, "r_screenoverlay \"%s\"", g_strOverlayPath[client][channel]);
 }
 
 OverlaysChannel:OverlaysClientFindChannel(client)
@@ -236,8 +236,11 @@ OverlaysChannel:OverlaysClientFindChannel(client)
  * 
  * @param client    The client index.
  * @param channel   The channel to change state of.
- * @param toggle    Set to true to toggle state, false to use value param.
+ * @param update    (Optional) Update the overlay when this function is called. 
+ * @param toggle    (Optional) Set to true to toggle state, false to use value param.
  * @param value     (Optional) New value of the state, only used if toggle is false.
+ * @param reset     (Optional) Resets the channel path.
+ * @return          The overlay's new state. 
  */
 bool:OverlaysClientSetChannelState(client, OverlaysChannel:channel, bool:update = false, bool:toggle = true, bool:value = false, bool:reset = false)
 {
@@ -296,6 +299,12 @@ public Action:OverlaysTimer(Handle:timer)
     {
         // If client isn't in game, then stop.
         if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If no overlay is on the client's screen, then stop.
+        if (OverlaysClientFindChannel(x) == OVERLAYS_CHANNEL_NONE)
         {
             continue;
         }

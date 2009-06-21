@@ -88,11 +88,12 @@ enum CvarsList
     Handle:CVAR_INFECT_WEAPONS_DROP,
     Handle:CVAR_INFECT_MZOMBIE_RATIO,
     Handle:CVAR_INFECT_MZOMBIE_RESPAWN,
-    Handle:CVAR_INFECT_SOUND,
-    Handle:CVAR_INFECT_ESPLASH,
+    Handle:CVAR_INFECT_EXPLOSION,
     Handle:CVAR_INFECT_FIREBALL,
     Handle:CVAR_INFECT_SMOKE,
     Handle:CVAR_INFECT_SPARKS,
+    Handle:CVAR_INFECT_SOUND,
+    Handle:CVAR_INFECT_ESPLASH,
     Handle:CVAR_INFECT_SHAKE,
     Handle:CVAR_INFECT_SHAKE_AMP,
     Handle:CVAR_INFECT_SHAKE_FREQUENCY,
@@ -280,9 +281,10 @@ CvarsCreate()
     g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]              =    CreateConVar("zr_infect_weapons_drop",         "1",                                "Force player to drop all weapons on infect, disabling this will strip weapons instead.");
     
     // Effects
-    g_hCvarsList[CVAR_INFECT_FIREBALL]                  =    CreateConVar("zr_infect_fireball",             "1",                                "Spawn a fireball effect around player on infection.");
-    g_hCvarsList[CVAR_INFECT_SMOKE]                     =    CreateConVar("zr_infect_smoke",                "1",                                "Spawn a smoke cloud effect around player on infection.");
-    g_hCvarsList[CVAR_INFECT_SPARKS]                    =    CreateConVar("zr_infect_sparks",               "1",                                "Emit sparks from player on infection.");
+    g_hCvarsList[CVAR_INFECT_EXPLOSION]                 =    CreateConVar("zr_infect_explosion",            "1",                                "Disabling this will disable the fireball, smoke cloud, and sparks in a more efficient way.");
+    g_hCvarsList[CVAR_INFECT_FIREBALL]                  =    CreateConVar("zr_infect_fireball",             "1",                                "Spawn a fireball effect around player on infection. [Dependency: zr_infect_explosion]");
+    g_hCvarsList[CVAR_INFECT_SMOKE]                     =    CreateConVar("zr_infect_smoke",                "1",                                "Spawn a smoke cloud effect around player on infection. [Dependency: zr_infect_explosion]");
+    g_hCvarsList[CVAR_INFECT_SPARKS]                    =    CreateConVar("zr_infect_sparks",               "1",                                "Emit sparks from player on infection. [Dependency: zr_infect_explosion]");
     g_hCvarsList[CVAR_INFECT_SOUND]                     =    CreateConVar("zr_infect_sound",                "npc/fast_zombie/fz_scream1.wav",   "Sound, relative to \"sounds\" folder, to play from player on infection. ['\"\"' = No sound]");
     g_hCvarsList[CVAR_INFECT_ESPLASH]                   =    CreateConVar("zr_infect_esplash",              "1",                                "Emit an energy splash from player on infection.");
     g_hCvarsList[CVAR_INFECT_SHAKE]                     =    CreateConVar("zr_infect_shake",                "1",                                "Shake player's view on infect.");
@@ -432,7 +434,7 @@ CvarsCreate()
     
     g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit",            "1",        "Put a time limit on the use of ZSpawn.");
     g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]            =    CreateConVar("zr_zspawn_timelimit_time",       "120.0",    "Time from the start of the round to allow ZSpawn. [Dependency: zr_zspawn_timelimit]");
-    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]          =    CreateConVar("zr_zspawn_timelimit_zombie",      "1",        "Spawn player on the zombie team AFTER the timelimit is up. ['-1' = Block ZSpawn | '0' = Spawn as human | '1' = Spawn as zombie | Dependency: zr_zspawn_timelimit]");
+    g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]          =    CreateConVar("zr_zspawn_timelimit_zombie",      "1",       "Spawn player on the zombie team AFTER the timelimit is up. ['-1' = Block ZSpawn | '0' = Spawn as human | '1' = Spawn as zombie | Dependency: zr_zspawn_timelimit]");
     
     
     // ===========================

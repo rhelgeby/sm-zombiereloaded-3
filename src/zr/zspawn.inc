@@ -31,6 +31,11 @@
 new Handle:tZSpawn = INVALID_HANDLE;
 
 /**
+ * Global variable to store SteamID cache handle.
+ */
+new Handle:g_hZSpawnSteamIDCache = INVALID_HANDLE;
+
+/**
  * Create commands specific to ZSpawn.
  */
 ZSpawnOnCommandsCreate()
@@ -46,6 +51,15 @@ ZSpawnOnMapStart()
 {
     // Reset timer handle.
     tZSpawn = INVALID_HANDLE;
+    
+    // If SteamID cache hasn't been created yet, then create.
+    if (g_hZSpawnSteamIDCache == INVALID_HANDLE)
+    {
+        g_hZSpawnSteamIDCache = SteamidCacheCreate();
+    }
+    
+    // Reset the SteamID cache.
+    SteamidCacheReset(g_hZSpawnSteamIDCache);
 }
 
 /**
@@ -61,8 +75,8 @@ ZSpawnOnClientDisconnect(client)
         return;
     }
     
-    // Add client serial to global array.
-    SerialAddClient(client);
+    // Add client to the SteamID cache.
+    SteamidCacheAddClient(g_hZSpawnSteamIDCache, client);
 }
 
 /**
@@ -72,8 +86,8 @@ ZSpawnOnClientDisconnect(client)
  */
 ZSpawnOnClientDeath(client)
 {
-    // Add client serial to global array.
-    SerialAddClient(client);
+    // Add client to the SteamID cache.
+    SteamidCacheAddClient(g_hZSpawnSteamIDCache, client);
 }
 
 /**
@@ -81,8 +95,8 @@ ZSpawnOnClientDeath(client)
  */
 ZSpawnOnRoundStart()
 {
-    // Reset serial number array.
-    SerialReset();
+    // Reset the SteamID cache.
+    SteamidCacheReset(g_hZSpawnSteamIDCache);
     
     // If zspawn timer is running, then kill it.
     if (tZSpawn != INVALID_HANDLE)
@@ -177,7 +191,7 @@ bool:ZSpawnClient(client)
     }
     
     // Block if client has already played during this round.
-    if (SerialClientExists(client))
+    if (SteamidCacheClientExists(g_hZSpawnSteamIDCache, client))
     {
         // Tell client the command may only be used when joining late.
         TranslationPrintToChat(client, "ZSpawn double spawn");

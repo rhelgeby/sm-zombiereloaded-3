@@ -36,11 +36,6 @@
 new g_iWeaponDropHookID[MAXPLAYERS + 1] = {-1, ...};
 
 /**
- * Global variable that stops render mode modifying
- */
-new bool:g_bWeaponAlpha;
-
-/**
  * Client is joining the server.
  * 
  * @param client    The client index.
@@ -67,39 +62,13 @@ WeaponAlphaOnClientDisconnect(client)
 }
 
 /**
- * The round is starting.
- */
-WeaponAlphaOnRoundStartPost()
-{
-    // Allow weapon render mode to be modified.
-    g_bWeaponAlpha = true;
-}
-
-/**
- * The round is ending.
- * 
- * @param reason    Reason the round has ended.
- */
-WeaponAlphaOnRoundEnd()
-{
-    // Disallow weapon render mode to be modified.
-    g_bWeaponAlpha = false;
-}
-
-/**
  * Client has just picked up a weapon.
  * 
  * @param client    The client index.
  * @param weapon    The weapon index.   
  */
-WeaponAlphaOnItemPickup(client, weapon)
+WeaponAlphaOnItemPickupPost(client, weapon)
 {
-    // If weapon alpha updating is disabled, then stop.
-    if (!g_bWeaponAlpha)
-    {
-        return;
-    }
-    
     // Get client's current alpha.
     new alpha = ToolsGetEntityAlpha(client);
     
@@ -116,12 +85,6 @@ WeaponAlphaOnItemPickup(client, weapon)
  */
 public ZRTools_Action:WeaponAlphaDrop(client, weapon)
 {
-    // If weapon alpha updating is disabled, then stop.
-    if (!g_bWeaponAlpha)
-    {
-        return;
-    }
-    
     // If weapon isn't a valid entity, then stop.
     if (weapon < MaxClients)
     {
