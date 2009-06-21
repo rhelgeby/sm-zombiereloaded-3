@@ -740,15 +740,15 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     // Get weapon index.
     new weaponindex = WeaponsNameToIndex(weapon);
     
-    // Get slot index of the weapon being purchased.
-    new WeaponsSlot:slot = WeaponsGetSlot(weaponindex);
-    
     // If weapon index is -1, then something went very wrong.
     if (weaponindex == -1)
     {
         LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "ZMarket Equip", "Invalid weapon (%s) selected from the ZMarket menu.", weapon);
         return false;
     }
+    
+    // Get slot index of the weapon being purchased.
+    new WeaponsSlot:slot = WeaponsGetSlot(weaponindex);
     
     // If client is a zombie, then update weapon loadout and stop.
     if (InfectIsClientInfected(client))
@@ -1029,6 +1029,12 @@ ZMarketRebuy(client, bool:autorebuy = false)
     // x = Weapon slot.
     for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
     {
+        // If slot is empty, then stop.
+        if (!rebuyweapons[x][0])
+        {
+            continue;
+        }
+        
         ZMarketEquip(client, rebuyweapons[x], true);
     }
     
