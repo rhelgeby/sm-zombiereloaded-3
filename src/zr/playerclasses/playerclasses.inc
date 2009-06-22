@@ -544,6 +544,9 @@ ClassLoad(bool:keepMultipliers = false)
     ConfigSetConfigReloadFunc(File_Classes, GetFunctionByName(GetMyHandle(), "ClassOnConfigReload"));
     // ConfigSetConfigHandle(File_Classes, INVALID_HANDLE);
     ConfigSetConfigPath(File_Classes, pathclasses);
+    
+    // Remove key/value cache.
+    CloseHandle(kvClassData);
 }
 
 /**

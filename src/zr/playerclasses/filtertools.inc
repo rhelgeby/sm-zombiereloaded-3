@@ -693,6 +693,7 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, requirefl
     new Handle:classarray;
     new arraycount;
     new randnum;
+    new buffer;
     
     classarray = CreateArray();
     
@@ -704,11 +705,14 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, requirefl
         randnum = GetRandomInt(0, arraycount - 1);
         
         // Return the value at the random index.
-        return GetArrayCell(classarray, randnum);
+        buffer = GetArrayCell(classarray, randnum);
+        CloseHandle(classarray);
+        return buffer;
     }
     else
     {
         // Failed to get a random class.
+        CloseHandle(classarray);
         return -1;
     }
 }
@@ -808,6 +812,7 @@ stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, requireflags = 0,
     if (!ClassAddToArray(classarray, teamid, ignoreEnabled, requireflags, denyflags, cachetype))
     {
         // Failed to get classes.
+        CloseHandle(classarray);
         return -1;
     }
     
@@ -822,10 +827,12 @@ stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, requireflags = 0,
         if (ClassGetTeamDefault(classindex, cachetype))
         {
             // Default class found.
+            CloseHandle(classarray);
             return classindex;
         }
     }
     
+    CloseHandle(classarray);
     return -1;
 }
 

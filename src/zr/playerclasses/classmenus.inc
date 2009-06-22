@@ -231,6 +231,9 @@ ClassMenuSelect(client, teamid)
         }
     }
     
+    // Destroy array.
+    CloseHandle(classarray);
+    
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
