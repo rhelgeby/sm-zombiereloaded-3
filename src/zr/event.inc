@@ -223,6 +223,7 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:index)
     
     // Forward event to modules.
     WeaponsOnClientSpawnPost(index);
+    SEffectsOnClientSpawnPost(index);
     SpawnProtectOnClientSpawnPost(index);
 }
 

@@ -94,8 +94,18 @@ SEffectsOnRoundEnd()
 SEffectsOnClientSpawn(client)
 {
     // Forward event to sub-modules.
-    AmbientSoundsOnClientSpawn(client);
     ZombieSoundsOnClientSpawn(client);
+}
+
+/**
+ * Client is spawning into the game. *Post
+ * 
+ * @param client    The client index.
+ */
+SEffectsOnClientSpawnPost(client)
+{
+    // Forward event to sub-modules.
+    AmbientSoundsOnClientSpawnPost(client);
 }
 
 /**
