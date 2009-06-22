@@ -366,6 +366,12 @@ new bool:ClassPlayerAdminMode[MAXPLAYERS + 1];
  */
 new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
 
+/**
+ * Cache for storing original model path before applying custom models. Used
+ * when restoring to old model.
+ */
+new String:ClassOriginalPlayerModel[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
+
 #include "zr/playerclasses/filtertools"
 #include "zr/playerclasses/attributes"
 #include "zr/playerclasses/apply"

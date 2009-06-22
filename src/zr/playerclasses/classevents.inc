@@ -69,6 +69,10 @@ ClassOnClientDisconnect(client)
  */
 ClassOnClientSpawn(client)
 {
+    decl String:originalmodel[PLATFORM_MAX_PATH];
+    decl String:steamid[16];
+    decl String:classname[64];
+    
     // Check if the player is alive.
     if (!IsPlayerAlive(client))
     {
@@ -85,10 +89,12 @@ ClassOnClientSpawn(client)
     // Reset attributes by triggering death event.
     ClassOnClientDeath(client);
     
+    // Cache original player model.
+    GetClientModel(client, originalmodel, sizeof(originalmodel));
+    strcopy(ClassOriginalPlayerModel[client], PLATFORM_MAX_PATH, originalmodel);
+    
+    // Get random class setting.
     new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
-
-    decl String:steamid[16];
-    decl String:classname[64];
     
     // Assign random classes if enabled. Always do it for bots.
     GetClientAuthString(client, steamid, sizeof(steamid));
