@@ -909,7 +909,7 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                 // The class index is invalid or the team IDs didn't match.
                 // Because it's user input, we'll fall back to the first class
                 // in the specified team, and log a warning.
-                classindex = ClassGetFirstClass(teamid, _, _, cachetype);
+                classindex = ClassGetFirstClass(teamid, _, _, ZR_CLASS_SPECIALFLAGS, cachetype);
                 
                 LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Default Spawn Class", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", classname, teamid);
                 

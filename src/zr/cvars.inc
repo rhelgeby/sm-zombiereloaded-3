@@ -238,7 +238,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin",           "random",       "Admin class assigned to admins on connect. [\"random\" = Random admin class | \"\" = Class config default]");
     
     // Menu
-    g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]           =    CreateConVar("zr_classes_menu_autoclose",      "0",            "Automatically close class selection menu.");
+    g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]           =    CreateConVar("zr_classes_menu_autoclose",      "0",            "Automatically close class selection menu after selecting a class.");
     
     // Overlays
     g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]           =    CreateConVar("zr_classes_overlay_toggle",      "1",            "Allow players to toggle class overlay.");
