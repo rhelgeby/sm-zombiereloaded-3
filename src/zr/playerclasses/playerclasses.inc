@@ -547,6 +547,7 @@ ClassLoad(bool:keepMultipliers = false)
     
     // Remove key/value cache.
     CloseHandle(kvClassData);
+    kvClassData = INVALID_HANDLE;
 }
 
 /**
