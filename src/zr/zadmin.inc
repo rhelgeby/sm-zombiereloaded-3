@@ -151,7 +151,7 @@ public ZRAdminMenuHandle(Handle:menu, MenuAction:action, client, slot)
         if (slot == MenuCancel_ExitBack)
         {
             // Exit back to main menu.
-            MenuMain(client);
+            ZMenuMain(client);
         }
     }
     else if (action == MenuAction_End)

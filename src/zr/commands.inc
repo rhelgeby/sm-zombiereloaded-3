@@ -38,6 +38,7 @@ CommandsInit()
     InfectOnCommandsCreate();
     MenuOnCommandsCreate();
     ZAdminOnCommandsCreate();
+    ZCookiesOnCommandsCreate();
     ZSpawnOnCommandsCreate();
     ZTeleOnCommandsCreate();
     ZHPOnCommandsCreate();

@@ -51,7 +51,7 @@ public Action:ZMenuCommand(client, argc)
     }
     
     // Send main menu.
-    MenuMain(client);
+    ZMenuMain(client);
     
     // This stops the "Unknown command" message in client's console.
     return Plugin_Handled;
@@ -62,10 +62,10 @@ public Action:ZMenuCommand(client, argc)
  * 
  * @param client    The client index.
  */
-MenuMain(client)
+ZMenuMain(client)
 {
     // Create menu handle.
-    new Handle:menu_main = CreateMenu(MenuMainHandle);
+    new Handle:menu_main = CreateMenu(ZMenuMainHandle);
     
     // Make client global translations target.
     SetGlobalTransTarget(client);
@@ -83,6 +83,7 @@ MenuMain(client)
     // Initialize menu lines.
     decl String:zadmin[256];
     decl String:zclass[256];
+    decl String:zcookies[256];
     decl String:zspawn[256];
     decl String:ztele[256];
     decl String:zhp[256];
@@ -91,6 +92,7 @@ MenuMain(client)
     // Translate each line into client's language.
     Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin", SAYHOOKS_KEYWORD_ZMENU);
     Format(zclass, sizeof(zclass), "%t", "Menu main zclass", SAYHOOKS_KEYWORD_ZADMIN);
+    Format(zcookies, sizeof(zcookies), "%t", "Menu main zcookies", SAYHOOKS_KEYWORD_ZCOOKIES);
     Format(zspawn, sizeof(zspawn), "%t", "Menu main zspawn", SAYHOOKS_KEYWORD_ZCLASS);
     Format(ztele, sizeof(ztele), "%t", "Menu main ztele", SAYHOOKS_KEYWORD_ZTELE);
     Format(zhp, sizeof(zhp), "%t", "Menu main zhp", SAYHOOKS_KEYWORD_ZHP);
@@ -103,6 +105,7 @@ MenuMain(client)
     AddMenuItem(menu_main, "zadmin", zadmin, MenuGetItemDraw(admin));
     
     AddMenuItem(menu_main, "zclass", zclass);
+    AddMenuItem(menu_main, "zcookies", zcookies);
     AddMenuItem(menu_main, "zspawn", zspawn);
     AddMenuItem(menu_main, "ztele", ztele);
     AddMenuItem(menu_main, "zhp", zhp);
@@ -121,7 +124,7 @@ MenuMain(client)
  * @param client    The client index.
  * @param slot      The menu slot selected. (starting from 0)
  */
-public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
+public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
 {
     // Client selected an option.
     if (action == MenuAction_Select)
@@ -131,41 +134,50 @@ public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
         
         switch(slot)
         {
-            // Selected zadmin.
+            // Selected ZAdmin.
             case 0:
             {
                 // Copy return to resend variable.
                 resend = !ZRAdminMenu(client);
             }
-            // Select zclass.
+            // Select ZClass.
             case 1:
             {
-                // Send class menu
+                // Send ZClass menu
                 ClassMenuMain(client);
                 
                 // Don't resend this menu.
                 resend = false;
             }
-            // Select zspawn.
+            // Select ZCookies.
             case 2:
             {
-                // Send zspawn command from client.
+                // Send ZCookies menu
+                ZCookiesMenuMain(client);
+                
+                // Don't resend this menu.
+                resend = false;
+            }
+            // Select ZSpawn.
+            case 3:
+            {
+                // Send ZSpawn command from client.
                 ZSpawnClient(client);
             }
-            // Select ztele.
-            case 3:
+            // Select ZTele.
+            case 4:
             {
                 // Copy return to resend variable.
                 resend = !ZTeleClient(client);
             }
-            // Select zhp.
-            case 4:
+            // Select ZHP.
+            case 5:
             {
                 // Toggle ZHP.
                 ZHPToggle(client);
             }
-            // Select zmarket.
-            case 5:
+            // Select ZMarket.
+            case 6:
             {
                 // Send ZMarket menu.
                 resend = !ZMarketMenuMain(client);
@@ -175,7 +187,7 @@ public MenuMainHandle(Handle:menu, MenuAction:action, client, slot)
         // Resend is still true, then resend menu.
         if (resend)
         {
-            MenuMain(client);
+            ZMenuMain(client);
         }
     }
     // Client exited menu.

@@ -47,6 +47,7 @@
 #define SAYHOOKS_KEYWORD_ZMENU      "zmenu"
 #define SAYHOOKS_KEYWORD_ZADMIN     "zadmin"
 #define SAYHOOKS_KEYWORD_ZCLASS     "zclass"
+#define SAYHOOKS_KEYWORD_ZCOOKIES   "zcookies"
 #define SAYHOOKS_KEYWORD_ZSPAWN     "zspawn"
 #define SAYHOOKS_KEYWORD_ZTELE      "ztele"
 #define SAYHOOKS_KEYWORD_ZHP        "zhp"

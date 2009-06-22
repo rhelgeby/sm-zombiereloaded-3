@@ -331,9 +331,8 @@ public ZMarketMenuMainHandle(Handle:menu_zmarket_main, MenuAction:action, client
             // Auto-rebuy.
             case 3:
             {
-                // Toggle rebuy.
-                new bool:autorebuyenabled = CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie);
-                CookiesSetClientCookieBool(client, g_hZMarketAutoRebuyCookie, !autorebuyenabled);
+                // Toggle the auto-rebuy cookie.
+                ZMarketToggleAutoRebuy(client);
                 
                 // Resend menu.
                 ZMarketMenuMain(client);
@@ -352,7 +351,7 @@ public ZMarketMenuMainHandle(Handle:menu_zmarket_main, MenuAction:action, client
         // Client hit "Back" button.
         if (slot == MenuCancel_ExitBack)
         {
-            MenuMain(client);
+            ZMenuMain(client);
         }
     }
     // Client hit "Exit" button.
@@ -1040,6 +1039,38 @@ ZMarketRebuy(client, bool:autorebuy = false)
     
     // Copy values back to cookies.
     ZMarketArrayToCookies(client, rebuyweapons, WEAPONS_SLOTS_MAX, sizeof(rebuyweapons));
+}
+
+/**
+ * Toggle auto-rebuy on a client.
+ * 
+ * @param client    The client index.
+ */
+ZMarketToggleAutoRebuy(client)
+{
+    // If auto-rebuy is disabled, then stop.
+    new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);
+    if (!zmarketrebuyauto)
+    {
+        return;
+    }
+    
+    // Get the cookie value.
+    new bool:autorebuystate = CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie);
+    
+    // Toggle the value.
+    CookiesSetClientCookieBool(client, g_hZMarketAutoRebuyCookie, !autorebuystate);
+    
+    // If auto-rebuy was enabled, then tell client it has been disabled.
+    if (autorebuystate)
+    {
+        TranslationPrintToChat(client, "Weapons zmarket auto-rebuy toggle off");
+    }
+    // If auto-rebuy was disabled, then tell client it has been enabled.
+    else
+    {
+        TranslationPrintToChat(client, "Weapons zmarket auto-rebuy toggle on");
+    }
 }
 
 /**

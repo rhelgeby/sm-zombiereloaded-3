@@ -405,31 +405,37 @@
 	"Menu main zclass"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZClass - Configure your class settings.(Command: {1})"
+		"en"		"ZClass - Configure your class settings. (Command: {1})"
+	}
+
+	"Menu main zcookies"
+	{
+		"#format"	"{1:s}"
+		"en"		"ZCookies - Toggle your personal ZR settings here. (Command: {1})"
 	}
 
 	"Menu main zspawn"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZSpawn - Join late?  Use this to spawn.(Command: {1})"
+		"en"		"ZSpawn - Join late?  Use this to spawn. (Command: {1})"
 	}
 
 	"Menu main ztele"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZTele - Teleport back to your spawn location.(Command: {1})"
+		"en"		"ZTele - Teleport back to your spawn location. (Command: {1})"
 	}
 
 	"Menu main zhp"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZHP - Toggle real HP display when infected.(Command: {1})"
+		"en"		"ZHP - Toggle real HP display when infected. (Command: {1})"
 	}
 
 	"Menu main zmarket"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZMarket - Need a weapon?  Buy them here.(Command: {1})"
+		"en"		"ZMarket - Need a weapon?  Buy them here. (Command: {1})"
 	}
 
 	// ===========================
@@ -530,6 +536,16 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"Weapon @green{1} @defaulthas a purchase limit of @green{2}@default.  Wait until you respawn to try again."
+	}
+
+	"Weapons zmarket auto-rebuy toggle on"
+	{
+		"en"		"Auto-rebuy has been enabled, your loadout will be automatically purchased for you each time you spawn."
+	}
+
+	"Weapons zmarket auto-rebuy toggle off"
+	{
+		"en"		"Auto-rebuy has been disabled."
 	}
 
 	"Weapons zmarket updated loadout"
@@ -725,6 +741,33 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Zombie protection ends in: {1} seconds."
+	}
+
+	// ===========================
+	// ZCookies (module)
+	// ===========================
+
+	"ZCookies Menu main title"
+	{
+		"en"		"ZCookies\nSelect a Cookie:"
+	}
+
+	"ZCookies menu main auto-rebuy"
+	{
+		"#format"	"{1:s}"
+		"en"		"ZMarket Auto-Rebuy: {1}"
+	}
+
+	"ZCookies menu main zhp"
+	{
+		"#format"	"{1:s}"
+		"en"		"ZHP Display: {1}"
+	}
+
+	"ZCookies menu main overlay"
+	{
+		"#format"	"{1:s}"
+		"en"		"Human/Zombie Class Overlay: {1}"
 	}
 
 	// ===========================

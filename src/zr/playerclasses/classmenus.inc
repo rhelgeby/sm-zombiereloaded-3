@@ -153,7 +153,7 @@ public ClassMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
         {
             if (slot == MenuCancel_ExitBack)
             {
-                MenuMain(client);
+                ZMenuMain(client);
             }
         }
     }

@@ -5,7 +5,7 @@
  *
  *  File:          cookies.inc
  *  Type:          Module
- *  Description:   Client cookie API.
+ *  Description:   Extended client cookie API.
  *
  *  Copyright (C) 2009  Greyscale, Richard Helgeby
  *
@@ -30,7 +30,7 @@
  */ 
 CookiesInit()
 {
-    // Forward event to modules.
+    // Forward "OnCookiesCreate" event to modules.
     ClassOnCookiesCreate();
     WeaponsOnCookiesCreate();
     ZHPOnCookiesCreate();

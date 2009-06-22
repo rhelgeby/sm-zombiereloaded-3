@@ -892,21 +892,29 @@ stock bool:ConfigSettingToBool(const String:option[])
  * @param bOption   True/false value to be converted to "yes"/"no", respectively.
  * @param option    Destination string buffer to store "yes" or "no" in.
  * @param maxlen    Length of destination string buffer (wont't be more than 4).
+ * @param yesno     When true, returns "yes/no", false returns "on/off." 
  */
-stock ConfigBoolToSetting(bool:bOption, String:option[], maxlen)
+stock ConfigBoolToSetting(bool:bOption, String:option[], maxlen, bool:yesno = true)
 {
     // If option is true, then copy "yes" to return string.
     if (bOption)
     {
-        strcopy(option, maxlen, "yes");
+        yesno ? strcopy(option, maxlen, "Yes") : strcopy(option, maxlen, "On");
     }
     // If option is false, then copy "no" to return string.
     else
     {
-        strcopy(option, maxlen, "no");
+        yesno ? strcopy(option, maxlen, "No") : strcopy(option, maxlen, "Off");
     }
 }
 
+/**
+ * Returns a "yes/no" string from config as a bool.
+ * 
+ * @param kv            The keyvalue handle.
+ * @param key           The keyname the value is under.
+ * @param defaultvalue  (Optional) Value to return if setting is missing.
+ */
 stock bool:ConfigKvGetStringBool(Handle:kv, const String:key[], const String:defaultvalue[] = "yes")
 {
     decl String:value[CONFIG_MAX_LENGTH];

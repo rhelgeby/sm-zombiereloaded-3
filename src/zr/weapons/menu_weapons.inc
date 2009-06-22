@@ -102,6 +102,7 @@ public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client
         if (slot == MenuCancel_ExitBack)
         {
             // Re-open admin menu.
+            ZRAdminMenu(client);
         }
     }
     // Client hit "Exit" button.
