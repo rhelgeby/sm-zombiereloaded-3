@@ -40,8 +40,8 @@ JumpBoostOnClientJump(client)
     new Float:distance = ClassGetJumpDistance(client);
     new Float:height = ClassGetJumpHeight(client);
     
-    // Do not apply jump boost if class jump boost multiplier is 1.0.
-    if (height == 1.0 && distance == 1.0)
+    // Do not apply jump boost if settings indicate no boost.
+    if (height == 0.0 && distance == 0.2)
     {
         return;
     }

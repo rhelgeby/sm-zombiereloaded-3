@@ -161,9 +161,51 @@ ClassOnClientDeath(client)
 ClassOnClientInfected(client, bool:motherzombie = false)
 {
     new classindex = ClassGetActiveIndex(client);
+    new isadmin;
+    new motherindex;
+    
+    decl String:motherzombiesetting[64];
     
     // Disable class attributes with timers.
     ClassHealthRegenStop(client);
+    
+    // Check if it's a mother zombie.
+    if (motherzombie)
+    {
+        // Set negative admin flag if client is admin, so it's removed in
+        // special class flags.
+        isadmin = ZRIsClientAdmin(client) ? -ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+        
+        // Get default mother zombie setting.
+        GetConVarString(g_hCvarsList[CVAR_CLASSES_DEFAULT_M_ZOMB], motherzombiesetting, sizeof(motherzombiesetting));
+        
+        if (StrEqual(motherzombiesetting, "disabled", false))
+        {
+            // Do nothing. Keep current class.
+        }
+        else if (StrEqual(motherzombiesetting, "random", false))
+        {
+            // Get random regular zombie class. Remove admin flag if admin.
+            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, ZR_CLASS_SPECIALFLAGS + isadmin);
+        }
+        else if (StrEqual(motherzombiesetting, "motherzombies", false))
+        {
+            // Get random mother zombie class.
+            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, ZR_CLASS_FLAG_MOTHER_ZOMBIE, isadmin);
+        }
+        else
+        {
+            // Assume it's a class name. Get index for the specified class name.
+            motherindex = ClassGetIndex(motherzombiesetting);
+            
+            // Validate index.
+            if (ClassValidateIndex(motherindex))
+            {
+                // Change class.
+                classindex = motherindex;
+            }
+        }
+    }
     
     // Update the players cache with zombie attributes.
     ClassReloadPlayerCache(client, classindex);

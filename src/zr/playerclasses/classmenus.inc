@@ -177,7 +177,7 @@ ClassMenuSelect(client, teamid)
     new Handle:menu = CreateMenu(ClassMenuSelectHandle);
     new arraycount;
     new classindex;
-    new bool:clientisadmin = ZRIsClientAdmin(client);
+    new denyflags;
     
     decl String:title[64];
     decl String:classname[64];
@@ -207,9 +207,12 @@ ClassMenuSelect(client, teamid)
     // Create buffer array.
     new Handle:classarray = CreateArray();
     
-    // Copy all class indexes into the array, with the specified team filter.
-    // Also list admin-only classes if client is a admin.
-    if (ClassAddToArray(classarray, teamid, _, clientisadmin))
+    // Set up filtering.
+    denyflags = ZR_CLASS_FLAG_MOTHER_ZOMBIE;                                // Hide mother zombie classes.
+    denyflags += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;   // Hide admin-only classes if not admin.
+    
+    // Copy all class indexes into the array, with the specified filter settings.
+    if (ClassAddToArray(classarray, teamid, _, _, denyflags))
     {
         // Get number of classes.
         arraycount = GetArraySize(classarray);
@@ -222,7 +225,7 @@ ClassMenuSelect(client, teamid)
             ClassGetName(classindex, classname, sizeof(classname), ZR_CLASS_CACHE_MODIFIED);
             ClassGetDescription(classindex, description, sizeof(description), ZR_CLASS_CACHE_MODIFIED);
             
-            // Add menu item.
+            // Add menu item. Using extra spaces for indention on the second line.
             Format(menuitem, sizeof(menuitem), "%s\n    %s", classname, description);
             AddMenuItem(menu, classname, menuitem);
         }

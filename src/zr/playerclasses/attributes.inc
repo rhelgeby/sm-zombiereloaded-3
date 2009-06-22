@@ -133,7 +133,7 @@ stock bool:ClassGetTeamDefault(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
 }
 
 /**
- * Checks if the specified class is for admins only or not.
+ * Gets flags for the specified class.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -143,23 +143,57 @@ stock bool:ClassGetTeamDefault(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
  *                  data.
  *                  ZR_CLASS_CACHE_PLAYER - Player cache. If this one is used,
  *                  index will be used as a client index.
- * @return          True if it's for admins only, false otherwise.
+ * @return          Class flags, or -1 if failed.
  */
-stock bool:ClassGetAdminOnly(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetFlags(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     switch (cachetype)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_admin_only];
+            return ClassData[index][class_flags];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_admin_only];
+            return ClassDataCache[index][class_flags];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_admin_only];
+            return ClassPlayerCache[index][class_flags];
+        }
+    }
+    return -1;
+}
+
+/**
+ * Do bitwise compare on flags in the specified class.
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param flags     Class flags to check.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest class
+ *                  data.
+ *                  ZR_CLASS_CACHE_PLAYER - Player cache. If this one is used,
+ *                  index will be used as a client index.
+ * @return          True if the flags are set, false otherwise or if failed.
+ */
+stock bool:ClassHasFlags(index, flags, cachetype = ZR_CLASS_CACHE_MODIFIED)
+{
+    switch (cachetype)
+    {
+        case ZR_CLASS_CACHE_ORIGINAL:
+        {
+            return bool:(ClassData[index][class_flags] & flags);
+        }
+        case ZR_CLASS_CACHE_MODIFIED:
+        {
+            return bool:(ClassDataCache[index][class_flags] & flags);
+        }
+        case ZR_CLASS_CACHE_PLAYER:
+        {
+            return bool:(ClassPlayerCache[index][class_flags] & flags);
         }
     }
     return false;
@@ -986,107 +1020,111 @@ stock ClassAttributeNameToFlag(const String:attributename[])
     // Check attribute names.
     if (StrEqual(attributename, "enabled", false))
     {
-        return ZR_CLASS_FLAG_ENABLED;
+        return ZR_CLASS_ENABLED;
     }
     else if (StrEqual(attributename, "team", false))
     {
-        return ZR_CLASS_FLAG_TEAM;
+        return ZR_CLASS_TEAM;
     }
     else if (StrEqual(attributename, "team_default", false))
     {
-        return ZR_CLASS_FLAG_TEAM_DEFAULT;
+        return ZR_CLASS_TEAM_DEFAULT;
     }
-    else if (StrEqual(attributename, "admin_only", false))
+    else if (StrEqual(attributename, "flags", false))
     {
-        return ZR_CLASS_FLAG_ADMIN_ONLY;
+        return ZR_CLASS_FLAGS;
     }
     else if (StrEqual(attributename, "name", false))
     {
-        return ZR_CLASS_FLAG_NAME;
+        return ZR_CLASS_NAME;
     }
     else if (StrEqual(attributename, "description", false))
     {
-        return ZR_CLASS_FLAG_DESCRIPTION;
+        return ZR_CLASS_DESCRIPTION;
     }
     else if (StrEqual(attributename, "model_path", false))
     {
-        return ZR_CLASS_FLAG_MODEL_PATH;
+        return ZR_CLASS_MODEL_PATH;
     }
     else if (StrEqual(attributename, "alpha_initial", false))
     {
-        return ZR_CLASS_FLAG_ALPHA_INITIAL;
+        return ZR_CLASS_ALPHA_INITIAL;
     }
     else if (StrEqual(attributename, "alpha_damaged", false))
     {
-        return ZR_CLASS_FLAG_ALPHA_DAMAGED;
+        return ZR_CLASS_ALPHA_DAMAGED;
     }
     else if (StrEqual(attributename, "alpha_damage", false))
     {
-        return ZR_CLASS_FLAG_ALPHA_DAMAGE;
+        return ZR_CLASS_ALPHA_DAMAGE;
     }
     else if (StrEqual(attributename, "overlay_path", false))
     {
-        return ZR_CLASS_FLAG_OVERLAY_PATH;
+        return ZR_CLASS_OVERLAY_PATH;
     }
     else if (StrEqual(attributename, "nvgs", false))
     {
-        return ZR_CLASS_FLAG_NVGS;
+        return ZR_CLASS_NVGS;
     }
     else if (StrEqual(attributename, "fov", false))
     {
-        return ZR_CLASS_FLAG_FOV;
+        return ZR_CLASS_FOV;
+    }
+    else if (StrEqual(attributename, "has_napalm", false))
+    {
+        return ZR_CLASS_HAS_NAPALM;
     }
     else if (StrEqual(attributename, "napalm_time", false))
     {
-        return ZR_CLASS_FLAG_NAPALM_TIME;
+        return ZR_CLASS_NAPALM_TIME;
     }
     else if (StrEqual(attributename, "immunity_mode", false))
     {
-        return ZR_CLASS_FLAG_IMMUNITY_MODE;
+        return ZR_CLASS_IMMUNITY_MODE;
     }
     else if (StrEqual(attributename, "immunity_amount", false))
     {
-        return ZR_CLASS_FLAG_IMMUNITY_AMOUNT;
+        return ZR_CLASS_IMMUNITY_AMOUNT;
     }
     else if (StrEqual(attributename, "no_fall_damage", false))
     {
-        return ZR_CLASS_FLAG_NO_FALL_DAMAGE;
+        return ZR_CLASS_NO_FALL_DAMAGE;
     }
     else if (StrEqual(attributename, "health", false))
     {
-        return ZR_CLASS_FLAG_HEALTH;
+        return ZR_CLASS_HEALTH;
     }
     else if (StrEqual(attributename, "health_regen_interval", false))
     {
-        return ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL;
+        return ZR_CLASS_HEALTH_REGEN_INTERVAL;
     }
     else if (StrEqual(attributename, "health_regen_amount", false))
     {
-        return ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT;
+        return ZR_CLASS_HEALTH_REGEN_AMOUNT;
     }
     else if (StrEqual(attributename, "health_infect_gain", false))
     {
-        return ZR_CLASS_FLAG_HEALTH_INFECT_GAIN;
+        return ZR_CLASS_HEALTH_INFECT_GAIN;
     }
     else if (StrEqual(attributename, "kill_bonus", false))
     {
-        return ZR_CLASS_FLAG_KILL_BONUS;
+        return ZR_CLASS_KILL_BONUS;
     }
     else if (StrEqual(attributename, "speed", false))
     {
-        return ZR_CLASS_FLAG_SPEED;
+        return ZR_CLASS_SPEED;
     }
     else if (StrEqual(attributename, "knockback", false))
     {
-        return ZR_CLASS_FLAG_KNOCKBACK;
+        return ZR_CLASS_KNOCKBACK;
     }
     else if (StrEqual(attributename, "jump_height", false))
     {
-        return ZR_CLASS_FLAG_JUMP_HEIGHT;
+        return ZR_CLASS_JUMP_HEIGHT;
     }
     else if (StrEqual(attributename, "jump_distance", false))
     {
-        return ZR_CLASS_FLAG_JUMP_DISTANCE;
+        return ZR_CLASS_JUMP_DISTANCE;
     }
     
     // Invalid attribute name.
@@ -1156,45 +1194,46 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
     switch (attributeflag)
     {
         // Boolean.
-        case ZR_CLASS_FLAG_ENABLED,
-              ZR_CLASS_FLAG_NVGS,
-              ZR_CLASS_FLAG_NO_FALL_DAMAGE,
-              ZR_CLASS_FLAG_ADMIN_ONLY:
+        case ZR_CLASS_ENABLED,
+              ZR_CLASS_NVGS,
+              ZR_CLASS_HAS_NAPALM,
+              ZR_CLASS_NO_FALL_DAMAGE:
         {
             return ClassDataType_Boolean;
         }
         
         // Integer.
-        case ZR_CLASS_FLAG_ALPHA_INITIAL,
-              ZR_CLASS_FLAG_ALPHA_DAMAGED,
-              ZR_CLASS_FLAG_ALPHA_DAMAGE,
-              ZR_CLASS_FLAG_FOV,
-              ZR_CLASS_FLAG_IMMUNITY_MODE,
-              ZR_CLASS_FLAG_HEALTH,
-              ZR_CLASS_FLAG_HEALTH_REGEN_AMOUNT,
-              ZR_CLASS_FLAG_HEALTH_INFECT_GAIN,
-              ZR_CLASS_FLAG_KILL_BONUS:
+        case ZR_CLASS_FLAGS,
+              ZR_CLASS_ALPHA_INITIAL,
+              ZR_CLASS_ALPHA_DAMAGED,
+              ZR_CLASS_ALPHA_DAMAGE,
+              ZR_CLASS_FOV,
+              ZR_CLASS_IMMUNITY_MODE,
+              ZR_CLASS_HEALTH,
+              ZR_CLASS_HEALTH_REGEN_AMOUNT,
+              ZR_CLASS_HEALTH_INFECT_GAIN,
+              ZR_CLASS_KILL_BONUS:
         {
             return ClassDataType_Integer;
         }
         
         // Float.
-        case ZR_CLASS_FLAG_NAPALM_TIME,
-              ZR_CLASS_FLAG_IMMUNITY_AMOUNT,
-              ZR_CLASS_FLAG_HEALTH_REGEN_INTERVAL,
-              ZR_CLASS_FLAG_SPEED,
-              ZR_CLASS_FLAG_KNOCKBACK,
-              ZR_CLASS_FLAG_JUMP_HEIGHT,
-              ZR_CLASS_FLAG_JUMP_DISTANCE:
+        case ZR_CLASS_NAPALM_TIME,
+              ZR_CLASS_IMMUNITY_AMOUNT,
+              ZR_CLASS_HEALTH_REGEN_INTERVAL,
+              ZR_CLASS_SPEED,
+              ZR_CLASS_KNOCKBACK,
+              ZR_CLASS_JUMP_HEIGHT,
+              ZR_CLASS_JUMP_DISTANCE:
         {
             return ClassDataType_Float;
         }
         
         // String.
-        case ZR_CLASS_FLAG_NAME,
-              ZR_CLASS_FLAG_DESCRIPTION,
-              ZR_CLASS_FLAG_MODEL_PATH,
-              ZR_CLASS_FLAG_OVERLAY_PATH:
+        case ZR_CLASS_NAME,
+              ZR_CLASS_DESCRIPTION,
+              ZR_CLASS_MODEL_PATH,
+              ZR_CLASS_OVERLAY_PATH:
         {
             return ClassDataType_String;
         }
