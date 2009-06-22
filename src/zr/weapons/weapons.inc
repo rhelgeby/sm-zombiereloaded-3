@@ -343,7 +343,7 @@ WeaponsOnItemPickup(client, weapon)
     WritePackCell(eventinfo, weapon);
     
     // Create post delay timer.
-    CreateTimer(0.0, WeaponsOnItemPickupPost, eventinfo);
+    CreateTimer(0.0, WeaponsOnItemPickupPost, eventinfo, TIMER_DATA_HNDL_CLOSE);
 }
 
 /**

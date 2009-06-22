@@ -207,6 +207,9 @@ RoundEndOutcome:RoundEndReasonToOutcome(reason)
  */
 public Action:RoundEndTimer(Handle:timer)
 {
+    // Set the global timer handle variable to INVALID_HANDLE.
+    tRoundEnd = INVALID_HANDLE;
+    
     // If there aren't clients on both teams, then stop.
     if (!ZRTeamHasClients())
     {
