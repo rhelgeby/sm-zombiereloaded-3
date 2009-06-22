@@ -69,6 +69,10 @@ ClassOnClientDisconnect(client)
  */
 ClassOnClientSpawn(client)
 {
+    decl String:originalmodel[PLATFORM_MAX_PATH];
+    decl String:steamid[16];
+    decl String:classname[64];
+    
     // Check if the player is alive.
     if (!IsPlayerAlive(client))
     {
@@ -85,10 +89,12 @@ ClassOnClientSpawn(client)
     // Reset attributes by triggering death event.
     ClassOnClientDeath(client);
     
+    // Cache original player model.
+    GetClientModel(client, originalmodel, sizeof(originalmodel));
+    strcopy(ClassOriginalPlayerModel[client], PLATFORM_MAX_PATH, originalmodel);
+    
+    // Get random class setting.
     new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
-
-    decl String:steamid[16];
-    decl String:classname[64];
     
     // Assign random classes if enabled. Always do it for bots.
     GetClientAuthString(client, steamid, sizeof(steamid));
@@ -172,9 +178,9 @@ ClassOnClientInfected(client, bool:motherzombie = false)
     // Check if it's a mother zombie.
     if (motherzombie)
     {
-        // Set negative admin flag if client is admin, so it's removed in
-        // special class flags.
-        isadmin = ZRIsClientAdmin(client) ? -ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+        // Set admin flag if client is admin, so it's removed in special class
+        // flags.
+        isadmin = ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
         
         // Get default mother zombie setting.
         GetConVarString(g_hCvarsList[CVAR_CLASSES_DEFAULT_M_ZOMB], motherzombiesetting, sizeof(motherzombiesetting));
@@ -186,7 +192,7 @@ ClassOnClientInfected(client, bool:motherzombie = false)
         else if (StrEqual(motherzombiesetting, "random", false))
         {
             // Get random regular zombie class. Remove admin flag if admin.
-            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, ZR_CLASS_SPECIALFLAGS + isadmin);
+            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, ZR_CLASS_SPECIALFLAGS - isadmin);
         }
         else if (StrEqual(motherzombiesetting, "motherzombies", false))
         {

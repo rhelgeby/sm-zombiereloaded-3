@@ -101,8 +101,19 @@ bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
     // Check if the user specified no change.
     else if (strcmp(modelpath, "default", false) == 0)
     {
-        // Don't change the model.
-        return true;
+        // Get current model.
+        GetClientModel(client, modelpath, sizeof(modelpath));
+        
+        // Restore original model if not already set.
+        if (!StrEqual(ClassOriginalPlayerModel[client], modelpath))
+        {
+            strcopy(modelpath, sizeof(modelpath), ClassOriginalPlayerModel[client]);
+        }
+        else
+        {
+            // Wanted model is already set, don't change.
+            return true;
+        }
     }
     
     SetEntityModel(client, modelpath);

@@ -492,7 +492,7 @@ stock bool:ClassFlagFilterMatch(index, require, deny, cachetype)
     }
     
     // Match deny filter.
-    if (deny == 0 || ~flags & deny)
+    if (deny == 0 || !(flags & deny))
     {
         // No denied flags are set.
         denypassed = true;
@@ -693,6 +693,7 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, requirefl
     new Handle:classarray;
     new arraycount;
     new randnum;
+    new buffer;
     
     classarray = CreateArray();
     
@@ -704,11 +705,14 @@ stock ClassGetRandomClass(teamfilter = -1, bool:ignoreEnabled = false, requirefl
         randnum = GetRandomInt(0, arraycount - 1);
         
         // Return the value at the random index.
-        return GetArrayCell(classarray, randnum);
+        buffer = GetArrayCell(classarray, randnum);
+        CloseHandle(classarray);
+        return buffer;
     }
     else
     {
         // Failed to get a random class.
+        CloseHandle(classarray);
         return -1;
     }
 }
@@ -808,6 +812,7 @@ stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, requireflags = 0,
     if (!ClassAddToArray(classarray, teamid, ignoreEnabled, requireflags, denyflags, cachetype))
     {
         // Failed to get classes.
+        CloseHandle(classarray);
         return -1;
     }
     
@@ -822,10 +827,12 @@ stock ClassGetDefaultClass(teamid, bool:ignoreEnabled = false, requireflags = 0,
         if (ClassGetTeamDefault(classindex, cachetype))
         {
             // Default class found.
+            CloseHandle(classarray);
             return classindex;
         }
     }
     
+    CloseHandle(classarray);
     return -1;
 }
 
@@ -909,7 +916,7 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                 // The class index is invalid or the team IDs didn't match.
                 // Because it's user input, we'll fall back to the first class
                 // in the specified team, and log a warning.
-                classindex = ClassGetFirstClass(teamid, _, _, cachetype);
+                classindex = ClassGetFirstClass(teamid, _, _, ZR_CLASS_SPECIALFLAGS, cachetype);
                 
                 LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Default Spawn Class", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", classname, teamid);
                 
