@@ -30,85 +30,58 @@
  * 
  * @param client    The client index.
  */
-JumpBoostOnClientJump(client)
+JumpBoostOnClientJumpPost(client)
 {
-    new Float:vecVelocity[3];
-    new Float:vecBuffer[3];
-    new Float:magnitude;
-    
     // Get class jump multipliers.
-    new Float:distance = ClassGetJumpDistance(client);
-    new Float:height = ClassGetJumpHeight(client);
+    new Float:distancemultiplier = ClassGetJumpDistance(client);
+    new Float:heightmultiplier = ClassGetJumpHeight(client);
     
-    // Do not apply jump boost if settings indicate no boost.
-    if (height == 0.0 && distance == 0.2)
-    {
-        return;
-    }
+    new Float:vecVelocity[3];
     
     // Get client's current velocity.
     ToolsClientVelocity(client, vecVelocity, false);
     
-    // Get bunny hop setting.
-    new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_PROTECT]);
+    // Protect against bunnyhop.
+    JumpBoostBHopProtect(vecVelocity, distancemultiplier);
     
-    // Check if bunny hop protection is enabled.
-    if (bunnyhopprotect)
-    {
-        // Get jump boost settings.
-        new bool:bunnyhopreset = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_RESET]);
-        new Float:bunnyhopmax = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BUNNYHOP_MAX]);
-        
-        // Get movement distance.
-        magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
-        
-        // Check if maximum speed is reached and reset setting is set.
-        if ((magnitude > bunnyhopmax) && bunnyhopreset)
-        {
-            // Reset horizontal velocity.
-            distance = 0.0;
-        }
-        
-        // Check if maximum speed is reached and reset setting is disabled.
-        else if ((magnitude > bunnyhopmax) && !bunnyhopreset)
-        {
-            // Set horizontal velocity to maximum allowed.
-            
-            // Copy to buffer.
-            vecBuffer[0] = vecVelocity[0];
-            vecBuffer[1] = vecVelocity[1];
-            vecBuffer[2] = 1.0;                 // Dummy value.
-            
-            // Normalize buffer vector to make it a unit vector.
-            NormalizeVector(vecBuffer, vecBuffer);
-            
-            // Restore horizontal axis in buffer to velocity vector.
-            vecVelocity[0] = vecBuffer[0];
-            vecVelocity[1] = vecBuffer[1];
-            
-            // Set distance to maximum speed.
-            distance = bunnyhopmax;
-        }
-    }
+    // Apply multipliers to jump vector.
+    vecVelocity[0] *= distancemultiplier;
+    vecVelocity[1] *= distancemultiplier;
+    vecVelocity[2] *= heightmultiplier;
     
-    // Apply forward jump boost.
-    vecVelocity[0] *= distance;
-    vecVelocity[1] *= distance;
-    
-    // Apply vertical jump boost.
-    vecVelocity[2] += height;
-    
-    // Apply velocity.
-    JumpBoostSetClientVelocity(client, vecVelocity);
+    ToolsClientVelocity(client, vecVelocity, true, false);
 }
 
 /**
- * Set new velocity on client. (Special method separate from ToolsClientVelocity)
+ * This function protects against excessive bunnyhopping.
+ * Note: This ONLY stops bunnyhopping from being worse than CS:S already allows.
  * 
- * @param client        The client index.
- * @param vecVelocity   Velocity to set on client.
+ * @param vecVelocity           The velocity of the client jumping.
+ * @param distancemultiplier    The distance multiplier used on this jump.
  */
-JumpBoostSetClientVelocity(client, const Float:vecVelocity[3])
+stock JumpBoostBHopProtect(Float:vecVelocity[], Float:distancemultiplier)
 {
-    SetEntDataVector(client, g_iToolsBaseVelocity, vecVelocity, true);
+    // If bunnyhop protection is disabled, then stop.
+    new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]);
+    if (!bunnyhopprotect)
+    {
+        return;
+    }
+    
+    // Calculate the magnitude of jump on the xy plane.
+    new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
+    
+    // If the magnitude doesn't exceed the limit, then stop.
+    new Float:bunnyhopmax = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_MAX]);
+    if (magnitude <= bunnyhopmax)
+    {
+        return;
+    }
+    
+    // If we are resetting the velocity, then set to 1.0 (normal jump)
+    new Float:bunnyhopreset = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_RESET]);
+    
+    // Scale with cvar value.
+    vecVelocity[0] /= (distancemultiplier / bunnyhopreset);
+    vecVelocity[1] /= (distancemultiplier / bunnyhopreset);
 }

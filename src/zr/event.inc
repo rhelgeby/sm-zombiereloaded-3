@@ -103,7 +103,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventRoundStartPost(Handle:timer, any:index)
+public Action:EventRoundStartPost(Handle:timer)
 {
     // Forward event to modules.
 }
@@ -213,18 +213,18 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerSpawnPost(Handle:timer, any:index)
+public Action:EventPlayerSpawnPost(Handle:timer, any:client)
 {
     // If client isn't in-game, then stop.
-    if (!IsClientInGame(index))
+    if (!IsClientInGame(client))
     {
         return;
     }
     
     // Forward event to modules.
-    WeaponsOnClientSpawnPost(index);
-    SEffectsOnClientSpawnPost(index);
-    SpawnProtectOnClientSpawnPost(index);
+    WeaponsOnClientSpawnPost(client);
+    SEffectsOnClientSpawnPost(client);
+    SpawnProtectOnClientSpawnPost(client);
 }
 
 /**
@@ -307,8 +307,28 @@ public Action:EventPlayerJump(Handle:event, const String:name[], bool:dontBroadc
     // Get all required event info.
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
+    // Fire post player_jump event.
+    CreateTimer(0.0, EventPlayerJumpPost, index);
+}
+
+/**
+ * Event callback (player_jump)
+ * Client is jumping. *Post
+ * 
+ * @param event     The event handle.
+ * @param name      Name of the event.
+ * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
+ */
+public Action:EventPlayerJumpPost(Handle:timer, any:client)
+{
+    // If client isn't in-game, then stop.
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+    
     // Forward event to modules.
-    JumpBoostOnClientJump(index);
+    JumpBoostOnClientJumpPost(client);
 }
 
 /**

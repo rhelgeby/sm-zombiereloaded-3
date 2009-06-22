@@ -29,7 +29,6 @@
  * Initialize global offset variables.
  */
 new g_iToolsVelocity;
-new g_iToolsBaseVelocity;
 new g_iToolsLMV;
 new g_iToolsHasNightVision;
 new g_iToolsNightVisionOn;
@@ -75,13 +74,6 @@ ToolsFindOffsets()
     if (g_iToolsVelocity == -1)
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_vecVelocity[0]\" was not found.");
-    }
-    
-    // If offset "m_vecBaseVelocity" can't be found, then stop the plugin.
-    g_iToolsBaseVelocity = FindSendPropInfo("CBasePlayer", "m_vecBaseVelocity");
-    if (g_iToolsBaseVelocity == -1)
-    {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_vecBaseVelocity\" was not found.");
     }
     
     // If offset "m_flLaggedMovementValue" can't be found, then stop the plugin.

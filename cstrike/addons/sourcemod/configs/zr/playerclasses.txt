@@ -42,8 +42,8 @@
 // kill_bonus               number      How many points to give per kill. Humans only.
 // speed                    decimal     The player speed.
 // knockback                decimal     Force of the knockback when shot at. Zombies only.
-// jump_height              decimal     Extra upwards jump boost in units. 0.0 for no extra boost.
-// jump_distance            decimal     Extra forwards jump boost multiplier. 0.2 is normal distance.
+// jump_height              decimal     Multiplier of the players jump height. 0.0 means no jump, 1.0 is normal.
+// jump_distance            decimal     Multiplier of the players jump distance. 0.0 means no forward jump, 1.0 is normal.
 
 "classes"
 {
@@ -91,8 +91,8 @@
         
         "speed"                 "350"
         "knockback"             "4"
-        "jump_height"           "10.0"
-        "jump_distance"         "0.3"
+        "jump_height"           "1.1"
+        "jump_distance"         "1.2"
     }
     
     "fast"
@@ -134,8 +134,8 @@
         
         "speed"                 "380"
         "knockback"             "4.5"
-        "jump_height"           "30.0"
-        "jump_distance"         "0.4"
+        "jump_height"           "1.3"
+        "jump_distance"         "1.2"
     }
     
     "mutated"
@@ -177,8 +177,8 @@
         
         "speed"                 "275"
         "knockback"             "3.5"
-        "jump_height"           "20.0"
-        "jump_distance"         "0.4"
+        "jump_height"           "1.3"
+        "jump_distance"         "1.3"
     }
     
     "heavy"
@@ -220,8 +220,8 @@
         
         "speed"                 "280"
         "knockback"             "2.5"
-        "jump_height"           "0.0"
-        "jump_distance"         "0.2"
+        "jump_height"           "0.9"
+        "jump_distance"         "0.9"
     }
     
     // ------------------------------------------
@@ -269,8 +269,8 @@
         
         "speed"                 "300"
         "knockback"             "0"
-        "jump_height"           "0.0"
-        "jump_distance"         "0.2"
+        "jump_height"           "1.0"
+        "jump_distance"         "1.0"
     }
     
     "human_speedy"
@@ -312,8 +312,8 @@
         
         "speed"                 "380"
         "knockback"             "0"
-        "jump_height"           "0.0"
-        "jump_distance"         "0.2"
+        "jump_height"           "1.0"
+        "jump_distance"         "1.0"
     }
     
     "human_light"
@@ -355,7 +355,7 @@
         
         "speed"                 "300"
         "knockback"             "0"
-        "jump_height"           "30.0"
-        "jump_distance"         "0.4"
+        "jump_height"           "1.3"
+        "jump_distance"         "1.3"
     }
 }
