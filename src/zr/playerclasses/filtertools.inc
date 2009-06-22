@@ -492,7 +492,7 @@ stock bool:ClassFlagFilterMatch(index, require, deny, cachetype)
     }
     
     // Match deny filter.
-    if (deny == 0 || ~flags & deny)
+    if (deny == 0 || !(flags & deny))
     {
         // No denied flags are set.
         denypassed = true;
