@@ -170,14 +170,6 @@ public OnConfigsExecuted()
 }
 
 /**
- * Client cookies just finished loading from the database.
- */
-public OnClientCookiesCached()
-{
-    // Forward event to modules.
-}
-
-/**
  * Client is joining the server.
  * 
  * @param client    The client index.

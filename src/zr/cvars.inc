@@ -137,7 +137,7 @@ enum CvarsList
     Handle:CVAR_NAPALM_IGNITE,
     Handle:CVAR_JUMPBOOST_BHOP_PROTECT,
     Handle:CVAR_JUMPBOOST_BHOP_MAX,
-    Handle:CVAR_JUMPBOOST_BHOP_RESET,
+    Handle:CVAR_JUMPBOOST_BHOP_SCALE,
     Handle:CVAR_VOL,
     Handle:CVAR_VOL_UPDATE_INTERVAL,
     Handle:CVAR_VOL_TRIGGER_INTERVAL,
@@ -413,7 +413,7 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]           =    CreateConVar("zr_jumpboost_bhop_protect",      "1",    "Prevent players from using forward jump boost multipliers to bunny hop.");
     g_hCvarsList[CVAR_JUMPBOOST_BHOP_MAX]               =    CreateConVar("zr_jumpboost_bhop_max",          "300",  "The maximum horizontal velocity a player can achieve before bunnyhop protection kicks in. [Dependency: zr_jumpboost_bhop_protect]");
-    g_hCvarsList[CVAR_JUMPBOOST_BHOP_RESET]             =    CreateConVar("zr_jumpboost_bhop_reset",        "0.9",  "This is the horizontal jump multiplier for when the max limit is exceeded. ['0.9' = 90% of the jumps original magnitude | '>1.0' = Redundant | Dependency: zr_jumpboost_bhop_protect&zr_jumpboost_bhop_max]");
+    g_hCvarsList[CVAR_JUMPBOOST_BHOP_SCALE]             =    CreateConVar("zr_jumpboost_bhop_scale",        "0.75", "This is the horizontal jump multiplier for when the max limit is exceeded. ['0.75' = 75% of the jumps original magnitude | '>1.0' = Redundant | Dependency: zr_jumpboost_bhop_protect&zr_jumpboost_bhop_max]");
     
     
     // ===========================

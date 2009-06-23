@@ -41,14 +41,15 @@ JumpBoostOnClientJumpPost(client)
     // Get client's current velocity.
     ToolsClientVelocity(client, vecVelocity, false);
     
-    // Protect against bunnyhop.
-    JumpBoostBHopProtect(vecVelocity, distancemultiplier);
-    
     // Apply multipliers to jump vector.
     vecVelocity[0] *= distancemultiplier;
     vecVelocity[1] *= distancemultiplier;
     vecVelocity[2] *= heightmultiplier;
     
+    // Protect against bunnyhop.
+    JumpBoostBHopProtect(vecVelocity, distancemultiplier);
+    
+    // Set new velocity.
     ToolsClientVelocity(client, vecVelocity, true, false);
 }
 
@@ -78,10 +79,10 @@ stock JumpBoostBHopProtect(Float:vecVelocity[], Float:distancemultiplier)
         return;
     }
     
-    // If we are resetting the velocity, then set to 1.0 (normal jump)
-    new Float:bunnyhopreset = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_RESET]);
+    // Now we must scale the jump.
+    new Float:bunnyhopscale = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_SCALE]);
     
     // Scale with cvar value.
-    vecVelocity[0] /= (distancemultiplier / bunnyhopreset);
-    vecVelocity[1] /= (distancemultiplier / bunnyhopreset);
+    vecVelocity[0] *= (magnitude * bunnyhopscale) / magnitude;
+    vecVelocity[1] *= (magnitude * bunnyhopscale) / magnitude;
 }
