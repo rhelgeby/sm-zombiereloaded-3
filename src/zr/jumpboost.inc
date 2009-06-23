@@ -47,7 +47,7 @@ JumpBoostOnClientJumpPost(client)
     vecVelocity[2] *= heightmultiplier;
     
     // Protect against bunnyhop.
-    JumpBoostBHopProtect(vecVelocity, distancemultiplier);
+    JumpBoostBHopProtect(vecVelocity);
     
     // Set new velocity.
     ToolsClientVelocity(client, vecVelocity, true, false);
@@ -60,7 +60,7 @@ JumpBoostOnClientJumpPost(client)
  * @param vecVelocity           The velocity of the client jumping.
  * @param distancemultiplier    The distance multiplier used on this jump.
  */
-stock JumpBoostBHopProtect(Float:vecVelocity[], Float:distancemultiplier)
+stock JumpBoostBHopProtect(Float:vecVelocity[])
 {
     // If bunnyhop protection is disabled, then stop.
     new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]);
