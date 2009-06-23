@@ -41,48 +41,43 @@ JumpBoostOnClientJumpPost(client)
     // Get client's current velocity.
     ToolsClientVelocity(client, vecVelocity, false);
     
-    // Apply multipliers to jump vector.
-    vecVelocity[0] *= distancemultiplier;
-    vecVelocity[1] *= distancemultiplier;
-    vecVelocity[2] *= heightmultiplier;
+    // If they have exceeded the max jump speed, then stop.
+    if (!JumpBoostIsBHop(vecVelocity))
+    {
+        // Apply horizontal multipliers to jump vector.
+        vecVelocity[0] *= distancemultiplier;
+        vecVelocity[1] *= distancemultiplier;
+    }
     
-    // Protect against bunnyhop.
-    JumpBoostBHopProtect(vecVelocity);
+    // Apply height multiplier to jump vector.
+    vecVelocity[2] *= heightmultiplier;
     
     // Set new velocity.
     ToolsClientVelocity(client, vecVelocity, true, false);
 }
 
 /**
- * This function protects against excessive bunnyhopping.
- * Note: This ONLY stops bunnyhopping from being worse than CS:S already allows.
+ * This function detects excessive bunnyhopping.
+ * Note: This ONLY catches bunnyhopping that is worse than CS:S already allows.
  * 
- * @param vecVelocity           The velocity of the client jumping.
- * @param distancemultiplier    The distance multiplier used on this jump.
+ * @param vecVelocity   The velocity of the client jumping.
+ * @return              True if the client is bunnyhopping, false if not.
  */
-stock JumpBoostBHopProtect(Float:vecVelocity[])
+stock bool:JumpBoostIsBHop(const Float:vecVelocity[])
 {
+    return false;
+    
     // If bunnyhop protection is disabled, then stop.
     new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]);
     if (!bunnyhopprotect)
     {
-        return;
+        return false;
     }
     
     // Calculate the magnitude of jump on the xy plane.
     new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
     
-    // If the magnitude doesn't exceed the limit, then stop.
+    // Return true if the magnitude exceeds the max.
     new Float:bunnyhopmax = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_MAX]);
-    if (magnitude <= bunnyhopmax)
-    {
-        return;
-    }
-    
-    // Now we must scale the jump.
-    new Float:bunnyhopscale = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_SCALE]);
-    
-    // Scale with cvar value.
-    vecVelocity[0] *= (magnitude * bunnyhopscale) / magnitude;
-    vecVelocity[1] *= (magnitude * bunnyhopscale) / magnitude;
+    return (magnitude > bunnyhopmax);
 }

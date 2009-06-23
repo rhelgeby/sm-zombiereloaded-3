@@ -137,7 +137,6 @@ enum CvarsList
     Handle:CVAR_NAPALM_IGNITE,
     Handle:CVAR_JUMPBOOST_BHOP_PROTECT,
     Handle:CVAR_JUMPBOOST_BHOP_MAX,
-    Handle:CVAR_JUMPBOOST_BHOP_SCALE,
     Handle:CVAR_VOL,
     Handle:CVAR_VOL_UPDATE_INTERVAL,
     Handle:CVAR_VOL_TRIGGER_INTERVAL,
@@ -216,6 +215,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_LOG_PRINT_ADMINS]          =    CreateConVar("zr_log_print_admins",       "0",    "Print log events to admin chat in addition to the log file.");
     g_hCvarsList[CVAR_LOG_PRINT_CHAT]            =    CreateConVar("zr_log_print_chat",         "0",    "Print log events to public chat in addition to the log file.");
     
+    
     // ===========================
     // Config (core)
     // ===========================
@@ -224,6 +224,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_CONFIG_PATH_CLASSES]       =    CreateConVar("zr_config_path_playerclasses",  "configs/zr/playerclasses.txt",         "Path, relative to root sourcemod directory, to playerclasses config file.");
     g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]       =    CreateConVar("zr_config_path_weapons",        "configs/zr/weapons.txt",               "Path, relative to root sourcemod directory, to weapons config file.");
     g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]     =    CreateConVar("zr_config_path_hitgroups",      "configs/zr/hitgroups.txt",             "Path, relative to root sourcemod directory, to hitgroups config file.");
+    
     
     // ===========================
     // Classes (core)
@@ -268,6 +269,7 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_HITGROUPS]                        =    CreateConVar("zr_hitgroups",   "1",    "Enable hitgroups module, disabling this will disable hitgroup-related features. (hitgroup knockback multipliers, hitgroup damage control)");
     
+    
     // ===========================
     // Infect (core)
     // ===========================
@@ -308,6 +310,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie",   "1",                            "Intercept suicide commands attempted by zombies.");
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human",    "1",                            "Intercept suicide commands attempted by humans.");
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds",     "kill, spectate, jointeam",     "List of client commands to intercept as suicide attempts. [Delimiter: \", \"]");
+    
     
     // ===========================
     // Overlays (core)
@@ -356,11 +359,12 @@ CvarsCreate()
     g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST]             =    CreateConVar("zr_veffects_fog_enddist",        "400",                  "(UNSUPPORTED) Distance from player to stop rendering fog. [Dependency: zr_veffects_fog]");
     g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ]                =    CreateConVar("zr_veffects_fog_farz",           "2000",                 "(UNSUPPORTED) Vertical clipping plane.");
     
-    // Ragdoll
     
+    // Ragdoll
     g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]          =    CreateConVar("zr_veffects_ragdoll_remove",     "1",                    "Remove players' ragdolls from the game after a delay.");
     g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]        =    CreateConVar("zr_veffects_ragdoll_dissolve",   "-1",                   "The ragdoll removal effect. ['-2' = Effectless removal | '-1' = Random effect | '0' = Energy dissolve | '1' = Heavy electrical dissolve | '2' = Light electrical dissolve | '3' = Core dissolve | Dependency: zr_veffects_ragdoll_remove]");
     g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DELAY]           =    CreateConVar("zr_veffects_ragdoll_delay",      "0.5",                  "Time to wait before removing the ragdoll. [Dependency: zr_veffects_ragdoll_remove]");
+    
     
     // ===========================
     // Sound Effects (module)
@@ -405,15 +409,14 @@ CvarsCreate()
     // ===========================
     // Napalm (module)
     // ===========================
-    
     g_hCvarsList[CVAR_NAPALM_IGNITE]                    =    CreateConVar("zr_napalm_ignite",       "1",    "Ignite grenade in mid-air after player throws it. [Dependency: Human Attribute 'has_napalm']");
+    
     
     // ===========================
     // Jump Boost (module)
     // ===========================
     g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]           =    CreateConVar("zr_jumpboost_bhop_protect",      "1",    "Prevent players from using forward jump boost multipliers to bunny hop.");
     g_hCvarsList[CVAR_JUMPBOOST_BHOP_MAX]               =    CreateConVar("zr_jumpboost_bhop_max",          "300",  "The maximum horizontal velocity a player can achieve before bunnyhop protection kicks in. [Dependency: zr_jumpboost_bhop_protect]");
-    g_hCvarsList[CVAR_JUMPBOOST_BHOP_SCALE]             =    CreateConVar("zr_jumpboost_bhop_scale",        "0.75", "This is the horizontal jump multiplier for when the max limit is exceeded. ['0.75' = 75% of the jumps original magnitude | '>1.0' = Redundant | Dependency: zr_jumpboost_bhop_protect&zr_jumpboost_bhop_max]");
     
     
     // ===========================
