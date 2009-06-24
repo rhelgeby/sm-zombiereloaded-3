@@ -65,8 +65,6 @@ JumpBoostOnClientJumpPost(client)
  */
 stock bool:JumpBoostIsBHop(const Float:vecVelocity[])
 {
-    return false;
-    
     // If bunnyhop protection is disabled, then stop.
     new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]);
     if (!bunnyhopprotect)
