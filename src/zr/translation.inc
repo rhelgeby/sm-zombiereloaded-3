@@ -132,6 +132,7 @@ stock TranslationPrintToChat(client, any:...)
  * Format the string to the plugin's style.
  * 
  * @param server    True to also print text to server console, false just to clients.
+ * @param admin     True to only print text to admins, false to print to everyone.
  * @param ...       Translation formatting parameters.
  */
 stock TranslationPrintToChatAll(bool:server, bool:admin, any:...)
@@ -194,7 +195,7 @@ stock TranslationPrintToConsole(client, any:...)
     SetGlobalTransTarget(client);
     
     // Translate phrase.
-    decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+    decl String:translation[TRANSLATION_MAX_LENGTH_CONSOLE];
     VFormat(translation, sizeof(translation), "%t", 2);
     
     // Format string to create plugin style.
@@ -212,7 +213,7 @@ stock TranslationPrintToConsole(client, any:...)
  */
 stock TranslationPrintToConsoleAll(bool:server, bool:admin, any:...)
 {
-    decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+    decl String:translation[TRANSLATION_MAX_LENGTH_CONSOLE];
     
     if (server)
     {
@@ -317,7 +318,7 @@ stock TranslationPrintToServer(any:...)
     SetGlobalTransTarget(LANG_SERVER);
     
     // Translate phrase.
-    decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+    decl String:translation[TRANSLATION_MAX_LENGTH_CONSOLE];
     VFormat(translation, sizeof(translation), "%t", 1);
     
     // Format string to create plugin style.
@@ -339,7 +340,7 @@ stock TranslationReplyToCommand(client, any:...)
     SetGlobalTransTarget(client);
     
     // Translate phrase.
-    decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+    decl String:translation[TRANSLATION_MAX_LENGTH_CONSOLE];
     VFormat(translation, sizeof(translation), "%t", 2);
     
     if (ZRIsClientValid(client))

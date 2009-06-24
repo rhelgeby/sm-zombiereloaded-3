@@ -35,6 +35,7 @@ CommandsInit()
     LogOnCommandsCreate();
     ClassOnCommandsCreate();
     WeaponsOnCommandsCreate();
+    HitgroupsOnCommandsCreate();
     InfectOnCommandsCreate();
     MenuOnCommandsCreate();
     ZAdminOnCommandsCreate();

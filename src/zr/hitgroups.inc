@@ -63,6 +63,17 @@ enum HitgroupsData
 new Handle:arrayHitgroups = INVALID_HANDLE;
 
 /**
+ * Create commands related to config here.
+ */
+HitgroupsOnCommandsCreate()
+{
+    // Create config admin commands.
+    RegAdminCmd("zr_hitgroup", HitgroupsCommand, ADMFLAG_CONFIG, "Toggles or sets if a zombie's hitgroup can be damaged. Usage: zr_hitgroup <hitgroup name> [1/0]");
+    RegAdminCmd("zr_hitgroup_enable_all", HitgroupsEnableAllCommand, ADMFLAG_CONFIG, "Enables all zombie hitgroups to be damaged.  Usage: zr_hitgroup_enable_all");
+    RegAdminCmd("zr_hitgroup_headshots_only", HitgroupsHeadshotsOnlyCommand, ADMFLAG_CONFIG, "Disables all zombie hitgroups but the head.  Usage: zr_hitgroup_headshots_only");
+}
+    
+/**
  * Loads hitgroup data from file.
  */ 
 HitgroupsLoad()
@@ -186,6 +197,43 @@ public HitgroupsOnConfigReload(ConfigFile:config)
 }
 
 /**
+ * Find the index at which the hitgroup's name is at.
+ * 
+ * @param hitgroup      The higroup name.
+ * @param maxlen        (Only if 'overwritename' is true) The max length of the hitgroup name. 
+ * @param overwritename (Optional) If true, the hitgroup given will be overwritten with the name from the config.
+ * @return          The array index containing the given hitgroup name.
+ */
+stock HitgroupsNameToIndex(String:hitgroup[], maxlen = 0, bool:overwritename = false)
+{
+    decl String:hitgroupname[HITGROUPS_MAX_LENGTH];
+    
+    // x = Array index.
+    new size = GetArraySize(arrayHitgroups);
+    for (new x = 0; x < size; x++)
+    {
+        HitgroupsGetName(x, hitgroupname, sizeof(hitgroupname));
+        
+        // If names match, then return index.
+        if (StrEqual(hitgroup, hitgroupname, false))
+        {
+            // If 'overwrite' name is true, then overwrite the old string with new.
+            if (overwritename)
+            {
+                // Copy config name to return string.
+                strcopy(hitgroup, maxlen, hitgroupname);
+            }
+            
+            // Return this index.
+            return x;
+        }
+    }
+    
+    // Name doesn't exist.
+    return -1;
+}
+
+/**
  * Find the array index at which the hitgroup index is at.
  * 
  * @param hitgroup  The hitgroup index to search for.
@@ -299,4 +347,151 @@ stock Float:HitgroupsGetKnockback(index)
     
     // Return the knockback multiplier for the hitgroup.
     return Float:GetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_KNOCKBACK);
+}
+
+/**
+ * Command callback (zr_hitgroup)
+ * Toggles or sets if a zombie's hitgroup can be damaged.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:HitgroupsCommand(client, argc)
+{
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "Hitgroups command syntax");
+        TranslationReplyToCommand(client, "Hitgroups command related commands");
+        TranslationPrintToConsole(client, "Hitgroups command syntax names");
+        
+        // Print all the hitgroup names in the client's console.
+        decl String:hitgroupname[HITGROUPS_MAX_LENGTH];
+        
+        // x = Hitgroup index.
+        new size = GetArraySize(arrayHitgroups);
+        for (new x = 0; x < size; x++)
+        {
+            // Get the hitgroups name and print in console.
+            HitgroupsGetName(x, hitgroupname, sizeof(hitgroupname));
+            PrintToConsole(client, "* %s", hitgroupname);
+        }
+        
+        return Plugin_Handled;
+    }
+    
+    // Get hitgroup alias given.
+    decl String:target[HITGROUPS_MAX_LENGTH];
+    GetCmdArg(1, target, sizeof(target));
+    
+    // If the hitgroup is invalid, then stop and tell client.
+    new hitgroup = HitgroupsNameToIndex(target, sizeof(target), true);
+    if (hitgroup == -1)
+    {
+        TranslationReplyToCommand(client, "Hitgroups command invalid hitgroup", target);
+        return Plugin_Handled;
+    }
+    
+    new bool:hitgroupdamage;
+    
+    // Check if value was given
+    decl String:value[4];
+    GetCmdArg(2, value, sizeof(value));
+    if (!value[0])
+    {
+        // Get the opposite value of the current hitgroup value.
+        hitgroupdamage = !HitgroupsCanDamage(hitgroup);
+    }
+    else
+    {
+        // Cast the given value to a bool.
+        hitgroupdamage = bool:StringToInt(value);
+    }
+    
+    // Set new value in the hitgroup data cache.
+    HitgroupsSetDamage(hitgroup, hitgroupdamage);
+    
+    // Tell client the new value of the hitgroup.
+    if (hitgroupdamage)
+    {
+        TranslationReplyToCommand(client, "Hitgroups command successful on", target);
+    }
+    else
+    {
+        TranslationReplyToCommand(client, "Hitgroups command successful off", target);
+    }
+    
+    // Log action to game events.
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Hitgroups, "Headshots Toggle", "Admin \"%L\" toggled hitgroup \"%s\" to \"%d\". (zr_hitgroup)", client, target, hitgroupdamage);
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback (zr_hitgroup_enable_all)
+ * Enables all zombie hitgroups to be damaged.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:HitgroupsEnableAllCommand(client, argc)
+{
+    new hitgroup;
+    
+    // x = Hitgroup index.
+    new size = GetArraySize(arrayHitgroups);
+    for (new x = 0; x < size; x++)
+    {
+        // Get CS:S hitgroup index.
+        hitgroup = HitgroupsGetIndex(x);
+        
+        // Set that hitgroup index to true for damage.
+        HitgroupsSetDamage(hitgroup, true);
+    }
+    
+    // Tell the server that all hitgroups have been enabled.
+    TranslationPrintToChatAll(true, false, "Hitgroups command enable all successful");
+    
+    // Log action to game events.
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Hitgroups, "Enable All", "Admin \"%L\" enabled all zombie hitgroups. (zr_hitgroup_enable_all)", client);
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback (zr_hitgroup_enable_all)
+ * Disables all zombie hitgroups but the head.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
+{
+    new hitgroup;
+    
+    // x = Hitgroup index.
+    new size = GetArraySize(arrayHitgroups);
+    for (new x = 0; x < size; x++)
+    {
+        // Get CS:S hitgroup index.
+        hitgroup = HitgroupsGetIndex(x);
+        
+        // If this hitgroup is the head, then enable it and stop.
+        if (hitgroup == HITGROUP_HEAD)
+        {
+            HitgroupsSetDamage(hitgroup, true);
+            continue;
+        }
+        
+        // Set that hitgroup index to true for damage.
+        HitgroupsSetDamage(hitgroup, false);
+    }
+    
+    // Tell the server that all hitgroups have been enabled.
+    TranslationPrintToChatAll(true, false, "Hitgroups command headshots only successful");
+    
+    // Log action to game events.
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Hitgroups, "Headshots Only", "Admin \"%L\" enabled headshots only. (zr_hitgroup_headshots_only)", client);
+    
+    return Plugin_Handled;
 }

@@ -65,7 +65,7 @@
 		"knockback"	"1.2"
 	}
 
-	"Left Arm"
+	"LeftArm"
 	{
 		// General
 		"index"		"4"
@@ -77,7 +77,7 @@
 		"knockback"	"1.0"
 	}
 
-	"Right Arm"
+	"RightArm"
 	{
 		// General
 		"index"		"5"
@@ -89,7 +89,7 @@
 		"knockback"	"1.0"
 	}
 
-	"Left Leg"
+	"LeftLeg"
 	{
 		// General
 		"index"		"6"
@@ -101,7 +101,7 @@
 		"knockback"	"0.9"
 	}
 
-	"Right Leg"
+	"RightLeg"
 	{
 		// General
 		"index"		"7"

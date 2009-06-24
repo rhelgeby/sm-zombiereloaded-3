@@ -105,8 +105,18 @@
 
 	"Config command reload syntax"
 	{
+		"en"		"Syntax: zr_reloadconfig <file alias1> [file alias2] ... - Reloads a config file."
+	}
+
+	"Config command reload related commands"
+	{
+		"en"		"Related command(s): zr_config_reloadall"
+	}
+
+	"Config command reload syntax aliases"
+	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"en"		"Syntax: zr_reloadconfig <file alias1> [file alias2] ... - Reloads a config file.\n File Aliases:\n * \"{1}\"\n * \"{2}\"\n * \"{3}\"\n * \"{4}\"\n * \"{5}\""
+		"en"		"File Aliases:\n* \"{1}\"\n* \"{2}\"\n* \"{3}\"\n* \"{4}\"\n* \"{5}\""
 	}
 
 	"Config command reload invalid"
@@ -714,6 +724,53 @@
 	"Weapons menu zmarket types weapon ammo"
 	{
 		"en"		"Ammo"
+	}
+
+	// ===========================
+	// Hitgroups (core)
+	// ===========================
+
+	"Hitgroups command syntax"
+	{
+		"en"		"Toggles or sets if a zombie's hitgroup can be damaged. Usage: zr_hitgroup <hitgroup alias> [1/0]"
+	}
+
+	"Hitgroups command related commands"
+	{
+		"en"		"Related command(s): zr_hitgroup_enable_all, zr_hitgroup_headshots_only"
+	}
+
+	"Hitgroups command syntax names"
+	{
+		"en"		"Hitgroup Names:"
+	}
+
+	"Hitgroups command successful on"
+	{
+		"#format"	"{1:s}"
+		"en"		"Damage for hitgroup \"{1}\" has been toggled on."
+	}
+
+	"Hitgroups command successful off"
+	{
+		"#format"	"{1:s}"
+		"en"		"Damage for hitgroup \"{1}\" has been toggled off."
+	}
+
+	"Hitgroups command invalid hitgroup"
+	{
+		"#format"	"{1:s}"
+		"en"		"\"{1}\" is not a valid hitgroup alias.  Type zr_hitgroup to view all aliases."
+	}
+
+	"Hitgroups command enable all successful"
+	{
+		"en"		"All zombie hitgroups have been enabled for damage."
+	}
+
+	"Hitgroups command headshots only successful"
+	{
+		"en"		"Zombies may now only be damaged by headshots."
 	}
 
 	// ===========================

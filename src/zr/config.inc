@@ -797,12 +797,15 @@ public Action:ConfigReloadCommand(client, argc)
     // If not enough arguments given, then stop.
     if (argc < 1)
     {
-        TranslationReplyToCommand(client, "Config command reload syntax", CONFIG_FILE_ALIAS_MODELS, CONFIG_FILE_ALIAS_DOWNLOADS, CONFIG_FILE_ALIAS_CLASSES, CONFIG_FILE_ALIAS_WEAPONS, CONFIG_FILE_ALIAS_HITGROUPS);
+        TranslationReplyToCommand(client, "Config command reload syntax");
+        TranslationReplyToCommand(client, "Config command reload related commands");
+        TranslationPrintToConsole(client, "Config command reload syntax aliases", CONFIG_FILE_ALIAS_MODELS, CONFIG_FILE_ALIAS_DOWNLOADS, CONFIG_FILE_ALIAS_CLASSES, CONFIG_FILE_ALIAS_WEAPONS, CONFIG_FILE_ALIAS_HITGROUPS);
         return Plugin_Handled;
     }
     
     decl String:filealias[CONFIG_MAX_LENGTH];
     decl String:path[PLATFORM_MAX_PATH];
+    decl String:logmessage[LOG_MAX_LENGTH_FILE];
     
     new args = GetCmdArgs();
     for (new x = 1; x <= args; x++)
@@ -824,11 +827,20 @@ public Action:ConfigReloadCommand(client, argc)
         // Get config file path.
         ConfigGetConfigPath(config, path, sizeof(path));
         
+        // Format log message
+        Format(logmessage, sizeof(logmessage), "Admin \"%L\" reloaded config file \"%s\". (zr_config_reload)", client);
+    
         // If file isn't loaded then tell client, then stop.
         if (!loaded)
         {
             TranslationReplyToCommand(client, "Config command reload not loaded", filealias);
+            
+            // Format a failed attempt string to the end of the log message.
+            Format(logmessage, sizeof(logmessage), "%s -- attempt failed, config file not loaded", logmessage);
         }
+        
+        // Log action to game events.
+        LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Config, "Reload Config", logmessage);
     }
     
     return Plugin_Handled;
@@ -866,6 +878,9 @@ public Action:ConfigReloadAllCommand(client, argc)
             TranslationReplyToCommand(client, "Config command reload all stats failed", configalias);
         }
     }
+    
+    // Log action to game events.
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Config, "Reload All Config", "Admin \"%L\" reloaded all config files.", client);
 }
 
 /**
