@@ -36,6 +36,12 @@ JumpBoostOnClientJumpPost(client)
     new Float:distancemultiplier = ClassGetJumpDistance(client);
     new Float:heightmultiplier = ClassGetJumpHeight(client);
     
+    // If both are set to 1.0, then stop here to save some work.
+    if (distancemultiplier == 1.0 && heightmultiplier == 1.0)
+    {
+        return;
+    }
+    
     new Float:vecVelocity[3];
     
     // Get client's current velocity.
