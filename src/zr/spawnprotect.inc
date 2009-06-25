@@ -162,12 +162,16 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
     // If client leaves, then stop timer.
     if (!IsClientInGame(client))
     {
+        // Reset timer handle.
+        tSpawnProtect[client] = INVALID_HANDLE;
         return Plugin_Stop;
     }
     
     // If client has become a zombie, then stop timer.
     if (!InfectIsClientHuman(client))
     {
+        // Reset timer handle.
+        tSpawnProtect[client] = INVALID_HANDLE;
         return Plugin_Stop;
     }
     

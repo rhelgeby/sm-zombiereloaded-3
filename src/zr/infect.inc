@@ -343,6 +343,9 @@ InfectOnRoundStart()
         // Reset timer handle.
         tInfect = INVALID_HANDLE;
     }
+    
+    // Tell plugin there are no zombies.
+    g_bZombieSpawned = false;
 }
 
 /**
@@ -789,6 +792,124 @@ InfectFireEffects(client)
 }
 
 /**
+ * Sends list of clients to infect/human.
+ *  
+ * @param client    The client index.
+ */
+InfectMenuClients(client)
+{
+    // Create menu handle.
+    new Handle:menu_infect_clients = CreateMenu(InfectMenuClientsHandle);
+    
+    // Set client as translation target.
+    SetGlobalTransTarget(client);
+    
+    SetMenuTitle(menu_infect_clients, "%t\n ", "Infect menu clients title");
+    
+    decl String:clientoption[MAX_NAME_LENGTH];
+    decl String:clientuserid[8];
+    
+    // x = Client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If client isn't alive, then stop.
+        if (!IsPlayerAlive(x))
+        {
+            continue;
+        }
+        
+        // Get client info.
+        GetClientName(x, clientoption, sizeof(clientoption));
+        IntToString(GetClientUserId(x), clientuserid, sizeof(clientuserid));
+        
+        // Append client's current team to the option.
+        if (InfectIsClientInfected(x))
+        {
+            Format(clientoption, sizeof(clientoption), "%s [%t]", clientoption, "Zombie");
+        }
+        else
+        {
+            Format(clientoption, sizeof(clientoption), "%s [%t]", clientoption, "Human");
+        }
+        
+        // Add option to menu.
+        AddMenuItem(menu_infect_clients, clientuserid, clientoption);
+    }
+    
+    // Create a "Back" button to the main admin menu.
+    SetMenuExitBackButton(menu_infect_clients, true);
+    
+    // Send menu.
+    DisplayMenu(menu_infect_clients, client, MENU_TIME_FOREVER);
+}
+
+/**
+ * Called when client selects option in the infect clients menu, and handles it.
+ * @param menu_weapons_main     Handle of the menu being used.
+ * @param action                The action done on the menu (see menus.inc, enum MenuAction).
+ * @param client                The client index.
+ * @param slot                  The slot index selected (starting from 0).
+ */ 
+public InfectMenuClientsHandle(Handle:menu_infect_clients, MenuAction:action, client, slot)
+{
+    // Client selected an option.
+    if (action == MenuAction_Select)
+    {
+        decl String:clientuserid[8];
+        GetMenuItem(menu_infect_clients, slot, clientuserid, sizeof(clientuserid));
+        
+        // Get the targetted client through their userid which was set into the menu slot's info param.
+        new target = GetClientOfUserId(StringToInt(clientuserid));
+        
+        // If target has left the server, then stop.
+        if (!target)
+        {
+            // Re-send menu.
+            InfectMenuClients(client);
+            return;
+        }
+        
+        // Create an array with a single slot and set target to it.
+        new targets[1];
+        targets[0] = target;
+        
+        // Toggle infect on the client.
+        if (InfectIsClientInfected(target))
+        {
+            InfectManualHuman(client, targets, 1);
+        }
+        else
+        {
+            InfectManualInfect(client, targets, 1);
+        }
+        
+        // Re-send menu.
+        InfectMenuClients(client);
+    }
+    // Client closed the menu.
+    if (action == MenuAction_Cancel)
+    {
+        // Client hit "Back" button.
+        if (slot == MenuCancel_ExitBack)
+        {
+            // Re-open admin menu.
+            ZRAdminMenu(client);
+        }
+    }
+    // Client hit "Exit" button.
+    else if (action == MenuAction_End)
+    {
+        CloseHandle(menu_infect_clients);
+    }
+}
+
+/**
  * Returns if a client is infected.
  * 
  * @param client    The client index.
@@ -825,37 +946,16 @@ bool:InfectIsClientHuman(client)
 }
 
 /**
- * Command callback (zr_infect)
- * Infects a client.
- *   
- * @param client    The client index.
- * @param argc      Argument count.
+ * Infecting a client manually (via zr_infect or the "Zombie Management" menu)
+ * 
+ * @param client            The client index infecting another client.
+ * @param targets           Array containing all clients to infect.
+ * @param count             The number of clients in the array.
+ * @param respawnoverride   (Optional) True to override respawn cvar.
+ * @param respawn           (Optional) True to respawn client on infect.
  */
-public Action:InfectInfectCommand(client, argc)
+stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false, bool:respawn = false)
 {
-    // If not enough arguments given, then stop.
-    if (argc < 1)
-    {
-        TranslationReplyToCommand(client, "Infect command infect syntax");
-        return Plugin_Handled;
-    }
-    
-    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
-    new targets[MAXPLAYERS], bool:tn_is_ml, result;
-    
-    // Get targetname.
-    GetCmdArg(1, target, sizeof(target));
-    
-    // Find a target.
-    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE , targetname, sizeof(targetname), tn_is_ml);
-        
-    // Check if there was a problem finding a client.
-    if (result <= 0)
-    {
-        ZRReplyToTargetError(client, result);
-        return Plugin_Handled;
-    }
-    
     new bool:zombiespawned = g_bZombieSpawned;
     
     // If zombie hasn't spawned, then make targetted player(s) mother zombies.
@@ -891,33 +991,25 @@ public Action:InfectInfectCommand(client, argc)
         g_bZombieSpawned = true;
     }
     
+    decl String:targetname[MAX_NAME_LENGTH];
+    
     // x = Client index.
-    for (new x = 0; x < result; x++)
+    for (new x = 0; x < count; x++)
     {
+        // Get client's name for later use.
+        GetClientName(targets[x], targetname, sizeof(targetname));
+        
         // Check if client is a human before turning into zombie.
         if (!InfectIsClientHuman(targets[x]))
         {
             // If there was only 1 player targetted, then let admin know the command was unsuccessful.
-            if (result == 1)
+            if (count == 1)
             {
                 // Tell admin command was unsuccessful.
                 TranslationReplyToCommand(client, "Infect command infect unsuccessful", targetname);
             }
             
             continue;
-        }
-        
-        new bool:respawnoverride, bool:respawn;
-        decl String:strRespawn[8];
-        
-        // Get respawn parameter.
-        GetCmdArg(2, strRespawn, sizeof(strRespawn));
-        
-        // If parameter exists then cast it into a bool and feed it to infect function.
-        if (strRespawn[0])
-        {
-            respawnoverride = true;
-            respawn = bool:StringToInt(strRespawn);
         }
         
         // If zombie hasn't spawned, then make targetted player(s) mother zombies.
@@ -927,7 +1019,7 @@ public Action:InfectInfectCommand(client, argc)
             InfectHumanToZombie(targets[x], _, true, respawnoverride, respawn);
             
             // If there was only 1 player targetted, then let admin know the outcome of the command.
-            if (result == 1)
+            if (count == 1)
             {
                 TranslationReplyToCommand(client, "Infect command infect mother successful", targetname);
             }
@@ -939,11 +1031,104 @@ public Action:InfectInfectCommand(client, argc)
         InfectHumanToZombie(targets[x], _, false, respawnoverride, respawn);
         
         // If there was only 1 player targetted, then let admin know the outcome of the command.
-        if (result == 1)
+        if (count == 1)
         {
             TranslationReplyToCommand(client, "Infect command infect successful", targetname);
         }
     }
+}
+
+/**
+ * Infecting a client manually (via zr_human or the "Zombie Management" menu)
+ * 
+ * @param client    The client index changing a zombie to human.
+ * @param targets   Array containing all clients to make human.
+ * @param count     The number of clients in the array.
+ * @param respawn   (Optional) True to respawn client upon changing to human.
+ * @param protect   (Optional) True to protect client upon changing to human.
+ */
+stock InfectManualHuman(client, targets[], count, bool:respawn = false, bool:protect = false)
+{
+    decl String:targetname[MAX_NAME_LENGTH];
+    
+    // x = Client index.
+    for (new x = 0; x < count; x++)
+    {
+        // Get client's name for later use.
+        GetClientName(targets[x], targetname, sizeof(targetname));
+        
+        // Check if client is a human before turning into zombie.
+        if (InfectIsClientInfected(targets[x]))
+        {
+            // Turn client into a zombie.
+            InfectZombieToHuman(targets[x], respawn, protect);
+            
+            // If there was only 1 player targetted, then let admin know the outcome of the command.
+            if (count == 1)
+            {
+                // Tell admin command was successful.
+                TranslationReplyToCommand(client, "Infect command human successful", targetname);
+            }
+        }
+        else
+        {
+            // If there was only 1 player targetted, then let admin know the command was unsuccessful.
+            if (count == 1)
+            {
+                // Tell admin command was unsuccessful.
+                TranslationReplyToCommand(client, "Infect command human unsuccessful", targetname);
+            }
+        }
+    }
+}
+
+/**
+ * Command callback (zr_infect)
+ * Infects a client.
+ *   
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:InfectInfectCommand(client, argc)
+{
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "Infect command infect syntax");
+        return Plugin_Handled;
+    }
+    
+    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
+    new targets[MAXPLAYERS], bool:tn_is_ml, result;
+    
+    // Get targetname.
+    GetCmdArg(1, target, sizeof(target));
+    
+    // Find a target.
+    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE , targetname, sizeof(targetname), tn_is_ml);
+        
+    // Check if there was a problem finding a client.
+    if (result <= 0)
+    {
+        ZRReplyToTargetError(client, result);
+        return Plugin_Handled;
+    }
+    
+    // Get respawn parameter.
+    decl String:strRespawn[8];
+    GetCmdArg(2, strRespawn, sizeof(strRespawn));
+    
+    new bool:respawnoverride, bool:respawn;
+        
+    // If parameter exists then cast it into a bool and feed it to infect function.
+    if (strRespawn[0])
+    {
+        respawnoverride = true;
+        respawn = bool:StringToInt(strRespawn);
+    }
+    
+    // Infect player.
+    InfectManualInfect(client, targets, result, respawnoverride, respawn);
     
     return Plugin_Handled;
 }
@@ -980,43 +1165,17 @@ public Action:InfectHumanCommand(client, argc)
         return Plugin_Handled;
     }
     
-    // x = Client index.
-    for (new x = 0; x < result; x++)
-    {
-        // Check if client is a human before turning into zombie.
-        if (InfectIsClientInfected(targets[x]))
-        {
-            new bool:respawn, bool:protect;
-            decl String:strRespawn[8], String:strProtect[8];
-            
-            // Get respawn&protect parameters
-            GetCmdArg(2, strRespawn, sizeof(strRespawn));
-            GetCmdArg(3, strProtect, sizeof(strProtect));
-            
-            // If parameter exists then cast it into a bool and feed it to "humanize" function.
-            respawn = (strRespawn[0]) ? (bool:StringToInt(strRespawn)) : false;
-            protect = (strProtect[0]) ? (bool:StringToInt(strProtect)) : false;
-            
-            // Turn client into a zombie.
-            InfectZombieToHuman(targets[x], respawn, protect);
-            
-            // If there was only 1 player targetted, then let admin know the outcome of the command.
-            if (result == 1)
-            {
-                // Tell admin command was successful.
-                TranslationReplyToCommand(client, "Infect command human successful", targetname);
-            }
-        }
-        else
-        {
-            // If there was only 1 player targetted, then let admin know the command was unsuccessful.
-            if (result == 1)
-            {
-                // Tell admin command was unsuccessful.
-                TranslationReplyToCommand(client, "Infect command human unsuccessful", targetname);
-            }
-        }
-    }
+    // Get respawn&protect parameters
+    decl String:strRespawn[8], String:strProtect[8];
+    GetCmdArg(2, strRespawn, sizeof(strRespawn));
+    GetCmdArg(3, strProtect, sizeof(strProtect));
+    
+    // If parameter exists then cast it into a bool and feed it to "humanize" function.
+    new bool:respawn = (strRespawn[0]) ? (bool:StringToInt(strRespawn)) : false;
+    new bool:protect = (strProtect[0]) ? (bool:StringToInt(strProtect)) : false;
+    
+    // Turn client into human.
+    InfectManualHuman(client, targets, result, respawn, protect);
     
     return Plugin_Handled;
 }

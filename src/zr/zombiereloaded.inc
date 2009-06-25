@@ -61,6 +61,9 @@ Float:ZRConvertUnitsFloat(Float:number, Float:conversion)
  * 
  * @param arrayEligibleClients  The handle of the array, don't forget to call CloseHandle
  *                              on it when finished!
+ * @param team                  Client is only eligible if on a team.
+ * @param alive                 Client is only eligible if alive.
+ * @param human                 Client is only eligible if human.
  * @param immunity              True to ignore clients immune from mother infect, false to count them.
  */  
 stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false)

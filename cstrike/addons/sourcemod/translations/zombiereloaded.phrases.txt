@@ -90,6 +90,16 @@
 		"en"		"Current value:"
 	}
 
+	"Zombie"
+	{
+		"en"		"Zombie"
+	}
+
+	"Human"
+	{
+		"en"		"Human"
+	}
+
 	// Menu
 
 	"Menu empty"
@@ -341,6 +351,13 @@
 	{
 		"en"		"The last zombie has left the game, and has passed the infection on to you."
 		"ru"		"Последний зомби покинул игру и передал свою инфекцию вам."
+	}
+
+	// Menu
+
+	"Infect menu clients title"
+	{
+		"en"		"Zombie Management\nToggle Infection:\n[] = Infected"
 	}
 
 	// Commands
@@ -932,58 +949,23 @@
 	// ZAdmin Menu
 	// ===========================
 
-	"!zadmin title"
+	"ZAdmin main title"
 	{
 		"en"		"ZAdmin\n Select Category:"
 	}
 
-	"!zadmin class multipliers"
+	"ZAdmin main class multipliers"
 	{
 		"en"		"Class Multipliers"
 	}
 
-	"!zadmin weapons"
+	"ZAdmin main weapons"
 	{
 		"en"		"Weapon Management"
 	}
 
-	"!zadmin main logflags"
+	"ZAdmin main zombie"
 	{
-		"en"		"Logging Flags"
-	}
-
-	"!zadmin infect title"
-	{
-		"en"		"Choose a Player to Infect:"
-	}
-
-	"!zadmin ztele title"
-	{
-		"en"		"ZTele Admin Menu:"
-	}
-
-	"!zadmin ztele spawn tele"
-	{
-		"en"		"Teleport a Player to Spawn"
-	}
-
-	"!zadmin ztele abort"
-	{
-		"en"		"Abort Teleport on a Player"
-	}
-
-	"!zadmin ztele save"
-	{
-		"en"		"Save Teleport Location"
-	}
-
-	"!zadmin ztele tele"
-	{
-		"en"		"Teleport Player to Saved Location"
-	}
-
-	"!zadmin log flags title"
-	{
-		"en"		"Toggle Logging Flags:"
+		"en"		"Zombie Management"
 	}
 }

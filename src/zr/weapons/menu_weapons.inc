@@ -32,6 +32,7 @@ new g_iWeaponsCurType[MAXPLAYERS + 1];
 
 /**
  * Sends main weapon menu to client.
+ *  
  * @param client    The client index.
  */
 bool:WeaponsMenuMain(client)
@@ -71,6 +72,7 @@ bool:WeaponsMenuMain(client)
 
 /**
  * Called when client selects option in the weapons main menu, and handles it.
+ *  
  * @param menu_weapons_main     Handle of the menu being used.
  * @param action                The action done on the menu (see menus.inc, enum MenuAction).
  * @param client                The client index.
@@ -114,6 +116,7 @@ public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client
 
 /**
  * Sends weapon type list to client.
+ *  
  * @param client    The client index.
  */
 WeaponsMenuTypes(client)
@@ -155,6 +158,7 @@ WeaponsMenuTypes(client)
 
 /**
  * Called when client selects option in the weapons list menu, and handles it.
+ *  
  * @param menu_weapons_types    Handle of the menu being used.
  * @param action                The action done on the menu (see menus.inc, enum MenuAction).
  * @param client                The client index.
@@ -189,6 +193,7 @@ public WeaponsMenuTypesHandle(Handle:menu_weapons_types, MenuAction:action, clie
 
 /**
  * Sends a list of weapons of a certain type in a menu to the client.
+ *  
  * @param client    The client index.
  */
 WeaponsMenuTypeWeapons(client)
@@ -249,6 +254,7 @@ WeaponsMenuTypeWeapons(client)
 
 /**
  * Called when client selects option in the weapon group menu, and handles it.
+ *  
  * @param menu_weapons_typeweapons  Handle of the menu being used.
  * @param action                    The action done on the menu (see menus.inc, enum MenuAction).
  * @param client                    The client index.
@@ -338,6 +344,7 @@ public WeaponsMenuTypeWeaponsHandle(Handle:menu_weapons_typeweapons, MenuAction:
 
 /**
  * Sends ZMarket options menu to client.
+ *  
  * @param client    The client index.
  */
 WeaponsMenuZMarket(client)
@@ -368,6 +375,7 @@ WeaponsMenuZMarket(client)
 
 /**
  * Called when client selects option in the weapons main menu, and handles it.
+ *  
  * @param menu_weapons_market   Handle of the menu being used.
  * @param action                The action done on the menu (see menus.inc, enum MenuAction).
  * @param client                The client index.
