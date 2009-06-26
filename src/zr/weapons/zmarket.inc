@@ -161,6 +161,12 @@ ZMarketOnClientSpawnPost(client)
         return;
     }
     
+    // If client is a zombie, then stop.
+    if (InfectIsClientInfected(client))
+    {
+        return;
+    }
+    
     // If auto-rebuy is enabled, then force client to rebuy weapons.
     if (CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie))
     {

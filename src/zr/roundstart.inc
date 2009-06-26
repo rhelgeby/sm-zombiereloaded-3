@@ -31,6 +31,33 @@
 #define ROUNDSTART_OBJECTIVE_ENTITIES "func_bomb_target|func_hostage_rescue|c4|hostage_entity"
 
 /**
+ * Client is spawning into the game.
+ * 
+ * @param client    The client index.
+ */
+RoundStartOnClientSpawn(client)
+{
+    // If client hasn't spawned yet, then stop.
+    if (!IsPlayerAlive(client))
+    {
+        return;
+    }
+    
+    // Get public chat trigger prefix.
+    decl String:publictrigger[4];
+    SayHooksGetPublicChatTrigger(publictrigger, sizeof(publictrigger));
+    
+    // If public chat trigger is disabled, then don't print message.
+    if (StrEqual(publictrigger, "N/A", false))
+    {
+        return;
+    }
+    
+    // Print to client, how to access ZMenu.
+    TranslationPrintToChat(client, "General zmenu reminder", publictrigger, SAYHOOKS_KEYWORD_ZMENU);
+}
+
+/**
  * The round is starting.
  */
 RoundStartOnRoundStart()

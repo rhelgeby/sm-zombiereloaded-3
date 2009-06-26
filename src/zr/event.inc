@@ -184,22 +184,13 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     AccountOnClientSpawn(index);    // Some modules depend on this to finish first.
     ClassOnClientSpawn(index);
     WeaponsOnClientSpawn(index);
+    RoundStartOnClientSpawn(index);
     SEffectsOnClientSpawn(index);
     SpawnProtectOnClientSpawn(index);
     RespawnOnClientSpawn(index);
     ZTeleOnClientSpawn(index);
     ZHPOnClientSpawn(index);
     VolOnPlayerSpawn(index);
-    
-    // Get public chat trigger prefix.
-    decl String:publictrigger[4];
-    SayHooksGetPublicChatTrigger(publictrigger, sizeof(publictrigger));
-    
-    // If public chat trigger is disabled, then don't print message.
-    if (!StrEqual(publictrigger, "N/A", false))
-    {
-        TranslationPrintToChat(index, "General zmenu reminder", publictrigger, SAYHOOKS_KEYWORD_ZMENU);
-    }
     
     // Fire post player_spawn event.
     CreateTimer(0.0, EventPlayerSpawnPost, index);
