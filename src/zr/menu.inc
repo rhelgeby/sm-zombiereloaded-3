@@ -138,7 +138,7 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             case 0:
             {
                 // Copy return to resend variable.
-                resend = !ZRAdminMenu(client);
+                resend = !ZAdminMenu(client);
             }
             // Select ZClass.
             case 1:
@@ -198,11 +198,77 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
 }
 
 /**
+ * Shows a list of all clients to a client, different handlers can be used for this, as well as title.
+ * 
+ * @param client    The client index.
+ * @param handler   The menu handler.
+ * @param any       Title is a translations phrase.  
+ */
+stock MenuClientList(client, MenuHandler:handler, any:...)
+{
+    // Create menu handle.
+    new Handle:menu_clients = CreateMenu(handler);
+    
+    // Set client as translation target.
+    SetGlobalTransTarget(client);
+    
+    // Translate phrase.
+    decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+    VFormat(translation, sizeof(translation), "%t", 3);
+    
+    // Set menu title to the translated phrase.
+    SetMenuTitle(menu_clients, translation);
+    
+    decl String:clientoption[MAX_NAME_LENGTH];
+    decl String:clientuserid[8];
+    
+    // x = Client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // Get client info.
+        GetClientName(x, clientoption, sizeof(clientoption));
+        IntToString(GetClientUserId(x), clientuserid, sizeof(clientuserid));
+        
+        // Add option to menu.
+        AddMenuItem(menu_clients, clientuserid, clientoption);
+    }
+    
+    // Create a "Back" button to the main admin menu.
+    SetMenuExitBackButton(menu_clients, true);
+    
+    // Send menu.
+    DisplayMenu(menu_clients, client, MENU_TIME_FOREVER);
+}
+
+/**
+ * Gets the client index of the selected client in the menu.
+ * 
+ * @param menu  The menu handle.
+ * @param slot  The menu slot that was selected. 
+ * @return      The client index, 0 if the selected client is no longer in the server.
+ */
+stock MenuGetClientIndex(Handle:menu, slot)
+{
+    // Get menu slot's information.
+    decl String:clientuserid[8];
+    GetMenuItem(menu, slot, clientuserid, sizeof(clientuserid));
+    
+    // Return the targetted client through their userid which was set into the menu slot's info param.
+    return GetClientOfUserId(StringToInt(clientuserid));
+}
+
+/**
  * Return itemdraw flag for SM menus.
  * 
  * @param condition     If this is true, item will be drawn normally.
  */
-MenuGetItemDraw(bool:condition)
+stock MenuGetItemDraw(bool:condition)
 {
     return condition ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
 }

@@ -791,6 +791,40 @@
 	}
 
 	// ===========================
+	// ZAdmin (core)
+	// ===========================
+
+	"ZAdmin main title"
+	{
+		"en"		"ZAdmin\n Select Category:"
+	}
+
+	"ZAdmin main class multipliers"
+	{
+		"en"		"Class Multipliers"
+	}
+
+	"ZAdmin main weapons"
+	{
+		"en"		"Weapon Management"
+	}
+
+	"ZAdmin main zombie"
+	{
+		"en"		"Zombie Management"
+	}
+
+	"ZAdmin main force zspawn "
+	{
+		"en"		"Force ZSpawn"
+	}
+
+	"ZAdmin main force ztele"
+	{
+		"en"		"Force ZTele"
+	}
+
+	// ===========================
 	// Spawn Protect (module)
 	// ===========================
 
@@ -848,6 +882,8 @@
 	// ZSpawn (module)
 	// ===========================
 
+	// General
+
 	"ZSpawn double spawn"
 	{
 		"en"		"ZSpawn can only be used if you joined late during a round in progress."
@@ -857,6 +893,33 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"The timelimit ({1} seconds), to use ZSpawn, has already expired."
+	}
+
+	// Menu
+
+	"ZSpawn clients title"
+	{
+		"en"		"Force ZSpawn (zr_zspawn_force)\nSelect a Player:"
+	}
+
+	// Commands
+
+	"ZSpawn command force syntax"
+	{
+		"en"		"Force ZSpawn on a client. Usage: zr_zspawn_force <client> ['0' = Spawn as human | '1' = Spawn as zombie]"
+
+	}
+
+	"ZSpawn command force successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player {1} was successfully ZSpawned."
+	}
+
+	"ZSpawn command force unsuccessful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player {1} couldn't be ZSpawned."
 	}
 
 	// ===========================
@@ -906,6 +969,33 @@
 		"en"		"Teleported back to spawn. (Count: {1}/{2})"
 	}
 
+	// Menu
+
+	"ZTele clients title"
+	{
+		"en"		"Force ZTele (zr_ztele_force)\nSelect a Player:"
+	}
+
+	// Commands
+
+	"ZTele command force syntax"
+	{
+		"en"		"Force ZTele on a client. Usage: zr_ztele_force <client>"
+
+	}
+
+	"ZTele command force successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player {1} was successfully ZTele'd."
+	}
+
+	"ZTele command force unsuccessful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player {1} couldn't be ZTele'd."
+	}
+
 	// ===========================
 	// ZHP (module)
 	// ===========================
@@ -943,29 +1033,5 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"Player {1} has been slayed for camping in a restricted area. (ID: {2})"
-	}
-
-	// ===========================
-	// ZAdmin Menu
-	// ===========================
-
-	"ZAdmin main title"
-	{
-		"en"		"ZAdmin\n Select Category:"
-	}
-
-	"ZAdmin main class multipliers"
-	{
-		"en"		"Class Multipliers"
-	}
-
-	"ZAdmin main weapons"
-	{
-		"en"		"Weapon Management"
-	}
-
-	"ZAdmin main zombie"
-	{
-		"en"		"Zombie Management"
 	}
 }

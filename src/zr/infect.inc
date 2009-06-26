@@ -861,11 +861,8 @@ public InfectMenuClientsHandle(Handle:menu_infect_clients, MenuAction:action, cl
     // Client selected an option.
     if (action == MenuAction_Select)
     {
-        decl String:clientuserid[8];
-        GetMenuItem(menu_infect_clients, slot, clientuserid, sizeof(clientuserid));
-        
-        // Get the targetted client through their userid which was set into the menu slot's info param.
-        new target = GetClientOfUserId(StringToInt(clientuserid));
+        // Get selected client index.
+        new target = MenuGetClientIndex(menu_infect_clients, slot);
         
         // If target has left the server, then stop.
         if (!target)
@@ -899,7 +896,7 @@ public InfectMenuClientsHandle(Handle:menu_infect_clients, MenuAction:action, cl
         if (slot == MenuCancel_ExitBack)
         {
             // Re-open admin menu.
-            ZRAdminMenu(client);
+            ZAdminMenu(client);
         }
     }
     // Client hit "Exit" button.

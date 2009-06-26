@@ -173,7 +173,7 @@ public Action:Command_Respawn(client, argc)
 {
     if (ZRIsClientValid(client))
     {
-        ZRAdminMenu(client);
+        ZAdminMenu(client);
     }
     else
     {

@@ -51,7 +51,7 @@ public Action:ZAdminCommand(client, argc)
     }
     
     // Send admin menu.
-    ZRAdminMenu(client);
+    ZAdminMenu(client);
     
     // This stops the "Unknown command" message in client's console.
     return Plugin_Handled;
@@ -62,7 +62,7 @@ public Action:ZAdminCommand(client, argc)
  * 
  * @param client    The client index.
  */
-bool:ZRAdminMenu(client)
+bool:ZAdminMenu(client)
 {
     // If client isn't an admin, then stop.
     if (!ZRIsClientAdmin(client))
@@ -72,7 +72,7 @@ bool:ZRAdminMenu(client)
     }
     
     // Create menu handle.
-    new Handle:menu_zadmin = CreateMenu(ZRAdminMenuHandle);
+    new Handle:menu_zadmin = CreateMenu(ZAdminMenuHandle);
     
     // Set translation target as the client.
     SetGlobalTransTarget(client);
@@ -80,8 +80,8 @@ bool:ZRAdminMenu(client)
     SetMenuTitle(menu_zadmin, "%t\n ", "ZAdmin main title");
     
     decl String:classmultipliers[64];
-    //decl String:zspawn[64];
-    //decl String:ztele[64];
+    decl String:zspawn[64];
+    decl String:ztele[64];
     decl String:weapons[64];
     decl String:infect[64];
     //decl String:logflags[64];
@@ -89,15 +89,15 @@ bool:ZRAdminMenu(client)
     Format(classmultipliers, sizeof(classmultipliers), "%t", "ZAdmin main class multipliers");
     Format(weapons, sizeof(weapons), "%t", "ZAdmin main weapons");
     Format(infect, sizeof(infect), "%t", "ZAdmin main zombie");
-    //Format(zspawn, sizeof(zspawn), "%t", "!zadmin main spawn");
-    //Format(ztele, sizeof(ztele), "%t", "!zadmin main tele");
+    Format(zspawn, sizeof(zspawn), "%t", "ZAdmin main force zspawn");
+    Format(ztele, sizeof(ztele), "%t", "ZAdmin main force ztele");
     //Format(logflags, sizeof(logflags), "%t", "!zadmin main logflags");
     
     AddMenuItem(menu_zadmin, "classmultipliers", classmultipliers);
     AddMenuItem(menu_zadmin, "weapons", weapons);
     AddMenuItem(menu_zadmin, "infect", infect);
-    //AddMenuItem(menu_zadmin, "zspawn", zspawn);
-    //AddMenuItem(menu_zadmin, "ztele", ztele, ITEMDRAW_DISABLED);
+    AddMenuItem(menu_zadmin, "zspawn", zspawn);
+    AddMenuItem(menu_zadmin, "ztele", ztele);
     //AddMenuItem(menu_zadmin, "logflags", logflags);
     
     // Set "Back" button.
@@ -118,7 +118,7 @@ bool:ZRAdminMenu(client)
  * @param client    The client index.
  * @param slot      The menu slot selected. (starting from 0)
  */
-public ZRAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
+public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
 {
     if (action == MenuAction_Select)
     {
@@ -146,12 +146,30 @@ public ZRAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
                 // Send list of clients to infect.
                 InfectMenuClients(client);
             }
+            // Force ZSpawn.
+            case 3:
+            {
+                // We're not resending this menu.
+                resend = false;
+                
+                // Send list of clients to infect.
+                MenuClientList(client, ZSpawnForceHandle, "ZSpawn clients title");
+            }
+            // Force ZTele.
+            case 4:
+            {
+                // We're not resending this menu.
+                resend = false;
+                
+                // Send list of clients to infect.
+                MenuClientList(client, ZTeleForceHandle, "ZTele clients title");
+            }
         }
         
         // Re-send menu if selection failed.
         if (resend)
         {
-            ZRAdminMenu(client);
+            ZAdminMenu(client);
         }
     }
     
