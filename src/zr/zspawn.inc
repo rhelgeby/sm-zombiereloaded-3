@@ -398,6 +398,9 @@ public Action:ZSpawnForceCommand(client, argc)
         }
     }
     
+    // Log action to game events.
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "Admin \"%L\" forced player(s) to spawn. (zr_zspawn_force)", client);
+    
     return Plugin_Handled;
 }
 

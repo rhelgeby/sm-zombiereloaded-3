@@ -814,7 +814,7 @@
 		"en"		"Zombie Management"
 	}
 
-	"ZAdmin main force zspawn "
+	"ZAdmin main force zspawn"
 	{
 		"en"		"Force ZSpawn"
 	}
@@ -913,13 +913,13 @@
 	"ZSpawn command force successful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player {1} was successfully ZSpawned."
+		"en"		"Player {1} was successfully spawned."
 	}
 
 	"ZSpawn command force unsuccessful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player {1} couldn't be ZSpawned."
+		"en"		"Player {1} couldn't be spawned."
 	}
 
 	// ===========================
@@ -987,13 +987,13 @@
 	"ZTele command force successful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player {1} was successfully ZTele'd."
+		"en"		"Player {1} was successfully teleported."
 	}
 
 	"ZTele command force unsuccessful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player {1} couldn't be ZTele'd."
+		"en"		"Player {1} couldn't be teleported."
 	}
 
 	// ===========================

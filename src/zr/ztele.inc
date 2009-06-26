@@ -342,6 +342,9 @@ public Action:ZTeleForceCommand(client, argc)
         }
     }
     
+    // Log action to game events.
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZTele, "Force ZTele", "Admin \"%L\" forced player(s) to teleport to spawn. (zr_ztele_force)", client);
+    
     return Plugin_Handled;
 }
 

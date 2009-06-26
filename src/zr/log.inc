@@ -119,6 +119,14 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
         {
             return shortName ? strcopy(buffer, maxlen, "weaponrestrict") : strcopy(buffer, maxlen, "Weapon Restrictions");
         }
+        case LogModule_ZSpawn:
+        {
+            return shortName ? strcopy(buffer, maxlen, "zspawn") : strcopy(buffer, maxlen, "ZSpawn");
+        }
+        case LogModule_ZTele:
+        {
+            return shortName ? strcopy(buffer, maxlen, "ztele") : strcopy(buffer, maxlen, "ZTele");
+        }
     }
     
     // Module mismatch.
@@ -197,6 +205,14 @@ LogModules:LogGetModule(const String:moduleName[])
     else if (StrEqual(moduleName, "weaponrestrict", false))
     {
         return LogModule_Weaponrestrict;
+    }
+    else if (StrEqual(moduleName, "zspawn", false))
+    {
+        return LogModule_ZSpawn;
+    }
+    else if (StrEqual(moduleName, "ztele", false))
+    {
+        return LogModule_ZTele;
     }
     
     // No match.

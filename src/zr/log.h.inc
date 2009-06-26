@@ -84,7 +84,9 @@ enum LogModules
     bool:LogModule_Tools,
     bool:LogModule_Volfeatures,
     bool:LogModule_Weapons,
-    bool:LogModule_Weaponrestrict
+    bool:LogModule_Weaponrestrict,
+    bool:LogModule_ZSpawn,
+    bool:LogModule_ZTele,
 }
 
 /**
