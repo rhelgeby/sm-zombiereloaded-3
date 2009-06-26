@@ -90,6 +90,9 @@ SayHooksGetPublicChatTrigger(String:trigger[], maxlen)
     {
         strcopy(trigger, maxlen, "N/A");
     }
+    
+    // Close the handle.
+    CloseHandle(kvCore);
 }
 
 /**
@@ -126,4 +129,7 @@ SayHooksGetSilentChatTrigger(String:trigger[], maxlen)
     {
         strcopy(trigger, maxlen, "N/A");
     }
+    
+    // Close the handle.
+    CloseHandle(kvCore);
 }
