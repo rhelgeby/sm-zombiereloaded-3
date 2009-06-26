@@ -143,7 +143,7 @@
 
 	"Config command reload all stats begin"
 	{
-		"en"		"Reloading all Zombie:Reloaded config files...\n ------------------------------------------------"
+		"en"		"Reloading all Zombie:Reloaded config files...\n------------------------------------------------"
 	}
 
 	"Config command reload all stats successful"
@@ -432,37 +432,37 @@
 	"Menu main zclass"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZClass - Configure your class settings. (Command: {1})"
+		"en"		"ZClass - Configure class settings. (Command: {1})"
 	}
 
 	"Menu main zcookies"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZCookies - Toggle your personal ZR settings here. (Command: {1})"
+		"en"		"ZCookies - Toggle personal ZR settings here. (Command: {1})"
 	}
 
 	"Menu main zspawn"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZSpawn - Join late?  Use this to spawn. (Command: {1})"
+		"en"		"ZSpawn - Join late?  Spawn with this. (Command: {1})"
 	}
 
 	"Menu main ztele"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZTele - Teleport back to your spawn location. (Command: {1})"
+		"en"		"ZTele - Stuck?  Teleport back to spawn. (Command: {1})"
 	}
 
 	"Menu main zhp"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZHP - Toggle real HP display when infected. (Command: {1})"
+		"en"		"ZHP - Shows real HP as zombie. (Command: {1})"
 	}
 
 	"Menu main zmarket"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZMarket - Need a weapon?  Buy them here. (Command: {1})"
+		"en"		"ZMarket - Customize loadouts here. (Command: {1})"
 	}
 
 	// ===========================
@@ -634,7 +634,7 @@
 	"Weapons menu restrict types unrestrict all"
 	{
 		"#format"	"{1:s}"
-		"en"		"Unrestrict weapon type {1}\n "
+		"en"		"Unrestrict weapon type {1}"
 	}
 
 	"Weapons menu restrict zmarket title"
@@ -747,6 +747,25 @@
 	// Hitgroups (core)
 	// ===========================
 
+	// Menu
+
+	"Hitgroups menu hitgroups title"
+	{
+		"en"		"Hitgroup Management\nCommands: zr_hitgroup(_enable_all/_headshots_only)\nSelect a Hitgroup to Toggle:"
+	}
+
+	"Hitgroups menu hitgroups enable all"
+	{
+		"en"		"Enable All Hitgroups"
+	}
+
+	"Hitgroups menu hitgroups headshots only"
+	{
+		"en"		"Headshots Only"
+	}
+
+	// Commands
+
 	"Hitgroups command syntax"
 	{
 		"en"		"Toggles or sets if a zombie's hitgroup can be damaged. Usage: zr_hitgroup <hitgroup alias> [1/0]"
@@ -796,7 +815,7 @@
 
 	"ZAdmin main title"
 	{
-		"en"		"ZAdmin\n Select Category:"
+		"en"		"ZAdmin\nSelect Category:"
 	}
 
 	"ZAdmin main class multipliers"
@@ -807,6 +826,11 @@
 	"ZAdmin main weapons"
 	{
 		"en"		"Weapon Management"
+	}
+
+	"ZAdmin main hitgroups"
+	{
+		"en"		"Hitgroup Management"
 	}
 
 	"ZAdmin main zombie"

@@ -170,6 +170,13 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     
     // Here we know that attacker and client are different teams.
     
+    // If client is a human, then allow damage.
+    if (InfectIsClientHuman(client))
+    {
+        // Allow damage.
+        return ZRTools_Continue;
+    }
+    
     // If damage hitgroups cvar is disabled, then allow damage.
     new bool:damagehitgroups = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_HITGROUPS]);
     if (!damagehitgroups)

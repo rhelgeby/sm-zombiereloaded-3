@@ -80,14 +80,16 @@ bool:ZAdminMenu(client)
     SetMenuTitle(menu_zadmin, "%t\n ", "ZAdmin main title");
     
     decl String:classmultipliers[64];
+    decl String:weapons[64];
+    decl String:hitgroups[64];
+    decl String:infect[64];
     decl String:zspawn[64];
     decl String:ztele[64];
-    decl String:weapons[64];
-    decl String:infect[64];
     //decl String:logflags[64];
     
     Format(classmultipliers, sizeof(classmultipliers), "%t", "ZAdmin main class multipliers");
     Format(weapons, sizeof(weapons), "%t", "ZAdmin main weapons");
+    Format(hitgroups, sizeof(hitgroups), "%t", "ZAdmin main hitgroups");
     Format(infect, sizeof(infect), "%t", "ZAdmin main zombie");
     Format(zspawn, sizeof(zspawn), "%t", "ZAdmin main force zspawn");
     Format(ztele, sizeof(ztele), "%t", "ZAdmin main force ztele");
@@ -95,6 +97,7 @@ bool:ZAdminMenu(client)
     
     AddMenuItem(menu_zadmin, "classmultipliers", classmultipliers);
     AddMenuItem(menu_zadmin, "weapons", weapons);
+    AddMenuItem(menu_zadmin, "hitgroups", hitgroups);
     AddMenuItem(menu_zadmin, "infect", infect);
     AddMenuItem(menu_zadmin, "zspawn", zspawn);
     AddMenuItem(menu_zadmin, "ztele", ztele);
@@ -137,8 +140,13 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
             {
                 resend = !WeaponsMenuMain(client);
             }
-            // Zombie management.
+            // Hitgroup management.
             case 2:
+            {
+                resend = !HitgroupsMenuHitgroups(client);
+            }
+            // Zombie management.
+            case 3:
             {
                 // We're not resending this menu.
                 resend = false;
@@ -147,7 +155,7 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
                 InfectMenuClients(client);
             }
             // Force ZSpawn.
-            case 3:
+            case 4:
             {
                 // We're not resending this menu.
                 resend = false;
@@ -156,7 +164,7 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
                 MenuClientList(client, ZSpawnForceHandle, "ZSpawn clients title");
             }
             // Force ZTele.
-            case 4:
+            case 5:
             {
                 // We're not resending this menu.
                 resend = false;

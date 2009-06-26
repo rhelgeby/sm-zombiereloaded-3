@@ -807,7 +807,7 @@ InfectMenuClients(client)
     
     SetMenuTitle(menu_infect_clients, "%t\n ", "Infect menu clients title");
     
-    decl String:clientoption[MAX_NAME_LENGTH];
+    decl String:clientoption[64];
     decl String:clientuserid[8];
     
     // x = Client index.

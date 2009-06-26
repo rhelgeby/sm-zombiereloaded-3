@@ -884,15 +884,15 @@ public Action:ConfigReloadAllCommand(client, argc)
 }
 
 /**
- * Converts string of "yes" or "no" to a boolean value.
+ * Converts string of "yes/on" or "no/off" to a boolean value.
  * 
- * @param option    "yes" or "no" string to be converted.
+ * @param option    "yes/on" or "no/off" string to be converted.
  * @return          True if string is "yes", false otherwise.
  */
 stock bool:ConfigSettingToBool(const String:option[])
 {
     // If option is equal to "yes," then return true.
-    if (StrEqual(option, "yes", false))
+    if (StrEqual(option, "yes", false) || StrEqual(option, "on", false))
     {
         return true;
     }
@@ -904,8 +904,8 @@ stock bool:ConfigSettingToBool(const String:option[])
 /**
  * Converts boolean value to "yes" or "no".
  * 
- * @param bOption   True/false value to be converted to "yes"/"no", respectively.
- * @param option    Destination string buffer to store "yes" or "no" in.
+ * @param bOption   True/false value to be converted to "yes/on"/"no/off", respectively.
+ * @param option    Destination string buffer to store "yes/on" or "no/off" in.
  * @param maxlen    Length of destination string buffer (wont't be more than 4).
  * @param yesno     When true, returns "yes/no", false returns "on/off." 
  */
