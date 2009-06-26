@@ -669,6 +669,7 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     // Forward event to modules.
     ClassOnClientInfected(client, motherinfect);
     RoundEndOnClientInfected();
+    DamageOnClientInfected(client, motherinfect);
     SEffectsOnClientInfected(client);
     ZTeleOnClientInfected(client);
     ZHPOnClientInfected(client);
