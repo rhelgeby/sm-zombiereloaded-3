@@ -162,6 +162,26 @@ RoundEndOnRoundEnd(reason)
     // Get outcome of the round.
     new RoundEndOutcome:outcome = RoundEndReasonToOutcome(reason);
     
+    // Update team scores.
+    new teamscore;
+    switch(outcome)
+    {
+        // Zombies won the round.
+        case ZombiesWin:
+        {
+            // Increment T score.
+            teamscore = GetTeamScore(CS_TEAM_T);
+            SetTeamScore(CS_TEAM_T, ++teamscore);
+        }
+        // Humans won the round.
+        case HumansWin:
+        {
+            // Increment CT score.
+            teamscore = GetTeamScore(CS_TEAM_CT);
+            SetTeamScore(CS_TEAM_CT, ++teamscore);
+        }
+    }
+    
     // Display the overlay to all clients.
     RoundEndOverlayStart(outcome);
     
