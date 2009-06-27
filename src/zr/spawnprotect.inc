@@ -47,14 +47,17 @@ SpawnProtectClientInit(client)
 }
 
 /**
- * Client is spawning into the game.
+ * Client is spawning into the game. *Post
  * 
  * @param client    The client index.
- */
-SpawnProtectOnClientSpawn(client)
+ */   
+SpawnProtectOnClientSpawnPost(client)
 {
-    // Disable spawn protection on client.
-    bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
+    // If client is dead, then they are joining the server, not spawning.
+    if (!IsPlayerAlive(client))
+    {
+        return;
+    }
     
     // If timer is currently running, kill it.
     if (tSpawnProtect[client] != INVALID_HANDLE)
@@ -64,21 +67,16 @@ SpawnProtectOnClientSpawn(client)
     
     // Reset timer handle.
     tSpawnProtect[client] = INVALID_HANDLE;
-}
-
-/**
- * Client is spawning into the game. *Post
- * 
- * @param client    The client index.
- */   
-SpawnProtectOnClientSpawnPost(client)
-{
+    
     // If protect cvar is disabled, then stop.
     new bool:protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
     if (!protect)
     {
         return;
     }
+    
+    // Disable spawn protection on client.
+    bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
     
     // Start spawn protection.
     SpawnProtectStart(client);

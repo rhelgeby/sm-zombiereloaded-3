@@ -187,7 +187,6 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     WeaponsOnClientSpawn(index);
     RoundStartOnClientSpawn(index);
     SEffectsOnClientSpawn(index);
-    SpawnProtectOnClientSpawn(index);
     RespawnOnClientSpawn(index);
     ZTeleOnClientSpawn(index);
     ZHPOnClientSpawn(index);
