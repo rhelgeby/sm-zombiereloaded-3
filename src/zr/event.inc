@@ -138,6 +138,7 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     new reason = GetEventInt(event, "reason");
     
     // Forward event to modules.
+    WeaponsOnRoundEnd();
     RoundEndOnRoundEnd(reason);
     InfectOnRoundEnd();
     SEffectsOnRoundEnd();

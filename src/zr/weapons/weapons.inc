@@ -36,6 +36,15 @@
 #define WEAPONS_SLOTS_MAX 5
 
 /**
+ * @section CS:S start weapons.
+ */
+#define WEAPONS_SPAWN_T_WEAPON "weapon_glock"
+#define WEAPONS_SPAWN_CT_WEAPON "weapon_usp"
+/**
+ * @endsection
+ */
+
+/**
  * Weapon config data indexes.
  */
 enum WeaponsData
@@ -323,6 +332,15 @@ WeaponsOnClientSpawnPost(client)
 {
     // Forward event to sub-modules.
     ZMarketOnClientSpawnPost(client);
+}
+
+/**
+ * The round is ending.
+ */
+WeaponsOnRoundEnd()
+{
+    // Forward event to sub-modules.
+    RestrictOnRoundEnd();
 }
 
 /**

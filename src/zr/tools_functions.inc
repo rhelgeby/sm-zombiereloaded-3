@@ -33,7 +33,7 @@
  * @param stack         If modifying velocity, then true will stack new velocity onto the client's
  *                      current velocity, false will reset it.
  */
-ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:stack = true)
+stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:stack = true)
 {
     // If retrieve if true, then get client's velocity.
     if (!apply)
@@ -72,7 +72,7 @@ ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:stack 
  * @param client    The client index.
  * @param value     LMV value. (1.0 = default, 2.0 = double)
  */
-ToolsSetClientLMV(client, Float:fLMV)
+stock ToolsSetClientLMV(client, Float:fLMV)
 {
     // Set lagged movement value of client.
     SetEntDataFloat(client, g_iToolsLMV, fLMV / 300.0, true);
@@ -85,7 +85,7 @@ ToolsSetClientLMV(client, Float:fLMV)
  * @param ownership If true, enable will toggle the client's ownership of nightvision.
  *                  If false, enable will toggle the client's on/off state of the nightvision.
  */
-ToolsClientNightVision(client, bool:enable, bool:ownership = true)
+stock ToolsClientNightVision(client, bool:enable, bool:ownership = true)
 {
     // If ownership is true, then toggle the ownership of nightvision on client.
     if (ownership)
@@ -104,7 +104,7 @@ ToolsClientNightVision(client, bool:enable, bool:ownership = true)
  * @param client    The client index.
  * @param FOV       The field of vision of the client.
  */
-ToolsSetClientDefaultFOV(client, FOV)
+stock ToolsSetClientDefaultFOV(client, FOV)
 {
     SetEntData(client, g_iToolsDefaultFOV, FOV, 1, true);
 }
@@ -118,7 +118,7 @@ ToolsSetClientDefaultFOV(client, FOV)
  * @param value     The value of the client's score or deaths.
  * @return          The score or death count of the client, -1 if setting.
  */
-ToolsClientScore(client, bool:score = true, bool:apply = true, value = 0)
+stock ToolsClientScore(client, bool:score = true, bool:apply = true, value = 0)
 {
     if (!apply)
     {
@@ -156,7 +156,7 @@ ToolsClientScore(client, bool:score = true, bool:apply = true, value = 0)
  * @param alpha     The alpha value to set client's alpha to. (0-255)
  * @param weapons   Apply alpha to all client's weapons.
  */
-ToolsSetClientAlpha(client, alpha)
+stock ToolsSetClientAlpha(client, alpha)
 {
     // Turn rendermode on, on the client.
     SetEntityRenderMode(client, RENDER_TRANSALPHA);
@@ -174,7 +174,7 @@ ToolsSetClientAlpha(client, alpha)
  * @param client	The client index.
  * @return          The alpha value of the client. (0-255)
  */
-ToolsGetEntityAlpha(entity)
+stock ToolsGetEntityAlpha(entity)
 {
 	static bool:gotconfig = false;
 	static String:prop[32];
