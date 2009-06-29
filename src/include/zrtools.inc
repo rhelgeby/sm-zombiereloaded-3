@@ -126,6 +126,81 @@ native ZRTools_HookOnTakeDamage(client, ZRTools_OnTakeDamage:callback);
 native ZRTools_UnhookOnTakeDamage(hookid);
 
 /**
+ * Callback function for StartTouch.
+ * 
+ * @param client        The client index.
+ * @param entity        The entity index of the entity being touched.
+ */
+functag public ZRTools_Action:ZRTools_StartTouch(client, entity);
+
+/**
+ * Hooks StartTouch on a client.
+ * 
+ * @param client    The client index.
+ * @param callback  The callback function for hook.
+ * @return          The unique HookID.
+ */
+native ZRTools_HookStartTouch(client, ZRTools_StartTouch:callback);
+
+/**
+ * Unhooks StartTouch on a client.
+ * 
+ * @param hookid    The HookID of the hook.
+ * @error           Invalid HookID.
+ */
+native ZRTools_UnhookStartTouch(hookid);
+
+/**
+ * Callback function for Touch.
+ * 
+ * @param client        The client index.
+ * @param entity        The entity index of the entity being touched.
+ */
+functag public ZRTools_Action:ZRTools_Touch(client, entity);
+
+/**
+ * Hooks Touch on a client.
+ * 
+ * @param client    The client index.
+ * @param callback  The callback function for hook.
+ * @return          The unique HookID.
+ */
+native ZRTools_HookTouch(client, ZRTools_Touch:callback);
+
+/**
+ * Unhooks Touch on a client.
+ * 
+ * @param hookid    The HookID of the hook.
+ * @error           Invalid HookID.
+ */
+native ZRTools_UnhookTouch(hookid);
+
+/**
+ * Callback function for EndTouch.
+ * 
+ * @param client        The client index.
+ * @param entity        The entity index of the entity being touched.
+ */
+functag public ZRTools_Action:ZRTools_EndTouch(client, entity);
+
+/**
+ * Hooks EndTouch on a client.
+ * 
+ * @param client    The client index.
+ * @param callback  The callback function for hook.
+ * @return          The unique HookID.
+ */
+native ZRTools_HookEndTouch(client, ZRTools_EndTouch:callback);
+
+/**
+ * Unhooks EndTouch on a client.
+ * 
+ * @param hookid    The HookID of the hook.
+ * @error           Invalid HookID.
+ */
+native ZRTools_UnhookEndTouch(hookid);
+
+/**
  * Callback function for Weapon_CanUse.
  * Called when a client attempts to pick up a weapon. 
  * 
