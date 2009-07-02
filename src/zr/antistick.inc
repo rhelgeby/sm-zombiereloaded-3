@@ -37,7 +37,7 @@
 /**
  * Default player hull width.
  */
-#define ANTISTICK_DEFAULT_HULL_WIDTH 32.0
+#define ANTISTICK_DEFAULT_HULL_WIDTH GetConVarFloat(g_hCvarsList[CVAR_ANTISTICK_DEFAULT_WIDTH])
 
 /**
  * Handle to keyvalue structure where data is stored.
