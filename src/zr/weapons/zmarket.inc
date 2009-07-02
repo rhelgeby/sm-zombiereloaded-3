@@ -785,22 +785,6 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         return false;
     }
     
-    // Get client's current money.
-    new cash = AccountGetClientCash(client);
-    
-    // If client doesn't have enough money, tell them, resend menu, and then stop.
-    if (cash < itemprice)
-    {
-        // Update cookie with new weapon.
-        ZMarketSetRebuyCookie(client, slot, weapon);
-        
-        TranslationPrintToChat(client, "Weapons zmarket updated loadout");
-        return false;
-    }
-    
-    // Set client's new cash after purchase.
-    AccountSetClientCash(client, cash - itemprice);
-    
     // Check to make sure the weapon isn't restricted.
     new bool:restricted = RestrictIsWeaponRestricted(weaponindex);
     if (restricted)
@@ -818,6 +802,22 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         TranslationPrintToChat(client, "Weapons zmarket purchase max", weapon, purchasemax);
         return false;
     }
+    
+    // Get client's current money.
+    new cash = AccountGetClientCash(client);
+    
+    // If client doesn't have enough money, tell them, resend menu, and then stop.
+    if (cash < itemprice)
+    {
+        // Update cookie with new weapon.
+        ZMarketSetRebuyCookie(client, slot, weapon);
+        
+        TranslationPrintToChat(client, "Weapons zmarket updated loadout");
+        return false;
+    }
+    
+    // Set client's new cash after purchase.
+    AccountSetClientCash(client, cash - itemprice);
     
     // Get a list of the client's current weapons.
     new weapons[WeaponsSlot];
