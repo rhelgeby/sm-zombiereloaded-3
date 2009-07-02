@@ -59,7 +59,7 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
         {
             return shortName ? strcopy(buffer, maxlen, "account") : strcopy(buffer, maxlen, "Account");
         }
-        case LogModule_Antistick:
+        case LogModule_AntiStick:
         {
             return shortName ? strcopy(buffer, maxlen, "antistick") : strcopy(buffer, maxlen, "Anti-Stick");
         }
@@ -148,7 +148,7 @@ LogModules:LogGetModule(const String:moduleName[])
     }
     else if (StrEqual(moduleName, "antistick", false))
     {
-        return LogModule_Antistick;
+        return LogModule_AntiStick;
     }
     else if (StrEqual(moduleName, "config", false))
     {

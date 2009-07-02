@@ -9,13 +9,6 @@
 
 		"Offsets"
 		{
-
-			"EyeAngles"
-			{
-				"windows"	"206"
-				"linux"		"207"
-			}
-
 			"TraceAttack"
 			{
 				"windows"	"58"

@@ -126,7 +126,7 @@ enum CvarsList
     Handle:CVAR_AMBIENTSOUNDS_LENGTH,
     Handle:CVAR_AMBIENTSOUNDS_VOLUME,
     Handle:CVAR_ANTISTICK,
-    Handle:CVAR_ANTISTICK_INTERVAL,
+    Handle:CVAR_ANTISTICK_FILE_PATH,
     Handle:CVAR_SPAWNPROTECT,
     Handle:CVAR_SPAWNPROTECT_TIME,
     Handle:CVAR_SPAWNPROTECT_SPEED,
@@ -387,8 +387,8 @@ CvarsCreate()
     // ===========================
     // Anti-Stick (module)
     // ===========================
-    g_hCvarsList[CVAR_ANTISTICK]                        =    CreateConVar("zr_antistick",               "1",        "Automatically unstick players when stuck within each others' collision hull.");
-    g_hCvarsList[CVAR_ANTISTICK_INTERVAL]               =    CreateConVar("zr_antistick_interval",      "0.5",      "Time between each check for stuck players. [Dependency: zr_antistick]");
+    g_hCvarsList[CVAR_ANTISTICK]                        =    CreateConVar("zr_antistick",               "1",                    "Automatically unstick players when stuck within each others' collision hull.");
+    g_hCvarsList[CVAR_ANTISTICK_FILE_PATH]              =    CreateConVar("zr_antistick_file_path",     "data/antistick.dat",   "File to store antistick model hull data. [Dependency: zr_antistick]");
     
     // ===========================
     // Spawn Protect (module)

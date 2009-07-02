@@ -70,7 +70,7 @@ enum LogModules
     bool:LogModule_Invalid = 0,         /** Used as return value when an error occoured.*/
     
     bool:LogModule_Account,
-    bool:LogModule_Antistick,
+    bool:LogModule_AntiStick,
     bool:LogModule_Config,
     bool:LogModule_Cvars,
     bool:LogModule_Damage,

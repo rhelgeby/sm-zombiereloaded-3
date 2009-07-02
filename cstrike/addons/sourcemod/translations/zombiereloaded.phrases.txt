@@ -849,6 +849,46 @@
 	}
 
 	// ===========================
+	// AntiStick (module)
+	// ===========================
+
+	// Commands
+
+	"AntiStick command set width syntax"
+	{
+		"en"		"Sets the width of a model's hull. (See zr_antistick_list_models) Usage: zr_antistick_set_width <model/player> <width>"
+	}
+
+	"AntiStick command list models list"
+	{
+		"en"		"Showing all players' model data...\n------------------------------------------------"
+	}
+
+	"AntiStick command list models name"
+	{
+		"#format"	"{1:s},{2:s},{3:f}"
+		"en"		"Player Name: {1} | Model Name: {2} | Model Hull Width: {3}"
+	}
+
+	"AntiStick command set width successful"
+	{
+		"#format"	"{1:s},{2:f}"
+		"en"		"Model hull width for model \"{1}\" has been changed to \"{2}.\""
+	}
+
+	"AntiStick command set width invalid model"
+	{
+		"#format"	"{1:s}"
+		"en"		"Invalid model/player specified: \"{1}\""
+	}
+
+	"AntiStick command set width invalid width"
+	{
+		"#format"	"{1:f}"
+		"en"		"Invalid model hull width specified: \"{1}\""
+	}
+
+	// ===========================
 	// Spawn Protect (module)
 	// ===========================
 

@@ -135,7 +135,6 @@ public OnMapStart()
     RoundEndOnMapStart();
     InfectOnMapStart();
     SEffectsOnMapStart();
-    AntiStickOnMapStart();
     ZSpawnOnMapStart();
 }
 
@@ -161,6 +160,7 @@ public OnConfigsExecuted()
     InfectLoad();
     VEffectsLoad();
     SEffectsLoad();
+    AntiStickLoad();
     ClassLoad();
     VolLoad();
     
@@ -183,6 +183,7 @@ public OnClientPutInServer(client)
     InfectClientInit(client);
     DamageClientInit(client);
     SEffectsClientInit(client);
+    AntiStickClientInit(client);
     SpawnProtectClientInit(client);
     RespawnClientInit(client);
     ZTeleClientInit(client);
@@ -201,6 +202,7 @@ public OnClientDisconnect(client)
     WeaponsOnClientDisconnect(client);
     InfectOnClientDisconnect(client);
     DamageOnClientDisconnect(client);
+    AntiStickOnClientDisconnect(client);
     ZSpawnOnClientDisconnect(client);
     VolOnPlayerDisconnect(client);
 }

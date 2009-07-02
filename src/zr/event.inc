@@ -87,7 +87,6 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     RoundEndOnRoundStart();
     InfectOnRoundStart();
     SEffectsOnRoundStart();
-    AntiStickOnRoundStart();
     ZSpawnOnRoundStart();
     VolOnRoundStart();
     
