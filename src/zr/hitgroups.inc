@@ -506,6 +506,14 @@ public HitgroupsMenuHitgroupsHandle(Handle:menu_hitgroups, MenuAction:action, cl
  */
 public Action:HitgroupsCommand(client, argc)
 {
+    // If module is disabled, then stop.
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (!hitgroups)
+    {
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return;
+    }
+    
     // If not enough arguments given, then stop.
     if (argc < 1)
     {
@@ -584,6 +592,14 @@ public Action:HitgroupsCommand(client, argc)
  */
 public Action:HitgroupsEnableAllCommand(client, argc)
 {
+    // If module is disabled, then stop.
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (!hitgroups)
+    {
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return;
+    }
+    
     // x = Hitgroup index.
     new size = GetArraySize(arrayHitgroups);
     for (new x = 0; x < size; x++)
@@ -610,6 +626,14 @@ public Action:HitgroupsEnableAllCommand(client, argc)
  */
 public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
 {
+    // If module is disabled, then stop.
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (!hitgroups)
+    {
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return;
+    }
+    
     // x = Hitgroup index.
     new size = GetArraySize(arrayHitgroups);
     for (new x = 0; x < size; x++)
