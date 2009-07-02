@@ -511,7 +511,7 @@ public Action:HitgroupsCommand(client, argc)
     if (!hitgroups)
     {
         TranslationReplyToCommand(client, "Feature is disabled");
-        return;
+        return Plugin_Handled;
     }
     
     // If not enough arguments given, then stop.
@@ -597,7 +597,7 @@ public Action:HitgroupsEnableAllCommand(client, argc)
     if (!hitgroups)
     {
         TranslationReplyToCommand(client, "Feature is disabled");
-        return;
+        return Plugin_Handled;
     }
     
     // x = Hitgroup index.
@@ -631,7 +631,7 @@ public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
     if (!hitgroups)
     {
         TranslationReplyToCommand(client, "Feature is disabled");
-        return;
+        return Plugin_Handled;
     }
     
     // x = Hitgroup index.

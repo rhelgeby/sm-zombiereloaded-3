@@ -96,12 +96,12 @@ bool:ZAdminMenu(client)
     //Format(logflags, sizeof(logflags), "%t", "!zadmin main logflags");
     
     // Get conditions for options.
-    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    new bool:hitgroupsenabled = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
     
     // Add items to menu.
     AddMenuItem(menu_zadmin, "classmultipliers", classmultipliers);
     AddMenuItem(menu_zadmin, "weapons", weapons);
-    AddMenuItem(menu_zadmin, "hitgroups", hitgroups, MenuGetItemDraw(hitgroups));
+    AddMenuItem(menu_zadmin, "hitgroups", hitgroups, MenuGetItemDraw(hitgroupsenabled));
     AddMenuItem(menu_zadmin, "infect", infect);
     AddMenuItem(menu_zadmin, "zspawn", zspawn);
     AddMenuItem(menu_zadmin, "ztele", ztele);
