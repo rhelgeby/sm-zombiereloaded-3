@@ -578,6 +578,9 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
             // If this is the knife slot, then stop.
             if (WeaponsSlot:x == Slot_Melee)
             {
+                // Strip knife.
+                RemovePlayerItem(client, weapons[x]);
+                
                 continue;
             }
             
@@ -591,11 +594,8 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
         }
     }
     
-    // If client has no knife, give them one.
-    if (GetPlayerWeaponSlot(client, _:Slot_Melee) == -1)
-    {
-        GivePlayerItem(client, "weapon_knife");
-    }
+    // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
+    GivePlayerItem(client, "weapon_knife");
     
     // Check if consecutive infection protection is enabled.
     new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]);
