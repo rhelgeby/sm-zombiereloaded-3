@@ -78,8 +78,6 @@ INDEX
 4.7.1 . . . Glitching Through Walls
 4.7.2 . . . Jumping Through Non-Solid Props
 4.7.3 . . . Jumping Fast In Small Areas
-4.8 . . . Gameplay Guideline Suggestions
-4.8.1 . . For Servers With Unlimited Ammo And No Reloading
 
 5.0 . . Troubleshooting
 5.1 . . . Verifying Requirements
@@ -92,6 +90,7 @@ INDEX
 6.2 . . . Map Balance
 6.3 . . . Knockback Settings
 6.4 . . . Map Time
+6.5 . . . Servers With Unlimited Ammo And No Reloading
 
 7.0 . . Reporting Bugs and Improvements
 
@@ -1358,7 +1357,7 @@ Players' cash can be modified on every spawn if enabled.
 ------------------------------------
 
 With visual effects it makes it possible to give a creepy ambience. It's
-possible to change light style in maps and set dissolve effects on players
+possible to change light style in maps and set dissolve effects on players'
 bodies when they die.
 
 It supposed to have support for adding fog, but because of technical limits in
@@ -1616,12 +1615,6 @@ on their way into a tube, the humans are doomed. The tube camping problem much
 better balanced.
 
 
-4.8  GAMEPLAY GUIDELINE SUGGESTIONS
--------------------------------------
-
-4.8.1  FOR SERVERS WITH UNLIMITED AMMO AND NO RELOADING
-
-
 5.0  TROUBLESHOOTING
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1643,6 +1636,25 @@ better balanced.
 
 6.0  GAMEPLAY GUIDELINES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+6.1  BRIEFING - MAP CONFIGURATION FILES
+-----------------------------------------
+
+
+6.2  MAP BALANCE
+-------------------
+
+
+6.3  KNOCKBACK SETTINGS
+-------------------------
+
+
+6.4  MAP TIME
+---------------
+
+
+6.5  SERVERS WITH UNLIMITED AMMO AND NO RELOADING
+---------------------------------------------------
 
 
 7.0  REPORTING BUGS AND IMPROVEMENTS
