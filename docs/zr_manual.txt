@@ -5,7 +5,7 @@
                  Targets plugin version 3.0.0, (not released)
                           Written by Richard Helgeby
 
-                       Manual last modified: 2009.06.22
+                       Manual last modified: 2009.07.04
 
 ===============================================================================
 
@@ -46,19 +46,20 @@ INDEX
 3.8.2 . . . Weapon List
 3.8.3 . . . Console Commands
 3.9 . . . Hit Group Configuration
-3.10  . . Infection Settings
+3.10  . . Infection Module
 3.11  . . Damage Control Settings
-3.12  . . Money Settings
-3.13  . . Visual Effects Configuration
-3.14  . . Sound Effects Configuration
-3.15  . . Spawn Protect Configuration
-3.16  . . Re-spawn Configuration
-3.17  . . Teleport Configuration
-3.18  . . HP Display Settings
-3.19  . . Volumetric Features
-3.19.1  . . Volume Attributes
-3.19.2  . . Feature Attributes
-3.19.3  . . Anti-Camp Feature
+3.12  . . Overlay Settings
+3.13  . . Money Settings
+3.14  . . Visual Effects Configuration
+3.15  . . Sound Effects Configuration
+3.16  . . Spawn Protect Configuration
+3.17  . . Re-spawn Configuration
+3.18  . . Teleport Configuration
+3.19  . . HP Display Settings
+3.20  . . Volumetric Features
+3.20.1  . . Volume Attributes
+3.20.2  . . Feature Attributes
+3.20.3  . . Anti-Camp Feature
 
 4.0 . . How To Play
 4.1 . . . Game Rules
@@ -70,7 +71,15 @@ INDEX
 4.5.2 . . . Making Barricades
 4.5.3 . . . Playing Fair
 4.6 . . . Playing As Zombie
-4.6.1 . . . Avoiding Knockback
+4.6.1 . . . Chasing Humans
+4.6.2 . . . Avoiding Knockback
+4.6.3 . . . Taking Advantage Of The Class Skills
+4.7 . . . Physics Stuff
+4.7.1 . . . Glitching Through Walls
+4.7.2 . . . Jumping Through Non-Solid Props
+4.7.3 . . . Jumping Fast In Small Areas
+4.8 . . . Gameplay Guideline Suggestions
+4.8.1 . . For Servers With Unlimited Ammo And No Reloading
 
 5.0 . . Troubleshooting
 5.1 . . . Verifying Requirements
@@ -125,16 +134,18 @@ Developers and testers:
       SourceMod platform.
   
   Richard Helgeby
-    - Started working on the plugin from version 2.5.1. Fixed bugs and
-      made new features.
+    - Zombie:Reloaded developer. Started working on the plugin from version
+      2.5.1. Fixed bugs and made new features.
 
   Cpt. Moore
     - Owner of the Zombie:Reloaded server "Zombie World Domination by
-      SwissQuake". Made some new features, and used the server for testing.
+      SwissQuake". Helped testing and debuging issues. Made some new features,
+      and used the server for testing.
 
 
 Additional testers:
-  (...)
+  Grey Echo
+  zhelev81
 
 
 2.0  INSTALLATION
@@ -326,21 +337,22 @@ Console variables:
     Console variable:                   Default:
     ===========================================================================
     zr_log                              "1"
+    ---------------------------------------------------------------------------
         Enable logging of events in the plugin. Fatal errors or errors are
         independendt on this setting and always logged.
         
         Options:
         0 or 1
     
-    ---------------------------------------------------------------------------
     zr_log_flags                        "3"
+    ---------------------------------------------------------------------------
         A bit field that specify what event types to log.
         
         Options:
         Number - See Log Flags (3.3.1)
     
-    ---------------------------------------------------------------------------
     zr_log_module_filter                "0"
+    ---------------------------------------------------------------------------
         Enable module filtering. Only log events from listed modules will be 
         logged. Use console commands below to add or remove modules from the
         filter.
@@ -348,8 +360,8 @@ Console variables:
         Options:
         0 or 1
     
-    ---------------------------------------------------------------------------
     zr_log_ignore_console               "1"
+    ---------------------------------------------------------------------------
         Don't log events triggered by console that are executed by the console
         itself, like commands in configs. Enable this command to avoid spamming
         logs with events like weapon restrictions.
@@ -357,15 +369,15 @@ Console variables:
         Options:
         0 or 1
     
-    ---------------------------------------------------------------------------
     zr_log_print_admins                 "0"
+    ---------------------------------------------------------------------------
         Print log events to admin chat in addition to the log file.
         
         Options:
         0 or 1
     
-    ---------------------------------------------------------------------------
     zr_log_print_chat                   "0"
+    ---------------------------------------------------------------------------
         Print log events to public chat in addition to the log file.
         
         Options:
@@ -374,24 +386,25 @@ Console variables:
 Console commands:
 
     Syntax:     Argument:   Description:
-    ---------------------------------------------------------------------------
+    ===========================================================================
     zr_log_add_module <module> [modules...]
+    ---------------------------------------------------------------------------
     
         Add one or more modules to the module filter.
     
                 module      Name of the module to add.
                 modules     Additional modules to add.
 
-    ---------------------------------------------------------------------------
     zr_log_remove_module <module> [modules...]
+    ---------------------------------------------------------------------------
     
         Remove one or more modules from the module filter.
     
                 module      Name of the module to remove.
                 modules     Additional modules to remove.
 
-    ---------------------------------------------------------------------------
     zr_log_list_flags
+    ---------------------------------------------------------------------------
         List available logging flags.
 
 
@@ -578,6 +591,9 @@ The list below explains all available class attributes in detail:
             used on mother zombies. Note that zr_classes_default_mother_zombie
             setting must be set to "motherzombies" for this flag to take
             effect.
+        
+        Remember that these flags can be used in a combination (1 + 2), so
+        it's a mother zombie class for admins only.
     
     name                    text            Unique, not empty, max 64 charact.
     ---------------------------------------------------------------------------
@@ -891,6 +907,7 @@ These are the allowed attributes:
     Attribute:              Type:       Limits/Requirements:
     ===========================================================================
     weapontype              text        Separate items by ", ".
+    ---------------------------------------------------------------------------
         A list of weapon groups and the weapon type.
         
         Pre defined options:
@@ -905,8 +922,8 @@ These are the allowed attributes:
         - Projectile
         - Equipment
     
-    ---------------------------------------------------------------------------
     weaponslot              number      0 - 3.
+    ---------------------------------------------------------------------------
         The slot index the weapon resides in. Don't change this!
         
         Options:
@@ -915,24 +932,24 @@ These are the allowed attributes:
         2 - Knife slot
         3 - Equipment slot
     
-    ---------------------------------------------------------------------------
     restrictdefault         text        "yes" or "no"
+    ---------------------------------------------------------------------------
         The default restricted status of the weapon on map start.
         
         Options:
         "yes" - Enable
         "no"  - Disable
     
-    ---------------------------------------------------------------------------
     toggleable              text        "yes" or "no"
+    ---------------------------------------------------------------------------
         Enable weapon to have restrictions toggled mid-game.
         
         Options:
         "yes" - Enable
         "no"  - Disable
     
-    ---------------------------------------------------------------------------
     ammotype                text        -
+    ---------------------------------------------------------------------------
         Ammo entity that belongs to weapons. Don't change this!
     
         Options:
@@ -947,22 +964,22 @@ These are the allowed attributes:
         ammo_357sig     - P228
         ammo_57mm       - p90, fiveseven
     
-    ---------------------------------------------------------------------------
     ammoprice               number      -
+    ---------------------------------------------------------------------------
         Price of ammo for this weapon.
     
-    ---------------------------------------------------------------------------
     knockback               decimal     -
+    ---------------------------------------------------------------------------
         The knock back multiplier for the weapon. 1.0 is no change, "0.5" gives
         half knock back, and 2.0 gives double knock back.
     
-    ---------------------------------------------------------------------------
     zmarketprice            number      -
+    ---------------------------------------------------------------------------
         The price of the weapon in ZMarket. Default in configuration file is
         CS:S buymenu price.
     
-    ---------------------------------------------------------------------------
     zmarketpurchasemax      number      -
+    ---------------------------------------------------------------------------
         The max number of purchases allowed per spawn for the weapon.
 
 The file structure is Valve's key/value format where the root section is named
@@ -1017,22 +1034,23 @@ Available commands for managing weapon restrictions. These can be used in the
 main configuration file, or on a per-map basis with map configuration files.
 
     Syntax:     Argument:       Description:
-    ---------------------------------------------------------------------------
+    ===========================================================================
     zr_restrict <weapon|weapon type> [weapon|weapontype] ...
+    ---------------------------------------------------------------------------
         Restricts one or more weapons or weapon types (group).
     
                 weapon          The weapon name.
                 weapon type     The weapon type group.
     
-    ---------------------------------------------------------------------------
     zr_unrestrict
+    ---------------------------------------------------------------------------
         Unrestricts one or more weapons or weapon types (group).
     
                 weapon          The weapon name.
                 weapon type     The weapon type group.
-
-    ---------------------------------------------------------------------------
+    
     zmarket
+    ---------------------------------------------------------------------------
         Displays the ZMarket weapon menu.
 
 
@@ -1055,6 +1073,7 @@ The default file is:
     Attribute:              Type:       Limits/Requirements:
     ===========================================================================
     index                   number      -
+    ---------------------------------------------------------------------------
         The hit group index.
         
         Options:
@@ -1068,37 +1087,539 @@ The default file is:
         7 - Right Leg
         8 - Gear
     
-    ---------------------------------------------------------------------------
     damage                  text        "yes" or "no"
+    ---------------------------------------------------------------------------
         Allows damage to be done on the specified hit group for zombies.
         
         Options:
         "yes" - Allow damage
         "no"  - Ignore damage
     
-    ---------------------------------------------------------------------------
     knockback               decimal     -
+    ---------------------------------------------------------------------------
         The knock back multiplier for the hitgroup. 1.0 for no change.
 
 
-3.10 INFECTION SETTINGS
--------------------------
+3.10  INFECTION MODULE
+-----------------------
+
+The infection module handles all infection events and does random infection on
+mother zombies.
+
+Number of mother zombies is based on a ratio setting, so on server with many
+players more mother zombies will be spawned than on a server with few players.
+Server admins can adjust this ratio to tune game balance.
+
+In addition several infection effects can be enabled or disabled.
+
+These are the console variables for the infection module:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_infect_mzombie_ratio             5
+    ---------------------------------------------------------------------------
+        Mother zombie ratio. Every random N-th player is infected, in this case
+        it's 5. If it's set to 0 there will be only 1 mother zombie.
+        
+        Options:
+        0 or a positive number
+    
+    zr_infect_mzombie_respawn           0
+    ---------------------------------------------------------------------------
+        Teleport mother zombies to spawn place when infected.
+        
+        Options:
+        0 or 1
+        
+    zr_infect_spawntime_min             30.0
+    ---------------------------------------------------------------------------
+        Minimum time when mother zombies spawn. Time is in seconds.
+    
+    zr_infect_spawntime_max             50.0
+    ---------------------------------------------------------------------------
+        Maximum time when mother zombies spawn. Time is in seconds.
+    
+    zr_infect_consecutive_block         1
+    ---------------------------------------------------------------------------
+        Blocks players from being mother zombie twice in a row.
+        
+        Options:
+        0 or 1
+    
+    zr_infect_weapons_drop              1
+    ---------------------------------------------------------------------------
+        Force players to drop weapons and grenades when infected. So other
+        players can use them.
+        
+        Options:
+        0 or 1
+    
+    zr_infect_sound                     "npc/fast_zombie/fz_scream1.wav"
+    ---------------------------------------------------------------------------
+        Sound played when infected. The file path is relative to the "sounds"
+        folder. Leave blank ("") to disable infection sound.
+    
+    zr_infect_explosion                 1
+    ---------------------------------------------------------------------------
+        Enable explosion effects. If disabled, this setting will also disable
+        the following CVARs:
+        
+            zr_infect_fireball
+            zr_infect_smoke
+            zr_infect_smoke
+        
+        Options:
+        0 or 1
+    
+    zr_infect_fireball                  1
+    ---------------------------------------------------------------------------
+        Spawn a fire ball effect around the player on infection.
+        
+        Options:
+        0 or 1
+    
+    zr_infect_smoke                     1
+    ---------------------------------------------------------------------------
+        Spawn a smoke cloud effect around the player on infection.
+        
+        Options:
+        0 or 1
+    
+    zr_infect_sparks                    1
+    ---------------------------------------------------------------------------
+        Emit sparks from the the player on infection.
+        
+        Options:
+        0 or 1
+    
+    zr_infect_esplash                   1
+    ---------------------------------------------------------------------------
+        Emit an energy splash effect from the player on infection.
+        
+        Options:
+        0 or 1
+    
+    zr_infect_shake                     1
+    ---------------------------------------------------------------------------
+        Shake the player's view on infection.
+        
+        Options:
+        0 or 1
+    
+    zr_infect_shake_amp                 15.0
+    ---------------------------------------------------------------------------
+        Shake amplitude, how strong the shake is. Amplitude is in units.
+    
+    zr_infect_shake_frequency           1.0
+    ---------------------------------------------------------------------------
+        Shake frequency, how fast the shake is. Frequency is in hertz (cycles
+        per second).
+        
+    zr_infect_shake_duration            5.0
+    ---------------------------------------------------------------------------
+        Duration of shake, how long the shake lasts. Time is in seconds.
 
 
-3.11 DAMAGE CONTROL SETTINGS
+3.11  DAMAGE CONTROL SETTINGS
+------------------------------
+
+With damage control it's possible to block suicide attempts, fall damage, blast
+damage and hit group damage. See Hit Group Configuration (3.9) on how to
+configure hit groups.
+
+Damage control console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_damage_hitgroups                 1
+    ---------------------------------------------------------------------------
+        Enables hit group damage control. See Hit Group Configuration (3.9) on
+        how to configure hit groups.
+    
+        Options:
+        0 or 1
+    
+    zr_damage_block_ff                  1
+    ---------------------------------------------------------------------------
+        Block friendly fire between zombies.
+    
+        Options:
+        0 or 1
+    
+    zr_damage_block_blast               1
+    ---------------------------------------------------------------------------
+        Block blast damage inflicted on self or teammates.
+    
+        Options:
+        0 or 1
+    
+    zr_damage_suicide_zombie            0
+    ---------------------------------------------------------------------------
+        Block suicide attempts by regular zombies.
+    
+        Options:
+        0 or 1
+    
+    zr_damage_suicide_mzombie           1
+    ---------------------------------------------------------------------------
+        Block suicide attempts by mother zombies.
+    
+        Options:
+        0 or 1
+    
+    zr_damage_suicide_human             0
+    ---------------------------------------------------------------------------
+        Block suicide attempts by humans.
+    
+        Options:
+        0 or 1
+    
+    zr_damage_suicide_cmds              "kill, spectate, jointeam"
+    ---------------------------------------------------------------------------
+        List of console commands that are treated as suicide attempts. 
+        Separated by ", ". These commands are often bound to a key on the
+        client, like "m" is bound to "jointeam".
+
+
+3.12  OVERLAY SETTINGS
+------------------------
+
+Overlays are pictures displayed on players' screen on certain events. However,
+these overlays require DirectX 9 or higher to work. Players with lower DirectX
+version won't see these overlays.
+
+Since these overlays doesn't last forever, they must be redisplayed at a
+certain interval. A refresh once per seconds seems to be enough.
+
+When the round ends, overlays for either humans or zombies are displayed,
+depending on the winning team.
+
+Overlays are also used as a class attribute, like the zombie vision effect.
+
+These are the overlay console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_overlays_update_time             1.0
+    ---------------------------------------------------------------------------
+        How often overlays are refreshed. Time is in seconds.
+    
+    zr_roundend_overlay                 1
+    ---------------------------------------------------------------------------
+        Show overlays for the winning team when the round ends.
+        
+        Options:
+        0 or 1
+    
+    zr_roundend_overlays_human          "overlays/zr/humans_win"
+    ---------------------------------------------------------------------------
+        Overlay to be displayed when humans win. Path is relative to the
+        "materials" folder.
+    
+    zr_roundend_overlays_zombie         "overlays/zr/zombies_win"
+    ---------------------------------------------------------------------------
+        Overlay to be displayed when zombies win. Path is relative to the
+        "materials" folder.
+
+
+3.13  MONEY CONFIGURATION
+---------------------------
+
+Players' cash can be modified on every spawn if enabled.
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_account_cashfill                 1
+    ---------------------------------------------------------------------------
+        Resets player's cash every spawn. Cash amount is specified in
+        zr_account_cashfill_value.
+        
+        Options:
+        0 or 1
+    
+    zr_account_cashfill_value           12000
+    ---------------------------------------------------------------------------
+        How much cash to give each spawn, if enabled.
+        
+        Min: 0
+        Max: 16000
+    
+    zr_account_cashdmg                  0
+    ---------------------------------------------------------------------------
+        Attacker receives amount of cash equivalent to the damage that was
+        inflicted. If this one is enabled, the zr_account_cashfill and
+        zr_account_cashfill_value console variables is ignored.
+        
+        Options:
+        0 or 1
+
+
+3.14  VISUAL EFFECTS CONFIGURATION
+------------------------------------
+
+With visual effects it makes it possible to give a creepy ambience. It's
+possible to change light style in maps and set dissolve effects on players
+bodies when they die.
+
+It supposed to have support for adding fog, but because of technical limits in
+SourceMod it's not possible yet. For developers who wonder why, it's because
+it must be a env_fog_controller entity in the map. That entity isn't networked
+so SourceMod can't modify or create that entity type. SourceMod may get this
+feature in future versions.
+
+Console variables for visual effects:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_veffects_lightstyle              1
+    ---------------------------------------------------------------------------
+        Change light style (brightness) in the map.
+        
+        Options:
+        0 or 1
+    
+    zr_veffects_lightstyle_value        "b"
+    ---------------------------------------------------------------------------
+        Light brightness value. The brightness is represented by characters
+        from "a" to "z" where "a" is dark, "n" is normal, and "z" is bright.
+        
+        Options:
+        a (dark) to z (bright)
+    
+    zr_veffects_sky                     1
+    ---------------------------------------------------------------------------
+        Change skybox of the map.
+        
+        Options:
+        0 or 1
+    
+    zr_veffects_sky_path                "sky_borealis01up.vmt"
+    ---------------------------------------------------------------------------
+        The skybox to use, if enabled. Path is relative to "materials/skybox".
+    
+    zr_veffects_sun_disable             1
+    ---------------------------------------------------------------------------
+        Remove the sun entity on the map. Disables sun rendering on the map.
+        
+        Options:
+        0 or 1
+    
+    zr_veffects_fog                     0
+    ---------------------------------------------------------------------------
+        (NOT SUPPORTED!)
+        Enable fog on the map.
+        
+        Options:
+        0 or 1
+    
+    zr_veffects_fog_override            0
+    ---------------------------------------------------------------------------
+        (NOT SUPPORTED!)
+        Override existing fog on the map. If fog exists already on the map,
+        replace it with the new modified fog.
+        
+        Options:
+        0 or 1
+    
+    zr_veffects_fog_pcolor              "255 255 255"
+    ---------------------------------------------------------------------------
+        (NOT SUPPORTED!)
+        Sets the primary fog color. Three values from 0 to 255 separated by a
+        space, representing amount of red, green and blue.
+        
+        Examples:
+        "255 255 0" - Yellow
+        "255 0 255" - Purpule
+        "96 96 96"  - Dark grey
+    
+    zr_veffects_fog_scolor              "255 255 255"
+    ---------------------------------------------------------------------------
+        (NOT SUPPORTED!)
+        Sets the secondary fog color. Three values from 0 to 255 separated by a
+        space, representing amount of red, green and blue.
+        
+        Examples:
+        "255 255 0" - Yellow
+        "255 0 255" - Purpule
+        "96 96 96"  - Dark grey
+    
+    zr_veffects_fog_density             0.8
+    ---------------------------------------------------------------------------
+        (NOT SUPPORTED!)
+        Density (thickness) of the fog. The value is in percent, 0.0 to 1.0.
+        
+        Options:
+        0.0 to 1.0
+    
+    zr_veffects_fog_startdist           0
+    ---------------------------------------------------------------------------
+        (NOT SUPPORTED!)
+        Distance from player to start rendering foremost fog. Distance is in
+        game units (1 unit is ~1 inch). For reference, default player models
+        are ~75 units tall.
+    
+    
+    zr_veffects_fog_enddist             400
+    ---------------------------------------------------------------------------
+        (NOT SUPPORTED!)
+        Distance from player to stop rendering fog. Distance is in game units
+        (1 unit is ~1 inch). For reference, default player models are ~75 units
+        tall.
+    
+    zr_veffects_fog_farz                2000
+    ---------------------------------------------------------------------------
+        (NOT SUPPORTED!)
+        Distance to stop render everything, for optimizing purposes. This
+        should be equal to or bigger than fog end distance. There's no reason
+        to render stuff that can't be seen anyways.
+    
+    zr_veffects_ragdoll_remove          1
+    ---------------------------------------------------------------------------
+        Remove players' bodies when dying.
+        
+        Options:
+        0 or 1
+    
+    zr_veffects_ragdoll_dissolve        -1
+    ---------------------------------------------------------------------------
+        Dissolve effect to use when removing bodies.
+        
+        Options:
+        -2  No effect
+        -1  Random effect
+        0   Energy dissolve
+        1   Heavy electrical dissolve
+        2   Light electrical dissolve
+        3   Core dissolve
+    
+    zr_veffects_ragdoll_delay           0.5
+    ---------------------------------------------------------------------------
+        Time to wait before removing dead bodies. Time is in seconds.
+
+
+3.15  SOUND EFFECTS CONFIGURATION
+-----------------------------------
+
+
+3.16  SPAWN PROTECT CONFIGURATION
+-----------------------------------
+
+
+3.17  RE-SPAWN CONFIGURATION
 ------------------------------
 
 
-3.12 MONEY CONFIGURATION
---------------------------
+3.18  TELEPORT CONFIGURATION
+------------------------------
 
+
+3.19  HP DISPLAY SETTINGS
+---------------------------
+
+
+3.20  VOLUMETRIC FEATURES
+---------------------------
+
+3.20.1  VOLUME ATTRIBUTES
+
+3.20.2  FEATURE ATTRIBUTES
+
+3.20.3  ANTI-CAMP FEATURE
 
 
 4.0  HOW TO PLAY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 (how to defend against zombies, in a fair way)
-(zombie tricks)
+(zombie tricks, getting through non-solid props)
+
+4.1  GAME RULES
+-----------------
+
+
+4.2  CHAT COMMANDS
+--------------------
+
+
+4.3  USING THE MENUS
+----------------------
+
+
+4.4  TEAMWORK
+---------------
+
+
+4.5  PLAYING AS HUMAN
+-----------------------
+
+4.5.1  FINDING A PLACE TO HIDE
+
+
+4.5.2  MAKING BARRICADES
+
+
+4.5.3  PLAYING FAIR
+
+
+4.6  PLAYING AS ZOMBIE
+------------------------
+
+4.6.1  CHASING HUMANS
+
+
+4.6.2  AVOIDING KNOCKBACK
+
+
+4.6.3  TAKING ADVANTAGE OF THE CLASS SKILLS
+
+(bunny jump)
+(invisible, act as a spy and surprise humans)
+
+
+4.7  PHYSICS STUFF
+--------------------
+
+There are glitches and simplified physics stuff that can be used to get an
+advantage. Some servers may not allow all of these tricks.
+
+
+4.7.1  GLITCHING THROUGH WALLS
+
+(bad thing to do, and should not be allowed)
+
+
+4.7.2  JUMPING THROUGH NON-SOLID PROPS
+
+Realistig physics in multiplayer games is a expensive task for the server and
+it appears to be laggy for players. The solution to this is simplified physics
+on props (that is simplified collision detection).
+
+Some props aren't solid but pushes players away from it's origin (center of the
+object). This is NOT a engine bug, but a simplified solution. These props are
+useful to _delay_ zombies in barricades, but they're still fair to use. If
+players got enough speed they can run and jump through them.
+
+There's another trick that works quite good if the knock back is balanced
+correctly. If a player look straight down or straight up it's possible to
+simply walk through non-solid props, or at the same time, jumping slowly
+through them.
+
+
+4.7.3  JUMPING FAST IN SMALL AREAS
+
+When zombies have to crouch to enter a area where humans camp (like tubes and
+vents), jumping fast helps a lot.
+
+When jumping it's not easy for humans to hit the head and they can't get that
+good knock back anymore. With multiple zombies jumping fast, pushing eachother
+on their way into a tube, the humans are doomed. The tube camping problem much
+better balanced.
+
+
+4.8  GAMEPLAY GUIDELINE SUGGESTIONS
+-------------------------------------
+
+4.8.1  FOR SERVERS WITH UNLIMITED AMMO AND NO RELOADING
 
 
 5.0  TROUBLESHOOTING
