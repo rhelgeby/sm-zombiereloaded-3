@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          restrict.inc
  *  Type:          Core

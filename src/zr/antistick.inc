@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          antistick.inc
  *  Type:          Module
@@ -316,14 +316,14 @@ public Action:AntiStickSolidifyTimer(Handle:timer, any:client)
     // Loop through all client's and check if client is stuck in them.
     for (new x = 1; x <= MaxClients; x++)
     {
-        // Don't compare the same clients.
-        if (client == x)
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
         {
             continue;
         }
         
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
+        // Don't compare the same clients.
+        if (client == x)
         {
             continue;
         }
@@ -409,14 +409,14 @@ stock AntiStickBuildModelBox(client, Float:boundaries[AntiStickBoxBound][3], Flo
     new Float:eyeloc[3];
     GetClientEyePosition(client, eyeloc);
     
-    boundaries[BoxBound_FUR][2] = eyeloc[2] / 1.1; // Scale box down a bit to prevent weird false triggers.
-    boundaries[BoxBound_FUL][2] = eyeloc[2] / 1.1;
-    boundaries[BoxBound_FDR][2] = clientloc[2] + 3.0;  // Raise this a hair up to be safe.
-    boundaries[BoxBound_FDL][2] = clientloc[2] + 3.0;
-    boundaries[BoxBound_BUR][2] = eyeloc[2] / 1.1;
-    boundaries[BoxBound_BUL][2] = eyeloc[2] / 1.1;
-    boundaries[BoxBound_BDR][2] = clientloc[2] + 3.0;
-    boundaries[BoxBound_BDL][2] = clientloc[2] + 3.0;
+    boundaries[BoxBound_FUR][2] = eyeloc[2];
+    boundaries[BoxBound_FUL][2] = eyeloc[2];
+    boundaries[BoxBound_FDR][2] = clientloc[2] + 15.0;
+    boundaries[BoxBound_FDL][2] = clientloc[2] + 15.0;
+    boundaries[BoxBound_BUR][2] = eyeloc[2];
+    boundaries[BoxBound_BUL][2] = eyeloc[2];
+    boundaries[BoxBound_BDR][2] = clientloc[2] + 15.0;
+    boundaries[BoxBound_BDL][2] = clientloc[2] + 15.0;
 }
 
 /**
@@ -634,6 +634,9 @@ public Action:AntiStickSetWidthCommand(client, argc)
     
     // Set hull width.
     AntiStickSetModelHullWidth(0, model, hull_width);
+    
+    // Tell client it was successful.
+    TranslationReplyToCommand(client, "AntiStick command set width successful", model, hull_width);
     
     // Save data.
     AntiStickSaveData();

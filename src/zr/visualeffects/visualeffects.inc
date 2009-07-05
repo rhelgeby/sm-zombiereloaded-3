@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          visualeffects.inc
  *  Type:          Module

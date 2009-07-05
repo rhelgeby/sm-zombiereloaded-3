@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          zmarket.inc
  *  Type:          Module
@@ -1003,6 +1003,12 @@ stock ZMarketSetRebuyCookie(client, WeaponsSlot:slot, const String:value[])
     
     // Find cookie handle, and retrieve its value.
     new Handle:rebuycookie = FindClientCookie(rebuycookiename);
+    if (rebuycookie == INVALID_HANDLE)
+    {
+        return;
+    }
+    
+    // Set weapon to cookie.
     SetClientCookie(client, rebuycookie, value);
 }
 
