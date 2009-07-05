@@ -31,6 +31,7 @@ INDEX
 3.2 . . . Configuration Files
 3.3 . . . Logging
 3.3.1 . . . Log Flags
+3.3.2 . . . List Of Modules
 3.4 . . . Custom Map Configuration Files
 3.4.1 . . . Types
 3.5 . . . Model List
@@ -52,14 +53,17 @@ INDEX
 3.13  . . Money Settings
 3.14  . . Visual Effects Configuration
 3.15  . . Sound Effects Configuration
-3.16  . . Spawn Protect Configuration
-3.17  . . Re-spawn Configuration
-3.18  . . Teleport Configuration
-3.19  . . HP Display Settings
-3.20  . . Volumetric Features
-3.20.1  . . Volume Attributes
-3.20.2  . . Feature Attributes
-3.20.3  . . Anti-Camp Feature
+3.16  . . Respawn Configuration
+3.17  . . Spawn Command Configuration
+3.18  . . Spawn Protect Configuration
+3.19  . . Teleport Configuration
+3.20  . . HP Display Settings
+3.21  . . Jump Boost Settings
+3.22  . . Anti-Stick Configuration
+3.23  . . Volumetric Feature Configuration
+3.23.1  . . Volume Attributes
+3.23.2  . . Feature Attributes
+3.23.3  . . Anti-Camp Feature
 
 4.0 . . How To Play
 4.1 . . . Game Rules
@@ -256,7 +260,7 @@ Usage examples:
 
 Some commands have parameters that support multiple pre defined options.
 Usually it's specifying a name, a index or a predefined value. Each option is
-separated by a "|" symbol.
+separated by a "|" symbol. Only one of the options listed is used in a command.
 
 Example:
 
@@ -294,7 +298,7 @@ These are the default configuration files. The paths are relative to the
 "cstrike" folder.
 
     Type:           File:
-    ---------------------------------------------------------------------------
+    ===========================================================================
     Main conf.      cfg/sourcemod/zombiereloaded/zombiereloaded.cfg
     Map conf.       cfg/sourcemod/zombiereloaded/<mapname>.cfg
     Post map conf.  cfg/sourcemod/zombiereloaded/<mapname>.post.cfg
@@ -384,33 +388,35 @@ Console variables:
 
 Console commands:
 
-    Syntax:     Argument:   Description:
+    Syntax:
     ===========================================================================
     zr_log_add_module <module> [modules...]
     ---------------------------------------------------------------------------
+        Adds one or more modules to the module filter. Use short module names,
+        see List Of Modules (3.3.2).
+        
+        Parameters:
+            module      Name of the module to add.
+            modules     Additional modules to add.
     
-        Add one or more modules to the module filter.
-    
-                module      Name of the module to add.
-                modules     Additional modules to add.
-
     zr_log_remove_module <module> [modules...]
     ---------------------------------------------------------------------------
+        Removes one or more modules from the module filter. Use short module
+        names, see List Of Modules (3.3.2).
+        
+        Parameters:
+            module      Name of the module to remove.
+            modules     Additional modules to remove.
     
-        Remove one or more modules from the module filter.
-    
-                module      Name of the module to remove.
-                modules     Additional modules to remove.
-
-    zr_log_list_flags
+    zr_log_list
     ---------------------------------------------------------------------------
-        List available logging flags.
+        Lists current log flag settings and module filtering settings.
 
 
 3.3.1  LOG FLAGS
 
     Flag:          Bit No.: Value:  Description:
-    ---------------------------------------------------------------------------
+    ===========================================================================
     LOG_CORE_EVENTS       1 1       Log events from the plugin core like config
                                     validation and other messages.
     LOG_GAME_EVENTS       2 2       Log admin commands, console commands, and
@@ -450,6 +456,30 @@ unit converter like below can also be used.
     <http://www.unitconversion.org/numbers/decimals-to-binary-conversion.html>
 
 
+3.3.2  LIST OF MODULES
+
+    Short name:         Description:
+    ===========================================================================
+    account             Money manager
+    antistick           Anti-Stick feature
+    config              Configuration file manager
+    cvars               Console variables
+    damage              Damage manager
+    downloads           File download manager
+    hitgroups           Hit group feature
+    infect              Infection manager
+    models              Model list file manager
+    playerclasses       Class manager
+    veffects            Visual effect manager
+    seffects            Sound effect manager
+    tools               Helper functions (offsets)
+    volfeatures         Volumetric features
+    weapons             Weapon manager
+    weaponrestrict      Weapon restriction manager
+    zspawn              Spawn command manager
+    ztele               Teleport manager
+
+
 3.4  CUSTOM MAP CONFIGURATION FILES
 -------------------------------------
 
@@ -472,7 +502,7 @@ files are executed after the modules are loaded. Certain stuff have to be
 placed in this one to take effect, like changing class attributes.
 
     Type:   Executed:       Path:
-    ---------------------------------------------------------------------------
+    ===========================================================================
     Pre     Before modules  cfg/sourcemod/zombiereloaded/<mapname>.cfg
     Post    After modules   cfg/sourcemod/zombiereloaded/<mapname>.post.cfg
 
@@ -733,7 +763,7 @@ tells what attributes that failed to validate.
 Attribute flags:
 
     Attribute:              Bit:    value:
-    ---------------------------------------------
+    =============================================
     enabled                 1       1
     team                    2       2
     team_default            3       4
@@ -870,21 +900,23 @@ When multiplying, the value is always based on the original value, not
 multiplying the earlier multiplied value. This also makes it easy to restore
 the original value.
 
-Command syntax:
+Console commands:
 
-    zr_class_modify <class> <attribute> <value> [is_multiplier]
-
-Parameters:
-
-    Parameter:      Description:
+    Syntax:
+    ===========================================================================
+    zr_class_modify <class|team> <attribute> <value> [is_multiplier]
     ---------------------------------------------------------------------------
-    class:          The class to modify. Can be any class name, or one of the
-                    following team names; "all", "humans", "zombies" or
-                    "admins".
-    attribute:      The name of the class attribute.
-    value:          Value to set, or multiplier.
-    is_multiplier:  Optional. Specifies wether the original value should be
-                    multiplied by the specified value. Default is false.
+        Modify settings on one or more classes.
+        
+        Parameters:
+        class           The class to modify. Can be any class name, or one of
+                        the following team names; "all", "humans", "zombies" or
+                        "admins".
+        attribute       The name of the class attribute.
+        value           Value to set, or multiplier if a multiplier.
+        is_multiplier   Optional. Specifies wether the original value should be
+                        multiplied by the specified value. Default is false.
+
 
 3.8  WEAPON CONFIGURATION
 ---------------------------
@@ -989,7 +1021,7 @@ below.
 3.8.2  WEAPON LIST
 
     Weapon name:    Type:           Full name:
-    ---------------------------------------------------------------------------
+    ===========================================================================
     "Glock"         Pistol          Glock 18 Select Fire (9X19mm Sidearm)
     "USP"           Pistol          .45 USP (K&M .45 Tactical)
     "P228"          Pistol          228 Compact
@@ -1032,21 +1064,23 @@ below.
 Available commands for managing weapon restrictions. These can be used in the
 main configuration file, or on a per-map basis with map configuration files.
 
-    Syntax:     Argument:       Description:
+    Syntax:
     ===========================================================================
     zr_restrict <weapon|weapon type> [weapon|weapontype] ...
     ---------------------------------------------------------------------------
         Restricts one or more weapons or weapon types (group).
-    
-                weapon          The weapon name.
-                weapon type     The weapon type group.
+        
+        Parameters:
+            weapon          The weapon name.
+            weapon type     The weapon type group.
     
     zr_unrestrict
     ---------------------------------------------------------------------------
         Unrestricts one or more weapons or weapon types (group).
-    
-                weapon          The weapon name.
-                weapon type     The weapon type group.
+        
+        Parameters:
+            weapon          The weapon name.
+            weapon type     The weapon type group.
     
     zmarket
     ---------------------------------------------------------------------------
@@ -1065,6 +1099,28 @@ the root key "hitgroups" and a sub key for each hit group.
 The default file is:
 
     addons/sourcemod/configs/zr/hitgroups.txt
+
+Console commands:
+
+    Syntax:
+    ===========================================================================
+    zr_hitgroup <hitgroup name> [value]
+    ---------------------------------------------------------------------------
+        Toggles or sets if a zombie's hitgroup can be damaged.
+        
+        Parameters:
+        hitgrup name    Name of the hit group to adjust. Options:
+                        "generic"
+                        "head"
+                        "chest"
+                        "stomach"
+                        "leftarm"
+                        "rightarm"
+                        "leftleg"
+                        "rightleg"
+                        "gear"
+        value           Optional. Enable hit group damage. Default action is
+                        to toggle setting. Options: 0 or 1
 
 
 3.9.1  HIT GROUP ATTRIBUTES
@@ -1129,7 +1185,7 @@ These are the console variables for the infection module:
         
         Options:
         0 or 1
-        
+    
     zr_infect_spawntime_min             30.0
     ---------------------------------------------------------------------------
         Minimum time when mother zombies spawn. Time is in seconds.
@@ -1217,6 +1273,26 @@ These are the console variables for the infection module:
     zr_infect_shake_duration            5.0
     ---------------------------------------------------------------------------
         Duration of shake, how long the shake lasts. Time is in seconds.
+
+Console commands:
+
+    Syntax:
+    ===========================================================================
+    zr_infect <target> [respawn]
+    ---------------------------------------------------------------------------
+        Infects one or more players.
+        
+        Parameters:
+        target      A SourceMod target string with one or more players.
+        respawn     Teleport players to spawn.
+    
+    zr_human <target> [respawn]
+    ---------------------------------------------------------------------------
+        Turn one or more zombies into humans.
+        
+        Parameters:
+        target      A SourceMod target string with one or more players.
+        respawn     Teleport players to spawn.
 
 
 3.11  DAMAGE CONTROL SETTINGS
@@ -1494,36 +1570,393 @@ Console variables for visual effects:
     zr_veffects_ragdoll_delay           0.5
     ---------------------------------------------------------------------------
         Time to wait before removing dead bodies. Time is in seconds.
+    
+    zr_napalm_ignite                    1
+    ---------------------------------------------------------------------------
+        Ignite grenades that players throws. Humans need the class attribute
+        "has_napalm" set for this setting to take effect.
+        
+        Options:
+        0 or 1
 
 
 3.15  SOUND EFFECTS CONFIGURATION
 -----------------------------------
 
+The sound effects make zombies groan, in addition to the ambience sound file
+that can be played.
 
-3.16  SPAWN PROTECT CONFIGURATION
+Currently it doesn't support any other custom files than the ambience file.
+Other sounds are pre-configured. Instead it's possible to specify how often
+the sounds should be played, if enabled.
+
+The lenght of the ambience file must be specified because SourceMod currently
+can't detect lenght of MP3 files.
+
+Sound effect console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_seffects_moan                    30.0
+    ---------------------------------------------------------------------------
+        Time between emission of a moan sound from a zombie. Time is in
+        secons.
+    
+    zr_seffects_groan                   5
+    ---------------------------------------------------------------------------
+        The probability that a groan sound will be emitted from a zombie when
+        shot. Probability is in percent.
+        
+        Options:
+        0 to 100
+    
+    zr_seffects_death                   1
+    ---------------------------------------------------------------------------
+        Emit a death sound when a zombie dies.
+        
+        Options:
+        0 or 1
+    
+    zr_ambientsounds                    1
+    ---------------------------------------------------------------------------
+        Enable ambient sound (background sound) to all players during gameplay.
+        
+        Options:
+        0 or 1
+    
+    zr_ambientsounds_file               "ambient/zr/zr_ambience.mp3"
+    ---------------------------------------------------------------------------
+        The ambient sound file to play as ambienece. Path is relative to the
+        "sounds" folder, and MP3 files are supported. This sound is also
+        looped, so only use sounds that support loops. Otherwise it might sound
+        bad when it restarts.
+    
+    zr_ambientsounds_length             60.0
+    ---------------------------------------------------------------------------
+        Length of the ambient sound. Length is in seconds. If the specified
+        length is shorter than the real sound length, the sound will start play
+        again before the previous sound finished.
+    
+    zr_ambientsounds_volume             0.8
+    ---------------------------------------------------------------------------
+        Volume of ambient sound file. Volume is in percent.
+        
+        Options
+        0.0 to 1.0
+
+
+3.16  RESPAWN CONFIGURATION
+-----------------------------
+
+Respawning makes players spawn into the game again after death. It keeps the
+game active and is less annoying for people who don't like to wait too much.
+
+If the mother zombie haven't spawned yet, players are always spawned as humans.
+
+Respawn console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_respawn                          1
+    ---------------------------------------------------------------------------
+        Enable respawning.
+        
+        Options:
+        0 or 1
+    
+    zr_respawn_delay                    1.0
+    ---------------------------------------------------------------------------
+        Time after death to respawn. Time is in seconds.
+    
+    zr_respawn_team_zombie              1
+    ---------------------------------------------------------------------------
+        Respawn as zombie. If the mother zombie haven't spawned yet, players
+        are always spawned as humans.
+        
+        Options:
+        0 or 1
+    
+    zr_respawn_team_zombie_world        1
+    ---------------------------------------------------------------------------
+        Respawn as zombie if the player was killed by world damage. If the
+        mother zombie haven't spawned yet, players are always spawned as humans.
+        
+        Options:
+        0 or 1
+
+
+3.17  SPAWN COMMAND CONFIGURATION
 -----------------------------------
 
+The spawn command (zspawn) lets players join the game late, depending on the
+time configured. To avoid abusing, there are settings that decides what team to
+spawn on, and a time limit when the command is allowed to be used.
 
-3.17  RE-SPAWN CONFIGURATION
+ZSpawn console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_zspawn                           1
+    ---------------------------------------------------------------------------
+        Enable spawn command.
+        
+        Options:
+        0 or 1
+    
+    zr_zspawn_team_overrride            1
+    ---------------------------------------------------------------------------
+        Override what team to spawn to when using the spawn command. If
+        disabled it will use the zr_respawn_team_zombie setting.
+        
+        Options:
+        0 or 1
+    
+    zr_zspawn_team_zombie               0
+    ---------------------------------------------------------------------------
+        Spawn as zombie if override setting is enabled.
+        
+        Options:
+        0 or 1
+    
+    zr_zspawn_timelimit                 1
+    ---------------------------------------------------------------------------
+        Put a time limit on the spawn command.
+        
+        Options:
+        0 or 1
+    
+    zr_zspawn_timelimit_time            120.0
+    ---------------------------------------------------------------------------
+        How long the spawn command is available after round start, if enabled.
+        Time is in seconds.
+    
+    zr_zspawn_timelimit_zombie          1
+    ---------------------------------------------------------------------------
+        Spawn as zombie if using the spawn command after the time limit is up.
+        
+        Options:
+        0 or 1
+
+
+3.18  SPAWN PROTECT CONFIGURATION
+-----------------------------------
+
+Spawning humans can have spawn protection settings that give them certain
+advantages for a limited time.
+
+Spawn protection console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_spawnprotect                     1
+    ---------------------------------------------------------------------------
+        Enable spawn protection for humans.
+        
+        Options:
+        0 or 1
+    
+    zr_spawnprotect_time                10
+    ---------------------------------------------------------------------------
+        How long the spawn protection lasts. Time is in seconds.
+    
+    zr_spawnprotect_speed               600.0
+    ---------------------------------------------------------------------------
+        Running speed for spawn protected players. Normal running speed is
+        300.0.
+    
+    zr_spawnprotect_alpha               0
+    ---------------------------------------------------------------------------
+        Transparency setting on spawn protected players.
+        
+        Options:
+        0 (transparent) to 255 (fully visible)
+
+Console commands:
+
+    Syntax:
+    ===========================================================================
+    zr_zspawn_force <target> [spawn team]
+    ---------------------------------------------------------------------------
+        Force one or more players to spawn.
+        
+        Parameters:
+        target      A SourceMod target string with one or more players.
+        spawn team  Optional. Specify what team to spawn to. Options:
+                    0 (humans) or 1 (zombies)
+
+
+3.19  TELEPORT CONFIGURATION
 ------------------------------
 
+Zombie:Reloaded got a built in teleport feature with support for limits, delays
+and abuse protection.
 
-3.18  TELEPORT CONFIGURATION
-------------------------------
+Teleport console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_ztele_zombie                     1
+    ---------------------------------------------------------------------------
+        Allow zombies to use the teleporter.
+        
+        Options:
+        0 or 1
+    
+    zr_ztele_human_before               1
+    ---------------------------------------------------------------------------
+        Allow humans to use the teleporter before mother zombies have spawned.
+        
+        Options:
+        0 or 1
+    
+    zr_ztele_human_after                0
+    ---------------------------------------------------------------------------
+        Allow humans to use the teleporter after mother zombies have spawned.
+        
+        Options:
+        0 or 1
+    
+    zr_ztele_delay_zombie               3.0
+    ---------------------------------------------------------------------------
+        Delay between teleport command and teleport for zombies. Time is in
+        seconds.
+    
+    zr_ztele_delay_human                3.0
+    ---------------------------------------------------------------------------
+        Delay between teleport command and teleport for humans. Time is in
+        seconds.
+    
+    zr_ztele_max_zombie                 3
+    ---------------------------------------------------------------------------
+        Maximum number of teleports zombies can do in a round.
+    
+    zr_ztele_max_human                  1
+    ---------------------------------------------------------------------------
+        Maximum number of teleports humans can do in a round.
+    
+    zr_ztele_autocancel                 1
+    ---------------------------------------------------------------------------
+        Automatically cancel a teleport in progress if moving a certain
+        distance.
+        
+        Options:
+        0 or 1
+    
+    zr_ztele_autocancel_distance        20
+    ---------------------------------------------------------------------------
+        Maximum distance for automatically canceling a teleport. Distance is in
+        feet. 1 feet is 16 game units where a game unit is ~1 inch. For
+        reference a player is ~75 units tall.
+
+Teleport console commands:
+
+    Syntax:
+    ===========================================================================
+    zr_tele_force <client>
+    ---------------------------------------------------------------------------
+        Force teleport on a player. Does not add delay or add to teleport
+        count.
+    
+        Parameters:
+            client      Single target player. Support SourceMod targets like
+                        @me and @aim.
 
 
-3.19  HP DISPLAY SETTINGS
+3.20  HP DISPLAY SETTINGS
 ---------------------------
 
+The HP display is a small panel on the center at the bottom of the screen that
+displays players' health. Players can disable this, and the setting can also be
+saved in player cookies.
 
-3.20  VOLUMETRIC FEATURES
+Console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_zhp                              1
+    ---------------------------------------------------------------------------
+        Enable HP display for zombies.
+        
+        Options:
+        0 or 1
+    
+    zr_zhp_default                      1
+    ---------------------------------------------------------------------------
+        Default HP display state on connecting players.
+        
+        Options:
+        0 or 1
+
+
+3.21  JUMP BOOST SETTINGS
 ---------------------------
 
-3.20.1  VOLUME ATTRIBUTES
+Jump boost can be abused to do bunny hops. There are settings for configuring
+maximum allowed velocity when jumping. If maximum speed is reached no
+horizontal jump boost is applied.
 
-3.20.2  FEATURE ATTRIBUTES
+Console variables:
 
-3.20.3  ANTI-CAMP FEATURE
+    Console variable:                   Default:
+    ===========================================================================
+    zr_jumpboost_bhop_protect           1
+    ---------------------------------------------------------------------------
+        Enable bunny hop protection.
+        
+        Options:
+        0 or 1
+        
+    zr_jumpboost_bhop_max               300.0
+    ---------------------------------------------------------------------------
+        Maximum horizontal velocity allowed when jumping. Normal running speed
+        for the player is 300.0
+
+
+3.22  ANTI-STICK SETTINGS
+---------------------------
+
+The anti-stick system is a no-block system that turns off collisions on players
+that are stuck together, and enable collision again when they're unstuck.
+
+To know if players are stuck, it needs some extra info about each model used in
+the game. Data for these models are stored in the following file:
+
+    "data/antistick.dat"
+
+The file path is relative to the "sourcemod" folder.
+
+Console variables:
+
+    Console variable:                   Default:
+    ===========================================================================
+    zr_antistick                        1
+    ---------------------------------------------------------------------------
+        Enable anti-stick system
+        
+        Options:
+        0 or 1
+    
+    zr_antistick_default_width          32.0
+    ---------------------------------------------------------------------------
+        Default model width used to detect if players are stuck together. Width
+        is in game units.
+        
+        Do not touch this variable if you don't know what you're doing!
+    
+    zr_antistick_file_path              "data/antistick.dat"
+    ---------------------------------------------------------------------------
+        File to store anti-stick model hull data. Path is default to the
+        "sourcemod" folder.
+
+
+3.23  VOLUMETRIC FEATURE CONFIGURATION
+----------------------------------------
+
+3.23.1  VOLUME ATTRIBUTES
+
+3.23.2  FEATURE ATTRIBUTES
+
+3.23.3  ANTI-CAMP FEATURE
 
 
 4.0  HOW TO PLAY
