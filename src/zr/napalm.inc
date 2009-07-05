@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          napalm.inc
  *  Type:          Module 
@@ -107,8 +107,8 @@ NapalmOnWeaponFire(client, const String:weapon[])
         return;
     }
     
-    // Wait .1 seconds.
-    CreateTimer(0.1, NapalmIgniteGrenade);
+    // Wait .15 seconds.
+    CreateTimer(0.15, NapalmIgniteGrenade);
 }
 
 /**
