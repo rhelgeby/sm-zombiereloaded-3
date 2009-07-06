@@ -563,37 +563,6 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     // Check if weapons drop is enabled.
     new bool:weaponsdrop = GetConVarBool(g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]);
     
-    // Loop through array slots and force drop.
-    // x = weapon slot.
-    for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
-    {
-        // If weapon is invalid, then stop.
-        if (weapons[x] == -1)
-        {
-            continue;
-        }
-        
-        if (weaponsdrop)
-        {
-            // If this is the knife slot, then stop.
-            if (WeaponsSlot:x == Slot_Melee)
-            {
-                // Strip knife.
-                RemovePlayerItem(client, weapons[x]);
-                
-                continue;
-            }
-            
-            // Force client to drop weapon.
-            WeaponsForceClientDrop(client, weapons[x]);
-        }
-        else
-        {
-            // Strip weapon.
-            RemovePlayerItem(client, weapons[x]);
-        }
-    }
-    
     // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
     GivePlayerItem(client, "weapon_knife");
     
@@ -673,6 +642,38 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     SEffectsOnClientInfected(client);
     ZTeleOnClientInfected(client);
     ZHPOnClientInfected(client);
+    
+    // This must be after the event forwarding because it fixes a problem caused by changing models in ClassOnClientInfected.
+    // Loop through array slots and force drop.
+    // x = weapon slot.
+    for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
+    {
+        // If weapon is invalid, then stop.
+        if (weapons[x] == -1)
+        {
+            continue;
+        }
+        
+        if (weaponsdrop)
+        {
+            // If this is the knife slot, then stop.
+            if (WeaponsSlot:x == Slot_Melee)
+            {
+                // Strip knife.
+                RemovePlayerItem(client, weapons[x]);
+                
+                continue;
+            }
+            
+            // Force client to drop weapon.
+            WeaponsForceClientDrop(client, weapons[x]);
+        }
+        else
+        {
+            // Strip weapon.
+            RemovePlayerItem(client, weapons[x]);
+        }
+    }
 }
 
 /**
@@ -701,6 +702,14 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     ClassReloadPlayer(client);
     RoundEndOnClientInfected();
     ZTeleOnClientInfected(client);
+    
+    // Give human a new knife. (If you leave the old one there will be glitches with the knife positioning)
+    new knife = GetPlayerWeaponSlot(client, _:Slot_Melee);
+    if (knife != -1)
+    {
+        RemovePlayerItem(client, knife);
+        GivePlayerItem(client, "weapon_knife");
+    }
     
     // Check if we should respawn the client.
     if (respawn)
