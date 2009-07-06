@@ -556,16 +556,6 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     // Mark player as zombie.
     bZombie[client] = true;
     
-    // Get a list of all client's weapon indexes.
-    new weapons[WeaponsSlot];
-    WeaponsGetClientWeapons(client, weapons);
-    
-    // Check if weapons drop is enabled.
-    new bool:weaponsdrop = GetConVarBool(g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]);
-    
-    // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
-    GivePlayerItem(client, "weapon_knife");
-    
     // Check if consecutive infection protection is enabled.
     new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]);
     
@@ -643,6 +633,13 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     ZTeleOnClientInfected(client);
     ZHPOnClientInfected(client);
     
+    // Get a list of all client's weapon indexes.
+    new weapons[WeaponsSlot];
+    WeaponsGetClientWeapons(client, weapons);
+    
+    // Check if weapons drop is enabled.
+    new bool:weaponsdrop = GetConVarBool(g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]);
+    
     // This must be after the event forwarding because it fixes a problem caused by changing models in ClassOnClientInfected.
     // Loop through array slots and force drop.
     // x = weapon slot.
@@ -674,6 +671,9 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
             RemovePlayerItem(client, weapons[x]);
         }
     }
+    
+    // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
+    GivePlayerItem(client, "weapon_knife");
 }
 
 /**
