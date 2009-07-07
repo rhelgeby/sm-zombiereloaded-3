@@ -166,9 +166,9 @@
 #define ZR_CLASS_SPEED_MAX                  2000.0
 #define ZR_CLASS_KNOCKBACK_MIN              -30.0
 #define ZR_CLASS_KNOCKBACK_MAX              30.0
-#define ZR_CLASS_JUMP_HEIGHT_MIN            -500.0
-#define ZR_CLASS_JUMP_HEIGHT_MAX            500.0
-#define ZR_CLASS_JUMP_DISTANCE_MIN          -5.0
+#define ZR_CLASS_JUMP_HEIGHT_MIN            0.0
+#define ZR_CLASS_JUMP_HEIGHT_MAX            5.0
+#define ZR_CLASS_JUMP_DISTANCE_MIN          0.0
 #define ZR_CLASS_JUMP_DISTANCE_MAX          5.0
 /**
  * @endsection
