@@ -736,6 +736,7 @@
 		// General
 
 		"weapontype"		"All, Equipment"
+		"weaponslot"		"5"
 
 		// Restrict (core)
 

@@ -683,7 +683,7 @@
 
 	"Weapons menu zmarket loadout title"
 	{
-		"en"		"ZMarket\nMy Current Loadout:\nRebuy refers to these weapons"
+		"en"		"ZMarket\nMy Current Loadout:\nSelect weapon slot to clear.\nNote: Rebuy refers to these weapons."
 	}
 
 	"Weapons menu zmarket loadout primary"
@@ -714,6 +714,12 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Explosive: {1}"
+	}
+
+	"Weapons menu zmarket loadout nvgs"
+	{
+		"#format"	"{1:s}"
+		"en"		"NVGs: {1}"
 	}
 
 	"Weapons menu zmarket loadout empty"

@@ -31,7 +31,7 @@
 #define WEAPONS_MAX_LENGTH 32
 
 /**
- * Number of weapon slots (For CS:S)
+ * Number of REAL weapon slots (For CS:S)
  */
 #define WEAPONS_SLOTS_MAX 5
 
@@ -82,6 +82,7 @@ enum WeaponsSlot
     Slot_Melee          = 2,    /** Melee (knife) weapon slot. */
     Slot_Projectile     = 3,    /** Projectile (grenades, flashbangs, etc) weapon slot. */
     Slot_Explosive      = 4,    /** Explosive (c4) weapon slot. */
+    Slot_NVGs           = 5,    /** NVGs (fake) equipment slot. */
 }
 
 /**

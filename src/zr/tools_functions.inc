@@ -79,13 +79,31 @@ stock ToolsSetClientLMV(client, Float:fLMV)
 }
 
 /**
+ * Get nightvision values on a client.
+ * @param client    The client index.
+ * @param ownership If true, function will return the value of the client's ownership of nightvision.
+ *                  If false, function will return the value of the client's on/off state of the nightvision.
+ * @return          True if aspect of nightvision is enabled on the client, false if not.
+ */
+stock bool:ToolsGetClientNightVision(client, bool:ownership = true)
+{
+    // If ownership is true, then toggle the ownership of nightvision on client.
+    if (ownership)
+    {
+        return bool:GetEntData(client, g_iToolsHasNightVision, 1);
+    }
+    
+    return bool:GetEntData(client, g_iToolsNightVisionOn, 1);
+}
+
+/**
  * Control nightvision values on a client.
  * @param client    The client index.
  * @param enable    Enable or disable an aspect of nightvision. (see ownership parameter)
  * @param ownership If true, enable will toggle the client's ownership of nightvision.
  *                  If false, enable will toggle the client's on/off state of the nightvision.
  */
-stock ToolsClientNightVision(client, bool:enable, bool:ownership = true)
+stock ToolsSetClientNightVision(client, bool:enable, bool:ownership = true)
 {
     // If ownership is true, then toggle the ownership of nightvision on client.
     if (ownership)

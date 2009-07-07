@@ -231,7 +231,7 @@ public Action:RestrictBuyCommand(client, argc)
         return Plugin_Handled;
     }
     
-    decl String:weapon[64];
+    decl String:weapon[WEAPONS_MAX_LENGTH];
     GetCmdArg(1, weapon, sizeof(weapon));
     
     ReplaceString(weapon, sizeof(weapon), "weapon_", "");
@@ -249,7 +249,11 @@ public Action:RestrictBuyCommand(client, argc)
     // If weapon is restricted, then stop.
     if (RestrictIsWeaponRestricted(index))
     {
-        TranslationPrintToChat(client, "Weapon is restricted", weapon);
+        // Get display name.
+        decl String:weapondisplay[WEAPONS_MAX_LENGTH];
+        WeaponsGetName(index, weapondisplay, sizeof(weapondisplay));
+        
+        TranslationPrintToChat(client, "Weapon is restricted", weapondisplay);
         
         // Block command.
         return Plugin_Handled;
