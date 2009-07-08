@@ -55,7 +55,7 @@ ZHPOnCommandsCreate()
 ZHPOnCookiesCreate()
 {
     // Create ZHP cookie.
-    g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Public);
+    g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Protected);
 }
 
 /**
@@ -238,7 +238,7 @@ ZHPUpdateHUD(client)
     }
     
     // Display HP
-    TranslationPrintHUDText(client, "Display HP", health);
+    TranslationPrintHintText(client, "Display HP", health);
 }
 
 /**

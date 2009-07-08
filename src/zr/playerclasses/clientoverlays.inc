@@ -74,7 +74,7 @@ ClassOverlayOnCommandsHook()
 ClassOverlayOnCookiesCreate()
 {
     // Create overlay cookie.
-    g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Public);
+    g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Protected);
 }
 
 /**
@@ -137,7 +137,7 @@ ClassOverlayInitialize(client, const String:overlay[])
         decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
         GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
         
-        TranslationPrintHUDText(client, "Classes overlay toggle", togglecmds);
+        TranslationPrintHintText(client, "Classes overlay toggle", togglecmds);
     }
     
     // Display class overlays.

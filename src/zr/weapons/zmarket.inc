@@ -66,7 +66,7 @@ ZMarketOnCommandsCreate()
 ZMarketOnCookiesCreate()
 {
     // Create all cookies.
-    g_hZMarketAutoRebuyCookie = RegClientCookie(ZMARKET_COOKIE_AUTOREBUY, "The toggle state of auto-rebuy.", CookieAccess_Public);
+    g_hZMarketAutoRebuyCookie = RegClientCookie(ZMARKET_COOKIE_AUTOREBUY, "The toggle state of auto-rebuy.", CookieAccess_Protected);
     
     decl String:rebuycookiename[32];
     decl String:rebuycookiedesc[64];
@@ -79,7 +79,7 @@ ZMarketOnCookiesCreate()
         Format(rebuycookiedesc, sizeof(rebuycookiedesc), "Current loadout weapon for slot %d", x);
         
         // Register client cookie.
-        RegClientCookie(rebuycookiename, rebuycookiedesc, CookieAccess_Public);
+        RegClientCookie(rebuycookiename, rebuycookiedesc, CookieAccess_Protected);
     }
 }
 
