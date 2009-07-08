@@ -563,11 +563,12 @@ below.
 
 3.7.1  CLASS TYPES
 
-There are three class types; zombies, humans and admins-only. Default classes
+There are three class types; zombies, humans and admin-mode. Default classes
 are selected on the player depending on console variables and the class file.
 
-Admins-only classes are currently incomplete and will be validated, but ignored
-in the game.
+Admin-mode classes are currently incomplete and will be validated, but ignored
+in the game. This is a special mode in the game, but not the same as admin-only
+classes.
 
 
 3.7.2  CLASS ATTRIBUTES
@@ -590,12 +591,14 @@ The list below explains all available class attributes in detail:
         
             0 - Zombie classes
             1 - Human classes
-            2 - Admin-only classes
+            2 - Admin-mode classes
         
         The admin class type sets the player in spectacting like mode, but
         allows admins to walk around. They can't take or give damage, and they
         won't affect the game rules in any way. This feature is incomplete and
         classes of this type is ignored in the game.
+        
+        See the "flags" attribute for admin-only classes.
     
     team_default            boolean         0 or 1
     ---------------------------------------------------------------------------
@@ -855,7 +858,7 @@ Class console variables:
         "default"       - Use the default class in the class configuration.
         "random"        - Select a random class from the class configuration.
     
-    zr_classes_default_mother_zombie    "random"
+    zr_classes_default_mother_zombie    "motherzombies"
     ---------------------------------------------------------------------------
         Default mother zombie class to be set on mother zombies. If no mother
         zombie class exist it will use the class selected by the player.
@@ -878,8 +881,8 @@ Class console variables:
     
     zr_classes_default_admin            "random"
     ---------------------------------------------------------------------------
-        Default admin class selected for all players when they connect, if any
-        admin class found.
+        Default admin-mode class selected for all players when they connect, if
+        found. This feature is incomplete and ignored.
         
         Options:
         <class name>    - Specify a class name to use as default.
