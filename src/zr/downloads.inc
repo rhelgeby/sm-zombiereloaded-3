@@ -53,7 +53,7 @@ DownloadsLoad()
     ConfigSetConfigPath(File_Downloads, pathdownloads);
     
     // Load config from file and create array structure.
-    new bool:success = ConfigLoadConfig(File_Downloads, arrayDownloads);
+    new bool:success = ConfigLoadConfig(File_Downloads, arrayDownloads, PLATFORM_MAX_PATH);
     
     // Unexpected error, stop plugin.
     if (!success)

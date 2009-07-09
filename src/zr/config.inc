@@ -422,9 +422,10 @@ stock ConfigGetConfigAlias(ConfigFile:config, String:alias[], maxlen)
  * 
  * @param config        The config file to load.
  * @param arrayConfig   Handle of the main array containing file data.
+ * @param blocksize     The max length of the contained strings. 
  * @return              True if file was loaded successfuly, false otherwise.
  */
-stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
+stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig, blocksize = CONFIG_MAX_LENGTH)
 {
     // Get config's structure.
     new ConfigStructure:structure = ConfigGetConfigStructure(config);
@@ -441,7 +442,7 @@ stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
     if (arrayConfig == INVALID_HANDLE)
     {
         // Create array in handle.
-        arrayConfig = CreateArray(CONFIG_MAX_LENGTH);
+        arrayConfig = CreateArray(blocksize);
     }
     
     switch(structure)
@@ -463,17 +464,8 @@ stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
             
             decl String:line[PLATFORM_MAX_PATH];
             
-            while(!IsEndOfFile(hFile))
+            while(ReadFileLine(hFile, line, sizeof(line)))
             {
-                // Get current line text.
-                ReadFileLine(hFile, line, sizeof(line));
-                
-                // If line contains a ";", then stop.
-                if (StrContains(line, ";") > -1)
-                {
-                    continue;
-                }
-                
                 // Cut out comments at the end of a line.
                 if (StrContains(line, "//") > -1)
                 {
@@ -518,7 +510,7 @@ stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
                 do
                 {
                     // Create new array to store information for config entry.
-                    new Handle:arrayConfigEntry = CreateArray(CONFIG_MAX_LENGTH);
+                    new Handle:arrayConfigEntry = CreateArray(blocksize);
                     
                     // Push the key name into the config entry's array.
                     decl String:keyname[CONFIG_MAX_LENGTH];

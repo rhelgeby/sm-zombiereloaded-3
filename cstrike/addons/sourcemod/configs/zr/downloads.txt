@@ -10,6 +10,7 @@
 // ----------------------------------------------------------------------------
 // Defaults:
 // ----------------------------------------------------------------------------
+
 materials/models/player/zh/Zombie_Classic_sheet.vmt
 materials/models/player/zh/corpse1.vmt
 materials/models/player/zh/Charple1_sheet.vmt

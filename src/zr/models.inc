@@ -63,7 +63,7 @@ ModelsLoad()
     ConfigSetConfigPath(File_Models, pathmodels);
     
     // Load config from file and create array structure.
-    new bool:success = ConfigLoadConfig(File_Models, arrayModels);
+    new bool:success = ConfigLoadConfig(File_Models, arrayModels, PLATFORM_MAX_PATH);
     
     // Unexpected error, stop plugin.
     if (!success)
@@ -72,7 +72,8 @@ ModelsLoad()
     }
     
     new modelcount;
-    new modelvalidcount;
+    new modelpublicvalidcount;
+    new modelnonpublicvalidcount;
     new modelfilecount;
     
     decl String:modelbase[PLATFORM_MAX_PATH];
@@ -91,9 +92,9 @@ ModelsLoad()
     // x = model array index.
     for (new x = 0; x < models; x++)
     {
-        // Get base model path (rawline in models.txt)
-        GetArrayString(arrayModels, x, modelbase, sizeof(modelbase));
-        
+        // Get base model path, excluding the public/non-public setting.
+        ModelReturnPath(x, modelbase, sizeof(modelbase));
+        PrintToServer("PATH BASE [%s]", modelbase);
         // Explode path into pieces. (separated by "/")
         new strings = ExplodeString(modelbase, "/", baseexploded, MODELS_PATH_MAX_DEPTH, MODELS_PATH_DIR_MAX_LENGTH);
         
@@ -147,10 +148,18 @@ ModelsLoad()
             modelfilecount++;
         }
         
-        // Increment modelvalidcount if model files are valid.
+        // Increment variable if model files are valid.
         if (modelfilecount)
         {
-            modelvalidcount++;
+            // Increment proper variable.
+            if (ModelIsPublic(x))
+            {
+                modelpublicvalidcount++;
+            }
+            else
+            {
+                modelnonpublicvalidcount++;
+            }
         }
         else
         {
@@ -169,12 +178,12 @@ ModelsLoad()
     }
     
     // Log model validation info.
-    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", modelcount, modelvalidcount, modelcount - modelvalidcount);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Total: %d | Successful Public: %d | Successful Non-Public: %d | Unsuccessful: %d", modelcount, modelpublicvalidcount, modelnonpublicvalidcount, modelcount - (modelpublicvalidcount + modelnonpublicvalidcount));
     
     // If none of the model paths are valid, then log and fail.
-    if (!modelvalidcount)
+    if (!modelpublicvalidcount)
     {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "No usable model paths in %s", pathmodels);
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "No usable (public) model paths in %s", pathmodels);
     }
     
     // Set config data.
@@ -190,4 +199,119 @@ public ModelsOnConfigReload(ConfigFile:config)
 {
     // Reload models config.
     ModelsLoad();
+}
+
+/**
+ * Checks if a model is public.
+ * 
+ * @param modelindex    The array index of the model to check.
+ * @return              True if public, false if not.
+ */
+stock bool:ModelIsPublic(modelindex)
+{
+    // Get the entire model string to parse for what we need.
+    decl String:modelsetting[PLATFORM_MAX_PATH + 16];
+    GetArrayString(arrayModels, modelindex, modelsetting, sizeof(modelsetting));
+    
+    // We define this to use as little memory as possible, because the value won't be used.
+    decl String:modelpath[1];
+    decl String:strpublic[32];
+    
+    if (StrContains(modelsetting, ";") > -1)
+    {
+        // Get string index of where the public setting starts.
+        new strindex = SplitString(modelsetting, ";", modelpath, sizeof(modelpath));
+        
+        // Copy setting to new string
+        strcopy(strpublic, sizeof(strpublic), modelsetting[strindex]);
+        
+        // Trim the whitespace.
+        TrimString(strpublic);
+        
+        // If public, return true, non-public returns false.
+        return StrEqual(strpublic, "public", false);
+    }
+    
+    // If nothing is specified, assume public.
+    return true;
+}
+
+/**
+ * Returns the path of a given model index.
+ * 
+ * @param modelindex    The array index of the model.
+ * @param modelpath     The output string of the model path.
+ * @param maxlen        The maximum length of the output string.
+ */
+stock ModelReturnPath(modelindex, String:modelpath[], maxlen)
+{
+    // Get the entire model string to parse for what we need.
+    decl String:modelsetting[PLATFORM_MAX_PATH + 16];
+    GetArrayString(arrayModels, modelindex, modelsetting, sizeof(modelsetting));
+    
+    // Copy to path before split just in case the string has no ";"
+    strcopy(modelpath, maxlen, modelsetting);
+    if (StrContains(modelsetting, ";") > -1)
+    {
+        SplitString(modelsetting, ";", modelpath, maxlen);
+    }
+    
+    // Trim whitespace.
+    TrimString(modelpath);
+}
+
+/**
+ * Get a random model index in arrayModels, allows you to specify a filter.
+ * 
+ * @param modelpath     The output string of the model path.
+ * @param maxlen        The maximum length of the output string.  
+ * @param all           True to choose any of the models in the file, false to use 'publicmodels' param.
+ * @param publicmodels  True to find a random public model, false to find non-public.
+ */
+stock ModelsGetRandomModelIndex(String:modelpath[], maxlen, bool:all = true, bool:publicmodels = true)
+{
+    new modelindex = -1;
+    
+    // Return any random model.
+    if (all)
+    {
+        // Get random model index and return the string in it.
+        modelindex = GetRandomInt(0, GetArraySize(arrayModels) - 1);
+    }
+    else
+    {
+        new Handle:modelsarray = CreateArray(PLATFORM_MAX_PATH);
+        decl String:modelsetting[PLATFORM_MAX_PATH];
+        
+        // x = Array index.
+        new size = GetArraySize(arrayModels);
+        for (new x = 0; x < size; x++)
+        {
+            if (publicmodels == ModelIsPublic(x))
+            {
+                // Transfer model to temp array.
+                GetArrayString(arrayModels, x, modelsetting, sizeof(modelsetting));
+                PushArrayString(modelsarray, modelsetting);
+            }
+        }
+        
+        // y = Array index.
+        size = GetArraySize(modelsarray);
+        
+        // If there are no models then copy a blank string to the output.
+        if (size == 0)
+        {
+            strcopy(modelpath, maxlen, "");
+            return;
+        }
+        
+        // Get random model index from the temp list, and return the string in it.
+        modelindex = GetRandomInt(0, GetArraySize(modelsarray) - 1);
+        
+        // Destroy the handle.
+        CloseHandle(modelsarray);
+    }
+    
+    // Get the path to the selected model.
+    ModelReturnPath(modelindex, modelpath, maxlen);
 }

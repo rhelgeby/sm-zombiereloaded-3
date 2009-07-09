@@ -93,8 +93,7 @@ bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
     if (strcmp(modelpath, "random", false) == 0)
     {
         // TODO: Make a function that gets a random model from the specified team.
-        new randmodel = GetRandomInt(0, GetArraySize(arrayModels) - 1);
-        GetArrayString(arrayModels, randmodel, modelpath, sizeof(modelpath));
+        ModelsGetRandomModelIndex(modelpath, sizeof(modelpath), false, true);
         Format(modelpath, sizeof(modelpath), "%s.mdl", modelpath);
     }
     
