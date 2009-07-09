@@ -248,6 +248,7 @@ stock bool:ZRIsClientAdmin(client, AdminFlag:flag = Admin_Generic)
     {
         return false;
     }
+    
     // If client doesn't have the Admin_Generic flag, then stop.
     if (!GetAdminFlag(GetUserAdmin(client), flag))
     {

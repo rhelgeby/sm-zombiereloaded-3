@@ -72,6 +72,12 @@ ZSpawnOnMapStart()
  */
 ZSpawnOnClientDisconnect(client)
 {
+    // So people who are connecting that click "cancel" aren't added to the list.
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+    
     // Check if client is a bot.
     if (IsFakeClient(client))
     {
