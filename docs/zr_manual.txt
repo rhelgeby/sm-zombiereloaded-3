@@ -512,20 +512,43 @@ If not explicit specified in the module documentation, use pre configuration.
 3.5  MODEL CONFIGURATION
 --------------------------
 
+Note: Work in progress. Some flags explained in this section doesn't exist yet.
+
 The model configuration file is a list of models used on the server. Each line
-contains the path including the model name, but not file extensions, like this:
+contains the path including the model name, but not the file extension.
+
+The models listed in this file are also precached when the server starts.
+Custom models used, but not listed in this file will cause a "model not
+precached" error on the server, so remember to list them in this file.
+
+In addition certain flags can be added to mark the model as special, such as
+only for admins/donators, hidden from random selection or only for mother
+zombies.
+
+Each line is separated into two fields with ";". The last field is optional and
+if no flag is specified it's treated as a regular public model.
+
+Model line syntax:
+
+    <model path>[; flag]
+
+Available flags:
+
+    "adminonly"     - Model can only be used by admins.
+    "donator"       - Model can only be used by donators.
+    "hidden"        - Model is not included in random selections.
+    "motherzombie"  - Model can only be used on mother zombies.
+
+Example usages:
 
     models/player/zh/zh_charple001
+    models/player/zh/zh_corpse002; adminonly
+    models/player/zh/zh_zombie003; hidden
+    models/player/ics/hellknight_red/t_guerilla; motherzombie
 
 Put the list of models in:
 
     addons/sourcemod/configs/zr/models.txt
-
-The models listed in this file are precached when the server starts. Models
-used, but not listed in this file will cause a "model not precached" error on
-the server.
-
-Note that it cannot end with "/".
 
 
 3.6  DOWNLOAD LIST

@@ -2,7 +2,7 @@
 //
 //                    Zombie:Reloaded Class configuration
 //
-// Check Class Configuration (3.7) in the manual for detailed info.
+// See Class Configuration (3.7) in the manual for detailed info.
 //
 // ============================================================================
 //
