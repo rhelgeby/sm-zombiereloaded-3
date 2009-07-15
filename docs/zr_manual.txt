@@ -2048,7 +2048,7 @@ advantage. Some servers may not allow all of these tricks.
 
 4.7.2  JUMPING THROUGH NON-SOLID PROPS
 
-Realistig physics in multiplayer games is a expensive task for the server and
+Realistic physics in multiplayer games is a expensive task for the server and
 it appears to be laggy for players. The solution to this is simplified physics
 on props (that is simplified collision detection).
 
