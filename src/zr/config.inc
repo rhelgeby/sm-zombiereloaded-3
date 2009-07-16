@@ -254,7 +254,7 @@ ConfigOnModulesLoaded()
     ServerCommand("exec %s", mapconfig);
     
     // Log action.
-    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Config, "Executed post map config file: %s", path);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Config, "Post Map Configs", "Executed post map config file: %s", path);
 }
 
 /**
