@@ -423,8 +423,8 @@ CvarsCreate()
     // Volumetric Features (module)
     // ===========================
     g_hCvarsList[CVAR_VOL]                              =    CreateConVar("zr_vol",                     "1",    "Enables volumetric features.");
-    g_hCvarsList[CVAR_VOL_UPDATE_INTERVAL]              =    CreateConVar("zr_vol_update_interval",     "1.0",  "How often to update player positions and trigger events, in seconds.");
-    g_hCvarsList[CVAR_VOL_TRIGGER_INTERVAL]             =    CreateConVar("zr_vol_trigger_interval",    "1.0",  "How often to check for delayed events, in seconds. Use lower values for more precise delays.");
+    g_hCvarsList[CVAR_VOL_UPDATE_INTERVAL]              =    CreateConVar("zr_vol_update_interval",     "0.5",  "How often to update player positions and trigger events, in seconds.");
+    g_hCvarsList[CVAR_VOL_TRIGGER_INTERVAL]             =    CreateConVar("zr_vol_trigger_interval",    "0.5",  "How often to check for delayed events, in seconds. Use lower values for more precise delays.");
     
     
     // ===========================

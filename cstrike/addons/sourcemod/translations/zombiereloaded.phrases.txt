@@ -932,17 +932,19 @@
 		"ru"		"Здоровье: {1}"
 	}
 
+	// ===========================
+	// Volumetric features (module)
+	// ===========================
 
-
-	"Unfair camping"
+	"Vol Anticamp Message"
 	{
-		"en"		"An admin has marked this area as unfair, please move along, or die."
+		"en"		"This area is restricted, please move along."
 	}
 	
-	"Unfair camper slayed"
+	"Vol Slay"
 	{
 		"#format"	"{1:s},{2:d}"
-		"en"		"Player {1} has been slayed for camping in a restricted area. (ID: {2})"
+		"en"		"Player \"{1}\" has been slayed for camping in a restricted area (ID: {2})."
 	}
 
 	// ===========================
