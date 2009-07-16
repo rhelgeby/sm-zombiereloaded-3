@@ -1,0 +1,164 @@
+===============================================================================
+
+                               Zombie:Reloaded
+                        Technical Manual For Developers
+
+                 Targets plugin version 3.0.0, (not released)
+                          Written by Richard Helgeby
+
+                       Manual last modified: 2009.04.25
+
+===============================================================================
+
+INDEX
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1.0 . . Introduction
+1.1 . . . About This Manual
+1.2 . . . Briefing
+
+2.0 . . Plugin Core
+2.1 . . . Startup
+2.2 . . . Console Variables
+2.3 . . . Translations
+2.4 . . . Offsets
+2.5 . . . Models
+2.6 . . . Round End Handler
+2.7 . . . Infection Handler
+2.8 . . . Damage Handler
+
+(account)
+(say hooks)
+(menu)
+(commands)
+(events)
+
+3.0 . . Log Module
+3.1 . . . Description
+3.2 . . . Logging Flags And Filters
+3.3 . . . Formatted Log Messages
+3.4 . . . The Log Function
+
+4.0 . . Class Module
+
+5.0 . . Weapon Module
+
+6.0 . . Hit Groups Module
+
+7.0 . . Visual Effects Module
+
+8.0 . . Sound Effects Module
+
+9.0 . . Anti-Stick Module
+
+10.0  . Knockback Module
+
+11.0  . Respawn Module
+
+12.0  . Spawn Protect Module
+
+13.0  . Napalm Grenades Module
+
+14.0  . HP Display Module
+
+15.0  . Teleport Module
+
+
+1.0  INTRODUCTION
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1.1  ABOUT THIS MANUAL
+------------------------
+
+The point of this manual is to describe how the plugin technically works so
+it's easier for other developers to make modifications or join the development.
+
+
+1.2  BRIEFING
+---------------
+
+The entire plugin is based on events in the game. It has a lot of features and
+each feature is separated in its own module. Events are then forwarded to those
+modules.
+
+There are core modules and optional modules. Core modules is features and stuff
+that cannot be disabled and is required for the plugin to function. Optional
+modules like respawning, sound effects or weapon restrictions can be disabled.
+
+Each module takes care of its own task. But modules have dependency, and events
+should be forwarded in correct order. Usually only core modules depends on other
+core modules. Optional modules should be independent.
+
+
+2.0  PLUGIN CORE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+3.0  LOG MODULE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+3.1  DESCRIPTION
+------------------
+
+A plugin with a lots of modules and events needs a good logging system. The
+user should be able to decide what's logged with logging flags.
+
+
+3.2  LOGGING FLAGS AND FILTERS
+--------------------------------
+
+The log system decides what to log based on some generic log flags. Those flags
+are stored in a bid field (http://en.wikipedia.org/wiki/Bit_field).
+
+An optional module filter can be enabled to only allow log events from user
+specified modules.
+
+For performance reasons there should be a single function that tells whether it
+should log or not, based on the specified module and generic event. The logging
+function itself should not do such check and always log a message when called.
+
+(incomplete)
+
+How to store module flags? Key/values? Reading those flags MUST be cheap, so
+the overall plugin performance isn't affected.
+
+
+3.3  FORMATTED LOG MESSAGES
+-----------------------------
+
+Each log message should tell the module and what part of it that fired the
+log event. Also it must be possible to supply additional info as parameters
+(the "any:..." parameter) to be used in the log message. These are easily'
+parsed with VFormat.
+
+
+3.4  THE LOG FUNCTION
+-----------------------
+
+Syntax:
+
+LogMessageFormatted(client,
+                    const String:module[],
+                    const String:block[],
+                    const String:message[],
+                    type = LOG_FORMAT_TYPE_FULL,
+                    any:...)
+
+    Parameter:      Description:
+    ---------------------------------------------------------------------------
+    client          Specifies what client that triggered the event. Use -1 for
+                    core events.
+    module          What module the event was triggered in.
+    block           What function or block that triggered the event.
+    message         The log message. Can be formatted.
+    type            Optional. Specifies what log type to use. Defaults to full.
+    any:...         Formatting parameters for the log message.
+
+Example usage with flag check:
+
+if (LogCheckFlag(LOG_CORE_EVENTS, LOG_MODULE_CLASSES))
+{
+    LogMessageFormatted(-1, "Classes", "Load", "Warning: Maximum classes reached (%d). Skipping other classes.", _, ZR_CLASS_MAX + 1);
+}
+
+The module check will be replaced with something other than defined constants.

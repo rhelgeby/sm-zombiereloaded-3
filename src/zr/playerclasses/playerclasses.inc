@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          playerclasses.inc
  *  Type:          Core 
@@ -166,9 +166,9 @@
 #define ZR_CLASS_SPEED_MAX                  2000.0
 #define ZR_CLASS_KNOCKBACK_MIN              -30.0
 #define ZR_CLASS_KNOCKBACK_MAX              30.0
-#define ZR_CLASS_JUMP_HEIGHT_MIN            -500.0
-#define ZR_CLASS_JUMP_HEIGHT_MAX            500.0
-#define ZR_CLASS_JUMP_DISTANCE_MIN          -5.0
+#define ZR_CLASS_JUMP_HEIGHT_MIN            0.0
+#define ZR_CLASS_JUMP_HEIGHT_MAX            5.0
+#define ZR_CLASS_JUMP_DISTANCE_MIN          0.0
 #define ZR_CLASS_JUMP_DISTANCE_MAX          5.0
 /**
  * @endsection
@@ -488,7 +488,7 @@ ClassLoad(bool:keepMultipliers = false)
         ClassData[ClassCount][class_health] = KvGetNum(kvClassData, "health", ZR_CLASS_DEFAULT_HEALTH);
         ClassData[ClassCount][class_health_regen_interval] = KvGetFloat(kvClassData, "health_regen_interval", ZR_CLASS_DEFAULT_HEALTH_REGEN_INTERVAL);
         ClassData[ClassCount][class_health_regen_amount] = KvGetNum(kvClassData, "health_regen_amount", ZR_CLASS_DEFAULT_HEALTH_REGEN_AMOUNT);
-        ClassData[ClassCount][class_health_infect_gain] = KvGetNum(kvClassData, "health_infect_bonus", ZR_CLASS_DEFAULT_HEALTH_INFECT_GAIN);
+        ClassData[ClassCount][class_health_infect_gain] = KvGetNum(kvClassData, "health_infect_gain", ZR_CLASS_DEFAULT_HEALTH_INFECT_GAIN);
         ClassData[ClassCount][class_kill_bonus] = KvGetNum(kvClassData, "kill_bonus", ZR_CLASS_DEFAULT_KILL_BONUS);
         
         ClassData[ClassCount][class_speed] = KvGetFloat(kvClassData, "speed", ZR_CLASS_DEFAULT_SPEED);

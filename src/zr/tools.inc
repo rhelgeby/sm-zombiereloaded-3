@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          tools.inc
  *  Type:          Core
@@ -42,7 +42,6 @@ new g_iToolsDefaultFOV;
  * Initialize global SDKTools handles.
  */
 new Handle:g_hToolsGameConfig = INVALID_HANDLE;
-new Handle:g_hToolsEyeAngles = INVALID_HANDLE;
 new Handle:g_hToolsTerminateRound = INVALID_HANDLE;
 new Handle:g_hToolsCSWeaponDrop = INVALID_HANDLE;
 /**
@@ -108,7 +107,6 @@ ToolsFindOffsets()
     WeaponsOnOffsetsFound();
     AccountOnOffsetsFound();
     VEffectsOnOffsetsFound();
-    AntiStickOnOffsetsFound();
     ZMarketOnOffsetsFound();
 }
 
@@ -124,18 +122,6 @@ ToolsSetupGameData()
     if (g_hToolsGameConfig == INVALID_HANDLE)
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "GameData", "Can't load game config file (plugin.zombiereloaded.txt) from the gamedata directory.");
-    }
-    
-    // Prep the SDKCall for "EyeAngles."
-    StartPrepSDKCall(SDKCall_Player);
-    PrepSDKCall_SetFromConf(g_hToolsGameConfig, SDKConf_Virtual, "EyeAngles");
-    PrepSDKCall_SetReturnInfo(SDKType_QAngle, SDKPass_ByValue);
-    g_hToolsEyeAngles = EndPrepSDKCall();
-    
-    // If offset "EyeAngles" can't be found, then stop the plugin.
-    if(g_hToolsEyeAngles == INVALID_HANDLE)
-    {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "GameData", "Offset \"EyeAngles\" was not found.");
     }
     
     // Prep the SDKCall for "TerminateRound."

@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          restrict.inc
  *  Type:          Core
@@ -42,6 +42,11 @@ enum RestrictData
  * Array that stores the "HookID" to be later unhooked on player disconnect.
  */
 new g_iCanUseHookID[MAXPLAYERS + 1] = {-1, ...};
+
+/**
+ * Array to block any client from picking up weapons.
+ */
+new bool:g_bRestrictBlockWeapon[MAXPLAYERS + 1];
 
 /**
  * Array to store a list of different weapon groups
@@ -134,6 +139,9 @@ RestrictClientInit(client)
 {
     // Hook "Weapon_CanUse" on client.
     g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    
+    // Reset block weapons flag.
+    g_bRestrictBlockWeapon[client] = false;
 }
 
 /**
@@ -161,6 +169,48 @@ RestrictOnClientSpawn(client)
     // Re-hook "canuse" on client.
     ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
     g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    
+    // H4x.  Unfortunately I can't disable this flag early enough for CS:S to give start USP/Glock.
+    // So I have to give BOOTLEG weapons.  (Sorry Valve)
+    if (g_bRestrictBlockWeapon[client])
+    {
+        // Reset block weapons flag.
+        g_bRestrictBlockWeapon[client] = false;
+        
+        if (ZRIsClientOnTeam(client, CS_TEAM_T))
+        {
+            GivePlayerItem(client, WEAPONS_SPAWN_T_WEAPON);
+        }
+        else if (ZRIsClientOnTeam(client, CS_TEAM_CT))
+        {
+            GivePlayerItem(client, WEAPONS_SPAWN_CT_WEAPON);
+        }
+    }
+}
+
+/**
+ * The round is ending.
+ */
+RestrictOnRoundEnd()
+{
+    // x = Client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If client is a human, then stop.
+        if (InfectIsClientHuman(x))
+        {
+            continue;
+        }
+        
+        // Enable block weapon flag.
+        g_bRestrictBlockWeapon[x] = true;
+    }
 }
 
 /**
@@ -181,7 +231,7 @@ public Action:RestrictBuyCommand(client, argc)
         return Plugin_Handled;
     }
     
-    decl String:weapon[64];
+    decl String:weapon[WEAPONS_MAX_LENGTH];
     GetCmdArg(1, weapon, sizeof(weapon));
     
     ReplaceString(weapon, sizeof(weapon), "weapon_", "");
@@ -199,7 +249,11 @@ public Action:RestrictBuyCommand(client, argc)
     // If weapon is restricted, then stop.
     if (RestrictIsWeaponRestricted(index))
     {
-        TranslationPrintToChat(client, "Weapon is restricted", weapon);
+        // Get display name.
+        decl String:weapondisplay[WEAPONS_MAX_LENGTH];
+        WeaponsGetName(index, weapondisplay, sizeof(weapondisplay));
+        
+        TranslationPrintToChat(client, "Weapon is restricted", weapondisplay);
         
         // Block command.
         return Plugin_Handled;
@@ -545,6 +599,18 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
         return ZRTools_Continue;
     }
     
+    // If the player is a zombie, then prevent pickup.
+    if (InfectIsClientInfected(client))
+    {
+        return ZRTools_Handled;
+    }
+    
+    // If client is flagged for not picking up weapons, then stop.
+    if (g_bRestrictBlockWeapon[client])
+    {
+        return ZRTools_Handled;
+    }
+    
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
@@ -571,12 +637,6 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
     
     // If weapon is restricted, then stop.
     if (RestrictIsWeaponRestricted(index))
-    {
-        return ZRTools_Handled;
-    }
-    
-    // If the player is a zombie, then prevent pickup.
-    if (InfectIsClientInfected(client))
     {
         return ZRTools_Handled;
     }

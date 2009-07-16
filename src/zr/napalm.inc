@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          napalm.inc
  *  Type:          Module 
@@ -39,6 +39,12 @@
  */
 NapalmOnClientHurt(client, attacker, const String:weapon[])
 {
+    // If there's no attacker, then stop.
+    if (!attacker)
+    {
+        return;
+    }
+    
     // If player isn't a zombie, then stop.
     if (!InfectIsClientInfected(client))
     {
@@ -107,8 +113,8 @@ NapalmOnWeaponFire(client, const String:weapon[])
         return;
     }
     
-    // Wait .1 seconds.
-    CreateTimer(0.1, NapalmIgniteGrenade);
+    // Wait .15 seconds.
+    CreateTimer(0.15, NapalmIgniteGrenade);
 }
 
 /**

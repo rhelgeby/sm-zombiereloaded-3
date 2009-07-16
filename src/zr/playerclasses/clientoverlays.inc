@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          clientoverlays.inc
  *  Type:          Core 
@@ -73,12 +73,8 @@ ClassOverlayOnCommandsHook()
  */
 ClassOverlayOnCookiesCreate()
 {
-    // If cookie doesn't already exist, then create it.
-    g_hOverlayEnabledCookie = FindClientCookie(CLASSOVERLAY_COOKIE_ENABLED);
-    if (g_hOverlayEnabledCookie == INVALID_HANDLE)
-    {
-        g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Public);
-    }
+    // Create overlay cookie.
+    g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Protected);
 }
 
 /**
@@ -141,7 +137,7 @@ ClassOverlayInitialize(client, const String:overlay[])
         decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
         GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
         
-        TranslationPrintHUDText(client, "Classes overlay toggle", togglecmds);
+        TranslationPrintHintText(client, "Classes overlay toggle", togglecmds);
     }
     
     // Display class overlays.

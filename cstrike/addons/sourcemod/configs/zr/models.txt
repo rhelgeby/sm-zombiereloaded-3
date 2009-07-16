@@ -6,12 +6,25 @@
 // Check the weapon configuration section in the manual for detailed info.
 //
 // ============================================================================
+// Format:
+// ----------------------------------------------------------------------------
+// the/path/to/the/model	;public/hidden/adminonly/etc
+// * ;public - The model will be treated as a model that any client has access to.
+// * ;hidden - The model can only be accessed through explicit use of a player class.
+//             E.g. If a class uses the "random" setting for model, then any non-public
+//                  models will not be chosen.
+// ============================================================================
 // * Each uncommented line will be used as a model path for clients to download,
 //   and classes to utilize.
+// * If no ;<string> is specified, the model will be assumed as public.
 // ----------------------------------------------------------------------------
 // Defaults:
 // ----------------------------------------------------------------------------
-models/player/zh/zh_charple001
-models/player/zh/zh_zombie003
-models/player/zh/zh_corpse002
-models/player/ics/hellknight_red/t_guerilla
+
+models/player/zh/zh_charple001			;public
+models/player/zh/zh_zombie003			;public
+models/player/zh/zh_corpse002			;public
+models/player/ics/hellknight_red/t_guerilla	;public
+// models/player/adminmodels/1337model		;adminonly   // None of these models will be randomly chosen.
+// models/player/donatormodels/donatormodel	;donator
+// models/player/hiddenmodels/myhiddenmodel	;non-public

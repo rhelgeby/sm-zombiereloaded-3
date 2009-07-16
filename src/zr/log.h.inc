@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          log.h.inc
  *  Type:          Core
@@ -70,7 +70,7 @@ enum LogModules
     bool:LogModule_Invalid = 0,         /** Used as return value when an error occoured.*/
     
     bool:LogModule_Account,
-    bool:LogModule_Antistick,
+    bool:LogModule_AntiStick,
     bool:LogModule_Config,
     bool:LogModule_Cvars,
     bool:LogModule_Damage,
@@ -84,7 +84,9 @@ enum LogModules
     bool:LogModule_Tools,
     bool:LogModule_Volfeatures,
     bool:LogModule_Weapons,
-    bool:LogModule_Weaponrestrict
+    bool:LogModule_Weaponrestrict,
+    bool:LogModule_ZSpawn,
+    bool:LogModule_ZTele,
 }
 
 /**

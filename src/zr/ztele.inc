@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          ztele.inc
  *  Type:          Module
@@ -55,8 +55,11 @@ new g_iZTeleTimeLeft[MAXPLAYERS + 1];
  */
 ZTeleOnCommandsCreate()
 {
-    // Register ZMenu command.
+    // Register ZTele command.
     RegConsoleCmd(SAYHOOKS_KEYWORD_ZTELE, ZTeleCommand, "Teleport back to spawn if you are stuck.");
+    
+    // Register admin command to force ZTele.
+    RegAdminCmd("zr_ztele_force", ZTeleForceCommand, ADMFLAG_GENERIC, "Force ZTele on a client. Usage: zr_ztele_force <client>");
 }
 
 /**
@@ -131,9 +134,11 @@ ZTeleOnClientInfected(client)
  * Teleports a client back to spawn if conditions are met.
  * 
  * @param client    The client index.
+ * @param force     (Optional) True to force teleporting of the client, false to follow rules.
+ * @param zombie    (Optional) True to teleport instantly, false to use delay.
  * @return          True if teleport was successful, false otherwise. 
  */
-bool:ZTeleClient(client)
+bool:ZTeleClient(client, bool:force = false)
 {
     // If the client is dead, then stop.
     if (!IsPlayerAlive(client))
@@ -145,7 +150,7 @@ bool:ZTeleClient(client)
     
     // If zombie cvar is disabled and the client is a zombie, then stop.
     new bool:ztelezombie = GetConVarBool(g_hCvarsList[CVAR_ZTELE_ZOMBIE]);
-    if (infected && !ztelezombie)
+    if (!force && infected && !ztelezombie)
     {
         // Tell client they must be human to use this feature.
         TranslationPrintToChat(client, "Must be human");
@@ -155,7 +160,7 @@ bool:ZTeleClient(client)
     // If zombie has spawned, get before value, get the after value otherwise.
     // If the cvar is disabled and the client is a human, then stop.
     new bool:ztelehuman = g_bZombieSpawned ? GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_AFTER]) : GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_BEFORE]);
-    if (!infected && !ztelehuman)
+    if (!force && !infected && !ztelehuman)
     {
         // Tell client that feature is restricted at this time.
         TranslationPrintToChat(client, "ZTele restricted human");
@@ -164,7 +169,7 @@ bool:ZTeleClient(client)
     
     // If the tele limit has been reached, then stop.
     new ztelemax = infected ? GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]) : GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]);
-    if (g_iZTeleCount[client] >= ztelemax)
+    if (!force && g_iZTeleCount[client] >= ztelemax)
     {
         // Tell client that they have already reached their limit.
         TranslationPrintToChat(client, "ZTele max", ztelemax);
@@ -174,18 +179,25 @@ bool:ZTeleClient(client)
     // If teleport is already in progress, then stop.
     if (tZTele[client] != INVALID_HANDLE)
     {
-        TranslationPrintToChat(client, "ZTele in progress");
+        if (!force)
+        {
+            TranslationPrintToChat(client, "ZTele in progress");
+        }
+        
         return false;
+    }
+    
+    // If we are forcing, then teleport now and stop.
+    if (force)
+    {
+        // Teleport client to spawn.
+        ZTeleTeleportClient(client);
+        
+        return true;
     }
     
     // Get current location.
     GetClientAbsOrigin(client, g_vecZTeleOrigin[client]);
-    
-    // If timer is running, kill it.
-    if (tZTele[client] != INVALID_HANDLE)
-    {
-        KillTimer(tZTele[client]);
-    }
     
     // Set timeleft array to value of respective cvar.
     g_iZTeleTimeLeft[client] = infected ? GetConVarInt(g_hCvarsList[CVAR_ZTELE_DELAY_ZOMBIE]) : GetConVarInt(g_hCvarsList[CVAR_ZTELE_DELAY_HUMAN]);
@@ -199,12 +211,10 @@ bool:ZTeleClient(client)
     }
     else
     {
-        // Reset timer handle.
-        tZTele[client] = INVALID_HANDLE;
-        
         // Teleport client to spawn.
         ZTeleTeleportClient(client);
         
+        // If we're forcing the ZTele, then don't increment the count or print how many teleports they have used.
         // Tell client they've been teleported.
         TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
         
@@ -227,7 +237,119 @@ ZTeleTeleportClient(client)
 }
 
 /**
- * Command callback (zmenu)
+ * Menu callback (ztele_force)
+ * Forces ZTele on a client.
+ * 
+ * @param menu      The menu handle.
+ * @param action    Action client is doing in menu.
+ * @param client    The client index.
+ * @param slot      The menu slot selected. (starting from 0)
+ */
+public ZTeleForceHandle(Handle:menu_ztele_force, MenuAction:action, client, slot)
+{
+    // Client selected an option.
+    if (action == MenuAction_Select)
+    {
+        // Get the client index of the selected client.
+        new target = MenuGetClientIndex(menu_ztele_force, slot);
+        
+        // Get the target's name for future use.
+        decl String:targetname[MAX_NAME_LENGTH];
+        GetClientName(target, targetname, sizeof(targetname));
+        
+        // Force ZSpawn on the target.
+        new bool:success = ZTeleClient(target, true);
+        
+        // Tell admin the outcome of the action.
+        if (success)
+        {
+            TranslationReplyToCommand(client, "ZTele command force successful", targetname);
+        }
+        else
+        {
+            TranslationReplyToCommand(client, "ZTele command force unsuccessful", targetname);
+        }
+        
+        // Re-send the menu.
+        MenuClientList(client, ZTeleForceHandle, "ZTele clients title");
+    }
+    // Client closed the menu.
+    if (action == MenuAction_Cancel)
+    {
+        // Client hit "Back" button.
+        if (slot == MenuCancel_ExitBack)
+        {
+            // Re-open admin menu.
+            ZAdminMenu(client);
+        }
+    }
+    // Client exited menu.
+    if (action == MenuAction_End)
+    {
+        CloseHandle(menu_ztele_force);
+    }
+}
+
+/**
+ * Command callback (zr_ztele_force)
+ * Force ZSpawn on a client.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZTeleForceCommand(client, argc)
+{
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "ZTele command force syntax");
+        return Plugin_Handled;
+    }
+    
+    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
+    new targets[MAXPLAYERS], bool:tn_is_ml, result;
+    
+    // Get targetname.
+    GetCmdArg(1, target, sizeof(target));
+    
+    // Find a target.
+    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_ALIVE, targetname, sizeof(targetname), tn_is_ml);
+        
+    // Check if there was a problem finding a client.
+    if (result <= 0)
+    {
+        ZRReplyToTargetError(client, result);
+        return Plugin_Handled;
+    }
+    
+    // x = Client index.
+    for (new x = 0; x < result; x++)
+    {
+        // Give client the item.
+        new bool:success = ZTeleClient(targets[x], true);
+        
+        // Tell admin the outcome of the command if only 1 client was targetted.
+        if (result == 1)
+        {
+            if (success)
+            {
+                TranslationReplyToCommand(client, "ZTele command force successful", targetname);
+            }
+            else
+            {
+                TranslationReplyToCommand(client, "ZTele command force unsuccessful", targetname);
+            }
+        }
+    }
+    
+    // Log action to game events.
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZTele, "Force ZTele", "Admin \"%L\" forced player(s) to teleport to spawn. (zr_ztele_force)", client);
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback (ztele)
  * Teleport back to spawn if you are stuck.
  * 
  * @param client    The client index.

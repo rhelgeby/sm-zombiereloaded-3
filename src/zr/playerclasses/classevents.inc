@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          classevents.inc
  *  Type:          Core
@@ -93,6 +93,12 @@ ClassOnClientSpawn(client)
     GetClientModel(client, originalmodel, sizeof(originalmodel));
     strcopy(ClassOriginalPlayerModel[client], PLATFORM_MAX_PATH, originalmodel);
     
+    // Exclude special class flags like mother zombies and admin classes.
+    new denyflags = ZR_CLASS_SPECIALFLAGS;
+    
+    // Allow admin classes if admin.
+    denyflags -= ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+    
     // Get random class setting.
     new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
     
@@ -101,15 +107,15 @@ ClassOnClientSpawn(client)
     if (randomclass || StrEqual(steamid, "BOT"))
     {
         // Get random classes for each type.
-        new randomzombie = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES);
-        new randomhuman = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS);
+        new randomzombie = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, denyflags);
+        new randomhuman = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS, _, _, denyflags);
         
-        // Mark zombie class as selected.
+        // Save selected zombie class index.
         ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = randomzombie;
         ClassGetName(randomzombie, classname, sizeof(classname), ZR_CLASS_TEAM_ZOMBIES);
         TranslationPrintToChat(client, "Classes random assignment", classname);
         
-        // Mark human class as selected.
+        // Save selected human class index.
         ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = randomhuman;
         ClassGetName(randomhuman, classname, sizeof(classname), ZR_CLASS_TEAM_HUMANS);
         TranslationPrintToChat(client, "Classes random assignment", classname);
@@ -193,11 +199,29 @@ ClassOnClientInfected(client, bool:motherzombie = false)
         {
             // Get random regular zombie class. Remove admin flag if admin.
             motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, ZR_CLASS_SPECIALFLAGS - isadmin);
+            
+            // Validate index. Do not change class if it's invalid.
+            if (ClassValidateIndex(motherindex))
+            {   
+                // Change class.
+                classindex = motherindex;
+            }
         }
         else if (StrEqual(motherzombiesetting, "motherzombies", false))
         {
-            // Get random mother zombie class.
-            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, ZR_CLASS_FLAG_MOTHER_ZOMBIE, isadmin);
+            // Get random mother zombie class. Include admin classes if admin.
+            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, ZR_CLASS_FLAG_MOTHER_ZOMBIE + isadmin, ZR_CLASS_FLAG_ADMIN_ONLY - isadmin);
+            
+            // Validate index. Do not change class if it's invalid.
+            if (ClassValidateIndex(motherindex))
+            {
+                // This is a mother zombie class. Reset mother zombie setting so
+                // class skills aren't improved.
+                motherzombie = false;
+                
+                // Change class.
+                classindex = motherindex;
+            }
         }
         else
         {

@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          weapons.inc
  *  Type:          Core 
@@ -31,9 +31,18 @@
 #define WEAPONS_MAX_LENGTH 32
 
 /**
- * Number of weapon slots (For CS:S)
+ * Number of REAL weapon slots (For CS:S)
  */
 #define WEAPONS_SLOTS_MAX 5
+
+/**
+ * @section CS:S start weapons.
+ */
+#define WEAPONS_SPAWN_T_WEAPON "weapon_glock"
+#define WEAPONS_SPAWN_CT_WEAPON "weapon_usp"
+/**
+ * @endsection
+ */
 
 /**
  * Weapon config data indexes.
@@ -73,6 +82,7 @@ enum WeaponsSlot
     Slot_Melee          = 2,    /** Melee (knife) weapon slot. */
     Slot_Projectile     = 3,    /** Projectile (grenades, flashbangs, etc) weapon slot. */
     Slot_Explosive      = 4,    /** Explosive (c4) weapon slot. */
+    Slot_NVGs           = 5,    /** NVGs (fake) equipment slot. */
 }
 
 /**
@@ -323,6 +333,15 @@ WeaponsOnClientSpawnPost(client)
 {
     // Forward event to sub-modules.
     ZMarketOnClientSpawnPost(client);
+}
+
+/**
+ * The round is ending.
+ */
+WeaponsOnRoundEnd()
+{
+    // Forward event to sub-modules.
+    RestrictOnRoundEnd();
 }
 
 /**

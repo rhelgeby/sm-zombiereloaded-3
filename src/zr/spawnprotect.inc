@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          spawnprotect.inc
  *  Type:          Module
@@ -47,14 +47,17 @@ SpawnProtectClientInit(client)
 }
 
 /**
- * Client is spawning into the game.
+ * Client is spawning into the game. *Post
  * 
  * @param client    The client index.
- */
-SpawnProtectOnClientSpawn(client)
+ */   
+SpawnProtectOnClientSpawnPost(client)
 {
-    // Disable spawn protection on client.
-    bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
+    // If client is dead, then they are joining the server, not spawning.
+    if (!IsPlayerAlive(client))
+    {
+        return;
+    }
     
     // If timer is currently running, kill it.
     if (tSpawnProtect[client] != INVALID_HANDLE)
@@ -64,21 +67,16 @@ SpawnProtectOnClientSpawn(client)
     
     // Reset timer handle.
     tSpawnProtect[client] = INVALID_HANDLE;
-}
-
-/**
- * Client is spawning into the game. *Post
- * 
- * @param client    The client index.
- */   
-SpawnProtectOnClientSpawnPost(client)
-{
+    
     // If protect cvar is disabled, then stop.
     new bool:protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
     if (!protect)
     {
         return;
     }
+    
+    // Disable spawn protection on client.
+    bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
     
     // Start spawn protection.
     SpawnProtectStart(client);
@@ -145,7 +143,7 @@ SpawnProtectStart(client)
     TranslationPrintToChat(client, "Spawn protection begin", protect_time);
     
     // Send time left in a hud message.
-    TranslationPrintHUDText(client, "Spawn Protect", pSpawnProtectTime[client]);
+    TranslationPrintHintText(client, "Spawn Protect", pSpawnProtectTime[client]);
     
     // Start repeating timer.
     tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -179,7 +177,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
     pSpawnProtectTime[client]--;
     
     // Print time left to client.
-    TranslationPrintHUDText(client, "Spawn Protect", pSpawnProtectTime[client]);
+    TranslationPrintHintText(client, "Spawn Protect", pSpawnProtectTime[client]);
     
     // Time has expired.
     if (pSpawnProtectTime[client] <= 0)
@@ -188,7 +186,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
         bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
         
         // Tell client spawn protection is over.
-        TranslationPrintHUDText(client, "Spawn protection end");
+        TranslationPrintHintText(client, "Spawn protection end");
         
         // Fix attributes.
         ToolsSetClientAlpha(client, ClassGetAlphaInitial(client));

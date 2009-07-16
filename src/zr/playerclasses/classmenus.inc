@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          classmenus.inc
  *  Type:          Core
@@ -384,7 +384,7 @@ public ClassTeamSelectHandle(Handle:menu, MenuAction:action, client, slot)
         {
             if (slot == MenuCancel_ExitBack)
             {
-                ZRAdminMenu(client);
+                ZAdminMenu(client);
             }
         }
     }

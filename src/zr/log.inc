@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          log.inc
  *  Type:          Core
@@ -59,7 +59,7 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
         {
             return shortName ? strcopy(buffer, maxlen, "account") : strcopy(buffer, maxlen, "Account");
         }
-        case LogModule_Antistick:
+        case LogModule_AntiStick:
         {
             return shortName ? strcopy(buffer, maxlen, "antistick") : strcopy(buffer, maxlen, "Anti-Stick");
         }
@@ -119,6 +119,14 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
         {
             return shortName ? strcopy(buffer, maxlen, "weaponrestrict") : strcopy(buffer, maxlen, "Weapon Restrictions");
         }
+        case LogModule_ZSpawn:
+        {
+            return shortName ? strcopy(buffer, maxlen, "zspawn") : strcopy(buffer, maxlen, "ZSpawn");
+        }
+        case LogModule_ZTele:
+        {
+            return shortName ? strcopy(buffer, maxlen, "ztele") : strcopy(buffer, maxlen, "ZTele");
+        }
     }
     
     // Module mismatch.
@@ -140,7 +148,7 @@ LogModules:LogGetModule(const String:moduleName[])
     }
     else if (StrEqual(moduleName, "antistick", false))
     {
-        return LogModule_Antistick;
+        return LogModule_AntiStick;
     }
     else if (StrEqual(moduleName, "config", false))
     {
@@ -197,6 +205,14 @@ LogModules:LogGetModule(const String:moduleName[])
     else if (StrEqual(moduleName, "weaponrestrict", false))
     {
         return LogModule_Weaponrestrict;
+    }
+    else if (StrEqual(moduleName, "zspawn", false))
+    {
+        return LogModule_ZSpawn;
+    }
+    else if (StrEqual(moduleName, "ztele", false))
+    {
+        return LogModule_ZTele;
     }
     
     // No match.

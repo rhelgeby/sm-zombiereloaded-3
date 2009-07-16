@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          hitgroup.inc
  *  Type:          Core
@@ -350,6 +350,154 @@ stock Float:HitgroupsGetKnockback(index)
 }
 
 /**
+ * Sends list of hitgroups to client.
+ *  
+ * @param client    The client index.
+ * @return          True if sent successfully, false if not.
+ */
+bool:HitgroupsMenuHitgroups(client)
+{
+    // If hitgroups is disabled, then stop.
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (!hitgroups)
+    {
+        return false;
+    }
+    
+    // Create menu handle.
+    new Handle:menu_hitgroups = CreateMenu(HitgroupsMenuHitgroupsHandle);
+    
+    // Set client as translation target.
+    SetGlobalTransTarget(client);
+    
+    SetMenuTitle(menu_hitgroups, "%t\n ", "Hitgroups menu hitgroups title");
+    
+    decl String:enableall[32];
+    decl String:headshotsonly[32];
+    
+    // Format menu options.
+    Format(enableall, sizeof(enableall), "%t", "Hitgroups menu hitgroups enable all");
+    Format(headshotsonly, sizeof(headshotsonly), "%t\n ", "Hitgroups menu hitgroups headshots only");
+    
+    // Add options to menu.
+    AddMenuItem(menu_hitgroups, "Enable All", enableall);
+    AddMenuItem(menu_hitgroups, "Headshots Only", headshotsonly);
+    
+    decl String:hitgroupoption[MAX_NAME_LENGTH];
+    decl String:hitgroupcandamage[MAX_NAME_LENGTH];
+    decl String:hitgroupid[4];
+    
+    // x = Hitgroup index.
+    new size = GetArraySize(arrayHitgroups);
+    for (new x = 0; x < size; x++)
+    {
+        // Get hitgroup name.
+        HitgroupsGetName(x, hitgroupoption, sizeof(hitgroupoption));
+        IntToString(x, hitgroupid, sizeof(hitgroupid));
+        
+        // Convert bool to "On/Off"
+        ConfigBoolToSetting(HitgroupsCanDamage(x), hitgroupcandamage, sizeof(hitgroupcandamage), false);
+        
+        // Format "on/off" to the option.
+        Format(hitgroupoption, sizeof(hitgroupoption), "%s: %s", hitgroupoption, hitgroupcandamage);
+        
+        // Add option to menu.
+        AddMenuItem(menu_hitgroups, hitgroupid, hitgroupoption);
+    }
+    
+    // Create a "Back" button to the main admin menu.
+    SetMenuExitBackButton(menu_hitgroups, true);
+    
+    // Send menu.
+    DisplayMenu(menu_hitgroups, client, MENU_TIME_FOREVER);
+    
+    return true;
+}
+
+/**
+ * Called when client selects option in the infect clients menu, and handles it.
+ * @param menu_weapons_main     Handle of the menu being used.
+ * @param action                The action done on the menu (see menus.inc, enum MenuAction).
+ * @param client                The client index.
+ * @param slot                  The slot index selected (starting from 0).
+ */ 
+public HitgroupsMenuHitgroupsHandle(Handle:menu_hitgroups, MenuAction:action, client, slot)
+{
+    // Client selected an option.
+    if (action == MenuAction_Select)
+    {
+        switch(slot)
+        {
+            // Enable all hitgroups.
+            case 0:
+            {
+                // x = Hitgroup index.
+                new size = GetArraySize(arrayHitgroups);
+                for (new x = 0; x < size; x++)
+                {
+                    // Enable hitgroup.
+                    HitgroupsSetDamage(x, true);
+                }
+                
+                // Tell the server that all hitgroups have been enabled.
+                TranslationPrintToChatAll(true, false, "Hitgroups command enable all successful");
+            }
+            // Headshots only.
+            case 1:
+            {
+                // x = Hitgroup index.
+                new size = GetArraySize(arrayHitgroups);
+                for (new x = 0; x < size; x++)
+                {
+                    if (HitgroupsGetIndex(x) == HITGROUP_HEAD)
+                    {
+                        // Enable hitgroup.
+                        HitgroupsSetDamage(x, true);
+                        
+                        continue;
+                    }
+                    
+                    // Disable hitgroup.
+                    HitgroupsSetDamage(x, false);
+                }
+                
+                // Tell the server that headshots only been enabled.
+                TranslationPrintToChatAll(true, false, "Hitgroups command headshots only successful");
+            }
+            default:
+            {
+                // Get selected hitgroup index.
+                decl String:hitgroupid[4];
+                GetMenuItem(menu_hitgroups, slot, hitgroupid, sizeof(hitgroupid));
+                new hitgroup = StringToInt(hitgroupid);
+                
+                // Toggle value.
+                new bool:hitgroupcandamage = HitgroupsCanDamage(hitgroup);
+                HitgroupsSetDamage(hitgroup, !hitgroupcandamage);
+            }
+        }
+        
+        // Re-send menu.
+        HitgroupsMenuHitgroups(client);
+    }
+    // Client closed the menu.
+    if (action == MenuAction_Cancel)
+    {
+        // Client hit "Back" button.
+        if (slot == MenuCancel_ExitBack)
+        {
+            // Re-open admin menu.
+            ZAdminMenu(client);
+        }
+    }
+    // Client hit "Exit" button.
+    else if (action == MenuAction_End)
+    {
+        CloseHandle(menu_hitgroups);
+    }
+}
+
+/**
  * Command callback (zr_hitgroup)
  * Toggles or sets if a zombie's hitgroup can be damaged.
  * 
@@ -358,6 +506,14 @@ stock Float:HitgroupsGetKnockback(index)
  */
 public Action:HitgroupsCommand(client, argc)
 {
+    // If module is disabled, then stop.
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (!hitgroups)
+    {
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
+    
     // If not enough arguments given, then stop.
     if (argc < 1)
     {
@@ -436,17 +592,20 @@ public Action:HitgroupsCommand(client, argc)
  */
 public Action:HitgroupsEnableAllCommand(client, argc)
 {
-    new hitgroup;
+    // If module is disabled, then stop.
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (!hitgroups)
+    {
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
     
     // x = Hitgroup index.
     new size = GetArraySize(arrayHitgroups);
     for (new x = 0; x < size; x++)
     {
-        // Get CS:S hitgroup index.
-        hitgroup = HitgroupsGetIndex(x);
-        
         // Set that hitgroup index to true for damage.
-        HitgroupsSetDamage(hitgroup, true);
+        HitgroupsSetDamage(x, true);
     }
     
     // Tell the server that all hitgroups have been enabled.
@@ -467,27 +626,30 @@ public Action:HitgroupsEnableAllCommand(client, argc)
  */
 public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
 {
-    new hitgroup;
+    // If module is disabled, then stop.
+    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    if (!hitgroups)
+    {
+        TranslationReplyToCommand(client, "Feature is disabled");
+        return Plugin_Handled;
+    }
     
     // x = Hitgroup index.
     new size = GetArraySize(arrayHitgroups);
     for (new x = 0; x < size; x++)
     {
-        // Get CS:S hitgroup index.
-        hitgroup = HitgroupsGetIndex(x);
-        
         // If this hitgroup is the head, then enable it and stop.
-        if (hitgroup == HITGROUP_HEAD)
+        if (HitgroupsGetIndex(x) == HITGROUP_HEAD)
         {
-            HitgroupsSetDamage(hitgroup, true);
+            HitgroupsSetDamage(x, true);
             continue;
         }
         
         // Set that hitgroup index to true for damage.
-        HitgroupsSetDamage(hitgroup, false);
+        HitgroupsSetDamage(x, false);
     }
     
-    // Tell the server that all hitgroups have been enabled.
+    // Tell the server that headshots only been enabled.
     TranslationPrintToChatAll(true, false, "Hitgroups command headshots only successful");
     
     // Log action to game events.

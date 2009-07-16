@@ -12,7 +12,7 @@
 // Attribute:               Values:     Description:
 // ----------------------------------------------------------------------------
 // index                    number      The hitgroup index.
-// damage                   yes/no      Allow damage to be done on this hitgroup for zombies.
+// damage                   on/off      Allow damage to be done on this hitgroup for zombies.
 // knockback                decimal     The knockback multiplier for this hitgroup.
 
 "hitgroups" // Counter-Strike: Source hitgroups
@@ -23,7 +23,7 @@
 		"index"		"0"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"1.0"
@@ -35,7 +35,7 @@
 		"index"		"1"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"2.0"
@@ -47,7 +47,7 @@
 		"index"		"2"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"1.3"
@@ -59,7 +59,7 @@
 		"index"		"3"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"1.2"
@@ -71,7 +71,7 @@
 		"index"		"4"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"1.0"
@@ -83,7 +83,7 @@
 		"index"		"5"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"1.0"
@@ -95,7 +95,7 @@
 		"index"		"6"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"0.9"
@@ -107,7 +107,7 @@
 		"index"		"7"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"0.9"
@@ -119,7 +119,7 @@
 		"index"		"8"
 
 		// Damage
-		"damage"	"yes"
+		"damage"	"on"
 
 		// Knockback
 		"knockback"	"1.0"

@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          zspawn.inc
  *  Type:          Module
@@ -42,6 +42,9 @@ ZSpawnOnCommandsCreate()
 {
     // Register ZSpawn command.
     RegConsoleCmd(SAYHOOKS_KEYWORD_ZSPAWN, ZSpawnCommand, "Spawn into the game after joining late.");
+    
+    // Register admin command to force ZSpawn.
+    RegAdminCmd("zr_zspawn_force", ZSpawnForceCommand, ADMFLAG_GENERIC, "Force ZSpawn on a client. Usage: zr_zspawn_force <client> ['0' = Spawn as human | '1' = Spawn as zombie]");
 }
 
 /**
@@ -69,6 +72,12 @@ ZSpawnOnMapStart()
  */
 ZSpawnOnClientDisconnect(client)
 {
+    // So people who are connecting that click "cancel" aren't added to the list.
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+    
     // Check if client is a bot.
     if (IsFakeClient(client))
     {
@@ -162,13 +171,15 @@ ZSpawnOnRoundEnd()
  * Spawns a late-joining client into the game.
  * 
  * @param client    The client index.
+ * @param force     (Optional) True to force spawning of the client, false to follow rules.
+ * @param zombie    (Optional) If you are forcing spawn, you must override the team here.
  * @return          True if successful, false otherwise.
  */
-bool:ZSpawnClient(client)
+bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
 {
     // If zspawn is disabled, then stop.
     new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
-    if (!zspawn)
+    if (!force && !zspawn)
     {
         TranslationPrintToChat(client, "Feature is disabled");
         return false;
@@ -177,65 +188,137 @@ bool:ZSpawnClient(client)
     // If client isn't on a team, then stop.
     if (!ZRIsClientOnTeam(client))
     {
-        // Tell client the command may only be used when on a team.
-        TranslationPrintToChat(client, "Must be on team");
+        if (!force)
+        {
+            // Tell client the command may only be used when on a team.
+            TranslationPrintToChat(client, "Must be on team");
+        }
+        
         return false;
     }
     
     // If client is alive, then stop.
     if (IsPlayerAlive(client))
     {
-        // Tell client the command may only be used when dead.
-        TranslationPrintToChat(client, "Must be dead");
+        if (!force)
+        {
+            // Tell client the command may only be used when dead.
+            TranslationPrintToChat(client, "Must be dead");
+        }
+        
         return false;
     }
     
     // Block if client has already played during this round.
-    if (SteamidCacheClientExists(g_hZSpawnSteamIDCache, client))
+    if (!force && SteamidCacheClientExists(g_hZSpawnSteamIDCache, client))
     {
         // Tell client the command may only be used when joining late.
         TranslationPrintToChat(client, "ZSpawn double spawn");
         return false;
     }
     
-    // Check if zspawn override is enabled, and if so get overidden value.
-    new bool:teamoverride = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]);
-    new bool:teamzombie = teamoverride ? GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]) : GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+    new bool:teamzombie;
     
-    // Block is the time limit is up.
-    new bool:zspawntimelimit = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]);
-    if (zspawntimelimit)
+    if (!force)
     {
-        if (tZSpawn == INVALID_HANDLE)
+        // Check if zspawn override is enabled, and if so get overidden value.
+        new bool:teamoverride = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]);
+        teamzombie = teamoverride ? GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]) : GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+        
+        // Block is the time limit is up.
+        new bool:zspawntimelimit = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]);
+        if (zspawntimelimit)
         {
-            new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
-            switch(zspawntimelimitzombie)
+            if (tZSpawn == INVALID_HANDLE)
             {
-                case -1:
+                new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
+                switch(zspawntimelimitzombie)
                 {
-                    // Get timelimit
-                    new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
-                    
-                    // Tell client the timelimit for this command has expired.
-                    TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
-                    return false;
-                }
-                case 0:
-                {
-                    teamzombie = false;
-                }
-                case 1:
-                {
-                    teamzombie = true;
+                    case -1:
+                    {
+                        // Get timelimit
+                        new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
+                        
+                        // Tell client the timelimit for this command has expired.
+                        TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
+                        return false;
+                    }
+                    case 0:
+                    {
+                        teamzombie = false;
+                    }
+                    case 1:
+                    {
+                        teamzombie = true;
+                    }
                 }
             }
         }
+    }
+    else
+    {
+        // Use the override team in the function if were forcing the spawn.
+         teamzombie = zombie;
     }
     
     // Tell respawn module to respawn client.
     RespawnSpawnClient(client, teamzombie);
     
     return true;
+}
+
+/**
+ * Menu callback (zspawn_force)
+ * Forces ZSpawn on a client.
+ * 
+ * @param menu      The menu handle.
+ * @param action    Action client is doing in menu.
+ * @param client    The client index.
+ * @param slot      The menu slot selected. (starting from 0)
+ */
+public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, slot)
+{
+    // Client selected an option.
+    if (action == MenuAction_Select)
+    {
+        // Get the client index of the selected client.
+        new target = MenuGetClientIndex(menu_zspawn_force, slot);
+        
+        // Get the target's name for future use.
+        decl String:targetname[MAX_NAME_LENGTH];
+        GetClientName(target, targetname, sizeof(targetname));
+        
+        // Force ZSpawn on the target.
+        new bool:success = ZSpawnClient(target, true);
+        
+        // Tell admin the outcome of the action.
+        if (success)
+        {
+            TranslationReplyToCommand(client, "ZSpawn command force successful", targetname);
+        }
+        else
+        {
+            TranslationReplyToCommand(client, "ZSpawn command force unsuccessful", targetname);
+        }
+        
+        // Re-send the menu.
+        MenuClientList(client, ZSpawnForceHandle, "ZSpawn clients title");
+    }
+    // Client closed the menu.
+    if (action == MenuAction_Cancel)
+    {
+        // Client hit "Back" button.
+        if (slot == MenuCancel_ExitBack)
+        {
+            // Re-open admin menu.
+            ZAdminMenu(client);
+        }
+    }
+    // Client exited menu.
+    if (action == MenuAction_End)
+    {
+        CloseHandle(menu_zspawn_force);
+    }
 }
 
 /**
@@ -258,6 +341,72 @@ public Action:ZSpawnCommand(client, argc)
     ZSpawnClient(client);
     
     // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
+}
+
+/**
+ * Command callback (zr_zspawn_force)
+ * Force ZSpawn on a client.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:ZSpawnForceCommand(client, argc)
+{
+    // If not enough arguments given, then stop.
+    if (argc < 1)
+    {
+        TranslationReplyToCommand(client, "ZSpawn command force syntax");
+        return Plugin_Handled;
+    }
+    
+    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
+    new targets[MAXPLAYERS], bool:tn_is_ml, result;
+    
+    // Get targetname.
+    GetCmdArg(1, target, sizeof(target));
+    
+    // Find a target.
+    result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_DEAD, targetname, sizeof(targetname), tn_is_ml);
+        
+    // Check if there was a problem finding a client.
+    if (result <= 0)
+    {
+        ZRReplyToTargetError(client, result);
+        return Plugin_Handled;
+    }
+    
+    // Get item to give to client.
+    decl String:strZombie[4];
+    GetCmdArg(2, strZombie, sizeof(strZombie));
+    
+    // Copy value of second (optional) parameter to 'zombie'.
+    // It will be false if the parameter wasn't specified.
+    new bool:zombie = bool:StringToInt(strZombie);
+    
+    // x = Client index.
+    for (new x = 0; x < result; x++)
+    {
+        // Give client the item.
+        new bool:success = ZSpawnClient(targets[x], true, zombie);
+        
+        // Tell admin the outcome of the command if only 1 client was targetted.
+        if (result == 1)
+        {
+            if (success)
+            {
+                TranslationReplyToCommand(client, "ZSpawn command force successful", targetname);
+            }
+            else
+            {
+                TranslationReplyToCommand(client, "ZSpawn command force unsuccessful", targetname);
+            }
+        }
+    }
+    
+    // Log action to game events.
+    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "Admin \"%L\" forced player(s) to spawn. (zr_zspawn_force)", client);
+    
     return Plugin_Handled;
 }
 

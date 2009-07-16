@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          damage.inc
  *  Type:          Core
@@ -47,6 +47,11 @@ new g_iDamageTraceAttackHookID[MAXPLAYERS + 1] = {-1, ...};
  * Array to store OnTakeDamage HookIDs.
  */
 new g_iDamageOnTakeDamageHookID[MAXPLAYERS + 1] = {-1, ...};
+
+/**
+ * Array to keep track of normal/mother zombies.
+ */
+new bool:g_bDamageMotherZombie[MAXPLAYERS + 1];
 
 /**
  * Hook commands related to damage here.
@@ -107,6 +112,18 @@ DamageOnClientDisconnect(client)
 }
 
 /**
+ * A client was infected.
+ * 
+ * @param client        The client index.
+ * @param motherinfect  True if the zombie is mother, false if not.
+ */
+DamageOnClientInfected(client, bool:motherinfect)
+{
+    // Update if client is a mother zombie or not.
+    g_bDamageMotherZombie[client] = motherinfect;
+}
+
+/**
  * Hook: TraceAttack
  * Called right before the bullet enters a client.
  * 
@@ -152,6 +169,13 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     }
     
     // Here we know that attacker and client are different teams.
+    
+    // If client is a human, then allow damage.
+    if (InfectIsClientHuman(client))
+    {
+        // Allow damage.
+        return ZRTools_Continue;
+    }
     
     // If damage hitgroups cvar is disabled, then allow damage.
     new bool:damagehitgroups = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_HITGROUPS]);
@@ -317,18 +341,29 @@ public Action:DamageSuicideIntercept(client, argc)
         return Plugin_Continue;
     }
     
-    // Get zombie flag on client.
-    new bool:clientzombie = InfectIsClientInfected(client);
-    
     // Get cvar values for suicide interception.
     new bool:suicidezombie = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]);
+    new bool:suicidezombiemother = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_MZOMBIE]);
     new bool:suicidehuman = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]);
     
-    // Determine whether to block suicide based off of the client's zombie flag and cvar values.
-    new bool:blocksuicide = clientzombie ? suicidezombie : suicidehuman;
+    // Check if client is a zombie.
+    if (InfectIsClientInfected(client))
+    {
+        // If client is a normal zombie, and suicide intercept is disabled for zombies, then let command go.
+        if (!g_bDamageMotherZombie[client] && !suicidezombie)
+        {
+            return Plugin_Continue;
+        }
+        
+        // If client is a mother zombie, and suicide intercept is disabled for mother zombies, then let command go.
+        if (g_bDamageMotherZombie[client] && !suicidezombiemother)
+        {
+            return Plugin_Continue;
+        }
+    }
     
-    // If cvar for this team is disabled, then stop.
-    if (!blocksuicide)
+    // If client is a human, and suicide intercept is disabled for humans, then let command go.
+    if (InfectIsClientHuman(client) && !suicidehuman)
     {
         return Plugin_Continue;
     }

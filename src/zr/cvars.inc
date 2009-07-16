@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          cvars.inc
  *  Type:          Core
@@ -73,6 +73,7 @@ enum CvarsList
     Handle:CVAR_DAMAGE_BLOCK_FF,
     Handle:CVAR_DAMAGE_BLOCK_BLAST,
     Handle:CVAR_DAMAGE_SUICIDE_ZOMBIE,
+    Handle:CVAR_DAMAGE_SUICIDE_MZOMBIE,
     Handle:CVAR_DAMAGE_SUICIDE_HUMAN,
     Handle:CVAR_DAMAGE_SUICIDE_CMDS,
     Handle:CVAR_SAYHOOKS_QUIET,
@@ -125,7 +126,8 @@ enum CvarsList
     Handle:CVAR_AMBIENTSOUNDS_LENGTH,
     Handle:CVAR_AMBIENTSOUNDS_VOLUME,
     Handle:CVAR_ANTISTICK,
-    Handle:CVAR_ANTISTICK_INTERVAL,
+    Handle:CVAR_ANTISTICK_DEFAULT_WIDTH,
+    Handle:CVAR_ANTISTICK_FILE_PATH,
     Handle:CVAR_SPAWNPROTECT,
     Handle:CVAR_SPAWNPROTECT_TIME,
     Handle:CVAR_SPAWNPROTECT_SPEED,
@@ -234,7 +236,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_CLASSES_SPAWN]                    =    CreateConVar("zr_classes_spawn",                   "0",            "Re-display class selection menu every spawn.");
     g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random",                  "0",            "Player is assigned a random class every spawn. [Override: zr_classes_spawn and zr_classes_default_*]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE]           =    CreateConVar("zr_classes_default_zombie",          "random",       "Zombie class assigned to players on connect. [\"random\" = Random zombie class | \"\" = Class config default]");
-    g_hCvarsList[CVAR_CLASSES_DEFAULT_M_ZOMB]           =    CreateConVar("zr_classes_default_mother_zombie",   "random",       "Zombie class assigned to mother zombies. [\"motherzombies\" = Random mother zombie class | \"random\" = Random regular zombie class | \"disabled\" = Don't change class on mother zombies]");
+    g_hCvarsList[CVAR_CLASSES_DEFAULT_M_ZOMB]           =    CreateConVar("zr_classes_default_mother_zombie",   "motherzombies","Zombie class assigned to mother zombies. [\"motherzombies\" = Random mother zombie class | \"random\" = Random regular zombie class | \"disabled\" = Don't change class on mother zombies]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]            =    CreateConVar("zr_classes_default_human",           "random",       "Human class assigned to players on connect. [\"random\" = Random human class | \"\" = Class config default]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin",           "random",       "Admin class assigned to admins on connect. [\"random\" = Random admin class | \"\" = Class config default]");
     
@@ -307,8 +309,9 @@ CvarsCreate()
     g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]               =    CreateConVar("zr_damage_block_blast",      "1",                            "Block blast damage inflicted on self or teammates.");
     
     // Suicide Intercept
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie",   "1",                            "Intercept suicide commands attempted by zombies.");
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human",    "1",                            "Intercept suicide commands attempted by humans.");
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie",   "0",                            "Intercept suicide commands attempted by zombies.");
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_MZOMBIE]           =    CreateConVar("zr_damage_suicide_mzombie",  "1",                            "Intercept suicide commands attempted by mother zombies.");
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human",    "0",                            "Intercept suicide commands attempted by humans.");
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds",     "kill, spectate, jointeam",     "List of client commands to intercept as suicide attempts. [Delimiter: \", \"]");
     
     
@@ -385,8 +388,9 @@ CvarsCreate()
     // ===========================
     // Anti-Stick (module)
     // ===========================
-    g_hCvarsList[CVAR_ANTISTICK]                        =    CreateConVar("zr_antistick",               "1",        "Automatically unstick players when stuck within each others' collision hull.");
-    g_hCvarsList[CVAR_ANTISTICK_INTERVAL]               =    CreateConVar("zr_antistick_interval",      "0.5",      "Time between each check for stuck players. [Dependency: zr_antistick]");
+    g_hCvarsList[CVAR_ANTISTICK]                        =    CreateConVar("zr_antistick",               "1",                    "Automatically unstick players when stuck within each others' collision hull.");
+    g_hCvarsList[CVAR_ANTISTICK_DEFAULT_WIDTH]          =    CreateConVar("zr_antistick_default_width", "32.0",                 "The default width of player models, don't touch if you don't know what you're doing. [Dependency: zr_antistick]");
+    g_hCvarsList[CVAR_ANTISTICK_FILE_PATH]              =    CreateConVar("zr_antistick_file_path",     "data/antistick.dat",   "File to store antistick model hull data. [Dependency: zr_antistick]");
     
     // ===========================
     // Spawn Protect (module)

@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          translation.inc
  *  Type:          Core
@@ -48,11 +48,6 @@
 /**
  * @endsection
  */
-
-/**
- * HUD text usermsg
- */
-#define TRANSLATION_USERMSG_HINTTEXT "HintText"
 
 /**
  * Load translations file here.
@@ -285,7 +280,7 @@ stock TranslationPrintCenterText(client, any:...)
  * @param client    The client index.
  * @param ...       Translation formatting parameters.  
  */
-stock TranslationPrintHUDText(client, any:...)
+stock TranslationPrintHintText(client, any:...)
 {
     // Set translation target
     SetGlobalTransTarget(client);
@@ -295,17 +290,7 @@ stock TranslationPrintHUDText(client, any:...)
     VFormat(translation, sizeof(translation), "%t", 2);
     
     // Print translated phrase to client.
-    
-    // If hint text usermsg is invalid, then stop.
-    new Handle:hHintText = StartMessageOne(TRANSLATION_USERMSG_HINTTEXT, client);
-    if (hHintText == INVALID_HANDLE)
-    {
-        return;
-    }
-    
-    BfWriteByte(hHintText, -1); 
-    BfWriteString(hHintText, translation);
-    EndMessage();
+    PrintHintText(client, translation);
 }
 
 /**

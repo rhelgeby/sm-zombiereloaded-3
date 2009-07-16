@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          knockback.inc
  *  Type:          Module
@@ -78,7 +78,7 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
         
         // Get attackers eye angles.
         new Float:attackerang[3];
-        KnockbackGetClientEyeAngles(attacker, attackerang);
+        GetClientEyeAngles(attacker, attackerang);
         
         // Calculate knockback end-vector.
         TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, KnockbackTRFilter);
@@ -198,15 +198,4 @@ KnockbackFindExplodingGrenade(Float:heLoc[3])
     
     // Didn't find the grenade.
     return -1;
-}
-
-/**
- * Get client's eye angles.
- * 
- * @param client    The client index.
- * @param vecAngles The angle vector of the client's eyes.
- */
-KnockbackGetClientEyeAngles(client, Float:vecAngles[3])
-{
-    SDKCall(g_hToolsEyeAngles, client, vecAngles);
 }

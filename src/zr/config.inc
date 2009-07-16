@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          config.inc
  *  Type:          Core
@@ -254,7 +254,7 @@ ConfigOnModulesLoaded()
     ServerCommand("exec %s", mapconfig);
     
     // Log action.
-    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Config, "Executed post map config file: %s", path);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Config, "Post Map Configs", "Executed post map config file: %s", path);
 }
 
 /**
@@ -422,9 +422,10 @@ stock ConfigGetConfigAlias(ConfigFile:config, String:alias[], maxlen)
  * 
  * @param config        The config file to load.
  * @param arrayConfig   Handle of the main array containing file data.
+ * @param blocksize     The max length of the contained strings. 
  * @return              True if file was loaded successfuly, false otherwise.
  */
-stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
+stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig, blocksize = CONFIG_MAX_LENGTH)
 {
     // Get config's structure.
     new ConfigStructure:structure = ConfigGetConfigStructure(config);
@@ -441,7 +442,7 @@ stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
     if (arrayConfig == INVALID_HANDLE)
     {
         // Create array in handle.
-        arrayConfig = CreateArray(CONFIG_MAX_LENGTH);
+        arrayConfig = CreateArray(blocksize);
     }
     
     switch(structure)
@@ -463,17 +464,8 @@ stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
             
             decl String:line[PLATFORM_MAX_PATH];
             
-            while(!IsEndOfFile(hFile))
+            while(ReadFileLine(hFile, line, sizeof(line)))
             {
-                // Get current line text.
-                ReadFileLine(hFile, line, sizeof(line));
-                
-                // If line contains a ";", then stop.
-                if (StrContains(line, ";") > -1)
-                {
-                    continue;
-                }
-                
                 // Cut out comments at the end of a line.
                 if (StrContains(line, "//") > -1)
                 {
@@ -518,7 +510,7 @@ stock bool:ConfigLoadConfig(ConfigFile:config, &Handle:arrayConfig)
                 do
                 {
                     // Create new array to store information for config entry.
-                    new Handle:arrayConfigEntry = CreateArray(CONFIG_MAX_LENGTH);
+                    new Handle:arrayConfigEntry = CreateArray(blocksize);
                     
                     // Push the key name into the config entry's array.
                     decl String:keyname[CONFIG_MAX_LENGTH];
@@ -884,15 +876,15 @@ public Action:ConfigReloadAllCommand(client, argc)
 }
 
 /**
- * Converts string of "yes" or "no" to a boolean value.
+ * Converts string of "yes/on" or "no/off" to a boolean value.
  * 
- * @param option    "yes" or "no" string to be converted.
+ * @param option    "yes/on" or "no/off" string to be converted.
  * @return          True if string is "yes", false otherwise.
  */
 stock bool:ConfigSettingToBool(const String:option[])
 {
     // If option is equal to "yes," then return true.
-    if (StrEqual(option, "yes", false))
+    if (StrEqual(option, "yes", false) || StrEqual(option, "on", false))
     {
         return true;
     }
@@ -904,8 +896,8 @@ stock bool:ConfigSettingToBool(const String:option[])
 /**
  * Converts boolean value to "yes" or "no".
  * 
- * @param bOption   True/false value to be converted to "yes"/"no", respectively.
- * @param option    Destination string buffer to store "yes" or "no" in.
+ * @param bOption   True/false value to be converted to "yes/on"/"no/off", respectively.
+ * @param option    Destination string buffer to store "yes/on" or "no/off" in.
  * @param maxlen    Length of destination string buffer (wont't be more than 4).
  * @param yesno     When true, returns "yes/no", false returns "on/off." 
  */

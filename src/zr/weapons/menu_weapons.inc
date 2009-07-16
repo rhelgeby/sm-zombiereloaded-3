@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          menu_weapons.inc
  *  Type:          Core
@@ -104,7 +104,7 @@ public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client
         if (slot == MenuCancel_ExitBack)
         {
             // Re-open admin menu.
-            ZRAdminMenu(client);
+            ZAdminMenu(client);
         }
     }
     // Client hit "Exit" button.
@@ -210,7 +210,7 @@ WeaponsMenuTypeWeapons(client)
     decl String:unrestrictall[64];
     
     Format(restrictall, sizeof(restrictall), "%t", "Weapons menu restrict types restrict all", typename);
-    Format(unrestrictall, sizeof(unrestrictall), "%t", "Weapons menu restrict types unrestrict all", typename);
+    Format(unrestrictall, sizeof(unrestrictall), "%t\n ", "Weapons menu restrict types unrestrict all", typename);
     
     // Draw items as selectable only if not all weapons within the type are restricted or unrestricted.
     AddMenuItem(menu_weapons_typeweapons, "restrictall", restrictall, MenuGetItemDraw(!RestrictIsTypeUniform(true, g_iWeaponsCurType[client])));

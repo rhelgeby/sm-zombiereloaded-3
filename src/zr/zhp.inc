@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          zhp.inc
  *  Type:          Module
@@ -54,12 +54,8 @@ ZHPOnCommandsCreate()
  */
 ZHPOnCookiesCreate()
 {
-    // If cookie doesn't already exist, then create it.
-    g_hZHPEnabledCookie = FindClientCookie(ZHP_COOKIE_ENABLED);
-    if (g_hZHPEnabledCookie == INVALID_HANDLE)
-    {
-        g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Public);
-    }
+    // Create ZHP cookie.
+    g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Protected);
 }
 
 /**
@@ -242,7 +238,7 @@ ZHPUpdateHUD(client)
     }
     
     // Display HP
-    TranslationPrintHUDText(client, "Display HP", health);
+    TranslationPrintHintText(client, "Display HP", health);
 }
 
 /**

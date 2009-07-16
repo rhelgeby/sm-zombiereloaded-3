@@ -143,7 +143,7 @@
 
 	"Config command reload all stats begin"
 	{
-		"en"		"Reloading all Zombie:Reloaded config files...\n ------------------------------------------------"
+		"en"		"Reloading all Zombie:Reloaded config files...\n------------------------------------------------"
 	}
 
 	"Config command reload all stats successful"
@@ -432,37 +432,37 @@
 	"Menu main zclass"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZClass - Configure your class settings. (Command: {1})"
+		"en"		"ZClass - Configure class settings. (Command: {1})"
 	}
 
 	"Menu main zcookies"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZCookies - Toggle your personal ZR settings here. (Command: {1})"
+		"en"		"ZCookies - Toggle personal ZR settings here. (Command: {1})"
 	}
 
 	"Menu main zspawn"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZSpawn - Join late?  Use this to spawn. (Command: {1})"
+		"en"		"ZSpawn - Join late?  Spawn with this. (Command: {1})"
 	}
 
 	"Menu main ztele"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZTele - Teleport back to your spawn location. (Command: {1})"
+		"en"		"ZTele - Stuck?  Teleport back to spawn. (Command: {1})"
 	}
 
 	"Menu main zhp"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZHP - Toggle real HP display when infected. (Command: {1})"
+		"en"		"ZHP - Shows real HP as zombie. (Command: {1})"
 	}
 
 	"Menu main zmarket"
 	{
 		"#format"	"{1:s}"
-		"en"		"ZMarket - Need a weapon?  Buy them here. (Command: {1})"
+		"en"		"ZMarket - Customize loadouts here. (Command: {1})"
 	}
 
 	// ===========================
@@ -634,7 +634,7 @@
 	"Weapons menu restrict types unrestrict all"
 	{
 		"#format"	"{1:s}"
-		"en"		"Unrestrict weapon type {1}\n "
+		"en"		"Unrestrict weapon type {1}"
 	}
 
 	"Weapons menu restrict zmarket title"
@@ -683,7 +683,7 @@
 
 	"Weapons menu zmarket loadout title"
 	{
-		"en"		"ZMarket\nMy Current Loadout:\nRebuy refers to these weapons"
+		"en"		"ZMarket\nMy Current Loadout:\nSelect weapon slot to clear.\nNote: Rebuy refers to these weapons."
 	}
 
 	"Weapons menu zmarket loadout primary"
@@ -716,6 +716,12 @@
 		"en"		"Explosive: {1}"
 	}
 
+	"Weapons menu zmarket loadout nvgs"
+	{
+		"#format"	"{1:s}"
+		"en"		"NVGs: {1}"
+	}
+
 	"Weapons menu zmarket loadout empty"
 	{
 		"en"		"(None)"
@@ -746,6 +752,25 @@
 	// ===========================
 	// Hitgroups (core)
 	// ===========================
+
+	// Menu
+
+	"Hitgroups menu hitgroups title"
+	{
+		"en"		"Hitgroup Management\nCommands: zr_hitgroup(_enable_all/_headshots_only)\nSelect a Hitgroup to Toggle:"
+	}
+
+	"Hitgroups menu hitgroups enable all"
+	{
+		"en"		"Enable All Hitgroups"
+	}
+
+	"Hitgroups menu hitgroups headshots only"
+	{
+		"en"		"Headshots Only"
+	}
+
+	// Commands
 
 	"Hitgroups command syntax"
 	{
@@ -788,6 +813,85 @@
 	"Hitgroups command headshots only successful"
 	{
 		"en"		"Zombies may now only be damaged by headshots."
+	}
+
+	// ===========================
+	// ZAdmin (core)
+	// ===========================
+
+	"ZAdmin main title"
+	{
+		"en"		"ZAdmin\nSelect Category:"
+	}
+
+	"ZAdmin main class multipliers"
+	{
+		"en"		"Class Multipliers"
+	}
+
+	"ZAdmin main weapons"
+	{
+		"en"		"Weapon Management"
+	}
+
+	"ZAdmin main hitgroups"
+	{
+		"en"		"Hitgroup Management"
+	}
+
+	"ZAdmin main zombie"
+	{
+		"en"		"Zombie Management"
+	}
+
+	"ZAdmin main force zspawn"
+	{
+		"en"		"Force ZSpawn"
+	}
+
+	"ZAdmin main force ztele"
+	{
+		"en"		"Force ZTele"
+	}
+
+	// ===========================
+	// AntiStick (module)
+	// ===========================
+
+	// Commands
+
+	"AntiStick command set width syntax"
+	{
+		"en"		"Sets the width of a model's hull. (See zr_antistick_list_models) Usage: zr_antistick_set_width <model/player> <width>"
+	}
+
+	"AntiStick command list models list"
+	{
+		"en"		"Showing all players' model data...\n------------------------------------------------"
+	}
+
+	"AntiStick command list models name"
+	{
+		"#format"	"{1:s},{2:s},{3:f}"
+		"en"		"Player Name: {1} | Model Name: {2} | Model Hull Width: {3}"
+	}
+
+	"AntiStick command set width successful"
+	{
+		"#format"	"{1:s},{2:f}"
+		"en"		"Model hull width for model \"{1}\" has been changed to \"{2}.\""
+	}
+
+	"AntiStick command set width invalid model"
+	{
+		"#format"	"{1:s}"
+		"en"		"Invalid model/player specified: \"{1}\""
+	}
+
+	"AntiStick command set width invalid width"
+	{
+		"#format"	"{1:f}"
+		"en"		"Invalid model hull width specified: \"{1}\""
 	}
 
 	// ===========================
@@ -848,6 +952,8 @@
 	// ZSpawn (module)
 	// ===========================
 
+	// General
+
 	"ZSpawn double spawn"
 	{
 		"en"		"ZSpawn can only be used if you joined late during a round in progress."
@@ -857,6 +963,33 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"The timelimit ({1} seconds), to use ZSpawn, has already expired."
+	}
+
+	// Menu
+
+	"ZSpawn clients title"
+	{
+		"en"		"Force ZSpawn (zr_zspawn_force)\nSelect a Player:"
+	}
+
+	// Commands
+
+	"ZSpawn command force syntax"
+	{
+		"en"		"Force ZSpawn on a client. Usage: zr_zspawn_force <client> ['0' = Spawn as human | '1' = Spawn as zombie]"
+
+	}
+
+	"ZSpawn command force successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player {1} was successfully spawned."
+	}
+
+	"ZSpawn command force unsuccessful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player {1} couldn't be spawned."
 	}
 
 	// ===========================
@@ -906,6 +1039,33 @@
 		"en"		"Teleported back to spawn. (Count: {1}/{2})"
 	}
 
+	// Menu
+
+	"ZTele clients title"
+	{
+		"en"		"Force ZTele (zr_ztele_force)\nSelect a Player:"
+	}
+
+	// Commands
+
+	"ZTele command force syntax"
+	{
+		"en"		"Force ZTele on a client. Usage: zr_ztele_force <client>"
+
+	}
+
+	"ZTele command force successful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player {1} was successfully teleported."
+	}
+
+	"ZTele command force unsuccessful"
+	{
+		"#format"	"{1:s}"
+		"en"		"Player {1} couldn't be teleported."
+	}
+
 	// ===========================
 	// ZHP (module)
 	// ===========================
@@ -945,29 +1105,5 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"Player \"{1}\" has been slayed for camping in a restricted area (ID: {2})."
-	}
-
-	// ===========================
-	// ZAdmin Menu
-	// ===========================
-
-	"ZAdmin main title"
-	{
-		"en"		"ZAdmin\n Select Category:"
-	}
-
-	"ZAdmin main class multipliers"
-	{
-		"en"		"Class Multipliers"
-	}
-
-	"ZAdmin main weapons"
-	{
-		"en"		"Weapon Management"
-	}
-
-	"ZAdmin main zombie"
-	{
-		"en"		"Zombie Management"
 	}
 }

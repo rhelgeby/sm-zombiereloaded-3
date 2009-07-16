@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *   Zombie:Reloaded
+ *  Zombie:Reloaded
  *
  *  File:          jumpboost.inc
  *  Type:          Module
@@ -47,7 +47,7 @@ JumpBoostOnClientJumpPost(client)
     // Get client's current velocity.
     ToolsClientVelocity(client, vecVelocity, false);
     
-    // If they have exceeded the max jump speed, then stop.
+    // Only apply horizontal multiplier if it's not a bhop.
     if (!JumpBoostIsBHop(vecVelocity))
     {
         // Apply horizontal multipliers to jump vector.
