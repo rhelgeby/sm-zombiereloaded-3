@@ -91,6 +91,7 @@ native ZRTools_UnhookTraceAttack(hookid);
 // CS:S Specific damage flags. (should probably use these)
 #define DMG_CSS_FALL        (DMG_FALL)      // Client was damaged by falling.
 #define DMG_CSS_BLAST       (DMG_BLAST)     // Client was damaged by explosion.
+#define DMG_CSS_BURN        (DMG_DIRECT)    // Client was damaged by fire.
 #define DMG_CSS_BULLET      (DMG_NEVERGIB)  // Client was shot or knifed.
 #define DMG_CSS_HEADSHOT    (1 << 30)       // Client was shot in the head.
 

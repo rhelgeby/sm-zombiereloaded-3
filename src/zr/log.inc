@@ -91,6 +91,10 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
         {
             return shortName ? strcopy(buffer, maxlen, "models") : strcopy(buffer, maxlen, "Models");
         }
+        case LogModule_Napalm:
+        {
+            return shortName ? strcopy(buffer, maxlen, "napalm") : strcopy(buffer, maxlen, "Napalm");
+        }
         case LogModule_Playerclasses:
         {
             return shortName ? strcopy(buffer, maxlen, "playerclasses") : strcopy(buffer, maxlen, "Player Classes");
@@ -177,6 +181,10 @@ LogModules:LogGetModule(const String:moduleName[])
     else if (StrEqual(moduleName, "models", false))
     {
         return LogModule_Models;
+    }
+    else if (StrEqual(moduleName, "napalm", false))
+    {
+        return LogModule_Napalm;
     }
     else if (StrEqual(moduleName, "playerclasses", false))
     {

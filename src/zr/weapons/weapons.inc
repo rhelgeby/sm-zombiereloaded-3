@@ -119,6 +119,7 @@ WeaponsOnOffsetsFound()
     
     // Forward event to sub-modules
     WeaponAmmoOnOffsetsFound();
+    ZMarketOnOffsetsFound();
 }
 
 /**

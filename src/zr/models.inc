@@ -94,7 +94,7 @@ ModelsLoad()
     {
         // Get base model path, excluding the public/non-public setting.
         ModelReturnPath(x, modelbase, sizeof(modelbase));
-        PrintToServer("PATH BASE [%s]", modelbase);
+        
         // Explode path into pieces. (separated by "/")
         new strings = ExplodeString(modelbase, "/", baseexploded, MODELS_PATH_MAX_DEPTH, MODELS_PATH_DIR_MAX_LENGTH);
         

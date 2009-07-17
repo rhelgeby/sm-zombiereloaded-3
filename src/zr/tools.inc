@@ -107,7 +107,7 @@ ToolsFindOffsets()
     WeaponsOnOffsetsFound();
     AccountOnOffsetsFound();
     VEffectsOnOffsetsFound();
-    ZMarketOnOffsetsFound();
+    NapalmOnOffsetsFound();
 }
 
 /**
