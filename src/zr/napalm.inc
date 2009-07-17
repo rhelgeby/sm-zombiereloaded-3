@@ -31,6 +31,71 @@
 #define GRENADE_FUSE_TIME 3.0
 
 /**
+ * @section m_nWaterLevel defines.
+ */
+#define NAPALM_WLEVEL_DRY 0
+#define NAPALM_WLEVEL_FEET 1
+#define NAPALM_WLEVEL_HALF 2
+#define NAPALM_WLEVEL_FULL 3
+/**
+ * @endsection
+ */
+
+/**
+ * Variable to store water-level offset value.
+ */
+new g_iToolsWaterLevel;
+
+/**
+ * Find napalm-specific offsets here.
+ */
+NapalmOnOffsetsFound()
+{
+    // If offset "m_bInBuyZone" can't be found, then stop the plugin.
+    g_iToolsWaterLevel = FindSendPropInfo("CBasePlayer", "m_nWaterLevel");
+    if (g_iToolsWaterLevel == -1)
+    {
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Napalm, "Offsets", "Offset \"CBaseEntity::m_nWaterLevel\" was not found.");
+    }
+}
+
+/**
+ * Hook: OnTakeDamage
+ * Forwarded from the damage module to check if we should extinguish any flames.
+ * 
+ * @param client        The client index.
+ * @param damagetype    The type of damage inflicted.
+ * @return              Return ZRTools_Handled to stop the damage to client.
+ *                      ZRTools_Continue to allow damage to client.
+ *                      Return -1 to not return anything and let the damage module continue as usual.
+ */
+NapalmOnTakeDamage(client, damagetype)
+{
+    // Client was damaged by fire.
+    if (damagetype & DMG_CSS_BURN)
+    {
+        // Only take action if it isn't disabled, or the option is valid.
+        new douse = GetConVarInt(g_hCvarsList[CVAR_NAPALM_DOUSE]);
+        
+        if (douse > 0 && douse <= 3)
+        {
+            // If the client water-level is equal or higher than the given, then we want to extinguish the flame.
+            if (NapalmGetClientWaterLevel(client) >= douse)
+            {
+                // Put the fire out.
+                ExtinguishEntity(client);
+                
+                // Stop the last bit of inflicted burn damage.
+                return _:ZRTools_Handled;
+            }
+        }
+    }
+    
+    // Let the damage module continue as usual.
+    return -1;
+}
+
+/**
  *  Client has been hurt.
  * 
  * @param client    The client index.
@@ -113,8 +178,8 @@ NapalmOnWeaponFire(client, const String:weapon[])
         return;
     }
     
-    // Wait .15 seconds.
-    CreateTimer(0.15, NapalmIgniteGrenade);
+    // Wait .1 seconds.
+    CreateTimer(0.1, NapalmIgniteGrenade);
 }
 
 /**
@@ -144,4 +209,16 @@ public Action:NapalmIgniteGrenade(Handle:timer)
             IgniteEntity(x, GRENADE_FUSE_TIME);
         }
     }
+}
+
+/**
+ * Checks the current water-level on a client.
+ * 
+ * @param client    The client index.
+ * @return          A NAPALM_WLEVEL_ define. 
+ */
+stock NapalmGetClientWaterLevel(client)
+{
+    // Return client's water-level.
+    return GetEntData(client, g_iToolsWaterLevel);
 }

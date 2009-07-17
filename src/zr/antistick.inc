@@ -87,13 +87,6 @@ AntiStickOnCommandsCreate()
  */
 AntiStickLoad()
 {
-    // If antistick is disabled, then stop.
-    new bool:antistick = GetConVarBool(g_hCvarsList[CVAR_ANTISTICK]);
-    if (!antistick)
-    {
-        return;
-    }
-    
     // Create antistick keyvalues if it hasn't been created yet.
     if (g_kvAntiStick == INVALID_HANDLE)
     {
@@ -255,6 +248,13 @@ stock AntiStickSetModelHullWidth(client, const String:model[] = "", Float:hull_w
  */
 public ZRTools_Action:AntiStickStartTouch(client, entity)
 {
+    // If antistick is disabled, then stop.
+    new bool:antistick = GetConVarBool(g_hCvarsList[CVAR_ANTISTICK]);
+    if (!antistick)
+    {
+        return;
+    }
+    
     // If client isn't in-game, then stop.
     if (!IsClientInGame(client))
     {

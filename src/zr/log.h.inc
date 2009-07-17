@@ -78,6 +78,7 @@ enum LogModules
     bool:LogModule_Hitgroups,
     bool:LogModule_Infect,
     bool:LogModule_Models,
+    bool:LogModule_Napalm,
     bool:LogModule_Playerclasses,
     bool:LogModule_VEffects,
     bool:LogModule_SEffects,

@@ -231,6 +231,17 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
         return ZRTools_Continue;
     }
     
+    new action;
+    
+    // Forward this hook to another module an return (or not) what it wants.
+    action = NapalmOnTakeDamage(client, damagetype);
+    
+    // If the napalm module wants to return here, then return the int casted into the ZRTools_Action type.
+    if (action > -1)
+    {
+        return ZRTools_Action:action;
+    }
+    
     // Client was shot or knifed.
     if (damagetype & DMG_CSS_BULLET)
     {

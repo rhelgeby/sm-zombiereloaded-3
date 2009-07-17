@@ -80,7 +80,7 @@ warning is logged in the SourceMod error logs.
 
 The validation prevents unexpected or invalid behaviour in the plugin. Dealing
 with errors or warnings in error logs helps a lot troubleshooting eventual
-eventual issues in the plugin caused by incorrect configurations.
+issues in the plugin caused by incorrect configurations.
 
 It's also possible to specify the path of configuration files. This can be used
 in combination with map configs, so it's possible to have different
