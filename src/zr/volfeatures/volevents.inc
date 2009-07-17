@@ -86,6 +86,38 @@ VolOnPlayerSpawn(client)
 }
 
 /**
+ * Called when a player died.
+ *
+ * @param client    The client index.
+ */
+VolOnPlayerDeath(client)
+{
+    // Send player left volume event to all volumes the player was in.
+    for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
+    {
+        // Check if volume is unused.
+        if (!Volumes[volindex][Vol_InUse])
+        {
+            continue;
+        }
+        
+        // Check if volume is disabled.
+        if (!Volumes[volindex][Vol_Enabled])
+        {
+            continue;
+        }
+        
+        // Check if player is inside the volume.
+        if (VolPlayerInVolume[client][volindex])
+        {
+            // Mark as not in the volume and trigger event.
+            VolPlayerInVolume[client][volindex] = false;
+            VolOnPlayerLeave(client, volindex);
+        }
+    }
+}
+
+/**
  * Called when a player disconnects.
  *
  * @param client    The client index.
@@ -94,6 +126,9 @@ VolOnPlayerDisconnect(client)
 {
     // Disable trigger delay counters.
     VolResetCountDown(client);
+    
+    // Trigger death event to clean up.
+    VolOnPlayerDeath(client);
 }
 
 /**
@@ -133,6 +168,13 @@ VolOnRoundEnd()
  */
 VolOnDisabled(volumeIndex)
 {
+    // Check if volumetric features is enabled.
+    if (!VolEnabled)
+    {
+        // Volumetric features disabled.
+        return;
+    }
+    
     new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
     
     // Forward stop event to features.
@@ -151,6 +193,13 @@ VolOnDisabled(volumeIndex)
  */
 VolOnEnabled(volumeIndex)
 {
+    // Check if volumetric features is enabled.
+    if (!VolEnabled)
+    {
+        // Volumetric features disabled.
+        return;
+    }
+    
     new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
     
     // Forward stop event to features.

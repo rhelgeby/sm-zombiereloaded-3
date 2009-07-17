@@ -77,6 +77,7 @@ new AnticampData[ZR_VOLUMES_MAX][VolTypeAnticamp];
 VolAnticampEnable(volumeIndex)
 {
     new Float:interval;
+    new Handle:timer;
     
     // Validate index.
     if (!VolIsValidIndex(volumeIndex))
@@ -96,20 +97,27 @@ VolAnticampEnable(volumeIndex)
     // Check if in use.
     if (AnticampData[dataindex][Anticamp_InUse])
     {
-        // Start timer if not running.
-        if (AnticampData[dataindex][Anticamp_Timer] == INVALID_HANDLE)
+        // Kill timer if it exist.
+        timer = AnticampData[dataindex][Anticamp_Timer];
+        if (timer != INVALID_HANDLE)
         {
-            // Get interval.
-            interval = AnticampData[dataindex][Anticamp_Interval];
-            
-            // Validate interval.
-            if (interval > 0.0)
-            {
-                AnticampData[dataindex][Anticamp_Timer] = CreateTimer(interval, Event_VolAnticampTrigger, _, TIMER_REPEAT);
-            }
+            KillTimer(timer);
+            AnticampData[dataindex][Anticamp_Timer] = INVALID_HANDLE;
         }
         
-        LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Vol state", "Enabled anticamp volume %d.", volumeIndex);
+        // Get interval.
+        interval = AnticampData[dataindex][Anticamp_Interval];
+        
+        // Validate interval.
+        if (interval > 0.0)
+        {
+            AnticampData[dataindex][Anticamp_Timer] = CreateTimer(interval, Event_VolAnticampTrigger, volumeIndex, TIMER_REPEAT);
+            LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Vol state", "Enabled anticamp volume %d.", volumeIndex);
+        }
+        else
+        {
+            LogEvent(_, LogType_Error, LOG_CORE_EVENTS, LogModule_Volfeatures, "Config Validation", "Warning: Invalid interval %.2f in anticamp volume %d.", interval, volumeIndex);
+        }
     }
 }
 
@@ -119,24 +127,44 @@ VolAnticampEnable(volumeIndex)
 stock VolAnticampEnableAll()
 {
     new Float:interval;
+    new dataindex;
     
     // Loop through all volumes.
-    for (new dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
+    for (new volumeindex = 0; volumeindex < ZR_VOLUMES_MAX; volumeindex++)
     {
-        // Check if in use.
-        if (AnticampData[dataindex][Anticamp_InUse])
+        // Check if unused.
+        if (!VolInUse(volumeindex))
         {
-            // Start timer if not running.
-            if (AnticampData[dataindex][Anticamp_Timer] == INVALID_HANDLE)
+            // Volume not in use, skip it.
+            continue;
+        }
+        
+        // Check if it's a anticamp volume.
+        if (VolIsType(volumeindex, VolFeature_Anticamp))
+        {
+            // Get data index.
+            dataindex = Volumes[volumeindex][Vol_DataIndex];
+            
+            // Kill timer if it exist.
+            timer = AnticampData[dataindex][Anticamp_Timer];
+            if (timer != INVALID_HANDLE)
             {
-                // Get interval.
-                interval = AnticampData[dataindex][Anticamp_Interval];
-                
-                // Validate interval.
-                if (interval > 0.0)
-                {
-                    AnticampData[dataindex][Anticamp_Timer] = CreateTimer(interval, Event_VolAnticampTrigger, _, TIMER_REPEAT);
-                }
+                KillTimer(timer);
+                AnticampData[dataindex][Anticamp_Timer] = INVALID_HANDLE;
+            }
+            
+            // Get interval.
+            interval = AnticampData[dataindex][Anticamp_Interval];
+            
+            // Validate interval.
+            if (interval > 0.0)
+            {
+                AnticampData[dataindex][Anticamp_Timer] = CreateTimer(interval, Event_VolAnticampTrigger, volumeindex, TIMER_REPEAT);
+                LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Vol state", "Enabled anticamp volume %d.", volumeIndex);
+            }
+            else
+            {
+                LogEvent(_, LogType_Error, LOG_CORE_EVENTS, LogModule_Volfeatures, "Config Validation", "Warning: Invalid interval %.2f in anticamp volume %d.", interval, volumeIndex);
             }
         }
     }
@@ -242,23 +270,37 @@ VolAnticampInit()
 /**
  * Timer callback for anticamp volumes. Applies actions on players in volumes.
  */
-public Action:Event_VolAnticampTrigger(Handle:timer)
+public Action:Event_VolAnticampTrigger(Handle:timer, any:volumeIndex)
 {
     // Loop through all players.
     for (new client = 1; client <= MaxClients; client++)
     {
-        // Loop through all volumes.
-        for (new volumeindex = 0; volumeindex < ZR_VOLUMES_MAX; volumeindex++)
+        // Validate client's connection state.
+        if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
         {
-            // Check if the volume is enabled and in use.
-            if (VolIsEnabled(volumeindex) && VolInUse(volumeindex))
+            continue;
+        }
+        
+        // Check if the volume is unused.
+        if (!VolInUse(volumeIndex))
+        {
+            continue;
+        }
+        
+        // Check if the volume is disabled.
+        if (!VolIsEnabled(volumeIndex))
+        {
+            continue;
+        }
+        
+        // Check if it's a anticamp volume.
+        if (VolIsType(volumeIndex, VolFeature_Anticamp))
+        {
+            // Check if player is in the volume.
+            if (VolPlayerInVolume[client][volumeIndex])
             {
-                // Check if player is in a anticamp volume.
-                if (VolPlayerInVolume[client][volumeindex] && Volumes[volumeindex][Vol_Type] == VolFeature_Anticamp)
-                {
-                    // Apply action.
-                    VolAnticampApplyAction(client, Volumes[volumeindex][Vol_DataIndex], volumeindex);
-                }
+                // Apply action.
+                VolAnticampApplyAction(client, Volumes[volumeIndex][Vol_DataIndex], volumeIndex);
             }
         }
     }
@@ -275,6 +317,13 @@ VolAnticampApplyAction(client, dataIndex, volumeIndex)
 {
     new Float:amount = AnticampData[dataIndex][Anticamp_Amount];
     
+    // Set client language.
+    SetGlobalTransTarget(client);
+    
+    // Get player name.
+    decl String:name[64];
+    GetClientName(client, name, sizeof(name));
+    
     // Send warning message.
     VolAnticampWarnPlayer(client, dataIndex);
     
@@ -286,11 +335,9 @@ VolAnticampApplyAction(client, dataIndex, volumeIndex)
         }
         case Anticamp_Damage:
         {
-            // Give damage to player. Kill if zero HP.
+            // Give damage to player. Kill if zero HP or below.
             new damage = RoundToNearest(amount);
             new health = GetClientHealth(client) - damage;
-            decl String:name[64];
-            decl String:buffer[256];
             
             if (health > 0)
             {
@@ -302,29 +349,32 @@ VolAnticampApplyAction(client, dataIndex, volumeIndex)
                 ForcePlayerSuicide(client);
                 
                 // Log event.
-                GetClientName(client, name, sizeof(name));
-                SetGlobalTransTarget(client);
-                Format(buffer, sizeof(buffer), "%t", "Vol Slay", name, volumeIndex);
-
-                /*if (LogFlagCheck(LOG_GAME_EVENTS, LOG_MODULE_ANTICAMP)) ZR_LogMessageFormatted(client, "anticamp", "kill", "%s", true, buffer);
-                if (anticamp_echo)
-                {
-                    FormatTextString(buffer, sizeof(buffer));
-                    ZR_PrintToAdminChat(buffer);
-                }*/
+                LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Volfeatures, "Anti-camp", "%t", "Vol Slay", name, volumeIndex);
             }
         }
         case Anticamp_Slay:
         {
+            // Instantly kill the player.
+            ForcePlayerSuicide(client);
             
+            // Log event.
+            LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Volfeatures, "Anti-camp", "%t", "Vol Slay", name, volumeIndex);
         }
         case Anticamp_Drug:
         {
-            
+            // TODO: Trigger sm_drug on client some how.
         }
         case Anticamp_Ignite:
         {
-            
+            // Validate amount.
+            if (amount > 0.0)
+            {
+                // Ignite player for "amount" seconds.
+                IgniteEntity(client, amount);
+                
+                // Log event.
+                LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Volfeatures, "Anti-camp", "%t", "Vol Ignite", name, volumeIndex);
+            }
         }
     }
 }
@@ -351,7 +401,7 @@ VolAnticampWarnPlayer(client, dataIndex)
     }
     else
     {
-        // Use message in translations file.
+        // Use default anticamp message in translations file.
         Format(buffer, sizeof(buffer), "%t", "Vol Anticamp Message");
     }
     
@@ -415,6 +465,10 @@ VolAnticampGetFreeIndex()
         // Check if it's free.
         if (!AnticampData[dataindex][Anticamp_InUse])
         {
+            // Mark as in use.
+            AnticampData[dataindex][Anticamp_InUse] = true;
+            
+            // Return the new index.
             return dataindex;
         }
     }
