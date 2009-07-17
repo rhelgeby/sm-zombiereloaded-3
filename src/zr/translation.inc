@@ -56,6 +56,7 @@ TranslationInit()
 {
     // Load translations phrases used by plugin.
     LoadTranslations("common.phrases.txt");
+    LoadTranslations("core.phrases.txt");
     LoadTranslations("zombiereloaded.phrases.txt");
 }
 

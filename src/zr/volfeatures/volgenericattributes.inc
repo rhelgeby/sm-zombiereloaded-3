@@ -44,21 +44,21 @@ stock bool:VolSetTeamString(volumeIndex, const String:team[])
     }
     
     // Convert value.
-    if (strcmp(team, "all", false))
+    if (StrEqual(team, "all", false))
     {
         teamfilter = VolTeam_All;
     }
-    else if (strcmp(team, "humans", false))
+    else if (StrEqual(team, "humans", false))
     {
         teamfilter = VolTeam_Humans;
     }
-    else if (strcmp(team, "zombies", false))
+    else if (StrEqual(team, "zombies", false))
     {
         teamfilter = VolTeam_Zombies;
     }
     
     // Apply value.
-    Volumes[volumeIndex][vol_team_filter] = teamfilter;
+    Volumes[volumeIndex][Vol_TeamFilter] = teamfilter;
     return true;
     
 }
@@ -71,7 +71,38 @@ stock bool:VolSetTeamString(volumeIndex, const String:team[])
  */
 stock VolSetTeam(volumeIndex, VolumeTeamFilters:team[])
 {
-    Volumes[volumeIndex][vol_team_filter] = team;
+    Volumes[volumeIndex][Vol_TeamFilter] = team;
+}
+
+/**
+ * Converts a team name type to a string.
+ *
+ * @param team          Team type to convert.
+ * @param buffer        Destination string buffer.
+ * @param maxlen        Size of destination buffer.
+ * @param shortName     Optional. Write short name or human readable name.
+ *                      Default is human readable (false).
+ * @return              Number of cells written.
+ */
+stock VolTeamToString(VolumeTeamFilters:team, String:buffer[], maxlen, bool:shortName = false)
+{
+    switch (team)
+    {
+        case VolTeam_All:
+        {
+            return shortName ? strcopy(buffer, maxlen, "all") : strcopy(buffer, maxlen, "All");
+        }
+        case VolTeam_Humans:
+        {
+            return shortName ? strcopy(buffer, maxlen, "humans") : strcopy(buffer, maxlen, "Humans");
+        }
+        case VolTeam_Zombies:
+        {
+            return shortName ? strcopy(buffer, maxlen, "zombies") : strcopy(buffer, maxlen, "Zombies");
+        }
+    }
+    
+    return 0;
 }
 
 /**
@@ -96,7 +127,7 @@ stock bool:VolSetDelayString(volumeIndex, const String:delay[])
     triggerdelay = StringToFloat(delay);
     
     // Apply value.
-    Volumes[volumeIndex][vol_trigger_delay] = triggerdelay;
+    Volumes[volumeIndex][Vol_TriggerDelay] = triggerdelay;
     return true;
 }
 
@@ -108,7 +139,7 @@ stock bool:VolSetDelayString(volumeIndex, const String:delay[])
  */
 stock VolSetDelay(volumeIndex, Float:delay)
 {
-    Volumes[volumeIndex][vol_trigger_delay] = delay;
+    Volumes[volumeIndex][Vol_TriggerDelay] = delay;
 }
 
 /**
@@ -128,19 +159,19 @@ stock bool:VolSetEffectString(volumeIndex, const String:effect[])
     }
     
     // Check effect string values and apply them to the volume.
-    if (strcmp(effect, "none", false))
+    if (StrEqual(effect, "none", false))
     {
-        Volumes[volumeIndex][vol_effect] = VolEffect_None;
+        Volumes[volumeIndex][Vol_Effect] = VolEffect_None;
         return true;
     }
-    else if (strcmp(effect, "wireframe", false))
+    else if (StrEqual(effect, "wireframe", false))
     {
-        Volumes[volumeIndex][vol_effect] = VolEffect_Wireframe;
+        Volumes[volumeIndex][Vol_Effect] = VolEffect_Wireframe;
         return true;
     }
-    else if (strcmp(effect, "smoke", false))
+    else if (StrEqual(effect, "smoke", false))
     {
-        Volumes[volumeIndex][vol_effect] = VolEffect_Smoke;
+        Volumes[volumeIndex][Vol_Effect] = VolEffect_Smoke;
         return true;
     }
     
@@ -156,7 +187,38 @@ stock bool:VolSetEffectString(volumeIndex, const String:effect[])
  */
 stock VolSetEffect(volumeIndex, VolumeEffects:effect)
 {
-    Volumes[volumeIndex][vol_effect] = effect;
+    Volumes[volumeIndex][Vol_Effect] = effect;
+}
+
+/**
+ * Converts a volume effect type to a string.
+ *
+ * @param effect        Effect type to convert.
+ * @param buffer        Destination string buffer.
+ * @param maxlen        Size of destination buffer.
+ * @param shortName     Optional. Write short name or human readable name.
+ *                      Default is human readable (false).
+ * @return              Number of cells written.
+ */
+stock VolEffectToString(VolumeEffects:effect, String:buffer[], maxlen, bool:shortName = false)
+{
+    switch (effect)
+    {
+        case VolEffect_None:
+        {
+            return shortName ? strcopy(buffer, maxlen, "none") : strcopy(buffer, maxlen, "No effect");
+        }
+        case VolEffect_Wireframe:
+        {
+            return shortName ? strcopy(buffer, maxlen, "wireframe") : strcopy(buffer, maxlen, "Wire frame");
+        }
+        case VolEffect_Smoke:
+        {
+            return shortName ? strcopy(buffer, maxlen, "smoke") : strcopy(buffer, maxlen, "Smoke");
+        }
+    }
+    
+    return 0;
 }
 
 /**
@@ -187,9 +249,9 @@ stock bool:VolSetEffectColorString(volumeIndex, const String:effect_color[])
     blue = StringToInt(colors[2]);
     
     // Apply values.
-    Volumes[volumeIndex][vol_effect_color][0] = red;
-    Volumes[volumeIndex][vol_effect_color][1] = green;
-    Volumes[volumeIndex][vol_effect_color][2] = blue;
+    Volumes[volumeIndex][Vol_EffectColor][0] = red;
+    Volumes[volumeIndex][Vol_EffectColor][1] = green;
+    Volumes[volumeIndex][Vol_EffectColor][2] = blue;
     return true;
 }
 
@@ -227,31 +289,31 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
     new bool:val = bool:StringToInt(enabled);
     
     // Check yes or no values first.
-    if (strcmp(enabled, "yes", false) == 0)
+    if (StrEqual(enabled, "yes", false))
     {
         val = true;
     }
-    else if (strcmp(enabled, "no", false) == 0)
+    else if (StrEqual(enabled, "no", false))
     {
         val = false;
     }
     
     // Check if the new value is different from the current.
-    if (Volumes[volumeIndex][vol_enabled] != val)
+    if (Volumes[volumeIndex][Vol_Enabled] != val)
     {
         // Forward event.
         if (val)
         {
-            VolOnVolumeEnabled(volumeIndex);
+            VolOnEnabled(volumeIndex);
         }
         else
         {
-            VolOnVolumeDisabled(volumeIndex);
+            VolOnDisabled(volumeIndex);
         }
     }
     
     // Apply converted value.
-    Volumes[volumeIndex][vol_enabled] = val;
+    Volumes[volumeIndex][Vol_Enabled] = val;
     return true;
 }
 
@@ -264,7 +326,7 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
 stock VolSetEnabled(volumeIndex, bool:enabled)
 {
     // Check if the new value is different from the current.
-    if (Volumes[volumeIndex][vol_enabled] != enabled)
+    if (Volumes[volumeIndex][Vol_Enabled] != enabled)
     {
         // Forward event.
         if (enabled)
@@ -277,5 +339,5 @@ stock VolSetEnabled(volumeIndex, bool:enabled)
         }
     }
 
-    Volumes[volumeIndex][vol_enabled] = enabled;
+    Volumes[volumeIndex][Vol_Enabled] = enabled;
 }

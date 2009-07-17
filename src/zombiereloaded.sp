@@ -80,6 +80,7 @@
 #include "zr/zcookies"
 #include "zr/jumpboost"
 #include "zr/volfeatures/volfeatures"
+#include "zr/debugtools"
 
 /**
  * Record plugin info.
@@ -136,6 +137,7 @@ public OnMapStart()
     InfectOnMapStart();
     SEffectsOnMapStart();
     ZSpawnOnMapStart();
+    
 }
 
 /**

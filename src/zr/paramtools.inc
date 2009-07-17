@@ -8,6 +8,8 @@
  *  Description:    Provides functions for parsing strings with parameters in
  *                  key=value format.
  *
+ *                  Note: Does not support spaces or quoted strings.
+ *
  *  Copyright (C) 2009  Greyscale, Richard Helgeby
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -34,6 +36,8 @@ stock GetParameterCount(const String:rawString[])
 {
     new lenRawString = strlen(rawString);
     new paramCount;
+    new searchPos;
+    new splitPos;
     
     // Check if the raw string is empty.
     if (lenRawString == 0)
@@ -42,20 +46,26 @@ stock GetParameterCount(const String:rawString[])
     }
     
     // Count number of "=".
-    for (new searchPos = 0; searchPos < lenRawString; searchPos++)
+    for (splitPos = 0; splitPos < lenRawString; splitPos++)
     {
-        // Set searchPos and check if "=" was found.
-        searchPos = StrContains(rawString[searchPos], "=");
-        if (searchPos)
+        // Find next "=".
+        searchPos = StrContains(rawString[splitPos], "=", false);
+        
+        // Note: searchPos is an offset from rawString[splitPos]. If searchPos
+        //       is 0, then the real position is splitPos.
+        
+        // Check if "=" was found.
+        if (searchPos >= 0)
         {
+            // Parameter found.
             paramCount++;
             
-            // Increment one position so we dont find the same "=" again.
-            searchPos++;
+            // Update split position.
+            splitPos += searchPos;
         }
         else
         {
-            // Exit loop.
+            // No need to continue. "=" not found.
             break;
         }
     }
@@ -86,9 +96,11 @@ stock GetParameterValue(String:buffer[], maxlen, const String:rawString[], const
     new valuePos;
     new valueLen;
     new nextPos;
+    new splitPos;
     
     // Get the position of parameter.
     paramPos = StrContains(rawString, parameter, false);
+    splitPos = paramPos;
     
     // Check if found.
     if (paramPos >= 0)
@@ -96,8 +108,8 @@ stock GetParameterValue(String:buffer[], maxlen, const String:rawString[], const
         // Get parameter length.
         paramLen = strlen(parameter);
         
-        // Get the position of the next parameter.
-        nextPos = StrContains(rawString[paramPos + 1], " ");
+        // Get the position of the next parameter by finding the next space.
+        nextPos = StrContains(rawString[splitPos], " ");
         
         // Check if the next parameter was found.
         if (nextPos >= 0)
@@ -105,8 +117,9 @@ stock GetParameterValue(String:buffer[], maxlen, const String:rawString[], const
             // Calculate value starting position.
             valuePos = paramPos + paramLen + 1;
             
-            // Calculate value length.
-            valueLen = nextPos - valuePos;
+            // Calculate value length. Note: Adding 1 for space to the null
+            // terminator.
+            valueLen = nextPos + splitPos - valuePos + 1;
             
             // Check if value length is longer than buffer size.
             if (valueLen > maxlen)
@@ -145,6 +158,7 @@ stock GetParameterName(String:buffer[], maxlen, const String:rawString[], parame
     new paramPos;
     new valuePos;
     new nextValuePos;
+    new splitPos;
     
     // Check if the raw string is empty.
     if (strlen(rawString) == 0)
@@ -157,22 +171,26 @@ stock GetParameterName(String:buffer[], maxlen, const String:rawString[], parame
         // Get the value starting position for the previous index.
         for (new index = 0; index < parameterIndex - 1; index++)
         {
-            valuePos = StrContains(rawString[valuePos], "=");
+            valuePos = StrContains(rawString[splitPos], "=");
+            splitPos += valuePos;
         }
         
-        // Find the next space from valuePos where the specified parameter
+        // Find the next space from splitPos where the specified parameter
         // starts.
-        paramPos = StrContains(rawString[valuePos], " ") + 1;
+        paramPos = StrContains(rawString[splitPos], " ") + splitPos + 1;
         
-        // Find the next value position from paramPos to get the end position
+        // Update split position.
+        splitPos += paramPos;
+        
+        // Find the next value position from splitPos to get the end position
         // of the parameter name.
-        nextValuePos = StrContains(rawString[paramPos], "=");
+        nextValuePos = StrContains(rawString[splitPos], "=") + splitPos;
         
         // Check if a value is specified.
         if (nextValuePos > 0)
         {
             // Return the parameter name between paramPos and nextValuePos.
-            return strcopy(buffer, nextValuePos - paramPos, rawString[paramPos]);
+            return strcopy(buffer, nextValuePos - paramPos + 1, rawString[paramPos]);   // + 1 to include null terminator.
         }
         else
         {
@@ -189,7 +207,7 @@ stock GetParameterName(String:buffer[], maxlen, const String:rawString[], parame
         if (valuePos > 0)
         {
             // Return the parameter name.
-            return strcopy(buffer, valuePos, rawString);
+            return strcopy(buffer, valuePos + 1, rawString);        // + 1 to include null terminator.
         }
         else
         {

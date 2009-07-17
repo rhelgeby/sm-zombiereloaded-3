@@ -39,9 +39,11 @@ VolOnPlayerEnter(client, volumeIndex)
         // Volumetric features disabled.
         return;
     }
-
+    
+    LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N entered volume %d.", client, volumeIndex);
+    
     // Forward event to features.
-    // VolAnticampStart(client, volume);
+    
 }
 
 /**
@@ -59,8 +61,10 @@ VolOnPlayerLeave(client, volumeIndex)
         return;
     }
     
+    LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N left volume %d.", client, volumeIndex);
+    
     // Forward event to features.
-    // VolAnticampStop(client, volume);
+    
 }
 
 /**
@@ -106,6 +110,9 @@ VolOnRoundStart()
     
     // Start main timer.
     VolStartUpdateTimer();
+    
+    // Start volumes.
+    VolEnableVolumes();
 }
 
 /**
@@ -116,26 +123,42 @@ VolOnRoundEnd()
     // Stop main timer.
     VolStopUpdateTimer();
     
-    // Forward stop event to features.
-    // VolAnticampStop();
+    // Stop volumes.
+    VolDisableVolumes();
 }
 
 /**
  * Called when a volume is disabled.
  * @param volumeIndex   The volume index.
  */
-VolOnVolumeDisabled(volumeIndex)
+VolOnDisabled(volumeIndex)
 {
-    // Forward stop event to features.
+    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
     
+    // Forward stop event to features.
+    switch (voltype)
+    {
+        case VolFeature_Anticamp:
+        {
+            VolAnticampDisable(volumeIndex);
+        }
+    }
 }
 
 /**
  * Called when a volume is enabled.
  * @param volumeIndex   The volume index.
  */
-VolOnVolumeEnabled(volumeIndex)
+VolOnEnabled(volumeIndex)
 {
-    // Forward start event to features.
+    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
     
+    // Forward stop event to features.
+    switch (voltype)
+    {
+        case VolFeature_Anticamp:
+        {
+            VolAnticampEnable(volumeIndex);
+        }
+    }
 }

@@ -46,6 +46,8 @@ CommandsInit()
     ZHPOnCommandsCreate();
     VolOnCommandsCreate();
     
+    DebugOnCommandsCreate();
+    
     // Forward event to modules. (hook commands)
     ClassOnCommandsHook();
     DamageOnCommandsHook();

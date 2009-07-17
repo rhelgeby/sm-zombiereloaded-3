@@ -384,7 +384,7 @@ stock ClassGetIndex(const String:name[], cachetype = ZR_CLASS_CACHE_MODIFIED)
  */
 stock ClassGetActiveIndex(client)
 {
-    new teamid = GetClientTeam(client);
+    new teamid;
     
     if (!ZRIsClientOnTeam(client))
     {
