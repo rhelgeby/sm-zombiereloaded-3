@@ -282,6 +282,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     ZSpawnOnClientDeath(index);
     ZTeleOnClientDeath(index);
     ZHPOnClientDeath(index);
+    VolOnPlayerDeath(index);
 }
 
 /**

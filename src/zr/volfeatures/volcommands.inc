@@ -223,7 +223,6 @@ public Action:VolAddVolumeCommand(client, argc)
         
         // Set attributes.
         paramcount = VolSetAttributes(volindex, params);
-        LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Add volume", "Parsing parameter string. Param count = \"%d\". String = \"%s\"", paramcount, params);
     }
     else
     {
@@ -239,6 +238,9 @@ public Action:VolAddVolumeCommand(client, argc)
     {
         Format(buffer, sizeof(buffer), "Additional attributes set: %d", paramcount);
     }
+    
+    // Send enable event to volume.
+    VolOnEnabled(volindex);
     
     ReplyToCommand(client, "Added volume at index %d. %s", volindex, buffer);
     return Plugin_Handled;

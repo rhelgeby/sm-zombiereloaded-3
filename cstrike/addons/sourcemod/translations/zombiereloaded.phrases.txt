@@ -1104,6 +1104,12 @@
 	"Vol Slay"
 	{
 		"#format"	"{1:s},{2:d}"
-		"en"		"Player \"{1}\" has been slayed for camping in a restricted area (ID: {2})."
+		"en"		"Slayed player \"{1}\" for camping in a restricted area (ID: {2})."
+	}
+	
+	"Vol Ignite"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"Ignited player \"{1}\" for camping in a restricted area (ID: {2})."
 	}
 }

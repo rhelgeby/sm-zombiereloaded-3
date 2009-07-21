@@ -195,6 +195,28 @@ VolDisableVolumes()
     {
         if (Volumes[volindex][Vol_InUse] && Volumes[volindex][Vol_Enabled])
         {
+            // Mark as disabled.
+            Volumes[volindex][Vol_Enabled] = false;
+            
+            // Trigger player left volume event if inside a volume.
+            for (new client = 1; client <= MaxClients; client++)
+            {
+                // Validate client's connection state.
+                if (!IsClientConnected(client) || !IsClientInGame(client))
+                {
+                    continue;
+                }
+                
+                // Check if player is inside the volume.
+                if (VolPlayerInVolume[client][volindex])
+                {
+                    // Mark as not in the volume and trigger event.
+                    VolPlayerInVolume[client][volindex] = false;
+                    VolOnPlayerLeave(client, volindex);
+                }
+            }
+            
+            // Trigger disabled event.
             VolOnDisabled(volindex);
         }
     }
@@ -210,6 +232,7 @@ VolEnableVolumes()
     {
         if (Volumes[volindex][Vol_InUse] && !Volumes[volindex][Vol_Enabled])
         {
+            Volumes[volindex][Vol_Enabled] = true;
             VolOnEnabled(volindex);
         }
     }
@@ -367,10 +390,10 @@ VolUpdatePlayerLocation(client = -1)
     {
         for (client = 1; client <= MaxClients; client++)
         {
-            // Check if client is in game and alive.
+            // Validate client's connection state.
             if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
             {
-                return;
+                continue;
             }
             
             // Save location in array.
@@ -396,7 +419,7 @@ VolUpdatePlayerChanges()
     // Loop through all players.
     for (new client = 1; client <= MaxClients; client++)
     {
-        // Check if client is in game and alive.
+        // Validate client's connection state.
         if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
         {
             // Skip client.
@@ -467,11 +490,17 @@ VolUpdatePlayerChanges()
                 // Make sure count down value is reset.
                 VolPlayerCountDown[client][volumeIndex] = -1.0;
                 
-                // Update cache.
-                VolPlayerInVolume[client][volumeIndex] = false;
-                
-                // Trigger event.
-                VolOnPlayerLeave(client, volumeIndex);
+                // Only trigger left volume event if player already is in the
+                // volume, so volumes with trigger delay won't get a left event
+                // before the enter event.
+                if (VolPlayerInVolume[client][volumeIndex])
+                {
+                    // Update cache.
+                    VolPlayerInVolume[client][volumeIndex] = false;
+                    
+                    // Trigger event.
+                    VolOnPlayerLeave(client, volumeIndex);
+                }
             }
         }
     }
@@ -639,6 +668,18 @@ bool:VolTeamFilterMatch(client, volumeIndex)
     
     // Invalid filter value.
     return false;
+}
+
+/**
+ * Checs if a volume is a certain type.
+ *
+ * @param volumeIndex   Volume to check.
+ * @param volType       Type to match.
+ * @return              True if the types match, false otherwise.
+ */
+bool:VolIsType(volumeIndex, VolumeFeatureTypes:volType)
+{
+    return Volumes[volumeIndex][Vol_Type] == volType;
 }
 
 /**
