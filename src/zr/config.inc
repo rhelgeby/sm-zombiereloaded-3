@@ -820,7 +820,7 @@ public Action:ConfigReloadCommand(client, argc)
         ConfigGetConfigPath(config, path, sizeof(path));
         
         // Format log message
-        Format(logmessage, sizeof(logmessage), "Admin \"%L\" reloaded config file \"%s\". (zr_config_reload)", client);
+        Format(logmessage, sizeof(logmessage), "Admin \"%L\" reloaded config file \"%s\". (zr_config_reload)", client, path);
     
         // If file isn't loaded then tell client, then stop.
         if (!loaded)
@@ -873,6 +873,8 @@ public Action:ConfigReloadAllCommand(client, argc)
     
     // Log action to game events.
     LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Config, "Reload All Config", "Admin \"%L\" reloaded all config files.", client);
+    
+    return Plugin_Handled;
 }
 
 /**
