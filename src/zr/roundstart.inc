@@ -72,7 +72,7 @@ RoundStartOnRoundStart()
 /**
  * Kills all objective entities.
  */
-RoundStartKillObjectives()
+stock RoundStartKillObjectives()
 {
     decl String:classname[64];
     
@@ -92,12 +92,10 @@ RoundStartKillObjectives()
         GetEdictClassname(x, classname, sizeof(classname));
         
         // Check if it matches any objective entities, then stop if it doesn't.
-        if(StrContains(ROUNDSTART_OBJECTIVE_ENTITIES, classname) == -1)
+        if(StrContains(ROUNDSTART_OBJECTIVE_ENTITIES, classname) > -1)
         {
-            continue;
+            // Entity is an objective, kill it.
+            RemoveEdict(x);
         }
-        
-        // Entity is an objective, kill it.
-        RemoveEdict(x);
     }
 }

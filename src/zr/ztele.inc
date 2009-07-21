@@ -271,7 +271,7 @@ public ZTeleForceHandle(Handle:menu_ztele_force, MenuAction:action, client, slot
         }
         
         // Re-send the menu.
-        MenuClientList(client, ZTeleForceHandle, "ZTele clients title");
+        MenuClientList(client, ZTeleForceHandle, true, true, false, "ZTele clients title");
     }
     // Client closed the menu.
     if (action == MenuAction_Cancel)

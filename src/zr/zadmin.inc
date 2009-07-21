@@ -165,7 +165,7 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
                 resend = false;
                 
                 // Send list of clients to infect.
-                MenuClientList(client, ZSpawnForceHandle, "ZSpawn clients title");
+                MenuClientList(client, ZSpawnForceHandle, true, false, true, "ZSpawn clients title");
             }
             // Force ZTele.
             case 5:
@@ -174,7 +174,7 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
                 resend = false;
                 
                 // Send list of clients to infect.
-                MenuClientList(client, ZTeleForceHandle, "ZTele clients title");
+                MenuClientList(client, ZTeleForceHandle, true, true, false, "ZTele clients title");
             }
         }
         

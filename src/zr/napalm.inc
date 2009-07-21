@@ -198,7 +198,7 @@ public Action:NapalmIgniteGrenade(Handle:timer)
     for (new x = 0; x <= maxentities; x++)
     {
         // If entity is invalid, then stop.
-        if(!IsValidEdict(x))
+        if(!IsValidEntity(x))
         {
             continue;
         }

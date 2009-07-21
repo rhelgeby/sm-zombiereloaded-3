@@ -597,42 +597,6 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
         ZHPOnHealthInfectGain(attacker);
     }
     
-    // Switch the player to terrorists.
-    // TODO: A solution to stop confusing bots? Respawn and teleport?
-    CS_SwitchTeam(client, CS_TEAM_T);
-    
-    // If respawn is enabled, then teleport mother zombie back to spawnpoint.
-    if (motherinfect)
-    {
-        new bool:zombierespawn = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]);
-        if(zombierespawn)
-        {
-            ZTeleTeleportClient(client);
-        }
-    }
-    // Check override.
-    else
-    {
-        if (respawnoverride && respawn)
-        {
-            ZTeleTeleportClient(client);
-        }
-    }
-    
-    // Set client as translation target.
-    SetGlobalTransTarget(client);
-    
-    // Print message to client.
-    TranslationPrintToChat(client, "Infect infected");
-    
-    // Forward event to modules.
-    ClassOnClientInfected(client, motherinfect);
-    RoundEndOnClientInfected();
-    DamageOnClientInfected(client, motherinfect);
-    SEffectsOnClientInfected(client);
-    ZTeleOnClientInfected(client);
-    ZHPOnClientInfected(client);
-    
     // Get a list of all client's weapon indexes.
     new weapons[WeaponsSlot];
     WeaponsGetClientWeapons(client, weapons);
@@ -674,6 +638,39 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     
     // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
     GivePlayerItem(client, "weapon_knife");
+    
+    // Switch the player to terrorists.
+    // TODO: A solution to stop confusing bots? Respawn and teleport?
+    CS_SwitchTeam(client, CS_TEAM_T);
+    
+    // If respawn is enabled, then teleport mother zombie back to spawnpoint.
+    if (motherinfect)
+    {
+        new bool:zombierespawn = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]);
+        if(zombierespawn)
+        {
+            ZTeleTeleportClient(client);
+        }
+    }
+    // Check override.
+    else
+    {
+        if (respawnoverride && respawn)
+        {
+            ZTeleTeleportClient(client);
+        }
+    }
+    
+    // Print message to client.
+    TranslationPrintToChat(client, "Infect infected");
+    
+    // Forward event to modules.
+    ClassOnClientInfected(client, motherinfect);
+    RoundEndOnClientInfected();
+    DamageOnClientInfected(client, motherinfect);
+    SEffectsOnClientInfected(client);
+    ZTeleOnClientInfected(client);
+    ZHPOnClientInfected(client);
 }
 
 /**
