@@ -27,12 +27,32 @@
 
 /**
  * @section Collision values.
-*/
+ */
 #define ANTISTICK_COLLISIONS_OFF 2
 #define ANTISTICK_COLLISIONS_ON 5
+
+#define COLLISION_GROUP_NONE                0   /** Default; collides with static and dynamic objects. */
+#define COLLISION_GROUP_DEBRIS              1   /** Collides with nothing but world and static stuff. */
+#define COLLISION_GROUP_DEBRIS_TRIGGER      2   /** Same as debris, but hits triggers. */
+#define COLLISION_GROUP_INTERACTIVE_DEBRIS  3   /** Collides with everything except other interactive debris or debris. */
+#define COLLISION_GROUP_INTERACTIVE         4   /** Collides with everything except interactive debris or debris. */
+#define COLLISION_GROUP_PLAYER              5   /** This is the default behavior expected for most prop_physics. */
+#define COLLISION_GROUP_BREAKABLE_GLASS     6   /** Special group for glass debris. */
+#define COLLISION_GROUP_VEHICLE             7   /** Collision group for driveable vehicles. */
+#define COLLISION_GROUP_PLAYER_MOVEMENT     8   /** For HL2, same as Collision_Group_Player. */
+#define COLLISION_GROUP_NPC                 9   /** Generic NPC group. */
+#define COLLISION_GROUP_IN_VEHICLE          10  /** For any entity inside a vehicle. */
+#define COLLISION_GROUP_WEAPON              11  /** For any weapons that need collision detection. */
+#define COLLISION_GROUP_VEHICLE_CLIP        12  /** Vehicle clip brush to restrict vehicle movement. */
+#define COLLISION_GROUP_PROJECTILE          13  /** Projectiles. */
+#define COLLISION_GROUP_DOOR_BLOCKER        14  /** Blocks entities not permitted to get near moving doors. */
+#define COLLISION_GROUP_PASSABLE_DOOR       15  /** Doors that the player shouldn't collide with. */
+#define COLLISION_GROUP_DISSOLVING          16  /** Things that are dissolving are in this group. */
+#define COLLISION_GROUP_PUSHAWAY            17  /** Nonsolid on client and server, pushaway in player code. */
+#define COLLISION_GROUP_NPC_ACTOR           18  /** Used so NPCs in scripts ignore the player. */
 /**
  * @endsection
-*/
+ */
 
 /**
  * Default player hull width.
@@ -80,6 +100,8 @@ AntiStickOnCommandsCreate()
     
     // Create admin command to set model hull width.
     RegAdminCmd("zr_antistick_set_width", AntiStickSetWidthCommand, ADMFLAG_GENERIC, "Sets the width of a model's hull. (See zr_antistick_list_models) Usage: zr_antistick_set_width <model/player> <width>");
+    
+    RegConsoleCmd("zr_antistick_dump_group", AntiStickDumpGroupCommand, "Dumps collision group data on one or more players. Usage zr_antistick_dump_group [#userid|name]");
 }
 
 /**
@@ -278,46 +300,70 @@ public ZRTools_Action:AntiStickStartTouch(client, entity)
     {
         return;
     }
+        
+    // From this point we know that client and entity is more or less within eachother.
+    LogEvent(false, LogType_Normal, LOG_DEBUG, LogModule_AntiStick, "Collision", "Player \"%N\" and \"%N\" are intersecting. Removing collisions.", client, entity);
     
-    // Disable collisions to unstick, and start timers to re-solidify.
-    if (AntiStickClientCollisionGroup(client) == ANTISTICK_COLLISIONS_ON)
+    // Get current collision groups of client and entity.
+    new clientcollisiongroup = AntiStickGetCollisionGroup(client);
+    new entitycollisiongroup = AntiStickGetCollisionGroup(entity);
+    
+    // Note: If zombies get stuck on infection or stuck in a teleport, they'll
+    //       get the COLLISION_GROUP_PUSHAWAY collision group, so check this
+    //       one too.
+    
+    // Check if the client have collisions enabled, or have the pushaway collision group.
+    if (clientcollisiongroup == ANTISTICK_COLLISIONS_ON || clientcollisiongroup == COLLISION_GROUP_PUSHAWAY)
     {
-        AntiStickClientCollisionGroup(client, true, ANTISTICK_COLLISIONS_OFF);
-        CreateTimer(0.0, AntiStickSolidifyTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+        // Disable collisions to unstick, and start timers to re-solidify.
+        AntiStickSetCollisionGroup(client, ANTISTICK_COLLISIONS_OFF);
+        CreateTimer(0.0, AntiStickSolidifyTimer, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
     }
     
-    if (AntiStickClientCollisionGroup(entity) == ANTISTICK_COLLISIONS_ON)
+    // Check if the entity have collisions enabled, or have the pushaway collision group.
+    if (entitycollisiongroup == ANTISTICK_COLLISIONS_ON || entitycollisiongroup == COLLISION_GROUP_PUSHAWAY)
     {
-        AntiStickClientCollisionGroup(entity, true, ANTISTICK_COLLISIONS_OFF);
-        CreateTimer(0.0, AntiStickSolidifyTimer, entity, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+        AntiStickSetCollisionGroup(entity, ANTISTICK_COLLISIONS_OFF);
+        CreateTimer(0.0, AntiStickSolidifyTimer, entity, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
     }
 }
 
 /**
- * Callback function for EndTouch.
+ * Callback for solidify timer.
  * 
  * @param client        The client index.
- * @param entity        The entity index of the entity being touched.
  */
 public Action:AntiStickSolidifyTimer(Handle:timer, any:client)
 {
-    // If client has left, then stop the timer.
+    // If client has left, then stop.
     if (!IsClientInGame(client))
     {
         return Plugin_Stop;
     }
     
-    // If the client's collisions are already on, then stop.
-    if (AntiStickClientCollisionGroup(client) == ANTISTICK_COLLISIONS_ON)
+    // If the client is dead, then stop.
+    if (!IsPlayerAlive(client))
     {
         return Plugin_Stop;
     }
     
-    // Loop through all client's and check if client is stuck in them.
+    // If the client's collisions are already on, then stop.
+    if (AntiStickGetCollisionGroup(client) == ANTISTICK_COLLISIONS_ON)
+    {
+        return Plugin_Stop;
+    }
+    
+    // Loop through all clients and check if client is stuck in them.
     for (new x = 1; x <= MaxClients; x++)
     {
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
+        // If client isn't connected or in-game, then skip it.
+        if (!IsClientConnected(x) || !IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // If the client is dead, then skip it.
+        if (!IsPlayerAlive(x))
         {
             continue;
         }
@@ -336,7 +382,10 @@ public Action:AntiStickSolidifyTimer(Handle:timer, any:client)
     }
     
     // Change collisions back to normal.
-    AntiStickClientCollisionGroup(client, true, ANTISTICK_COLLISIONS_ON);
+    AntiStickSetCollisionGroup(client, ANTISTICK_COLLISIONS_ON);
+    
+    // Debug message. May be useful when calibrating antistick.
+    LogEvent(false, LogType_Normal, LOG_DEBUG, LogModule_AntiStick, "Collision", "Player \"%N\" is no longer intersecting anyone. Applying normal collisions.", client);
     
     return Plugin_Stop;
 }
@@ -443,7 +492,7 @@ stock AntiStickJumpToPoint(const Float:vec[3], const Float:ang[3], Float:distanc
     // Add the vectors together.
     AddVectors(vec, viewvec, result);
 }
-    
+
 /**
  * Get the max/min value of a 3D box on any axis.
  * 
@@ -532,21 +581,119 @@ stock bool:AntiStickIsModelBoxColliding(client1, client2)
 }
 
 /**
- * Set collision group flags on a client.
+ * Sets the collision group on a client.
+ *
  * @param client            The client index.
  * @param collisiongroup    Collision group flag.
- * @return                  The collision group on the client, -1 if applying collision group. 
  */
-AntiStickClientCollisionGroup(client, bool:apply = false, collisiongroup = 0)
+AntiStickSetCollisionGroup(client, collisiongroup)
 {
-    if (apply)
+    SetEntProp(client, Prop_Data, "m_CollisionGroup", collisiongroup);
+}
+
+/**
+ * Gets the collision group on a client.
+ *
+ * @param client    The client index.
+ * @return          The collision group on the client.
+ */
+AntiStickGetCollisionGroup(client)
+{
+    return GetEntProp(client, Prop_Data, "m_CollisionGroup");
+}
+
+/**
+ * Converts a collision group value into a name.
+ *
+ * @param collisiongroup    The collision group to convert.
+ * @param buffer            Destination string buffer.
+ * @param maxlen            Size of destination buffer.
+ * @return                  Number of cells written.
+ */
+AntiStickCollisionGroupToString(collisiongroup, String:buffer[], maxlen)
+{
+    switch (collisiongroup)
     {
-        SetEntProp(client, Prop_Data, "m_CollisionGroup", collisiongroup);
-        
-        return -1;
+        case COLLISION_GROUP_NONE:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_NONE");
+        }
+        case COLLISION_GROUP_DEBRIS:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_DEBRIS");
+        }
+        case COLLISION_GROUP_DEBRIS_TRIGGER:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_DEBRIS_TRIGGER");
+        }
+        case COLLISION_GROUP_INTERACTIVE_DEBRIS:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_INTERACTIVE_DEBRIS");
+        }
+        case COLLISION_GROUP_INTERACTIVE:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_INTERACTIVE");
+        }
+        case COLLISION_GROUP_PLAYER:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_PLAYER");
+        }
+        case COLLISION_GROUP_BREAKABLE_GLASS:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_BREAKABLE_GLASS");
+        }
+        case COLLISION_GROUP_VEHICLE:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_VEHICLE");
+        }
+        case COLLISION_GROUP_PLAYER_MOVEMENT:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_PLAYER_MOVEMENT");
+        }
+        case COLLISION_GROUP_NPC:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_NPC");
+        }
+        case COLLISION_GROUP_IN_VEHICLE:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_IN_VEHICLE");
+        }
+        case COLLISION_GROUP_WEAPON:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_WEAPON");
+        }
+        case COLLISION_GROUP_VEHICLE_CLIP:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_VEHICLE_CLIP");
+        }
+        case COLLISION_GROUP_PROJECTILE:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_PROJECTILE");
+        }
+        case COLLISION_GROUP_DOOR_BLOCKER:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_DOOR_BLOCKER");
+        }
+        case COLLISION_GROUP_PASSABLE_DOOR:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_PASSABLE_DOOR");
+        }
+        case COLLISION_GROUP_DISSOLVING:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_DISSOLVING");
+        }
+        case COLLISION_GROUP_PUSHAWAY:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_PUSHAWAY");
+        }
+        case COLLISION_GROUP_NPC_ACTOR:
+        {
+            return strcopy(buffer, maxlen, "COLLISION_GROUP_NPC_ACTOR");
+        }
     }
     
-    return GetEntProp(client, Prop_Data, "m_CollisionGroup");
+    // No match. Write a blank string.
+    return strcopy(buffer, maxlen, "");
 }
 
 /**
@@ -643,4 +790,62 @@ public Action:AntiStickSetWidthCommand(client, argc)
     
     return Plugin_Handled;
 }
+
+/**
+ * Command callback (zr_antistick_dump_group)
+ * Dumps collision group data.
+ * 
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:AntiStickDumpGroupCommand(client, argc)
+{
+    new collisiongroup;
+    new target;
+    decl String:groupname[64];
+    decl String:arg[96];
+    
+    // Write header.
+    ReplyToCommand(client, "Player:                             Collision group:\n--------------------------------------------------------------------------------");
+    
+    if (argc < 1)
+    {
+        // Dump collision groups on all players.
         
+        // Loop through all alive players.
+        for (target = 1; target <= MaxClients; target++)
+        {
+            // Validate client state.
+            if (!IsClientConnected(target) || !IsClientInGame(target) || !IsPlayerAlive(target))
+            {
+                continue;
+            }
+            
+            // Get collision group name.
+            collisiongroup = AntiStickGetCollisionGroup(target);
+            AntiStickCollisionGroupToString(collisiongroup, groupname, sizeof(groupname));
+            
+            // List player name and collision group.
+            ReplyToCommand(client, "%-35N %s", target, groupname);
+        }
+    }
+    else
+    {
+        // Get the target.
+        GetCmdArg(1, arg, sizeof(arg));
+        target = FindTarget(client, arg);
+        
+        // Validate target.
+        if (ZRIsClientValid(target))
+        {
+            // Get collision group name.
+            collisiongroup = AntiStickGetCollisionGroup(target);
+            AntiStickCollisionGroupToString(collisiongroup, groupname, sizeof(groupname));
+            
+            // List player name and collision group.
+            ReplyToCommand(client, "%-35N %s", target, groupname);
+        }
+    }
+    
+    return Plugin_Handled;
+}
