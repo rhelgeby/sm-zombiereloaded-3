@@ -337,9 +337,20 @@ new ClassCount;
 new bool:ClassValidated;
 
 /**
- * Stores what class that the player have selected, for each team.
+ * Stores what class the player has selected, for each team.
  */
 new ClassSelected[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
+
+/**
+ * Stores what class the player had selected last time, if available. Classes
+ * specified here will be restored on the player when he dies. In normal cases
+ * it should be -1 for all teams on all players.
+ *
+ * Usage example of this one is to restore the player's zombie class after
+ * being a mother zombie with a mother zombie class. But this feature can also
+ * be useful in the future.
+ */
+new ClassPrevious[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
 
 /**
  * Cache for the currently selected team (admin menus).
@@ -527,6 +538,9 @@ ClassLoad(bool:keepMultipliers = false)
     // Cache class data.
     ClassReloadDataCache();
     
+    // Reset previously selected class indexes.
+    ClassResetPreviousIndexes();
+    
     // Reset attribute multipliers, if not keeping.
     if (!keepMultipliers)
     {
@@ -542,7 +556,6 @@ ClassLoad(bool:keepMultipliers = false)
     // Set config data.
     ConfigSetConfigLoaded(File_Classes, true);
     ConfigSetConfigReloadFunc(File_Classes, GetFunctionByName(GetMyHandle(), "ClassOnConfigReload"));
-    // ConfigSetConfigHandle(File_Classes, INVALID_HANDLE);
     ConfigSetConfigPath(File_Classes, pathclasses);
     
     // Remove key/value cache.
@@ -772,6 +785,73 @@ ClassResetMultiplierCache()
         ClassMultiplierCache[teamid][ClassM_JumpHeight] = 1.0;
         ClassMultiplierCache[teamid][ClassM_JumpDistance] = 1.0;
     }
+}
+
+/**
+ * Resets the previously selected class indexes on one or all clients.
+ *
+ * @param client    Optional. Specify client to reset. Default is all.
+ */
+ClassResetPreviousIndexes(client = -1)
+{
+    new teamid;
+    
+    if (client > 0)
+    {
+        for (teamid = 0; teamid < ZR_CLASS_TEAMCOUNT; teamid++)
+        {
+            ClassPrevious[client][teamid] = -1;
+        }
+    }
+    else
+    {
+        for (client = 1; client <= MAXPLAYERS; client++)
+        {
+            for (teamid = 0; teamid < ZR_CLASS_TEAMCOUNT; teamid++)
+            {
+                ClassPrevious[client][teamid] = -1;
+            }
+        }
+    }
+}
+
+/**
+ * Restores previously selected class indexes on a player, if available.
+ * Note: Does not apply attributes. The classes are only marked as selected.
+ *
+ * @param client    The client index.
+ */
+ClassRestoreIndexes(client)
+{
+    new previouszombie = ClassPrevious[client][ZR_CLASS_TEAM_ZOMBIES];
+    new previoushuman = ClassPrevious[client][ZR_CLASS_TEAM_HUMANS];
+    new previousadmin = ClassPrevious[client][ZR_CLASS_TEAM_ADMINS];
+    
+    // Validate zombie class index.
+    if (ClassValidateIndex(previouszombie))
+    {
+        // Mark previous zombie class as selected.
+        ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = previouszombie;
+    }
+    
+    // Validate human class index.
+    if (ClassValidateIndex(previoushuman))
+    {
+        // Mark previous zombie class as selected.
+        ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = previoushuman;
+    }
+    
+    // Validate admin class index.
+    if (ClassValidateIndex(previousadmin))
+    {
+        // Mark previous zombie class as selected.
+        ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = previousadmin;
+    }
+    
+    // Reset indexes.
+    ClassPrevious[client][ZR_CLASS_TEAM_ZOMBIES] = -1;
+    ClassPrevious[client][ZR_CLASS_TEAM_HUMANS] = -1;
+    ClassPrevious[client][ZR_CLASS_TEAM_ADMINS] = -1;
 }
 
 /**

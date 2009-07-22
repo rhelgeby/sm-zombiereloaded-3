@@ -60,6 +60,9 @@ ClassOnClientDisconnect(client)
 {
     // Disable class attributes with timers.
     ClassHealthRegenStop(client);
+    
+    // Reset previously selected class indexes.
+    ClassResetPreviousIndexes(client);
 }
 
 /**
@@ -73,13 +76,13 @@ ClassOnClientSpawn(client)
     decl String:steamid[16];
     decl String:classname[64];
     
-    // Check if the player is alive.
+    // Check if the player is dead.
     if (!IsPlayerAlive(client))
     {
         return;
     }
     
-    // Check if there are valid classes. Block this event if classes aren't
+    // Check if there are no valid classes. Block this event if classes aren't
     // done loading.
     if (!ClassValidated)
     {
@@ -88,6 +91,9 @@ ClassOnClientSpawn(client)
     
     // Reset attributes by triggering death event.
     ClassOnClientDeath(client);
+    
+    // Restore previously selected classes if available.
+    ClassRestoreIndexes(client);
     
     // Cache original player model.
     GetClientModel(client, originalmodel, sizeof(originalmodel));
@@ -218,6 +224,9 @@ ClassOnClientInfected(client, bool:motherzombie = false)
                 // This is a mother zombie class. Reset mother zombie setting so
                 // class skills aren't improved.
                 motherzombie = false;
+                
+                // Save class index to be restored next time.
+                ClassPrevious[client][ZR_CLASS_TEAM_ZOMBIES] = classindex;
                 
                 // Change class.
                 classindex = motherindex;
