@@ -202,9 +202,12 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
  * 
  * @param client    The client index.
  * @param handler   The menu handler.
+ * @param team      If true, only clients on a team will be displayed.
+ * @param alive     If true, only clients that are alive will be displayed.
+ * @param dead      If true, only clients that are dead will be displayed.     
  * @param any       Title is a translations phrase.  
  */
-stock MenuClientList(client, MenuHandler:handler, any:...)
+stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive = false, bool:dead = false, any:...)
 {
     // Create menu handle.
     new Handle:menu_clients = CreateMenu(handler);
@@ -214,13 +217,15 @@ stock MenuClientList(client, MenuHandler:handler, any:...)
     
     // Translate phrase.
     decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
-    VFormat(translation, sizeof(translation), "%t", 3);
+    VFormat(translation, sizeof(translation), "%t", 6);
     
     // Set menu title to the translated phrase.
     SetMenuTitle(menu_clients, translation);
     
     decl String:clientoption[MAX_NAME_LENGTH];
     decl String:clientuserid[8];
+    
+    new count = 0;
     
     // x = Client index.
     for (new x = 1; x <= MaxClients; x++)
@@ -231,12 +236,42 @@ stock MenuClientList(client, MenuHandler:handler, any:...)
             continue;
         }
         
+        // If client isn't on a team, then stop.
+        if (team && !ZRIsClientOnTeam(x))
+        {
+            continue;
+        }
+        
+        // If client is dead, then stop.
+        if (alive && !IsPlayerAlive(x))
+        {
+            continue;
+        }
+        
+        // If client is alive, then stop.
+        if (dead && IsPlayerAlive(x))
+        {
+            continue;
+        }
+        
         // Get client info.
         GetClientName(x, clientoption, sizeof(clientoption));
         IntToString(GetClientUserId(x), clientuserid, sizeof(clientuserid));
         
         // Add option to menu.
         AddMenuItem(menu_clients, clientuserid, clientoption);
+        
+        // Increment count.
+        count++;
+    }
+    
+    // If there are no clients, add an "(Empty)" line.
+    if (count == 0)
+    {
+        decl String:empty[64];
+        Format(empty, sizeof(empty), "%t", "Menu empty");
+        
+        AddMenuItem(menu_clients, "empty", empty, ITEMDRAW_DISABLED);
     }
     
     // Create a "Back" button to the main admin menu.

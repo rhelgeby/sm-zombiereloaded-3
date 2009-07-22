@@ -302,7 +302,7 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
         }
         
         // Re-send the menu.
-        MenuClientList(client, ZSpawnForceHandle, "ZSpawn clients title");
+        MenuClientList(client, ZSpawnForceHandle, true, false, true, "ZSpawn clients title");
     }
     // Client closed the menu.
     if (action == MenuAction_Cancel)

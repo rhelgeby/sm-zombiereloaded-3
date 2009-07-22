@@ -222,6 +222,12 @@ RestrictOnRoundEnd()
  */
 public Action:RestrictBuyCommand(client, argc)
 {
+    // If client isn't in-game, then stop.
+    if (!IsClientInGame(client))
+    {
+        return Plugin_Continue;
+    }
+    
     // If player is a zombie, then block command.
     if (InfectIsClientInfected(client))
     {
@@ -242,7 +248,7 @@ public Action:RestrictBuyCommand(client, argc)
     // If weapon isn't configged, then allow pickup.
     if (index == -1)
     {
-        // Allow pickup.
+        // Allow command.
         return Plugin_Continue;
     }
     
