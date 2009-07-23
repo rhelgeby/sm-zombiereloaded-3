@@ -62,22 +62,26 @@ ZCookiesMenuMain(client)
     decl String:autorebuy[64];
     decl String:zhp[64];
     decl String:overlay[64];
+    decl String:zmarket[64];
     
     // Translate each line into client's language.
     Format(autorebuy, sizeof(autorebuy), "%t", "ZCookies menu main auto-rebuy", autorebuyenabled);
     Format(zhp, sizeof(zhp), "%t", "ZCookies menu main zhp", zhpenabled);
     Format(overlay, sizeof(overlay), "%t", "ZCookies menu main overlay", overlayenabled);
+    Format(zmarket, sizeof(zmarket), "%t", "ZCookies zmarket loadout");
     
     // Get conditional values for each option.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);                               // For auto-rebuy.
     new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);   // For auto-rebuy.
-    new bool:zhpcvar = GetConVarBool(g_hCvarsList[CVAR_ZHP]);                                       // For ZHP.
+    new bool:zhpcvar = GetConVarBool(g_hCvarsList[CVAR_ZHP]);                                   // For ZHP.
     new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);          // For class overlay.
+    new bool:zmarketenabled = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET]);                // For ZMarket loadout.
     
     // Add items to menu.
     AddMenuItem(zcookies_menu_main, "autorebuy", autorebuy, MenuGetItemDraw(weapons && zmarketrebuyauto));
     AddMenuItem(zcookies_menu_main, "zhp", zhp, MenuGetItemDraw(zhpcvar));
     AddMenuItem(zcookies_menu_main, "overlay", overlay, MenuGetItemDraw(overlaytoggle));
+    AddMenuItem(zcookies_menu_main, "zmarket", zmarket, MenuGetItemDraw(zmarketenabled));
     
     // Create a "Back" button to the main menu.
     SetMenuExitBackButton(zcookies_menu_main, true);
@@ -100,6 +104,8 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
     // Client selected an option.
     if (action == MenuAction_Select)
     {
+        new bool:resend = true;
+        
         switch(slot)
         {
             // Toggled auto-rebuy
@@ -125,10 +131,22 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
                     CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayenabled);
                 }
             }
+            // Opened ZMarket loadout.
+            case 3:
+            {
+                // Show a client their current loadout.
+                ZMarketMenuLoadout(client);
+                
+                // Don't resend ZCookies.
+                resend = false;
+            }
         }
         
-        // Re-send menu.
-        ZCookiesMenuMain(client);
+        if (resend)
+        {
+            // Re-send menu.
+            ZCookiesMenuMain(client);
+        }
     }
     // Client closed the menu.
     if (action == MenuAction_Cancel)
