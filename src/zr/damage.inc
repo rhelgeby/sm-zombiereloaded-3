@@ -66,12 +66,15 @@ DamageOnCommandsHook()
     new String:arrayCmds[DAMAGE_SUICIDE_MAX_CMDS][DAMAGE_SUICIDE_MAX_LENGTH];
     
     // Explode string into array indexes.
-    new cmdcount = ExplodeString(suicidecmds, ", ", arrayCmds, DAMAGE_SUICIDE_MAX_CMDS, DAMAGE_SUICIDE_MAX_LENGTH);
+    new cmdcount = ExplodeString(suicidecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
     
     // x = Array index.
     // arrayCmds[x] = suicide command.
     for (new x = 0; x <= cmdcount - 1; x++)
     {
+        // Trim whitespace.
+        TrimString(arrayCmds[x]);
+        
         // Prepare intercept for this command.
         RegConsoleCmd(arrayCmds[x], DamageSuicideIntercept);
     }

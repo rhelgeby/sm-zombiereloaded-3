@@ -28,9 +28,6 @@
 /**
  * @section Collision values.
  */
-#define ANTISTICK_COLLISIONS_OFF 2
-#define ANTISTICK_COLLISIONS_ON 5
-
 #define COLLISION_GROUP_NONE                0   /** Default; collides with static and dynamic objects. */
 #define COLLISION_GROUP_DEBRIS              1   /** Collides with nothing but world and static stuff. */
 #define COLLISION_GROUP_DEBRIS_TRIGGER      2   /** Same as debris, but hits triggers. */
@@ -50,6 +47,9 @@
 #define COLLISION_GROUP_DISSOLVING          16  /** Things that are dissolving are in this group. */
 #define COLLISION_GROUP_PUSHAWAY            17  /** Nonsolid on client and server, pushaway in player code. */
 #define COLLISION_GROUP_NPC_ACTOR           18  /** Used so NPCs in scripts ignore the player. */
+
+#define ANTISTICK_COLLISIONS_OFF COLLISION_GROUP_DEBRIS_TRIGGER
+#define ANTISTICK_COLLISIONS_ON COLLISION_GROUP_PLAYER
 /**
  * @endsection
  */
@@ -306,25 +306,17 @@ public ZRTools_Action:AntiStickStartTouch(client, entity)
     
     // Get current collision groups of client and entity.
     new clientcollisiongroup = AntiStickGetCollisionGroup(client);
-    new entitycollisiongroup = AntiStickGetCollisionGroup(entity);
     
     // Note: If zombies get stuck on infection or stuck in a teleport, they'll
     //       get the COLLISION_GROUP_PUSHAWAY collision group, so check this
     //       one too.
     
-    // Check if the client have collisions enabled, or have the pushaway collision group.
-    if (clientcollisiongroup == ANTISTICK_COLLISIONS_ON || clientcollisiongroup == COLLISION_GROUP_PUSHAWAY)
+    // If the client is in any other collision group than "off", than we must set them to off, to unstick.
+    if (clientcollisiongroup != ANTISTICK_COLLISIONS_OFF)
     {
         // Disable collisions to unstick, and start timers to re-solidify.
         AntiStickSetCollisionGroup(client, ANTISTICK_COLLISIONS_OFF);
         CreateTimer(0.0, AntiStickSolidifyTimer, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-    }
-    
-    // Check if the entity have collisions enabled, or have the pushaway collision group.
-    if (entitycollisiongroup == ANTISTICK_COLLISIONS_ON || entitycollisiongroup == COLLISION_GROUP_PUSHAWAY)
-    {
-        AntiStickSetCollisionGroup(entity, ANTISTICK_COLLISIONS_OFF);
-        CreateTimer(0.0, AntiStickSolidifyTimer, entity, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
     }
 }
 

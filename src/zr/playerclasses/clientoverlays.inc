@@ -57,12 +57,15 @@ ClassOverlayOnCommandsHook()
     new String:arrayCmds[CLASSOVERLAY_TOGGLE_MAX_CMDS][CLASSOVERLAY_TOGGLE_MAX_LENGTH];
     
     // Explode string into array indexes.
-    new cmdcount = ExplodeString(togglecmds, ", ", arrayCmds, CLASSOVERLAY_TOGGLE_MAX_CMDS, CLASSOVERLAY_TOGGLE_MAX_LENGTH);
+    new cmdcount = ExplodeString(togglecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
     
     // x = Array index.
     // arrayCmds[x] = suicide command.
     for (new x = 0; x <= cmdcount - 1; x++)
     {
+        // Trim whitespace.
+        TrimString(arrayCmds[x]);
+        
         // Prepare intercept for this command.
         RegConsoleCmd(arrayCmds[x], ClassOverlayEnableCommand);
     }

@@ -96,7 +96,7 @@ ModelsLoad()
         ModelReturnPath(x, modelbase, sizeof(modelbase));
         
         // Explode path into pieces. (separated by "/")
-        new strings = ExplodeString(modelbase, "/", baseexploded, MODELS_PATH_MAX_DEPTH, MODELS_PATH_DIR_MAX_LENGTH);
+        new strings = ExplodeString(modelbase, "/", baseexploded, sizeof(baseexploded), sizeof(baseexploded[]));
         
         // Get model file name.
         strcopy(modelname, sizeof(modelname), baseexploded[strings - 1]);

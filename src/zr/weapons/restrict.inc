@@ -98,7 +98,7 @@ RestrictLoad()
     {
         WeaponsGetType(x, weapontype, sizeof(weapontype));
         
-        ExplodeString(weapontype, ",", weapontypes, WEAPONS_RESTRICT_MAX_TYPES, WEAPONS_MAX_LENGTH);
+        ExplodeString(weapontype, ",", weapontypes, sizeof(weapontypes), sizeof(weapontypes[]));
         for (new y = 0; y < WEAPONS_RESTRICT_MAX_TYPES; y++)
         {
             // Cut off whitespace.
@@ -498,7 +498,7 @@ stock RestrictGetTypeWeapons(index, &Handle:arrayTypeWeapons)
     {
         WeaponsGetType(x, weapontype, sizeof(weapontype));
         
-        ExplodeString(weapontype, ",", weapontypes, WEAPONS_RESTRICT_MAX_TYPES, WEAPONS_MAX_LENGTH);
+        ExplodeString(weapontype, ",", weapontypes, sizeof(weapontypes), sizeof(weapontypes[]));
         for (new y = 0; y < WEAPONS_RESTRICT_MAX_TYPES; y++)
         {
             // Cut off whitespace.
