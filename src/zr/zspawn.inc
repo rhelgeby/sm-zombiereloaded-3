@@ -210,7 +210,8 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
     }
     
     // Block if client has already played during this round.
-    if (!force && SteamidCacheClientExists(g_hZSpawnSteamIDCache, client))
+    new blockrejoin = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_BLOCK_REJOIN]);
+    if (!force && SteamidCacheClientExists(g_hZSpawnSteamIDCache, client) && blockrejoin)
     {
         // Tell client the command may only be used when joining late.
         TranslationPrintToChat(client, "ZSpawn double spawn");
