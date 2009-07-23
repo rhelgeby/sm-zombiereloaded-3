@@ -984,6 +984,11 @@
 		"en"		"Human/Zombie Class Overlay: {1}"
 	}
 
+	"ZCookies zmarket loadout"
+	{
+		"en"		"ZMarket Loadout"
+	}
+
 	// ===========================
 	// ZSpawn (module)
 	// ===========================
