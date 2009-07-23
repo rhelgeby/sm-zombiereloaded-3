@@ -62,7 +62,7 @@ ClassOnClientDisconnect(client)
     ClassHealthRegenStop(client);
     
     // Reset previously selected class indexes.
-    ClassResetPreviousIndexes(client);
+    ClassResetNextIndexes(client);
 }
 
 /**
@@ -76,7 +76,8 @@ ClassOnClientSpawn(client)
     decl String:steamid[16];
     decl String:classname[64];
     
-    // Check if the player is dead.
+    // Check if the player is dead. Spawning into the game is also a event in
+    // the connection process.
     if (!IsPlayerAlive(client))
     {
         return;
@@ -92,65 +93,59 @@ ClassOnClientSpawn(client)
     // Reset attributes by triggering death event.
     ClassOnClientDeath(client);
     
-    // Restore previously selected classes if available.
-    ClassRestoreIndexes(client);
+    // Restore class indexes to be selected on spawn, if available.
+    ClassRestoreNextIndexes(client);
     
     // Cache original player model.
     GetClientModel(client, originalmodel, sizeof(originalmodel));
     strcopy(ClassOriginalPlayerModel[client], PLATFORM_MAX_PATH, originalmodel);
     
-    // Exclude special class flags like mother zombies and admin classes.
-    new denyflags = ZR_CLASS_SPECIALFLAGS;
-    
-    // Allow admin classes if admin.
-    denyflags -= ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
-    
-    // Get random class setting.
-    new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
-    
-    // Assign random classes if enabled. Always do it for bots.
-    GetClientAuthString(client, steamid, sizeof(steamid));
-    if (randomclass || StrEqual(steamid, "BOT"))
-    {
-        // Get random classes for each type.
-        new randomzombie = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, denyflags);
-        new randomhuman = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS, _, _, denyflags);
-        
-        // Save selected zombie class index.
-        ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = randomzombie;
-        ClassGetName(randomzombie, classname, sizeof(classname), ZR_CLASS_TEAM_ZOMBIES);
-        TranslationPrintToChat(client, "Classes random assignment", classname);
-        
-        // Save selected human class index.
-        ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = randomhuman;
-        ClassGetName(randomhuman, classname, sizeof(classname), ZR_CLASS_TEAM_HUMANS);
-        TranslationPrintToChat(client, "Classes random assignment", classname);
-        
-        // Update player cache with the human class data, and apply it.
-        ClassReloadPlayerCache(client, randomhuman);
-        ClassApplyAttributes(client);
-    }
-    
     // Check if the player should spawn in admin mode.
-    if (ClassPlayerAdminMode[client])
+    if (ClassPlayerInAdminMode[client])
     {
         // Mark player as in admin mode.
         ClassPlayerInAdminMode[client] = true;
         
-        // Update player cache with the admin class and apply attributes.
-        new adminindex = ClassPlayerNextAdminClass[client];
-        ClassReloadPlayerCache(client, adminindex);
-        ClassApplyAttributes(client);
+        // TODO: This is the place to initialize admin mode stuff like no-block
+        //       and other stuff.
     }
     else
     {
         // Mark player as not in admin mode.
         ClassPlayerInAdminMode[client] = false;
         
-        // Apply class attributes for the currently active class.
-        ClassReloadPlayerCache(client, ClassGetActiveIndex(client));
-        ClassApplyAttributes(client);
+        // Get random class setting and steam id.
+        new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
+        GetClientAuthString(client, steamid, sizeof(steamid));
+        
+        // Assign random classes if enabled. Always do it for bots.
+        if (randomclass || StrEqual(steamid, "BOT"))
+        {
+            // Exclude special class flags like mother zombies and admin classes.
+            new denyflags = ZR_CLASS_SPECIALFLAGS;
+            
+            // Allow admin classes if admin.
+            denyflags -= ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+            
+            // Get random classes for each type.
+            new randomzombie = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, denyflags);
+            new randomhuman = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS, _, _, denyflags);
+            
+            // Set selected zombie class index.
+            ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = randomzombie;
+            ClassGetName(randomzombie, classname, sizeof(classname), ZR_CLASS_TEAM_ZOMBIES);
+            TranslationPrintToChat(client, "Classes random assignment", classname);
+            
+            // Set selected human class index.
+            ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = randomhuman;
+            ClassGetName(randomhuman, classname, sizeof(classname), ZR_CLASS_TEAM_HUMANS);
+            TranslationPrintToChat(client, "Classes random assignment", classname);
+        }
     }
+    
+    // Apply class attributes for the active class.
+    ClassReloadPlayerCache(client, ClassGetActiveIndex(client));
+    ClassApplyAttributes(client);
 }
 
 /**
@@ -208,7 +203,10 @@ ClassOnClientInfected(client, bool:motherzombie = false)
             
             // Validate index. Do not change class if it's invalid.
             if (ClassValidateIndex(motherindex))
-            {   
+            {
+                // Save active class index to be restored next spawn.
+                ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES] = classindex;
+                
                 // Change class.
                 classindex = motherindex;
             }
@@ -221,12 +219,12 @@ ClassOnClientInfected(client, bool:motherzombie = false)
             // Validate index. Do not change class if it's invalid.
             if (ClassValidateIndex(motherindex))
             {
-                // This is a mother zombie class. Reset mother zombie setting so
-                // class skills aren't improved.
+                // This is a mother zombie class. Reset mother zombie setting
+                // so class skills aren't improved.
                 motherzombie = false;
                 
-                // Save class index to be restored next time.
-                ClassPrevious[client][ZR_CLASS_TEAM_ZOMBIES] = classindex;
+                // Save active class index to be restored next spawn.
+                ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES] = classindex;
                 
                 // Change class.
                 classindex = motherindex;
@@ -240,13 +238,22 @@ ClassOnClientInfected(client, bool:motherzombie = false)
             // Validate index.
             if (ClassValidateIndex(motherindex))
             {
+                // Save active class index to be restored next spawn.
+                ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES] = classindex;
+                
                 // Change class.
                 classindex = motherindex;
             }
         }
     }
     
-    // Update the players cache with zombie attributes.
+    // Update the player's selected class index.
+    ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = classindex;
+    
+    // Restore next indexes, if available. But don't restore the zombie index.
+    ClassRestoreNextIndexes(client, ZR_CLASS_TEAM_ZOMBIES);
+    
+    // Update the player's cache with zombie attributes.
     ClassReloadPlayerCache(client, classindex);
     
     // Apply the new attributes.

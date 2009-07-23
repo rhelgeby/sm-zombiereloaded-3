@@ -342,15 +342,9 @@ new bool:ClassValidated;
 new ClassSelected[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
 
 /**
- * Stores what class the player had selected last time, if available. Classes
- * specified here will be restored on the player when he dies. In normal cases
- * it should be -1 for all teams on all players.
- *
- * Usage example of this one is to restore the player's zombie class after
- * being a mother zombie with a mother zombie class. But this feature can also
- * be useful in the future.
+ * Stores what class to be restored on next spawn, if available.
  */
-new ClassPrevious[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
+new ClassSelectedNext[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
 
 /**
  * Cache for the currently selected team (admin menus).
@@ -368,14 +362,9 @@ new ClassMultipliers:ClassAdminAttributeSelected[MAXPLAYERS + 1];
 new bool:ClassPlayerInAdminMode[MAXPLAYERS + 1];
 
 /**
- * Specifies whether a player is set to be in admin mode next spawn.
- */
-new bool:ClassPlayerAdminMode[MAXPLAYERS + 1];
-
-/**
  * Specifies the admin class to use on next admin mode spawn.
  */
-new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
+//new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
 
 /**
  * Cache for storing original model path before applying custom models. Used
@@ -538,8 +527,8 @@ ClassLoad(bool:keepMultipliers = false)
     // Cache class data.
     ClassReloadDataCache();
     
-    // Reset previously selected class indexes.
-    ClassResetPreviousIndexes();
+    // Reset selected class indexes for next spawn.
+    ClassResetNextIndexes();
     
     // Reset attribute multipliers, if not keeping.
     if (!keepMultipliers)
@@ -760,7 +749,7 @@ bool:ClassReloadPlayer(client)
     }
     
     // Refresh cache and re-apply attributes.
-    ClassOnClientDeath(client);         // Dummy event to clean up stuff.
+    ClassOnClientDeath(client);         // Dummy event to clean up and turn off stuff.
     ClassReloadPlayerCache(client, activeclass);
     ClassApplyAttributes(client);
     
@@ -788,11 +777,11 @@ ClassResetMultiplierCache()
 }
 
 /**
- * Resets the previously selected class indexes on one or all clients.
+ * Resets the selected class indexes for next span on one or all clients.
  *
  * @param client    Optional. Specify client to reset. Default is all.
  */
-ClassResetPreviousIndexes(client = -1)
+ClassResetNextIndexes(client = -1)
 {
     new teamid;
     
@@ -800,7 +789,7 @@ ClassResetPreviousIndexes(client = -1)
     {
         for (teamid = 0; teamid < ZR_CLASS_TEAMCOUNT; teamid++)
         {
-            ClassPrevious[client][teamid] = -1;
+            ClassSelectedNext[client][teamid] = -1;
         }
     }
     else
@@ -809,49 +798,67 @@ ClassResetPreviousIndexes(client = -1)
         {
             for (teamid = 0; teamid < ZR_CLASS_TEAMCOUNT; teamid++)
             {
-                ClassPrevious[client][teamid] = -1;
+                ClassSelectedNext[client][teamid] = -1;
             }
         }
     }
 }
 
 /**
- * Restores previously selected class indexes on a player, if available.
+ * Restores next class indexes on a player, if available.
  * Note: Does not apply attributes. The classes are only marked as selected.
  *
- * @param client    The client index.
+ * @param client        The client index.
+ * @param excludeTeam   Do not restore the specified team.
  */
-ClassRestoreIndexes(client)
+ClassRestoreNextIndexes(client, excludeTeam = -1)
 {
-    new previouszombie = ClassPrevious[client][ZR_CLASS_TEAM_ZOMBIES];
-    new previoushuman = ClassPrevious[client][ZR_CLASS_TEAM_HUMANS];
-    new previousadmin = ClassPrevious[client][ZR_CLASS_TEAM_ADMINS];
+    // Get next class indexes.
+    new zombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
+    new human = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
+    new admin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
     
-    // Validate zombie class index.
-    if (ClassValidateIndex(previouszombie))
+    // Check if the zombie team should be excluded.
+    if (excludeTeam != ZR_CLASS_TEAM_ZOMBIES)
     {
-        // Mark previous zombie class as selected.
-        ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = previouszombie;
+        // Validate zombie class index.
+        if (ClassValidateIndex(zombie))
+        {
+            // Mark next zombie class as selected.
+            ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombie;
+        }
+        
+        // Reset index.
+        ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES] = -1;
     }
     
-    // Validate human class index.
-    if (ClassValidateIndex(previoushuman))
+    // Check if the human team should be excluded.
+    if (excludeTeam != ZR_CLASS_TEAM_HUMANS)
     {
-        // Mark previous zombie class as selected.
-        ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = previoushuman;
+        // Validate human class index.
+        if (ClassValidateIndex(human))
+        {
+            // Mark next zombie class as selected.
+            ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = human;
+        }
+        
+        // Reset index.
+        ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS] = -1;
     }
     
-    // Validate admin class index.
-    if (ClassValidateIndex(previousadmin))
+    // Check if the human team should be excluded.
+    if (excludeTeam != ZR_CLASS_TEAM_ADMINS)
     {
-        // Mark previous zombie class as selected.
-        ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = previousadmin;
+        // Validate admin class index.
+        if (ClassValidateIndex(admin))
+        {
+            // Mark next zombie class as selected.
+            ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = admin;
+        }
+        
+        // Reset index.
+        ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS] = -1;
     }
-    
-    // Reset indexes.
-    ClassPrevious[client][ZR_CLASS_TEAM_ZOMBIES] = -1;
-    ClassPrevious[client][ZR_CLASS_TEAM_HUMANS] = -1;
-    ClassPrevious[client][ZR_CLASS_TEAM_ADMINS] = -1;
 }
 
 /**
@@ -907,7 +914,6 @@ ClassClientSetDefaultIndexes(client = -1)
             ClassSelected[clientindex][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_HUMANS] = humanindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_ADMINS] = adminindex;
-            ClassPlayerNextAdminClass[clientindex] = adminindex;
             
             // Copy human class data to player cache.
             ClassReloadPlayerCache(client, humanindex);
@@ -918,7 +924,6 @@ ClassClientSetDefaultIndexes(client = -1)
         ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
         ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
         ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
-        ClassPlayerNextAdminClass[client] = adminindex;
         
         // Copy human class data to player cache.
         ClassReloadPlayerCache(client, humanindex);

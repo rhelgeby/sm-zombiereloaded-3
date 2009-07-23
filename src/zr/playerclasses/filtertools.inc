@@ -295,7 +295,6 @@ stock bool:ClassValidateIndex(classindex)
     }
 }
 
-
 /**
  * Compares the class team ID with a team ID.
  *

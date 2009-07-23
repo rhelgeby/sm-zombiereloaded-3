@@ -230,39 +230,75 @@
 
 	"Classes menu zombie"
 	{
-		"en"		"Select Zombie Class"
+		"en"		"Select Zombie Class:"
+	}
+
+	"Classes menu zombie current"
+	{
+		"#format"	"{1:s}"
+		"en"		"Select Zombie Class\n    {1}"
+	}
+
+	"Classes menu zombie next"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Select Zombie Class\n    Active: {1}\n    Next spawn: {2}"
 	}
 
 	"Classes menu human"
 	{
-		"en"		"Select Human Class"
+		"en"		"Select Human Class:"
+	}
+
+	"Classes menu human current"
+	{
+		"#format"	"{1:s}"
+		"en"		"Select Human Class\n    {1}"
+	}
+
+	"Classes menu human next"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Select Human Class\n    Active: {1}\n    Next spawn: {2}"
 	}
 
 	"Classes menu admin"
 	{
-		"en"		"Select Admin Class"
+		"en"		"Select Admin Mode Class:"
+	}
+	
+	"Classes menu admin current"
+	{
+		"#format"	"{1:s}"
+		"en"		"Select Admin Mode Class\n     {1}"
+	}
+
+	"Classes menu admin next"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Select Admin Mode Class\n    Active: {1}\n    Next spawn: {2}"
 	}
 
 	"Classes menu admin mode toggle"
 	{
 		"en"		"Toggle Admin Mode"
 	}
-	
+
 	"Classes Menu Team Select Title"
 	{
 		"en"		"Select Team:"
 	}
-	
+
 	"Classes Menu Zombies"
 	{
 		"en"		"Zombies"
 	}
-	
+
 	"Classes Menu Humans"
 	{
 		"en"		"Humans"
 	}
-	
+
 	"Classes Menu Multiplier Select Title"
 	{
 		"en"		"Select Multiplier:"
@@ -272,49 +308,49 @@
 	{
 		"en"		"Adjust Value:"
 	}
-	
+
 	// Attributes
-	
+
 	"Classes Attrib Napalm Time"
 	{
 		"en"		"Napalm Time"
 	}
-	
+
 	"Classes Attrib Health"
 	{
 		"en"		"Health"
 	}
-	
+
 	"Classes Attrib Regen Interval"
 	{
 		"en"		"Health Regeneration Interval"
 	}
-	
+
 	"Classes Attrib Regen Amount"
 	{
 		"en"		"Health Regeneration Amount"
 	}
-	
+
 	"Classes Attrib Infect Gain"
 	{
 		"en"		"Infection Health Gain"
 	}
-	
+
 	"Classes Attrib Speed"
 	{
 		"en"		"Running Speed"
 	}
-	
+
 	"Classes Attrib Knockback"
 	{
 		"en"		"Knock back"
 	}
-	
+
 	"Classes Attrib Jump Height"
 	{
 		"en"		"Jump Height"
 	}
-	
+
 	"Classes Attrib Jump Distance"
 	{
 		"en"		"Jump Distance"
@@ -1100,13 +1136,13 @@
 	{
 		"en"		"This area is restricted, please move along."
 	}
-	
+
 	"Vol Slay"
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"Slayed player \"{1}\" for camping in a restricted area (ID: {2})."
 	}
-	
+
 	"Vol Ignite"
 	{
 		"#format"	"{1:s},{2:d}"
