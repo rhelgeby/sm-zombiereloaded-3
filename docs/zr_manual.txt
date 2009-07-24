@@ -42,6 +42,7 @@ INDEX
 3.7.3 . . . Class Requirements
 3.7.4 . . . Class Console Variables
 3.7.5 . . . Modifying Class Attributes
+3.7.6 . . . Attribute Multipliers
 3.8 . . . Weapon Configuration
 3.8.1 . . . Attributes
 3.8.2 . . . Weapon List
@@ -121,7 +122,7 @@ At a random time after the round starts, one or more random humans are turned
 into zombies. Zombies have certain advantages as running faster and more
 health points. Humans have huge amounts of ammo (or unlimited), and their
 bullets knock back zombies. A lot more attributes can be adjusted for both
-zombies and humans.
+zombies and humans in different classes.
 
 
 1.3  CREDITS
@@ -135,18 +136,26 @@ Developers and testers:
   Greyscale
     - Author of Zombie:Reloaded. The one who started remaking Zombie Mod for the
       SourceMod platform.
+      
+      Related server: "Zombie Strippers - Zombie:Reloaded"
+                      74.201.57.54:27015 - USA, California
   
   Richard Helgeby
     - Zombie:Reloaded developer. Started working on the plugin from version
       2.5.1. Fixed bugs and made new features.
+      
+      Related server: (same as Cpt. Moore)
 
   Cpt. Moore
     - Owner of the Zombie:Reloaded server "Zombie World Domination by
-      SwissQuake". Helped testing and debuging issues. Made some new features,
-      and used the server for testing.
+      SwissQuake". Helped debuging issues and made some new features. Used the
+      server for testing.
+      
+      Related server: "Zombie World Domination by SwissQuake"
+                      85.195.74.201:13010 - Switzerland, Basel
 
 
-Additional testers:
+Additional testers and contributors:
   Grey Echo
   zhelev81
 
@@ -181,10 +190,6 @@ Extract the content of the zip file into "cstrike/" on the server.
 
 This plugin is often confused by Zombie Mod, which is actually ovbious since
 Zombie:Reloaded is a SourceMod alternative to Zombie Mod.
-
-We suggest having "Zombie:Reloaded" instead of "Zombie Mod" in the server name
-if that's the case. No offense to the Zombie Mod team, of course, but we just
-suggest this to help marketing Zombie:Reloaded.
 
 
 2.3  TEST RUN
@@ -936,12 +941,57 @@ Console commands:
         
         Parameters:
         class           The class to modify. Can be any class name, or one of
-                        the following team names; "all", "humans", "zombies" or
+                        the following team names: "all", "humans", "zombies" or
                         "admins".
         attribute       The name of the class attribute.
         value           Value to set, or multiplier if a multiplier.
         is_multiplier   Optional. Specifies wether the original value should be
                         multiplied by the specified value. Default is false.
+
+
+3.7.6  ATTRIBUTE MULTIPLIERS
+
+Making a balanced zombie map is difficult, and all maps have different balance.
+The knock back and other settings may work fine on one map, but not on other
+maps. This is where multipliers are useful.
+
+With class attribute multipliers, numeric class attributes can be scaled and
+configured with map configuration files. There's a set of multipliers for both
+humans and zombies.
+
+Warning: Currently these multipliers aren't validated, so using too high or
+         negative values may cause unexpected behaviour, or even crash the
+         plugin.
+
+Attribute multipliers are set using this console command:
+
+    Syntax:
+    ===========================================================================
+    zr_class_set_multiplier <team> <attribute> <value>
+    ---------------------------------------------------------------------------
+        Sets the multiplier on a class attribute.
+        
+        Parameters:
+        team            What multiplier set to use.
+                        Options: "zombies" or "humans"
+        attribute       A numeric class attribute. See Class Attributes (3.7.2)
+                        for details on attributes. Valid attribute multipliers:
+                        "napalm_time" (zombies only)
+                        "health"
+                        "health_regen_interval"
+                        "health_regen_amount"
+                        "health_infect_gain" (zombies only)
+                        "speed"
+                        "knockback" (zombies only)
+                        "jump_height"
+                        "jump_distance"
+        value           The multiplier to set. Note that a multiplier might be
+                        very sensitive to big change.
+                        Default: 1.0
+
+Multipliers can also be adjusted in the zombie admin menu, but the changes
+aren't saved. The menu is useful for finding the correct value, and then use it
+in a map configuration file.
 
 
 3.8  WEAPON CONFIGURATION

@@ -1153,7 +1153,7 @@ stock ClassMultipliers:ClassAttributeNameToMultiplier(const String:attributename
     {
         return ClassM_HealthRegenInterval;
     }
-    else if (StrEqual(attributename, "health_regen_interval", false))
+    else if (StrEqual(attributename, "health_regen_amount", false))
     {
         return ClassM_HealthRegenAmount;
     }
