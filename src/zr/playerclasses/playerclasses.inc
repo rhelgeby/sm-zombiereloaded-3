@@ -409,6 +409,11 @@ ClassLoad(bool:keepMultipliers = false)
     if (!exists)
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Missing playerclasses config file \"%s\"", pathclasses);
+        
+        // Remove key/value cache.
+        CloseHandle(kvClassData);
+        kvClassData = INVALID_HANDLE;
+        
         return;
     }
     

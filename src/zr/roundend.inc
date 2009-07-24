@@ -340,6 +340,9 @@ RoundEndBalanceTeams()
     // If there are no eligible client's then stop.
     if (!eligibleclients)
     {
+        // Destroy handle.
+        CloseHandle(arrayEligibleClients);
+        
         return;
     }
     

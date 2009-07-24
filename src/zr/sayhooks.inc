@@ -78,6 +78,10 @@ SayHooksGetPublicChatTrigger(String:trigger[], maxlen)
     if (!success)
     {
         strcopy(trigger, maxlen, SAYHOOKS_CHAT_PUBLIC_DEFAULT);
+        
+        // Close the handle.
+        CloseHandle(kvCore);
+        
         return;
     }
     
@@ -117,6 +121,10 @@ SayHooksGetSilentChatTrigger(String:trigger[], maxlen)
     if (!success)
     {
         strcopy(trigger, maxlen, SAYHOOKS_CHAT_SILENT_DEFAULT);
+        
+        // Close the handle.
+        CloseHandle(kvCore);
+        
         return;
     }
     

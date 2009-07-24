@@ -302,6 +302,10 @@ stock ModelsGetRandomModelIndex(String:modelpath[], maxlen, bool:all = true, boo
         if (size == 0)
         {
             strcopy(modelpath, maxlen, "");
+            
+            // Destroy the handle.
+            CloseHandle(modelsarray);
+            
             return;
         }
         
