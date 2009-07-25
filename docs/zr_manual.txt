@@ -2,7 +2,7 @@
 
                           Zombie:Reloaded User Manual
 
-                Targets plugin version 3.0.0 Beta 1, 2009.07.25
+              Targets plugin version 3.0.0 Beta 2, (not released)
                           Written by Richard Helgeby
 
                        Manual last modified: 2009.07.25

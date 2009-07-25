@@ -32,7 +32,7 @@
 #include <cstrike>
 #include <zrtools>
 
-#define VERSION "3.0.0-b1"
+#define VERSION "3.0.0-b2-dev"
 
 // Header includes.
 #include "zr/log.h"
