@@ -138,7 +138,7 @@ Developers and testers:
       SourceMod platform.
       
       Related server: "Zombie Strippers - Zombie:Reloaded"
-                      74.201.57.54:27015 - USA, California
+                      74.201.57.54:27015 - USA, Washington
   
   Richard Helgeby
     - Zombie:Reloaded developer. Started working on the plugin from version
@@ -147,9 +147,8 @@ Developers and testers:
       Related server: (same as Cpt. Moore)
 
   Cpt. Moore
-    - Owner of the Zombie:Reloaded server "Zombie World Domination by
-      SwissQuake". Helped debuging issues and made some new features. Used the
-      server for testing.
+    - Helped debuging issues and made some new features. Used the server for
+      testing.
       
       Related server: "Zombie World Domination by SwissQuake"
                       85.195.74.201:13010 - Switzerland, Basel
