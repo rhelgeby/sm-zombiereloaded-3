@@ -630,7 +630,7 @@ ZMarketMenuTypeWeapons(client)
         
         // Do appropriate formatting for the type of item client is buying.
         new WeaponsSlot:slot = WeaponsGetSlot(weaponindex);
-        if (!hasweapon || slot == Slot_Invalid || slot == Slot_Projectile)
+        if (!hasweapon || slot == Slot_Projectile)
         {
             // Get the weapon price.
             itemprice = WeaponsGetZMarketPrice(weaponindex);
@@ -791,7 +791,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     
     // Get the appropriate price of the item being purchased.
     new bool:hasweapon = WeaponsClientHasWeapon(client, weapon);
-    new itemprice = (hasweapon && slot != Slot_Invalid && slot != Slot_Projectile) ? WeaponsGetAmmoPrice(weaponindex) : WeaponsGetZMarketPrice(weaponindex);
+    new itemprice = (hasweapon && slot != Slot_Projectile) ? WeaponsGetAmmoPrice(weaponindex) : WeaponsGetZMarketPrice(weaponindex);
     
     // If the weapon price is below 0, then something went wrong.
     if (itemprice < 0)
