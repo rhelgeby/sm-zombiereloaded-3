@@ -26,6 +26,17 @@
  */
 
 /**
+ * @section Some defined lengths of menu lines throughout the plugin.
+ */
+#define MENU_LINE_SMALL_LENGTH 32
+#define MENU_LINE_REG_LENGTH 64
+#define MENU_LINE_BIG_LENGTH 128
+#define MENU_LINE_HUGE_LENGTH 256
+/**
+ * @endsection
+ */
+
+/**
  * Create commands specific to ZMenu.
  */
 MenuOnCommandsCreate()
@@ -81,13 +92,13 @@ ZMenuMain(client)
     SetMenuTitle(menu_main, "%t\n ", "Menu main title", publictrigger, silenttrigger);
     
     // Initialize menu lines.
-    decl String:zadmin[256];
-    decl String:zclass[256];
-    decl String:zcookies[256];
-    decl String:zspawn[256];
-    decl String:ztele[256];
-    decl String:zhp[256];
-    decl String:zmarket[256];
+    decl String:zadmin[MENU_LINE_HUGE_LENGTH];
+    decl String:zclass[MENU_LINE_HUGE_LENGTH];
+    decl String:zcookies[MENU_LINE_HUGE_LENGTH];
+    decl String:zspawn[MENU_LINE_HUGE_LENGTH];
+    decl String:ztele[MENU_LINE_HUGE_LENGTH];
+    decl String:zhp[MENU_LINE_HUGE_LENGTH];
+    decl String:zmarket[MENU_LINE_HUGE_LENGTH];
     
     // Translate each line into client's language.
     Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin", SAYHOOKS_KEYWORD_ZADMIN);
@@ -216,13 +227,13 @@ stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive 
     SetGlobalTransTarget(client);
     
     // Translate phrase.
-    decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+    decl String:translation[MENU_LINE_REG_LENGTH];
     VFormat(translation, sizeof(translation), "%t", 6);
     
     // Set menu title to the translated phrase.
     SetMenuTitle(menu_clients, translation);
     
-    decl String:clientoption[MAX_NAME_LENGTH];
+    decl String:clientoption[MENU_LINE_REG_LENGTH];
     decl String:clientuserid[8];
     
     new count = 0;

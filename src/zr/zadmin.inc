@@ -79,13 +79,12 @@ bool:ZAdminMenu(client)
     
     SetMenuTitle(menu_zadmin, "%t\n ", "ZAdmin main title");
     
-    decl String:classmultipliers[64];
-    decl String:weapons[64];
-    decl String:hitgroups[64];
-    decl String:infect[64];
-    decl String:zspawn[64];
-    decl String:ztele[64];
-    //decl String:logflags[64];
+    decl String:classmultipliers[MENU_LINE_REG_LENGTH];
+    decl String:weapons[MENU_LINE_REG_LENGTH];
+    decl String:hitgroups[MENU_LINE_REG_LENGTH];
+    decl String:infect[MENU_LINE_REG_LENGTH];
+    decl String:zspawn[MENU_LINE_REG_LENGTH];
+    decl String:ztele[MENU_LINE_REG_LENGTH];
     
     Format(classmultipliers, sizeof(classmultipliers), "%t", "ZAdmin main class multipliers");
     Format(weapons, sizeof(weapons), "%t", "ZAdmin main weapons");
@@ -93,7 +92,6 @@ bool:ZAdminMenu(client)
     Format(infect, sizeof(infect), "%t", "ZAdmin main zombie");
     Format(zspawn, sizeof(zspawn), "%t", "ZAdmin main force zspawn");
     Format(ztele, sizeof(ztele), "%t", "ZAdmin main force ztele");
-    //Format(logflags, sizeof(logflags), "%t", "!zadmin main logflags");
     
     // Get conditions for options.
     new bool:hitgroupsenabled = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
@@ -105,7 +103,6 @@ bool:ZAdminMenu(client)
     AddMenuItem(menu_zadmin, "infect", infect);
     AddMenuItem(menu_zadmin, "zspawn", zspawn);
     AddMenuItem(menu_zadmin, "ztele", ztele);
-    //AddMenuItem(menu_zadmin, "logflags", logflags);
     
     // Set "Back" button.
     SetMenuExitBackButton(menu_zadmin, true);

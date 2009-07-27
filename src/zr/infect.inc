@@ -817,7 +817,7 @@ InfectMenuClients(client)
     
     SetMenuTitle(menu_infect_clients, "%t\n ", "Infect menu clients title");
     
-    decl String:clientoption[64];
+    decl String:clientoption[MENU_LINE_REG_LENGTH];
     decl String:clientuserid[8];
     
     // x = Client index.
@@ -862,7 +862,7 @@ InfectMenuClients(client)
 
 /**
  * Called when client selects option in the infect clients menu, and handles it.
- * @param menu_weapons_main     Handle of the menu being used.
+ * @param menu_infect_clients   Handle of the menu being used.
  * @param action                The action done on the menu (see menus.inc, enum MenuAction).
  * @param client                The client index.
  * @param slot                  The slot index selected (starting from 0).

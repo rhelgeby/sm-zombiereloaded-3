@@ -372,8 +372,8 @@ bool:HitgroupsMenuHitgroups(client)
     
     SetMenuTitle(menu_hitgroups, "%t\n ", "Hitgroups menu hitgroups title");
     
-    decl String:enableall[32];
-    decl String:headshotsonly[32];
+    decl String:enableall[MENU_LINE_REG_LENGTH];
+    decl String:headshotsonly[MENU_LINE_REG_LENGTH];
     
     // Format menu options.
     Format(enableall, sizeof(enableall), "%t", "Hitgroups menu hitgroups enable all");
@@ -383,8 +383,8 @@ bool:HitgroupsMenuHitgroups(client)
     AddMenuItem(menu_hitgroups, "Enable All", enableall);
     AddMenuItem(menu_hitgroups, "Headshots Only", headshotsonly);
     
-    decl String:hitgroupoption[MAX_NAME_LENGTH];
-    decl String:hitgroupcandamage[MAX_NAME_LENGTH];
+    decl String:hitgroupoption[MENU_LINE_REG_LENGTH];
+    decl String:hitgroupcandamage[8];
     decl String:hitgroupid[4];
     
     // x = Hitgroup index.
@@ -416,7 +416,7 @@ bool:HitgroupsMenuHitgroups(client)
 
 /**
  * Called when client selects option in the infect clients menu, and handles it.
- * @param menu_weapons_main     Handle of the menu being used.
+ * @param menu_hitgroups        Handle of the menu being used.
  * @param action                The action done on the menu (see menus.inc, enum MenuAction).
  * @param client                The client index.
  * @param slot                  The slot index selected (starting from 0).

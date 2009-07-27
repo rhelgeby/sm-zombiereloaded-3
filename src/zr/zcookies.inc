@@ -59,10 +59,10 @@ ZCookiesMenuMain(client)
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZHPEnabledCookie), zhpenabled, sizeof(zhpenabled), false);
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie), overlayenabled, sizeof(overlayenabled), false);
     
-    decl String:autorebuy[64];
-    decl String:zhp[64];
-    decl String:overlay[64];
-    decl String:zmarket[64];
+    decl String:autorebuy[MENU_LINE_REG_LENGTH];
+    decl String:zhp[MENU_LINE_REG_LENGTH];
+    decl String:overlay[MENU_LINE_REG_LENGTH];
+    decl String:zmarket[MENU_LINE_REG_LENGTH];
     
     // Translate each line into client's language.
     Format(autorebuy, sizeof(autorebuy), "%t", "ZCookies menu main auto-rebuy", autorebuyenabled);

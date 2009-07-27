@@ -51,8 +51,8 @@ bool:WeaponsMenuMain(client)
     
     SetMenuTitle(menu_weapons_main, "%t\n ", "Weapons menu restrict main title");
     
-    decl String:restrict[64];
-    decl String:zmarket[64];
+    decl String:restrict[MENU_LINE_SMALL_LENGTH];
+    decl String:zmarket[MENU_LINE_SMALL_LENGTH];
     
     Format(restrict, sizeof(restrict), "%t", "Weapons menu restrict main restrict");
     Format(zmarket, sizeof(zmarket), "%t", "Weapons menu restrict main market");
@@ -144,7 +144,7 @@ WeaponsMenuTypes(client)
     // If there are no weapons, add an "(Empty)" line.
     if (size == 0)
     {
-        decl String:empty[64];
+        decl String:empty[MENU_LINE_SMALL_LENGTH];
         Format(empty, sizeof(empty), "%t", "Menu empty");
         
         AddMenuItem(menu_weapons_types, "empty", empty, ITEMDRAW_DISABLED);
@@ -206,8 +206,8 @@ WeaponsMenuTypeWeapons(client)
     
     SetMenuTitle(menu_weapons_typeweapons, "%t\n ", "Weapons menu restrict types weapon type title", typename);
     
-    decl String:restrictall[64];
-    decl String:unrestrictall[64];
+    decl String:restrictall[MENU_LINE_REG_LENGTH];
+    decl String:unrestrictall[MENU_LINE_REG_LENGTH];
     
     Format(restrictall, sizeof(restrictall), "%t", "Weapons menu restrict types restrict all", typename);
     Format(unrestrictall, sizeof(unrestrictall), "%t\n ", "Weapons menu restrict types unrestrict all", typename);
@@ -216,8 +216,8 @@ WeaponsMenuTypeWeapons(client)
     AddMenuItem(menu_weapons_typeweapons, "restrictall", restrictall, MenuGetItemDraw(!RestrictIsTypeUniform(true, g_iWeaponsCurType[client])));
     AddMenuItem(menu_weapons_typeweapons, "unrestrictall", unrestrictall, MenuGetItemDraw(!RestrictIsTypeUniform(false, g_iWeaponsCurType[client])));
     
-    decl String:typeweapon[WEAPONS_MAX_LENGTH];
-    decl String:display[WEAPONS_MAX_LENGTH];
+    decl String:typeweapon[MENU_LINE_SMALL_LENGTH];
+    decl String:display[MENU_LINE_SMALL_LENGTH + 2]; // +2 to allow room for the [ ] if its restricted.
     
     // Get an array populated with all weapons of the given type.
     new Handle:arrayTypeWeapons;
@@ -291,7 +291,7 @@ public WeaponsMenuTypeWeaponsHandle(Handle:menu_weapons_typeweapons, MenuAction:
             default:
             {
                 // Get weappon name.
-                decl String:typeweapon[WEAPONS_MAX_LENGTH];
+                decl String:typeweapon[MENU_LINE_REG_LENGTH];
                 GetMenuItem(menu_weapons_typeweapons, slot, typeweapon, sizeof(typeweapon));
                 
                 // Get weapon index.
@@ -356,7 +356,7 @@ WeaponsMenuZMarket(client)
     
     SetMenuTitle(menu_weapons_market, "%t\n ", "Weapons menu restrict zmarket title");
     
-    decl String:buyzone[64];
+    decl String:buyzone[MENU_LINE_REG_LENGTH];
     decl String:buyzonesetting[8];
     
     // Get "yes" or "no" settings from respective cvar.

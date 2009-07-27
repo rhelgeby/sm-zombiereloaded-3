@@ -258,11 +258,11 @@ bool:ZMarketMenuMain(client)
     new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);
     
     // Add "Get Current Loadout" option.
-    decl String:getloadout[WEAPONS_MAX_LENGTH];
-    decl String:viewloadout[WEAPONS_MAX_LENGTH];
-    decl String:rebuy[WEAPONS_MAX_LENGTH];
-    decl String:rebuyauto[WEAPONS_MAX_LENGTH];
-    decl String:weaponslist[WEAPONS_MAX_LENGTH];
+    decl String:getloadout[MENU_LINE_REG_LENGTH];
+    decl String:viewloadout[MENU_LINE_REG_LENGTH];
+    decl String:rebuy[MENU_LINE_REG_LENGTH];
+    decl String:rebuyauto[MENU_LINE_REG_LENGTH];
+    decl String:weaponslist[MENU_LINE_REG_LENGTH];
     
     // Get auto-rebuy setting.
     decl String:rebuyautosetting[8];
@@ -399,7 +399,7 @@ bool:ZMarketMenuLoadout(client)
     WeaponsClassnameToDisplay(rebuyweapons[Slot_NVGs], sizeof(rebuyweapons[]), nvgsweapon, sizeof(nvgsweapon));
     
     // Get the empty translation.
-    decl String:empty[64];
+    decl String:empty[MENU_LINE_SMALL_LENGTH];
     Format(empty, sizeof(empty), "%t", "Weapons menu zmarket loadout empty");
     
     // If the client doesn't have a weapon in this slot, then set the weapon to the empty translation.
@@ -428,12 +428,12 @@ bool:ZMarketMenuLoadout(client)
     decl String:nvgsbool[8];
     ConfigBoolToSetting(bool:nvgsweapon[0], nvgsbool, sizeof(nvgsbool));
     
-    decl String:primary[64];
-    decl String:secondary[64];
-    decl String:melee[64];
-    decl String:projectile[64];
-    decl String:explosive[64];
-    decl String:nvgs[64];
+    decl String:primary[MENU_LINE_REG_LENGTH];
+    decl String:secondary[MENU_LINE_REG_LENGTH];
+    decl String:melee[MENU_LINE_REG_LENGTH];
+    decl String:projectile[MENU_LINE_REG_LENGTH];
+    decl String:explosive[MENU_LINE_REG_LENGTH];
+    decl String:nvgs[MENU_LINE_REG_LENGTH];
     
     // Format all the lines of the menu.
     Format(primary, sizeof(primary), "%t", "Weapons menu zmarket loadout primary", primaryweapon);
@@ -525,7 +525,7 @@ ZMarketMenuTypes(client)
     // If there are no weapons, add an "(Empty)" line.
     if (size == 0)
     {
-        decl String:empty[64];
+        decl String:empty[MENU_LINE_SMALL_LENGTH];
         Format(empty, sizeof(empty), "%t", "Menu empty");
         
         AddMenuItem(menu_zmarket_types, "empty", empty, ITEMDRAW_DISABLED);
@@ -605,8 +605,8 @@ ZMarketMenuTypeWeapons(client)
     SetMenuTitle(menu_zmarket_typeweapons, "%t\n ", "Weapons menu zmarket types weapon type title", typename);
     
     decl String:typeweapon[WEAPONS_MAX_LENGTH];
-    decl String:typeweapondisplay[WEAPONS_MAX_LENGTH];
-    decl String:display[128];
+    decl String:typeweapondisplay[MENU_LINE_REG_LENGTH];
+    decl String:display[MENU_LINE_BIG_LENGTH];
     
     // Get an array populated with all weapons of the given type.
     new Handle:arrayTypeWeapons;
