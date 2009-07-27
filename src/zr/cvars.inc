@@ -137,6 +137,7 @@ enum CvarsList
     Handle:CVAR_RESPAWN_TEAM_ZOMBIE,
     Handle:CVAR_RESPAWN_TEAM_ZOMBIE_WORLD,
     Handle:CVAR_NAPALM_IGNITE,
+    Handle:CVAR_NAPALM_TIME_RESET,
     Handle:CVAR_NAPALM_DOUSE,
     Handle:CVAR_JUMPBOOST_BHOP_PROTECT,
     Handle:CVAR_JUMPBOOST_BHOP_MAX,
@@ -416,6 +417,7 @@ CvarsCreate()
     // Napalm (module)
     // ===========================
     g_hCvarsList[CVAR_NAPALM_IGNITE]                    =    CreateConVar("zr_napalm_ignite",       "1",    "Ignite grenade in mid-air after player throws it. [Dependency: Human Attribute 'has_napalm']");
+    g_hCvarsList[CVAR_NAPALM_TIME_RESET]                =    CreateConVar("zr_napalm_time_reset",   "1",    "The burn-time is reset when being naded multiple times. [0: Original burn-time is used.]");
     g_hCvarsList[CVAR_NAPALM_DOUSE]                     =    CreateConVar("zr_napalm_douse",        "0",    "Minimum water-saturation before flame is extinguished. ['0' = Disabled | '1' = Feet | '2' = Waist | '3' = Full submersion]");
     
     

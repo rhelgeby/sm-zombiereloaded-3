@@ -132,11 +132,17 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
     // If weapon is a grenade, then ignite player.
     if (StrEqual(weapon, "hegrenade", false))
     {
-        // Put any existing fire out.
-        ExtinguishEntity(client);
+        new bool:reset = GetConVarBool(g_hCvarsList[CVAR_NAPALM_TIME_RESET]);
+        new flags = GetEntityFlags(client);
         
-        // Re-ignite to start burn-time over.
-        IgniteEntity(client, napalm_time);
+        if (reset || !(flags & FL_ONFIRE))
+        {
+            // This stops the fire before re-ignition.
+            ExtinguishEntity(client);
+            
+            // Ignite client.
+            IgniteEntity(client, napalm_time);
+        }
     }
 }
 
