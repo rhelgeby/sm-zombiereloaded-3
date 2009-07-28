@@ -43,7 +43,8 @@ ClassMenuMain(client)
     new Handle:menu = CreateMenu(ClassMenuMainHandle);
     
     SetGlobalTransTarget(client);
-    SetMenuTitle(menu, "%t\n", "Classes menu title");
+    
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     
     decl String:zombieclass[MENU_LINE_REG_LENGTH];
     decl String:humanclass[MENU_LINE_REG_LENGTH];
@@ -81,7 +82,6 @@ ClassMenuMain(client)
     if (ClassPlayerInAdminMode[client])
     {
         // Notify the player.
-        SetGlobalTransTarget(client);
         Format(inadminmnode, sizeof(inadminmnode), "%t\n", "Classes admin mode enabled");
         AddMenuItem(menu, "", inadminmnode, ITEMDRAW_RAWLINE);
     }
@@ -98,13 +98,11 @@ ClassMenuMain(client)
         // Get name of previous class index and format item text.
         ClassGetName(nextzombie, nextzombiename, sizeof(nextzombiename), ZR_CLASS_CACHE_MODIFIED);
         
-        SetGlobalTransTarget(client);
         Format(zombieselect, sizeof(zombieselect), "%t", "Classes menu zombie next", zombieclass, nextzombiename);
     }
     else
     {
         // Use current class name and format item text.
-        SetGlobalTransTarget(client);
         Format(zombieselect, sizeof(zombieselect), "%t", "Classes menu zombie current", zombieclass);
     }
     
@@ -124,13 +122,11 @@ ClassMenuMain(client)
         // Get name of previous class index and format item text.
         ClassGetName(nexthuman, nexthumanname, sizeof(nexthumanname), ZR_CLASS_CACHE_MODIFIED);
         
-        SetGlobalTransTarget(client);
         Format(humanselect, sizeof(humanselect), "%t", "Classes menu human next", humanclass, nexthumanname);
     }
     else
     {
         // Use current class name and format item text.
-        SetGlobalTransTarget(client);
         Format(humanselect, sizeof(humanselect), "%t", "Classes menu human current", humanclass);
     }
     
@@ -152,13 +148,11 @@ ClassMenuMain(client)
         {
             // Get name of previous class index and format item text.
             ClassGetName(nextadmin, nextadminname, sizeof(nextadminname), ZR_CLASS_CACHE_MODIFIED);
-            SetGlobalTransTarget(client);
             Format(adminselect, sizeof(adminselect), "%t", "Classes menu admin next", adminclass, nextadminname);
         }
         else
         {
             // Use current class name and format item text.
-            SetGlobalTransTarget(client);
             Format(adminselect, sizeof(adminselect), "%t", "Classes menu admin current", adminclass);
         }
         
@@ -168,12 +162,10 @@ ClassMenuMain(client)
         // Set admin mode status string.
         if (ClassPlayerInAdminMode[client])
         {
-            SetGlobalTransTarget(client);
             Format(adminmode, sizeof(adminmode), "%t", "On");
         }
         else
         {
-            SetGlobalTransTarget(client);
             Format(adminmode, sizeof(adminmode), "%t", "Off");
         }
         
@@ -181,10 +173,12 @@ ClassMenuMain(client)
         AddMenuItem(menu, "", " ", ITEMDRAW_RAWLINE);
         
         // Show admin mode toggle option.
-        SetGlobalTransTarget(client);
         Format(toggleadminmode, sizeof(toggleadminmode), "%t\n    %s", "Classes menu admin mode toggle", adminmode);
         AddMenuItem(menu, "", toggleadminmode, admin_itemdraw);
     }
+    
+    Format(title, sizeof(title), "%t\n", "Classes menu title");
+    SetMenuTitle(menu, title);
     
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
