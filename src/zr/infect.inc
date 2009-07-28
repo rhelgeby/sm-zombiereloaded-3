@@ -815,8 +815,7 @@ InfectMenuClients(client)
     // Set client as translation target.
     SetGlobalTransTarget(client);
     
-    SetMenuTitle(menu_infect_clients, "%t\n ", "Infect menu clients title");
-    
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:clientoption[MENU_LINE_REG_LENGTH];
     decl String:clientuserid[8];
     
@@ -852,6 +851,9 @@ InfectMenuClients(client)
         // Add option to menu.
         AddMenuItem(menu_infect_clients, clientuserid, clientoption);
     }
+    
+    Format(title, sizeof(title), "%t\n ", "Infect menu clients title");
+    SetMenuTitle(menu_infect_clients, title);
     
     // Create a "Back" button to the main admin menu.
     SetMenuExitBackButton(menu_infect_clients, true);

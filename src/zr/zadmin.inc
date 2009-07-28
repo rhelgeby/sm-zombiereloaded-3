@@ -77,8 +77,7 @@ bool:ZAdminMenu(client)
     // Set translation target as the client.
     SetGlobalTransTarget(client);
     
-    SetMenuTitle(menu_zadmin, "%t\n ", "ZAdmin main title");
-    
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:classmultipliers[MENU_LINE_REG_LENGTH];
     decl String:weapons[MENU_LINE_REG_LENGTH];
     decl String:hitgroups[MENU_LINE_REG_LENGTH];
@@ -86,6 +85,7 @@ bool:ZAdminMenu(client)
     decl String:zspawn[MENU_LINE_REG_LENGTH];
     decl String:ztele[MENU_LINE_REG_LENGTH];
     
+    Format(title, sizeof(title), "%t\n ", "ZAdmin main title");
     Format(classmultipliers, sizeof(classmultipliers), "%t", "ZAdmin main class multipliers");
     Format(weapons, sizeof(weapons), "%t", "ZAdmin main weapons");
     Format(hitgroups, sizeof(hitgroups), "%t", "ZAdmin main hitgroups");
@@ -97,6 +97,7 @@ bool:ZAdminMenu(client)
     new bool:hitgroupsenabled = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
     
     // Add items to menu.
+    SetMenuTitle(menu_zadmin, title);
     AddMenuItem(menu_zadmin, "classmultipliers", classmultipliers);
     AddMenuItem(menu_zadmin, "weapons", weapons);
     AddMenuItem(menu_zadmin, "hitgroups", hitgroups, MenuGetItemDraw(hitgroupsenabled));

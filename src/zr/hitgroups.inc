@@ -370,16 +370,17 @@ bool:HitgroupsMenuHitgroups(client)
     // Set client as translation target.
     SetGlobalTransTarget(client);
     
-    SetMenuTitle(menu_hitgroups, "%t\n ", "Hitgroups menu hitgroups title");
-    
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:enableall[MENU_LINE_REG_LENGTH];
     decl String:headshotsonly[MENU_LINE_REG_LENGTH];
     
     // Format menu options.
+    Format(title, sizeof(title), "%t\n ", "Hitgroups menu hitgroups title");
     Format(enableall, sizeof(enableall), "%t", "Hitgroups menu hitgroups enable all");
     Format(headshotsonly, sizeof(headshotsonly), "%t\n ", "Hitgroups menu hitgroups headshots only");
     
     // Add options to menu.
+    SetMenuTitle(menu_hitgroups, title);
     AddMenuItem(menu_hitgroups, "Enable All", enableall);
     AddMenuItem(menu_hitgroups, "Headshots Only", headshotsonly);
     

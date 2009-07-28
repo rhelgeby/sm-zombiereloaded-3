@@ -45,21 +45,21 @@ ClassMenuMain(client)
     SetGlobalTransTarget(client);
     SetMenuTitle(menu, "%t\n", "Classes menu title");
     
-    decl String:zombieclass[64];
-    decl String:humanclass[64];
-    decl String:adminclass[64];
+    decl String:zombieclass[MENU_LINE_REG_LENGTH];
+    decl String:humanclass[MENU_LINE_REG_LENGTH];
+    decl String:adminclass[MENU_LINE_REG_LENGTH];
     
-    decl String:nextzombiename[64];
-    decl String:nexthumanname[64];
-    decl String:nextadminname[64];
+    decl String:nextzombiename[MENU_LINE_REG_LENGTH];
+    decl String:nexthumanname[MENU_LINE_REG_LENGTH];
+    decl String:nextadminname[MENU_LINE_REG_LENGTH];
     
-    decl String:zombieselect[128];
-    decl String:humanselect[128];
-    decl String:adminselect[128];
+    decl String:zombieselect[MENU_LINE_BIG_LENGTH];
+    decl String:humanselect[MENU_LINE_BIG_LENGTH];
+    decl String:adminselect[MENU_LINE_BIG_LENGTH];
         
-    decl String:inadminmnode[128];
-    decl String:adminmode[128];
-    decl String:toggleadminmode[128];
+    decl String:inadminmnode[MENU_LINE_BIG_LENGTH];
+    decl String:adminmode[MENU_LINE_BIG_LENGTH];
+    decl String:toggleadminmode[MENU_LINE_BIG_LENGTH];
     
     // Get number of enabled classes per team.
     new zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
@@ -81,6 +81,7 @@ ClassMenuMain(client)
     if (ClassPlayerInAdminMode[client])
     {
         // Notify the player.
+        SetGlobalTransTarget(client);
         Format(inadminmnode, sizeof(inadminmnode), "%t\n", "Classes admin mode enabled");
         AddMenuItem(menu, "", inadminmnode, ITEMDRAW_RAWLINE);
     }
@@ -96,11 +97,14 @@ ClassMenuMain(client)
     {
         // Get name of previous class index and format item text.
         ClassGetName(nextzombie, nextzombiename, sizeof(nextzombiename), ZR_CLASS_CACHE_MODIFIED);
+        
+        SetGlobalTransTarget(client);
         Format(zombieselect, sizeof(zombieselect), "%t", "Classes menu zombie next", zombieclass, nextzombiename);
     }
     else
     {
         // Use current class name and format item text.
+        SetGlobalTransTarget(client);
         Format(zombieselect, sizeof(zombieselect), "%t", "Classes menu zombie current", zombieclass);
     }
     
@@ -119,11 +123,14 @@ ClassMenuMain(client)
     {
         // Get name of previous class index and format item text.
         ClassGetName(nexthuman, nexthumanname, sizeof(nexthumanname), ZR_CLASS_CACHE_MODIFIED);
+        
+        SetGlobalTransTarget(client);
         Format(humanselect, sizeof(humanselect), "%t", "Classes menu human next", humanclass, nexthumanname);
     }
     else
     {
         // Use current class name and format item text.
+        SetGlobalTransTarget(client);
         Format(humanselect, sizeof(humanselect), "%t", "Classes menu human current", humanclass);
     }
     
@@ -145,11 +152,13 @@ ClassMenuMain(client)
         {
             // Get name of previous class index and format item text.
             ClassGetName(nextadmin, nextadminname, sizeof(nextadminname), ZR_CLASS_CACHE_MODIFIED);
+            SetGlobalTransTarget(client);
             Format(adminselect, sizeof(adminselect), "%t", "Classes menu admin next", adminclass, nextadminname);
         }
         else
         {
             // Use current class name and format item text.
+            SetGlobalTransTarget(client);
             Format(adminselect, sizeof(adminselect), "%t", "Classes menu admin current", adminclass);
         }
         
@@ -159,10 +168,12 @@ ClassMenuMain(client)
         // Set admin mode status string.
         if (ClassPlayerInAdminMode[client])
         {
+            SetGlobalTransTarget(client);
             Format(adminmode, sizeof(adminmode), "%t", "On");
         }
         else
         {
+            SetGlobalTransTarget(client);
             Format(adminmode, sizeof(adminmode), "%t", "Off");
         }
         
@@ -170,6 +181,7 @@ ClassMenuMain(client)
         AddMenuItem(menu, "", " ", ITEMDRAW_RAWLINE);
         
         // Show admin mode toggle option.
+        SetGlobalTransTarget(client);
         Format(toggleadminmode, sizeof(toggleadminmode), "%t\n    %s", "Classes menu admin mode toggle", adminmode);
         AddMenuItem(menu, "", toggleadminmode, admin_itemdraw);
     }
@@ -242,10 +254,10 @@ ClassMenuSelect(client, teamid)
     new classindex;
     new denyflags;
     
-    decl String:title[64];
-    decl String:classname[64];
-    decl String:description[256];
-    decl String:menuitem[320];
+    decl String:title[MENU_LINE_TITLE_LENGTH];
+    decl String:classname[MENU_LINE_REG_LENGTH];
+    decl String:description[MENU_LINE_BIG_LENGTH];
+    decl String:menuitem[MENU_LINE_HUGE_LENGTH];
     
     SetGlobalTransTarget(client);
     
@@ -306,7 +318,7 @@ ClassMenuSelect(client, teamid)
  */
 public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
 {
-    decl String:classname[64];
+    decl String:classname[MENU_LINE_REG_LENGTH];
     new classindex;
     new teamid;
     new bool:autoclose = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]);
@@ -405,9 +417,9 @@ bool:ClassTeamSelect(client)
     // Create menu.
     new Handle:menu = CreateMenu(ClassTeamSelectHandle);
     
-    decl String:title[64];
-    decl String:zombies[16];
-    decl String:humans[16];
+    decl String:title[MENU_LINE_TITLE_LENGTH];
+    decl String:zombies[MENU_LINE_SMALL_LENGTH];
+    decl String:humans[MENU_LINE_SMALL_LENGTH];
     
     // Set translation language.
     SetGlobalTransTarget(client);
@@ -486,16 +498,16 @@ ClassMultiplierSelectMenu(client)
     new teamid = ClassAdminTeamSelected[client];
     new bool:zombiesselected = bool:(teamid == ZR_CLASS_TEAM_ZOMBIES);
     
-    decl String:title[64];
-    decl String:napalmtime[48];
-    decl String:health[48];
-    decl String:regeninterval[48];
-    decl String:regenamount[48];
-    decl String:infectgain[48];
-    decl String:speed[48];
-    decl String:knockback[48];
-    decl String:jumpheight[48];
-    decl String:jumpdistance[48];
+    decl String:title[MENU_LINE_TITLE_LENGTH];
+    decl String:napalmtime[MENU_LINE_REG_LENGTH];
+    decl String:health[MENU_LINE_REG_LENGTH];
+    decl String:regeninterval[MENU_LINE_REG_LENGTH];
+    decl String:regenamount[MENU_LINE_REG_LENGTH];
+    decl String:infectgain[MENU_LINE_REG_LENGTH];
+    decl String:speed[MENU_LINE_REG_LENGTH];
+    decl String:knockback[MENU_LINE_REG_LENGTH];
+    decl String:jumpheight[MENU_LINE_REG_LENGTH];
+    decl String:jumpdistance[MENU_LINE_REG_LENGTH];
     
     new Float:currentnapalmtime;
     new Float:currenthealth;
@@ -507,9 +519,6 @@ ClassMultiplierSelectMenu(client)
     new Float:currentjumpheight;
     new Float:currentjumpdistance;
     
-    // Set translation language.
-    SetGlobalTransTarget(client);
-    
     // Get current multipliers.
     currentnapalmtime = Float:ClassMultiplierCache[teamid][ClassM_NapalmTime];
     currenthealth = Float:ClassMultiplierCache[teamid][ClassM_Health];
@@ -520,6 +529,8 @@ ClassMultiplierSelectMenu(client)
     currentknockback = Float:ClassMultiplierCache[teamid][ClassM_Knockback];
     currentjumpheight = Float:ClassMultiplierCache[teamid][ClassM_JumpHeight];
     currentjumpdistance = Float:ClassMultiplierCache[teamid][ClassM_JumpDistance];
+    
+    SetGlobalTransTarget(client);
     
     // Translate phrases.
     Format(title, sizeof(title), "%t\n", "Classes Menu Multiplier Select Title");
@@ -645,19 +656,18 @@ ClassMultiplierMenu(client, ClassMultipliers:attribute)
     
     new Handle:menu = CreateMenu(ClassMultiplierHandle);
     
-    decl String:title[64];
-    decl String:attributename[48];
-    decl String:linebuffer[48];
-    
-    // Set translation language.
-    SetGlobalTransTarget(client);
+    decl String:title[MENU_LINE_TITLE_LENGTH];
+    decl String:attributename[MENU_LINE_REG_LENGTH];
+    decl String:linebuffer[MENU_LINE_REG_LENGTH];
     
     // Get attribute string.
-    ClassMultiplierToString(attribute, attributename, sizeof(attributename));
+    ClassMultiplierToString(client, attribute, attributename, sizeof(attributename));
     
+    SetGlobalTransTarget(client);
     Format(title, sizeof(title), "%t %s\n%t %.2f\n", "Classes Menu Adjust Value", attributename, "Current Value", Float:ClassMultiplierCache[ClassAdminTeamSelected[client]][attribute]);
     SetMenuTitle(menu, title);
     
+    SetGlobalTransTarget(client);
     Format(linebuffer, sizeof(linebuffer), "%t", "Increase by", "0.5");
     AddMenuItem(menu, "increasehalf", linebuffer);
     Format(linebuffer, sizeof(linebuffer), "%t", "Increase by", "0.1");

@@ -32,6 +32,8 @@
 #define MENU_LINE_REG_LENGTH 64
 #define MENU_LINE_BIG_LENGTH 128
 #define MENU_LINE_HUGE_LENGTH 256
+
+#define MENU_LINE_TITLE_LENGTH MENU_LINE_BIG_LENGTH
 /**
  * @endsection
  */
@@ -78,9 +80,6 @@ ZMenuMain(client)
     // Create menu handle.
     new Handle:menu_main = CreateMenu(ZMenuMainHandle);
     
-    // Make client global translations target.
-    SetGlobalTransTarget(client);
-    
     decl String:publictrigger[4];
     decl String:silenttrigger[4];
     
@@ -88,10 +87,10 @@ ZMenuMain(client)
     SayHooksGetPublicChatTrigger(publictrigger, sizeof(publictrigger));
     SayHooksGetSilentChatTrigger(silenttrigger, sizeof(silenttrigger));
     
-    // Set menu title.
-    SetMenuTitle(menu_main, "%t\n ", "Menu main title", publictrigger, silenttrigger);
+    SetGlobalTransTarget(client);
     
     // Initialize menu lines.
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:zadmin[MENU_LINE_HUGE_LENGTH];
     decl String:zclass[MENU_LINE_HUGE_LENGTH];
     decl String:zcookies[MENU_LINE_HUGE_LENGTH];
@@ -101,6 +100,7 @@ ZMenuMain(client)
     decl String:zmarket[MENU_LINE_HUGE_LENGTH];
     
     // Translate each line into client's language.
+    Format(title, sizeof(title), "%t\n ", "Menu main title", publictrigger, silenttrigger);
     Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin", SAYHOOKS_KEYWORD_ZADMIN);
     Format(zclass, sizeof(zclass), "%t", "Menu main zclass", SAYHOOKS_KEYWORD_ZCLASS);
     Format(zcookies, sizeof(zcookies), "%t", "Menu main zcookies", SAYHOOKS_KEYWORD_ZCOOKIES);
@@ -110,6 +110,8 @@ ZMenuMain(client)
     Format(zmarket, sizeof(zmarket), "%t", "Menu main zmarket", SAYHOOKS_KEYWORD_ZMARKET);
     
     // Add items to menu.
+    
+    SetMenuTitle(menu_main, title);
     
     // Disable option if client isn't an admin.
     new bool:admin = ZRIsClientAdmin(client);

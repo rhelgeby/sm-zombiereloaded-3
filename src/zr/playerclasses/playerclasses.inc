@@ -1055,15 +1055,17 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
 /**
  * Converts a multiplier attribute to a human readable string.
  *
+ * @param client        The client index to translate correct language. 
  * @param attribute     Attribute to convert.
  * @param buffer        Destination string buffer.
  * @param maxlen        Size of buffer.
  * @return              Number of cells written.
  */
-ClassMultiplierToString(ClassMultipliers:attribute, String:buffer[], maxlen)
+ClassMultiplierToString(client, ClassMultipliers:attribute, String:buffer[], maxlen)
 {
     decl String:phrase[48];
     
+    SetGlobalTransTarget(client);
     switch (attribute)
     {
         case ClassM_NapalmTime:

@@ -47,9 +47,6 @@ ZCookiesMenuMain(client)
     // Make client global translations target.
     SetGlobalTransTarget(client);
     
-    // Set menu title.
-    SetMenuTitle(zcookies_menu_main, "%t\n ", "ZCookies Menu main title");
-    
     decl String:autorebuyenabled[4];
     decl String:zhpenabled[4];
     decl String:overlayenabled[4];
@@ -59,12 +56,14 @@ ZCookiesMenuMain(client)
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZHPEnabledCookie), zhpenabled, sizeof(zhpenabled), false);
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie), overlayenabled, sizeof(overlayenabled), false);
     
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:autorebuy[MENU_LINE_REG_LENGTH];
     decl String:zhp[MENU_LINE_REG_LENGTH];
     decl String:overlay[MENU_LINE_REG_LENGTH];
     decl String:zmarket[MENU_LINE_REG_LENGTH];
     
     // Translate each line into client's language.
+    Format(title, sizeof(title), "%t\n ", "ZCookies Menu main title");
     Format(autorebuy, sizeof(autorebuy), "%t", "ZCookies menu main auto-rebuy", autorebuyenabled);
     Format(zhp, sizeof(zhp), "%t", "ZCookies menu main zhp", zhpenabled);
     Format(overlay, sizeof(overlay), "%t", "ZCookies menu main overlay", overlayenabled);
@@ -78,6 +77,7 @@ ZCookiesMenuMain(client)
     new bool:zmarketenabled = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET]);                // For ZMarket loadout.
     
     // Add items to menu.
+    SetMenuTitle(zcookies_menu_main, title);
     AddMenuItem(zcookies_menu_main, "autorebuy", autorebuy, MenuGetItemDraw(weapons && zmarketrebuyauto));
     AddMenuItem(zcookies_menu_main, "zhp", zhp, MenuGetItemDraw(zhpcvar));
     AddMenuItem(zcookies_menu_main, "overlay", overlay, MenuGetItemDraw(overlaytoggle));

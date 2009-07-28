@@ -250,14 +250,12 @@ bool:ZMarketMenuMain(client)
     // Set translation target as client.
     SetGlobalTransTarget(client);
     
-    // Set menu title.
-    SetMenuTitle(menu_zmarket_main, "%t\n ", "Weapons menu zmarket main title");
-    
     // If rebuy is enabled, then add it to the menu.
     new bool:zmarketrebuy = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY]);
     new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);
     
     // Add "Get Current Loadout" option.
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:getloadout[MENU_LINE_REG_LENGTH];
     decl String:viewloadout[MENU_LINE_REG_LENGTH];
     decl String:rebuy[MENU_LINE_REG_LENGTH];
@@ -269,6 +267,7 @@ bool:ZMarketMenuMain(client)
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie), rebuyautosetting, sizeof(rebuyautosetting));
     
     // Format menu options.
+    Format(title, sizeof(title), "%t\n ", "Weapons menu zmarket main title");
     Format(getloadout, sizeof(getloadout), "%t", "Weapons menu zmarket main get loadout");
     Format(viewloadout, sizeof(viewloadout), "%t", "Weapons menu zmarket main view loadout");
     Format(rebuy, sizeof(rebuy), "%t", "Weapons menu zmarket main rebuy");
@@ -276,6 +275,7 @@ bool:ZMarketMenuMain(client)
     Format(weaponslist, sizeof(weaponslist), "%t", "Weapons menu zmarket main weapons list");
     
     // Add formatted options to menu.
+    SetMenuTitle(menu_zmarket_main, title);
     AddMenuItem(menu_zmarket_main, "Get Loadout", getloadout, MenuGetItemDraw(zmarketrebuy || zmarketrebuyauto));
     AddMenuItem(menu_zmarket_main, "View Loadout", viewloadout, MenuGetItemDraw(zmarketrebuy || zmarketrebuyauto));
     AddMenuItem(menu_zmarket_main, "Rebuy", rebuy, MenuGetItemDraw(zmarketrebuy || zmarketrebuyauto));
@@ -373,12 +373,6 @@ bool:ZMarketMenuLoadout(client)
     // Create menu handle.
     new Handle:menu_zmarket_loadout = CreateMenu(ZMarketMenuLoadoutHandle);
     
-    // Set translation target as client.
-    SetGlobalTransTarget(client);
-    
-    // Set menu title.
-    SetMenuTitle(menu_zmarket_loadout, "%t\n ", "Weapons menu zmarket loadout title");
-    
     decl String:primaryweapon[WEAPONS_MAX_LENGTH];
     decl String:secondaryweapon[WEAPONS_MAX_LENGTH];
     decl String:meleeweapon[WEAPONS_MAX_LENGTH];
@@ -397,6 +391,8 @@ bool:ZMarketMenuLoadout(client)
     WeaponsClassnameToDisplay(rebuyweapons[Slot_Projectile], sizeof(rebuyweapons[]), projectileweapon, sizeof(projectileweapon));
     WeaponsClassnameToDisplay(rebuyweapons[Slot_Explosive], sizeof(rebuyweapons[]), explosiveweapon, sizeof(explosiveweapon));
     WeaponsClassnameToDisplay(rebuyweapons[Slot_NVGs], sizeof(rebuyweapons[]), nvgsweapon, sizeof(nvgsweapon));
+    
+    SetGlobalTransTarget(client);
     
     // Get the empty translation.
     decl String:empty[MENU_LINE_SMALL_LENGTH];
@@ -428,6 +424,7 @@ bool:ZMarketMenuLoadout(client)
     decl String:nvgsbool[8];
     ConfigBoolToSetting(bool:nvgsweapon[0], nvgsbool, sizeof(nvgsbool));
     
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:primary[MENU_LINE_REG_LENGTH];
     decl String:secondary[MENU_LINE_REG_LENGTH];
     decl String:melee[MENU_LINE_REG_LENGTH];
@@ -436,6 +433,7 @@ bool:ZMarketMenuLoadout(client)
     decl String:nvgs[MENU_LINE_REG_LENGTH];
     
     // Format all the lines of the menu.
+    Format(title, sizeof(title), "%t\n ", "Weapons menu zmarket loadout title");
     Format(primary, sizeof(primary), "%t", "Weapons menu zmarket loadout primary", primaryweapon);
     Format(secondary, sizeof(secondary), "%t", "Weapons menu zmarket loadout secondary", secondaryweapon);
     Format(melee, sizeof(melee), "%t", "Weapons menu zmarket loadout melee", meleeweapon);
@@ -444,6 +442,7 @@ bool:ZMarketMenuLoadout(client)
     Format(nvgs, sizeof(nvgs), "%t", "Weapons menu zmarket loadout nvgs", nvgsbool);
     
     // Add formatted options to menu.
+    SetMenuTitle(menu_zmarket_loadout, title);
     AddMenuItem(menu_zmarket_loadout, "0", primary, MenuGetItemDraw(!StrEqual(primaryweapon, empty)));
     AddMenuItem(menu_zmarket_loadout, "1", secondary, MenuGetItemDraw(!StrEqual(secondaryweapon, empty)));
     AddMenuItem(menu_zmarket_loadout, "2", melee, MenuGetItemDraw(!StrEqual(meleeweapon, empty)));
@@ -504,10 +503,10 @@ ZMarketMenuTypes(client)
     new Handle:menu_zmarket_types = CreateMenu(ZMarketMenuTypesHandle);
     
     // Set translation target as client.
-    SetGlobalTransTarget(client);
     
-    // Set menu title.
-    SetMenuTitle(menu_zmarket_types, "%t\n ", "Weapons menu zmarket types title");
+    decl String:title[MENU_LINE_TITLE_LENGTH];
+    Format(title, sizeof(title), "%t\n ", "Weapons menu zmarket types title");
+    SetMenuTitle(menu_zmarket_types, title);
     
     decl String:typename[WEAPONS_MAX_LENGTH];
     
@@ -525,6 +524,8 @@ ZMarketMenuTypes(client)
     // If there are no weapons, add an "(Empty)" line.
     if (size == 0)
     {
+        SetGlobalTransTarget(client);
+        
         decl String:empty[MENU_LINE_SMALL_LENGTH];
         Format(empty, sizeof(empty), "%t", "Menu empty");
         
@@ -601,9 +602,7 @@ ZMarketMenuTypeWeapons(client)
     decl String:typename[WEAPONS_MAX_LENGTH];
     RestrictWeaponTypeGetName(g_iZMarketCurType[client], typename, sizeof(typename));
     
-    // Set menu title.
-    SetMenuTitle(menu_zmarket_typeweapons, "%t\n ", "Weapons menu zmarket types weapon type title", typename);
-    
+    decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:typeweapon[WEAPONS_MAX_LENGTH];
     decl String:typeweapondisplay[MENU_LINE_REG_LENGTH];
     decl String:display[MENU_LINE_BIG_LENGTH];
@@ -611,6 +610,8 @@ ZMarketMenuTypeWeapons(client)
     // Get an array populated with all weapons of the given type.
     new Handle:arrayTypeWeapons;
     new count = RestrictGetTypeWeapons(g_iZMarketCurType[client], arrayTypeWeapons);
+    
+    SetGlobalTransTarget(client);
     
     // x = Array index.
     for (new x = 0; x < count; x++)
@@ -694,6 +695,9 @@ ZMarketMenuTypeWeapons(client)
         new bool:itemdraw = ((itemprice > -1) && !restricted && (purchasemax <= 0 || purchasesleft > 0));
         AddMenuItem(menu_zmarket_typeweapons, typeweapon, display, MenuGetItemDraw(itemdraw));
     }
+    
+    Format(title, sizeof(title), "%t\n ", "Weapons menu zmarket types weapon type title", typename);
+    SetMenuTitle(menu_zmarket_typeweapons, title);
     
     // Destroy the array handle.
     CloseHandle(arrayTypeWeapons);
