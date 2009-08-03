@@ -38,7 +38,7 @@
 // health_regen_interval    decimal     Sets the regeneration interval. 0 to disable.
 // health_regen_amount      number      How much HP to give per interval.
 // health_infect_gain       number      How much HP to give when the player infects someone. Zombies only.
-// kill_bonus               number      How many points to give per kill. Humans only.
+// kill_bonus               number      How many points to give per kill. Zombies only.
 // speed                    decimal     The player speed.
 // knockback                decimal     Force of the knockback when shot at. Zombies only.
 // jump_height              decimal     Multiplier of the players jump height. 0.0 means no jump, 1.0 is normal.

@@ -750,8 +750,8 @@ The list below explains all available class attributes in detail:
     
     kill_bonus              number          0 - 16
     ---------------------------------------------------------------------------
-        Human classes only. How many points to give the player each time he
-        kill a zombie.
+        Zombie classes only. How many EXTRA points to give the killer of a
+        zombie.  If this is 0, the default value of 1 point will be given.
     
     speed                   decimal         10.0 - 2000.0
     ---------------------------------------------------------------------------

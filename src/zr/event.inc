@@ -272,7 +272,6 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     
     // Forward event to modules.
     ClassOnClientDeath(index);
-    RoundEndOnClientDeath();
     InfectOnClientDeath(index, attacker);
     VEffectsOnClientDeath(index);
     SEffectsOnClientDeath(index);
@@ -283,6 +282,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     ZTeleOnClientDeath(index);
     ZHPOnClientDeath(index);
     VolOnPlayerDeath(index);
+    RoundEndOnClientDeath();
 }
 
 /**
