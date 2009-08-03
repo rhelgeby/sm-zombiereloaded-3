@@ -151,6 +151,13 @@ ZMarketOnClientSpawnPost(client)
     // Reset purchase counts for client.
     ZMarketResetPurchaseCount(client);
     
+    // If auto-rebuy is disabled, then ensure it is also disabled on the client as well.
+    new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);
+    if (!zmarketrebuyauto)
+    {
+        CookiesSetClientCookieBool(client, g_hZMarketAutoRebuyCookie, false);
+    }
+    
     // If client hasn't spawned into the game yet, then stop.
     if (!IsPlayerAlive(client))
     {
