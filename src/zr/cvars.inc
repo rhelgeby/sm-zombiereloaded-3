@@ -345,7 +345,7 @@ CvarsCreate()
     // ===========================
     
     // Lightstyle
-    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]              =    CreateConVar("zr_veffects_lightstyle",         "1",                    "Change lightstyle (brightness) of the map.");
+    g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]              =    CreateConVar("zr_veffects_lightstyle",         "0",                    "Change lightstyle (brightness) of the map.");
     g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE]        =    CreateConVar("zr_veffects_lightstyle_value",   "b",                    "Lightstyle value. ['a' = Darkest | 'z' = Brightest | Dependency: zr_veffects_lightstyle]");
     
     // Sky
