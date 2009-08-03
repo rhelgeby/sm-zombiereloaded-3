@@ -52,9 +52,9 @@ ZCookiesMenuMain(client)
     decl String:overlayenabled[4];
     
     // Get the current toggle state of the cookies.
-    ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie), autorebuyenabled, sizeof(autorebuyenabled), false);
-    ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZHPEnabledCookie), zhpenabled, sizeof(zhpenabled), false);
-    ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie), overlayenabled, sizeof(overlayenabled), false);
+    ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie), autorebuyenabled, sizeof(autorebuyenabled), false, client);
+    ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZHPEnabledCookie), zhpenabled, sizeof(zhpenabled), false, client);
+    ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie), overlayenabled, sizeof(overlayenabled), false, client);
     
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:autorebuy[MENU_LINE_REG_LENGTH];

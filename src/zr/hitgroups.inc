@@ -397,7 +397,7 @@ bool:HitgroupsMenuHitgroups(client)
         IntToString(x, hitgroupid, sizeof(hitgroupid));
         
         // Convert bool to "On/Off"
-        ConfigBoolToSetting(HitgroupsCanDamage(x), hitgroupcandamage, sizeof(hitgroupcandamage), false);
+        ConfigBoolToSetting(HitgroupsCanDamage(x), hitgroupcandamage, sizeof(hitgroupcandamage), false, client);
         
         // Format "on/off" to the option.
         Format(hitgroupoption, sizeof(hitgroupoption), "%s: %s", hitgroupoption, hitgroupcandamage);

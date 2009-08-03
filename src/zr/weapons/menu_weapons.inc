@@ -360,7 +360,7 @@ WeaponsMenuZMarket(client)
     
     // Get "yes" or "no" settings from respective cvar.
     decl String:buyzonesetting[8];
-    ConfigBoolToSetting(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]), buyzonesetting, sizeof(buyzonesetting));
+    ConfigBoolToSetting(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]), buyzonesetting, sizeof(buyzonesetting), true, client);
     
     SetGlobalTransTarget(client);
     

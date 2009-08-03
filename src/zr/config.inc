@@ -878,7 +878,7 @@ public Action:ConfigReloadAllCommand(client, argc)
 }
 
 /**
- * Converts string of "yes/on" or "no/off" to a boolean value.
+ * Converts string of "yes/on" or "no/off" to a boolean value.  Always uses english as yes/no/on/off language.
  * 
  * @param option    "yes/on" or "no/off" string to be converted.
  * @return          True if string is "yes", false otherwise.
@@ -891,7 +891,7 @@ stock bool:ConfigSettingToBool(const String:option[])
         return true;
     }
     
-    // Option isn't "yes."
+    // Option isn't yes.
     return false;
 }
 
@@ -901,19 +901,29 @@ stock bool:ConfigSettingToBool(const String:option[])
  * @param bOption   True/false value to be converted to "yes/on"/"no/off", respectively.
  * @param option    Destination string buffer to store "yes/on" or "no/off" in.
  * @param maxlen    Length of destination string buffer (wont't be more than 4).
- * @param yesno     When true, returns "yes/no", false returns "on/off." 
+ * @param yesno     When true, returns "yes/no", false returns "on/off."
+ * @param target    The target to use as translation language.
  */
-stock ConfigBoolToSetting(bool:bOption, String:option[], maxlen, bool:yesno = true)
+stock ConfigBoolToSetting(bool:bOption, String:option[], maxlen, bool:yesno = true, target = LANG_SERVER)
 {
+    decl String:t_yes[16], String:t_on[16];
+    decl String:t_no[16], String:t_off[16];
+    
+    SetGlobalTransTarget(target);
+    
+    // Get the yes/no translations for the target.
+    Format(t_yes, sizeof(t_yes), "%t", "Yes");  Format(t_on, sizeof(t_on), "%t", "On");
+    Format(t_no, sizeof(t_no), "%t", "No");     Format(t_off, sizeof(t_off), "%t", "Off");
+    
     // If option is true, then copy "yes" to return string.
     if (bOption)
     {
-        yesno ? strcopy(option, maxlen, "Yes") : strcopy(option, maxlen, "On");
+        yesno ? strcopy(option, maxlen, t_yes) : strcopy(option, maxlen, t_on);
     }
     // If option is false, then copy "no" to return string.
     else
     {
-        yesno ? strcopy(option, maxlen, "No") : strcopy(option, maxlen, "Off");
+        yesno ? strcopy(option, maxlen, t_no) : strcopy(option, maxlen, t_off);
     }
 }
 
