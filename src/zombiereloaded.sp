@@ -49,6 +49,7 @@
 #include "zr/menu"
 #include "zr/cookies"
 #include "zr/paramtools"
+#include "zr/paramparser"
 #include "zr/models"
 #include "zr/downloads"
 #include "zr/overlays"
