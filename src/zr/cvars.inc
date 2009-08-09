@@ -255,7 +255,7 @@ CvarsCreate()
     // Overlays
     g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]           =    CreateConVar("zr_classes_overlay_toggle",      "1",            "Allow players to toggle class overlay.");
     g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds",  "nightvision",  "List of commands to hook that players can use to toggle class overlay. [Dependency: zr_classes_overlay_toggle | Delimiter: \", \"]");
-    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default",     "0",            "Default class overlay toggle state set on connecting player. [Dependency: zr_classes_overlay_toggle]");
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default",     "0",            "Default class overlay toggle state set on connecting player.");
     
     
     // ===========================
@@ -298,7 +298,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_INFECT_FIREBALL]                  =    CreateConVar("zr_infect_fireball",             "1",                                "Spawn a fireball effect around player on infection. [Dependency: zr_infect_explosion]");
     g_hCvarsList[CVAR_INFECT_SMOKE]                     =    CreateConVar("zr_infect_smoke",                "1",                                "Spawn a smoke cloud effect around player on infection. [Dependency: zr_infect_explosion]");
     g_hCvarsList[CVAR_INFECT_SPARKS]                    =    CreateConVar("zr_infect_sparks",               "1",                                "Emit sparks from player on infection. [Dependency: zr_infect_explosion]");
-    g_hCvarsList[CVAR_INFECT_SOUND]                     =    CreateConVar("zr_infect_sound",                "npc/fast_zombie/fz_scream1.wav",   "Sound, relative to \"sounds\" folder, to play from player on infection. ['\"\"' = No sound]");
+    g_hCvarsList[CVAR_INFECT_SOUND]                     =    CreateConVar("zr_infect_sound",                "npc/fast_zombie/fz_scream1.wav",   "Sound, relative to \"sound\" folder, to play from player on infection. ['\"\"' = No sound]");
     g_hCvarsList[CVAR_INFECT_ESPLASH]                   =    CreateConVar("zr_infect_esplash",              "1",                                "Emit an energy splash from player on infection.");
     g_hCvarsList[CVAR_INFECT_SHAKE]                     =    CreateConVar("zr_infect_shake",                "1",                                "Shake player's view on infect.");
     g_hCvarsList[CVAR_INFECT_SHAKE_AMP]                 =    CreateConVar("zr_infect_shake_amp",            "15.0",                             "Amplitude of shaking effect. [Dependency: zr_infect_shake]");
@@ -389,7 +389,7 @@ CvarsCreate()
     
     // Ambient Sounds
     g_hCvarsList[CVAR_AMBIENTSOUNDS]                    =    CreateConVar("zr_ambientsounds",           "1",                            "Play an ambient sound to all players during gameplay.");
-    g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE]               =    CreateConVar("zr_ambientsounds_file",      "ambient/zr/zr_ambience.mp3",   "Sound file, relative to \"sounds\" folder, to play as ambience. [Dependency: zr_ambientsounds]");
+    g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE]               =    CreateConVar("zr_ambientsounds_file",      "ambient/zr/zr_ambience.mp3",   "Sound file, relative to \"sound\" folder, to play as ambience. [Dependency: zr_ambientsounds]");
     g_hCvarsList[CVAR_AMBIENTSOUNDS_LENGTH]             =    CreateConVar("zr_ambientsounds_length",    "60.0",                         "Length of the ambient sound. [Dependency: zr_ambientsounds]");
     g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]             =    CreateConVar("zr_ambientsounds_volume",    "0.8",                          "Volume of the ambient sound. [1.0 = Max volume | 0.0001 = Not audible | Dependency: zr_ambientsounds]");
     
@@ -448,7 +448,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn",                      "1",        "Allow players to spawn into the game late.");
     
     g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override",        "1",        "Override spawn team when spawning by means of ZSpawn.");
-    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie",          "0",        "Spawn player on zombie team when spawning by means of ZSpawn. [Dependency: zr_zspawn_team_override | Override: zr_respawn_zombie]");
+    g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie",          "0",        "Spawn player on zombie team when spawning by means of ZSpawn. [Dependency: zr_zspawn_team_override | Override: zr_respawn_team_zombie]");
     g_hCvarsList[CVAR_ZSPAWN_BLOCK_REJOIN]              =    CreateConVar("zr_zspawn_block_rejoin",         "1",        "Block players disconnecting and rejoing the game using zspawn.");
     
     g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]                 =    CreateConVar("zr_zspawn_timelimit",            "1",        "Put a time limit on the use of ZSpawn.");
