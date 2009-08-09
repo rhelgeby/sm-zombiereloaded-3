@@ -516,6 +516,64 @@ stock bool:ClassFlagFilterMatch(index, require, deny, cachetype)
 }
 
 /**
+ * Decides whether a class selection menu should be enabled. The decision is
+ * based on zr_class_allow_* console variables.
+ *
+ * @param team  Optional. Team ID to match. Default is all.
+ * @return      True if allowed, false otherwise.
+ */
+bool:ClassAllowSelection(client, team = -1)
+{
+    // Get selection settings.
+    new bool:zombie = GetConVarBool(g_hCvarsList[CVAR_CLASSES_ZOMBIE_SELECT]);
+    new bool:human = GetConVarBool(g_hCvarsList[CVAR_CLASSES_HUMAN_SELECT]);
+    new bool:admin = GetConVarBool(g_hCvarsList[CVAR_CLASSES_ADMIN_SELECT]);
+    
+    // Since admin mode classes are optional they must be counted to verify
+    // that they exist.
+    new bool:adminexist;
+    
+    // Check if player is admin.
+    new bool:isadmin = ZRIsClientAdmin(client);
+    
+    // Only count admin mode classes if client is admin for better performance.
+    if (isadmin)
+    {
+        adminexist = ClassCountTeam(ZR_CLASS_TEAM_ADMINS) > 0;
+    }
+    
+    // Check if a team id is specified.
+    if (team >= 0)
+    {
+        // Check team and return the corresponding selection setting.
+        switch (team)
+        {
+            case ZR_CLASS_TEAM_ZOMBIES:
+            {
+                return zombie;
+            }
+            case ZR_CLASS_TEAM_HUMANS:
+            {
+                return human;
+            }
+            case ZR_CLASS_TEAM_ADMINS:
+            {
+                // Player must be admin to select admin mode classes.
+                return admin && isadmin && adminexist;
+            }
+        }
+        
+        // Team ID didn't match.
+        return false;
+    }
+    else
+    {
+        // Check zombie and human.
+        return zombie || human;
+    }
+}
+
+/**
  * Gets all class indexes or from a specified team, and adds them to the
  * specified array.
  * 

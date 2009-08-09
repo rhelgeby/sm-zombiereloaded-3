@@ -62,6 +62,9 @@ enum CvarsList
     Handle:CVAR_CLASSES_OVERLAY_TOGGLE,
     Handle:CVAR_CLASSES_OVERLAY_TOGGLECMDS,
     Handle:CVAR_CLASSES_OVERLAY_DEFAULT,
+    Handle:CVAR_CLASSES_ZOMBIE_SELECT,
+    Handle:CVAR_CLASSES_HUMAN_SELECT,
+    Handle:CVAR_CLASSES_ADMIN_SELECT,
     Handle:CVAR_WEAPONS,
     Handle:CVAR_WEAPONS_RESTRICT,
     Handle:CVAR_WEAPONS_ZMARKET,
@@ -214,7 +217,7 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_LOG]                       =    CreateConVar("zr_log",                    "1",    "Enable logging of events in the plugin. Fatal errors are logged independent on this setting.");
     g_hCvarsList[CVAR_LOG_FLAGS]                 =    CreateConVar("zr_log_flags",              "3",    "A bit field that specify what event types to log. See logging section (3.3) in manual for details.");
-    g_hCvarsList[CVAR_LOG_MODULE_FILTER]         =    CreateConVar("zr_log_module_filter",      "0",    "Enable module filtering. Only log events from listed modules will be logged.");
+    g_hCvarsList[CVAR_LOG_MODULE_FILTER]         =    CreateConVar("zr_log_module_filter",      "0",    "Enable module filtering. Only events from listed modules will be logged.");
     g_hCvarsList[CVAR_LOG_IGNORE_CONSOLE]        =    CreateConVar("zr_log_ignore_console",     "1",    "Don't log events triggered by console commands that are executed by the console itself, like commands in configs. Enable this command to avoid spamming logs with events like weapon restrictions.");
     g_hCvarsList[CVAR_LOG_ERROR_OVERRIDE]        =    CreateConVar("zr_log_error_override",     "1",    "Always log error messages. Overrides module filter and logging flags.");
     g_hCvarsList[CVAR_LOG_PRINT_ADMINS]          =    CreateConVar("zr_log_print_admins",       "0",    "Print log events to admin chat in addition to the log file.");
@@ -242,6 +245,9 @@ CvarsCreate()
     g_hCvarsList[CVAR_CLASSES_DEFAULT_M_ZOMB]           =    CreateConVar("zr_classes_default_mother_zombie",   "motherzombies","Zombie class assigned to mother zombies. [\"motherzombies\" = Random mother zombie class | \"random\" = Random regular zombie class | \"disabled\" = Don't change class on mother zombies]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]            =    CreateConVar("zr_classes_default_human",           "random",       "Human class assigned to players on connect. [\"random\" = Random human class | \"\" = Class config default]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN]            =    CreateConVar("zr_classes_default_admin",           "random",       "Admin class assigned to admins on connect. [\"random\" = Random admin class | \"\" = Class config default]");
+    g_hCvarsList[CVAR_CLASSES_ZOMBIE_SELECT]            =    CreateConVar("zr_classes_zombie_select",           "1",            "Allow players to select zombie classes.");
+    g_hCvarsList[CVAR_CLASSES_HUMAN_SELECT]             =    CreateConVar("zr_classes_human_select",            "1",            "Allow players to select human classes.");
+    g_hCvarsList[CVAR_CLASSES_ADMIN_SELECT]             =    CreateConVar("zr_classes_admin_select",            "1",            "Allow admins to select admin mode classes. (Not to be confused by admin-only classes!)");
     
     // Menu
     g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]           =    CreateConVar("zr_classes_menu_autoclose",      "0",            "Automatically close class selection menu after selecting a class.");

@@ -65,7 +65,7 @@
 
 	"Must be zombie"
 	{
-		"en"		"This feature requires that you are a zombie.
+		"en"		"This feature requires that you are a zombie."
 	}
 
 	"Must be human"
@@ -354,6 +354,11 @@
 	"Classes Attrib Jump Distance"
 	{
 		"en"		"Jump Distance"
+	}
+
+	"Classes Selection Not Allowed"
+	{
+		"en"		"Changing classes is not allowed."
 	}
 
 	// ===========================

@@ -117,7 +117,10 @@ ZMenuMain(client)
     new bool:admin = ZRIsClientAdmin(client);
     AddMenuItem(menu_main, "zadmin", zadmin, MenuGetItemDraw(admin));
     
-    AddMenuItem(menu_main, "zclass", zclass);
+    // Decide whether the client can use zclass.
+    new zclassdraw = ClassAllowSelection(client) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    
+    AddMenuItem(menu_main, "zclass", zclass, zclassdraw);
     AddMenuItem(menu_main, "zcookies", zcookies);
     AddMenuItem(menu_main, "zspawn", zspawn);
     AddMenuItem(menu_main, "ztele", ztele);

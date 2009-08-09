@@ -59,7 +59,14 @@ public Action:ZClassCommand(client, argc)
     // If client is console, then stop and tell them this feature is for players only.
     if (ZRIsConsole(client))
     {
-        TranslationPrintToServer("Must be player");
+        TranslationReplyToCommand(client, "Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Check if class selection is allowed.
+    if (!ClassAllowSelection(client))
+    {
+        TranslationReplyToCommand(client, "Classes Selection Not Allowed");
         return Plugin_Handled;
     }
     

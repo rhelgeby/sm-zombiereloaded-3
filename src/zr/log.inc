@@ -624,7 +624,7 @@ public Action:Command_LogRemoveModule(client, argc)
     if (argc < 1)
     {
         // Display syntax info.
-        StrCat(buffer, sizeof(buffer), "Add one or more modules to the module filter. Usage: zr_log_add_module <module> [module] ...\n");
+        StrCat(buffer, sizeof(buffer), "Remove one or more modules to the module filter. Usage: zr_log_remove_module <module> [module] ...\n");
         StrCat(buffer, sizeof(buffer), "See zr_log_list to list available module names (short names).");
         ReplyToCommand(client, buffer);
     }

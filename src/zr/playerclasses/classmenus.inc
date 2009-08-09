@@ -65,18 +65,19 @@ ClassMenuMain(client)
     // Get number of enabled classes per team.
     new zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
     new humancount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
-    new admincount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
+    new admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS);
     
     // Get previously selected class indexes, if set.
     new nextzombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
     new nexthuman = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
     new nextadmin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
     
-    // Set draw style on class options depending on number of enabled classes.
-    // Disable class selection if there's only one class.
-    new zombie_itemdraw = (zombiecount > 1) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-    new human_itemdraw = (humancount > 1) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-    new admin_itemdraw = (admincount > 1) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    // Set draw style on class options depending on number of enabled classes
+    // and selection permissions. Disable class selection if there's only one
+    // class.
+    new zombie_itemdraw = (zombiecount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ZOMBIES)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new human_itemdraw = (humancount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_HUMANS)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new admin_itemdraw = (admincount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ADMINS)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
     
     // Check if the player is in admin mode.
     if (ClassPlayerInAdminMode[client])
