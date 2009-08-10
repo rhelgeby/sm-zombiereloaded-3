@@ -101,13 +101,13 @@ ZMenuMain(client)
     
     // Translate each line into client's language.
     Format(title, sizeof(title), "%t\n ", "Menu main title", publictrigger, silenttrigger);
-    Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin", SAYHOOKS_KEYWORD_ZADMIN);
-    Format(zclass, sizeof(zclass), "%t", "Menu main zclass", SAYHOOKS_KEYWORD_ZCLASS);
-    Format(zcookies, sizeof(zcookies), "%t", "Menu main zcookies", SAYHOOKS_KEYWORD_ZCOOKIES);
-    Format(zspawn, sizeof(zspawn), "%t", "Menu main zspawn", SAYHOOKS_KEYWORD_ZSPAWN);
-    Format(ztele, sizeof(ztele), "%t", "Menu main ztele", SAYHOOKS_KEYWORD_ZTELE);
-    Format(zhp, sizeof(zhp), "%t", "Menu main zhp", SAYHOOKS_KEYWORD_ZHP);
-    Format(zmarket, sizeof(zmarket), "%t", "Menu main zmarket", SAYHOOKS_KEYWORD_ZMARKET);
+    Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin");
+    Format(zclass, sizeof(zclass), "%t", "Menu main zclass");
+    Format(zcookies, sizeof(zcookies), "%t", "Menu main zcookies");
+    Format(zspawn, sizeof(zspawn), "%t", "Menu main zspawn");
+    Format(ztele, sizeof(ztele), "%t", "Menu main ztele");
+    Format(zhp, sizeof(zhp), "%t", "Menu main zhp");
+    Format(zmarket, sizeof(zmarket), "%t", "Menu main zmarket");
     
     // Add items to menu.
     

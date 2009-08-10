@@ -466,44 +466,37 @@
 
 	"Menu main zadmin"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZAdmin - Open admin menu. (Command: {1})"
+		"en"		"ZAdmin - Open admin menu"
 	}
 
 	"Menu main zclass"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZClass - Configure class settings. (Command: {1})"
+		"en"		"ZClass - Configure class settings"
 	}
 
 	"Menu main zcookies"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZCookies - Toggle personal ZR settings here. (Command: {1})"
+		"en"		"ZCookies - Toggle personal ZR settings here"
 	}
 
 	"Menu main zspawn"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZSpawn - Join late?  Spawn with this. (Command: {1})"
+		"en"		"ZSpawn - Join late?  Spawn with this"
 	}
 
 	"Menu main ztele"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZTele - Stuck?  Teleport back to spawn. (Command: {1})"
+		"en"		"ZTele - Stuck?  Teleport back to spawn"
 	}
 
 	"Menu main zhp"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZHP - Shows real HP as zombie. (Command: {1})"
+		"en"		"ZHP - Shows real HP as zombie"
 	}
 
 	"Menu main zmarket"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZMarket - Customize loadouts here. (Command: {1})"
+		"en"		"ZMarket - Customize loadouts here"
 	}
 
 	// ===========================

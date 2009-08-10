@@ -439,37 +439,37 @@
 
 	"Menu main zadmin"
 	{
-		"no"		"ZAdmin - Åpne administrasjonsmeny. (Kommando: {1})"
+		"no"		"ZAdmin - Åpne administrasjonsmeny"
 	}
 
 	"Menu main zclass"
 	{
-		"no"		"ZClass - Endre klasseinstillinger. (Kommando: {1})"
+		"no"		"ZClass - Endre klasseinstillinger"
 	}
 
 	"Menu main zcookies"
 	{
-		"no"		"ZCookies - Endre egendefinerte instillinger. (Kommando: {1})"
+		"no"		"ZCookies - Endre lagrede instillinger"
 	}
 
 	"Menu main zspawn"
 	{
-		"no"		"ZSpawn - Bli med i spillet øyeblikkelig. (Kommando: {1})"
+		"no"		"ZSpawn - Bli med i spillet øyeblikkelig"
 	}
 
 	"Menu main ztele"
 	{
-		"no"		"ZTele - Teleporter til startområde. (Kommando: {1})"
+		"no"		"ZTele - Teleporter til startområde"
 	}
 
 	"Menu main zhp"
 	{
-		"no"		"ZHP - Vis nåværende helsenivå. (Kommando: {1})"
+		"no"		"ZHP - Vis nåværende helsenivå"
 	}
 
 	"Menu main zmarket"
 	{
-		"no"		"ZMarket - Endre egendefinerte våpeninstillinger. (Kommando: {1})"
+		"no"		"ZMarket - Endre våpeninstillinger"
 	}
 
 	// ===========================
@@ -645,7 +645,7 @@
 
 	"Weapons menu zmarket main get loadout"
 	{
-		"no"		"Kjøp gjeldende våpenvalg"
+		"no"		"Lagre gjeldende våpenvalg"
 	}
 
 	"Weapons menu zmarket main view loadout"
