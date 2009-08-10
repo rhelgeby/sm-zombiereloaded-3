@@ -362,9 +362,13 @@ new ClassMultipliers:ClassAdminAttributeSelected[MAXPLAYERS + 1];
 new bool:ClassPlayerInAdminMode[MAXPLAYERS + 1];
 
 /**
- * Specifies the admin class to use on next admin mode spawn.
+ * Specifies whether a player is allowed to change class with instant effect.
+ * This is only used on human classes, and in combination with the
+ * zr_classes_change_timelimit time limit, but could be used other places too.
+ * The class menu will automatically check this setting and apply attributes if
+ * set to true.
  */
-//new ClassPlayerNextAdminClass[MAXPLAYERS + 1];
+new bool:ClassAllowInstantChange[MAXPLAYERS + 1];
 
 /**
  * Cache for storing original model path before applying custom models. Used

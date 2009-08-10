@@ -141,11 +141,34 @@ ClassOnClientSpawn(client)
             ClassGetName(randomhuman, classname, sizeof(classname), ZR_CLASS_TEAM_HUMANS);
             TranslationPrintToChat(client, "Classes random assignment", classname);
         }
+        
+        // Display class menu if enabled.
+        new bool:classmenu = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SPAWN]);
+        if (classmenu)
+        {
+            ClassMenuMain(client);
+        }
     }
     
     // Apply class attributes for the active class.
     ClassReloadPlayerCache(client, ClassGetActiveIndex(client));
     ClassApplyAttributes(client);
+    
+    // Check if instant class change cvar is set.
+    new Float:instantspawn = GetConVarFloat(g_hCvarsList[CVAR_CLASSES_CHANGE_TIMELIMIT]);
+    if (instantspawn > 0)
+    {
+        // Allow instant class change.
+        ClassAllowInstantChange[client] = true;
+        
+        // Create timer to disable instant change.
+        CreateTimer(instantspawn, Event_ClassDisableInstantSpawn, client, TIMER_FLAG_NO_MAPCHANGE);
+    }
+    else
+    {
+        // Make sure instant change is not allowed.
+        ClassAllowInstantChange[client] = false;
+    }
 }
 
 /**
@@ -181,6 +204,9 @@ ClassOnClientInfected(client, bool:motherzombie = false)
     
     // Disable class attributes with timers.
     ClassHealthRegenStop(client);
+    
+    // Make sure the player is not allowed to instantly change class.
+    ClassAllowInstantChange[client] = false;
     
     // Check if it's a mother zombie.
     if (motherzombie)
@@ -258,4 +284,13 @@ ClassOnClientInfected(client, bool:motherzombie = false)
     
     // Apply the new attributes.
     ClassApplyAttributes(client, motherzombie);
+}
+
+/**
+ * Timer callback for disabling instant class change setting on a client.
+ */
+public Action:Event_ClassDisableInstantSpawn(Handle:timer, any:client)
+{
+    // Disable instant class change.
+    ClassAllowInstantChange[client] = false;
 }

@@ -332,28 +332,41 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
             // Solve teamid from the class index.
             teamid = ClassGetTeamID(classindex, ZR_CLASS_CACHE_MODIFIED);
             
-            // Check if the player is alive.
-            if (IsPlayerAlive(client))
+            // Allow instant class change if enabled and both class and player is human.
+            if (ClassAllowInstantChange[client] && !iszombie && teamid == ZR_CLASS_TEAM_HUMANS)
             {
-                // Set next spawn index if the player is changing the class on
-                // his active team.
-                if ((iszombie && teamid == ZR_CLASS_TEAM_ZOMBIES) ||
-                    (!iszombie && teamid == ZR_CLASS_TEAM_HUMANS) ||
-                    (ClassPlayerInAdminMode[client] && teamid == ZR_CLASS_TEAM_ADMINS))
-                {
-                    // Set class to be used on next spawn.
-                    ClassSelectedNext[client][teamid] = classindex;
-                }
-                else
-                {
-                    // Directly change the selected class index.
-                    ClassSelected[client][teamid] = classindex;
-                }
+                // Directly change the selected class index.
+                ClassSelected[client][teamid] = classindex;
+                
+                // Update cache and apply attributes.
+                ClassReloadPlayerCache(client, classindex);
+                ClassApplyAttributes(client);
             }
             else
             {
-                // Player isn't alive. The class can be directly changed.
-                ClassSelected[client][teamid] = classindex;
+                // Check if the player is alive.
+                if (IsPlayerAlive(client))
+                {
+                    // Set next spawn index if the player is changing the class on
+                    // his active team.
+                    if ((iszombie && teamid == ZR_CLASS_TEAM_ZOMBIES) ||
+                        (!iszombie && teamid == ZR_CLASS_TEAM_HUMANS) ||
+                        (ClassPlayerInAdminMode[client] && teamid == ZR_CLASS_TEAM_ADMINS))
+                    {
+                        // Set class to be used on next spawn.
+                        ClassSelectedNext[client][teamid] = classindex;
+                    }
+                    else
+                    {
+                        // Directly change the selected class index.
+                        ClassSelected[client][teamid] = classindex;
+                    }
+                }
+                else
+                {
+                    // Player isn't alive. The class can be directly changed.
+                    ClassSelected[client][teamid] = classindex;
+                }
             }
         }
         case MenuAction_Cancel:
