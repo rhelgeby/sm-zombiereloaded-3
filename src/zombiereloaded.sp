@@ -41,6 +41,7 @@
 #include "zr/zombiereloaded"
 #include "zr/translation"
 #include "zr/cvars"
+#include "zr/admintools"
 #include "zr/log"
 #include "zr/config"
 #include "zr/steamidcache"

@@ -409,15 +409,9 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
  * @return          True if displayed, false otherwise.
  */
 bool:ClassTeamSelect(client)
-{
-    // Validate client.
-    if (!ZRIsClientValid(client, false))
-    {
-        return false;
-    }
-    
+{    
     // Validate permissions.
-    if (!ZRIsClientAdmin(client, Admin_Config))
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
     {
         return false;
     }
