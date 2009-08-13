@@ -52,15 +52,15 @@ stock bool:ClassIsEnabled(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_enabled];
+            return ClassData[index][Class_Enabled];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_enabled];
+            return ClassDataCache[index][Class_Enabled];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_enabled];
+            return ClassPlayerCache[index][Class_Enabled];
         }
     }
     return false;
@@ -84,15 +84,15 @@ stock ClassGetTeamID(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_team];
+            return ClassData[index][Class_Team];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_team];
+            return ClassDataCache[index][Class_Team];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_team];
+            return ClassPlayerCache[index][Class_Team];
         }
     }
     return -1;
@@ -118,15 +118,15 @@ stock bool:ClassGetTeamDefault(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_team_default];
+            return ClassData[index][Class_TeamDefault];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_team_default];
+            return ClassDataCache[index][Class_TeamDefault];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_team_default];
+            return ClassPlayerCache[index][Class_TeamDefault];
         }
     }
     return false;
@@ -151,15 +151,15 @@ stock ClassGetFlags(index, cachetype = ZR_CLASS_CACHE_MODIFIED)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_flags];
+            return ClassData[index][Class_Flags];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_flags];
+            return ClassDataCache[index][Class_Flags];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_flags];
+            return ClassPlayerCache[index][Class_Flags];
         }
     }
     return -1;
@@ -185,18 +185,53 @@ stock bool:ClassHasFlags(index, flags, cachetype = ZR_CLASS_CACHE_MODIFIED)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return bool:(ClassData[index][class_flags] & flags);
+            return bool:(ClassData[index][Class_Flags] & flags);
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return bool:(ClassDataCache[index][class_flags] & flags);
+            return bool:(ClassDataCache[index][Class_Flags] & flags);
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return bool:(ClassPlayerCache[index][class_flags] & flags);
+            return bool:(ClassPlayerCache[index][Class_Flags] & flags);
         }
     }
     return false;
+}
+
+/**
+ * Gets the class group required to be a member of to use the class.
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param buffer    The destination string buffer.
+ * @param maxlen    The length of the destination string buffer.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
+ *                  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
+ *                  is used, index will be used as a client index.
+ * @return          Number of cells written. -1 on error.
+ */
+stock ClassGetGroup(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
+{
+    switch (cachetype)
+    {
+        case ZR_CLASS_CACHE_ORIGINAL:
+        {
+            return strcopy(buffer, maxlen, ClassData[index][Class_Group]);
+        }
+        case ZR_CLASS_CACHE_MODIFIED:
+        {
+            return strcopy(buffer, maxlen, ClassDataCache[index][Class_Group]);
+        }
+        case ZR_CLASS_CACHE_PLAYER:
+        {
+            return strcopy(buffer, maxlen, ClassPlayerCache[index][Class_Group]);
+        }
+    }
+    
+    return -1;
 }
 
 /**
@@ -219,15 +254,15 @@ stock ClassGetName(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PL
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return strcopy(buffer, maxlen, ClassData[index][class_name]);
+            return strcopy(buffer, maxlen, ClassData[index][Class_Name]);
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return strcopy(buffer, maxlen, ClassDataCache[index][class_name]);
+            return strcopy(buffer, maxlen, ClassDataCache[index][Class_Name]);
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return strcopy(buffer, maxlen, ClassPlayerCache[index][class_name]);
+            return strcopy(buffer, maxlen, ClassPlayerCache[index][Class_Name]);
         }
     }
     
@@ -254,15 +289,15 @@ stock ClassGetDescription(index, String:buffer[], maxlen, cachetype = ZR_CLASS_C
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return strcopy(buffer, maxlen, ClassData[index][class_description]);
+            return strcopy(buffer, maxlen, ClassData[index][Class_Description]);
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return strcopy(buffer, maxlen, ClassDataCache[index][class_description]);
+            return strcopy(buffer, maxlen, ClassDataCache[index][Class_Description]);
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return strcopy(buffer, maxlen, ClassPlayerCache[index][class_description]);
+            return strcopy(buffer, maxlen, ClassPlayerCache[index][Class_Description]);
         }
     }
     return -1;
@@ -298,15 +333,15 @@ stock ClassGetModelPath(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CAC
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return strcopy(buffer, maxlen, ClassData[index][class_model_path]);
+            return strcopy(buffer, maxlen, ClassData[index][Class_ModelPath]);
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return strcopy(buffer, maxlen, ClassDataCache[index][class_model_path]);
+            return strcopy(buffer, maxlen, ClassDataCache[index][Class_ModelPath]);
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return strcopy(buffer, maxlen, ClassPlayerCache[index][class_model_path]);
+            return strcopy(buffer, maxlen, ClassPlayerCache[index][Class_ModelPath]);
         }
     }
     return -1;
@@ -330,15 +365,15 @@ stock ClassGetAlphaInitial(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_alpha_initial];
+            return ClassData[index][Class_AlphaInitial];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_alpha_initial];
+            return ClassDataCache[index][Class_AlphaInitial];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_alpha_initial];
+            return ClassPlayerCache[index][Class_AlphaInitial];
         }
     }
     return -1;
@@ -363,15 +398,15 @@ stock ClassGetAlphaDamaged(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_alpha_damaged];
+            return ClassData[index][Class_AlphaDamaged];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_alpha_damaged];
+            return ClassDataCache[index][Class_AlphaDamaged];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_alpha_damaged];
+            return ClassPlayerCache[index][Class_AlphaDamaged];
         }
     }
     return -1;
@@ -396,15 +431,15 @@ stock ClassGetAlphaDamage(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_alpha_damage];
+            return ClassData[index][Class_AlphaDamage];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_alpha_damage];
+            return ClassDataCache[index][Class_AlphaDamage];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_alpha_damage];
+            return ClassPlayerCache[index][Class_AlphaDamage];
         }
     }
     return -1;
@@ -440,15 +475,15 @@ stock ClassGetOverlayPath(index, String:buffer[], maxlen, cachetype = ZR_CLASS_C
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return strcopy(buffer, maxlen, ClassData[index][class_overlay_path]);
+            return strcopy(buffer, maxlen, ClassData[index][Class_OverlayPath]);
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return strcopy(buffer, maxlen, ClassDataCache[index][class_overlay_path]);
+            return strcopy(buffer, maxlen, ClassDataCache[index][Class_OverlayPath]);
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return strcopy(buffer, maxlen, ClassPlayerCache[index][class_overlay_path]);
+            return strcopy(buffer, maxlen, ClassPlayerCache[index][Class_OverlayPath]);
         }
     }
     return -1;    
@@ -472,15 +507,15 @@ stock bool:ClassGetNvgs(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_nvgs];
+            return ClassData[index][Class_Nvgs];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_nvgs];
+            return ClassDataCache[index][Class_Nvgs];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_nvgs];
+            return ClassPlayerCache[index][Class_Nvgs];
         }
     }
     return false;
@@ -504,15 +539,15 @@ stock ClassGetFOV(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_fov];
+            return ClassData[index][Class_Fov];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_fov];
+            return ClassDataCache[index][Class_Fov];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_fov];
+            return ClassPlayerCache[index][Class_Fov];
         }
     }
     return -1;
@@ -546,15 +581,15 @@ stock bool:ClassGetHasNapalm(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_has_napalm];
+            return ClassData[index][Class_HasNapalm];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_has_napalm];
+            return ClassDataCache[index][Class_HasNapalm];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_has_napalm];
+            return ClassPlayerCache[index][Class_HasNapalm];
         }
     }
     return false;
@@ -580,15 +615,15 @@ stock Float:ClassGetNapalmTime(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_napalm_time];
+            return ClassData[index][Class_NapalmTime];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_napalm_time];
+            return ClassDataCache[index][Class_NapalmTime];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_napalm_time] * ClassGetAttributeMultiplier(index, ClassM_NapalmTime);
+            return ClassPlayerCache[index][Class_NapalmTime] * ClassGetAttributeMultiplier(index, ClassM_NapalmTime);
         }
     }
     return -1.0;
@@ -622,15 +657,15 @@ stock ClassGetImmunityMode(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_immunity_mode];
+            return ClassData[index][Class_ImmunityMode];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_immunity_mode];
+            return ClassDataCache[index][Class_ImmunityMode];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_immunity_mode];
+            return ClassPlayerCache[index][Class_ImmunityMode];
         }
     }
     return -1;
@@ -654,15 +689,15 @@ stock Float:ClassGetImmunityAmount(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_immunity_amount];
+            return ClassData[index][Class_ImmunityAmount];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_immunity_amount];
+            return ClassDataCache[index][Class_ImmunityAmount];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_immunity_amount];
+            return ClassPlayerCache[index][Class_ImmunityAmount];
         }
     }
     return -1.0;
@@ -687,15 +722,15 @@ stock bool:ClassGetNoFallDamage(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_no_fall_damage];
+            return ClassData[index][Class_NoFallDamage];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_no_fall_damage];
+            return ClassDataCache[index][Class_NoFallDamage];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_no_fall_damage];
+            return ClassPlayerCache[index][Class_NoFallDamage];
         }
     }
     return false;
@@ -721,15 +756,15 @@ stock ClassGetHealth(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_health];
+            return ClassData[index][Class_Health];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_health];
+            return ClassDataCache[index][Class_Health];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return RoundToCeil(ClassPlayerCache[index][class_health] * ClassGetAttributeMultiplier(index, ClassM_Health));
+            return RoundToCeil(ClassPlayerCache[index][Class_Health] * ClassGetAttributeMultiplier(index, ClassM_Health));
         }
     }
     return -1;
@@ -756,15 +791,15 @@ stock Float:ClassGetHealthRegenInterval(index, cachetype = ZR_CLASS_CACHE_PLAYER
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_health_regen_interval];
+            return ClassData[index][Class_HealthRegenInterval];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_health_regen_interval];
+            return ClassDataCache[index][Class_HealthRegenInterval];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_health_regen_interval] * ClassGetAttributeMultiplier(index, ClassM_HealthRegenInterval);
+            return ClassPlayerCache[index][Class_HealthRegenInterval] * ClassGetAttributeMultiplier(index, ClassM_HealthRegenInterval);
         }
     }
     return -1.0;
@@ -791,15 +826,15 @@ stock ClassGetHealthRegenAmount(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_health_regen_amount];
+            return ClassData[index][Class_HealthRegenAmount];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_health_regen_amount];
+            return ClassDataCache[index][Class_HealthRegenAmount];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return RoundToCeil(ClassPlayerCache[index][class_health_regen_amount] * ClassGetAttributeMultiplier(index, ClassM_HealthRegenAmount));
+            return RoundToCeil(ClassPlayerCache[index][Class_HealthRegenAmount] * ClassGetAttributeMultiplier(index, ClassM_HealthRegenAmount));
         }
     }
     return -1;
@@ -826,15 +861,15 @@ stock ClassGetHealthInfectGain(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_health_infect_gain];
+            return ClassData[index][Class_HealthInfectGain];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_health_infect_gain];
+            return ClassDataCache[index][Class_HealthInfectGain];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return RoundToCeil(ClassPlayerCache[index][class_health_infect_gain] * ClassGetAttributeMultiplier(index, ClassM_HealthInfectGain));
+            return RoundToCeil(ClassPlayerCache[index][Class_HealthInfectGain] * ClassGetAttributeMultiplier(index, ClassM_HealthInfectGain));
         }
     }
     return -1;
@@ -858,15 +893,15 @@ stock ClassGetKillBonus(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_kill_bonus];
+            return ClassData[index][Class_KillBonus];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_kill_bonus];
+            return ClassDataCache[index][Class_KillBonus];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_kill_bonus];
+            return ClassPlayerCache[index][Class_KillBonus];
         }
     }
     return -1;
@@ -892,15 +927,15 @@ stock Float:ClassGetSpeed(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_speed];
+            return ClassData[index][Class_Speed];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_speed];
+            return ClassDataCache[index][Class_Speed];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_speed] * ClassGetAttributeMultiplier(index, ClassM_Speed);
+            return ClassPlayerCache[index][Class_Speed] * ClassGetAttributeMultiplier(index, ClassM_Speed);
         }
     }
     return -1.0;
@@ -926,15 +961,15 @@ stock Float:ClassGetKnockback(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_knockback];
+            return ClassData[index][Class_KnockBack];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_knockback];
+            return ClassDataCache[index][Class_KnockBack];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_knockback] * ClassGetAttributeMultiplier(index, ClassM_Knockback);
+            return ClassPlayerCache[index][Class_KnockBack] * ClassGetAttributeMultiplier(index, ClassM_Knockback);
         }
     }
     return 0.0;
@@ -960,15 +995,15 @@ stock Float:ClassGetJumpHeight(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_jump_height];
+            return ClassData[index][Class_JumpHeight];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_jump_height];
+            return ClassDataCache[index][Class_JumpHeight];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_jump_height] * ClassGetAttributeMultiplier(index, ClassM_JumpHeight);
+            return ClassPlayerCache[index][Class_JumpHeight] * ClassGetAttributeMultiplier(index, ClassM_JumpHeight);
         }
     }
     return -1.0;
@@ -994,15 +1029,15 @@ stock Float:ClassGetJumpDistance(index, cachetype = ZR_CLASS_CACHE_PLAYER)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
         {
-            return ClassData[index][class_jump_distance];
+            return ClassData[index][Class_JumpDistance];
         }
         case ZR_CLASS_CACHE_MODIFIED:
         {
-            return ClassDataCache[index][class_jump_distance];
+            return ClassDataCache[index][Class_JumpDistance];
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][class_jump_distance] * ClassGetAttributeMultiplier(index, ClassM_JumpDistance);
+            return ClassPlayerCache[index][Class_JumpDistance] * ClassGetAttributeMultiplier(index, ClassM_JumpDistance);
         }
     }
     return -1.0;
@@ -1033,6 +1068,10 @@ stock ClassAttributeNameToFlag(const String:attributename[])
     else if (StrEqual(attributename, "flags", false))
     {
         return ZR_CLASS_FLAGS;
+    }
+    else if (StrEqual(attributename, "group", false))
+    {
+        return ZR_CLASS_GROUP;
     }
     else if (StrEqual(attributename, "name", false))
     {
@@ -1230,7 +1269,8 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
         }
         
         // String.
-        case ZR_CLASS_NAME,
+        case ZR_CLASS_GROUP,
+              ZR_CLASS_NAME,
               ZR_CLASS_DESCRIPTION,
               ZR_CLASS_MODEL_PATH,
               ZR_CLASS_OVERLAY_PATH:

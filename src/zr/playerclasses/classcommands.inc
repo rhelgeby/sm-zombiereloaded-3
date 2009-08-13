@@ -619,22 +619,22 @@ stock bool:ClassModifyBoolean(classindex, attributeflag, bool:value)
     {
         case ZR_CLASS_ENABLED:
         {
-            ClassDataCache[classindex][class_enabled] = bool:value;
+            ClassDataCache[classindex][Class_Enabled] = bool:value;
             return true;
         }
         case ZR_CLASS_NVGS:
         {
-            ClassDataCache[classindex][class_nvgs] = bool:value;
+            ClassDataCache[classindex][Class_Nvgs] = bool:value;
             return true;
         }
         case ZR_CLASS_NO_FALL_DAMAGE:
         {
-            ClassDataCache[classindex][class_no_fall_damage] = bool:value;
+            ClassDataCache[classindex][Class_NoFallDamage] = bool:value;
             return true;
         }
         case ZR_CLASS_HAS_NAPALM:
         {
-            ClassDataCache[classindex][class_has_napalm] = bool:value;
+            ClassDataCache[classindex][Class_HasNapalm] = bool:value;
             return true;
         }
     }
@@ -670,80 +670,80 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
     {
         case ZR_CLASS_FLAGS:
         {
-            ClassDataCache[classindex][class_flags] = value;
+            ClassDataCache[classindex][Class_Flags] = value;
             return true;
         }
         case ZR_CLASS_ALPHA_INITIAL:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][class_alpha_initial]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex][Class_AlphaInitial]) * multiplier);
             }
-            ClassDataCache[classindex][class_alpha_initial] = value;
+            ClassDataCache[classindex][Class_AlphaInitial] = value;
             return true;
         }
         case ZR_CLASS_ALPHA_DAMAGED:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][class_alpha_damaged]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex][Class_AlphaDamaged]) * multiplier);
             }
-            ClassDataCache[classindex][class_alpha_damaged] = value;
+            ClassDataCache[classindex][Class_AlphaDamaged] = value;
             return true;
         }
         case ZR_CLASS_ALPHA_DAMAGE:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][class_alpha_damage]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex][Class_AlphaDamage]) * multiplier);
             }
-            ClassDataCache[classindex][class_alpha_damage] = value;
+            ClassDataCache[classindex][Class_AlphaDamage] = value;
             return true;
         }
         case ZR_CLASS_FOV:
         {
-            ClassDataCache[classindex][class_fov] = value;
+            ClassDataCache[classindex][Class_Fov] = value;
             return true;
         }
         case ZR_CLASS_IMMUNITY_MODE:
         {
-            ClassDataCache[classindex][class_fov] = value;
+            ClassDataCache[classindex][Class_ImmunityMode] = value;
             return true;
         }
         case ZR_CLASS_HEALTH:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][class_health]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex][Class_Health]) * multiplier);
             }
-            ClassDataCache[classindex][class_health] = value;
+            ClassDataCache[classindex][Class_Health] = value;
             return true;
         }
         case ZR_CLASS_HEALTH_REGEN_AMOUNT:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][class_health_regen_amount]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex][Class_HealthRegenAmount]) * multiplier);
             }
-            ClassDataCache[classindex][class_health_regen_amount] = value;
+            ClassDataCache[classindex][Class_HealthRegenAmount] = value;
             return true;
         }
         case ZR_CLASS_HEALTH_INFECT_GAIN:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][class_health_infect_gain]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex][Class_HealthInfectGain]) * multiplier);
             }
-            ClassDataCache[classindex][class_health_infect_gain] = value;
+            ClassDataCache[classindex][Class_HealthInfectGain] = value;
             return true;
         }
         case ZR_CLASS_KILL_BONUS:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][class_kill_bonus]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex][Class_KillBonus]) * multiplier);
             }
-            ClassDataCache[classindex][class_kill_bonus] = value;
+            ClassDataCache[classindex][Class_KillBonus] = value;
             return true;
         }
     }
@@ -777,63 +777,63 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][class_napalm_time] * value;
+                value = ClassData[classindex][Class_NapalmTime] * value;
             }
-            ClassDataCache[classindex][class_napalm_time] = value;
+            ClassDataCache[classindex][Class_NapalmTime] = value;
             return true;
         }
         case ZR_CLASS_IMMUNITY_AMOUNT:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][class_immunity_amount] * value;
+                value = ClassData[classindex][Class_ImmunityAmount] * value;
             }
-            ClassDataCache[classindex][class_immunity_amount] = value;
+            ClassDataCache[classindex][Class_ImmunityAmount] = value;
             return true;
         }
         case ZR_CLASS_HEALTH_REGEN_INTERVAL:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][class_health_regen_interval] * value;
+                value = ClassData[classindex][Class_HealthRegenInterval] * value;
             }
-            ClassDataCache[classindex][class_health_regen_interval] = value;
+            ClassDataCache[classindex][Class_HealthRegenInterval] = value;
             return true;
         }
         case ZR_CLASS_SPEED:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][class_speed] * value;
+                value = ClassData[classindex][Class_Speed] * value;
             }
-            ClassDataCache[classindex][class_speed] = value;
+            ClassDataCache[classindex][Class_Speed] = value;
             return true;
         }
         case ZR_CLASS_KNOCKBACK:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][class_knockback] * value;
+                value = ClassData[classindex][Class_KnockBack] * value;
             }
-            ClassDataCache[classindex][class_knockback] = value;
+            ClassDataCache[classindex][Class_KnockBack] = value;
             return true;
         }
         case ZR_CLASS_JUMP_HEIGHT:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][class_jump_height] * value;
+                value = ClassData[classindex][Class_JumpHeight] * value;
             }
-            ClassDataCache[classindex][class_jump_height] = value;
+            ClassDataCache[classindex][Class_JumpHeight] = value;
             return true;
         }
         case ZR_CLASS_JUMP_DISTANCE:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][class_jump_distance] * value;
+                value = ClassData[classindex][Class_JumpDistance] * value;
             }
-            ClassDataCache[classindex][class_jump_distance] = value;
+            ClassDataCache[classindex][Class_JumpDistance] = value;
             return true;
         }
     }
@@ -860,24 +860,29 @@ stock ClassModifyString(classindex, attributeflag, const String:value[])
     
     switch (attributeflag)
     {
+        case ZR_CLASS_GROUP:
+        {
+            strcopy(ClassDataCache[classindex][Class_Group], 64, value);
+            return true;
+        }
         case ZR_CLASS_NAME:
         {
-            strcopy(ClassDataCache[classindex][class_name], 64, value);
+            strcopy(ClassDataCache[classindex][Class_Name], 64, value);
             return true;
         }
         case ZR_CLASS_DESCRIPTION:
         {
-            strcopy(ClassDataCache[classindex][class_description], 256, value);
+            strcopy(ClassDataCache[classindex][Class_Description], 256, value);
             return true;
         }
         case ZR_CLASS_MODEL_PATH:
         {
-            strcopy(ClassDataCache[classindex][class_model_path], PLATFORM_MAX_PATH, value);
+            strcopy(ClassDataCache[classindex][Class_ModelPath], PLATFORM_MAX_PATH, value);
             return true;
         }
         case ZR_CLASS_OVERLAY_PATH:
         {
-            strcopy(ClassDataCache[classindex][class_overlay_path], PLATFORM_MAX_PATH, value);
+            strcopy(ClassDataCache[classindex][Class_OverlayPath], PLATFORM_MAX_PATH, value);
             return true;
         }
     }

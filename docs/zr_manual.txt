@@ -651,8 +651,13 @@ The list below explains all available class attributes in detail:
             setting must be set to "motherzombies" for this flag to take
             effect.
         
-        Remember that these flags can be used in a combination (1 + 2), so
-        it's a mother zombie class for admins only.
+        These flags can be used in a combination (1 + 2), so it could be a
+        mother zombie class for admins only.
+    
+    group                   text            Name of a valid SourceMod group.
+    ---------------------------------------------------------------------------
+        Rescrict class to members of this SourceMod group. Useful for making
+        VIP-only classes. Leave blank to allow everyone to use this class.
     
     name                    text            Unique, not empty, max 64 charact.
     ---------------------------------------------------------------------------
@@ -750,8 +755,8 @@ The list below explains all available class attributes in detail:
     
     kill_bonus              number          0 - 16
     ---------------------------------------------------------------------------
-        Zombie classes only. How many EXTRA points to give the killer of a
-        zombie.  If this is 0, the default value of 1 point will be given.
+        Zombie classes only. How many extra points to give the killer of this
+        zombie. If this is 0, the default value of 1 point will be given.
     
     speed                   decimal         10.0 - 2000.0
     ---------------------------------------------------------------------------
@@ -798,29 +803,30 @@ Attribute flags:
     team                    2       2
     team_default            3       4
     flags                   4       8
-    name                    5       16
-    description             6       32
-    model_path              7       64
-    alpha_initial           8       128
-    alpha_damaged           9       256
-    alpha_damage            10      512
-    overlay_path            11      1024
-    nvgs                    12      2048
-    fov                     13      4096
-    has_napalm              14      8192
-    napalm_time             15      16384
-    immunity_mode           16      32768
-    immunity_amount         17      65536
-    no_fall_damage          18      131072
-    health                  19      262144
-    health_regen_interval   20      524288
-    health_regen_amount     21      1048576
-    infect_gain             22      2097152
-    kill_bonus              23      4194304
-    speed                   24      8388608
-    knockback               25      16777216
-    jump_height             26      33554432
-    jump_distance           27      67108864
+    group                   5       16
+    name                    6       32
+    description             7       64
+    model_path              8       128
+    alpha_initial           9       256
+    alpha_damaged           10      512
+    alpha_damage            11      1024
+    overlay_path            12      2048
+    nvgs                    13      4096
+    fov                     14      8192
+    has_napalm              15      16384
+    napalm_time             16      32768
+    immunity_mode           17      65536
+    immunity_amount         18      131072
+    no_fall_damage          19      262144
+    health                  20      524288
+    health_regen_interval   21      1048576
+    health_regen_amount     22      2097152
+    infect_gain             23      4194304
+    kill_bonus              24      8388608
+    speed                   25      16777216
+    knockback               26      33554432
+    jump_height             27      67108864
+    jump_distance           28      134217728
 
 The error flags are stored in a bit field (explained in the log configuration
 in section 3.2).
