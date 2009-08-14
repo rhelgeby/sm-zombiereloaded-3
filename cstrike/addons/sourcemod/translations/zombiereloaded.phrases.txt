@@ -228,55 +228,31 @@
 		"en"		"Class Selection:"
 	}
 
-	"Classes menu zombie"
-	{
-		"en"		"Select Zombie Class:"
-	}
-
-	"Classes menu zombie current"
+	"Classes menu active"
 	{
 		"#format"	"{1:s}"
-		"en"		"Select Zombie Class\n    {1}"
+		"en"		"Active: {1}"
 	}
 
-	"Classes menu zombie next"
-	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Select Zombie Class\n    Active: {1}\n    Next spawn: {2}"
-	}
-
-	"Classes menu human"
-	{
-		"en"		"Select Human Class:"
-	}
-
-	"Classes menu human current"
+	"Classes menu next"
 	{
 		"#format"	"{1:s}"
-		"en"		"Select Human Class\n    {1}"
+		"en"		"Next spawn: {1}"
 	}
 
-	"Classes menu human next"
+	"Classes menu select zombie"
 	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Select Human Class\n    Active: {1}\n    Next spawn: {2}"
+		"en"		"Select Zombie Class"
 	}
 
-	"Classes menu admin"
+	"Classes menu select human"
 	{
-		"en"		"Select Admin Mode Class:"
-	}
-	
-	"Classes menu admin current"
-	{
-		"#format"	"{1:s}"
-		"en"		"Select Admin Mode Class\n     {1}"
+		"en"		"Select Human Class"
 	}
 
-	"Classes menu admin next"
+	"Classes menu select admin"
 	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Select Admin Mode Class\n    Active: {1}\n    Next spawn: {2}"
+		"en"		"Select Admin Mode Class"
 	}
 
 	"Classes menu admin mode toggle"

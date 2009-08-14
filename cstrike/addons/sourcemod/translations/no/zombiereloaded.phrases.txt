@@ -216,49 +216,29 @@
 		"no"		"Klassevalg:"
 	}
 
-	"Classes menu zombie"
+	"Classes menu active"
 	{
-		"no"		"Velg zombieklasse:"
+		"no"		"Aktiv: {1}"
 	}
 
-	"Classes menu zombie current"
+	"Classes menu next"
 	{
-		"no"		"Velg zombieklasse\n    {1}"
+		"no"		"Påfølgende: {1}"
 	}
 
-	"Classes menu zombie next"
+	"Classes menu select zombie"
 	{
-		"no"		"Velg zombieklasse\n    Aktiv: {1}\n    Påfølgende: {2}"
+		"no"		"Velg zombieklasse"
 	}
 
-	"Classes menu human"
+	"Classes menu select human"
 	{
-		"no"		"Velg menneskeklasse:"
+		"no"		"Velg menneskeklasse"
 	}
 
-	"Classes menu human current"
+	"Classes menu select admin"
 	{
-		"no"		"Velg menneskeklasse\n    {1}"
-	}
-
-	"Classes menu human next"
-	{
-		"no"		"Velg menneskeklasse\n    Aktiv: {1}\n    Påfølgende: {2}"
-	}
-
-	"Classes menu admin"
-	{
-		"no"		"Velg administratormodusklasse:"
-	}
-	
-	"Classes menu admin current"
-	{
-		"no"		"Velg administratormodusklasse\n     {1}"
-	}
-
-	"Classes menu admin next"
-	{
-		"no"		"Velg administratormodusklasse\n    Active: {1}\n    Next spawn: {2}"
+		"no"		"Velg administratormodusklasse"
 	}
 
 	"Classes menu admin mode toggle"

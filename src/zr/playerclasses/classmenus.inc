@@ -67,7 +67,7 @@ ClassMenuMain(client)
     new humancount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
     new admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS);
     
-    // Get previously selected class indexes, if set.
+    // Get next class indexes, if set.
     new nextzombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
     new nexthuman = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
     new nextadmin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
@@ -93,18 +93,18 @@ ClassMenuMain(client)
     // Get current class name.
     ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES], zombieclass, sizeof(zombieclass), ZR_CLASS_CACHE_MODIFIED);
     
-    // Check if previous index is set.
+    // Check if next index is set.
     if (ClassValidateIndex(nextzombie))
     {
         // Get name of previous class index and format item text.
         ClassGetName(nextzombie, nextzombiename, sizeof(nextzombiename), ZR_CLASS_CACHE_MODIFIED);
         
-        Format(zombieselect, sizeof(zombieselect), "%t", "Classes menu zombie next", zombieclass, nextzombiename);
+        Format(zombieselect, sizeof(zombieselect), "%t\n    %t\n    %t", "Classes menu select zombie", "Classes menu active", zombieclass, "Classes menu next", nextzombiename);
     }
     else
     {
         // Use current class name and format item text.
-        Format(zombieselect, sizeof(zombieselect), "%t", "Classes menu zombie current", zombieclass);
+        Format(zombieselect, sizeof(zombieselect), "%t\n    %s", "Classes menu select zombie", zombieclass);
     }
     
     // Add item to list.
@@ -117,18 +117,18 @@ ClassMenuMain(client)
     // Get current class name.
     ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_HUMANS], humanclass, sizeof(humanclass), ZR_CLASS_CACHE_MODIFIED);
     
-    // Check if previous index is set.
+    // Check if next index is set.
     if (ClassValidateIndex(nexthuman))
     {
         // Get name of previous class index and format item text.
         ClassGetName(nexthuman, nexthumanname, sizeof(nexthumanname), ZR_CLASS_CACHE_MODIFIED);
         
-        Format(humanselect, sizeof(humanselect), "%t", "Classes menu human next", humanclass, nexthumanname);
+        Format(humanselect, sizeof(humanselect), "%t\n    %t\n    %t", "Classes menu select human", "Classes menu active", humanclass, "Classes menu next", nexthumanname);
     }
     else
     {
         // Use current class name and format item text.
-        Format(humanselect, sizeof(humanselect), "%t", "Classes menu human current", humanclass);
+        Format(humanselect, sizeof(humanselect), "%t\n    %s", "Classes menu select human", humanclass);
     }
     
     // Add item to list.
@@ -144,17 +144,17 @@ ClassMenuMain(client)
         // Get current class name.
         ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ADMINS], adminclass, sizeof(adminclass), ZR_CLASS_CACHE_MODIFIED);
         
-        // Check if previous index is set.
+        // Check if next index is set.
         if (ClassValidateIndex(nextadmin))
         {
             // Get name of previous class index and format item text.
             ClassGetName(nextadmin, nextadminname, sizeof(nextadminname), ZR_CLASS_CACHE_MODIFIED);
-            Format(adminselect, sizeof(adminselect), "%t", "Classes menu admin next", adminclass, nextadminname);
+            Format(adminselect, sizeof(adminselect), "%t\n    %t\n    %t", "Classes menu select admin", "Classes menu active", adminclass, "Classes menu next", nextadminname);
         }
         else
         {
             // Use current class name and format item text.
-            Format(adminselect, sizeof(adminselect), "%t", "Classes menu admin current", adminclass);
+            Format(adminselect, sizeof(adminselect), "%t\n    %s", "Classes menu select admin", adminclass);
         }
         
         // Add item to list.
@@ -260,15 +260,15 @@ ClassMenuSelect(client, teamid)
     {
         case ZR_CLASS_TEAM_ZOMBIES:
         {
-            Format(title, sizeof(title), "%t\n", "Classes menu zombie");
+            Format(title, sizeof(title), "%t:\n", "Classes menu select zombie");
         }
         case ZR_CLASS_TEAM_HUMANS:
         {
-            Format(title, sizeof(title), "%t\n", "Classes menu human");
+            Format(title, sizeof(title), "%t:\n", "Classes menu select human");
         }
         case ZR_CLASS_TEAM_ADMINS:
         {
-            Format(title, sizeof(title), "%t\n", "Classes menu admin");
+            Format(title, sizeof(title), "%t:\n", "Classes menu select admin");
         }
     }
     SetMenuTitle(menu, title);
@@ -364,8 +364,18 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
                         (!iszombie && teamid == ZR_CLASS_TEAM_HUMANS) ||
                         (ClassPlayerInAdminMode[client] && teamid == ZR_CLASS_TEAM_ADMINS))
                     {
-                        // Set class to be used on next spawn.
-                        ClassSelectedNext[client][teamid] = classindex;
+                        // Check if player selected the same class that he already is.
+                        if (ClassSelected[client][teamid] == classindex)
+                        {
+                            // Player is already the specified class. Disable
+                            // next class for the specified team.
+                            ClassSelectedNext[client][teamid] = -1;
+                        }
+                        else
+                        {
+                            // Set class to be used on next spawn.
+                            ClassSelectedNext[client][teamid] = classindex;
+                        }
                     }
                     else
                     {
