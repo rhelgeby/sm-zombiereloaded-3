@@ -313,6 +313,27 @@ enum ClassDataTypes
 }
 
 /**
+ * Structure for class filter settings passed to various functions.
+ */
+enum ClassFilter
+{
+    bool:ClassFilter_IgnoreEnabled,     /** Ignore whether the class is disabled or not. */
+    ClassFilter_RequireFlags,           /** Flags the classes must have set. */
+    ClassFilter_DenyFlags,              /** Flags the classes cannot have set. */
+    ClassFilter_Client                  /** The client to check for class group permissions. Use 0 or less to ignore group filter. */
+}
+
+/**
+ * Empty filter structure.
+ */
+new ClassNoFilter[ClassFilter];
+
+/**
+ * Filter structure for excluding special classes.
+ */
+new ClassNoSpecialClasses[ClassFilter] = {false, 0, ZR_CLASS_SPECIALFLAGS, -1};
+
+/**
  * Keyvalue handle to store class data.
  */
 new Handle:kvClassData = INVALID_HANDLE;
@@ -1006,7 +1027,7 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
     cellcount += StrCat(buffer, maxlen, attribute);
     
     ClassGetGroup(index, format_buffer, sizeof(format_buffer), cachetype);
-    Format(attribute, sizeof(attribute), "group:                 \"%d\"\n", format_buffer);
+    Format(attribute, sizeof(attribute), "group:                 \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
     
     ClassGetName(index, format_buffer, sizeof(format_buffer), cachetype);

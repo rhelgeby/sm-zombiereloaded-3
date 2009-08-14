@@ -75,6 +75,7 @@ ClassOnClientSpawn(client)
     decl String:originalmodel[PLATFORM_MAX_PATH];
     decl String:steamid[16];
     decl String:classname[64];
+    new filter[ClassFilter];
     
     // Check if the player is dead. Spawning into the game is also a event in
     // the connection process.
@@ -121,15 +122,24 @@ ClassOnClientSpawn(client)
         // Assign random classes if enabled. Always do it for bots.
         if (randomclass || StrEqual(steamid, "BOT"))
         {
-            // Exclude special class flags like mother zombies and admin classes.
-            new denyflags = ZR_CLASS_SPECIALFLAGS;
+            // Setup filtering
+            // ---------------
             
+            // Exclude special class flags like mother zombies and admin classes.
+            filter[ClassFilter_DenyFlags] = ZR_CLASS_SPECIALFLAGS;
+                        
             // Allow admin classes if admin.
-            denyflags -= ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+            filter[ClassFilter_DenyFlags] -= ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+            
+            // Specify client for checking group permissions.
+            filter[ClassFilter_Client] = client;
+            
+            // Get classes
+            // -----------
             
             // Get random classes for each type.
-            new randomzombie = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, denyflags);
-            new randomhuman = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS, _, _, denyflags);
+            new randomzombie = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, filter);
+            new randomhuman = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS, filter);
             
             // Set selected zombie class index.
             ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = randomzombie;
@@ -199,6 +209,7 @@ ClassOnClientInfected(client, bool:motherzombie = false)
     new classindex = ClassGetActiveIndex(client);
     new isadmin;
     new motherindex;
+    new filter[ClassFilter];
     
     decl String:motherzombiesetting[64];
     
@@ -224,8 +235,23 @@ ClassOnClientInfected(client, bool:motherzombie = false)
         }
         else if (StrEqual(motherzombiesetting, "random", false))
         {
+            // Setup filtering
+            // ---------------
+            
+            // Exclude special class flags.
+            filter[ClassFilter_DenyFlags] = ZR_CLASS_SPECIALFLAGS;
+            
+            // Allow admin classes if admin.
+            filter[ClassFilter_DenyFlags] -= isadmin;
+            
+            // Specify client for checking group permissions.
+            filter[ClassFilter_Client] = client;
+            
+            // Get class
+            // ---------
+            
             // Get random regular zombie class. Remove admin flag if admin.
-            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, _, ZR_CLASS_SPECIALFLAGS - isadmin);
+            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, filter);
             
             // Validate index. Do not change class if it's invalid.
             if (ClassValidateIndex(motherindex))
@@ -239,8 +265,26 @@ ClassOnClientInfected(client, bool:motherzombie = false)
         }
         else if (StrEqual(motherzombiesetting, "motherzombies", false))
         {
+            // Setup filtering
+            // ---------------
+            
+            // Exclude special class flags except mother zombies.
+            filter[ClassFilter_DenyFlags] = ZR_CLASS_SPECIALFLAGS - ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+            
+            // Require mother zombie class flag.
+            filter[ClassFilter_RequireFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+            
+            // Allow admin classes if admin.
+            filter[ClassFilter_DenyFlags] -= isadmin;
+            
+            // Specify client for checking group permissions.
+            filter[ClassFilter_Client] = client;
+            
+            // Get class
+            // ---------
+            
             // Get random mother zombie class. Include admin classes if admin.
-            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, _, ZR_CLASS_FLAG_MOTHER_ZOMBIE + isadmin, ZR_CLASS_FLAG_ADMIN_ONLY - isadmin);
+            motherindex = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, filter);
             
             // Validate index. Do not change class if it's invalid.
             if (ClassValidateIndex(motherindex))

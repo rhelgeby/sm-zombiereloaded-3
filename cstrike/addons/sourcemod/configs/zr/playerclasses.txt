@@ -20,6 +20,7 @@
 //                                      use a sum of the flag values. Available flags:
 //                                      1 - Admins only
 //                                      2 - Mother zombies only
+// group                    text        Restrict class to member of this SourceMod group. Leave blank for no restriction.
 // name                     text        The class name used in class menu.
 // description              text        The class description used in class menu.
 // model_path               text        Path to model to use. Relative to cstrike folder.
@@ -58,6 +59,7 @@
         "team"                  "0"
         "team_default"          "1"
         "flags"                 "0"
+        "group"                 ""
         
         "name"                  "Classic"
         "description"           "Need brains!!! Arrrrggghh!"
@@ -101,6 +103,7 @@
         "team"                  "0"
         "team_default"          "0"
         "flags"                 "0"
+        "group"                 ""
         
         "name"                  "Fast"
         "description"           "-HP | +Speed | +Jump | +Knockback"
@@ -144,6 +147,7 @@
         "team"                  "0"
         "team_default"          "0"
         "flags"                 "0"
+        "group"                 ""
         
         "name"                  "Mutated"
         "description"           "+HP | -Speed | +Jump | +Knockback"
@@ -187,6 +191,7 @@
         "team"                  "0"
         "team_default"          "0"
         "flags"                 "0"
+        "group"                 ""
         
         "name"                  "Heavy"
         "description"           "+HP | -Speed | -Jump | -Knockback"
@@ -230,6 +235,7 @@
         "team"                  "0"
         "team_default"          "0"
         "flags"                 "2"
+        "group"                 ""
         
         "name"                  "Mother zombie"
         "description"           "+HP regen | +Speed | +Jump | -Knockback"
@@ -273,6 +279,7 @@
         "team"                  "0"
         "team_default"          "0"
         "flags"                 "3"
+        "group"                 ""
         
         "name"                  "Admin mother zombie"
         "description"           "+HP regen | +Speed | +Jump | -Knockback"
@@ -322,6 +329,7 @@
         "team"                  "1"
         "team_default"          "1"
         "flags"                 "0"
+        "group"                 ""
         
         "name"                  "Normal Human"
         "description"           "Default Counter-Strike settings"
@@ -365,6 +373,7 @@
         "team"                  "1"
         "team_default"          "0"
         "flags"                 "0"
+        "group"                 ""
         
         "name"                  "VIP Human"
         "description"           "Human class for important players"
@@ -408,6 +417,7 @@
         "team"                  "1"
         "team_default"          "0"
         "flags"                 "1"
+        "group"                 ""
         
         "name"                  "Admin Human"
         "description"           "Human class for admins"
@@ -451,6 +461,7 @@
         "team"                  "1"
         "team_default"          "0"
         "flags"                 "0"
+        "group"                 ""
         
         "name"                  "Speedy"
         "description"           "Fast human"
@@ -494,6 +505,7 @@
         "team"                  "1"
         "team_default"          "0"
         "flags"                 "0"
+        "group"                 ""
         
         "name"                  "Light"
         "description"           "Regular human with improved jump skills"

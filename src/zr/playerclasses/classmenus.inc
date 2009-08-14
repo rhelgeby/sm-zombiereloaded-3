@@ -247,7 +247,6 @@ ClassMenuSelect(client, teamid)
     new Handle:menu = CreateMenu(ClassMenuSelectHandle);
     new arraycount;
     new classindex;
-    new denyflags;
     
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:classname[MENU_LINE_REG_LENGTH];
@@ -277,12 +276,24 @@ ClassMenuSelect(client, teamid)
     // Create buffer array.
     new Handle:classarray = CreateArray();
     
-    // Set up filtering.
-    denyflags = ZR_CLASS_FLAG_MOTHER_ZOMBIE;                                // Hide mother zombie classes.
-    denyflags += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;   // Hide admin-only classes if not admin.
+    // Set up filtering
+    // ----------------
+    new filter[ClassFilter];
+    
+    // Hide mother zombie classes.
+    filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+    
+    // Hide admin-only classes if not admin.
+    filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+    
+    // Specify client for checking class group permissions.
+    filter[ClassFilter_Client] = client;
+    
+    // Get classes
+    // -----------
     
     // Copy all class indexes into the array, with the specified filter settings.
-    if (ClassAddToArray(classarray, teamid, _, _, denyflags))
+    if (ClassAddToArray(classarray, teamid, filter))
     {
         // Get number of classes.
         arraycount = GetArraySize(classarray);
