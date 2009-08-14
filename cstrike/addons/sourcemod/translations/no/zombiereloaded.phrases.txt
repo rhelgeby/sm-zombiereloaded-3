@@ -248,7 +248,7 @@
 
 	"Classes Menu Team Select Title"
 	{
-		"no"		"velg lag:"
+		"no"		"Velg lag:"
 	}
 
 	"Classes Menu Zombies"
