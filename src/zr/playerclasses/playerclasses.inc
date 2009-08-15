@@ -100,9 +100,9 @@
  * @section Overall default class settings. Since this is a zombie plugin the
  * default values represent a zombie.
  */
-#define ZR_CLASS_DEFAULT_ENABLED                true
+#define ZR_CLASS_DEFAULT_ENABLED                "yes"
 #define ZR_CLASS_DEFAULT_TEAM                   ZR_CLASS_TEAM_ZOMBIES
-#define ZR_CLASS_DEFAULT_TEAM_DEFAULT           true
+#define ZR_CLASS_DEFAULT_TEAM_DEFAULT           "yes"
 #define ZR_CLASS_DEFAULT_FLAGS                  0
 #define ZR_CLASS_DEFAULT_GROUP                  ""
 #define ZR_CLASS_DEFAULT_NAME                   "classic"
@@ -112,13 +112,13 @@
 #define ZR_CLASS_DEFAULT_ALPHA_DAMAGED          255
 #define ZR_CLASS_DEFAULT_ALPHA_DAMAGE           0
 #define ZR_CLASS_DEFAULT_OVERLAY_PATH           "overlays/zr/zvision"
-#define ZR_CLASS_DEFAULT_NVGS                   true
+#define ZR_CLASS_DEFAULT_NVGS                   "no"
 #define ZR_CLASS_DEFAULT_FOV                    90
-#define ZR_CLASS_DEFAULT_HAS_NAPALM             1
+#define ZR_CLASS_DEFAULT_HAS_NAPALM             "yes"
 #define ZR_CLASS_DEFAULT_NAPALM_TIME            10.0
 #define ZR_CLASS_DEFAULT_IMMUNITY_MODE          ZR_CLASS_IMMUNITY_DISABLED
 #define ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT        0.0
-#define ZR_CLASS_DEFAULT_NO_FALL_DAMAGE         true
+#define ZR_CLASS_DEFAULT_NO_FALL_DAMAGE         "on"
 #define ZR_CLASS_DEFAULT_HEALTH                 6000
 #define ZR_CLASS_DEFAULT_HEALTH_REGEN_INTERVAL  0.0
 #define ZR_CLASS_DEFAULT_HEALTH_REGEN_AMOUNT    2
@@ -495,9 +495,9 @@ ClassLoad(bool:keepMultipliers = false)
         }
         
         /* General */
-        ClassData[ClassCount][Class_Enabled] = bool:KvGetNum(kvClassData, "enabled", ZR_CLASS_DEFAULT_ENABLED);
+        ClassData[ClassCount][Class_Enabled] = ConfigKvGetStringBool(kvClassData, "enabled", ZR_CLASS_DEFAULT_ENABLED);
         ClassData[ClassCount][Class_Team] = KvGetNum(kvClassData, "team", ZR_CLASS_DEFAULT_TEAM);
-        ClassData[ClassCount][Class_TeamDefault] = bool:KvGetNum(kvClassData, "team_default", ZR_CLASS_DEFAULT_TEAM_DEFAULT);
+        ClassData[ClassCount][Class_TeamDefault] = ConfigKvGetStringBool(kvClassData, "team_default", ZR_CLASS_DEFAULT_TEAM_DEFAULT);
         ClassData[ClassCount][Class_Flags] = KvGetNum(kvClassData, "flags", ZR_CLASS_DEFAULT_FLAGS);
         
         KvGetString(kvClassData, "group", group, sizeof(group), ZR_CLASS_DEFAULT_GROUP);
@@ -523,19 +523,19 @@ ClassLoad(bool:keepMultipliers = false)
         KvGetString(kvClassData, "overlay_path", overlay_path, sizeof(overlay_path), ZR_CLASS_DEFAULT_OVERLAY_PATH);
         strcopy(ClassData[ClassCount][Class_OverlayPath], PLATFORM_MAX_PATH, overlay_path);
         
-        ClassData[ClassCount][Class_Nvgs] = bool:KvGetNum(kvClassData, "nvgs", ZR_CLASS_DEFAULT_NVGS);
+        ClassData[ClassCount][Class_Nvgs] = ConfigKvGetStringBool(kvClassData, "nvgs", ZR_CLASS_DEFAULT_NVGS);
         ClassData[ClassCount][Class_Fov] = KvGetNum(kvClassData, "fov", ZR_CLASS_DEFAULT_FOV);
         
         
         /* Effects */
-        ClassData[ClassCount][Class_HasNapalm] = bool:KvGetNum(kvClassData, "have_napalm", ZR_CLASS_DEFAULT_HAS_NAPALM);
+        ClassData[ClassCount][Class_HasNapalm] = ConfigKvGetStringBool(kvClassData, "have_napalm", ZR_CLASS_DEFAULT_HAS_NAPALM);
         ClassData[ClassCount][Class_NapalmTime] = KvGetFloat(kvClassData, "napalm_time", ZR_CLASS_DEFAULT_NAPALM_TIME);
         
         
         /* Player behaviour */
         ClassData[ClassCount][Class_ImmunityMode] = KvGetNum(kvClassData, "immunity_mode", ZR_CLASS_DEFAULT_IMMUNITY_MODE);
         ClassData[ClassCount][Class_ImmunityAmount] = KvGetFloat(kvClassData, "immunity_amount", ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT);
-        ClassData[ClassCount][Class_NoFallDamage] = bool:KvGetNum(kvClassData, "no_fall_damage", ZR_CLASS_DEFAULT_NO_FALL_DAMAGE);
+        ClassData[ClassCount][Class_NoFallDamage] = ConfigKvGetStringBool(kvClassData, "no_fall_damage", ZR_CLASS_DEFAULT_NO_FALL_DAMAGE);
         
         ClassData[ClassCount][Class_Health] = KvGetNum(kvClassData, "health", ZR_CLASS_DEFAULT_HEALTH);
         ClassData[ClassCount][Class_HealthRegenInterval] = KvGetFloat(kvClassData, "health_regen_interval", ZR_CLASS_DEFAULT_HEALTH_REGEN_INTERVAL);

@@ -10,12 +10,12 @@
 //
 // Attribute:               Values:     Description:
 // ----------------------------------------------------------------------------
-// enabled                  0/1         Enables or disables a class.
+// enabled                  yes/no      Enables or disables a class.
 // team                     number      Specifies what team the class belongs to:
 //                                      0 - Zombies
 //                                      1 - Humans
 //                                      2 - Admin mode classes (incomplete feautre!)
-// team_default             0/1         Marks the class as the default class in the team.
+// team_default             yes/no      Marks the class as the default class in the team.
 // flags                    number      Special class flags (bit field). To combine multiple flags
 //                                      use a sum of the flag values. Available flags:
 //                                      1 - Admins only
@@ -28,13 +28,13 @@
 // alpha_damaged            number      Transparency when damaged.
 // alpha_damage             number      How much damage to do before switching alpha.
 // overlay_path             text        Overlay displayed at the player.
-// nvgs                     0/1         Give night vision.
+// nvgs                     yes/no      Give night vision.
 // fov                      number      Field of view value. 90 is default.
-// has_napalm               0/1         Allows player to throw napalm grenades. Humans only.
+// has_napalm               yes/no      Allows player to throw napalm grenades. Humans only.
 // napalm_time              decimal     Napalm burn duration. Zombies only.
 // immunity_mode            number      Sets the immunity mode.
 // immunity_amount          decimal     Sets the immunity value.
-// no_fall_damage           0/1         Disables fall damage.
+// no_fall_damage           on/off      Disables fall damage.
 // health                   number      How many health points to give.
 // health_regen_interval    decimal     Sets the regeneration interval. 0 to disable.
 // health_regen_amount      number      How much HP to give per interval.
@@ -55,9 +55,9 @@
     "zombie_classic"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "0"
-        "team_default"          "1"
+        "team_default"          "yes"
         "flags"                 "0"
         "group"                 ""
         
@@ -72,17 +72,17 @@
         
         // Hud
         "overlay_path"          "overlays/zr/zvision"
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "0"
+        "has_napalm"            "no"
         "napalm_time"           "10.0"
         
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "1"
+        "no_fall_damage"        "yes"
         
         "health"                "2500"
         "health_regen_interval" "0.0"
@@ -99,9 +99,9 @@
     "zombie_fast"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "0"
-        "team_default"          "0"
+        "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
         
@@ -116,17 +116,17 @@
         
         // Hud
         "overlay_path"          "overlays/zr/zvision"
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "0"
+        "has_napalm"            "no"
         "napalm_time"           "5.0"
         
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "1"
+        "no_fall_damage"        "yes"
         
         "health"                "2000"
         "health_regen_interval" "0.0"
@@ -143,9 +143,9 @@
     "zombie_mutated"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "0"
-        "team_default"          "0"
+        "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
         
@@ -160,17 +160,17 @@
         
         // Hud
         "overlay_path"          "overlays/zr/zvision"
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "0"
+        "has_napalm"            "no"
         "napalm_time"           "15.0"
         
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "1"
+        "no_fall_damage"        "yes"
         
         "health"                "3500"
         "health_regen_interval" "0.0"
@@ -187,9 +187,9 @@
     "zombie_heavy"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "0"
-        "team_default"          "0"
+        "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
         
@@ -204,17 +204,17 @@
         
         // Hud
         "overlay_path"          "overlays/zr/zvision"
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "0"
+        "has_napalm"            "no"
         "napalm_time"           "20.0"
         
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "1"
+        "no_fall_damage"        "yes"
         
         "health"                "4000"
         "health_regen_interval" "0.0"
@@ -231,9 +231,9 @@
     "mother_zombie"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "0"
-        "team_default"          "0"
+        "team_default"          "no"
         "flags"                 "2"
         "group"                 ""
         
@@ -248,7 +248,7 @@
         
         // Hud
         "overlay_path"          "overlays/zr/zvision"
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "110"
         
         // Effects
@@ -258,7 +258,7 @@
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "1"
+        "no_fall_damage"        "yes"
         
         "health"                "2500"
         "health_regen_interval" "0.25"
@@ -275,9 +275,9 @@
     "mother_zombie_admin"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "0"
-        "team_default"          "0"
+        "team_default"          "no"
         "flags"                 "3"
         "group"                 ""
         
@@ -292,7 +292,7 @@
         
         // Hud
         "overlay_path"          "overlays/zr/zvision"
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "110"
         
         // Effects
@@ -302,7 +302,7 @@
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "1"
+        "no_fall_damage"        "yes"
         
         "health"                "3500"
         "health_regen_interval" "0.25"
@@ -325,9 +325,9 @@
     "human_normal"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "1"
-        "team_default"          "1"
+        "team_default"          "yes"
         "flags"                 "0"
         "group"                 ""
         
@@ -342,17 +342,17 @@
         
         // Hud
         "overlay_path"          ""
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "1"
+        "has_napalm"            "yes"
         "napalm_time"           "0.0"
         
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "0"
+        "no_fall_damage"        "no"
         
         "health"                "100"
         "health_regen_interval" "0.0"
@@ -369,9 +369,9 @@
     "human_vip"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "1"
-        "team_default"          "0"
+        "team_default"          "yes"
         "flags"                 "0"
         "group"                 ""
         
@@ -386,7 +386,7 @@
         
         // Hud
         "overlay_path"          ""
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
@@ -396,7 +396,7 @@
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "0"
+        "no_fall_damage"        "no"
         
         "health"                "200"
         "health_regen_interval" "1.0"
@@ -413,9 +413,9 @@
     "human_admin"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "1"
-        "team_default"          "0"
+        "team_default"          "no"
         "flags"                 "1"
         "group"                 ""
         
@@ -430,7 +430,7 @@
         
         // Hud
         "overlay_path"          ""
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
@@ -440,7 +440,7 @@
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "1"
+        "no_fall_damage"        "yes"
         
         "health"                "200"
         "health_regen_interval" "1.0"
@@ -457,9 +457,9 @@
     "human_speedy"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "1"
-        "team_default"          "0"
+        "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
         
@@ -474,11 +474,11 @@
         
         // Hud
         "overlay_path"          ""
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "0"
+        "has_napalm"            "no"
         "napalm_time"           "0.0"
         
         // Player behaviour
@@ -501,9 +501,9 @@
     "human_light"
     {
         // General
-        "enabled"               "1"
+        "enabled"               "yes"
         "team"                  "1"
-        "team_default"          "0"
+        "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
         
@@ -518,17 +518,17 @@
         
         // Hud
         "overlay_path"          ""
-        "nvgs"                  "0"
+        "nvgs"                  "no"
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "1"
+        "has_napalm"            "yes"
         "napalm_time"           "0.0"
         
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "0"
+        "no_fall_damage"        "no"
         
         "health"                "100"
         "health_regen_interval" "0.0"

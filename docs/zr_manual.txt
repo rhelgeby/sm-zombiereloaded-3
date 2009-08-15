@@ -604,7 +604,7 @@ The list below explains all available class attributes in detail:
 
     Attribute:              Value type:     Limits/Requirements:
     ===========================================================================
-    enabled                 boolean         0 or 1
+    enabled                 text            "yes" or "no"
     ---------------------------------------------------------------------------
         Enables or disables the class. Disabled classes won't show up in the
         class selection menus. Also, if some attributes failed to validate the
@@ -627,7 +627,7 @@ The list below explains all available class attributes in detail:
         
         See the "flags" attribute for admin-only classes.
     
-    team_default            boolean         0 or 1
+    team_default            text            "yes" or "no"
     ---------------------------------------------------------------------------
         Marks the class as the default class for its specified team. This class
         will be automatically selected on new players when they join the
@@ -699,7 +699,7 @@ The list below explains all available class attributes in detail:
         controlled by the night vision key ("n" by default). The path is
         relative to "cstrike/materials". Leave blank to disable.
     
-    nvgs                    boolean         0 or 1
+    nvgs                    text            "yes" or "no"
     ---------------------------------------------------------------------------
         Gives night vision to the player.
     
@@ -708,7 +708,7 @@ The list below explains all available class attributes in detail:
         The field of view on the player. Note that the weapon hud disappear if
         FOV is anything else than 90.
     
-    has_napalm              boolean         0 or 1
+    has_napalm              text            "yes" or "no"
     ---------------------------------------------------------------------------
         Human classes only. Specifies whether the human can trow napalm
         grenades or not.
@@ -730,7 +730,7 @@ The list below explains all available class attributes in detail:
         The value for the specified immunity mode. This feature is currently
         incomplete and values are ignored.
     
-    no_fall_damage          boolean         0 or 1
+    no_fall_damage          text            "yes" or "no"
     ---------------------------------------------------------------------------
         Blocks fall damage on the player.
     
