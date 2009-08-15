@@ -162,8 +162,10 @@ stock ClassValidateAttributes(classindex)
     }
     else
     {
-        // Check if a model different from default or random is specified.
-        if (!StrEqual(model_path, "random", false) && !StrEqual(model_path, "default", false))
+        // Check if a model different from a pre-defined setting.
+        if (!StrEqual(model_path, "random", false) &&
+            !StrEqual(model_path, "default", false) &&
+            !StrEqual(model_path, "nochange", false))
         {
             // Check if the file exists.
             if (!FileExists(model_path))

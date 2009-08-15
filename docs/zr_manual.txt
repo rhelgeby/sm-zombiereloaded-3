@@ -673,10 +673,13 @@ The list below explains all available class attributes in detail:
     model_path              text            Max 256 characters, not empty
     ---------------------------------------------------------------------------
         The model file to use on the player, path is relative to the "cstrike"
-        folder. There are two special values supported by this attribute:
+        folder. There are a few special values supported by this attribute:
         
-            "default" - Don't change model, use default CS models.
-            "random"  - Selects a random model for the current team.
+            "default"   - Use default CS models. The one players select when
+                          selecting team.
+            "random"    - Selects a random model for the current team.
+            "nochange"  - Don't change model. To be used in combination with
+                          other plugins that change model on players.
     
     alpha_spawn             number          0 - 255
     ---------------------------------------------------------------------------
