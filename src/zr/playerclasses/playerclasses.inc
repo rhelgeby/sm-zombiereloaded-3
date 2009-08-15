@@ -320,7 +320,7 @@ enum ClassFilter
     bool:ClassFilter_IgnoreEnabled,     /** Ignore whether the class is disabled or not. */
     ClassFilter_RequireFlags,           /** Flags the classes must have set. */
     ClassFilter_DenyFlags,              /** Flags the classes cannot have set. */
-    ClassFilter_Client                  /** The client to check for class group permissions. Use 0 or less to ignore group filter. */
+    ClassFilter_Client                  /** The client to check for class group permissions. Use 0 to ignore group filter and negative to exclude classes with groups set. */
 }
 
 /**
@@ -930,6 +930,8 @@ ClassRestoreNextIndexes(client, excludeTeam = -1)
 ClassClientSetDefaultIndexes(client = -1)
 {
     new bool:clientvalid = ZRIsClientValid(client);
+    new filter[ClassFilter];
+    
     new zombieindex;
     new humanindex;
     new adminindex;
@@ -950,11 +952,15 @@ ClassClientSetDefaultIndexes(client = -1)
         //       one so zero means no class set and will result in a invalid
         //       class index when restored.
         
-        // Check if class indexes are set. If not, fall back to default class
-        // indexes. Otherwise substract index by one.
-        if (zombieindex <= 0)
+        // Setup filtering so group permission is checked on player first.
+        filter[ClassFilter_Client] = client;
+        
+        // Check if class indexes are set and that the client pass group
+        // permissions. If not, fall back to default class indexes. Otherwise
+        // substract index by one.
+        if (zombieindex <= 0 || !ClassFilterMatch(zombieindex, filter))
         {
-            zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES);
+            zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES, filter);
         }
         else
         {
@@ -962,9 +968,9 @@ ClassClientSetDefaultIndexes(client = -1)
             haszombie = true;
         }
         
-        if (humanindex <= 0)
+        if (humanindex <= 0 || !ClassFilterMatch(humanindex, filter))
         {
-            humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS);
+            humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS, filter);
         }
         else
         {
@@ -972,9 +978,9 @@ ClassClientSetDefaultIndexes(client = -1)
             hashuman = true;
         }
         
-        if (adminindex <= 0)
+        if (adminindex <= 0 || !ClassFilterMatch(adminindex, filter))
         {
-            adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS);
+            adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS, filter);
         }
         else
         {
@@ -984,10 +990,13 @@ ClassClientSetDefaultIndexes(client = -1)
     }
     else
     {
+        // Setup filtering so classes with groups set are excluded.
+        filter[ClassFilter_Client] = -1;
+        
         // Get default class indexes.
-        zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES);
-        humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS);
-        adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS);
+        zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES, filter);
+        humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS, filter);
+        adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS, filter);
     }
     
     // Validate indexes.
@@ -998,7 +1007,7 @@ ClassClientSetDefaultIndexes(client = -1)
         LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get specified zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".");
         
         // Use default class.
-        zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES);
+        zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, filter);
     }
     
     // Get human class index.
@@ -1009,7 +1018,7 @@ ClassClientSetDefaultIndexes(client = -1)
         LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get specified human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".");
         
         // Use default class.
-        humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS);
+        humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, filter);
     }
     
     // Get admin class index.
@@ -1018,7 +1027,7 @@ ClassClientSetDefaultIndexes(client = -1)
         // Invalid class index. Fall back to default class in class config if
         // possible. A invalid class index (-1) can also be stored if there are
         // no admin classes at all.
-        adminindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ADMINS);
+        adminindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ADMINS, filter);
     }
     
     // Check if a client is specified.

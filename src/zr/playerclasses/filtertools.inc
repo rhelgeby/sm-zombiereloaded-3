@@ -485,30 +485,39 @@ stock bool:ClassFilterMatch(index, filter[ClassFilter], cachetype = ZR_CLASS_CAC
         return false;
     }
     
-    // Check class flags pass the flag filter.
+    // Check if class flags pass the flag filter.
     if (!ClassFlagFilterMatch(index, filter[ClassFilter_RequireFlags], filter[ClassFilter_DenyFlags], cachetype))
     {
         return false;
     }
     
+    // Get class group name.
+    decl String:groupname[64];
+    groupname[0] = 0;
+    ClassGetGroup(index, groupname, sizeof(groupname), cachetype);
+    
     // Check if a client is specified in the filter.
     new client = filter[ClassFilter_Client];
     if (ZRIsClientValid(client))
     {
-        // Get class group name.
-        decl String:groupname[64];
-        groupname[0] = 0;
-        ClassGetGroup(index, groupname, sizeof(groupname), cachetype);
-        
-        // Check if a group is set on the class. Note: This group name is
-        // validated when classes are loaded.
+        // Check if a group is set on the class.
         if (strlen(groupname))
         {
-            // Check if the client is a member of that group.
+            // Check if the client is not a member of that group.
             if (!ZRIsClientInGroup(client, groupname))
             {
                 return false;
             }
+        }
+    }
+    
+    // Check if classes with groups are set to be excluded.
+    if (client < 0)
+    {
+        // Exclude class if it has a group name.
+        if (strlen(groupname))
+        {
+            return false;
         }
     }
     
@@ -921,6 +930,8 @@ stock ClassGetDefaultClass(teamid, filter[ClassFilter] = ClassNoSpecialClasses, 
  * when players join the server.
  *
  * @param teamid    The team ID.
+ * @param filter    Optional. Structure with filter settings. Default is to
+ *                  deny classes with special flags (ZR_CLASS_SPECIALFLAGS).
  * @param cachetype Optional. Specifies what class cache to read from. Options:
  *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
  *                  ZR_CLASS_CACHE_MODIFIED (default) - Changed/newest class
@@ -929,7 +940,7 @@ stock ClassGetDefaultClass(teamid, filter[ClassFilter] = ClassNoSpecialClasses, 
  *          successful. -1 on critical errors. Otherwise it will try to fall
  *          back on the first class in the specified team.
  */
-stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
+stock ClassGetDefaultSpawnClass(teamid, filter[ClassFilter] = ClassNoSpecialClasses, cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     decl String:classname[64];
     new classindex;
@@ -964,7 +975,7 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
         {
             // Get a list of all classes with the specified team ID. Deny
             // classes with special flags.
-            classindex = ClassGetRandomClass(teamid, _, cachetype);
+            classindex = ClassGetRandomClass(teamid, filter, cachetype);
             
             // Validate the result, in case there were errors.
             if (ClassValidateIndex(classindex))
@@ -996,7 +1007,7 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
                 // The class index is invalid or the team IDs didn't match.
                 // Because it's user input, we'll fall back to the first class
                 // in the specified team, and log a warning.
-                classindex = ClassGetFirstClass(teamid, _, cachetype);
+                classindex = ClassGetFirstClass(teamid, filter, cachetype);
                 
                 LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Default Spawn Class", "Warning: Failed to set \"%s\" as default spawn class for team %d. The class doesn't exist or the team IDs doesn't match. Falling back to the first class in the team.", classname, teamid);
                 
@@ -1019,6 +1030,6 @@ stock ClassGetDefaultSpawnClass(teamid, cachetype = ZR_CLASS_CACHE_MODIFIED)
     else
     {
         // Blank class name, get the default class and return the index.
-        return ClassGetDefaultClass(teamid, _, cachetype);
+        return ClassGetDefaultClass(teamid, filter, cachetype);
     }
 }
