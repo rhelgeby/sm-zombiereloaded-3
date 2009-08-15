@@ -391,6 +391,11 @@ new ClassSelectedNext[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
 new ClassAdminTeamSelected[MAXPLAYERS + 1];
 
 /**
+ * Cookies for storing class indexes.
+ */
+new Handle:g_hClassCookieClassSelected[ZR_CLASS_TEAMCOUNT];
+
+/**
  * Cache for the currently selected attribute multiplier (admin menus).
  */
 new ClassMultipliers:ClassAdminAttributeSelected[MAXPLAYERS + 1];
@@ -920,38 +925,94 @@ ClassRestoreNextIndexes(client, excludeTeam = -1)
  * Sets default class indexes for each team on all players, or a single player
  * if specified.
  *
- * @param client    Optional. The client index.
+ * @param client    Optional. The client index. If specified, cookies are used.
  */
 ClassClientSetDefaultIndexes(client = -1)
 {
-    // Get indexes.
-    new zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES);
-    new humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS);
-    new adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS);
+    new bool:clientvalid = ZRIsClientValid(client);
+    new zombieindex;
+    new humanindex;
+    new adminindex;
     
-    // Validate zombie class index.
+    new bool:haszombie;
+    new bool:hashuman;
+    new bool:hasadmin;
+    
+    // Check if a client is specified.
+    if (clientvalid)
+    {
+        // Get cookie indexes.
+        zombieindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES]);
+        humanindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS]);
+        adminindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS]);
+        
+        // Note: When class indexes are set on cookies, they're incremented by
+        //       one so zero means no class set and will result in a invalid
+        //       class index when restored.
+        
+        // Check if class indexes are set. If not, fall back to default class
+        // indexes. Otherwise substract index by one.
+        if (zombieindex <= 0)
+        {
+            zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES);
+        }
+        else
+        {
+            zombieindex--;
+            haszombie = true;
+        }
+        
+        if (humanindex <= 0)
+        {
+            humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS);
+        }
+        else
+        {
+            humanindex--;
+            hashuman = true;
+        }
+        
+        if (adminindex <= 0)
+        {
+            adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS);
+        }
+        else
+        {
+            adminindex--;
+            hasadmin = true;
+        }
+    }
+    else
+    {
+        // Get default class indexes.
+        zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES);
+        humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS);
+        adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS);
+    }
+    
+    // Validate indexes.
     if (!ClassValidateIndex(zombieindex))
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get default zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get specified zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".");
         
         // Use default class.
         zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES);
     }
     
-    // Validate human class index.
+    // Get human class index.
     if (!ClassValidateIndex(humanindex))
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get default human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get specified human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".");
         
         // Use default class.
         humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS);
     }
     
-    // Validate admin class index.
+    // Get admin class index.
     if (!ClassValidateIndex(adminindex))
     {
         // Invalid class index. Fall back to default class in class config if
@@ -960,12 +1021,37 @@ ClassClientSetDefaultIndexes(client = -1)
         adminindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ADMINS);
     }
     
-    // Check if a client isn't specified.
-    if (client < 1)
+    // Check if a client is specified.
+    if (clientvalid)
+    {
+        // Set selected class idexes.
+        ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
+        ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
+        ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
+        
+        // Copy human class data to player cache.
+        ClassReloadPlayerCache(client, humanindex);
+        
+        // Save indexes in cookies if not already saved.
+        if (!haszombie)
+        {
+            CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES], zombieindex + 1);
+        }
+        if (!hashuman)
+        {
+            CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS], humanindex + 1);
+        }
+        if (!hasadmin)
+        {
+            CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS], adminindex + 1);
+        }
+    }
+    else
     {
         // No client specified. Loop through all players.
-        for (new clientindex = 1; clientindex <= MAXPLAYERS; clientindex++)
+        for (new clientindex = 1; clientindex <= MaxClients; clientindex++)
         {
+            // Set selected class idexes.
             ClassSelected[clientindex][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_HUMANS] = humanindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_ADMINS] = adminindex;
@@ -973,15 +1059,6 @@ ClassClientSetDefaultIndexes(client = -1)
             // Copy human class data to player cache.
             ClassReloadPlayerCache(client, humanindex);
         }
-    }
-    else
-    {
-        ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
-        ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
-        ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
-        
-        // Copy human class data to player cache.
-        ClassReloadPlayerCache(client, humanindex);
     }
 }
 
