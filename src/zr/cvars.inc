@@ -56,6 +56,7 @@ enum CvarsList
     Handle:CVAR_CLASSES_SPAWN,
     Handle:CVAR_CLASSES_RANDOM,
     Handle:CVAR_CLASSES_CHANGE_TIMELIMIT,
+    Handle:CVAR_CLASSES_SAVE,
     Handle:CVAR_CLASSES_DEFAULT_ZOMBIE,
     Handle:CVAR_CLASSES_DEFAULT_M_ZOMB,
     Handle:CVAR_CLASSES_DEFAULT_HUMAN,
@@ -249,7 +250,8 @@ CvarsCreate()
     // General
     g_hCvarsList[CVAR_CLASSES_SPAWN]                    =    CreateConVar("zr_classes_spawn",                   "0",            "Re-display class selection menu every spawn.");
     g_hCvarsList[CVAR_CLASSES_RANDOM]                   =    CreateConVar("zr_classes_random",                  "0",            "Player is assigned a random class every spawn. [Override: zr_classes_default_*]");
-    g_hCvarsList[CVAR_CLASSES_CHANGE_TIMELIMIT]         =    CreateConVar("zr_classes_change_timelimit",        "20",           "Time limit to change class with instant change after spawning. Time is in seconds. Use 0 or negative to disable.");
+    g_hCvarsList[CVAR_CLASSES_CHANGE_TIMELIMIT]         =    CreateConVar("zr_classes_change_timelimit",        "20",           "Time limit to change human class with instant change after spawning. Time is in seconds. Use 0 or negative to disable.");
+    g_hCvarsList[CVAR_CLASSES_SAVE]                     =    CreateConVar("zr_classes_save",                    "1",            "Save players' class selections in server cookies and restore when connecting. [Override: zr_classes_default_*]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_ZOMBIE]           =    CreateConVar("zr_classes_default_zombie",          "random",       "Zombie class assigned to players on connect. [\"random\" = Random zombie class | \"\" = Class config default]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_M_ZOMB]           =    CreateConVar("zr_classes_default_mother_zombie",   "motherzombies","Zombie class assigned to mother zombies. [\"motherzombies\" = Random mother zombie class | \"random\" = Random regular zombie class | \"disabled\" = Don't change class on mother zombies]");
     g_hCvarsList[CVAR_CLASSES_DEFAULT_HUMAN]            =    CreateConVar("zr_classes_default_human",           "random",       "Human class assigned to players on connect. [\"random\" = Random human class | \"\" = Class config default]");

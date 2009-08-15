@@ -882,6 +882,25 @@ Class console variables:
     ---------------------------------------------------------------------------
         Assign random classes to all players each round.
         
+        This setting overrides zr_classes_save.
+        
+        Options:
+        0 or 1
+    
+    zr_classes_change_timelimit         20
+    ---------------------------------------------------------------------------
+        The time limit to change human classes with instant change after
+        spawning. So humans don't have to set class before spawning. Time is in
+        seconds.
+    
+    zr_classes_save                     1
+    ---------------------------------------------------------------------------
+        Save players' class selections in server cookies. Class selections are
+        restored next time players connect.
+        
+        This setting overrides zr_classes_default_*, but on first-time
+        connecting players the default classes are assigned.
+        
         Options:
         0 or 1
     

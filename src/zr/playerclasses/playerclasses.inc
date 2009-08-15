@@ -931,6 +931,7 @@ ClassClientSetDefaultIndexes(client = -1)
 {
     new bool:clientvalid = ZRIsClientValid(client);
     new filter[ClassFilter];
+    new bool:saveclasses = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]);
     
     new zombieindex;
     new humanindex;
@@ -943,10 +944,21 @@ ClassClientSetDefaultIndexes(client = -1)
     // Check if a client is specified.
     if (clientvalid)
     {
-        // Get cookie indexes.
-        zombieindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES]);
-        humanindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS]);
-        adminindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS]);
+        // Get cookie indexes if enabled.
+        if (saveclasses)
+        {
+            zombieindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES]);
+            humanindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS]);
+            adminindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS]);
+        }
+        else
+        {
+            // Do not use indexes in cookies. Set invalid values so it will
+            // fall back to default class.
+            zombieindex = 0;
+            humanindex = 0;
+            adminindex = 0;
+        }
         
         // Note: When class indexes are set on cookies, they're incremented by
         //       one so zero means no class set and will result in a invalid
@@ -1041,18 +1053,21 @@ ClassClientSetDefaultIndexes(client = -1)
         // Copy human class data to player cache.
         ClassReloadPlayerCache(client, humanindex);
         
-        // Save indexes in cookies if not already saved.
-        if (!haszombie)
+        // Save indexes in cookies if enabled, and not already saved.
+        if (saveclasses)
         {
-            CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES], zombieindex + 1);
-        }
-        if (!hashuman)
-        {
-            CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS], humanindex + 1);
-        }
-        if (!hasadmin)
-        {
-            CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS], adminindex + 1);
+            if (!haszombie)
+            {
+                CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES], zombieindex + 1);
+            }
+            if (!hashuman)
+            {
+                CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS], humanindex + 1);
+            }
+            if (!hasadmin)
+            {
+                CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS], adminindex + 1);
+            }
         }
     }
     else
