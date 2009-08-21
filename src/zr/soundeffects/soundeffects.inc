@@ -35,6 +35,7 @@
  */
 #define SOUND_AMBIENT_CHANNEL 8
 
+#include "zr/soundeffects/voice"
 #include "zr/soundeffects/ambientsounds"
 #include "zr/soundeffects/zombiesounds"
 
@@ -94,6 +95,7 @@ SEffectsOnRoundEnd()
 SEffectsOnClientSpawn(client)
 {
     // Forward event to sub-modules.
+    VoiceOnClientSpawn(client);
     ZombieSoundsOnClientSpawn(client);
 }
 
@@ -138,9 +140,21 @@ SEffectsOnClientHurt(client)
 SEffectsOnClientInfected(client)
 {
     // Forward event to sub-modules.
+    VoiceOnClientInfected(client);
     ZombieSoundsOnClientInfected(client);
 }
-    
+
+/**
+ * Client has been turned back human.
+ * 
+ * @param client    The client index.
+ */
+SEffectsOnClientHuman(client)
+{
+    // Forward event to sub-modules.
+    VoiceOnClientHuman(client);
+}
+
 /**
  * Emits an ambient sound
  * 

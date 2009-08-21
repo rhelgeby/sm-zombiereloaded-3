@@ -91,7 +91,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     VolOnRoundStart();
     
     // Fire post round_start event.
-    CreateTimer(0.0, EventRoundStartPost);
+    //CreateTimer(0.0, EventRoundStartPost);
 }
 
 /**
@@ -102,10 +102,10 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventRoundStartPost(Handle:timer)
-{
+//public Action:EventRoundStartPost(Handle:timer)
+//{
     // Forward event to modules.
-}
+//}
 
 /**
  * Event callback (round_freeze_end)

@@ -723,6 +723,9 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     {
         SpawnProtectStart(client);
     }
+    
+    // Forward event to modules.
+    SEffectsOnClientHuman(client);
 }
 
 /**

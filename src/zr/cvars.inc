@@ -118,6 +118,8 @@ enum CvarsList
     Handle:CVAR_VEFFECTS_RAGDOLL_REMOVE,
     Handle:CVAR_VEFFECTS_RAGDOLL_DISSOLVE,
     Handle:CVAR_VEFFECTS_RAGDOLL_DELAY,
+    Handle:CVAR_VOICE,
+    Handle:CVAR_VOICE_ZOMBIES_MUTE,
     Handle:CVAR_SEFFECTS_MOAN,
     Handle:CVAR_SEFFECTS_GROAN,
     Handle:CVAR_SEFFECTS_DEATH,
@@ -375,6 +377,10 @@ CvarsCreate()
     // ===========================
     // Sound Effects (module)
     // ===========================
+    
+    // Voice
+    g_hCvarsList[CVAR_VOICE]                            =    CreateConVar("zr_voice",                   "1",                            "Modify sv_alltalk to obey zombie/human teams instead of t/ct.");
+    g_hCvarsList[CVAR_VOICE_ZOMBIES_MUTE]               =    CreateConVar("zr_voice_zombies_mute",      "0",                            "Only allow humans to communicate, block verbal zombie communication.");
     
     // Zombie Sounds
     g_hCvarsList[CVAR_SEFFECTS_MOAN]                    =    CreateConVar("zr_seffects_moan",           "30.0",                         "Time between emission of a moan sound from a zombie.");

@@ -26,6 +26,39 @@
  */
 
 /**
+ * Client is spawning into the game.
+ * 
+ * @param client    The client index.
+ */
+VoiceOnClientSpawn(client)
+{
+    // Give client proper verbal permissions.
+    VoiceUpdateClient(client);
+}
+
+/**
+ * Client has been infected.
+ * 
+ * @param client    The client index.
+ */
+VoiceOnClientInfected(client)
+{
+    // Give client proper verbal permissions.
+    VoiceUpdateClient(client);
+}
+
+/**
+ * Client has been turned back human.
+ * 
+ * @param client    The client index.
+ */
+VoiceOnClientHuman(client)
+{
+    // Give client proper verbal permissions.
+    VoiceUpdateClient(client);
+}
+
+/**
  * Allow all clients to listen and speak with each other.
  */
 stock VoiceAllTalk()
@@ -58,4 +91,41 @@ stock VoiceAllTalk()
             SetClientListening(x, y, true);
         }
     }
+}
+
+/**
+ * Set which team the client is allowed to listen/speak with.
+ * 
+ * @param client    The client index.
+ * @param zombie    True to permit verbal communication to zombies only, false for humans only.
+ */
+stock VoiceSetClientTeam(client, bool:zombie)
+{
+    // x = Client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // If sender isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
+        // Client can only listen/speak if the sender is on their team.
+        new bool:canlisten = (zombie == InfectIsClientInfected(x));
+        
+        // (Dis)allow clients to listen/speak with each other.
+        SetClientListening(client, x, canlisten);
+        SetClientListening(x, client, canlisten);
+    }
+}
+
+/**
+ * Update a client's listening/speaking status.
+ * 
+ * @param client    The client index.
+ */
+stock VoiceUpdateClient(client)
+{
+    // Set the client's listening/speaking status to their current team.
+    VoiceSetClientTeam(client, InfectIsClientInfected(client));
 }
