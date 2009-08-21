@@ -64,7 +64,7 @@ public Action:ZAdminCommand(client, argc)
  */
 bool:ZAdminMenu(client)
 {
-    // If client isn't an admin, then stop.
+    // If client isn't an generic admin, then stop.
     if (!ZRIsClientAdmin(client))
     {
         TranslationPrintToChat(client, "Must be admin");
@@ -94,16 +94,18 @@ bool:ZAdminMenu(client)
     Format(ztele, sizeof(ztele), "%t", "ZAdmin main force ztele");
     
     // Get conditions for options.
-    new bool:hitgroupsenabled = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    new configdraw = MenuGetItemDraw(ZRIsClientPrivileged(client, OperationType_Configuration));
+    new moderatordraw = MenuGetItemDraw(ZRIsClientPrivileged(client, OperationType_Generic));
+    new bool:hitgroupsenabled = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]) && ZRIsClientPrivileged(client, OperationType_Configuration);
     
     // Add items to menu.
     SetMenuTitle(menu_zadmin, title);
-    AddMenuItem(menu_zadmin, "classmultipliers", classmultipliers);
-    AddMenuItem(menu_zadmin, "weapons", weapons);
+    AddMenuItem(menu_zadmin, "classmultipliers", classmultipliers, configdraw);
+    AddMenuItem(menu_zadmin, "weapons", weapons, configdraw);
     AddMenuItem(menu_zadmin, "hitgroups", hitgroups, MenuGetItemDraw(hitgroupsenabled));
-    AddMenuItem(menu_zadmin, "infect", infect);
-    AddMenuItem(menu_zadmin, "zspawn", zspawn);
-    AddMenuItem(menu_zadmin, "ztele", ztele);
+    AddMenuItem(menu_zadmin, "infect", infect, moderatordraw);
+    AddMenuItem(menu_zadmin, "zspawn", zspawn, moderatordraw);
+    AddMenuItem(menu_zadmin, "ztele", ztele, moderatordraw);
     
     // Set "Back" button.
     SetMenuExitBackButton(menu_zadmin, true);

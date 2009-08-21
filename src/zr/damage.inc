@@ -307,12 +307,6 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
     // Client was damaged by falling.
     else if (damagetype & DMG_CSS_FALL)
     {
-        // If client isn't a zombie, then allow damage.
-        if (!InfectIsClientInfected(client))
-        {
-            return ZRTools_Continue;
-        }
-        
         // If class has "nofalldamage" disabled, then allow damage.
         new bool:blockfalldamage = ClassGetNoFallDamage(client);
         if (!blockfalldamage)

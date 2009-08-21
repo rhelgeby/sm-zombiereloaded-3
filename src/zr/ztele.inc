@@ -233,7 +233,7 @@ bool:ZTeleClient(client, bool:force = false)
 ZTeleTeleportClient(client)
 {
     // Teleport client.
-    TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, NULL_VECTOR);
+    TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, Float:{0.0, 0.0, 0.0});
 }
 
 /**

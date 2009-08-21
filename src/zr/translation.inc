@@ -333,16 +333,13 @@ stock TranslationReplyToCommand(client, any:...)
     {
         // Format string to create plugin style. (color)
         TranslationPluginFormatString(translation, sizeof(translation));
-        
-        // Print translated phrase to client's chat/console.
-        PrintToChat(client, translation);
     }
     else
     {
         // Format string to create plugin style. (no color)
         TranslationPluginFormatString(translation, sizeof(translation), false);
-        
-        // Print to server.
-        PrintToServer(translation);
     }
+    
+    // Print translated phrase to server or client's chat/console.
+    ReplyToCommand(client, translation);
 }

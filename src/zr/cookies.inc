@@ -68,3 +68,35 @@ bool:CookiesGetClientCookieBool(client, Handle:cookie)
     // Return string casted into an int, then to bool.
     return bool:StringToInt(cookievalue);
 }
+
+/**
+ * Sets a integer value on a cookie.
+ *
+ * @param client    The client index.
+ * @param cookie    The handle to the cookie.
+ * @param value     The value to set.
+ */
+CookiesSetInt(client, Handle:cookie, value)
+{
+    // Convert value to string.
+    decl String:strValue[16];
+    IntToString(value, strValue, sizeof(strValue));
+    
+    // Set string value.
+    SetClientCookie(client, cookie, strValue);
+}
+
+/**
+ * Gets a integer value from a cookie.
+ *
+ * @param client    The client index.
+ * @param cookie    The handle to the cookie.
+ */
+CookiesGetInt(client, Handle:cookie)
+{
+    decl String:strValue[16];
+    strValue[0] = 0;
+    GetClientCookie(client, cookie, strValue, sizeof(strValue));
+    
+    return StringToInt(strValue);
+}

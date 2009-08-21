@@ -89,16 +89,14 @@ bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
         ClassGetModelPath(classindex, modelpath, sizeof(modelpath), cachetype);
     }
     
-    // Check if the user specified a random model.
-    if (strcmp(modelpath, "random", false) == 0)
+    // Check if the user specified a pre-defined model setting.
+    if (StrEqual(modelpath, "random", false))
     {
         // TODO: Make a function that gets a random model from the specified team.
         ModelsGetRandomModelIndex(modelpath, sizeof(modelpath), false, true);
         Format(modelpath, sizeof(modelpath), "%s.mdl", modelpath);
     }
-    
-    // Check if the user specified no change.
-    else if (strcmp(modelpath, "default", false) == 0)
+    else if (StrEqual(modelpath, "default", false))
     {
         // Get current model.
         GetClientModel(client, modelpath, sizeof(modelpath));
@@ -113,6 +111,11 @@ bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
             // Wanted model is already set, don't change.
             return true;
         }
+    }
+    else if (StrEqual(modelpath, "nochange", false))
+    {
+        // Do nothing.
+        return true;
     }
     
     SetEntityModel(client, modelpath);

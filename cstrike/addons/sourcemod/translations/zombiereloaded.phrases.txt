@@ -65,7 +65,7 @@
 
 	"Must be zombie"
 	{
-		"en"		"This feature requires that you are a zombie.
+		"en"		"This feature requires that you are a zombie."
 	}
 
 	"Must be human"
@@ -228,55 +228,31 @@
 		"en"		"Class Selection:"
 	}
 
-	"Classes menu zombie"
-	{
-		"en"		"Select Zombie Class:"
-	}
-
-	"Classes menu zombie current"
+	"Classes menu active"
 	{
 		"#format"	"{1:s}"
-		"en"		"Select Zombie Class\n    {1}"
+		"en"		"Active: {1}"
 	}
 
-	"Classes menu zombie next"
-	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Select Zombie Class\n    Active: {1}\n    Next spawn: {2}"
-	}
-
-	"Classes menu human"
-	{
-		"en"		"Select Human Class:"
-	}
-
-	"Classes menu human current"
+	"Classes menu next"
 	{
 		"#format"	"{1:s}"
-		"en"		"Select Human Class\n    {1}"
+		"en"		"Next spawn: {1}"
 	}
 
-	"Classes menu human next"
+	"Classes menu select zombie"
 	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Select Human Class\n    Active: {1}\n    Next spawn: {2}"
+		"en"		"Select Zombie Class"
 	}
 
-	"Classes menu admin"
+	"Classes menu select human"
 	{
-		"en"		"Select Admin Mode Class:"
-	}
-	
-	"Classes menu admin current"
-	{
-		"#format"	"{1:s}"
-		"en"		"Select Admin Mode Class\n     {1}"
+		"en"		"Select Human Class"
 	}
 
-	"Classes menu admin next"
+	"Classes menu select admin"
 	{
-		"#format"	"{1:s},{2:s}"
-		"en"		"Select Admin Mode Class\n    Active: {1}\n    Next spawn: {2}"
+		"en"		"Select Admin Mode Class"
 	}
 
 	"Classes menu admin mode toggle"
@@ -354,6 +330,11 @@
 	"Classes Attrib Jump Distance"
 	{
 		"en"		"Jump Distance"
+	}
+
+	"Classes Selection Not Allowed"
+	{
+		"en"		"Changing classes is not allowed."
 	}
 
 	// ===========================
@@ -461,44 +442,37 @@
 
 	"Menu main zadmin"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZAdmin - Open admin menu. (Command: {1})"
+		"en"		"ZAdmin - Open admin menu"
 	}
 
 	"Menu main zclass"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZClass - Configure class settings. (Command: {1})"
+		"en"		"ZClass - Configure class settings"
 	}
 
 	"Menu main zcookies"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZCookies - Toggle personal ZR settings here. (Command: {1})"
+		"en"		"ZCookies - Toggle personal ZR settings here"
 	}
 
 	"Menu main zspawn"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZSpawn - Join late?  Spawn with this. (Command: {1})"
+		"en"		"ZSpawn - Join late?  Spawn with this"
 	}
 
 	"Menu main ztele"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZTele - Stuck?  Teleport back to spawn. (Command: {1})"
+		"en"		"ZTele - Stuck?  Teleport back to spawn"
 	}
 
 	"Menu main zhp"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZHP - Shows real HP as zombie. (Command: {1})"
+		"en"		"ZHP - Shows real HP as zombie"
 	}
 
 	"Menu main zmarket"
 	{
-		"#format"	"{1:s}"
-		"en"		"ZMarket - Customize loadouts here. (Command: {1})"
+		"en"		"ZMarket - Customize loadouts here"
 	}
 
 	// ===========================

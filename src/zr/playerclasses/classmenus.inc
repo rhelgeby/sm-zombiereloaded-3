@@ -65,18 +65,19 @@ ClassMenuMain(client)
     // Get number of enabled classes per team.
     new zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
     new humancount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
-    new admincount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
+    new admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS);
     
-    // Get previously selected class indexes, if set.
+    // Get next class indexes, if set.
     new nextzombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
     new nexthuman = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
     new nextadmin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
     
-    // Set draw style on class options depending on number of enabled classes.
-    // Disable class selection if there's only one class.
-    new zombie_itemdraw = (zombiecount > 1) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-    new human_itemdraw = (humancount > 1) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-    new admin_itemdraw = (admincount > 1) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    // Set draw style on class options depending on number of enabled classes
+    // and selection permissions. Disable class selection if there's only one
+    // class.
+    new zombie_itemdraw = (zombiecount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ZOMBIES)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new human_itemdraw = (humancount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_HUMANS)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new admin_itemdraw = (admincount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ADMINS)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
     
     // Check if the player is in admin mode.
     if (ClassPlayerInAdminMode[client])
@@ -92,18 +93,18 @@ ClassMenuMain(client)
     // Get current class name.
     ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES], zombieclass, sizeof(zombieclass), ZR_CLASS_CACHE_MODIFIED);
     
-    // Check if previous index is set.
+    // Check if next index is set.
     if (ClassValidateIndex(nextzombie))
     {
         // Get name of previous class index and format item text.
         ClassGetName(nextzombie, nextzombiename, sizeof(nextzombiename), ZR_CLASS_CACHE_MODIFIED);
         
-        Format(zombieselect, sizeof(zombieselect), "%t", "Classes menu zombie next", zombieclass, nextzombiename);
+        Format(zombieselect, sizeof(zombieselect), "%t\n    %t\n    %t", "Classes menu select zombie", "Classes menu active", zombieclass, "Classes menu next", nextzombiename);
     }
     else
     {
         // Use current class name and format item text.
-        Format(zombieselect, sizeof(zombieselect), "%t", "Classes menu zombie current", zombieclass);
+        Format(zombieselect, sizeof(zombieselect), "%t\n    %s", "Classes menu select zombie", zombieclass);
     }
     
     // Add item to list.
@@ -116,18 +117,18 @@ ClassMenuMain(client)
     // Get current class name.
     ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_HUMANS], humanclass, sizeof(humanclass), ZR_CLASS_CACHE_MODIFIED);
     
-    // Check if previous index is set.
+    // Check if next index is set.
     if (ClassValidateIndex(nexthuman))
     {
         // Get name of previous class index and format item text.
         ClassGetName(nexthuman, nexthumanname, sizeof(nexthumanname), ZR_CLASS_CACHE_MODIFIED);
         
-        Format(humanselect, sizeof(humanselect), "%t", "Classes menu human next", humanclass, nexthumanname);
+        Format(humanselect, sizeof(humanselect), "%t\n    %t\n    %t", "Classes menu select human", "Classes menu active", humanclass, "Classes menu next", nexthumanname);
     }
     else
     {
         // Use current class name and format item text.
-        Format(humanselect, sizeof(humanselect), "%t", "Classes menu human current", humanclass);
+        Format(humanselect, sizeof(humanselect), "%t\n    %s", "Classes menu select human", humanclass);
     }
     
     // Add item to list.
@@ -143,17 +144,17 @@ ClassMenuMain(client)
         // Get current class name.
         ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ADMINS], adminclass, sizeof(adminclass), ZR_CLASS_CACHE_MODIFIED);
         
-        // Check if previous index is set.
+        // Check if next index is set.
         if (ClassValidateIndex(nextadmin))
         {
             // Get name of previous class index and format item text.
             ClassGetName(nextadmin, nextadminname, sizeof(nextadminname), ZR_CLASS_CACHE_MODIFIED);
-            Format(adminselect, sizeof(adminselect), "%t", "Classes menu admin next", adminclass, nextadminname);
+            Format(adminselect, sizeof(adminselect), "%t\n    %t\n    %t", "Classes menu select admin", "Classes menu active", adminclass, "Classes menu next", nextadminname);
         }
         else
         {
             // Use current class name and format item text.
-            Format(adminselect, sizeof(adminselect), "%t", "Classes menu admin current", adminclass);
+            Format(adminselect, sizeof(adminselect), "%t\n    %s", "Classes menu select admin", adminclass);
         }
         
         // Add item to list.
@@ -246,7 +247,6 @@ ClassMenuSelect(client, teamid)
     new Handle:menu = CreateMenu(ClassMenuSelectHandle);
     new arraycount;
     new classindex;
-    new denyflags;
     
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:classname[MENU_LINE_REG_LENGTH];
@@ -260,15 +260,15 @@ ClassMenuSelect(client, teamid)
     {
         case ZR_CLASS_TEAM_ZOMBIES:
         {
-            Format(title, sizeof(title), "%t\n", "Classes menu zombie");
+            Format(title, sizeof(title), "%t:\n", "Classes menu select zombie");
         }
         case ZR_CLASS_TEAM_HUMANS:
         {
-            Format(title, sizeof(title), "%t\n", "Classes menu human");
+            Format(title, sizeof(title), "%t:\n", "Classes menu select human");
         }
         case ZR_CLASS_TEAM_ADMINS:
         {
-            Format(title, sizeof(title), "%t\n", "Classes menu admin");
+            Format(title, sizeof(title), "%t:\n", "Classes menu select admin");
         }
     }
     SetMenuTitle(menu, title);
@@ -276,12 +276,24 @@ ClassMenuSelect(client, teamid)
     // Create buffer array.
     new Handle:classarray = CreateArray();
     
-    // Set up filtering.
-    denyflags = ZR_CLASS_FLAG_MOTHER_ZOMBIE;                                // Hide mother zombie classes.
-    denyflags += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;   // Hide admin-only classes if not admin.
+    // Set up filtering
+    // ----------------
+    new filter[ClassFilter];
+    
+    // Hide mother zombie classes.
+    filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+    
+    // Hide admin-only classes if not admin.
+    filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+    
+    // Specify client for checking class group permissions.
+    filter[ClassFilter_Client] = client;
+    
+    // Get classes
+    // -----------
     
     // Copy all class indexes into the array, with the specified filter settings.
-    if (ClassAddToArray(classarray, teamid, _, _, denyflags))
+    if (ClassAddToArray(classarray, teamid, filter))
     {
         // Get number of classes.
         arraycount = GetArraySize(classarray);
@@ -331,28 +343,57 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
             // Solve teamid from the class index.
             teamid = ClassGetTeamID(classindex, ZR_CLASS_CACHE_MODIFIED);
             
-            // Check if the player is alive.
-            if (IsPlayerAlive(client))
+            // Allow instant class change if enabled and both class and player is human.
+            if (ClassAllowInstantChange[client] && !iszombie && teamid == ZR_CLASS_TEAM_HUMANS)
             {
-                // Set next spawn index if the player is changing the class on
-                // his active team.
-                if ((iszombie && teamid == ZR_CLASS_TEAM_ZOMBIES) ||
-                    (!iszombie && teamid == ZR_CLASS_TEAM_HUMANS) ||
-                    (ClassPlayerInAdminMode[client] && teamid == ZR_CLASS_TEAM_ADMINS))
-                {
-                    // Set class to be used on next spawn.
-                    ClassSelectedNext[client][teamid] = classindex;
-                }
-                else
-                {
-                    // Directly change the selected class index.
-                    ClassSelected[client][teamid] = classindex;
-                }
+                // Directly change the selected class index.
+                ClassSelected[client][teamid] = classindex;
+                
+                // Update cache and apply attributes.
+                ClassReloadPlayerCache(client, classindex);
+                ClassApplyAttributes(client);
             }
             else
             {
-                // Player isn't alive. The class can be directly changed.
-                ClassSelected[client][teamid] = classindex;
+                // Check if the player is alive.
+                if (IsPlayerAlive(client))
+                {
+                    // Set next spawn index if the player is changing the class on
+                    // his active team.
+                    if ((iszombie && teamid == ZR_CLASS_TEAM_ZOMBIES) ||
+                        (!iszombie && teamid == ZR_CLASS_TEAM_HUMANS) ||
+                        (ClassPlayerInAdminMode[client] && teamid == ZR_CLASS_TEAM_ADMINS))
+                    {
+                        // Check if player selected the same class that he already is.
+                        if (ClassSelected[client][teamid] == classindex)
+                        {
+                            // Player is already the specified class. Disable
+                            // next class for the specified team.
+                            ClassSelectedNext[client][teamid] = -1;
+                        }
+                        else
+                        {
+                            // Set class to be used on next spawn.
+                            ClassSelectedNext[client][teamid] = classindex;
+                        }
+                    }
+                    else
+                    {
+                        // Directly change the selected class index.
+                        ClassSelected[client][teamid] = classindex;
+                    }
+                }
+                else
+                {
+                    // Player isn't alive. The class can be directly changed.
+                    ClassSelected[client][teamid] = classindex;
+                }
+                
+                // Save selected class index in cookie if enabled.
+                if (GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]))
+                {
+                    CookiesSetInt(client, g_hClassCookieClassSelected[teamid], classindex + 1);
+                }
             }
         }
         case MenuAction_Cancel:
@@ -395,15 +436,9 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
  * @return          True if displayed, false otherwise.
  */
 bool:ClassTeamSelect(client)
-{
-    // Validate client.
-    if (!ZRIsClientValid(client, false))
-    {
-        return false;
-    }
-    
+{    
     // Validate permissions.
-    if (!ZRIsClientAdmin(client, Admin_Config))
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
     {
         return false;
     }
