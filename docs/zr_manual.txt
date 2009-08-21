@@ -770,13 +770,15 @@ The list below explains all available class attributes in detail:
         Zombie classes only. Force to apply on the zombie when shot at. The 
         zombie is pushed in the same direction as the bullet.
     
-    jump_height             decimal         -500.0 - 500.0
+    jump_height             decimal         0.0 - 5.0
     ---------------------------------------------------------------------------
-        Extra upward boost when jumping.
+        Jump height multiplier. Extra upward boost when jumping. If 1.0 or 0.0
+        no boost will be applied.
     
-    jump_distance           decimal         -500.0 - 500.0
+    jump_distance           decimal         0.0 - 5.0
     ---------------------------------------------------------------------------
-        Extra forward boost when jumping.
+        Jump distance multiplier. Extra forward boost when jumping. If 1.0 or
+        0.0 no boost will be applied.
 
 
 3.7.3  CLASS REQUIREMENTS
