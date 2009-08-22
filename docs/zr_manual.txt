@@ -932,7 +932,7 @@ Class console variables:
         Default human class selected for all players when they connect.
         
         Options:
-        <class name>    - Specify a class name to use as default zombie.
+        <class name>    - Specify a class name to use as default human.
         "default"       - Use the default class in the class configuration.
         "random"        - Select a random class from the class configuration.
     
@@ -942,7 +942,8 @@ Class console variables:
         found. This feature is incomplete and ignored.
         
         Options:
-        <class name>    - Specify a class name to use as default.
+        <class name>    - Specify a class name to use as default admin-mode
+                          class.
         "default"       - Use the default class in the class configuration.
         "random"        - Select a random class from the class configuration.
 
