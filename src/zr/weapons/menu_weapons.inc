@@ -209,6 +209,9 @@ WeaponsMenuTypeWeapons(client)
     decl String:typename[WEAPONS_MAX_LENGTH];
     RestrictWeaponTypeGetName(g_iWeaponsCurType[client], typename, sizeof(typename));
     
+    // Set translation language.
+    SetGlobalTransTarget(client);
+    
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:restrictall[MENU_LINE_REG_LENGTH];
     decl String:unrestrictall[MENU_LINE_REG_LENGTH];

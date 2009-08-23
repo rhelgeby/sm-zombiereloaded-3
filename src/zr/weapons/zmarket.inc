@@ -431,7 +431,7 @@ bool:ZMarketMenuLoadout(client)
     decl String:nvgsbool[8];
     ConfigBoolToSetting(bool:nvgsweapon[0], nvgsbool, sizeof(nvgsbool), true, client);
     
-    decl String:title[MENU_LINE_TITLE_LENGTH];
+    decl String:title[MENU_LINE_HUGE_LENGTH];
     decl String:primary[MENU_LINE_REG_LENGTH];
     decl String:secondary[MENU_LINE_REG_LENGTH];
     decl String:melee[MENU_LINE_REG_LENGTH];
@@ -510,6 +510,7 @@ ZMarketMenuTypes(client)
     new Handle:menu_zmarket_types = CreateMenu(ZMarketMenuTypesHandle);
     
     // Set translation target as client.
+    SetGlobalTransTarget(client);
     
     decl String:title[MENU_LINE_TITLE_LENGTH];
     Format(title, sizeof(title), "%t\n ", "Weapons menu zmarket types title");

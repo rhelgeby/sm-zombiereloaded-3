@@ -906,8 +906,8 @@ stock bool:ConfigSettingToBool(const String:option[])
  */
 stock ConfigBoolToSetting(bool:bOption, String:option[], maxlen, bool:yesno = true, target = LANG_SERVER)
 {
-    decl String:t_yes[16], String:t_on[16];
-    decl String:t_no[16], String:t_off[16];
+    decl String:t_yes[16], String:t_on[32];
+    decl String:t_no[16], String:t_off[32];
     
     SetGlobalTransTarget(target);
     

@@ -370,7 +370,7 @@ bool:HitgroupsMenuHitgroups(client)
     // Set client as translation target.
     SetGlobalTransTarget(client);
     
-    decl String:title[MENU_LINE_TITLE_LENGTH];
+    decl String:title[MENU_LINE_HUGE_LENGTH];
     decl String:enableall[MENU_LINE_REG_LENGTH];
     decl String:headshotsonly[MENU_LINE_REG_LENGTH];
     
@@ -385,7 +385,7 @@ bool:HitgroupsMenuHitgroups(client)
     AddMenuItem(menu_hitgroups, "Headshots Only", headshotsonly);
     
     decl String:hitgroupoption[MENU_LINE_REG_LENGTH];
-    decl String:hitgroupcandamage[8];
+    decl String:hitgroupcandamage[MENU_LINE_SMALL_LENGTH];
     decl String:hitgroupid[4];
     
     // x = Hitgroup index.

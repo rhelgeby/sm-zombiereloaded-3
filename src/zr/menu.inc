@@ -232,7 +232,7 @@ stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive 
     SetGlobalTransTarget(client);
     
     // Translate phrase.
-    decl String:translation[MENU_LINE_REG_LENGTH];
+    decl String:translation[MENU_LINE_TITLE_LENGTH];
     VFormat(translation, sizeof(translation), "%t", 6);
     
     // Set menu title to the translated phrase.
@@ -284,6 +284,10 @@ stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive 
     // If there are no clients, add an "(Empty)" line.
     if (count == 0)
     {
+        // Set translation language again, because SetMenuTitle above reset
+        // this for some reason.
+        SetGlobalTransTarget(client);
+        
         decl String:empty[64];
         Format(empty, sizeof(empty), "%t", "Menu empty");
         
