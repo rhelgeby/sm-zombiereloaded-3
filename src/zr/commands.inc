@@ -46,6 +46,10 @@ CommandsInit()
     ZHPOnCommandsCreate();
     VolOnCommandsCreate();
     
+    #if defined ADD_VERSION_INFO
+        VersionOnCommandsCreate();
+    #endif
+    
     DebugOnCommandsCreate();
     
     // Forward event to modules. (hook commands)

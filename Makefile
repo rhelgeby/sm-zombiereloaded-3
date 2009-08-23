@@ -2,6 +2,7 @@
 SOURCEDIR=src
 BUILDDIR=build
 SPCOMP=bin/spcomp
+VERSIONDUMP=./updateversion.sh
 
 vpath %.sp $(SOURCEDIR)
 vpath %.inc $(SOURCEDIR)/include
@@ -24,6 +25,7 @@ prepare_builddir:
 	@mkdir -p $(BUILDDIR)
 
 %.smx: %.sp
+	$(VERSIONDUMP)
 	$(SPCOMP) -i$(SOURCEDIR) -i$(SOURCEDIR)/include -o$(BUILDDIR)/$@ $<
 
 clean:

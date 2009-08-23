@@ -34,11 +34,24 @@
 
 #define VERSION "3.0.0-b2-dev"
 
+// Comment this line to exclude version info command. Temporary solution until
+// there is a windows script for updating hgversion.h.inc.
+#define ADD_VERSION_INFO 1
+
 // Header includes.
 #include "zr/log.h"
 
+#if defined ADD_VERSION_INFO
+#include "zr/hgversion.h"
+#endif
+
 // Core includes.
 #include "zr/zombiereloaded"
+
+#if defined ADD_VERSION_INFO
+#include "zr/versioninfo"
+#endif
+
 #include "zr/translation"
 #include "zr/cvars"
 #include "zr/admintools"

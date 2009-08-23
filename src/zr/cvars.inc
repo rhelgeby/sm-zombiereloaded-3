@@ -208,6 +208,10 @@ CvarsInit()
     Format(description, sizeof(description), "%s Current version of this plugin", TRANSLATION_PHRASE_PREFIX);
     CreateConVar("gs_zombiereloaded_version", VERSION, description, FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
     
+    #if defined ADD_VERSION_INFO
+        CreateConVar("zombiereloaded_revision", ZR_VER_REVISION, "Revision number for this plugin in source code repository.", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
+    #endif
+    
     // Forward event to modules.
     VEffectsOnCvarInit();
 }
