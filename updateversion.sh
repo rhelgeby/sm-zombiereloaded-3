@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Command for printing date.
-ZR_DATEPATH=date
+ZR_DATEPATH='date'
 
-if [ -n $1 ]
+if [ "$1" ]
 then
     ZR_DATEPATH=$1
 fi
