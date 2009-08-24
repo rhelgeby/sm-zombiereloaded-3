@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Program for printing date.
+# Command for printing date.
 ZR_DATEPATH=date
 
 if [ -n $1 ]
@@ -23,4 +23,4 @@ echo "#define ZR_VER_REVISION         \"$(hg id -n):$(hg id -i)\"" >> $ZR_VERSIO
 echo "#define ZR_VER_LICENSE          \"$ZR_LICENSE\"" >> $ZR_VERSION_FILE
 echo "#define ZR_VER_DATE             \"$ZR_DATE\"" >> $ZR_VERSION_FILE
 
-echo "Updated hgversion.h.inc"
+echo "Updated $ZR_VERSION_FILE"
