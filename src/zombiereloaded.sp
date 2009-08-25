@@ -36,7 +36,7 @@
 
 // Comment this line to exclude version info command. Temporary solution until
 // there is a windows script for updating hgversion.h.inc.
-#define ADD_VERSION_INFO 1
+//#define ADD_VERSION_INFO
 
 // Header includes.
 #include "zr/log.h"
@@ -139,6 +139,15 @@ public OnPluginStart()
     CommandsInit();
     WeaponsInit();
     EventInit();
+}
+
+/**
+ * All plugins have finished loading.
+ */
+public OnAllPluginsLoaded()
+{
+    // Forward event to modules.
+    WeaponsOnAllPluginsLoaded();
 }
 
 /**

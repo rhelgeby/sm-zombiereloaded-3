@@ -50,6 +50,7 @@
 enum WeaponsData
 {
     WEAPONS_DATA_NAME = 0,
+    WEAPONS_DATA_ENTITY,
     WEAPONS_DATA_TYPE,
     WEAPONS_DATA_SLOT,
     WEAPONS_DATA_RESTRICTDEFAULT,
@@ -103,6 +104,15 @@ WeaponsInit()
 {
     // Forward event to sub-modules.
     RestrictInit();
+}
+
+/**
+ * All plugins have finished loading.
+ */
+WeaponsOnAllPluginsLoaded()
+{
+    // Forward event to sub-modules.
+    ZMarketOnAllPluginsLoaded();
 }
 
 /**
@@ -236,10 +246,12 @@ WeaponsCacheData()
         
         // Get config data.
         
+        decl String:weaponentity[CONFIG_MAX_LENGTH];
         decl String:weapontype[CONFIG_MAX_LENGTH];
         decl String:ammotype[CONFIG_MAX_LENGTH];
         
         // General
+        KvGetString(kvWeapons, "weaponentity", weaponentity, sizeof(weaponentity));
         KvGetString(kvWeapons, "weapontype", weapontype, sizeof(weapontype));
         new WeaponsSlot:weaponslot = WeaponsSlot:KvGetNum(kvWeapons, "weaponslot", -1);
         
@@ -261,18 +273,19 @@ WeaponsCacheData()
         new Handle:arrayWeapon = GetArrayCell(arrayWeapons, x);
         
         // Push data into array.
-        PushArrayString(arrayWeapon, weapontype);           // Index: 1
-        PushArrayCell(arrayWeapon, weaponslot);             // Index: 2
-        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 3
-        PushArrayCell(arrayWeapon, toggleable);             // Index: 4
-        PushArrayString(arrayWeapon, ammotype);             // Index: 5
-        PushArrayCell(arrayWeapon, ammoprice);              // Index: 6
-        PushArrayCell(arrayWeapon, knockback);              // Index: 7
-        PushArrayCell(arrayWeapon, zmarketprice);           // Index: 8
-        PushArrayCell(arrayWeapon, zmarketpurchasemax);    // Index: 9
+        PushArrayString(arrayWeapon, weaponentity);         // Index: 1
+        PushArrayString(arrayWeapon, weapontype);           // Index: 2
+        PushArrayCell(arrayWeapon, weaponslot);             // Index: 3
+        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 4
+        PushArrayCell(arrayWeapon, toggleable);             // Index: 5
+        PushArrayString(arrayWeapon, ammotype);             // Index: 6
+        PushArrayCell(arrayWeapon, ammoprice);              // Index: 7
+        PushArrayCell(arrayWeapon, knockback);              // Index: 8
+        PushArrayCell(arrayWeapon, zmarketprice);           // Index: 9
+        PushArrayCell(arrayWeapon, zmarketpurchasemax);    // Index: 10
         
         // Initialize other stored weapon info here.
-        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 10
+        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 11
     }
     
     // We're done with this file now, so we can close it.
@@ -441,29 +454,49 @@ stock WeaponsNameToIndex(const String:weapon[])
 }
 
 /**
- * Takes a weapon's classname and returns the display name in weapons config file.
+ * Takes a weapon's entity name and returns the display name in weapons config file.
  * 
- * @param
+ * @param entityname    The entity to find the display of.
+ * @param display       Buffer to store display name in.
+ * @param displaymaxlen The max length of the display name.
+ * @param noprefix      If this is true, the entity name will be compared without the weapon_/item_ prefix.
+ * @return              The index of the weapon found.  
  */
-stock WeaponsClassnameToDisplay(String:classname[], classnamemaxlen, String:display[], displaymaxlen)
+stock WeaponsEntityToDisplay(const String:entityname[], String:display[], displaymaxlen, noprefix = false)
 {
-    // Strip off classnames' weapon prefix.
-    ReplaceString(classname, classnamemaxlen, "weapon_", "");
-    ReplaceString(classname, classnamemaxlen, "item_", "");
+    decl String:weaponentity[WEAPONS_MAX_LENGTH];
     
-    // Get the index of the weapon.
-    new weaponindex = WeaponsNameToIndex(classname);
+    // Initialize string to null.
+    strcopy(display, sizeof(displaymaxlen), "");
     
-    // If weapon index is invalid, then return an empty string.
-    if (weaponindex == -1)
+    // x = Array index.
+    new size = GetArraySize(arrayWeapons);
+    for (new x = 0; x < size; x++)
     {
-        // Return an empty string.
-        strcopy(display, displaymaxlen, "");
-        return;
+        // If entity names don't match, then stop.
+        WeaponsGetEntity(x, weaponentity, sizeof(weaponentity));
+        
+        // If noprefix is true, then strip the weapon_/item_ prefix.
+        if (noprefix)
+        {
+            ReplaceString(weaponentity, sizeof(weaponentity), "weapon_", "");
+            ReplaceString(weaponentity, sizeof(weaponentity), "item_", "");
+        }
+        
+        if (!StrEqual(entityname, weaponentity, false))
+        {
+            continue;
+        }
+        
+        // The entity names match, so return display.
+        WeaponsGetName(x, display, displaymaxlen);
+        
+        // Return the weapon index.
+        return x;
     }
     
-    // Return the display name.
-    WeaponsGetName(weaponindex, display, displaymaxlen);
+    // Nothing was found.
+    return -1;
 }
 
 /**
@@ -489,6 +522,21 @@ stock WeaponsGetName(index, String:weapon[], maxlen)
     
     // Get weapon name.
     GetArrayString(arrayWeapon, _:WEAPONS_DATA_NAME, weapon, maxlen);
+}
+
+/**
+ * Gets the entity of a weapon at a given index.
+ * @param index     The weapon index.
+ * @param type      The string to return entity in.
+ * @param maxlen    The max length of the string.
+ */
+stock WeaponsGetEntity(index, String:type[], maxlen)
+{
+    // Get array handle of weapon at given index.
+    new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
+    
+    // Get weapon type.
+    GetArrayString(arrayWeapon, _:WEAPONS_DATA_ENTITY, type, maxlen);
 }
 
 /**
@@ -648,7 +696,6 @@ stock bool:WeaponsClientHasWeapon(client, const String:weapon[])
         
         // If the weapon's classname matches, then return true.
         GetEdictClassname(weapons[x], classname, sizeof(classname));
-        ReplaceString(classname, sizeof(classname), "weapon_", "");
         if (StrEqual(weapon, classname, false))
         {
             return true;

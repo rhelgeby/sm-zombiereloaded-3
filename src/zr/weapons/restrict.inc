@@ -240,26 +240,21 @@ public Action:RestrictBuyCommand(client, argc)
     decl String:weapon[WEAPONS_MAX_LENGTH];
     GetCmdArg(1, weapon, sizeof(weapon));
     
-    ReplaceString(weapon, sizeof(weapon), "weapon_", "");
-    
     // If the weapon is restricted, then prevent pickup.
-    new index = WeaponsNameToIndex(weapon);
+    decl String:weaponname[WEAPONS_MAX_LENGTH];
+    new weaponindex = WeaponsEntityToDisplay(weapon, weaponname, sizeof(weaponname), true);
     
     // If weapon isn't configged, then allow pickup.
-    if (index == -1)
+    if (weaponindex == -1)
     {
         // Allow command.
         return Plugin_Continue;
     }
     
     // If weapon is restricted, then stop.
-    if (RestrictIsWeaponRestricted(index))
+    if (RestrictIsWeaponRestricted(weaponindex))
     {
-        // Get display name.
-        decl String:weapondisplay[WEAPONS_MAX_LENGTH];
-        WeaponsGetName(index, weapondisplay, sizeof(weapondisplay));
-        
-        TranslationPrintToChat(client, "Weapon is restricted", weapondisplay);
+        TranslationPrintToChat(client, "Weapon is restricted", weaponname);
         
         // Block command.
         return Plugin_Handled;
@@ -283,9 +278,6 @@ RestrictQuery:RestrictWeapon(bool:restrict, const String:target[], &bool:single 
 {
     // Copy 'target' to 'returntarget' to be possibly changed later.
     strcopy(returntarget, maxlen, target);
-    
-    // Strip "weapon_" from target.
-    ReplaceString(returntarget, maxlen, "weapon_", "");
     
     // Find index of the given weapon type.
     new typeindex = RestrictTypeToIndex(returntarget);
@@ -593,14 +585,11 @@ stock bool:RestrictIsTypeUniform(bool:restricted, index)
  */
 public ZRTools_Action:RestrictCanUse(client, weapon)
 {
-    new String:weaponname[WEAPONS_MAX_LENGTH];
-    GetEdictClassname(weapon, weaponname, sizeof(weaponname));
-    
-    // Strip "weapon_" from entity name.
-    ReplaceString(weaponname, sizeof(weaponname), "weapon_", "");
+    new String:weaponentity[WEAPONS_MAX_LENGTH];
+    GetEdictClassname(weapon, weaponentity, sizeof(weaponentity));
     
     // If weapon is a knife, then allow pickup.
-    if (StrEqual(weaponname, "knife"))
+    if (StrEqual(weaponentity, "weapon_knife"))
     {
         return ZRTools_Continue;
     }
@@ -632,17 +621,18 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
     }
     
     // If the weapon is restricted, then prevent pickup.
-    new index = WeaponsNameToIndex(weaponname);
+    decl String:weaponname[WEAPONS_MAX_LENGTH];
+    new weaponindex = WeaponsEntityToDisplay(weaponentity, weaponname, sizeof(weaponname));
     
     // If weapon isn't configged, then allow pickup.
-    if (index == -1)
+    if (weaponindex == -1)
     {
         // Allow pickup.
         return ZRTools_Continue;
     }
     
     // If weapon is restricted, then stop.
-    if (RestrictIsWeaponRestricted(index))
+    if (RestrictIsWeaponRestricted(weaponindex))
     {
         return ZRTools_Handled;
     }

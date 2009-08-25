@@ -30,9 +30,20 @@
  */
 new g_iToolsClip1;
 new g_iToolsClip2;
+new g_iToolsAmmo;
 /**
  * @endsection
  */
+
+/**
+ * Grenade slots.
+ */
+enum WeaponAmmoGrenadeType
+{
+    GrenadeType_HEGrenade       = 11,   /** HEGrenade slot */
+    GrenadeType_Flashbang       = 12,   /** Flashbang slot. */
+    GrenadeType_Smokegrenade    = 13,   /** Smokegrenade slot. */
+}
 
 /**
  * Find ammo-reserve-specific offsets here.
@@ -51,6 +62,13 @@ WeaponAmmoOnOffsetsFound()
     if (g_iToolsClip2 == -1)
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Offsets", "Offset \"CBaseCombatWeapon::m_iClip2\" was not found.");
+    }
+    
+    // If offset "m_iClip2" can't be found, then stop the plugin.
+    g_iToolsAmmo = FindSendPropInfo("CBasePlayer", "m_iAmmo");
+    if (g_iToolsAmmo == -1)
+    {
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Offsets", "Offset \"CBasePlayer::m_iAmmo\" was not found.");
     }
 }
 
@@ -93,4 +111,37 @@ stock WeaponAmmoGetAmmo(weapon, bool:clip)
     
     // Return ammo offset value.
     return GetEntData(weapon, ammooffset);
+}
+
+/**
+ * Set the count of any grenade-type a client has.
+ * 
+ * @param client    The client index.
+ * @param slot      The type of
+ * @param value     The amount of ammo to set to.
+ * @param add       (Optional) If true, the value is added to the grenades' current ammo count. 
+ */
+stock WeaponAmmoSetGrenadeCount(client, WeaponAmmoGrenadeType:type, value, bool:add)
+{
+    // Initialize variable (value is 0)
+    new ammovalue;
+    
+    // If we are adding, then update variable with current ammo value.
+    if (add)
+    {
+        ammovalue = WeaponAmmoGetGrenadeCount(client, type);
+    }
+    
+    SetEntData(client, g_iToolsAmmo + (_:type * 4), ammovalue + value, _, true);
+}
+
+/**
+ * Get the count of any grenade-type a client has.
+ * 
+ * @param client    The client index.
+ * @param slot      The type of
+ */
+stock WeaponAmmoGetGrenadeCount(client, WeaponAmmoGrenadeType:type)
+{
+    return GetEntData(client, g_iToolsAmmo + (_:type * 4));
 }

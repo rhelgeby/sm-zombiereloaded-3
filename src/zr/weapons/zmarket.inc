@@ -35,6 +35,18 @@
  */
 
 /**
+ * @section Defines for ZMarket grenade limits, supporting the Grenade Pack plugin.
+ */
+#define GRENADE_PACK_FILENAME "grenadepack.smx"
+#define GRENADE_PACK_LIMIT "gp_limit"
+#define GRENADE_CSS_LIMIT 1
+
+/**
+ * Variable to store if Grenade Pack is loaded and running.
+ */
+new bool:g_bGrenadePack;
+
+/**
  * Variable to store buyzone offset value.
  */
 new g_iToolsInBuyZone;
@@ -53,6 +65,21 @@ new Handle:g_hZMarketPurchaseCount[MAXPLAYERS + 1];
  * Cookie handle for auti-rebuy.
  */
 new Handle:g_hZMarketAutoRebuyCookie = INVALID_HANDLE;
+
+/**
+ * All plugins have finished loading.
+ */
+ZMarketOnAllPluginsLoaded()
+{
+    // Check if "Grenade Pack" is loaded
+    g_bGrenadePack = ZMarketIsGPLoaded();
+    
+    // DEBUG
+    if (g_bGrenadePack)
+    {
+        PrintToServer("GRENADE PACK IS LOADEDDD!!!!!!!!!");
+    }
+}
 
 /**
  * Create commands specific to ZMarket.
@@ -380,24 +407,9 @@ bool:ZMarketMenuLoadout(client)
     // Create menu handle.
     new Handle:menu_zmarket_loadout = CreateMenu(ZMarketMenuLoadoutHandle);
     
-    decl String:primaryweapon[WEAPONS_MAX_LENGTH];
-    decl String:secondaryweapon[WEAPONS_MAX_LENGTH];
-    decl String:meleeweapon[WEAPONS_MAX_LENGTH];
-    decl String:projectileweapon[WEAPONS_MAX_LENGTH];
-    decl String:explosiveweapon[WEAPONS_MAX_LENGTH];
-    decl String:nvgsweapon[WEAPONS_MAX_LENGTH];
-    
     // Transfer cookie values into an array.
     new String:rebuyweapons[WeaponsSlot][WEAPONS_MAX_LENGTH];
     ZMarketCookiesToArray(client, rebuyweapons, WEAPONS_SLOTS_MAX + 1, sizeof(rebuyweapons[]));
-    
-    // Return the display name for all the client's weapon classname's.
-    WeaponsClassnameToDisplay(rebuyweapons[Slot_Primary], sizeof(rebuyweapons[]), primaryweapon, sizeof(primaryweapon));
-    WeaponsClassnameToDisplay(rebuyweapons[Slot_Secondary], sizeof(rebuyweapons[]), secondaryweapon, sizeof(secondaryweapon));
-    WeaponsClassnameToDisplay(rebuyweapons[Slot_Melee], sizeof(rebuyweapons[]), meleeweapon, sizeof(meleeweapon));
-    WeaponsClassnameToDisplay(rebuyweapons[Slot_Projectile], sizeof(rebuyweapons[]), projectileweapon, sizeof(projectileweapon));
-    WeaponsClassnameToDisplay(rebuyweapons[Slot_Explosive], sizeof(rebuyweapons[]), explosiveweapon, sizeof(explosiveweapon));
-    WeaponsClassnameToDisplay(rebuyweapons[Slot_NVGs], sizeof(rebuyweapons[]), nvgsweapon, sizeof(nvgsweapon));
     
     SetGlobalTransTarget(client);
     
@@ -405,31 +417,25 @@ bool:ZMarketMenuLoadout(client)
     decl String:empty[MENU_LINE_SMALL_LENGTH];
     Format(empty, sizeof(empty), "%t", "Weapons menu zmarket loadout empty");
     
-    // If the client doesn't have a weapon in this slot, then set the weapon to the empty translation.
-    if (!primaryweapon[0])
+    // x = Rebuy weapon slot.
+    for (new x = 0; x < sizeof(rebuyweapons); x++)
     {
-        strcopy(primaryweapon, sizeof(primaryweapon), empty);
-    }
-    if (!secondaryweapon[0])
-    {
-        strcopy(secondaryweapon, sizeof(secondaryweapon), empty);
-    }
-    if (!meleeweapon[0])
-    {
-        strcopy(meleeweapon, sizeof(meleeweapon), empty);
-    }
-    if (!projectileweapon[0])
-    {
-        strcopy(projectileweapon, sizeof(projectileweapon), empty);
-    }
-    if (!explosiveweapon[0])
-    {
-        strcopy(explosiveweapon, sizeof(explosiveweapon), empty);
+        // Ignore the NVG slot, we handle this separately.
+        if (WeaponsSlot:x == Slot_NVGs)
+        {
+            continue;
+        }
+        
+        // If the client doesn't have a weapon in this slot, then set the weapon to the empty translation.
+        if (!rebuyweapons[x][0])
+        {
+            strcopy(rebuyweapons[x], sizeof(rebuyweapons[]), empty);
+        }
     }
     
     // Copy "Yes/No" to NVGs string.
     decl String:nvgsbool[8];
-    ConfigBoolToSetting(bool:nvgsweapon[0], nvgsbool, sizeof(nvgsbool), true, client);
+    ConfigBoolToSetting(bool:rebuyweapons[Slot_NVGs][0], nvgsbool, sizeof(nvgsbool), true, client);
     
     decl String:title[MENU_LINE_HUGE_LENGTH];
     decl String:primary[MENU_LINE_REG_LENGTH];
@@ -441,21 +447,21 @@ bool:ZMarketMenuLoadout(client)
     
     // Format all the lines of the menu.
     Format(title, sizeof(title), "%t\n ", "Weapons menu zmarket loadout title");
-    Format(primary, sizeof(primary), "%t", "Weapons menu zmarket loadout primary", primaryweapon);
-    Format(secondary, sizeof(secondary), "%t", "Weapons menu zmarket loadout secondary", secondaryweapon);
-    Format(melee, sizeof(melee), "%t", "Weapons menu zmarket loadout melee", meleeweapon);
-    Format(projectile, sizeof(projectile), "%t", "Weapons menu zmarket loadout projectile", projectileweapon);
-    Format(explosive, sizeof(explosive), "%t", "Weapons menu zmarket loadout explosive", explosiveweapon);
+    Format(primary, sizeof(primary), "%t", "Weapons menu zmarket loadout primary", rebuyweapons[Slot_Primary]);
+    Format(secondary, sizeof(secondary), "%t", "Weapons menu zmarket loadout secondary", rebuyweapons[Slot_Secondary]);
+    Format(melee, sizeof(melee), "%t", "Weapons menu zmarket loadout melee", rebuyweapons[Slot_Melee]);
+    Format(projectile, sizeof(projectile), "%t", "Weapons menu zmarket loadout projectile", rebuyweapons[Slot_Projectile]);
+    Format(explosive, sizeof(explosive), "%t", "Weapons menu zmarket loadout explosive", rebuyweapons[Slot_Explosive]);
     Format(nvgs, sizeof(nvgs), "%t", "Weapons menu zmarket loadout nvgs", nvgsbool);
     
     // Add formatted options to menu.
     SetMenuTitle(menu_zmarket_loadout, title);
-    AddMenuItem(menu_zmarket_loadout, "0", primary, MenuGetItemDraw(!StrEqual(primaryweapon, empty)));
-    AddMenuItem(menu_zmarket_loadout, "1", secondary, MenuGetItemDraw(!StrEqual(secondaryweapon, empty)));
-    AddMenuItem(menu_zmarket_loadout, "2", melee, MenuGetItemDraw(!StrEqual(meleeweapon, empty)));
-    AddMenuItem(menu_zmarket_loadout, "3", projectile, MenuGetItemDraw(!StrEqual(projectileweapon, empty)));
-    AddMenuItem(menu_zmarket_loadout, "4", explosive, MenuGetItemDraw(!StrEqual(explosiveweapon, empty)));
-    AddMenuItem(menu_zmarket_loadout, "5", nvgs, MenuGetItemDraw(bool:nvgsweapon[0]));
+    AddMenuItem(menu_zmarket_loadout, "0", primary, MenuGetItemDraw(!StrEqual(rebuyweapons[Slot_Primary], empty)));
+    AddMenuItem(menu_zmarket_loadout, "1", secondary, MenuGetItemDraw(!StrEqual(rebuyweapons[Slot_Secondary], empty)));
+    AddMenuItem(menu_zmarket_loadout, "2", melee, MenuGetItemDraw(!StrEqual(rebuyweapons[Slot_Melee], empty)));
+    AddMenuItem(menu_zmarket_loadout, "3", projectile, MenuGetItemDraw(!StrEqual(rebuyweapons[Slot_Projectile], empty)));
+    AddMenuItem(menu_zmarket_loadout, "4", explosive, MenuGetItemDraw(!StrEqual(rebuyweapons[Slot_Explosive], empty)));
+    AddMenuItem(menu_zmarket_loadout, "5", nvgs, MenuGetItemDraw(bool:rebuyweapons[Slot_NVGs][0]));
     
     // Set exit back button.
     SetMenuExitBackButton(menu_zmarket_loadout, true);
@@ -613,6 +619,7 @@ ZMarketMenuTypeWeapons(client)
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:typeweapon[WEAPONS_MAX_LENGTH];
     decl String:typeweapondisplay[MENU_LINE_REG_LENGTH];
+    decl String:typeweaponentity[WEAPONS_MAX_LENGTH];
     decl String:display[MENU_LINE_BIG_LENGTH];
     
     // Get an array populated with all weapons of the given type.
@@ -630,8 +637,11 @@ ZMarketMenuTypeWeapons(client)
         // Get name of weapon.
         WeaponsGetName(weaponindex, typeweapon, sizeof(typeweapon));
         
+        // Get entity name of weapon.
+        WeaponsGetEntity(weaponindex, typeweaponentity, sizeof(typeweaponentity));
+        
         // Check if client is buying the weapon or ammo for it, and get the price of the item.
-        new bool:hasweapon = WeaponsClientHasWeapon(client, typeweapon);
+        new bool:hasweapon = WeaponsClientHasWeapon(client, typeweaponentity);
         
         // DO ITEM PRICE STUFF HERE.
         
@@ -801,8 +811,12 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         return false;
     }
     
+    // Get entity name of the weapon.
+    decl String:weaponentity[WEAPONS_MAX_LENGTH];
+    WeaponsGetEntity(weaponindex, weaponentity, sizeof(weaponentity));
+    
     // Get the appropriate price of the item being purchased.
-    new bool:hasweapon = WeaponsClientHasWeapon(client, weapon);
+    new bool:hasweapon = WeaponsClientHasWeapon(client, weaponentity);
     new itemprice = (hasweapon && slot != Slot_Projectile) ? WeaponsGetAmmoPrice(weaponindex) : WeaponsGetZMarketPrice(weaponindex);
     
     // If the weapon price is below 0, then something went wrong.
@@ -811,13 +825,9 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         return false;
     }
     
-    // Copy the 'weapon' variable into a local variable for indexing.
-    decl String:weaponname[WEAPONS_MAX_LENGTH];
-    strcopy(weaponname, sizeof(weaponname), weapon);
-    
     // Get the display name for the weapon.
     decl String:weapondisplay[WEAPONS_MAX_LENGTH];
-    WeaponsClassnameToDisplay(weaponname, sizeof(weaponname), weapondisplay, sizeof(weapondisplay));
+    WeaponsGetName(weaponindex, weapondisplay, sizeof(weapondisplay));
     
     // Check to make sure the weapon isn't restricted.
     new bool:restricted = RestrictIsWeaponRestricted(weaponindex);
@@ -835,6 +845,24 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     {
         TranslationPrintToChat(client, "Weapons zmarket purchase max", weapondisplay, purchasemax);
         return false;
+    }
+    
+    // If the slot is a projectile, then get information we need to compare later.
+    if (slot == Slot_Projectile)
+    {
+        // How many grenades does the client currently have?
+        new grenadecount = WeaponAmmoGetGrenadeCount(client, GrenadeType_HEGrenade);
+        
+        // What is the current grenade limit?
+        new Handle:gplimit = FindConVar(GRENADE_PACK_LIMIT);
+        new grenadelimit = (gplimit != INVALID_HANDLE) ? GetConVarInt(gplimit) : GRENADE_CSS_LIMIT;
+        
+        // If client is at, or exceeds the grenade limit, then stop.
+        if (grenadecount >= grenadelimit)
+        {
+            // TRANSLATION HERE
+            return false;
+        }
     }
     
     // Get client's current money.
@@ -860,7 +888,6 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     // Check if client is buying the weapon or ammo for it.
     if (!hasweapon || slot == Slot_Projectile || slot == Slot_NVGs)
     {
-        
         // If the item is a projectile or NVGs, then skip.
         if (slot != Slot_Projectile && slot != Slot_NVGs)
         {
@@ -872,19 +899,6 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
             }
         }
         
-        // Format name into entity name.
-        decl String:weaponentity[WEAPONS_MAX_LENGTH];
-        
-        // If this is the NVGs slot, then format "item_" in front instead of "weapon_".
-        if (slot == Slot_NVGs)
-        {
-            Format(weaponentity, sizeof(weaponentity), "item_%s", weapon);
-        }
-        else
-        {
-            Format(weaponentity, sizeof(weaponentity), "weapon_%s", weapon);
-        }
-        
         // Give client the weapon.
         GivePlayerItem(client, weaponentity);
         
@@ -894,7 +908,8 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         // Add 1 to the client's purchase count.
         ZMarketSetPurchaseCount(client, weapon, 1, true);
         
-        if (slot != Slot_Projectile && slot != Slot_NVGs)
+        // If client isn't rebuying the weapon, then tell them the weapon has been purchased.
+        if (!rebuy)
         {
             // Tell client they bought a weapon.
             TranslationPrintToChat(client, "Weapons zmarket purchase", weapondisplay);
@@ -946,6 +961,7 @@ bool:ZMarketGetCurrentLoadout(client)
     WeaponsGetClientWeapons(client, weapons);
     
     decl String:weaponname[WEAPONS_MAX_LENGTH];
+    decl String:weaponentity[WEAPONS_MAX_LENGTH];
     
     // x = Weapon slot.
     for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
@@ -959,8 +975,10 @@ bool:ZMarketGetCurrentLoadout(client)
         }
         
         // Get the name of the weapon.
-        GetEdictClassname(weapons[x], weaponname, sizeof(weaponname));
-        ReplaceString(weaponname, sizeof(weaponname), "weapon_", "");
+        GetEdictClassname(weapons[x], weaponentity, sizeof(weaponentity));
+        
+        // Get the entity name of the weapon.
+        WeaponsEntityToDisplay(weaponentity, weaponname, sizeof(weaponname));
         
         // Copy the name to the rebuy cache.
         ZMarketSetRebuyCookie(client, WeaponsSlot:x, weaponname);
@@ -1160,4 +1178,35 @@ stock bool:ZMarketIsClientInBuyZone(client)
 {
     // Return if client is in buyzone.
     return bool:GetEntData(client, g_iToolsInBuyZone);
+}
+
+/**
+ * Returns true if plugin "Grenade Pack" is found and running.
+ */
+stock bool:ZMarketIsGPLoaded()
+{
+    new Handle:hPlugins = GetPluginIterator();
+    new Handle:hPlugin;
+    decl String:strPlugin[PLATFORM_MAX_PATH];
+    
+    while (MorePlugins(hPlugins))
+    {
+        // Read the next plugin.
+        hPlugin = ReadPlugin(hPlugins);
+        
+        GetPluginFilename(hPlugin, strPlugin, sizeof(strPlugin));
+        if (!StrEqual(strPlugin, GRENADE_PACK_FILENAME, false))
+        {
+            continue;
+        }
+        
+        // Plugin was found, now return true only if it is running.
+        return (GetPluginStatus(hPlugin) == Plugin_Running);
+    }
+    
+    // Done iterating, close handle.
+    CloseHandle(hPlugins);
+    
+    // Plugin wasn't found.
+    return false;
 }
