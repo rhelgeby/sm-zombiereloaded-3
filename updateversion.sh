@@ -1,6 +1,9 @@
 #!/bin/sh
 
-# Command for printing date.
+# Note: Copy this script to the source code repository and execute it
+#       from that location.
+
+# Program for printing date.
 ZR_DATEPATH='date'
 
 if [ "$1" ]
