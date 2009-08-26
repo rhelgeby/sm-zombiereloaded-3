@@ -35,18 +35,6 @@
  */
 
 /**
- * @section Defines for ZMarket grenade limits, supporting the Grenade Pack plugin.
- */
-#define GRENADE_PACK_FILENAME "grenadepack.smx"
-#define GRENADE_PACK_LIMIT "gp_limit"
-#define GRENADE_CSS_LIMIT 1
-
-/**
- * Variable to store if Grenade Pack is loaded and running.
- */
-new bool:g_bGrenadePack;
-
-/**
  * Variable to store buyzone offset value.
  */
 new g_iToolsInBuyZone;
@@ -65,21 +53,6 @@ new Handle:g_hZMarketPurchaseCount[MAXPLAYERS + 1];
  * Cookie handle for auti-rebuy.
  */
 new Handle:g_hZMarketAutoRebuyCookie = INVALID_HANDLE;
-
-/**
- * All plugins have finished loading.
- */
-ZMarketOnAllPluginsLoaded()
-{
-    // Check if "Grenade Pack" is loaded
-    g_bGrenadePack = ZMarketIsGPLoaded();
-    
-    // DEBUG
-    if (g_bGrenadePack)
-    {
-        PrintToServer("GRENADE PACK IS LOADEDDD!!!!!!!!!");
-    }
-}
 
 /**
  * Create commands specific to ZMarket.
@@ -850,17 +823,26 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     // If the slot is a projectile, then get information we need to compare later.
     if (slot == Slot_Projectile)
     {
-        // How many grenades does the client currently have?
-        new grenadecount = WeaponAmmoGetGrenadeCount(client, GrenadeType_HEGrenade);
+        // Get the grenade type the client is trying to buy.
+        new WeaponAmmoGrenadeType:grenadetype = WeaponAmmoEntityToGrenadeType(weaponentity);
         
-        // What is the current grenade limit?
-        new Handle:gplimit = FindConVar(GRENADE_PACK_LIMIT);
-        new grenadelimit = (gplimit != INVALID_HANDLE) ? GetConVarInt(gplimit) : GRENADE_CSS_LIMIT;
+        if (grenadetype == GrenadeType_Invalid)
+        {
+            LogEvent(false, LogType_Error, LOG_GAME_EVENTS, LogModule_Weapons, "Grenades", "Client \"%L\" attempted to buy weapon entity \"%s\" marked as a Projectile.  Check your weapon config.", client, weaponentity);
+            return false;
+        }
+        
+        // How many grenades does the client currently have?
+        new grenadecount = WeaponAmmoGetGrenadeCount(client, grenadetype);
+        
+        // How many grenades can the client hold?
+        new grenadelimit = WeaponAmmoGetGrenadeLimit(grenadetype);
         
         // If client is at, or exceeds the grenade limit, then stop.
         if (grenadecount >= grenadelimit)
         {
-            // TRANSLATION HERE
+            // Client can't carry any more of this type of grenade.
+            TranslationPrintToChat(client, "Weapons zmarket grenade max", grenadelimit);
             return false;
         }
     }
@@ -1178,35 +1160,4 @@ stock bool:ZMarketIsClientInBuyZone(client)
 {
     // Return if client is in buyzone.
     return bool:GetEntData(client, g_iToolsInBuyZone);
-}
-
-/**
- * Returns true if plugin "Grenade Pack" is found and running.
- */
-stock bool:ZMarketIsGPLoaded()
-{
-    new Handle:hPlugins = GetPluginIterator();
-    new Handle:hPlugin;
-    decl String:strPlugin[PLATFORM_MAX_PATH];
-    
-    while (MorePlugins(hPlugins))
-    {
-        // Read the next plugin.
-        hPlugin = ReadPlugin(hPlugins);
-        
-        GetPluginFilename(hPlugin, strPlugin, sizeof(strPlugin));
-        if (!StrEqual(strPlugin, GRENADE_PACK_FILENAME, false))
-        {
-            continue;
-        }
-        
-        // Plugin was found, now return true only if it is running.
-        return (GetPluginStatus(hPlugin) == Plugin_Running);
-    }
-    
-    // Done iterating, close handle.
-    CloseHandle(hPlugins);
-    
-    // Plugin wasn't found.
-    return false;
 }

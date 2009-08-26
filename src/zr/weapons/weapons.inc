@@ -112,7 +112,7 @@ WeaponsInit()
 WeaponsOnAllPluginsLoaded()
 {
     // Forward event to sub-modules.
-    ZMarketOnAllPluginsLoaded();
+    WeaponAmmoOnAllPluginsLoaded();
 }
 
 /**

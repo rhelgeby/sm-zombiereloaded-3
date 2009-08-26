@@ -27,7 +27,7 @@
 
 "weapons" // Counter-Strike: Source weapons
 {
-	"Gangsta Glock"
+	"Glock"
 	{
 		// General
 

@@ -26,6 +26,30 @@
  */
 
 /**
+ * @section Grenade Pack plugin information.
+ */
+#define GRENADE_PACK_FILENAME "grenadepack.smx"
+#define GRENADE_PACK_CVAR_LIMIT "gp_limit"
+/**
+ * @endsection
+ */
+
+/**
+ * @section Defines for ZMarket grenade limits, supporting the Grenade Pack plugin.
+ */
+#define WEAPONAMMO_HEGRENADE_LIMIT      1
+#define WEAPONAMMO_FLASHBANG_LIMIT      2
+#define WEAPONAMMO_SMOKEGRENADE_LIMIT   1
+/**
+ * @endsection
+ */
+
+/**
+ * Variable to store if Grenade Pack is loaded and running.
+ */
+new bool:g_bGrenadePack;
+
+/**
  * @section Variables to store ammo offset values.
  */
 new g_iToolsClip1;
@@ -40,9 +64,19 @@ new g_iToolsAmmo;
  */
 enum WeaponAmmoGrenadeType
 {
+    GrenadeType_Invalid         = -1,   /** Invalid grenade slot. */
     GrenadeType_HEGrenade       = 11,   /** HEGrenade slot */
     GrenadeType_Flashbang       = 12,   /** Flashbang slot. */
     GrenadeType_Smokegrenade    = 13,   /** Smokegrenade slot. */
+}
+
+/**
+ * All plugins have finished loading.
+ */
+WeaponAmmoOnAllPluginsLoaded()
+{
+    // Check if "Grenade Pack" is loaded
+    g_bGrenadePack = ZMarketIsGPLoaded();
 }
 
 /**
@@ -64,7 +98,7 @@ WeaponAmmoOnOffsetsFound()
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Offsets", "Offset \"CBaseCombatWeapon::m_iClip2\" was not found.");
     }
     
-    // If offset "m_iClip2" can't be found, then stop the plugin.
+    // If offset "m_iAmmo" can't be found, then stop the plugin.
     g_iToolsAmmo = FindSendPropInfo("CBasePlayer", "m_iAmmo");
     if (g_iToolsAmmo == -1)
     {
@@ -144,4 +178,90 @@ stock WeaponAmmoSetGrenadeCount(client, WeaponAmmoGrenadeType:type, value, bool:
 stock WeaponAmmoGetGrenadeCount(client, WeaponAmmoGrenadeType:type)
 {
     return GetEntData(client, g_iToolsAmmo + (_:type * 4));
+}
+
+/**
+ * Takes a weapon entity and returns an entry in enum WeaponAmmoGrenadeType.
+ * 
+ * @param weaponentity  The weapon entity to find entry for.
+ * @return              An entry in WeaponAmmoGrenadeType.
+ */
+stock WeaponAmmoGrenadeType:WeaponAmmoEntityToGrenadeType(const String:weaponentity[])
+{
+    if (StrEqual(weaponentity, "weapon_hegrenade"))
+    {
+        return GrenadeType_HEGrenade;
+    }
+    else if (StrEqual(weaponentity, "weapon_flashbang"))
+    {
+        return GrenadeType_Flashbang;
+    }
+    else if (StrEqual(weaponentity, "weapon_smokegrenade"))
+    {
+        return GrenadeType_Smokegrenade;
+    }
+    
+    return GrenadeType_Invalid;
+}
+
+/**
+ * Returns the max amount of this type of grenades the client is allowed to carry.
+ * 
+ * @param weaponentity  The weapon entity to get the limit for.
+ * @return              The grenade limit, -1 if an unhandled grenade entity was given. 
+ */
+ stock WeaponAmmoGetGrenadeLimit(WeaponAmmoGrenadeType:grenadetype)
+ {
+    switch(grenadetype)
+    {
+        case GrenadeType_HEGrenade:
+        {
+            // Attempt to find a cvar provided by an outside plugin.
+            new Handle:gplimit = FindConVar(GRENADE_PACK_CVAR_LIMIT);
+            
+            // If Grenade Pack is loaded and the cvar was found, then get the value of the outside cvar, if not return CS:S default.
+            return (g_bGrenadePack && gplimit != INVALID_HANDLE) ? GetConVarInt(gplimit) : WEAPONAMMO_HEGRENADE_LIMIT;
+        }
+        case GrenadeType_Flashbang:
+        {
+            return WEAPONAMMO_FLASHBANG_LIMIT;
+        }
+        case GrenadeType_Smokegrenade:
+        {
+            return WEAPONAMMO_SMOKEGRENADE_LIMIT;
+        }
+    }
+    
+    return -1;
+}
+
+/**
+ * Returns true if plugin "Grenade Pack" is found and running.
+ */
+stock bool:ZMarketIsGPLoaded()
+{
+    new Handle:hPlugins = GetPluginIterator();
+    new Handle:hPlugin;
+    decl String:strPlugin[PLATFORM_MAX_PATH];
+    
+    while (MorePlugins(hPlugins))
+    {
+        // Read the next plugin.
+        hPlugin = ReadPlugin(hPlugins);
+        
+        GetPluginFilename(hPlugin, strPlugin, sizeof(strPlugin));
+        if (!StrEqual(strPlugin, GRENADE_PACK_FILENAME, false))
+        {
+            continue;
+        }
+        
+        // Plugin was found, now return true only if it is running.
+        return (GetPluginStatus(hPlugin) == Plugin_Running);
+    }
+    
+    // Done iterating, close handle.
+    CloseHandle(hPlugins);
+    
+    // Plugin wasn't found.
+    return false;
 }

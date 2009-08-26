@@ -1,4 +1,15 @@
-﻿"Phrases"
+﻿// =======================================
+//              CHANGELOG
+// =======================================
+// RECORD ALLLLL CHANGES TO THIS FILE HERE.
+//
+// 8/25/09 5:15 PM
+// Added phrase "Weapons zmarket grenade max"  Line 588.
+//
+//
+//
+
+"Phrases"
 {
 	// ===========================
 	// General (base)
@@ -573,6 +584,12 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"Weapon @green{1} @defaulthas a purchase limit of @green{2}@default.  Wait until you respawn to try again."
+	}
+
+	"Weapons zmarket grenade max"
+	{
+		"#format"	"{1:d}"
+		"en"		"You may only carry {1} grenade(s) of this type."
 	}
 
 	"Weapons zmarket auto-rebuy toggle on"

@@ -75,6 +75,7 @@ SEffectsClientInit(client)
 SEffectsOnRoundStart()
 {
     // Forward event to sub-modules.
+    VoiceOnRoundStart();
     AmbientSoundsOnRoundStart();
 }
 
@@ -84,6 +85,7 @@ SEffectsOnRoundStart()
 SEffectsOnRoundEnd()
 {
     // Forward event to sub-modules.
+    VoiceOnRoundEnd();
     AmbientSoundsOnRoundEnd();
 }
 
