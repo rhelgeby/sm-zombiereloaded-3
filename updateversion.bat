@@ -10,3 +10,4 @@ REM Converts a windows path to a linux path for cygwin (/cygdrive/c/...).
 for /f %%s in ('env\win32\bin\cygpath.exe -u "%DATEPATH%"') do set DATEPATH=%%s
 
 %BASH% updateversion.sh %DATEPATH%
+exit
