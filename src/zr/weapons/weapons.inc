@@ -778,3 +778,80 @@ stock WeaponsForceClientDrop(client, weapon)
     // Force client to drop weapon.
     SDKCall(g_hToolsCSWeaponDrop, client, weapon, true, false);
 }
+
+/**
+ * Used to explicitly remove projectile weapons from a client.
+ * 
+ * @param client    The client index.
+ * @param weaponsdrop   True to force drop on all weapons, false to strip. 
+ */
+stock WeaponsRemoveClientGrenades(client, bool:weaponsdrop)
+{
+    // This while-structure is a stupid sloppy annoying workaround to stop the "unintended assignment" warning.  I hate those.
+    // While GetPlayerWeaponSlot returns a valid projectile, remove it and then test again.
+    new grenade = GetPlayerWeaponSlot(client, _:Slot_Projectile);
+    while (grenade != -1)
+    {
+        // Check if we drop or strip the grenade.
+        if (weaponsdrop)
+        {
+            WeaponsForceClientDrop(client, grenade);
+        }
+        else
+        {
+            RemovePlayerItem(client, grenade);
+        }
+        
+        // Find next grenade.
+        grenade = GetPlayerWeaponSlot(client, _:Slot_Projectile);
+    }
+}
+
+/**
+ * Remove all weapons, except knife, on a client, with options.
+ * 
+ * @param client        The client index.
+ * @param weaponsdrop   True to force drop on all weapons, false to strip.
+ */
+stock WeaponsRemoveAllClientWeapons(client, bool:weaponsdrop)
+{
+    // Get a list of all client's weapon indexes.
+    new weapons[WeaponsSlot];
+    WeaponsGetClientWeapons(client, weapons);
+    
+    // Loop through array slots and force drop.
+    // x = weapon slot.
+    for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
+    {
+        // If weapon is invalid, then stop.
+        if (weapons[x] == -1)
+        {
+            continue;
+        }
+        
+        // If this is the knife slot, then strip it and stop.
+        if (WeaponsSlot:x == Slot_Melee)
+        {
+            // Strip knife.
+            RemovePlayerItem(client, weapons[x]);
+            continue;
+        }
+        
+        if (weaponsdrop)
+        {
+            // Force client to drop weapon.
+            WeaponsForceClientDrop(client, weapons[x]);
+        }
+        else
+        {
+            // Strip weapon.
+            RemovePlayerItem(client, weapons[x]);
+        }
+    }
+    
+    // Remove left-over projectiles.
+    WeaponsRemoveClientGrenades(client, weaponsdrop);
+    
+    // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
+    GivePlayerItem(client, "weapon_knife");
+}
