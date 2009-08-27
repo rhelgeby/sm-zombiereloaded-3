@@ -36,7 +36,7 @@
 
 // Comment this line to exclude version info command. Temporary solution until
 // there is a windows script for updating hgversion.h.inc.
-//#define ADD_VERSION_INFO
+#define ADD_VERSION_INFO
 
 // Header includes.
 #include "zr/log.h"
