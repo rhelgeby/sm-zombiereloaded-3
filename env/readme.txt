@@ -6,13 +6,6 @@ Compiling:
 The binary will be made in <repos>/build.
 
 The develop environment should be mostly stand-alone with SourcePawn compiler
-some tools and include files. But there are some other stuff that's required
-for this to work:
+some tools and include files.
 
-Linux users:
-- Mercurial
-- Make
-
-Windows users:
-- TortoiseHG (windows version of Mercurial, with both GUI and command line
-  tools).
+Linux users need to have make installed.
