@@ -537,6 +537,11 @@
 		"no"		"Våpenet @green{1}@default har en kjøpegrense på @green{2}@default enheter. Vent til neste runde eller gjenoppliving."
 	}
 
+	"Weapons zmarket grenade max"
+	{
+		"no"		"Du kan bare holde {1} granat(er) av denne typen."
+	}
+
 	"Weapons zmarket auto-rebuy toggle on"
 	{
 		"no"		"Autokjøp er aktivert, dine valg vil automatisk bli kjøpt hver runde eller hver gjenoppliving."

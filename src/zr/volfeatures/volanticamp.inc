@@ -369,6 +369,9 @@ VolAnticampApplyAction(client, dataIndex, volumeIndex)
             // Validate amount.
             if (amount > 0.0)
             {
+                // Extinguish player first.
+                ExtinguishEntity(client);
+                
                 // Ignite player for "amount" seconds.
                 IgniteEntity(client, amount);
                 
