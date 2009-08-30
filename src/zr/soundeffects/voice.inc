@@ -167,6 +167,12 @@ stock VoiceSetClientTeam(client, bool:zombie)
             continue;
         }
         
+        // No need to alter listening/speaking flags between one client.
+        if (client == x)
+        {
+            continue;
+        }
+        
         // Client can only listen/speak if the sender is on their team.
         new bool:canlisten = (zombie == InfectIsClientInfected(x));
         

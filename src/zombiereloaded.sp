@@ -64,6 +64,7 @@
 #include "zr/cookies"
 #include "zr/paramtools"
 #include "zr/paramparser"
+#include "zr/shoppinglist"
 #include "zr/models"
 #include "zr/downloads"
 #include "zr/overlays"
