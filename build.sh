@@ -34,7 +34,6 @@ cp -r "$DOCS" "$RELEASEDIR"
 
 mkdir -p $RELEASEDIR/$PLUGINDIR
 cp -r $BUILDDIR/$PLUGINFILE $RELEASEDIR/$PLUGINDIR/$PLUGINFILE
-cp -r license.txt $RELEASEDIR/$DOCS/license.txt
 
 # Make release package.
 echo "Compressing files..."
