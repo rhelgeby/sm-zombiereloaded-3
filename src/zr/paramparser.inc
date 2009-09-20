@@ -279,8 +279,11 @@ stock ParamParseString(buffer[][ParamParseResult], maxlen, String:paramString[],
                         // Check if the current character is a special character.
                         if (paramString[startpos] == '"')
                         {
-                            // Toggle quote.
-                            quoteon = !quoteon;
+                            // Toggle quote if the current quote is not escaped.
+                            if (paramString[startpos - 1] != '\\')
+                            {
+                                quoteon = !quoteon;
+                            }
                             
                             // Check quote state.
                             if (quoteon)
