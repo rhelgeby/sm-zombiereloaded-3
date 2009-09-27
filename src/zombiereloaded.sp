@@ -139,6 +139,7 @@ public OnPluginStart()
     CommandsInit();
     WeaponsInit();
     EventInit();
+    VolInit();
 }
 
 /**

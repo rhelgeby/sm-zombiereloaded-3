@@ -60,8 +60,8 @@ ClassHealthRegenStop(client)
 
 public Action:ClassHealthRegenTimer(Handle:timer, any:client)
 {
-    // Kill the timer if the player is dead.
-    if (!IsPlayerAlive(client))
+    // Kill the timer if the player is dead or not in game.
+    if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
     {
         tHealthRegen[client] = INVALID_HANDLE;
         return Plugin_Stop;

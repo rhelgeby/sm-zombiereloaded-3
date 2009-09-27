@@ -293,6 +293,168 @@ stock ClassValidateAttributes(classindex)
 }
 
 /**
+ * Validates a set of editable attributes.
+ *
+ * @param attributes    Attribute set to validate.
+ * @return              0 if successful, or a bit field (positivie number) of
+ *                      failed attributes.
+ */
+stock ClassValidateEditableAttributes(attributes[ClassEditableAttributes])
+{
+    new flags;
+    
+    // Alpha initial.
+    new alphaInitial = attributes[ClassEdit_AlphaInitial];
+    if (alphaInitial >= 0)
+    {
+        if (!(alphaInitial >= ZR_CLASS_ALPHA_INITIAL_MIN && alphaInitial <= ZR_CLASS_ALPHA_INITIAL_MAX))
+        {
+            flags += ZR_CLASS_ALPHA_INITIAL;
+        }
+    }
+    
+    // Alpha damaged.
+    new alphaDamaged = attributes[ClassEdit_AlphaDamaged];
+    if (alphaDamaged >= 0)
+    {
+        if (!(alphaDamaged >= ZR_CLASS_ALPHA_DAMAGED_MIN && alphaDamaged <= ZR_CLASS_ALPHA_DAMAGED_MAX))
+        {
+            flags += ZR_CLASS_ALPHA_DAMAGED;
+        }
+    }
+    
+    // Alpha damage.
+    new alphaDamage = attributes[ClassEdit_AlphaDamage];
+    if (alphaDamage >= 0)
+    {
+        if (!(alphaDamage >= ZR_CLASS_ALPHA_DAMAGE_MIN && alphaDamage <= ZR_CLASS_ALPHA_DAMAGE_MAX))
+        {
+            flags += ZR_CLASS_ALPHA_DAMAGE;
+        }
+    }
+    
+    // Overlay.
+    if (!StrEqual(attributes[ClassEdit_OverlayPath], "nochange", false))
+    {
+        decl String:overlay_path[PLATFORM_MAX_PATH];
+        decl String:overlay[PLATFORM_MAX_PATH];
+        if (strcopy(overlay_path, sizeof(overlay_path), attributes[ClassEdit_OverlayPath]) > 0)
+        {
+            // Check if the file exists.
+            Format(overlay, sizeof(overlay), "materials/%s.vmt", overlay_path);
+            if (!FileExists(overlay))
+            {
+                flags += ZR_CLASS_OVERLAY_PATH;
+            }
+        }
+    }
+    
+    // Fov.
+    new fov = attributes[ClassEdit_Fov];
+    if (fov >= 0)
+    {
+        if (!(fov >= ZR_CLASS_FOV_MIN && fov <= ZR_CLASS_FOV_MAX))
+        {
+            flags += ZR_CLASS_FOV;
+        }
+    }
+    
+    // Napalm time.
+    new Float:napalmTime = attributes[ClassEdit_NapalmTime];
+    if (napalmTime >= 0.0)
+    {
+        if (!(napalmTime >= ZR_CLASS_NAPALM_TIME_MIN && napalmTime <= ZR_CLASS_NAPALM_TIME_MAX))
+        {
+            flags += ZR_CLASS_NAPALM_TIME;
+        }
+    }
+    
+    // Immunity mode not implemented yet.
+        
+    // Health regen interval.
+    new Float:healthRegenInterval = attributes[ClassEdit_RegenInterval];
+    if (healthRegenInterval >= 0.0)
+    {
+        if (!(healthRegenInterval >= ZR_CLASS_REGEN_INTERVAL_MIN && healthRegenInterval <= ZR_CLASS_REGEN_INTERVAL_MAX))
+        {
+            flags += ZR_CLASS_REGEN_INTERVAL;
+        }
+    }
+    
+    // Health regen amount.
+    new healthRegenAmount = attributes[ClassEdit_RegenAmount];
+    if (healthRegenAmount >= 0)
+    {
+        if (!(healthRegenAmount >= ZR_CLASS_REGEN_AMOUNT_MIN && healthRegenAmount <= ZR_CLASS_REGEN_AMOUNT_MAX))
+        {
+            flags += ZR_CLASS_REGEN_AMOUNT;
+        }
+    }
+    
+    // Infect gain.
+    new infectGain = attributes[ClassEdit_InfectGain];
+    if (infectGain >= 0)
+    {
+        if (!(infectGain >= ZR_CLASS_HEALTH_INFECT_GAIN_MIN && infectGain <= ZR_CLASS_HEALTH_INFECT_GAIN_MAX))
+        {
+            flags += ZR_CLASS_HEALTH_INFECT_GAIN;
+        }
+    }
+    
+    // Kill bonus.
+    new killBonus = attributes[ClassEdit_KillBonus];
+    if (killBonus >= 0)
+    {
+        if (!(killBonus >= ZR_CLASS_KILL_BONUS_MIN && killBonus <= ZR_CLASS_KILL_BONUS_MAX))
+        {
+            flags += ZR_CLASS_KILL_BONUS;
+        }
+    }
+    
+    // Speed.
+    new Float:speed = attributes[ClassEdit_Speed];
+    if (speed >= 0)
+    {
+        if (!(speed >= ZR_CLASS_SPEED_MIN && speed <= ZR_CLASS_SPEED_MAX))
+        {
+            flags += ZR_CLASS_SPEED;
+        }
+    }
+    
+    // Knock back.
+    new Float:knockBack = attributes[ClassEdit_KnockBack];
+    if (knockBack > ZR_CLASS_KNOCKBACK_IGNORE)
+    {
+        if (!(knockBack >= ZR_CLASS_KNOCKBACK_MIN && knockBack <= ZR_CLASS_KNOCKBACK_MAX))
+        {
+            flags += ZR_CLASS_KNOCKBACK;
+        }
+    }
+    
+    // Jump heigt.
+    new Float:jumpHeight = attributes[ClassEdit_JumpHeight];
+    if (jumpHeight >= 0.0)
+    {
+        if (!(jumpHeight >= ZR_CLASS_JUMP_HEIGHT_MIN && jumpHeight <= ZR_CLASS_JUMP_HEIGHT_MAX))
+        {
+            flags += ZR_CLASS_JUMP_HEIGHT;
+        }
+    }
+    
+    // Jump distance.
+    new Float:jumpDistance = attributes[ClassEdit_JumpDistance];
+    if (jumpDistance >= 0.0)
+    {
+        if (!(jumpDistance >= ZR_CLASS_JUMP_DISTANCE_MIN && jumpDistance <= ZR_CLASS_JUMP_DISTANCE_MAX))
+        {
+            flags += ZR_CLASS_JUMP_DISTANCE;
+        }
+    }
+    
+    return flags;
+}
+
+/**
  * Checks if the specified class index is a valid index.
  *
  * @param classindex    The class index to validate.
