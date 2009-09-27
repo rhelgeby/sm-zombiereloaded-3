@@ -78,6 +78,7 @@ public Action:VolAddVolumeCommand(client, argc)
         StrCat(buffer, sizeof(buffer), "x2, y2, z2  Coordinates to oposite corner (diagonally to oposite height)\n");
         StrCat(buffer, sizeof(buffer), "type        Volumetric feature type:\n");
         StrCat(buffer, sizeof(buffer), "                anticamp\n");
+        StrCat(buffer, sizeof(buffer), "                classedit\n");
         StrCat(buffer, sizeof(buffer), "params      Parameter string with additional volume data. Generic parameters:\n");
         StrCat(buffer, sizeof(buffer), "                teamfilter=all|humans|zombies\n");
         StrCat(buffer, sizeof(buffer), "                delay=0\n");
@@ -103,7 +104,7 @@ public Action:VolAddVolumeCommand(client, argc)
     new dataindex;
     new paramcount;
     
-    decl String:params[256];
+    decl String:params[512];
     decl String:argbuffer[256];
     
     params[0] = 0;
@@ -418,9 +419,9 @@ public Action:VolListCommand(client, argc)
             {
                 VolAnticampDumpData(volcache[Vol_DataIndex], buffer, sizeof(buffer));
             }
-            case VolFeature_Knockback:
+            case VolFeature_ClassEdit:
             {
-                
+                VolClassEditDumpData(volcache[Vol_DataIndex], buffer, sizeof(buffer));
             }
         }
         
@@ -587,11 +588,43 @@ VolClear(volumeIndex)
     Volumes[volumeIndex][Vol_yMax] = 0.0;
     Volumes[volumeIndex][Vol_zMax] = 0.0;
     
+    Volumes[volumeIndex][Vol_Effect] = VolEffect_None;
+    Volumes[volumeIndex][Vol_EffectColor][0] = 0;
+    Volumes[volumeIndex][Vol_EffectColor][1] = 0;
+    Volumes[volumeIndex][Vol_EffectColor][2] = 0;
+    
+    new dataindex = Volumes[volumeIndex][Vol_DataIndex];
+    if (dataindex >= 0)
+    {
+        switch (Volumes[volumeIndex][Vol_Type])
+        {
+            case VolFeature_Anticamp:
+            {
+                VolAnticampReset(dataindex);
+            }
+            case VolFeature_ClassEdit:
+            {
+                VolClassEditReset(dataindex);
+            }
+        }
+    }
+    
     Volumes[volumeIndex][Vol_Type] = VolFeature_Invalid;
     Volumes[volumeIndex][Vol_DataIndex] = -1;
     
     Volumes[volumeIndex][Vol_TeamFilter] = VolTeam_All;
     Volumes[volumeIndex][Vol_TriggerDelay] = 0.0;
+}
+
+/**
+ * Clears all volumes.
+ */
+VolClearAll()
+{
+    for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
+    {
+        VolClear(volindex);
+    }
 }
 
 /**
@@ -693,6 +726,13 @@ VolSetAttributes(volumeIndex, const String:attributes[])
                 case VolFeature_Anticamp:
                 {
                     if (VolAnticampSetAttribute(dataindex, attribName, attribValue))
+                    {
+                        successfulCount++;
+                    }
+                }
+                case VolFeature_ClassEdit:
+                {
+                    if (VolClassEditSetAttribute(dataindex, attribName, attribValue))
                     {
                         successfulCount++;
                     }

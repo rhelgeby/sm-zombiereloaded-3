@@ -43,7 +43,14 @@ VolOnPlayerEnter(client, volumeIndex)
     LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N entered volume %d.", client, volumeIndex);
     
     // Forward event to features.
-    
+    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+    switch (voltype)
+    {
+        case VolFeature_ClassEdit:
+        {
+            VolClassEditOnPlayerEnter(client, volumeIndex);
+        }
+    }
 }
 
 /**
@@ -64,7 +71,14 @@ VolOnPlayerLeave(client, volumeIndex)
     LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N left volume %d.", client, volumeIndex);
     
     // Forward event to features.
-    
+    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+    switch (voltype)
+    {
+        case VolFeature_ClassEdit:
+        {
+            VolClassEditOnPlayerLeave(client, volumeIndex);
+        }
+    }
 }
 
 /**
@@ -183,6 +197,10 @@ VolOnDisabled(volumeIndex)
         case VolFeature_Anticamp:
         {
             VolAnticampDisable(volumeIndex);
+        }
+        case VolFeature_ClassEdit:
+        {
+            VolClassEditOnDisabled(volumeIndex);
         }
     }
 }

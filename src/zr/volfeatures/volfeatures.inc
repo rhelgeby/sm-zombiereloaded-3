@@ -36,30 +36,32 @@
 enum VolumeAttributes
 {
     /* General */
-    bool:Vol_Enabled,                  /** Volume state. */
-    bool:Vol_InUse,                    /** Marks if the volume is used. */
+    bool:Vol_Enabled,                   /** Volume state. */
+    bool:Vol_InUse,                     /** Marks if the volume is used. */
     
     /* Location */
-    Float:Vol_xMin,                    /** Minimum x position. */
-    Float:Vol_xMax,                    /** Maximum x position. */
+    Float:Vol_xMin,                     /** Minimum x position. */
+    Float:Vol_xMax,                     /** Maximum x position. */
     
-    Float:Vol_yMin,                    /** Minimum y position. */
-    Float:Vol_yMax,                    /** Maximum y position. */
+    Float:Vol_yMin,                     /** Minimum y position. */
+    Float:Vol_yMax,                     /** Maximum y position. */
     
-    Float:Vol_zMin,                    /** Minimum z position. */
-    Float:Vol_zMax,                    /** Maximum z position. */
+    Float:Vol_zMin,                     /** Minimum z position. */
+    Float:Vol_zMax,                     /** Maximum z position. */
     
     /* Style */
-    VolumeEffects:Vol_Effect,          /** Visual effect to apply on the volume. */
-    Vol_EffectColor[3],                /** Render color of the effect. RGB colors. */
+    VolumeEffects:Vol_Effect,           /** Visual effect to apply on the volume. */
+    Vol_EffectColor[3],                 /** Render color of the effect. RGB colors. */
     
     /* Data */
-    VolumeFeatureTypes:Vol_Type,       /** The volumetric feature type. */
-    Vol_DataIndex,                     /** Index in remote feature array. */
+    VolumeFeatureTypes:Vol_Type,        /** The volumetric feature type. */
+    Vol_DataIndex,                      /** Index in remote feature array. */
     
     /* Behaviour */
-    VolumeTeamFilters:Vol_TeamFilter,  /** Team filtering. Trigger by certain teams, or all. */
-    Float:Vol_TriggerDelay             /** Trigger delay. How many seconds players have to stay to trigger volume events. */
+    VolumeTeamFilters:Vol_TeamFilter,   /** Team filtering. Trigger by certain teams, or all. */
+    Float:Vol_TriggerDelay,             /** Trigger delay. How many seconds players have to stay to trigger volume events. */
+    Vol_ConflictAction,                 /** What to do if volumes of same type overlap. */
+    Vol_Priority,                       /** Volume priority. */
 }
 
 /**
@@ -69,7 +71,7 @@ enum VolumeFeatureTypes
 {
     VolFeature_Invalid = 0,
     VolFeature_Anticamp,
-    VolFeature_Knockback
+    VolFeature_ClassEdit
 }
 
 /**
@@ -90,6 +92,15 @@ enum VolumeTeamFilters
     VolTeam_All = 0,
     VolTeam_Humans,
     VolTeam_Zombies
+}
+
+/**
+ * Conflict actions. What to do with overlapping volumes of same type.
+ */
+enum VolumeConflictActions
+{
+    VolPriority = 0,    /** Use the volume with highest priority, ignore others. */
+    VolMerge            /** Merge volume settings/attributes. Using priority if there's a merge conflict. */
 }
 
 /**
@@ -147,18 +158,29 @@ new Float:VolTriggerInterval;
 
 // Sub features.
 #include "zr/volfeatures/volanticamp"
+#include "zr/volfeatures/volclassedit"
 
 
 /**
  * Initialize volumetric features.
  */
+VolInit()
+{
+    // Clear all volumes.
+    VolClearAll();
+    
+    // Initialize sub features.
+    VolAnticampInit();
+    VolClassEditInit();
+} 
+
+/**
+ * Initialize volumetric feature settings.
+ */
 VolLoad()
 {
     // Cache CVAR value.
     VolEnabled = GetConVarBool(g_hCvarsList[CVAR_VOL]);
-    
-    // Initialize sub features.
-    VolAnticampInit();
 }
 
 /**
@@ -273,7 +295,7 @@ bool:VolStartUpdateTimer()
     else
     {
         // Volumetric features disabled.
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Volfeatures, "Config Validation", "Warning: Console variable \"zr_vol_update_interval\" is set to zero or negative. Must be positive.");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Volfeatures, "Config Validation", "Warning: Console variable \"zr_vol_update_interval\" is zero or negative. Must be positive.");
         return false;
     }
 }
@@ -322,7 +344,7 @@ bool:VolStartTriggerTimer()
     else
     {
         // Trigger timer not running. Either disabled or invalid interval.
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Volfeatures, "Config Validation", "Warning: Console variable \"zr_vol_trigger_interval\" is set to zero or negative. Must be positive.");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Volfeatures, "Config Validation", "Warning: Console variable \"zr_vol_trigger_interval\" is zero or negative. Must be positive.");
         return false;
     }
 }
@@ -621,10 +643,9 @@ VolGetFreeDataIndex(VolumeFeatureTypes:volumeType)
         {
             return VolAnticampGetFreeIndex();
         }
-        case VolFeature_Knockback:
+        case VolFeature_ClassEdit:
         {
-            // TOTO: Finish incomplete feature.
-            return -1;
+            return VolClassEditGetFreeIndex();
         }
     }
     
@@ -754,9 +775,9 @@ VolumeFeatureTypes:VolGetTypeFromString(const String:volType[])
     {
         return VolFeature_Anticamp;
     }
-    else if (StrEqual(volType, "knockback", false))
+    else if (StrEqual(volType, "classedit", false))
     {
-        return VolFeature_Knockback;
+        return VolFeature_ClassEdit;
     }
     
     // No match.
@@ -783,11 +804,11 @@ VolTypeToString(VolumeFeatureTypes:volType, String:buffer[], maxlen, bool:shortN
         }
         case VolFeature_Anticamp:
         {
-            return shortName ? strcopy(buffer, maxlen, "anticamp") : strcopy(buffer, maxlen, "Anti camp");
+            return shortName ? strcopy(buffer, maxlen, "anticamp") : strcopy(buffer, maxlen, "Anti-Camp");
         }
-        case VolFeature_Knockback:
+        case VolFeature_ClassEdit:
         {
-            return shortName ? strcopy(buffer, maxlen, "knockback") : strcopy(buffer, maxlen, "Knock back modifier");
+            return shortName ? strcopy(buffer, maxlen, "classedit") : strcopy(buffer, maxlen, "Class Editor");
         }
     }
     

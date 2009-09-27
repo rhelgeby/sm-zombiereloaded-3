@@ -114,11 +114,11 @@
 #define ZR_CLASS_DEFAULT_OVERLAY_PATH           "overlays/zr/zvision"
 #define ZR_CLASS_DEFAULT_NVGS                   "no"
 #define ZR_CLASS_DEFAULT_FOV                    90
-#define ZR_CLASS_DEFAULT_HAS_NAPALM             "yes"
+#define ZR_CLASS_DEFAULT_HAS_NAPALM             "no"
 #define ZR_CLASS_DEFAULT_NAPALM_TIME            10.0
 #define ZR_CLASS_DEFAULT_IMMUNITY_MODE          ZR_CLASS_IMMUNITY_DISABLED
 #define ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT        0.0
-#define ZR_CLASS_DEFAULT_NO_FALL_DAMAGE         "on"
+#define ZR_CLASS_DEFAULT_NO_FALL_DAMAGE         "yes"
 #define ZR_CLASS_DEFAULT_HEALTH                 6000
 #define ZR_CLASS_DEFAULT_HEALTH_REGEN_INTERVAL  0.0
 #define ZR_CLASS_DEFAULT_HEALTH_REGEN_AMOUNT    2
@@ -167,6 +167,7 @@
 #define ZR_CLASS_SPEED_MAX                  2000.0
 #define ZR_CLASS_KNOCKBACK_MIN              -30.0
 #define ZR_CLASS_KNOCKBACK_MAX              30.0
+#define ZR_CLASS_KNOCKBACK_IGNORE           -31.0   /** Used by class editor volumetric feature. */
 #define ZR_CLASS_JUMP_HEIGHT_MIN            0.0
 #define ZR_CLASS_JUMP_HEIGHT_MAX            5.0
 #define ZR_CLASS_JUMP_DISTANCE_MIN          0.0
@@ -270,6 +271,48 @@ enum ClassAttributes
     Float:Class_KnockBack,
     Float:Class_JumpHeight,
     Float:Class_JumpDistance
+}
+
+/**
+ * Structure of class attributes that are allowed to be modified directly,
+ * while the player is alive.
+ *
+ * Note: This structure is also used as a mask to tell if a individual
+ *       attribute should be ignored or not. Negative valueas usually indicate
+ *       ignored attributes. Booleans are now ints so they can be negative.
+ *       Strings have reserved keywords like "nochange" that indicate a ignored
+ *       attribute.
+ */
+enum ClassEditableAttributes
+{
+    /* Model */
+    ClassEdit_AlphaInitial = 0,
+    ClassEdit_AlphaDamaged,
+    ClassEdit_AlphaDamage,
+    
+    /* Hud */
+    String:ClassEdit_OverlayPath[PLATFORM_MAX_PATH],
+    ClassEdit_Nvgs,
+    ClassEdit_Fov,
+    
+    /* Effects */
+    ClassEdit_HasNapalm,
+    Float:ClassEdit_NapalmTime,
+    
+    /* Player behaviour */
+    ClassEdit_ImmunityMode,
+    Float:ClassEdit_ImmunityAmount,
+    
+    ClassEdit_NoFallDamage,
+    Float:ClassEdit_RegenInterval,
+    ClassEdit_RegenAmount,
+    ClassEdit_InfectGain,
+    ClassEdit_KillBonus,
+    
+    Float:ClassEdit_Speed,
+    Float:ClassEdit_KnockBack,
+    Float:ClassEdit_JumpHeight,
+    Float:ClassEdit_JumpDistance
 }
 
 /**
@@ -533,7 +576,7 @@ ClassLoad(bool:keepMultipliers = false)
         
         
         /* Effects */
-        ClassData[ClassCount][Class_HasNapalm] = ConfigKvGetStringBool(kvClassData, "have_napalm", ZR_CLASS_DEFAULT_HAS_NAPALM);
+        ClassData[ClassCount][Class_HasNapalm] = ConfigKvGetStringBool(kvClassData, "has_napalm", ZR_CLASS_DEFAULT_HAS_NAPALM);
         ClassData[ClassCount][Class_NapalmTime] = KvGetFloat(kvClassData, "napalm_time", ZR_CLASS_DEFAULT_NAPALM_TIME);
         
         
