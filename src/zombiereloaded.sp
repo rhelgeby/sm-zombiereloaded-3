@@ -140,7 +140,6 @@ public OnPluginStart()
     CommandsInit();
     WeaponsInit();
     EventInit();
-    VolInit();
 }
 
 /**
@@ -163,7 +162,7 @@ public OnMapStart()
     InfectOnMapStart();
     SEffectsOnMapStart();
     ZSpawnOnMapStart();
-    
+    VolInit();
 }
 
 /**
