@@ -164,7 +164,7 @@ stock bool:AntiStickLoadData()
     BuildPath(Path_SM, fullpath, PLATFORM_MAX_PATH, filepath);
     
     // Log action to game events.
-    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_AntiStick, "Loaded Data", "Antistick data has been loaded from \"%s\"", fullpath);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_AntiStick, "Loaded Data", "Antistick data has been loaded from \"%s\"", fullpath);
     
     // Retrieve keyvalue data from a file, and store in server's memory.
     KvRewind(g_kvAntiStick);
@@ -185,7 +185,7 @@ stock AntiStickSaveData()
     BuildPath(Path_SM, fullpath, PLATFORM_MAX_PATH, filepath);
     
     // Log action to game events.
-    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_AntiStick, "Saved Data", "Antistick data has been saved to \"%s\"", fullpath);
+    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_AntiStick, "Saved Data", "Antistick data has been saved to \"%s\"", fullpath);
     
     // Dump keyvalue structure into a file from the server's memory.
     KvRewind(g_kvAntiStick);

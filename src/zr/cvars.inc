@@ -224,11 +224,11 @@ CvarsCreate()
     // ===========================
     // Log (core)
     // ===========================
-    g_hCvarsList[CVAR_LOG]                       =    CreateConVar("zr_log",                    "1",    "Enable logging of events in the plugin. Fatal errors are logged independent on this setting.");
-    g_hCvarsList[CVAR_LOG_FLAGS]                 =    CreateConVar("zr_log_flags",              "3",    "A bit field that specify what event types to log. See logging section (3.3) in manual for details.");
+    g_hCvarsList[CVAR_LOG]                       =    CreateConVar("zr_log",                    "1",    "Enable logging of events in the plugin. Fatal errors are always logged.");
+    g_hCvarsList[CVAR_LOG_FLAGS]                 =    CreateConVar("zr_log_flags",              "2",    "A bit field that specify what event types to log. See logging section (3.3) in manual for details.");
     g_hCvarsList[CVAR_LOG_MODULE_FILTER]         =    CreateConVar("zr_log_module_filter",      "0",    "Enable module filtering. Only events from listed modules will be logged.");
     g_hCvarsList[CVAR_LOG_IGNORE_CONSOLE]        =    CreateConVar("zr_log_ignore_console",     "1",    "Don't log events triggered by console commands that are executed by the console itself, like commands in configs. Enable this command to avoid spamming logs with events like weapon restrictions.");
-    g_hCvarsList[CVAR_LOG_ERROR_OVERRIDE]        =    CreateConVar("zr_log_error_override",     "1",    "Always log error messages. Overrides module filter and logging flags.");
+    g_hCvarsList[CVAR_LOG_ERROR_OVERRIDE]        =    CreateConVar("zr_log_error_override",     "1",    "Always log error messages no matter what logging flags or modules filters that are enabled.");
     g_hCvarsList[CVAR_LOG_PRINT_ADMINS]          =    CreateConVar("zr_log_print_admins",       "0",    "Print log events to admin chat in addition to the log file.");
     g_hCvarsList[CVAR_LOG_PRINT_CHAT]            =    CreateConVar("zr_log_print_chat",         "0",    "Print log events to public chat in addition to the log file.");
     
