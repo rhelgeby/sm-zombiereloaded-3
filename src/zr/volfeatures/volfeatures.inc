@@ -60,7 +60,7 @@ enum VolumeAttributes
     /* Behaviour */
     VolumeTeamFilters:Vol_TeamFilter,   /** Team filtering. Trigger by certain teams, or all. */
     Float:Vol_TriggerDelay,             /** Trigger delay. How many seconds players have to stay to trigger volume events. */
-    Vol_ConflictAction,                 /** What to do if volumes of same type overlap. */
+    VolumeConflictActions:Vol_ConflictAction,       /** What to do if volumes of same type overlap. */
     Vol_Priority,                       /** Volume priority. */
 }
 
@@ -100,7 +100,7 @@ enum VolumeTeamFilters
 enum VolumeConflictActions
 {
     VolPriority = 0,    /** Use the volume with highest priority, ignore others. */
-    VolMerge            /** Merge volume settings/attributes. Using priority if there's a merge conflict. */
+    VolMerge            /** Try to merge volume settings/attributes, or use priority if there's a merge conflict. */
 }
 
 /**
