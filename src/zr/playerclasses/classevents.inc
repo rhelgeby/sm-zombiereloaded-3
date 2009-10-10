@@ -66,10 +66,10 @@ ClassClientInit(client)
     {
         // Set default class indexes on the player.
         ClassClientSetDefaultIndexes(client);
+        
+        // Forward event to sub-modules.
+        ClassOverlayClientInit(client);
     }
-    
-    // Forward event to sub-modules
-    ClassOverlayClientInit(client);
 }
 
 /**

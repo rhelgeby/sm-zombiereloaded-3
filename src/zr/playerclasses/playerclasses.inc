@@ -984,6 +984,28 @@ ClassClientSetDefaultIndexes(client = -1)
     new bool:hashuman;
     new bool:hasadmin;
     
+    
+    /*
+     *  SETUP CLASS FILTER
+     */
+    
+    // Do not require any class flags to be set.
+    filter[ClassFilter_RequireFlags] = 0;
+    
+    // Set filter to hide mother zombie classes.
+    filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+    
+    // Set filter to also hide admin-only classes if not admin.
+    filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+    
+    // Specify client so it can check group permissions.
+    filter[ClassFilter_Client] = client;
+    
+    
+    /*
+     *  GET CLASS INDEXES
+     */
+    
     // Check if a client is specified.
     if (clientvalid)
     {
@@ -1007,13 +1029,10 @@ ClassClientSetDefaultIndexes(client = -1)
         //       one so zero means no class set and will result in a invalid
         //       class index when restored.
         
-        // Setup filtering so group permission is checked on player first.
-        filter[ClassFilter_Client] = client;
-        
-        // Check if class indexes are set and that the client pass group
-        // permissions. If not, fall back to default class indexes. Otherwise
-        // substract index by one.
-        if (zombieindex <= 0 || !ClassFilterMatch(zombieindex, filter))
+        // Check if class indexes are set and that the client pass the filter.
+        // If not, fall back to default class indexes. Otherwise substract
+        // index by one.
+        if (zombieindex <= 0 || !ClassFilterMatch(zombieindex - 1, filter))
         {
             zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES, filter);
         }
@@ -1023,7 +1042,7 @@ ClassClientSetDefaultIndexes(client = -1)
             haszombie = true;
         }
         
-        if (humanindex <= 0 || !ClassFilterMatch(humanindex, filter))
+        if (humanindex <= 0 || !ClassFilterMatch(humanindex - 1, filter))
         {
             humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS, filter);
         }
@@ -1033,7 +1052,7 @@ ClassClientSetDefaultIndexes(client = -1)
             hashuman = true;
         }
         
-        if (adminindex <= 0 || !ClassFilterMatch(adminindex, filter))
+        if (adminindex <= 0 || !ClassFilterMatch(adminindex - 1, filter))
         {
             adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS, filter);
         }
@@ -1045,7 +1064,7 @@ ClassClientSetDefaultIndexes(client = -1)
     }
     else
     {
-        // Setup filtering so classes with groups set are excluded.
+        // Set filter to exclude classes that require groups.
         filter[ClassFilter_Client] = -1;
         
         // Get default class indexes.
@@ -1054,7 +1073,10 @@ ClassClientSetDefaultIndexes(client = -1)
         adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS, filter);
     }
     
-    // Validate indexes.
+    
+    /*
+     *  VALIDATE INDEXES
+     */
     if (!ClassValidateIndex(zombieindex))
     {
         // Invalid class index. Fall back to default class in class config and
@@ -1065,7 +1087,6 @@ ClassClientSetDefaultIndexes(client = -1)
         zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, filter);
     }
     
-    // Get human class index.
     if (!ClassValidateIndex(humanindex))
     {
         // Invalid class index. Fall back to default class in class config and
@@ -1076,7 +1097,6 @@ ClassClientSetDefaultIndexes(client = -1)
         humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, filter);
     }
     
-    // Get admin class index.
     if (!ClassValidateIndex(adminindex))
     {
         // Invalid class index. Fall back to default class in class config if
@@ -1084,6 +1104,11 @@ ClassClientSetDefaultIndexes(client = -1)
         // no admin classes at all.
         adminindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ADMINS, filter);
     }
+    
+    
+    /*
+     *  MARK INDEXES AS SELECTED, UPDATE CACHE AND COOKIES
+     */
     
     // Check if a client is specified.
     if (clientvalid)
