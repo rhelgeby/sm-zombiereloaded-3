@@ -45,7 +45,7 @@
  * Total number of classes that can be stored in each cache. A total of 32
  * classes should be enough. Too many classes will confuse players.
  */
-#define ZR_CLASS_MAX 32
+#define ZR_CLASS_MAX 48
 
 /**
  * @section Class cache types. Specifies what data array to use.
