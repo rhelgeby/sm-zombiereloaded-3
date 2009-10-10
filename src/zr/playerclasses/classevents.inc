@@ -25,24 +25,19 @@ ClassOnCookiesCreate()
     // Forward event to sub-modules.
     ClassOverlayOnCookiesCreate();
     
-    // Close cookie handles if they already exist.
-    if (g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS] != INVALID_HANDLE)
+    // Create cookie handles only if they don't exist.
+    if (g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS] == INVALID_HANDLE)
     {
-        CloseHandle(g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS]);
+        g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS] = RegClientCookie("zr_humanclass", "The last human class selected.", CookieAccess_Protected);
     }
-    if (g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES] != INVALID_HANDLE)
+    if (g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES] == INVALID_HANDLE)
     {
-        CloseHandle(g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES]);
+        g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES] = RegClientCookie("zr_zombieclass", "The last zombie class selected.", CookieAccess_Protected);
     }
-    if (g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS] != INVALID_HANDLE)
+    if (g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS] == INVALID_HANDLE)
     {
-        CloseHandle(g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS]);
+        g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS] = RegClientCookie("zr_adminclass", "The last admin mode class selected.", CookieAccess_Protected);
     }
-    
-    // Create class index cookies.
-    g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS] = RegClientCookie("zr_humanclass", "The last human class selected.", CookieAccess_Protected);
-    g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES] = RegClientCookie("zr_zombieclass", "The last zombie class selected.", CookieAccess_Protected);
-    g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS] = RegClientCookie("zr_adminclass", "The last admin mode class selected.", CookieAccess_Protected);
 }
 
 /**

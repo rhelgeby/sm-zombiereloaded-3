@@ -76,14 +76,11 @@ ClassOverlayOnCommandsHook()
  */
 ClassOverlayOnCookiesCreate()
 {
-    // Close cookie handle if it already exist.
-    if (g_hOverlayEnabledCookie != INVALID_HANDLE)
+    // Create cookie handle only if it don't exist.
+    if (g_hOverlayEnabledCookie == INVALID_HANDLE)
     {
-        CloseHandle(g_hOverlayEnabledCookie);
+        g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Protected);
     }
-    
-    // Create overlay cookie.
-    g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Protected);
 }
 
 /**

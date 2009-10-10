@@ -54,14 +54,11 @@ ZHPOnCommandsCreate()
  */
 ZHPOnCookiesCreate()
 {
-    // Close cookie handle if it already exist.
-    if (g_hZHPEnabledCookie != INVALID_HANDLE)
+    // Create cookie handle if it doesn't exist.
+    if (g_hZHPEnabledCookie == INVALID_HANDLE)
     {
-        CloseHandle(g_hZHPEnabledCookie);
+        g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Protected);
     }
-    
-    // Create ZHP cookie.
-    g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Protected);
 }
 
 /**

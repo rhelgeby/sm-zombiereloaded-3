@@ -70,14 +70,11 @@ ZMarketOnCommandsCreate()
 
 ZMarketOnCookiesCreate()
 {
-    // Close auto-rebuy cookie handle if it already exist.
-    if (g_hZMarketAutoRebuyCookie != INVALID_HANDLE)
+    // Create auto-rebuy cookie handle if doesn't exist.
+    if (g_hZMarketAutoRebuyCookie == INVALID_HANDLE)
     {
-        CloseHandle(g_hZMarketAutoRebuyCookie);
+        g_hZMarketAutoRebuyCookie = RegClientCookie(ZMARKET_COOKIE_AUTOREBUY, "The toggle state of auto-rebuy.", CookieAccess_Protected);
     }
-    
-    // Create auto-rebuy cookie.
-    g_hZMarketAutoRebuyCookie = RegClientCookie(ZMARKET_COOKIE_AUTOREBUY, "The toggle state of auto-rebuy.", CookieAccess_Protected);
     
     decl String:rebuycookiename[32];
     decl String:rebuycookiedesc[64];
@@ -89,14 +86,11 @@ ZMarketOnCookiesCreate()
         Format(rebuycookiename, sizeof(rebuycookiename), "%s_%d", ZMARKET_COOKIE_REBUY, x);
         Format(rebuycookiedesc, sizeof(rebuycookiedesc), "Current loadout weapon for slot %d", x);
         
-        // Close loadout cookie handle if it already exist.
-        if (g_hZMarketLoadoutCookie[x] != INVALID_HANDLE)
+        // Create loadout cookie handle if it doesn't exist.
+        if (g_hZMarketLoadoutCookie[x] == INVALID_HANDLE)
         {
-            CloseHandle(g_hZMarketLoadoutCookie[x]);
+            g_hZMarketLoadoutCookie[x] = RegClientCookie(rebuycookiename, rebuycookiedesc, CookieAccess_Protected);
         }
-        
-        // Create loadout cookie.
-        g_hZMarketLoadoutCookie[x] = RegClientCookie(rebuycookiename, rebuycookiedesc, CookieAccess_Protected);
     }
 }
 
