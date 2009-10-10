@@ -5,7 +5,7 @@
               Targets plugin version 3.0.0 Beta 2, (not released)
                           Written by Richard Helgeby
 
-                       Manual last modified: 2009.07.25
+                       Manual last modified: 2009.10.10
 
 ===============================================================================
 
@@ -43,6 +43,9 @@ INDEX
 3.7.4 . . . Class Console Variables
 3.7.5 . . . Modifying Class Attributes
 3.7.6 . . . Attribute Multipliers
+3.7.7 . . . Reload Attributes
+3.7.8 . . . Dumping Attributes
+3.7.9 . . . Dumping Multipliers
 3.8 . . . Weapon Configuration
 3.8.1 . . . Attributes
 3.8.2 . . . Weapon List
@@ -903,6 +906,9 @@ Class console variables:
         This setting overrides zr_classes_default_*, but on first-time
         connecting players the default classes are assigned.
         
+        This setting also override zr_classes_*_select. If players have saved
+        class indexes in cookies they will be restored.
+        
         Options:
         0 or 1
     
@@ -946,6 +952,34 @@ Class console variables:
                           class.
         "default"       - Use the default class in the class configuration.
         "random"        - Select a random class from the class configuration.
+    
+    zr_classes_zombie_select            1
+    ---------------------------------------------------------------------------
+        Allow players to select zombie classes. Disable this option to force
+        certain classes on players depending on what zr_classes_default_zombie
+        is set to.
+        
+        Options:
+        0 or 1
+    
+    zr_classes_human_select             1
+    ---------------------------------------------------------------------------
+        Allow players to select human classes. Disable this option to force
+        certain classes on players depending on what zr_classes_default_human
+        is set to.
+        
+        Options:
+        0 or 1
+    
+    zr_classes_admin_select             1
+    ---------------------------------------------------------------------------
+        (Incomplete feature! This setting is ignored.)
+        Allow admins to select admin classes. Disable this option to force
+        certain classes on admins depending on what zr_classes_default_admin
+        is set to, - and if admin mode is enabled on the player.
+        
+        Options:
+        0 or 1
 
 
 3.7.5  MODIFYING CLASS ATTRIBUTES
@@ -1022,6 +1056,57 @@ Attribute multipliers are set using this console command:
 Multipliers can also be adjusted in the zombie admin menu, but the changes
 aren't saved. The menu is useful for finding the correct value, and then use it
 in a map configuration file.
+
+
+3.7.7  RELOAD ATTRIBUTES
+
+While testing or adjusting class attributes they must be reloaded before they
+will take effect. This only applies to players who already is the same class.
+
+    Syntax:
+    ===========================================================================
+    zr_class_reload <target>
+    ---------------------------------------------------------------------------
+        Refreshes the player cache and reloads class attributes on one or more
+        players.
+        
+        Parameters:
+        target          Target player(s) to refresh cache on.
+
+
+3.7.8  DUMPING ATTRIBUTES
+
+For debug purposes class attributes can be dumped.
+
+    Syntax:
+    ===========================================================================
+    zr_class_dump <cachetype> <index|targetname>
+    ---------------------------------------------------------------------------
+        Dumps class data at a specified index in the specified cache.
+        
+        Parameters:
+        cachetype           Cache to read from. Cache types:
+                            "original" - Unmodified raw class data.
+                            "modified" - Modified class data with multipliers.
+                            "player"   - Player cache, with multipliers.
+        index|targetname    Class index, or name of player if "player" cache
+                            type is used.
+
+
+3.7.9  DUMPING MULTIPLIERS
+
+Dumping multipliers is another command for debug purposes. It will dump the
+current state of multipliers.
+
+    Syntax:
+    ===========================================================================
+    zr_class_dump_multipliers <team>
+    ---------------------------------------------------------------------------
+        Dumps class attribute multipliers for the specified team.
+        
+        Parameters:
+        team            The multiplier set to dump. Valid options are:
+                        "humans" or "zombies"
 
 
 3.8  WEAPON CONFIGURATION
