@@ -53,7 +53,7 @@ p.headerinfo
     color: #909090;
 }
 
-p.code
+.code
 {
     font-family: "Courier New", "Lucida Console";
     color: #000000;
@@ -64,11 +64,13 @@ table
     border-style: none;
     border-collapse: collapse;
     width: 100%;
+    table-layout: auto;
 }
 
 td
 {
     text-align: left;
+    vertical-align: top;
     padding: 3px;
 }
 
@@ -95,12 +97,22 @@ th
     text-align: left;
     padding: 3px;
     border-bottom-style: solid;
-    border-bottom-width: medium;
+    border-bottom-width: 2px;
 }
 
 th.namewidth
 {
-    width: "500px";
+    width: "400px";
+}
+
+th.tinywidth
+{
+    width: "100px";
+}
+
+th.mediumwidth
+{
+    width: "200px";
 }
 
 .container

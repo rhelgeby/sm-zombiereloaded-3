@@ -255,7 +255,7 @@ for both zombies and humans in different classes.</p>
 	
 	<li>
 		<p>ZRTools extension (bundled). Provides some extra functions needed by Zombie:Reloaded.
-		See Plugin Installation (2.2).</p>
+		See <a href="#2.2">Plugin Installation (2.2)</a>.</p>
 	</li>
 </ol>
 
@@ -271,7 +271,7 @@ round starts there sould be some messages at the chat with "[ZR]". Or type "!zme
 bring up the zombie menu to confirm that the plugin is running.</p>
 
 <p>Next check error logs from SourceMod and look if there are any entries from "zombiereloaded.smx".
-If the plugin doesn't work at all or there are error logs, see Troubleshooting at section 5.0.</p>
+If the plugin doesn't work at all or there are error logs, see <a href="#5">Troubleshooting (5)</a>.</p>
 
 
 <h2><a name="3" />3. Configuration</h2>
@@ -439,13 +439,13 @@ configuration file.</p>
 	
 	<tr>
 		<td class="commandheader">zr_log_flags</td>
-		<td class="commandheader">"3"</td>
+		<td class="commandheader">"2"</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
 			<p>A bit field that specify what event types to log.</p>
 			<p>Options:<br />
-			Number - See Log Flags (3.3.1)</p>
+			Number - See <a href="#3.3.1">Log Flags (3.3.1)</a></p>
 		</td>
 	</tr>
 	
@@ -513,8 +513,8 @@ configuration file.</p>
 	</tr>
 	<tr>
 		<td class="indent">
-			<p>Adds one or more modules to the module filter. Use short module names, see List Of
-			Modules (3.3.2).</p>
+			<p>Adds one or more modules to the module filter. Use short module names, see
+			<a href="#3.3.2">List Of Modules (3.3.2)</a>.</p>
 			<p>Parameters:</p>
 			<blockquote><table>
 				<tr><td class="namewidth">module</td><td>Name of the module to add.</td></tr>
@@ -528,8 +528,8 @@ configuration file.</p>
 	</tr>
 	<tr>
 		<td class="indent">
-			<p>Removes one or more modules from the module filter. Use short module names, see List
-			Of Modules (3.3.2).</p>
+			<p>Removes one or more modules from the module filter. Use short module names, see
+			<a href="#3.3.2">List Of Modules (3.3.2)</a>.</p>
 			<p>Parameters:</p>
 			<blockquote><table>
 				<tr><td class="namewidth">module</td><td>Name of the module to remove.</td></tr>
@@ -548,6 +548,1649 @@ configuration file.</p>
 		</td>
 	</tr>
 </table></blockquote>
+
+
+<h4><a name="3.3.1" />1. Log Flags</h4>
+
+<blockquote><table>
+	<tr>
+		<th class="namewidth">Flag:</th>
+		<th class="tinywidth">Bit No.:</th>
+		<th class="tinywidth">Value:</th>
+		<th>Description:</th>
+	</tr>
+	<tr>
+		<td class="code">LOG_CORE_EVENTS</td>
+		<td>1</td>
+		<td>1</td>
+		<td>Log events from the plugin core like config validation and other messages.</td>
+	</tr>
+	<tr>
+		<td class="code">LOG_GAME_EVENTS</td>
+		<td>2</td>
+		<td>2</td>
+		<td>Log admin commands, console commands, and game related events from modules like,
+		suicide attempts and weapon restrictions.</td>
+	</tr>
+	<tr>
+		<td class="code">LOG_PLAYER_COMMANDS</td>
+		<td>3</td>
+		<td>4</td>
+		<td>Log events that are triggered by players, like chat triggers, teleporting and class
+		changes.</td>
+	</tr>
+	<tr>
+		<td class="code">LOG_DEBUG</td>
+		<td>4</td>
+		<td>8</td>
+		<td>Log debug messages, if any. Usually only developers need to enable this log flag.</td>
+	</tr>
+	<tr>
+		<td class="code">LOG_DEBUG_DETAIL</td>
+		<td>5</td>
+		<td>16</td>
+		<td>Log additional debug messages with more details. May cause spam depending on module
+		filter settings. Usually only developers need to enable this log flag.</td>
+	</tr>
+</table></blockquote>
+
+<p>To combine several logging flags use the sum of their values. A combination could be "3", which
+is these log flags:</p>
+
+	<blockquote><p class="code">LOG_CORE_EVENTS + LOG_GAME_EVENTS<br />
+	1 + 2</p></blockquote>
+
+<p>Most server setups donesn't need different flag settings. Default is fine.</p>
+
+<p>To decode the value you must convert it from decimals to binary, and count from right to left
+what bits that are 1. Look up the bit number (not value) in the table above.</p>
+
+<p>As an example on using the number 11 it's 1011 in binary. Counting from right
+we see that the following bit numbers are on: 1, 2, and 4. That is the flags:</p>
+
+	<blockquote><p class="code">LOG_CORE_EVENTS + LOG_GAME_EVENTS + LOG_DEBUG<br />
+	1 + 2 + 8</p></blockquote>
+
+<p>Most operating systems or distributions have a calculator that can convert
+between binary and decimal numbers with scientific mode enabled. An online
+unit converter like below can also be used.</p>
+
+	<blockquote><p><a href="http://www.unitconversion.org/numbers/decimals-to-binary-conversion.html">
+	Decimals to binary conversion</a></p></blockquote>
+
+
+<h4><a name="3.3.2" />2. List Of Modules</h4>
+
+<blockquote><table>
+	<tr>
+		<th class="namewidth">Short name:</th>
+		<th>Description:</th>
+	</tr>
+	<tr>
+		<td>account</td>
+		<td>Money manager</td>
+	</tr>
+	<tr>
+		<td>antistick</td>
+		<td>Anti-Stick feature</td>
+	</tr>
+	<tr>
+		<td>config</td>
+		<td>Configuration file manager</td>
+	</tr>
+	<tr>
+		<td>cvars</td>
+		<td>Console variables</td>
+	</tr>
+	<tr>
+		<td>damage</td>
+		<td>Damage manager</td>
+	</tr>
+	<tr>
+		<td>downloads</td>
+		<td>File download manager</td>
+	</tr>
+	<tr>
+		<td>hitgroups</td>
+		<td>Hit group feature</td>
+	</tr>
+	<tr>
+		<td>infect</td>
+		<td>Infection manager</td>
+	</tr>
+	<tr>
+		<td>models</td>
+		<td>Model list file manager</td>
+	</tr>
+	<tr>
+		<td>playerclasses</td>
+		<td>Class manager</td>
+	</tr>
+	<tr>
+		<td>veffects</td>
+		<td>Visual effect manager</td>
+	</tr>
+	<tr>
+		<td>seffects</td>
+		<td>Sound effect manager</td>
+	</tr>
+	<tr>
+		<td>tools</td>
+		<td>Helper functions (offsets)</td>
+	</tr>
+	<tr>
+		<td>volfeatures</td>
+		<td>Volumetric features</td>
+	</tr>
+	<tr>
+		<td>weapons</td>
+		<td>Weapon manager</td>
+	</tr>
+	<tr>
+		<td>weaponrestrict</td>
+		<td>Weapon restriction manager</td>
+	</tr>
+	<tr>
+		<td>zspawn</td>
+		<td>Spawn command manager</td>
+	</tr>
+	<tr>
+		<td>ztele</td>
+		<td>Teleport manager</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.4" />4. Custom Map Configuration Files</h3>
+
+<p>Configuration files for each map is supported. They're executed after the main configuration
+files are executed, and are ideal for customizing map settings. These files are just regular
+configuration files and can also have standard console commands like setting map time. These files
+are optional.</p>
+
+<p>The main purpose of these files is to make it possible to change settings for Zombie:Reloaded on
+certain maps. That could be scaling knockback, restricting certain weapons, changing class
+attributes or changing ambience sound.</p>
+
+<h4><a name="3.4.1" />1. Types</h4>
+<p>There are two kinds of map configs; pre and post. Pre map configuration files are executed
+before the modules are loaded. They're useful for changing configuration sets for certain modules
+like classes. Post map configuration files are executed after the modules are loaded. Certain stuff
+have to be placed in this one to take effect, like changing class attributes.</p>
+
+<blockquote><table>
+	<tr>
+		<th class="tinywidth">Type:</th>
+		<th class="mediumwidth">Executed:</th>
+		<th>Path:</th>
+	</tr>
+	<tr>
+		<td>Pre</td>
+		<td>Before modules</td>
+		<td class="code">cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</td>
+	</tr>
+	<tr>
+		<td>Post</td>
+		<td>After modules</td>
+		<td class="code">cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.post.cfg</td>
+	</tr>
+</table></blockquote>
+
+<p>If not explicit specified in the module documentation, use pre configuration.</p>
+
+
+<h3><a name="3.5" />5. Model Configuration</h3>
+
+<p><b>Note:</b> Work in progress. Some flags explained in this section doesn't exist yet.</p>
+
+<p>The model configuration file is a list of models used on the server. Each line contains the path
+including the model name, but not the file extension.</p>
+
+<p>The models listed in this file are also precached when the server starts. Custom models used,
+but not listed in this file will cause a "model not precached" error on the server, so remember to
+list them in this file.</p>
+
+<p>In addition certain flags can be added to mark the model as special, such as only for
+admins/donators, hidden from random selection or only for mother zombies.</p>
+
+<p>Each line is separated into two fields with ";". The last field is optional and if no flag is
+specified it's treated as a regular public model.</p>
+
+<p>Model line syntax:</p>
+	<blockquote><p class="code">&lt;model path&gt;[; flag]</p></blockquote>
+
+<p>Available flags:</p>
+
+<blockquote><table>
+	<tr>
+		<td class="code">adminonly</td>
+		<td>Can only be used by admins.</td>
+	</tr>
+	<tr>
+		<td class="code">donator</td>
+		<td>Can only be used by donators.</td>
+	</tr>
+	<tr>
+		<td class="code">hidden</td>
+		<td>Is not included in random selections.</td>
+	</tr>
+	<tr>
+		<td class="code">motherzombie</td>
+		<td>Can only be used on mother zombies.</td>
+	</tr>
+</table></blockquote>
+
+<p>Example usages:</p>
+
+	<blockquote><p class="code">models/player/zh/zh_charple001<br />
+	models/player/zh/zh_corpse002; adminonly<br />
+	models/player/zh/zh_zombie003; hidden<br />
+	models/player/ics/hellknight_red/t_guerilla; motherzombie</p></blockquote>
+
+<p>Put the list of models in:</p>
+
+	<blockquote><p class="code">addons/sourcemod/configs/zr/models.txt</p></blockquote>
+
+
+<h3><a name="3.6" />6. Download List</h3>
+
+<p>Custom models, materials and overlays must be listed in the download list so clients will
+download them. The paths must be relative to the "cstrike" folder.</p>
+
+<p>List files to be downloaded in:</p>
+
+	<blockquote><p class="code">addons/sourcemod/configs/zr/downloads.txt</p></blockquote>
+
+
+<h3><a name="3.7" />7. Class Configuration</h3>
+
+<p>The class system makes it possible to have different zombies and humans with customized skills.
+It cannot be turned off, but class selection options can be disabled. If there is only one class in
+each team, the class selections menus are automatically disabled.</p>
+
+<p>The class configurations are stored in Valve's key/value format, and the file that's loaded
+should be specified in the "zr_classes_file" console variable. It's possible to change this
+variable with per-map configuration files to have different sets of classes on one or more maps.</p>
+
+<p>Default path is:</p>
+
+	<blockquote><p class="code">configs/zr/playerclasses.txt</p></blockquote>
+
+<p><b>Note:</b> The path is relative to the "sourcemod" folder.</p>
+
+<p>The file contains a short description of all attributes. Details are explained below.</p>
+
+<h4><a name="3.7.1" />1. Class Types</h4>
+
+<p>There are three class types; zombies, humans and admin-mode. Default classes are selected on the
+player depending on console variables and the class file.</p>
+
+<p>Admin-mode classes are currently incomplete and will be validated, but ignored in the game. This
+is a special mode in the game, but not the same as admin-only classes. To get admin-only classes set
+the admin-only flag in the "flags" attribute.</p>
+
+<h4><a name="3.7.2" />2. Class Attributes</h4>
+
+<p>The list below explains all available class attributes in detail:</p>
+
+<blockquote><table>
+	<tr>
+		<th class="namewidth">Attribute:</th>
+		<th class="mediumwidth">Value type:</th>
+		<th>Limits/Requirements:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">enabled</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"yes" or "no"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Enables or disables the class. Disabled classes won't show up in the class selection
+			menus. Also, if some attributes failed to validate the class will be disabled.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">team</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 2</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Specifies the class type (team ID). Class types are filtered in the class selection
+			menus, so only zombies can use zombie class types, and only humans can use human class
+			types. These are the allowed team IDs:</p>
+			<blockquote><table>
+				<tr><td>0</td><td>Zombie classes</td></tr>
+				<tr><td>1</td><td>Human classes</td></tr>
+				<tr><td>2</td><td>Admin-mode classes</td></tr>
+			</table></blockquote>
+			<p>The admin-mode class type sets the player in spectacting like mode, but allow
+			admins to walk around. They can't take or give damage, and they won't affect the game
+			rules in any way. <b>Admin-mode is incomplete</b> and classes of this type is ignored
+			in the game.</p>
+			<p>See the "flags" attribute for admin-only classes.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">team_default</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"yes" or "no"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Marks the class as the default class for its specified team. This class will be
+			automatically selected on new players when they join the server, depending on what's
+			specified as default in the main configuration file (zr_classes_default_*). If multiple
+			classes in the same team is marked as default the first class marked as default will
+			be used.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">flags</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 3</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Special class flags that are stored in a bit field (explained in <a href="#3.3.1">Log Flags
+			(3.3.1)</a>). Available flags:</p>
+			<blockquote><table>
+				<tr>
+					<td>1</td>
+					<td>Admins only<br />
+					Marks the class to be used by admins only. Classes with this option on will not
+					be visible for regular players in the class menu.</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Mother zombie.<br />
+					Marks the class as a mother zombie class. These classes will be used on mother
+					zombies. Note that zr_classes_default_mother_zombie setting must be set to
+					"motherzombies" for this flag to take effect.</td>
+				</tr>
+			</table></blockquote>
+			<p>These flags can be used in a combination (1 + 2), so it could be a mother zombie
+			class for admins only.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">group</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">Name of a valid SourceMod group</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Rescrict class to members of this SourceMod group. Useful for making VIP-only
+			classes. Leave blank to allow everyone to use this class.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">name</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">Unique, not empty, max 64 charact.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>A unique name for the class that is displayed in the class selection menus. Cannot
+			be empty. If multiple classes have the same name, the first one found is used.</p>
+			<p>This name is also refered to by cvars that set default classes.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">description</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">Max 256 characters, not empty</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The description of the class, used in class selection menus. Cannot be empty.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">model_path</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">Max 256 characters, not empty</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The model file to use on the player, path is relative to the "cstrike" folder. There
+			are a few special values supported by this attribute:</p>
+			<blockquote><table>
+				<tr>
+					<td class="code">default</td>
+					<td>Use default CS models. The one players select when selecting team.</td>
+				</tr>
+				<tr>
+					<td class="code">random</td>
+					<td>Selects a random model for the current team.</td>
+				</tr>
+				<tr>
+					<td class="code">nochange</td>
+					<td>Don't change model. To be used in combination with other plugins that
+					change model on players.</td>
+				</tr>
+			</table></blockquote>	
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">alpha_spawn</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 255</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The initial transparency value on the player, where 255 is fully visible and 0 is
+			invisible.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">alpha_damaged</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 255</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Transparency on the player when a certain amount of damage is done. 255 is fully
+			visible and 0 is invisible.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">alpha_damage</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 20000</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>How much damage that needs to be done before the players alpha changes from
+			"aplha_spawn" to "aplha_damaged".</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">overlay_path</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">Max 256 characters</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Optional. Overlay texture to be displayed at the player. It can be controlled by
+			the night vision key ("n" by default). The path is relative to "cstrike/materials".
+			Leave blank to disable.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">nvgs</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"yes" or "no"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Gives night vision to the player.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">fov</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">15 - 165</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The field of view on the player. Note that the weapon hud disappear if FOV is
+			anything else than 90.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">has_napalm</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"yes" or "no"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Human classes only.</b> Specifies whether the human can trow napalm grenades or
+			not.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">napalm_time</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">0.0 - 600.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Zombie classes only.</b> Specifies how long in seconds zombies will burn when hit by
+			napalm grenades. 0.0 or a negative value will disable this feature on the current
+			class. This attribute has no effect on human classes.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">immunity_mode</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 2</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Note: Incomplete feature!</b></p>
+			<p>The immunity mode. This feature is currently incomplete and values are ignored.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">immunity_amount</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">(incomplete)</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Note: Incomplete feature!</b></p>
+			<p>The value for the specified immunity mode. This feature is currently incomplete and
+			values are ignored.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">health</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 20000</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Initial health points on the player.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">health_regen_interval</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">0.0 - 900.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The health regeneration interval, in seconds. Use 0.0 to disable regeneration.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">health_regen_amount</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 10000</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>How many health points to give per interval. Regeneration stops when the players
+			health is above the initial health.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">health_infect_gain</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 20000</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Zombie classes only.</b> How many health points to give the zombie each time it infect
+			a human.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">kill_bonus</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 16</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Zombie classes only.</b> How many extra points to give the killer of this zombie.
+			If this is 0, the default value of 1 point will be given.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">speed</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">10.0 - 2000.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The player's running speed.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">knockback</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">-30.0 - 30.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Zombie classes only.</b> Force to apply on the zombie when shot at. The zombie is
+			pushed in the same direction as the bullet.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">jump_height</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">0.0 - 5.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Jump height multiplier. Extra upward boost when jumping. If 1.0 or 0.0 no boost will
+			be applied.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">jump_distance</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">0.0 - 5.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Jump distance multiplier. Extra forward boost when jumping. If 1.0 or 0.0 no boost
+			will be applied.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h4><a name="3.7.3" />3. Class Requirements</h4>
+
+<p>At least one zombie class and one human class with no special flags set is
+required. Otherwise the plugin will fail to load.</p>
+
+<p><b>Requirements:</b></p>
+
+<ul>
+	<li>At least one human class (teamid 1).</li>
+	<li>At least one zombie class (teamid 0).</li>
+	<li>One of the classes in each team must have "team_default" set to "yes".</li>
+	<li>In addition both above classes shouldn't have special flags or groups set. They must be
+	clean classes, which is "flags" set to "0" and "group" set to "".</li>
+	<li>All other attributes must have valid values. See <a href="#3.7.2">Class Attributes (3.7.2)</a>.</li>
+</ul>
+
+<p>Errors are logged to SourceMod error logs if it can't parse the file or if class attributes
+have invalid values.</p>
+
+<p>In case of incorrect values a warning will be logged and the class will be disabled. The class
+index and the error flags (bit field) in the log message tells what attributes that failed to
+validate.</p>
+
+<p><b>Attribute flags:</b></p>
+
+<blockquote><table>
+	<tr>
+		<th class="commandheader">Attribute:</th>
+		<th class="commandheader">Bit:</th>
+		<th class="commandheader">Value:</th>
+	</tr>
+	<tr>
+		<td class="code">enabled</td>
+		<td>1</td>
+		<td>1</td>
+	</tr>
+	<tr>
+		<td class="code">team</td>
+		<td>2</td>
+		<td>2</td>
+	</tr>
+	<tr>
+		<td class="code">team_default</td>
+		<td>3</td>
+		<td>4</td>
+	</tr>
+	<tr>
+		<td class="code">flags</td>
+		<td>4</td>
+		<td>8</td>
+	</tr>
+	<tr>
+		<td class="code">group</td>
+		<td>5</td>
+		<td>16</td>
+	</tr>
+	<tr>
+		<td class="code">name</td>
+		<td>6</td>
+		<td>32</td>
+	</tr>
+	<tr>
+		<td class="code">description</td>
+		<td>7</td>
+		<td>64</td>
+	</tr>
+	<tr>
+		<td class="code">model_path</td>
+		<td>8</td>
+		<td>128</td>
+	</tr>
+	<tr>
+		<td class="code">alpha_initial</td>
+		<td>9</td>
+		<td>256</td>
+	</tr>
+	<tr>
+		<td class="code">alpha_damaged</td>
+		<td>10</td>
+		<td>512</td>
+	</tr>
+	<tr>
+		<td class="code">alpha_damage</td>
+		<td>11</td>
+		<td>1024</td>
+	</tr>
+	<tr>
+		<td class="code">overlay_path</td>
+		<td>12</td>
+		<td>2048</td>
+	</tr>
+	<tr>
+		<td class="code">nvgs</td>
+		<td>13</td>
+		<td>4096</td>
+	</tr>
+	<tr>
+		<td class="code">fov</td>
+		<td>14</td>
+		<td>8192</td>
+	</tr>
+	<tr>
+		<td class="code">has_napalm</td>
+		<td>15</td>
+		<td>16384</td>
+	</tr>
+	<tr>
+		<td class="code">napalm_time</td>
+		<td>16</td>
+		<td>32768</td>
+	</tr>
+	<tr>
+		<td class="code">immunity_mode</td>
+		<td>17</td>
+		<td>65536</td>
+	</tr>
+	<tr>
+		<td class="code">immunity_amount</td>
+		<td>18</td>
+		<td>131072</td>
+	</tr>
+	<tr>
+		<td class="code">no_fall_damage</td>
+		<td>19</td>
+		<td>262144</td>
+	</tr>
+	<tr>
+		<td class="code">health</td>
+		<td>20</td>
+		<td>524288</td>
+	</tr>
+	<tr>
+		<td class="code">health_regen_interval</td>
+		<td>21</td>
+		<td>1048576</td>
+	</tr>
+	<tr>
+		<td class="code">health_regen_amount</td>
+		<td>22</td>
+		<td>2097152</td>
+	</tr>
+	<tr>
+		<td class="code">infect_gain</td>
+		<td>23</td>
+		<td>4194304</td>
+	</tr>
+	<tr>
+		<td class="code">kill_bonus</td>
+		<td>24</td>
+		<td>8388608</td>
+	</tr>
+	<tr>
+		<td class="code">speed</td>
+		<td>25</td>
+		<td>16777216</td>
+	</tr>
+	<tr>
+		<td class="code">knockback</td>
+		<td>26</td>
+		<td>33554432</td>
+	</tr>
+	<tr>
+		<td class="code">jump_height</td>
+		<td>27</td>
+		<td>67108864</td>
+	</tr>
+	<tr>
+		<td class="code">jump_distance</td>
+		<td>28</td>
+		<td>134217728</td>
+	</tr>
+</table></blockquote>
+
+<p>The error flags are stored in a bit field (explained in <a href="#3.3">Logging (3.3)</a>).</p>
+
+<p>Another quick way to decode it would be to use the calculator in Windows. Enable scientific
+mode and enter the decimal value. Then switch to binary mode (F8) and count from right to left
+what bits that are 1. Look up the bit numbers in the table above to see what attributes that
+didn't validate.</p>
+
+<h4><a name="3.7.4" />4. Class Console Variables</h4>
+
+<p>There are several console variables to set default class settings for players.
+Place these console variables in the main configuration file:</p>
+
+	<blockquote><p class="code">cfg/sourcemod/zombiereloaded/zombiereloaded.cfg</p></blockquote>
+
+<p>And/or in a map config file:</p>
+
+	<blockquote><p class="code">cfg/sourcemod/zombiereloaded/&lt;map name&gt;[.post].cfg</p></blockquote>
+
+<p>Example map config files:</p>
+
+	<blockquote><p class="code">cfg/sourcemod/zombiereloaded/zm_panic.cfg<br />
+    cfg/sourcemod/zombiereloaded/zm_panic.post.cfg</p></blockquote>
+
+<p><b>Class console variables:</b></p>
+
+<blockquote><table>
+	<tr>
+		<th class="namewidth">Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_config_path_playerclasses</td>
+		<td class="commandheader">"configs/zr/playerclasses.txt"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Specifies what class configuration file to load. Several class templates can be used
+			with map configurations.</p>
+			<p>Path is relative to "sourcemod".</p>
+			<p>If used in map configuration files this console variable must be placed in pre map
+			configuration files. Post configuration files won't have any effect because the class
+			module is done loading.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_spawn</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Re-display class menu every spawn.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_random</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Assign random classes to all players each round.</p>
+			<p>This setting overrides zr_classes_save.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_change_timelimit</td>
+		<td class="commandheader">20</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>The time limit to change human classes with instant change after spawning. So humans
+			don't have to set class before spawning. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_save</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Save players' class selections in server cookies. Class selections are restored next
+			time players connect.</p>
+			<p>This setting overrides zr_classes_default_*, but on first-time connecting players
+			the default classes are assigned.</p>
+			<p>This setting also override zr_classes_*_select. If players have saved class indexes
+			in cookies they will be restored.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_default_zombie</td>
+		<td class="commandheader">"random"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Default zombie class selected for all players when they connect.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td class="code">&lt;class name&gt;</td><td>Specify a class name to use as
+				default zombie.</td></tr>
+				<tr><td class="code">"default"</td><td>Use the default class in the class
+				configuration.</td></tr>
+				<tr><td class="code">"random"</td><td>Select a random zombie class from the class
+				configuration.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_default_mother_zombie</td>
+		<td class="commandheader">"motherzombies"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Default mother zombie class to be set on mother zombies. If no mother zombie class
+			exist it will use the class selected by the player.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td class="code">&lt;class name&gt;</td><td>Specify a class name to use as
+				default mother zombie.</td></tr>
+				<tr><td class="code">"random"</td><td>Select a random regular zombie class.</td></tr>
+				<tr><td class="code">"motherzombies"</td><td>Select a random zombie class with
+				mother zombie flag.</td></tr>
+				<tr><td class="code">"disabled"</td><td>No change. Use the zombie class selected by
+				the player.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_default_human</td>
+		<td class="commandheader">"random"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Default human class selected for all players when they connect.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td class="code">&lt;class name&gt;</td><td>Specify a class name to use as
+				default human.</td></tr>
+				<tr><td class="code">"default"</td><td>Use the default class in the class
+				configuration.</td></tr>
+				<tr><td class="code">"random"</td><td>Select a random human class from the class
+				configuration.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_default_admin</td>
+		<td class="commandheader">"random"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> This feature is incomplete!</p>
+			<p>Default admin-mode class selected for all players when they connect, if found. This
+			feature is incomplete and ignored.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td class="code">&lt;class name&gt;</td><td>Specify a class name to use as
+				default admin-mode class.</td></tr>
+				<tr><td class="code">"default"</td><td>Use the default class in the class
+				configuration.</td></tr>
+				<tr><td class="code">"random"</td><td>Select a random admin-mode class from the
+				class configuration.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_zombie_select</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Allow players to select zombie classes. Disable this option to force certain classes
+			on players depending on what zr_classes_default_zombie is set to.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_human_select</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Allow players to select human classes. Disable this option to force certain classes
+			on players depending on what zr_classes_default_human is set to.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_admin_select</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b>This feature is incomplete!</p>
+			<p>Allow admins to select admin classes. Disable this option to force certain classes
+			on admins depending on what zr_classes_default_admin is set to, - and if admin mode is
+			enabled on the player.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h4><a name="3.7.5" />5. Modifying Class Attributes</h4>
+
+<p>Classes can be modified after they're loaded. This is useful in map configs
+to do stuff like scaling knockback to tune map balance.</p>
+
+<p>All attributes can be modified, and some can also be scaled with a multiplier.
+The value in the original class cache is multiplied with the specified value
+and written back to the modified cache.</p>
+
+<p>When multiplying, the value is always based on the original value, not
+multiplying the earlier multiplied value. This also makes it easy to restore
+the original value.</p>
+
+<p><b>Console commands:</b></p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_class_modify &lt;class|team&gt; &lt;attribute&gt; &lt;value&gt; [is_multiplier]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Modify settings on one or more classes.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr>
+					<td class="code">class|team</td>
+					<td>The class to modify. Can be any valid class name, or one of the following team
+					names: <br />
+					"all", "humans", "zombies" or "admins".</td>
+				</tr>
+				<tr>
+					<td class="code">attribute</td>
+					<td>The name of the class attribute to modify.</td>
+				</tr>
+				<tr>
+					<td class="code">value</td>
+					<td>Value to set, or multiplier if a multiplier.</td>
+				</tr>
+				<tr>
+					<td class="code">is_multiplier</td>
+					<td>Optional. Specifies wether the original value should be multiplied by the
+					specified value. Default is false.</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h4><a name="3.7.6" />6. Attribute Multipliers</h4>
+
+<p>Making a balanced zombie map is difficult, and all maps have different balance. The knock back
+and other settings may work fine on one map, but not on other maps. This is where multipliers are
+useful.</p>
+
+<p>With class attribute multipliers, numeric class attributes can be scaled and configured with
+map configuration files. There's a set of multipliers for both humans and zombies.</p>
+
+<p><b>Warning:</b> Currently these multipliers aren't validated, so using too high or negative
+values may cause unexpected behaviour, or even crash the plugin.</p>
+
+<p>Attribute multipliers are set using this console command:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_class_set_multiplier &lt;team&gt; &lt;attribute&gt; &lt;value&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Sets the multiplier on a class attribute.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr>
+					<td class="code">team</td>
+					<td>What multiplier set to use. Options:<br />
+					"zombies" or "humans"</td>
+				</tr>
+				<tr>
+					<td class="code">attribute</td>
+					<td>A numeric class attribute. See <a href="#3.7.2">Class Attributes (3.7.2)</a>
+						for details on attributes. Valid attribute multipliers:
+						<ul>
+							<li>"napalm_time" (zombies only)</li>
+							<li>"health"</li>
+							<li>"health_regen_interval"</li>
+							<li>"health_regen_amount"</li>
+							<li>"health_infect_gain" (zombies only)</li>
+							<li>"speed"</li>
+							<li>"knockback" (zombies only)</li>
+							<li>"jump_height"</li>
+							<li>"jump_distance"</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td class="code">value</td>
+					<td>Value to set, or multiplier if a multiplier.</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+<p>Multipliers can also be adjusted in the zombie admin menu, but the changes aren't saved. The
+menu is useful for finding the correct value, and then use it in a map configuration file.</p>
+
+<h4><a name="3.7.7" />7. Reloading Attributes</h4>
+
+<p>While testing or adjusting class attributes they must be reloaded before they will take effect.
+This only applies to players who already is the same class.</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_class_reload &lt;target&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Refreshes the player cache and reloads class attributes on one or more players.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr>
+					<td class="code">target</td>
+					<td>Target player(s) to refresh cache on. A name or a SourceMod target specifier.</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h4><a name="3.7.8" />8. Dumping Attributes</h4>
+
+<p>For debug purposes class attributes also can be dumped.</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_class_dump &lt;cachetype&gt; &lt;index|targetname&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Dumps class data at a specified index in the specified cache.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr>
+					<td class="code">cachetype</td>
+					<td>Cache to read from. Cache types:
+						<table>
+							<tr><td>"original"</td><td>Unmodified raw class data.</td></tr>
+							<tr><td>"modified"</td><td>Modified class data with multipliers.</td></tr>
+							<tr><td>"player"</td><td>Player cache, with multipliers.</td></tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="code">index|targetname</td>
+					<td>Class index, or name of player if "player" cache type is used.</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h4><a name="3.7.9" />9. Dumping Multipliers</h4>
+
+<p>Dumping multipliers is another command for debug purposes. It will dump the current state of
+multipliers.</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_class_dump_multipliers &lt;team&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Dumps class attribute multipliers for the specified team.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr>
+					<td class="code">team</td>
+					<td>The multiplier set to dump. Valid options are:<br />
+					"humans" or "zombies"</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.8" />8. Weapon Configuration</h3>
+
+<p>The weapon module can be used to restict weapons or scale knockback.</p>
+
+<h4><a name="3.8.1" />1. Weapon Attributes</h4>
+
+<p>Weapon attributes are stored by default in:</p>
+
+	<blockquote><p class="code">addons/sourcemod/configs/zr/weapons.txt</p></blockquote>
+
+<p>Custom file may be specified in the console variable "zr_config_path_weapons". If used in per
+map configuration files it must be in a pre configuration file.</p>
+
+<p>These are the allowed attributes:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Attribute:</th>
+		<th>Type:</th>
+		<th>Limits/Requirements:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapontype</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">Separate items by ", "</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>A list of weapon groups and the weapon type.</p>
+			<p>Pre-defined options:</p>
+			<ul>
+				<li>All</li>
+				<li>Pistol</li>
+				<li>Shotgun</li>
+				<li>SMG</li>
+				<li>Rifle</li>
+				<li>Sniper</li>
+				<li>Machine Gun</li>
+				<li>Melee</li>
+				<li>Projectile</li>
+				<li>Equipment</li>
+			</ul>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weaponslot</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 3</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The slot index the weapon resides in. Don't change this!</p>
+			<p>Options:</p>
+			<table>
+				<tr><td>0</td><td>Primary weapon slot</td></tr>
+				<tr><td>1</td><td>Secondary weapon slot</td></tr>
+				<tr><td>2</td><td>Knife slot</td></tr>
+				<tr><td>3</td><td>Equipment slot</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">restrictdefault</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"yes" or "no"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The default restricted status of the weapon on map start.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td>"yes"</td><td>Enable</td></tr>
+				<tr><td>"no"</td><td>Disable</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">toggleable</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"yes" or "no"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Enable weapon to have restrictions toggled mid-game.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td>"yes"</td><td>Enable</td></tr>
+				<tr><td>"no"</td><td>Disable</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">ammotype</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">-</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Ammo entity that belongs to weapons. Don't change this!</p>
+			<p>Options:</p>
+			<table>
+				<tr><td>ammo_50ae</td><td>deagle</td></tr>
+				<tr><td>ammo_762mm</td><td>scout, ak47, g3sg1, aug</td></tr>
+				<tr><td>ammo_556mm_box</td><td>m249</td></tr>
+				<tr><td>ammo_556mm</td><td>galil, sg552, famas, m4a1, sg550</td></tr>
+				<tr><td>ammo_338mag</td><td>awp</td></tr>
+				<tr><td>ammo_9mm</td><td>mp5navy, tmp, glock, elite</td></tr>
+				<tr><td>ammo_buckshot</td><td>m3, xm1014</td></tr>
+				<tr><td>ammo_45acp</td><td>ump45, mac10, usp</td></tr>
+				<tr><td>ammo_357sig</td><td>P228</td></tr>
+				<tr><td>ammo_57mm</td><td>p90, fiveseven</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">ammoprice</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">-</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Price of ammo for this weapon.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">knockback</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">-</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The knock back multiplier for the weapon. 1.0 is no change, "0.5" give half knock
+			back, and 2.0 gives double knock back.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zmarketprice</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">-</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The price of the weapon in ZMarket. Default in configuration file is CS:S buymenu
+			price.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zmarketpurchasemax</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">-</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The max number of purchases allowed per spawn for the weapon.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<p>The file structure is Valve's key/value format where the root section is named "weapons" and a
+sub section for each weapon using short names from the list below.</p>
+
+<h4><a name="3.8.2" />2. Weapon List</h4>
+
+<blockquote><table>
+	<tr>
+		<th class="namewidth">Weapon name:</th>
+		<th>Type:</th>
+		<th>Full name:</th>
+	</tr>
+	
+	<tr>
+		<td class="code">Glock</td>
+		<td>Pistol</td>
+		<td>Glock 18 Select Fire (9X19mm Sidearm)</td>
+	</tr>
+	<tr>
+		<td class="code">USP</td>
+		<td>Pistol</td>
+		<td>.45 USP (K&amp;M .45 Tactical)</td>
+	</tr>
+	<tr>
+		<td class="code">P228</td>
+		<td>Pistol</td>
+		<td>228 Compact</td>
+	</tr>
+	<tr>
+		<td class="code">Deagle</td>
+		<td>Pistol</td>
+		<td>Desert Eagle .50C (Night Hawk .50C)</td>
+	</tr>
+	<tr>
+		<td class="code">Elite</td>
+		<td>Pistol</td>
+		<td>.40 Dual Elites</td>
+	</tr>
+	<tr>
+		<td class="code">Fiveseven</td>
+		<td>Pistol</td>
+		<td>ES Five-Seven</td>
+	</tr>
+	<tr>
+		<td class="code">M3</td>
+		<td>Shotgun</td>
+		<td>Benelli M3 (Leone 12 Gauge Super)</td>
+	</tr>
+	<tr>
+		<td class="code">XM1014</td>
+		<td>Shotgun</td>
+		<td>Benelli XM1014 (Leone YG1265 Auto Shotgun)</td>
+	</tr>
+	<tr>
+		<td class="code">Mac10</td>
+		<td>SMG</td>
+		<td>Ingram MAC-10</td>
+	</tr>
+	<tr>
+		<td class="code">TMP</td>
+		<td>SMG</td>
+		<td>Steyr TMP (Schmidt Machine Pistol)</td>
+	</tr>
+	<tr>
+		<td class="code">MP5Navy</td>
+		<td>SMG</td>
+		<td>HK MP5 Navy (KM Sub-Machine Gun)</td>
+	</tr>
+	<tr>
+		<td class="code">UMP45</td>
+		<td>SMG</td>
+		<td>K&amp;M UMP45</td>
+	</tr>
+	<tr>
+		<td class="code">P90</td>
+		<td>SMG</td>
+		<td>FN P90 (ES C90)</td>
+	</tr>
+	<tr>
+		<td class="code">Galil</td>
+		<td>Rifle</td>
+		<td>IMI Galil (IDF Defender)</td>
+	</tr>
+	<tr>
+		<td class="code">Famas</td>
+		<td>Rifle</td>
+		<td>Giat FAMAS (Clarion 5.56)</td>
+	</tr>
+	<tr>
+		<td class="code">AK47</td>
+		<td>Rifle</td>
+		<td>AK-47 (CV-47)</td>
+	</tr>
+	<tr>
+		<td class="code">M4A1</td>
+		<td>Rifle</td>
+		<td>M4A1 Carbine (Maverick M4A1 Carbine)</td>
+	</tr>
+	<tr>
+		<td class="code">SG552</td>
+		<td>Rifle</td>
+		<td>SIG SG552 (Krieg 552 Commando)</td>
+	</tr>
+	<tr>
+		<td class="code">AUG</td>
+		<td>Rifle</td>
+		<td>Steyr AUG (Bullpup)</td>
+	</tr>
+	<tr>
+		<td class="code">M249</td>
+		<td>Machine gun</td>
+		<td>FN M249 (ES M249 Para)</td>
+	</tr>
+	<tr>
+		<td class="code">Scout</td>
+		<td>Sniper</td>
+		<td>Steyr Scout (Schmidt Scout)</td>
+	</tr>
+	<tr>
+		<td class="code">SG550</td>
+		<td>Sniper</td>
+		<td>SIG SG550 (Krieg 550 Commando)</td>
+	</tr>
+	<tr>
+		<td class="code">G3SG1</td>
+		<td>Sniper</td>
+		<td>G3/SG-1 (D3/AU-1)</td>
+	</tr>
+	<tr>
+		<td class="code">AWP</td>
+		<td>Sniper</td>
+		<td>Arctic Warfare Magnum (Magnum Sniper Rifle)</td>
+	</tr>
+	<tr>
+		<td class="code">hegrenade</td>
+		<td>Grenade</td>
+		<td>High explosive grenade</td>
+	</tr>
+	<tr>
+		<td class="code">flashbang</td>
+		<td>Grenade</td>
+		<td>Flash bang</td>
+	</tr>
+	<tr>
+		<td class="code">smokegrenade</td>
+		<td>Grenade</td>
+		<td>Smoke grenade</td>
+	</tr>
+	<tr>
+		<td class="code">NVGs</td>
+		<td>Equipment</td>
+		<td>Night vision goggles</td>
+	</tr>
+</table></blockquote>
+
+<h4><a name="3.8.3" />3. Weapon Commands</h4>
+
+<p>Available commands for managing weapon restrictions. These can be used in the main configuration
+file, or on a per-map basis with map configuration files.</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_restrict &lt;weapon|weapon type&gt; [weapon|weapontype] ...</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Restricts one or more weapons or weapon types (group).</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td>weapon</td><td>The weapon name.</td></tr>
+				<tr><td>weapon type</td><td>The weapon type group.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_unrestrict &lt;weapon|weapon type&gt; [weapon|weapontype] ...</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Unrestricts one or more weapons or weapon types (group).</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td>weapon</td><td>The weapon name.</td></tr>
+				<tr><td>weapon type</td><td>The weapon type group.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zmarket</td>
+	</tr>
+	<tr>
+		<td class="indent">Displays the ZMarket weapon menu.</td>
+	</tr>
+</table></blockquote>
+
+
+
+
+
+<h4><a name="a" /></h4>
+<p></p>
+<blockquote><p class="code"></p></blockquote>
+<blockquote><table>
+	<tr>
+		<td class="code"></td>
+		<td></td>
+	</tr>
+</table></blockquote>
+
 
 </div>
 

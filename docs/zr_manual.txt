@@ -573,7 +573,7 @@ List files to be downloaded in:
 --------------------------
 
 The class system makes it possible to have different zombies and humans with
-customized skills. It cannot be turned off. If there are only one class in each
+customized skills. It cannot be turned off. If there is only one class in each
 team, the class selections menus are automatically disabled.
 
 The class configurations are stored in Valve's key/value format, and the file
@@ -657,7 +657,7 @@ The list below explains all available class attributes in detail:
         These flags can be used in a combination (1 + 2), so it could be a
         mother zombie class for admins only.
     
-    group                   text            Name of a valid SourceMod group.
+    group                   text            Name of a valid SourceMod group
     ---------------------------------------------------------------------------
         Rescrict class to members of this SourceMod group. Useful for making
         VIP-only classes. Leave blank to allow everyone to use this class.
@@ -766,7 +766,7 @@ The list below explains all available class attributes in detail:
     
     speed                   decimal         10.0 - 2000.0
     ---------------------------------------------------------------------------
-        The players running speed.
+        The player's running speed.
     
     knockback               decimal         -30.0 - 30.0
     ---------------------------------------------------------------------------
@@ -792,7 +792,7 @@ required. Otherwise the plugin will fail to load.
 Requirements:
 
     - At least one human class (teamid 1).
-    - At least one zombie class (teamid 0)
+    - At least one zombie class (teamid 0).
     - In addition both above classes shouldn't have special flags set. They
       must be clean classes, which is flags set to "0".
 
@@ -1076,7 +1076,7 @@ will take effect. This only applies to players who already is the same class.
 
 3.7.8  DUMPING ATTRIBUTES
 
-For debug purposes class attributes can be dumped.
+For debug purposes class attributes also can be dumped.
 
     Syntax:
     ===========================================================================
@@ -1132,7 +1132,7 @@ These are the allowed attributes:
     ---------------------------------------------------------------------------
         A list of weapon groups and the weapon type.
         
-        Pre defined options:
+        Pre-defined options:
         - All
         - Pistol
         - Shotgun
