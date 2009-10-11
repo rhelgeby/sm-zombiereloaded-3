@@ -1,0 +1,555 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-Language" content="en" />
+		<meta http-equiv="Content-Type" content="text/xhtml; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="zr.css" />
+		<title>Front page - Helgeby Network</title>
+	</head>
+<body>
+
+<div class="container">
+<h1><a name="top" />Zombie:Reloaded User Manual</h1>
+
+<p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
+Written by Richard Helgeby</p>
+<p class="headerinfo">Manual last modified: 2009.10.10</p>
+
+<h2>Index</h2>
+
+<ol>
+	<li>
+		<a href="#1">Introduction</a>
+		<ol>
+			<li><a href="#1.1">About The Plugin</a></li>
+			<li><a href="#1.2">Game Objectives</a></li>
+			<li><a href="#1.3">Credits</a></li>
+		</ol>
+	</li>
+	
+	<li>
+		<a href="#2">Installation</a>
+		<ol>
+			<li><a href="#2.1">Requirements</a></li>
+			<li><a href="#2.2">Plugin Installation</a></li>
+			<li><a href="#2.3">Test Run</a></li>
+		</ol>
+	</li>
+	
+	<li>
+		<a href="#3">Configuration</a>
+		<ol>
+			<li>
+				<a href="#3.1">Understanding syntax</a>
+				<ol>
+					<li><a href="#3.1.1">Optional Parameters</a></li>
+					<li><a href="#3.1.2">Required Parameters</a></li>
+					<li><a href="#3.1.3">Multiple Options In The Same Parameter</a></li>
+					<li><a href="#3.1.4">Text As Parameters</a></li>
+				</ol>
+			</li>
+			
+			<li><a href="#3.2">Configuration Files</a></li>
+			
+			<li>
+				<a href="#3.3">Logging</a>
+				<ol>
+					<li><a href="#3.3.1">Log Flags</a></li>
+					<li><a href="#3.3.2">List Of Modules</a></li>
+				</ol>
+			</li>
+			
+			<li>
+				<a href="#3.4">Custom Map Configuration Files</a>
+				<ol>
+					<li><a href="#3.4.1">Types</a></li>
+				</ol>
+			</li>
+			
+			<li><a href="#3.5">Model List</a></li>
+			<li><a href="#3.6">Download List</a></li>
+			
+			<li>
+				<a href="#3.7">Class Configuration</a>
+				<ol>
+					<li><a href="#3.7.1">Class Types</a></li>
+					<li><a href="#3.7.2">Class Attributes</a></li>
+					<li><a href="#3.7.3">Class Requirements</a></li>
+					<li><a href="#3.7.4">Class Console Variables</a></li>
+					<li><a href="#3.7.5">Modifying Class Attributes</a></li>
+					<li><a href="#3.7.6">Attribute Multipliers</a></li>
+					<li><a href="#3.7.7">Reloading Attributes</a></li>
+					<li><a href="#3.7.8">Dumping Attributes</a></li>
+					<li><a href="#3.7.9">Dumping Multipliers</a></li>
+				</ol>
+			</li>
+			
+			<li>
+				<a href="#3.8">Weapon Configuration</a>
+				<ol>
+					<li><a href="#3.8.1">Attributes</a></li>
+					<li><a href="#3.8.2">Weapon List</a></li>
+					<li><a href="#3.8.3">Console Commands</a></li>
+				</ol>
+			</li>
+			
+			<li><a href="#3.9">Hit Group Configuration</a></li>
+			<li><a href="#3.10">Infection Module</a></li>
+			<li><a href="#3.11">Damage Control Settings</a></li>
+			<li><a href="#3.12">Overlay Settings</a></li>
+			<li><a href="#3.13">Money Settings</a></li>
+			<li><a href="#3.14">Visual Effects Configuration</a></li>
+			<li><a href="#3.15">Sound Effects Configuration</a></li>
+			<li><a href="#3.16">Respawn Configuration</a></li>
+			<li><a href="#3.17">Spawn Command Configuration</a></li>
+			<li><a href="#3.18">Spawn Protect Configuration</a></li>
+			<li><a href="#3.19">Teleport Configuration</a></li>
+			<li><a href="#3.20">HP Display Settings</a></li>
+			<li><a href="#3.21">Jump Boost Settings</a></li>
+			<li><a href="#3.22">Anti-Stick Configuration</a></li>
+			
+			<li>
+				<a href="#3.23">Volumetric Feature Configuration</a>
+				<ol>
+					<li><a href="#3.23.1">volume Attributes</a></li>
+					<li><a href="#3.23.2">Feature Attributes</a></li>
+					<li><a href="#3.23.3">Anti-Camp Feature</a></li>
+				</ol>
+			</li>
+		</ol>
+	</li>
+	
+	<li>
+		<a href="#4">How To Play</a>
+		<ol>
+			<li><a href="#4.1">Game Rules</a></li>
+			<li><a href="#4.2">Chat Commands</a></li>
+			<li><a href="#4.3">Using The Menus</a></li>
+			<li><a href="#4.4">Teamwork</a></li>
+			
+			<li>
+				<a href="#4.5">Playing As Human</a>
+				<ol>
+					<li><a href="#4.5.1">Finding A Place To Hide</a></li>
+					<li><a href="#4.5.2">Making Barricades</a></li>
+					<li><a href="#4.5.3">Playing Fair</a></li>
+				</ol>
+			</li>
+			
+			<li>
+				<a href="#4.6">Playing As Zombie</a>
+				<ol>
+					<li><a href="#4.6.1">Chasing Humans</a></li>
+					<li><a href="#4.6.2">Avoiding Knock back</a></li>
+					<li><a href="#4.6.3">Taking Advantage Of Class Skills</a></li>
+				</ol>
+			</li>
+			
+			<li>
+				<a href="#4.6">Physics Stuff</a>
+				<ol>
+					<li><a href="#4.6.1">Glitching Trough Walls</a></li>
+					<li><a href="#4.6.2">Jumping Through Non-Solid Props</a></li>
+					<li><a href="#4.6.3">Jumping Fast In Small Areas</a></li>
+				</ol>
+			</li>
+		</ol>
+	</li>
+	
+	<li>
+		<a href="#5">Troubleshooting</a>
+		<ol>
+			<li><a href="#5.1">Verifying Requirements</a></li>
+			<li><a href="#5.2">Startup</a></li>
+			<li><a href="#5.3">Error and Warning Messages</a></li>
+			<li><a href="#5.4">Common Problems</a></li>
+		</ol>
+	</li>
+	
+	<li>
+		<a href="#6">Gameplay Guidelines</a>
+		<ol>
+			<li><a href="#6.1">Briefing - Map Configuration Files</a></li>
+			<li><a href="#6.2">Map Balance</a></li>
+			<li><a href="#6.3">Knock Back Settings</a></li>
+			<li><a href="#6.4">Map Time</a></li>
+			<li><a href="#6.5">Servers With Unlimited Ammo and No Reloading</a></li>
+		</ol>
+	</li>
+	
+	<li><a href="#7">Reporting Bugs and Improvements</a></li>
+</ol>
+
+<h2><a name="1" />1. Introduction</h2>
+
+<h3><a name="1.1" />1.1 About The Plugin</h3>
+<p>Zombie:Reloaded remake of Zombie Mod with a lot of new features and improvements. It's made for
+a Counter-Strike: Source server and runs on a powerful scripting platform called SourceMod.</p>
+
+<h3><a name="1.2" />1.2 Game Objectives</h3>
+<p>The objectives is to change the game into humans versus zombies. Humans try to survive by
+camping, barricading and hiding. Zombies try to zombify humans by using their knife.</p>
+
+<p>At a random time after the round starts, one or more random humans are turned into zombies.
+Zombies have certain advantages as running faster and more health points. Humans have huge amounts
+of ammo (or unlimited), and their bullets knock back zombies. A lot more attributes can be adjusted
+for both zombies and humans in different classes.</p>
+
+<h3><a name="1.3" />1.3 Credits</h3>
+<h6>Concept</h6>
+<ul>
+	<li>
+		<p><b>c0ldfyr3</b></p>
+		<p>The developer of Zombie Mod (<a href="http://www.zombiemod.com">www.zombiemod.com</a>).</p>
+	</li>
+</ul>
+
+<h6>Developers and testers</h6>
+<ul>
+	<li>
+		<p><b>Greyscale</b></p>
+		<p>Author of Zombie:Reloaded. The one who started remaking Zombie Mod for the SourceMod platform.</p>
+		<p>Related server: "#1 Pro's Playground - 24/7 Zombie Mod [ Rank / Reload / Napalm ]"
+		(74.201.57.54:27015) - USA, Washington</p>
+	</li>
+    
+    <li>
+		<p><b>Richard Helgeby</b></p>
+		<p>Zombie:Reloaded developer. Started working on the plugin from version 2.5.1. Fixed bugs and
+		made new features.</p>
+		<p>Related server: (same as Cpt. Moore)</p>
+	</li>
+    
+    <li>
+		<p><b>Cpt. Moore</b></p>
+		<p>Helped debuging issues and made some new features. Used the server for testing.</p>
+		<p>Related server: "Zombie World Domination by SwissQuake" (85.195.74.201:13010)
+		 - Switzerland, Basel</p>
+	</li>
+</ul>
+
+<h6>Additional testers and contributors</h6>
+<ul>
+	<li>Grey Echo</li>
+	<li>"zhelev81"</li>
+	<li>"exvel"</li>
+	<li>And more people we haven't listed yet...</li>
+</ul>
+
+
+<h2><a name="2" />2. Installation</h2>
+
+<h3><a name="2.1" />1. Requirements</h3>
+<p>Zombie: Reloaded requires that the following stuff is installed on the server:</p>
+<ol>
+	<li><p>Metamod:Source - A simplified API for server plugins. It makes it easier for developers
+	to make plugins like SourceMod:</p>
+	<ul><li><a href="http://wiki.alliedmods.net/Installing_Metamod:Source">Installing Metamod:Source</a></li></ul></li>
+	
+	<li><p>SourceMod - A scripting platform:</p>
+	<ul>
+		<li><a href="http://wiki.alliedmods.net/Installing_SourceMod">Installing SourceMod</a></li>
+        <li><a href="http://wiki.alliedmods.net/index.php/Category:SourceMod_Documentation">SourceMod Documentation</a></li>
+	</ul></li>
+	
+	<li>
+		<p>ZRTools extension (bundled). Provides some extra functions needed by Zombie:Reloaded.
+		See Plugin Installation (2.2).</p>
+	</li>
+</ol>
+
+<h3><a name="2.2" />2. Plugin Installation</h3>
+<p>Extract the content of the zip file into "cstrike/" on the server.</p>
+
+<p>This plugin is often confused by Zombie Mod, which is actually ovbious since
+Zombie:Reloaded is a SourceMod alternative to Zombie Mod.</p>
+
+<h3><a name="2.3" />3. Test Run</h3>
+<p>The plugin should work with default configuration. Start the server and join a team. Once the
+round starts there sould be some messages at the chat with "[ZR]". Or type "!zmenu" in the chat to
+bring up the zombie menu to confirm that the plugin is running.</p>
+
+<p>Next check error logs from SourceMod and look if there are any entries from "zombiereloaded.smx".
+If the plugin doesn't work at all or there are error logs, see Troubleshooting at section 5.0.</p>
+
+
+<h2><a name="3" />3. Configuration</h2>
+
+<h3><a name="3.1" />1. Understanding Syntax</h3>
+<p>In this manual commands or paths may be written in a certain style that tells how to use it.</p>
+
+<p>Note that the style itself is not written, but it's used as an indicator to tell if a parameter
+is optional or not.</p>
+
+<p>Example syntax of a command:</p>
+	<blockquote><p class="code">zr_class_modify &lt;classname|"zombies"|"humans"|"admins"&gt; &lt;attribute&gt; &lt;value&gt; [is_multiplier]</p></blockquote>
+
+<p>Some paths may look like:</p>
+	<blockquote><p class="code">cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</p></blockquote>
+
+<p>How to read syntaxes like this is explained below.</p>
+
+<h4><a name="3.1.1" />1. Optional Parameters</h4>
+
+<p>Optional parameters is not required and usually have a default value or action. They are marked
+with brackets.</p>
+
+<p>Example:</p>
+	<blockquote><p class="code">zr_somecommand [number]</p></blockquote>
+
+<p>Usage examples:</p>
+	<blockquote><p class="code">zr_somecommand<br />
+	zr_somecommand 10</p></blockquote>
+<p></p>
+
+<h4><a name="3.1.2" />2. Required Parameters</h4>
+
+<p>Required parameters must be specified for the command to function. Usually if no parameters are
+written the command replies with some info about the syntax.</p>
+
+<p>Less than (&lt;) and greather than (&gt;) symbols marks required parameters.</p>
+
+<p>Examples:</p>
+	<blockquote><p class="code">zr_somecommand &lt;number&gt;<br />
+    zr_infect &lt;target&gt;</p></blockquote>
+
+<p>Usage examples:</p>
+	<blockquote><p class="code">zr_somecommand 100<br />
+    zr_infect "unnamed"</p></blockquote>
+
+<h4><a name="3.1.3" />3. Multiple Options In The Same Parameter</h4>
+
+<p>Some commands have parameters that support multiple pre defined options.
+Usually it's specifying a name, a index or a predefined value. Each option is
+separated by a "|" symbol. Only one of the options listed is used in a command.</p>
+
+<p>Example:</p>
+	<blockquote><p class="code">zr_do_something &lt;index|name|"all"&gt;</p></blockquote>
+
+<p>Usage examples:</p>
+	<blockquote><p class="code">zr_do_something 1<br />
+    zr_do_something "all"<br />
+    zr_do_something "unnamed"</p></blockquote>
+
+<h4><a name="3.1.4" />4. Text As Parameters</h4>
+
+<p>Since parameters are separated by spaces, text (strings) should be quoted. It's a good habit to
+do this on all string parameters to avoid parsing mistakes.</p>
+
+<p>Example:</p>
+	<blockquote><p class="code">zr_infect "unnamed" "player"<br />
+    zr_do_something "example text. test."</p></blockquote>
+
+<p>Example of bad usage:</p>
+	<blockquote><p class="code">zr_do_something example text. test.</p></blockquote>
+
+<p>The last example actually have 3 parameters while it should be only one. This may cause unexpected
+results and is an example of why strings should be quoted.</p>
+
+
+<h3><a name="3.2" />2. Configuration Files</h3>
+<p>These are the default configuration files. The paths are relative to the "cstrike" folder.</p>
+
+<blockquote><table>
+	<tr>
+		<th>Type:</th>
+		<th>File:</th>
+	</tr>
+	<tr>
+		<td>Main conf.</td>
+		<td>cfg/sourcemod/zombiereloaded/zombiereloaded.cfg</td>
+	</tr>
+	<tr>
+		<td>Map conf.</td>
+		<td>cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</td>
+	</tr>
+	<tr>
+		<td>Post map conf.</td>
+		<td>cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.post.cfg</td>
+	</tr>
+	<tr>
+		<td>Hitgroup conf.</td>
+		<td>addons/sourcemod/configs/zr/hitgroups.txt</td>
+	</tr>
+	<tr>
+		<td>Class conf.</td>
+		<td>addons/sourcemod/configs/zr/playerclasses.txt</td>
+	</tr>
+	<tr>
+		<td>Weapon conf.</td>
+		<td>addons/sourcemod/configs/zr/weapons.txt</td>
+	</tr>
+	<tr>
+		<td>Download list</td>
+		<td>addons/sourcemod/configs/zr/downloads.txt</td>
+	</tr>
+	<tr>
+		<td>Model list</td>
+		<td>addons/sourcemod/configs/zr/models.txt</td>
+	</tr>
+</table></blockquote>
+
+<p>The post map configuration file is executed after all features of ZR is done loading. Commands
+that modify loaded data must be put in post configuration files. How to configure each file is
+explained in their own sections.</p>
+
+
+<h3><a name="3.3" />3. Logging</h3>
+
+<p>The log system used in Zombie:Reloaded is pretty powerful and customizable. It's based on
+logging flags and a module filter.</p>
+
+<p>The flags tell what kind of events to log. Those flags are stored as a numeric value in a bit
+field where each bit tell wether to log a certain event or not. See
+<a href="http://en.wikipedia.org/wiki/Bit_field">Bit field</a> for technical details.</p>
+
+<p>The module filter is a list of modules to enable log events from. This filter gives extra
+control of what stuff to log. Use console commands below in the main configuration file to add or
+remove modules to the filter.</p>
+
+<p>These commands might not work properly until
+<a href="http://bugs.alliedmods.net/show_bug.cgi?id=3828">bug 3828</a> in SourceMod is fixed. It's
+a bug where console commands in plugin configuration files are executed late so a command like
+zr_log_add_module is too late.</p>
+
+<p>There are console variables for different log settings and exceptions. Place them in the main
+configuration file.</p>
+
+<p><b>Console variables:</b></p>
+
+<blockquote><table>
+	<tr>
+		<th class="namewidth">Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log</td>
+		<td class="commandheader">"1"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable logging of events in the plugin. Fatal errors or errors are independendt on
+			this setting and always logged.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log_flags</td>
+		<td class="commandheader">"3"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>A bit field that specify what event types to log.</p>
+			<p>Options:<br />
+			Number - See Log Flags (3.3.1)</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log_module_filter</td>
+		<td class="commandheader">"0"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable module filtering. Only log events from listed modules will be logged. Use console
+			commands below to add or remove modules from the filter.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log_ignore_console</td>
+		<td class="commandheader">"1"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Don't log events triggered by console that are executed by the console itself, like
+			commands in configs. Enable this command to avoid spamming logs with events like weapon
+			restrictions.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log_print_admins</td>
+		<td class="commandheader">"0"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Print log events to admin chat in addition to the log file.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log_print_chat</td>
+		<td class="commandheader">"0"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Print log events to public chat in addition to the log file.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<p><b>Console commands:</b></p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log_add_module &lt;module&gt; [modules...]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Adds one or more modules to the module filter. Use short module names, see List Of
+			Modules (3.3.2).</p>
+			<p>Parameters:</p>
+			<blockquote><table>
+				<tr><td class="namewidth">module</td><td>Name of the module to add.</td></tr>
+				<tr><td>modules</td><td>Additional modules to add.</td></tr>
+			</table></blockquote>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log_remove_module &lt;module&gt; [modules...]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Removes one or more modules from the module filter. Use short module names, see List
+			Of Modules (3.3.2).</p>
+			<p>Parameters:</p>
+			<blockquote><table>
+				<tr><td class="namewidth">module</td><td>Name of the module to remove.</td></tr>
+				<tr><td>modules</td><td>Additional modules to remove.</td></tr>
+			</table></blockquote>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_log_list</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Lists current log flag settings and module filtering settings.</p>
+			<p>Parameters:</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+</div>
+
+</body>
+</html>

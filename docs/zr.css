@@ -1,0 +1,111 @@
+h1
+{
+    font-family: "Verdana", "Arial", "Times";
+    font-size: x-large;
+}
+
+h2
+{
+    font-family: "Courier New", "Verdana" "Arial";
+    font-size: larger;
+    color: #900000;
+    border-bottom-style: solid;
+    border-bottom-color: #900000;
+    border-bottom-width: medium;
+}
+
+h3
+{
+    font-family: "Verdana", "Arial", "Times";
+    font-size: medium;
+}
+
+h4
+{
+    font-family: "Verdana", "Arial", "Times";
+    font-size: small;
+}
+
+h5
+{
+    font-family: "Verdana", "Arial", "Times";
+    font-size: x-small;
+    color: #909090;
+}
+h6
+{
+    font-family: "Verdana", "Arial", "Times";
+    font-size: small;
+    font-weight: bold;
+    color: #900000;
+}
+
+p, li, td
+{
+    font-family: "Arial", "Times";
+    font-size: small;
+    color: #404040;
+}
+
+p.headerinfo
+{
+    font-size: x-small;
+    color: #909090;
+}
+
+p.code
+{
+    font-family: "Courier New", "Lucida Console";
+    color: #000000;
+}
+
+table
+{
+    border-style: none;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td
+{
+    text-align: left;
+    padding: 3px;
+}
+
+td.commandheader
+{
+    border-bottom-style: dashed;
+    border-bottom-width: thin;
+    font-family: "Courier New", "Lucida Console";
+    color: #000000;
+}
+
+td.indent
+{
+    padding-left: 40px;
+}
+
+th
+{
+    font-family: "Arial", "Times";
+    font-size: small;
+    font-weight: bold;
+    color: #900000;
+    vertical-align: top;
+    text-align: left;
+    padding: 3px;
+    border-bottom-style: solid;
+    border-bottom-width: medium;
+}
+
+th.namewidth
+{
+    width: "500px";
+}
+
+.container
+{
+    margin-left: 0px;
+    margin-right: auto;
+    width: 700px;
+}
