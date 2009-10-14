@@ -1281,7 +1281,7 @@ main configuration file, or on a per-map basis with map configuration files.
 3.9  HIT GROUP CONFIGURATION
 ------------------------------
 
-A hit group configuration makes it possible to disable damage or adjust knock
+Hit group configuration makes it possible to disable damage or adjust knock
 back per hit group. This is useful for fine tuning game balance.
 
 The hit group configuration file is a file in Valve's key/value format with
@@ -1402,7 +1402,7 @@ These are the console variables for the infection module:
     
     zr_infect_sound                     "npc/fast_zombie/fz_scream1.wav"
     ---------------------------------------------------------------------------
-        Sound played when infected. The file path is relative to the "sounds"
+        Sound played when infected. The file path is relative to the "sound"
         folder. Leave blank ("") to disable infection sound.
     
     zr_infect_explosion                 1

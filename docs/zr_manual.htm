@@ -14,7 +14,7 @@
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
 Written by Richard Helgeby</p>
-<p class="headerinfo">Manual last modified: 2009.10.10</p>
+<p class="headerinfo">Manual last modified: 2009.10.14</p>
 
 <h2>Index</h2>
 
@@ -184,8 +184,9 @@ Written by Richard Helgeby</p>
 <h2><a name="1" />1. Introduction</h2>
 
 <h3><a name="1.1" />1.1 About The Plugin</h3>
-<p>Zombie:Reloaded remake of Zombie Mod with a lot of new features and improvements. It's made for
-a Counter-Strike: Source server and runs on a powerful scripting platform called SourceMod.</p>
+<p>Zombie:Reloaded a alternative to Zombie Mod with a lot of new features and improvements. It's
+open source and made for Counter-Strike: Source and runs on a powerful scripting platform called
+SourceMod.</p>
 
 <h3><a name="1.2" />1.2 Game Objectives</h3>
 <p>The objectives is to change the game into humans versus zombies. Humans try to survive by
@@ -195,6 +196,10 @@ camping, barricading and hiding. Zombies try to zombify humans by using their kn
 Zombies have certain advantages as running faster and more health points. Humans have huge amounts
 of ammo (or unlimited), and their bullets knock back zombies. A lot more attributes can be adjusted
 for both zombies and humans in different classes.</p>
+
+<p>This plugin is often confused by Zombie Mod, which is actually ovbious since
+Zombie:Reloaded is a SourceMod alternative to Zombie Mod and the gameplay is exactly the same. This
+plugin is compatible with all existing Zombie Mod maps.</p>
 
 <h3><a name="1.3" />1.3 Credits</h3>
 <h6>Concept</h6>
@@ -240,7 +245,7 @@ for both zombies and humans in different classes.</p>
 
 <h2><a name="2" />2. Installation</h2>
 
-<h3><a name="2.1" />1. Requirements</h3>
+<h3><a name="2.1" />2.1. Requirements</h3>
 <p>Zombie: Reloaded requires that the following stuff is installed on the server:</p>
 <ol>
 	<li><p>Metamod:Source - A simplified API for server plugins. It makes it easier for developers
@@ -259,13 +264,11 @@ for both zombies and humans in different classes.</p>
 	</li>
 </ol>
 
-<h3><a name="2.2" />2. Plugin Installation</h3>
-<p>Extract the content of the zip file into "cstrike/" on the server.</p>
+<h3><a name="2.2" />2.2. Plugin Installation</h3>
+<p>Extract the content of "cstrike" in the zip file into "cstrike" on the server. The folder and
+file structure is already set up correctly and ready to be extracted.</p>
 
-<p>This plugin is often confused by Zombie Mod, which is actually ovbious since
-Zombie:Reloaded is a SourceMod alternative to Zombie Mod.</p>
-
-<h3><a name="2.3" />3. Test Run</h3>
+<h3><a name="2.3" />2.3. Test Run</h3>
 <p>The plugin should work with default configuration. Start the server and join a team. Once the
 round starts there sould be some messages at the chat with "[ZR]". Or type "!zmenu" in the chat to
 bring up the zombie menu to confirm that the plugin is running.</p>
@@ -276,7 +279,7 @@ If the plugin doesn't work at all or there are error logs, see <a href="#5">Trou
 
 <h2><a name="3" />3. Configuration</h2>
 
-<h3><a name="3.1" />1. Understanding Syntax</h3>
+<h3><a name="3.1" />3.1. Understanding Syntax</h3>
 <p>In this manual commands or paths may be written in a certain style that tells how to use it.</p>
 
 <p>Note that the style itself is not written, but it's used as an indicator to tell if a parameter
@@ -348,7 +351,7 @@ do this on all string parameters to avoid parsing mistakes.</p>
 results and is an example of why strings should be quoted.</p>
 
 
-<h3><a name="3.2" />2. Configuration Files</h3>
+<h3><a name="3.2" />3.2. Configuration Files</h3>
 <p>These are the default configuration files. The paths are relative to the "cstrike" folder.</p>
 
 <blockquote><table>
@@ -361,31 +364,31 @@ results and is an example of why strings should be quoted.</p>
 		<td>cfg/sourcemod/zombiereloaded/zombiereloaded.cfg</td>
 	</tr>
 	<tr>
-		<td>Map conf.</td>
+		<td><a href="#3.4">Map config.</a></td>
 		<td>cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</td>
 	</tr>
 	<tr>
-		<td>Post map conf.</td>
+		<td><a href="#3.4">Post map conf.</a></td>
 		<td>cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.post.cfg</td>
 	</tr>
 	<tr>
-		<td>Hitgroup conf.</td>
+		<td><a href="#3.9">Hitgroup conf.</a></td>
 		<td>addons/sourcemod/configs/zr/hitgroups.txt</td>
 	</tr>
 	<tr>
-		<td>Class conf.</td>
+		<td><a href="#3.7">Class conf.</a></td>
 		<td>addons/sourcemod/configs/zr/playerclasses.txt</td>
 	</tr>
 	<tr>
-		<td>Weapon conf.</td>
+		<td><a href="#3.8">Weapon conf.</a></td>
 		<td>addons/sourcemod/configs/zr/weapons.txt</td>
 	</tr>
 	<tr>
-		<td>Download list</td>
+		<td><a href="#3.6">Download list</a></td>
 		<td>addons/sourcemod/configs/zr/downloads.txt</td>
 	</tr>
 	<tr>
-		<td>Model list</td>
+		<td><a href="#3.5">Model list</a></td>
 		<td>addons/sourcemod/configs/zr/models.txt</td>
 	</tr>
 </table></blockquote>
@@ -395,7 +398,7 @@ that modify loaded data must be put in post configuration files. How to configur
 explained in their own sections.</p>
 
 
-<h3><a name="3.3" />3. Logging</h3>
+<h3><a name="3.3" />3.3. Logging</h3>
 
 <p>The log system used in Zombie:Reloaded is pretty powerful and customizable. It's based on
 logging flags and a module filter.</p>
@@ -701,7 +704,7 @@ unit converter like below can also be used.</p>
 </table></blockquote>
 
 
-<h3><a name="3.4" />4. Custom Map Configuration Files</h3>
+<h3><a name="3.4" />3.4. Custom Map Configuration Files</h3>
 
 <p>Configuration files for each map is supported. They're executed after the main configuration
 files are executed, and are ideal for customizing map settings. These files are just regular
@@ -716,7 +719,7 @@ attributes or changing ambience sound.</p>
 <p>There are two kinds of map configs; pre and post. Pre map configuration files are executed
 before the modules are loaded. They're useful for changing configuration sets for certain modules
 like classes. Post map configuration files are executed after the modules are loaded. Certain stuff
-have to be placed in this one to take effect, like changing class attributes.</p>
+have to be placed in this one to be effective, like changing class attributes.</p>
 
 <blockquote><table>
 	<tr>
@@ -739,7 +742,7 @@ have to be placed in this one to take effect, like changing class attributes.</p
 <p>If not explicit specified in the module documentation, use pre configuration.</p>
 
 
-<h3><a name="3.5" />5. Model Configuration</h3>
+<h3><a name="3.5" />3.5. Model Configuration</h3>
 
 <p><b>Note:</b> Work in progress. Some flags explained in this section doesn't exist yet.</p>
 
@@ -792,7 +795,7 @@ specified it's treated as a regular public model.</p>
 	<blockquote><p class="code">addons/sourcemod/configs/zr/models.txt</p></blockquote>
 
 
-<h3><a name="3.6" />6. Download List</h3>
+<h3><a name="3.6" />3.6. Download List</h3>
 
 <p>Custom models, materials and overlays must be listed in the download list so clients will
 download them. The paths must be relative to the "cstrike" folder.</p>
@@ -802,7 +805,7 @@ download them. The paths must be relative to the "cstrike" folder.</p>
 	<blockquote><p class="code">addons/sourcemod/configs/zr/downloads.txt</p></blockquote>
 
 
-<h3><a name="3.7" />7. Class Configuration</h3>
+<h3><a name="3.7" />3.7. Class Configuration</h3>
 
 <p>The class system makes it possible to have different zombies and humans with customized skills.
 It cannot be turned off, but class selection options can be disabled. If there is only one class in
@@ -911,7 +914,7 @@ the admin-only flag in the "flags" attribute.</p>
 					<td>Mother zombie.<br />
 					Marks the class as a mother zombie class. These classes will be used on mother
 					zombies. Note that zr_classes_default_mother_zombie setting must be set to
-					"motherzombies" for this flag to take effect.</td>
+					"motherzombies" for this flag to be effective.</td>
 				</tr>
 			</table></blockquote>
 			<p>These flags can be used in a combination (1 + 2), so it could be a mother zombie
@@ -1720,8 +1723,8 @@ menu is useful for finding the correct value, and then use it in a map configura
 
 <h4><a name="3.7.7" />7. Reloading Attributes</h4>
 
-<p>While testing or adjusting class attributes they must be reloaded before they will take effect.
-This only applies to players who already is the same class.</p>
+<p>While testing or adjusting class attributes they must be reloaded before they will be effective.
+This only applies to players who already are the same class.</p>
 
 <blockquote><table>
 	<tr>
@@ -1810,7 +1813,7 @@ multipliers.</p>
 </table></blockquote>
 
 
-<h3><a name="3.8" />8. Weapon Configuration</h3>
+<h3><a name="3.8" />3.8. Weapon Configuration</h3>
 
 <p>The weapon module can be used to restict weapons or scale knockback.</p>
 
@@ -2177,6 +2180,1004 @@ file, or on a per-map basis with map configuration files.</p>
 	</tr>
 </table></blockquote>
 
+
+<h3><a name="3.9" />3.9. Hit Group Configuration</h3>
+
+<p>Hit group configuration makes it possible to disable damage or adjust knock back per hit group.
+This is useful for fine tuning game balance.</p>
+
+<p>The hit group configuration file is a file in Valve's key/value format with the root key
+"hitgroups" and a sub key for each hit group.</p>
+
+<p>The default file is:</p>
+
+	<blockquote><p class="code">addons/sourcemod/configs/zr/hitgroups.txt</p></blockquote>
+
+<p>Console commands:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_hitgroup &lt;hitgroup name&gt; [value]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Toggles or sets if a zombie's hitgroup can be damaged.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr>
+					<td>hitgrup name</td>
+					<td>Name of the hit group to adjust. Options:
+                        <ul>
+							<li>generic</li>
+							<li>head</li>
+							<li>chest</li>
+							<li>stomach</li>
+							<li>leftarm</li>
+							<li>rightarm</li>
+							<li>leftleg</li>
+							<li>rightleg</li>
+							<li>gear</li>
+						</ul>
+					</td>
+				</tr>
+				<tr><td>value</td><td>Optional. Enable hit group damage. Default action is to toggle
+				setting. Options: 0 or 1</td></tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h4><a name="3.9.1" />1. Hit Group Attributes</h4>
+
+<blockquote><table>
+	<tr>
+		<th>Attribute:</th>
+		<th>Type:</th>
+		<th>Limits/Requirements:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">index</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">-</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The hit group index.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td>0</td><td>Generic</td></tr>
+				<tr><td>1</td><td>Head</td></tr>
+				<tr><td>2</td><td>Chest</td></tr>
+				<tr><td>3</td><td>Stomach</td></tr>
+				<tr><td>4</td><td>Left Arm</td></tr>
+				<tr><td>5</td><td>Right Arm</td></tr>
+				<tr><td>6</td><td>Left Leg</td></tr>
+				<tr><td>7</td><td>Right Leg</td></tr>
+				<tr><td>8</td><td>Gear</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">damage</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"yes" or "no"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Allows damage to be done on the specified hit group for zombies.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td>yes</td><td>Allow damage</td></tr>
+				<tr><td>no</td><td>Ignore damage</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">knockback</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">-</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The knock back multiplier for the hitgroup. 1.0 for no change.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h3><a name="3.10" />3.10. Infection Module</h3>
+
+<p>The infection module handles all infection events and does random infection on mother zombies.
+It's the core part of the plugin that creates this human vs. zombies game.</p>
+
+<p>Number of mother zombies is based on a ratio setting, so on server with many players more mother
+zombies will be spawned than on a server with few players. Server admins can adjust this ratio to
+tune game balance.</p>
+
+<p>In addition several infection effects can be enabled or disabled.</p>
+
+<p>These are the console variables for the infection module:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_mzombie_ratio</td>
+		<td class="commandheader">5</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Mother zombie ratio. Every random N-th player is infected. In this case it's 5 where
+			every fifth player will be infected. If it's set to 0 there will be only 1 mother zombie
+			every time.</p>
+			<p>Options:<br />
+			0 or a positive number up to max server slots</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_mzombie_respawn</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Teleport mother zombies to spawn place when infected.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_spawntime_min</td>
+		<td class="commandheader">30.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Minimum time when mother zombies spawn. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_spawntime_max</td>
+		<td class="commandheader">50.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Maximum time when mother zombies spawn. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_consecutive_block</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Blocks players from being mother zombie twice in a row.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_weapons_drop</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Force players to drop weapons and grenades when infected. So other players can use them.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_sound</td>
+		<td class="commandheader">npc/fast_zombie/fz_scream1.wav</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Sound played when infected. The file path is relative to the "sound" folder. Leave
+			blank ("") to disable infection sound.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_explosion</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable explosion effects. If disabled, this setting will also disable the following
+			CVARs:</p>
+			<ul>
+				<li>zr_infect_fireball</li>
+				<li>zr_infect_smoke</li>
+				<li>zr_infect_smoke</li>
+			</ul>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_fireball</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Spawn a fire ball effect around the player on infection.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_smoke</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Spawn a smoke cloud effect around the player on infection.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_sparks</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Emit sparks from the the player on infection.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_esplash</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Emit an energy splash effect from the player on infection.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_shake</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Shake the player's view on infection.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_shake_amp</td>
+		<td class="commandheader">15.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Shake amplitude, how strong the shake is. Amplitude is in units.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_shake_frequency</td>
+		<td class="commandheader">1.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Shake frequency, how fast the shake is. Frequency is in hertz (cycles per second).</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect_shake_duration</td>
+		<td class="commandheader">5.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Duration of shake, how long the shake lasts. Time is in seconds.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<p>Console commands:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_infect &lt;target&gt; [respawn]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Infects one or more players.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td>target</td><td>A SourceMod target string with one or more players.</td></tr>
+				<tr><td>respawn</td><td>Teleport players to spawn.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_human &lt;target&gt; [respawn]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Turn one or more zombies into humans.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td>target</td><td>A SourceMod target string with one or more players.</td></tr>
+				<tr><td>respawn</td><td>Teleport players to spawn.</td></tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.11" />3.11. Damage Control Settings</h3>
+
+<p>With damage control it's possible to block suicide attempts, fall damage, blast damage and hit
+group damage. See <a href="#3.9">Hit Group Configuration (3.9)</a> on how to configure hit groups.</p>
+
+<p>Damage control console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_damage_hitgroups</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enables hit group damage control. See Hit Group Configuration (3.9) on how to configure
+			hit groups.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_damage_block_ff</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Block friendly fire between zombies.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_damage_block_blast</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Block blast damage inflicted on self or teammates.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_damage_suicide_zombie</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Block suicide attempts by regular zombies.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_damage_suicide_mzombie</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Block suicide attempts by mother zombies.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_damage_suicide_human</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Block suicide attempts by humans.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_damage_suicide_cmds</td>
+		<td class="commandheader">"kill, spectate, jointeam"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>List of console commands that are treated as suicide attempts. Separated by ", ".
+			These commands are often bound to a key on the client, like "m" is bound to "jointeam".</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.12" />3.12. Overlay Settings</h3>
+
+<p>Overlays are pictures displayed on players' screen on certain events. However, these <b>overlays
+require DirectX 9 or higher</b> to work. Players with lower DirectX version won't see these overlays.</p>
+
+<p>Since these overlays doesn't last forever, they must be redisplayed at a certain interval. A
+refresh once per second seems to be enough.</p>
+
+<p>When the round ends, overlays for either humans or zombies are displayed, depending on the winning
+team.</p>
+
+<p>Overlays are also used as a class attribute, like the zombie vision effect.</p>
+
+<p>These are the overlay console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_overlays_update_time</td>
+		<td class="commandheader">1.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>How often overlays are refreshed. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_roundend_overlay</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Show overlays for the winning team when the round ends.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_roundend_overlays_human</td>
+		<td class="commandheader">overlays/zr/humans_win</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Overlay to be displayed when humans win. Path is relative to the "materials" folder.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_roundend_overlays_zombie</td>
+		<td class="commandheader">overlays/zr/zombies_win</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Overlay to be displayed when zombies win. Path is relative to the "materials" folder.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.13" />3.13. Money Configuration</h3>
+
+<p>Players' cash can be modified and reset on every spawn if enabled.</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_account_cashfill</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Resets player's cash every spawn. Cash amount is specified in
+			zr_account_cashfill_value.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_account_cashfill_value</td>
+		<td class="commandheader">12000</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>How much cash to give each spawn, if enabled.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_account_cashdmg</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Attacker receives amount of cash equivalent to the damage that was inflicted. If this
+			one is enabled, the zr_account_cashfill and zr_account_cashfill_value console variables
+			is ignored.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.14" />3.14. Visual Effects Configuration</h3>
+
+<p>With visual effects it makes it possible to give a creepy ambience. It's possible to change light
+style in maps and set dissolve effects on players' bodies when they die.</p>
+
+<p>It supposed to have support for adding fog, but because of technical limits in SourceMod it's not
+fully functional yet. For developers who wonder why, it's because there must be a env_fog_controller
+entity in the map. That entity isn't networked so SourceMod can't create that entity type (<a
+href="http://forums.alliedmods.net/showthread.php?t=98280">Logical Entity Support</a> is a work
+in progress by the SourceMod team).</p>
+
+<p>Currently, fog can only be modified if the map already has a env_fog_controller entity.</p>
+
+<p>Console variables for visual effects:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_lightstyle</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Change light style (brightness) in the map.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_lightstyle_value</td>
+		<td class="commandheader">b</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Light brightness value. The brightness is represented by characters from "a" to "z"
+			where "a" is dark, "n" is normal, and "z" is bright.</p>
+			<p>Options:<br />
+			a (dark) to z (bright)</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_sky</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Change skybox of the map.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_sky_path</td>
+		<td class="commandheader">sky_borealis01up.vmt</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>The skybox to use, if enabled. Path is relative to "materials/skybox".</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_sun_disable</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Remove the sun entity on the map. Disables sun rendering on the map.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_fog</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p>Enable fog on the map.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_fog_override</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p>Override existing fog on the map. If fog exists already on the map, replace it with
+			the new modified fog.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_fog_pcolor</td>
+		<td class="commandheader">"255 255 255"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p>Sets the primary fog color. Three values from 0 to 255 separated by a space,
+			representing amount of red, green and blue.</p>
+			<p>Examples</p>
+			<table>
+				<tr><td>255 255 0</td><td>Yellow</td></tr>
+				<tr><td>255 0 255</td><td>Purpule</td></tr>
+				<tr><td>96 96 96</td><td>Dark grey</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_fog_scolor</td>
+		<td class="commandheader">"255 255 255"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p>Sets the secondary fog color. Three values from 0 to 255 separated by a space,
+			representing amount of red, green and blue.</p>
+			<p>Examples</p>
+			<table>
+				<tr><td>255 255 0</td><td>Yellow</td></tr>
+				<tr><td>255 0 255</td><td>Purpule</td></tr>
+				<tr><td>96 96 96</td><td>Dark grey</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_fog_density</td>
+		<td class="commandheader">0.8</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p>Density (thickness) of the fog. The value is in percent, 0.0 to 1.0.</p>
+			<p>Options:<br />
+			0.0 to 1.0</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_fog_startdist</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p>Distance from player to start rendering foremost fog. Distance is in game units (1
+			unit is ~1 inch). For reference, default player models are ~75 units tall.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_fog_enddist</td>
+		<td class="commandheader">400</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Distance from player to stop rendering fog. Distance is in game units (1 unit is ~1
+			inch). For reference, default player models are ~75 units tall.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_fog_farz</td>
+		<td class="commandheader">2000</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Distance to stop render everything, for optimizing purposes. This should be equal to
+			or bigger than fog end distance. There's no reason to render stuff that can't be seen
+			anyways.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_ragdoll_remove</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Remove players' bodies when dying.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_ragdoll_dissolve</td>
+		<td class="commandheader">-1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Dissolve effect to use when removing bodies.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td>-2</td><td>No effect</td></tr>
+				<tr><td>-1</td><td>Random effect</td></tr>
+				<tr><td>0</td><td>Energy dissolve</td></tr>
+				<tr><td>1</td><td>Heavy electrical dissolve</td></tr>
+				<tr><td>2</td><td>Light electrical dissolve</td></tr>
+				<tr><td>3</td><td>Core dissolve</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_veffects_ragdoll_delay</td>
+		<td class="commandheader">0.5</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Time to wait before removing dead bodies. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_napalm_ignite</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Ignite grenades that players throws. Humans need the class attribute "has_napalm"
+			set for this setting to be effective.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.15" />3.15. Sound Effects Configuration</h3>
+
+<p>The sound effects make zombies groan, in addition to the ambience sound file that can be
+played.</p>
+
+<p>Currently it doesn't support any other custom files than the ambience file. Other sounds are
+pre-configured. Instead it's possible to specify how often the sounds should be played, if enabled.</p>
+
+<p>The lenght of the ambience file must be specified because SourceMod currently can't detect lenght
+of MP3 files.</p>
+
+<p>Sound effect console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_seffects_moan</td>
+		<td class="commandheader">30.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Time between emission of a moan sound from a zombie. Time is in secons.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_seffects_groan</td>
+		<td class="commandheader">5</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>The probability that a groan sound will be emitted from a zombie when shot. Probability
+			is in percent.</p>
+			<p>Options:<br />
+			0 to 100</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_seffects_death</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Emit a death sound when a zombie dies.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ambientsounds</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable ambient sound (background sound) to all players during gameplay.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ambientsounds_file</td>
+		<td class="commandheader">ambient/zr/zr_ambience.mp3</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>The ambient sound file to play as ambienece. Path is relative to the "sound" folder,
+			and MP3 files are supported. This sound is also looped so only use sounds that can be
+			looped. Otherwise it might sound wierd when it restarts.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ambientsounds_length</td>
+		<td class="commandheader">60.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Length of the ambient sound. Length is in seconds. If the specified length is shorter
+			than the real sound length, the sound will play again before the previous sound
+			finished playing.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ambientsounds_volume</td>
+		<td class="commandheader">0.8</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Volume of ambient sound file. Volume is in percent.</p>
+			<p>Options:<br />
+			0.0 to 1.0</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.16" />3.16. Respawn Configuration</h3>
+
+<p>Respawning makes players spawn into the game again after death. It keeps the game active and is
+less annoying for people who don't like to wait too much.</p>
+
+<p>If the mother zombie haven't spawned yet, players are always spawned as humans.</p>
+
+<p>Respawn console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_respawn</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable respawning.</p>
+			<p>Options:<br />
+			0.0 to 1.0</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_respawn_delay</td>
+		<td class="commandheader">1.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Time after death to respawn. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_respawn_team_zombie</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Respawn as zombie. If the mother zombie haven't spawned yet, players are always spawned
+			as humans.</p>
+			<p>Options:<br />
+			0.0 to 1.0</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_respawn_team_zombie_world</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Respawn as zombie if the player was killed by world damage. If the mother zombie
+			haven't spawned yet, players are always spawned as humans.</p>
+			<p>Options:<br />
+			0.0 to 1.0</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader"></td>
+		<td class="commandheader"></td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p></p>
+			<p>Options:<br />
+			0.0 to 1.0</p>
+		</td>
+	</tr>
+</table></blockquote>
 
 
 

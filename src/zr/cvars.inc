@@ -372,11 +372,11 @@ CvarsCreate()
     g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE]        =    CreateConVar("zr_veffects_lightstyle_value",   "b",                    "Lightstyle value. ['a' = Darkest | 'z' = Brightest | Dependency: zr_veffects_lightstyle]");
     
     // Sky
-    g_hCvarsList[CVAR_VEFFECTS_SKY]                     =    CreateConVar("zr_veffects_sky",                "1",                    "Change map skybox.");
+    g_hCvarsList[CVAR_VEFFECTS_SKY]                     =    CreateConVar("zr_veffects_sky",                "0",                    "Change map skybox.");
     g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path",           "sky_borealis01up.vmt", "Skybox file, relative to \"materials/skybox\" folder, to change map skybox to. [Dependency: zr_veffects_sky]");
     
     // Sun
-    g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]             =    CreateConVar("zr_veffects_sun_disable",        "1",                    "Disable sun rendering on map.");
+    g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]             =    CreateConVar("zr_veffects_sun_disable",        "0",                    "Disable sun rendering on map.");
     
     // Fog
     g_hCvarsList[CVAR_VEFFECTS_FOG]                     =    CreateConVar("zr_veffects_fog",                "0",                    "(UNSUPPORTED) Enable fog rendering on the map.");

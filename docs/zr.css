@@ -18,6 +18,9 @@ h3
 {
     font-family: "Verdana", "Arial", "Times";
     font-size: medium;
+    border-bottom-style: dotted;
+    border-bottom-color: #C0C0C0;
+    border-bottom-width: 2px;
 }
 
 h4
