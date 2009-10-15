@@ -114,7 +114,8 @@ Written by Richard Helgeby</p>
 				<ol>
 					<li><a href="#3.23.1">volume Attributes</a></li>
 					<li><a href="#3.23.2">Feature Attributes</a></li>
-					<li><a href="#3.23.3">Anti-Camp Feature</a></li>
+					<li><a href="#3.23.3">Anti-Camp</a></li>
+					<li><a href="#3.23.4">Class Editor</a></li>
 				</ol>
 			</li>
 		</ol>
@@ -124,8 +125,8 @@ Written by Richard Helgeby</p>
 		<a href="#4">How To Play</a>
 		<ol>
 			<li><a href="#4.1">Game Rules</a></li>
-			<li><a href="#4.2">Chat Commands</a></li>
-			<li><a href="#4.3">Using The Menus</a></li>
+			<li><a href="#4.2">Commands</a></li>
+			<li><a href="#4.3">Menus</a></li>
 			<li><a href="#4.4">Teamwork</a></li>
 			
 			<li>
@@ -141,7 +142,7 @@ Written by Richard Helgeby</p>
 				<a href="#4.6">Playing As Zombie</a>
 				<ol>
 					<li><a href="#4.6.1">Chasing Humans</a></li>
-					<li><a href="#4.6.2">Avoiding Knock back</a></li>
+					<li><a href="#4.6.2">Avoiding Knock Back</a></li>
 					<li><a href="#4.6.3">Taking Advantage Of Class Skills</a></li>
 				</ol>
 			</li>
@@ -245,7 +246,7 @@ plugin is compatible with all existing Zombie Mod maps.</p>
 
 <h2><a name="2" />2. Installation</h2>
 
-<h3><a name="2.1" />2.1. Requirements</h3>
+<h3><a name="2.1" />2.1 Requirements</h3>
 <p>Zombie: Reloaded requires that the following stuff is installed on the server:</p>
 <ol>
 	<li><p>Metamod:Source - A simplified API for server plugins. It makes it easier for developers
@@ -264,11 +265,11 @@ plugin is compatible with all existing Zombie Mod maps.</p>
 	</li>
 </ol>
 
-<h3><a name="2.2" />2.2. Plugin Installation</h3>
+<h3><a name="2.2" />2.2 Plugin Installation</h3>
 <p>Extract the content of "cstrike" in the zip file into "cstrike" on the server. The folder and
 file structure is already set up correctly and ready to be extracted.</p>
 
-<h3><a name="2.3" />2.3. Test Run</h3>
+<h3><a name="2.3" />2.3 Test Run</h3>
 <p>The plugin should work with default configuration. Start the server and join a team. Once the
 round starts there sould be some messages at the chat with "[ZR]". Or type "!zmenu" in the chat to
 bring up the zombie menu to confirm that the plugin is running.</p>
@@ -279,7 +280,7 @@ If the plugin doesn't work at all or there are error logs, see <a href="#5">Trou
 
 <h2><a name="3" />3. Configuration</h2>
 
-<h3><a name="3.1" />3.1. Understanding Syntax</h3>
+<h3><a name="3.1" />3.1 Understanding Syntax</h3>
 <p>In this manual commands or paths may be written in a certain style that tells how to use it.</p>
 
 <p>Note that the style itself is not written, but it's used as an indicator to tell if a parameter
@@ -351,7 +352,7 @@ do this on all string parameters to avoid parsing mistakes.</p>
 results and is an example of why strings should be quoted.</p>
 
 
-<h3><a name="3.2" />3.2. Configuration Files</h3>
+<h3><a name="3.2" />3.2 Configuration Files</h3>
 <p>These are the default configuration files. The paths are relative to the "cstrike" folder.</p>
 
 <blockquote><table>
@@ -398,7 +399,7 @@ that modify loaded data must be put in post configuration files. How to configur
 explained in their own sections.</p>
 
 
-<h3><a name="3.3" />3.3. Logging</h3>
+<h3><a name="3.3" />3.3 Logging</h3>
 
 <p>The log system used in Zombie:Reloaded is pretty powerful and customizable. It's based on
 logging flags and a module filter.</p>
@@ -704,7 +705,7 @@ unit converter like below can also be used.</p>
 </table></blockquote>
 
 
-<h3><a name="3.4" />3.4. Custom Map Configuration Files</h3>
+<h3><a name="3.4" />3.4 Custom Map Configuration Files</h3>
 
 <p>Configuration files for each map is supported. They're executed after the main configuration
 files are executed, and are ideal for customizing map settings. These files are just regular
@@ -742,7 +743,7 @@ have to be placed in this one to be effective, like changing class attributes.</
 <p>If not explicit specified in the module documentation, use pre configuration.</p>
 
 
-<h3><a name="3.5" />3.5. Model Configuration</h3>
+<h3><a name="3.5" />3.5 Model Configuration</h3>
 
 <p><b>Note:</b> Work in progress. Some flags explained in this section doesn't exist yet.</p>
 
@@ -795,7 +796,7 @@ specified it's treated as a regular public model.</p>
 	<blockquote><p class="code">addons/sourcemod/configs/zr/models.txt</p></blockquote>
 
 
-<h3><a name="3.6" />3.6. Download List</h3>
+<h3><a name="3.6" />3.6 Download List</h3>
 
 <p>Custom models, materials and overlays must be listed in the download list so clients will
 download them. The paths must be relative to the "cstrike" folder.</p>
@@ -805,7 +806,7 @@ download them. The paths must be relative to the "cstrike" folder.</p>
 	<blockquote><p class="code">addons/sourcemod/configs/zr/downloads.txt</p></blockquote>
 
 
-<h3><a name="3.7" />3.7. Class Configuration</h3>
+<h3><a name="3.7" />3.7 Class Configuration</h3>
 
 <p>The class system makes it possible to have different zombies and humans with customized skills.
 It cannot be turned off, but class selection options can be disabled. If there is only one class in
@@ -900,8 +901,8 @@ the admin-only flag in the "flags" attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p>Special class flags that are stored in a bit field (explained in <a href="#3.3.1">Log Flags
-			(3.3.1)</a>). Available flags:</p>
+			<p>Special class flags that are stored in a bit field (explained in <a href="#3.3.1">Log
+			Flags (3.3.1)</a>). Available flags:</p>
 			<blockquote><table>
 				<tr>
 					<td>1</td>
@@ -1148,8 +1149,8 @@ the admin-only flag in the "flags" attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Zombie classes only.</b> How many health points to give the zombie each time it infect
-			a human.</p>
+			<p><b>Zombie classes only.</b> How many health points to give the zombie each time it
+			infect a human.</p>
 		</td>
 	</tr>
 	
@@ -1813,7 +1814,7 @@ multipliers.</p>
 </table></blockquote>
 
 
-<h3><a name="3.8" />3.8. Weapon Configuration</h3>
+<h3><a name="3.8" />3.8 Weapon Configuration</h3>
 
 <p>The weapon module can be used to restict weapons or scale knockback.</p>
 
@@ -2181,7 +2182,7 @@ file, or on a per-map basis with map configuration files.</p>
 </table></blockquote>
 
 
-<h3><a name="3.9" />3.9. Hit Group Configuration</h3>
+<h3><a name="3.9" />3.9 Hit Group Configuration</h3>
 
 <p>Hit group configuration makes it possible to disable damage or adjust knock back per hit group.
 This is useful for fine tuning game balance.</p>
@@ -2291,7 +2292,7 @@ This is useful for fine tuning game balance.</p>
 	</tr>
 </table></blockquote>
 
-<h3><a name="3.10" />3.10. Infection Module</h3>
+<h3><a name="3.10" />3.10 Infection Module</h3>
 
 <p>The infection module handles all infection events and does random infection on mother zombies.
 It's the core part of the plugin that creates this human vs. zombies game.</p>
@@ -2537,7 +2538,7 @@ tune game balance.</p>
 </table></blockquote>
 
 
-<h3><a name="3.11" />3.11. Damage Control Settings</h3>
+<h3><a name="3.11" />3.11 Damage Control Settings</h3>
 
 <p>With damage control it's possible to block suicide attempts, fall damage, blast damage and hit
 group damage. See <a href="#3.9">Hit Group Configuration (3.9)</a> on how to configure hit groups.</p>
@@ -2636,7 +2637,7 @@ group damage. See <a href="#3.9">Hit Group Configuration (3.9)</a> on how to con
 </table></blockquote>
 
 
-<h3><a name="3.12" />3.12. Overlay Settings</h3>
+<h3><a name="3.12" />3.12 Overlay Settings</h3>
 
 <p>Overlays are pictures displayed on players' screen on certain events. However, these <b>overlays
 require DirectX 9 or higher</b> to work. Players with lower DirectX version won't see these overlays.</p>
@@ -2701,7 +2702,7 @@ team.</p>
 </table></blockquote>
 
 
-<h3><a name="3.13" />3.13. Money Configuration</h3>
+<h3><a name="3.13" />3.13 Money Configuration</h3>
 
 <p>Players' cash can be modified and reset on every spawn if enabled.</p>
 
@@ -2752,7 +2753,7 @@ team.</p>
 </table></blockquote>
 
 
-<h3><a name="3.14" />3.14. Visual Effects Configuration</h3>
+<h3><a name="3.14" />3.14 Visual Effects Configuration</h3>
 
 <p>With visual effects it makes it possible to give a creepy ambience. It's possible to change light
 style in maps and set dissolve effects on players' bodies when they die.</p>
@@ -2999,7 +3000,7 @@ in progress by the SourceMod team).</p>
 </table></blockquote>
 
 
-<h3><a name="3.15" />3.15. Sound Effects Configuration</h3>
+<h3><a name="3.15" />3.15 Sound Effects Configuration</h3>
 
 <p>The sound effects make zombies groan, in addition to the ambience sound file that can be
 played.</p>
@@ -3097,13 +3098,13 @@ of MP3 files.</p>
 		<td class="indent" colspan="2">
 			<p>Volume of ambient sound file. Volume is in percent.</p>
 			<p>Options:<br />
-			0.0 to 1.0</p>
+			0 or 1</p>
 		</td>
 	</tr>
 </table></blockquote>
 
 
-<h3><a name="3.16" />3.16. Respawn Configuration</h3>
+<h3><a name="3.16" />3.16 Respawn Configuration</h3>
 
 <p>Respawning makes players spawn into the game again after death. It keeps the game active and is
 less annoying for people who don't like to wait too much.</p>
@@ -3126,7 +3127,7 @@ less annoying for people who don't like to wait too much.</p>
 		<td class="indent" colspan="2">
 			<p>Enable respawning.</p>
 			<p>Options:<br />
-			0.0 to 1.0</p>
+			0 or 1</p>
 		</td>
 	</tr>
 	
@@ -3149,7 +3150,7 @@ less annoying for people who don't like to wait too much.</p>
 			<p>Respawn as zombie. If the mother zombie haven't spawned yet, players are always spawned
 			as humans.</p>
 			<p>Options:<br />
-			0.0 to 1.0</p>
+			0 or 1</p>
 		</td>
 	</tr>
 	
@@ -3162,8 +3163,595 @@ less annoying for people who don't like to wait too much.</p>
 			<p>Respawn as zombie if the player was killed by world damage. If the mother zombie
 			haven't spawned yet, players are always spawned as humans.</p>
 			<p>Options:<br />
-			0.0 to 1.0</p>
+			0 or 1</p>
 		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.17" />3.17 Spawn Command Configuration</h3>
+
+<p>The spawn command (zspawn) lets players join the game late, depending on the time configured. To
+avoid abusing there are settings that decides what team to spawn on, and a time limit when the
+command is allowed to be used.</p>
+
+<p>ZSpawn console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zspawn</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable spawn command.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zspawn_team_overrride</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Override what team to spawn to when using the spawn command. If disabled it will use
+			the same as zr_respawn_team_zombie.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zspawn_team_zombie</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Spawn as zombie if override setting is enabled.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zspawn_timelimit</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable time limit on the spawn command.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zspawn_timelimit_time</td>
+		<td class="commandheader">120.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>How long the spawn command is available after round start, if enabled. Time is in
+			seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zspawn_timelimit_zombie</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Spawn as zombie if using the spawn command after the time is up.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.18" />3.18 Spawn Protect Configuration</h3>
+
+<p>Humans can have spawn protection settings that give them certain advantages for a limited time
+right after they've spawned.</p>
+
+<p>Spawn protection console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_spawnprotect</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable spawn protection for humans.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_spawnprotect_time</td>
+		<td class="commandheader">10</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>How long the spawn protection lasts. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_spawnprotect_speed</td>
+		<td class="commandheader">600.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Running speed for spawn protected players. Normal running speed is 300.0, double is
+			600.0.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_spawnprotect_alpha</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Transparency setting on spawn protected players.</p>
+			<p>Options:<br />
+			0 (invisible) to 255 (fully visible)</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<p>Console commands:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zspawn_force &lt;target&gt; [spawn team]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Force one or more players to spawn.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td>target</td><td>A SourceMod target string with one or more players.</td></tr>
+				<tr><td>spawn team</td><td>Optional. Specify what team to spawn to. Options:<br />
+				0 (humans) or 1 (zombies)</td></tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.19" />3.19 Teleport Configuration</h3>
+
+<p>Zombie:Reloaded has a built in teleport feature with support for limits, delays and abuse
+protection.</p>
+
+<p>Teleport console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_zombie</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Allow zombies to use the teleporter.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_human_before</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Allow humans to use the teleporter before mother zombies have spawned.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_human_after</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Allow humans to use the teleporter after mother zombies have spawned.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_delay_zombie</td>
+		<td class="commandheader">3.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Delay between teleport command and teleport for zombies. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_delay_human</td>
+		<td class="commandheader">3.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Delay between teleport command and teleport for humans. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_max_zombie</td>
+		<td class="commandheader">3</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Maximum number of teleports a zombie can do in a round.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_max_human</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Maximum number of teleports humans can do in a round.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_autocancel</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Automatically cancel a teleport in progress if moving a certain distance.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_ztele_autocancel_distance</td>
+		<td class="commandheader">20</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Maximum distance for automatically canceling a teleport. Distance is in feet. 1 feet
+			is 16 game units where a game unit is ~1 inch. For reference a player is ~75 units tall.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<p>Teleport console commands:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_tele_force &lt;client&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Force teleport on a player. Does not add delay or add to teleport count.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td>client</td><td>Single target player. Support SourceMod targets like
+				@me and @aim.</td></tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.20" />3.20 HP Display Settings</h3>
+
+<p>The HP display is a small panel on the center at the bottom of the screen that displays players'
+health. Players can disable this, and the setting can also be saved in player cookies.</p>
+
+<p>Console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zhp</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable HP display for zombies.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_zhp_default</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Default HP display state on connecting players.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.21" />3.21 Jump Boost Settings</h3>
+
+<p>Jump boost can be abused to do bunny hops. There are settings for configuring maximum allowed
+velocity when jumping. If maximum speed is reached no jump boost is applied.</p>
+
+<p><b>Note:</b> This is not a real bunny hop protection feature. Players who do bunny jumping will
+still be able to do it, but they won't get jump boost after a certain speed if the speed limit is
+enabled.</p>
+
+<p>Console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_jumpboost_bhop_protect</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable bunny hop protection.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_jumpboost_bhop_max</td>
+		<td class="commandheader">300.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Maximum horizontal velocity allowed when jumping. Normal running speed for the player
+			is 300.0</p>
+			<p><b>Note:</b> The first jump does not have a speed limit, but subsequent jumps won't
+			get any boost if the speed limit is reached.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.22" />3.22 Anti-Stick Settings</h3>
+
+<p>The anti-stick system is a automatic no-block system that turn off collisions on players
+that are stuck together, and enable collision again when they're unstuck.</p>
+
+<p>(<b>Note:</b> This file is obsolete!) To know if players are stuck, it needs some extra info about
+each model used in the game. Data for these models are stored in the following file (relative to
+"sourcemod" folder):</p>
+
+	<blockquote><p class="code">data/antistick.dat</p></blockquote>
+
+<p>Console variables:</p>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_antistick</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Enable anti-stick system.</p>
+			<p>Options:<br />
+			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_antistick_default_width</td>
+		<td class="commandheader">32.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> Obsolete! Do not chnage default value!</p>
+			<p>Default model width used to detect if players are stuck together. Width is in game
+			units.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_antistick_file_path</td>
+		<td class="commandheader">data/antistick.dat</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p><b>Note:</b> Obsolete! Just ignore this file.</p>
+			<p>File to store anti-stick model hull data. Path is default to the "sourcemod" folder.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+
+<h3><a name="3.23" />3.23 Volumetric Feature Configuration</h3>
+
+<p>(Feature exist, but incomplete documentation)</p>
+
+<h4><a name="3.23.1" />1. Volume Attributes</h4>
+<h4><a name="3.23.2" />2. Feature Attributes</h4>
+<h4><a name="3.23.3" />3. Anti-Camp</h4>
+<h4><a name="3.23.4" />4. Class Editor</h4>
+
+
+<h2><a name="4" />4. How To Play</h4>
+
+<p>(Incomplete) Feel free to contribute to this section. Make a new thread with suggestions in the
+<a href="http://forums.alliedmods.net/forumdisplay.php?f=132">Zombie:Reloaded Forum</a>.</p>
+
+<p>(how to defend against zombies, in a fair way)</p>
+<p>(zombie tricks, getting through non-solid props)</p>
+
+<h3><a name="4.1" />4.1 Game Rules</h3>
+
+
+<h3><a name="4.3" />4.3 Commands</h3>
+
+
+<h3><a name="4.2" />4.2 Menus</h3>
+
+
+<h3><a name="4.4" />4.4 Teamwork</h3>
+
+
+<h3><a name="4.5" />4.5 Playing As Human</h3>
+
+<h4><a name="4.5.1" />4.5.1 Finding A Place To Hide</h4>
+<h4><a name="4.5.2" />4.5.2 Making Barricades</h4>
+<h4><a name="4.5.3" />4.5.3 Playing Fair</h4>
+
+
+<h3><a name="4.6" />4.6 Playing As Zombie</h3>
+
+<h4><a name="4.6.1" />4.6.1 Chasing Humans</h4>
+<h4><a name="4.6.2" />4.6.2 Avoiding Knock Back</h4>
+<h4><a name="4.6.3" />4.6.3 Taking Advantage Of The Class Skills</h4>
+
+<p>(bunny jump)</p>
+<p>(almost invisible, act as a spy and surprise humans)</p>
+
+
+<h3><a name="4.7" />4.7 Physics Stuff</h3>
+
+<p>There are glitches and simplified physics stuff that can be used to get an advantage. Some servers
+may not allow all of these tricks because they could be unfair.</p>
+
+<h4><a name="4.7.1" />4.7.1 Glitching Through Walls</h4>
+
+<p>(bad thing to do, and should not be allowed)</p>
+
+<h4><a name="4.7.2" />4.7.2 Jumping Through Non-Solid Props</h4>
+
+<p>Realistic physics in multiplayer games is a expensive task for the server and it appears to be
+laggy for players. The solution to this is simplified physics on props (that is simplified collision
+detection).</p>
+
+<p>Some props aren't solid but pushes players away from it's origin (center of the object). This is
+NOT a engine bug, but a simplified solution. These props are useful to _delay_ zombies in barricades,
+but they're still fair to use. If players got enough speed they can run and jump through them.</p>
+
+<p>There's another trick that works quite good if the knock back is balanced
+correctly. If a player look straight down or straight up it's possible to
+simply walk through non-solid props, or at the same time, jumping slowly
+through them.</p>
+
+<p>This simplified physics is used by default on regular Counter-Strike: Source maps. There's
+something called turbo physics which is enabled on most zombie servers, where all props are solid so
+players can stand on them. Players can't push props, but move them by shooting or using their use
+key (E by default) while aiming at the object.</p>
+
+<h4><a name="4.7.3" />4.7.3 Jumping Fast In Small Areas</h4>
+
+<p>When zombies have to crouch to enter a area where humans camp (like tubes and vents), jumping fast
+might help.</p>
+
+<p>When jumping it's not easy for humans to hit the head and they can't get that good knock back
+anymore. With multiple zombies jumping fast, pushing eachother on their way into a tube, the humans
+are doomed. The tube camping problem much better balanced. This problem can also be solved by
+using a <a href="#3.23.4">class editor volume</a> or <a href="#3.23.3">anti-camp</a> in tubes and
+vents.</p>
+
+
+<h3><a name="5" />5. Troubleshooting</h3>
+
+<h4><a name="5.1" />5.1 Verifying Requirements</h4>
+<h4><a name="5.2" />5.2 Startup</h4>
+<h4><a name="5.3" />5.3 Error Messages</h4>
+<h4><a name="5.4" />5.4 Common Problems</h4>
+
+
+<h3><a name="6" />6. Gameplay Guidelines</h3>
+
+<h4><a name="6.1" />6.1 Briefing - Map Configuration Files</h4>
+<h4><a name="6.2" />6.2 Map Balance</h4>
+<h4><a name="6.3" />6.3 Knock Back Settings</h4>
+<h4><a name="6.4" />6.4 Map Time</h4>
+<h4><a name="6.5" />6.5 Servers With Unlimited Ammo And No Reloading</h4>
+
+
+<h3><a name="7" />7. Reporting Bugs And Problems</h3>
+
+<p>Currently we have no public bug tracker, so issues have to be reported in the <a
+href="http://forums.alliedmods.net/forumdisplay.php?f=132">Zombie:Reloaded forum</a>.</p>
+
+<p>A few guidelines while posing issues or questions:</p>
+<ul>
+	<li>Use a single thread per topic. It's much easier to browse a few pages of threads than
+	browsing 1000 posts. Make new threads - or post in existing threads if someone have the same
+	issue. If you're unsure about this, just make new threads.</li>
+	<li>Tell us what version you use. If you use a old version the problem might be solved in a
+	newer version.</li>
+	<li>Use a short thread title that describes your problem (keyworks is enough).</li>
+	<li>If you found a bug, start the thread title with [BUG] or similar.</li>
+	<li>If your problem were solved you could share the solution in your thread. Also add [SOLVED]
+	or similar in the thread title.</li>
+</ul>
+
+
+<!-- Templates:
+<h4><a name="a" /></h4>
+<p></p>
+<blockquote><p class="code"></p></blockquote>
+
+			<table>
+				<tr><td></td><td></td></tr>
+			</table>
+
+<blockquote><table>
+	<tr>
+		<th>Console variable:</th>
+		<th>Default:</th>
 	</tr>
 	
 	<tr>
@@ -3174,24 +3762,26 @@ less annoying for people who don't like to wait too much.</p>
 		<td class="indent" colspan="2">
 			<p></p>
 			<p>Options:<br />
-			0.0 to 1.0</p>
+			0 or 1</p>
 		</td>
 	</tr>
 </table></blockquote>
 
-
-
-
-<h4><a name="a" /></h4>
-<p></p>
-<blockquote><p class="code"></p></blockquote>
 <blockquote><table>
 	<tr>
-		<td class="code"></td>
-		<td></td>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader"></td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p></p>
+		</td>
 	</tr>
 </table></blockquote>
-
+-->
 
 </div>
 

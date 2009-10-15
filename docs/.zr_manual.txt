@@ -1979,7 +1979,7 @@ Console commands:
 3.19  TELEPORT CONFIGURATION
 ------------------------------
 
-Zombie:Reloaded got a built in teleport feature with support for limits, delays
+Zombie:Reloaded has a built in teleport feature with support for limits, delays
 and abuse protection.
 
 Teleport console variables:
@@ -2000,7 +2000,7 @@ Teleport console variables:
         Options:
         0 or 1
     
-    zr_ztele_human_after                0
+    zr_ztele_human_after                1
     ---------------------------------------------------------------------------
         Allow humans to use the teleporter after mother zombies have spawned.
         
@@ -2019,7 +2019,7 @@ Teleport console variables:
     
     zr_ztele_max_zombie                 3
     ---------------------------------------------------------------------------
-        Maximum number of teleports zombies can do in a round.
+        Maximum number of teleports a zombie can do in a round.
     
     zr_ztele_max_human                  1
     ---------------------------------------------------------------------------
@@ -2083,8 +2083,8 @@ Console variables:
 ---------------------------
 
 Jump boost can be abused to do bunny hops. There are settings for configuring
-maximum allowed velocity when jumping. If maximum speed is reached no
-horizontal jump boost is applied.
+maximum allowed velocity when jumping. If maximum speed is reached no jump
+boost is applied.
 
 Console variables:
 
@@ -2122,7 +2122,7 @@ Console variables:
     ===========================================================================
     zr_antistick                        1
     ---------------------------------------------------------------------------
-        Enable anti-stick system
+        Enable anti-stick system.
         
         Options:
         0 or 1
