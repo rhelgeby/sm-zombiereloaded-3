@@ -6,7 +6,7 @@ h1
 
 h2
 {
-    font-family: "Courier New", "Verdana" "Arial";
+    font-family: "Courier New", "Verdana", "Arial";
     font-size: larger;
     color: #900000;
     border-bottom-style: solid;
@@ -62,6 +62,13 @@ p.headerinfo
     color: #000000;
 }
 
+.imagetext
+{
+    font-family: "Arial", "Times";
+    font-size: x-small;
+    color: #000000;
+}
+
 table
 {
     border-style: none;
@@ -103,19 +110,33 @@ th
     border-bottom-width: 2px;
 }
 
-th.namewidth
+.namewidth
 {
-    width: "400px";
+    width: 200px;
 }
 
-th.tinywidth
+.tinywidth
 {
-    width: "100px";
+    width: 75px;
 }
 
-th.mediumwidth
+.mediumwidth
 {
-    width: "200px";
+    width: 150px;
+}
+
+td.parameter
+{
+    font-family: "Courier New", "Lucida Console";
+    color: #000000;
+    width: 150px;
+}
+
+td.valueoption
+{
+    font-family: "Courier New", "Lucida Console";
+    color: #000000;
+    width: 125px;
 }
 
 .container
@@ -123,4 +144,16 @@ th.mediumwidth
     margin-left: 0px;
     margin-right: auto;
     width: 700px;
+}
+
+img
+{
+    border-style: solid;
+    border-color: #000000;
+    border-width: thin;
+}
+
+img.noborder
+{
+    border-style: none;
 }

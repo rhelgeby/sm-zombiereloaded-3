@@ -14,7 +14,7 @@
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
 Written by Richard Helgeby</p>
-<p class="headerinfo">Manual last modified: 2009.10.14</p>
+<p class="headerinfo">Manual last modified: 2009.10.20</p>
 
 <h2>Index</h2>
 
@@ -112,10 +112,11 @@ Written by Richard Helgeby</p>
 			<li>
 				<a href="#3.23">Volumetric Feature Configuration</a>
 				<ol>
-					<li><a href="#3.23.1">volume Attributes</a></li>
-					<li><a href="#3.23.2">Feature Attributes</a></li>
-					<li><a href="#3.23.3">Anti-Camp</a></li>
-					<li><a href="#3.23.4">Class Editor</a></li>
+					<li><a href="#3.23.1">Creating A Volume</a></li>
+					<li><a href="#3.23.2">Volume Attributes</a></li>
+					<li><a href="#3.23.3">Volume Commands</a></li>
+					<li><a href="#3.23.4">Anti-Camp</a></li>
+					<li><a href="#3.23.5">Class Editor</a></li>
 				</ol>
 			</li>
 		</ol>
@@ -165,6 +166,7 @@ Written by Richard Helgeby</p>
 			<li><a href="#5.2">Startup</a></li>
 			<li><a href="#5.3">Error and Warning Messages</a></li>
 			<li><a href="#5.4">Common Problems</a></li>
+			<li><a href="#5.5">Known Issues</a></li>
 		</ol>
 	</li>
 	
@@ -275,7 +277,7 @@ round starts there sould be some messages at the chat with "[ZR]". Or type "!zme
 bring up the zombie menu to confirm that the plugin is running.</p>
 
 <p>Next check error logs from SourceMod and look if there are any entries from "zombiereloaded.smx".
-If the plugin doesn't work at all or there are error logs, see <a href="#5">Troubleshooting (5)</a>.</p>
+If the plugin doesn't work at all or there are errors logged, see <a href="#5">Troubleshooting (5)</a>.</p>
 
 
 <h2><a name="3" />3. Configuration</h2>
@@ -316,11 +318,11 @@ written the command replies with some info about the syntax.</p>
 
 <p>Examples:</p>
 	<blockquote><p class="code">zr_somecommand &lt;number&gt;<br />
-    zr_infect &lt;target&gt;</p></blockquote>
+	zr_infect &lt;target&gt;</p></blockquote>
 
 <p>Usage examples:</p>
 	<blockquote><p class="code">zr_somecommand 100<br />
-    zr_infect "unnamed"</p></blockquote>
+	zr_infect "unnamed"</p></blockquote>
 
 <h4><a name="3.1.3" />3. Multiple Options In The Same Parameter</h4>
 
@@ -333,8 +335,8 @@ separated by a "|" symbol. Only one of the options listed is used in a command.<
 
 <p>Usage examples:</p>
 	<blockquote><p class="code">zr_do_something 1<br />
-    zr_do_something "all"<br />
-    zr_do_something "unnamed"</p></blockquote>
+	zr_do_something "all"<br />
+	zr_do_something "unnamed"</p></blockquote>
 
 <h4><a name="3.1.4" />4. Text As Parameters</h4>
 
@@ -343,7 +345,7 @@ do this on all string parameters to avoid parsing mistakes.</p>
 
 <p>Example:</p>
 	<blockquote><p class="code">zr_infect "unnamed" "player"<br />
-    zr_do_something "example text. test."</p></blockquote>
+	zr_do_something "example text. test."</p></blockquote>
 
 <p>Example of bad usage:</p>
 	<blockquote><p class="code">zr_do_something example text. test.</p></blockquote>
@@ -357,40 +359,40 @@ results and is an example of why strings should be quoted.</p>
 
 <blockquote><table>
 	<tr>
-		<th>Type:</th>
+		<th class="mediumwidth">Type:</th>
 		<th>File:</th>
 	</tr>
 	<tr>
 		<td>Main conf.</td>
-		<td>cfg/sourcemod/zombiereloaded/zombiereloaded.cfg</td>
+		<td class="code">cfg/sourcemod/zombiereloaded/zombiereloaded.cfg</td>
 	</tr>
 	<tr>
 		<td><a href="#3.4">Map config.</a></td>
-		<td>cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</td>
+		<td class="code">cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</td>
 	</tr>
 	<tr>
 		<td><a href="#3.4">Post map conf.</a></td>
-		<td>cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.post.cfg</td>
+		<td class="code">cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.post.cfg</td>
 	</tr>
 	<tr>
 		<td><a href="#3.9">Hitgroup conf.</a></td>
-		<td>addons/sourcemod/configs/zr/hitgroups.txt</td>
+		<td class="code">addons/sourcemod/configs/zr/hitgroups.txt</td>
 	</tr>
 	<tr>
 		<td><a href="#3.7">Class conf.</a></td>
-		<td>addons/sourcemod/configs/zr/playerclasses.txt</td>
+		<td class="code">addons/sourcemod/configs/zr/playerclasses.txt</td>
 	</tr>
 	<tr>
 		<td><a href="#3.8">Weapon conf.</a></td>
-		<td>addons/sourcemod/configs/zr/weapons.txt</td>
+		<td class="code">addons/sourcemod/configs/zr/weapons.txt</td>
 	</tr>
 	<tr>
 		<td><a href="#3.6">Download list</a></td>
-		<td>addons/sourcemod/configs/zr/downloads.txt</td>
+		<td class="code">addons/sourcemod/configs/zr/downloads.txt</td>
 	</tr>
 	<tr>
 		<td><a href="#3.5">Model list</a></td>
-		<td>addons/sourcemod/configs/zr/models.txt</td>
+		<td class="code">addons/sourcemod/configs/zr/models.txt</td>
 	</tr>
 </table></blockquote>
 
@@ -521,8 +523,8 @@ configuration file.</p>
 			<a href="#3.3.2">List Of Modules (3.3.2)</a>.</p>
 			<p>Parameters:</p>
 			<blockquote><table>
-				<tr><td class="namewidth">module</td><td>Name of the module to add.</td></tr>
-				<tr><td>modules</td><td>Additional modules to add.</td></tr>
+				<tr><td class="parameter">module</td><td>Name of the module to add.</td></tr>
+				<tr><td class="parameter">modules</td><td>Additional modules to add.</td></tr>
 			</table></blockquote>
 		</td>
 	</tr>
@@ -536,8 +538,8 @@ configuration file.</p>
 			<a href="#3.3.2">List Of Modules (3.3.2)</a>.</p>
 			<p>Parameters:</p>
 			<blockquote><table>
-				<tr><td class="namewidth">module</td><td>Name of the module to remove.</td></tr>
-				<tr><td>modules</td><td>Additional modules to remove.</td></tr>
+				<tr><td class="parameter">module</td><td>Name of the module to remove.</td></tr>
+				<tr><td class="parameter">modules</td><td>Additional modules to remove.</td></tr>
 			</table></blockquote>
 		</td>
 	</tr>
@@ -548,7 +550,6 @@ configuration file.</p>
 	<tr>
 		<td class="indent">
 			<p>Lists current log flag settings and module filtering settings.</p>
-			<p>Parameters:</p>
 		</td>
 	</tr>
 </table></blockquote>
@@ -627,79 +628,79 @@ unit converter like below can also be used.</p>
 
 <blockquote><table>
 	<tr>
-		<th class="namewidth">Short name:</th>
+		<th>Short name:</th>
 		<th>Description:</th>
 	</tr>
 	<tr>
-		<td>account</td>
+		<td class="valueoption">account</td>
 		<td>Money manager</td>
 	</tr>
 	<tr>
-		<td>antistick</td>
+		<td class="valueoption">antistick</td>
 		<td>Anti-Stick feature</td>
 	</tr>
 	<tr>
-		<td>config</td>
+		<td class="valueoption">config</td>
 		<td>Configuration file manager</td>
 	</tr>
 	<tr>
-		<td>cvars</td>
+		<td class="valueoption">cvars</td>
 		<td>Console variables</td>
 	</tr>
 	<tr>
-		<td>damage</td>
+		<td class="valueoption">damage</td>
 		<td>Damage manager</td>
 	</tr>
 	<tr>
-		<td>downloads</td>
+		<td class="valueoption">downloads</td>
 		<td>File download manager</td>
 	</tr>
 	<tr>
-		<td>hitgroups</td>
+		<td class="valueoption">hitgroups</td>
 		<td>Hit group feature</td>
 	</tr>
 	<tr>
-		<td>infect</td>
+		<td class="valueoption">infect</td>
 		<td>Infection manager</td>
 	</tr>
 	<tr>
-		<td>models</td>
+		<td class="valueoption">models</td>
 		<td>Model list file manager</td>
 	</tr>
 	<tr>
-		<td>playerclasses</td>
+		<td class="valueoption">playerclasses</td>
 		<td>Class manager</td>
 	</tr>
 	<tr>
-		<td>veffects</td>
+		<td class="valueoption">veffects</td>
 		<td>Visual effect manager</td>
 	</tr>
 	<tr>
-		<td>seffects</td>
+		<td class="valueoption">seffects</td>
 		<td>Sound effect manager</td>
 	</tr>
 	<tr>
-		<td>tools</td>
+		<td class="valueoption">tools</td>
 		<td>Helper functions (offsets)</td>
 	</tr>
 	<tr>
-		<td>volfeatures</td>
+		<td class="valueoption">volfeatures</td>
 		<td>Volumetric features</td>
 	</tr>
 	<tr>
-		<td>weapons</td>
+		<td class="valueoption">weapons</td>
 		<td>Weapon manager</td>
 	</tr>
 	<tr>
-		<td>weaponrestrict</td>
+		<td class="valueoption">weaponrestrict</td>
 		<td>Weapon restriction manager</td>
 	</tr>
 	<tr>
-		<td>zspawn</td>
+		<td class="valueoption">zspawn</td>
 		<td>Spawn command manager</td>
 	</tr>
 	<tr>
-		<td>ztele</td>
+		<td class="valueoption">ztele</td>
 		<td>Teleport manager</td>
 	</tr>
 </table></blockquote>
@@ -709,8 +710,8 @@ unit converter like below can also be used.</p>
 
 <p>Configuration files for each map is supported. They're executed after the main configuration
 files are executed, and are ideal for customizing map settings. These files are just regular
-configuration files and can also have standard console commands like setting map time. These files
-are optional.</p>
+configuration files and can also have standard console commands like setting map time. Map
+configuration files are optional.</p>
 
 <p>The main purpose of these files is to make it possible to change settings for Zombie:Reloaded on
 certain maps. That could be scaling knockback, restricting certain weapons, changing class
@@ -718,9 +719,9 @@ attributes or changing ambience sound.</p>
 
 <h4><a name="3.4.1" />1. Types</h4>
 <p>There are two kinds of map configs; pre and post. Pre map configuration files are executed
-before the modules are loaded. They're useful for changing configuration sets for certain modules
-like classes. Post map configuration files are executed after the modules are loaded. Certain stuff
-have to be placed in this one to be effective, like changing class attributes.</p>
+before the modules and data is loaded. They're useful for changing configuration sets for certain
+modules like classes. Post map configuration files are executed after the modules are loaded. Certain
+stuff have to be placed in this one to be effective, like changing class attributes.</p>
 
 <blockquote><table>
 	<tr>
@@ -730,7 +731,7 @@ have to be placed in this one to be effective, like changing class attributes.</
 	</tr>
 	<tr>
 		<td>Pre</td>
-		<td>Before modules</td>
+		<td>Before modules and data loading</td>
 		<td class="code">cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</td>
 	</tr>
 	<tr>
@@ -767,19 +768,19 @@ specified it's treated as a regular public model.</p>
 
 <blockquote><table>
 	<tr>
-		<td class="code">adminonly</td>
+		<td class="valueoption">adminonly</td>
 		<td>Can only be used by admins.</td>
 	</tr>
 	<tr>
-		<td class="code">donator</td>
+		<td class="valueoption">donator</td>
 		<td>Can only be used by donators.</td>
 	</tr>
 	<tr>
-		<td class="code">hidden</td>
+		<td class="valueoption">hidden</td>
 		<td>Is not included in random selections.</td>
 	</tr>
 	<tr>
-		<td class="code">motherzombie</td>
+		<td class="valueoption">motherzombie</td>
 		<td>Can only be used on mother zombies.</td>
 	</tr>
 </table></blockquote>
@@ -831,7 +832,7 @@ player depending on console variables and the class file.</p>
 
 <p>Admin-mode classes are currently incomplete and will be validated, but ignored in the game. This
 is a special mode in the game, but not the same as admin-only classes. To get admin-only classes set
-the admin-only flag in the "flags" attribute.</p>
+the admin-only flag in the <span class="code">flags</span> attribute.</p>
 
 <h4><a name="3.7.2" />2. Class Attributes</h4>
 
@@ -867,15 +868,15 @@ the admin-only flag in the "flags" attribute.</p>
 			menus, so only zombies can use zombie class types, and only humans can use human class
 			types. These are the allowed team IDs:</p>
 			<blockquote><table>
-				<tr><td>0</td><td>Zombie classes</td></tr>
-				<tr><td>1</td><td>Human classes</td></tr>
-				<tr><td>2</td><td>Admin-mode classes</td></tr>
+				<tr><td class="valueoption">0</td><td>Zombie classes</td></tr>
+				<tr><td class="valueoption">1</td><td>Human classes</td></tr>
+				<tr><td class="valueoption">2</td><td>Admin-mode classes</td></tr>
 			</table></blockquote>
 			<p>The admin-mode class type sets the player in spectacting like mode, but allow
 			admins to walk around. They can't take or give damage, and they won't affect the game
 			rules in any way. <b>Admin-mode is incomplete</b> and classes of this type is ignored
 			in the game.</p>
-			<p>See the "flags" attribute for admin-only classes.</p>
+			<p>See the <span class="code">flags</span> attribute for admin-only classes.</p>
 		</td>
 	</tr>
 	
@@ -905,17 +906,18 @@ the admin-only flag in the "flags" attribute.</p>
 			Flags (3.3.1)</a>). Available flags:</p>
 			<blockquote><table>
 				<tr>
-					<td>1</td>
+					<td class="valueoption">1</td>
 					<td>Admins only<br />
 					Marks the class to be used by admins only. Classes with this option on will not
 					be visible for regular players in the class menu.</td>
 				</tr>
 				<tr>
-					<td>2</td>
+					<td class="valueoption">2</td>
 					<td>Mother zombie.<br />
 					Marks the class as a mother zombie class. These classes will be used on mother
-					zombies. Note that zr_classes_default_mother_zombie setting must be set to
-					"motherzombies" for this flag to be effective.</td>
+					zombies. Note that <span class="code">zr_classes_default_mother_zombie</span>
+					setting must be set to <span class="code">motherzombies</span> for this flag to
+					be effective.</td>
 				</tr>
 			</table></blockquote>
 			<p>These flags can be used in a combination (1 + 2), so it could be a mother zombie
@@ -970,15 +972,15 @@ the admin-only flag in the "flags" attribute.</p>
 			are a few special values supported by this attribute:</p>
 			<blockquote><table>
 				<tr>
-					<td class="code">default</td>
+					<td class="valueoption">default</td>
 					<td>Use default CS models. The one players select when selecting team.</td>
 				</tr>
 				<tr>
-					<td class="code">random</td>
+					<td class="valueoption">random</td>
 					<td>Selects a random model for the current team.</td>
 				</tr>
 				<tr>
-					<td class="code">nochange</td>
+					<td class="valueoption">nochange</td>
 					<td>Don't change model. To be used in combination with other plugins that
 					change model on players.</td>
 				</tr>
@@ -1482,6 +1484,8 @@ Place these console variables in the main configuration file:</p>
 			the default classes are assigned.</p>
 			<p>This setting also override zr_classes_*_select. If players have saved class indexes
 			in cookies they will be restored.</p>
+			<p>Disabling this option won't erase saved settings, they just won't be restored when
+			players connect.</p>
 			<p>Options:<br />
 			0 or 1</p>
 		</td>
@@ -1496,11 +1500,11 @@ Place these console variables in the main configuration file:</p>
 			<p>Default zombie class selected for all players when they connect.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td class="code">&lt;class name&gt;</td><td>Specify a class name to use as
+				<tr><td class="valueoption">&lt;class name&gt;</td><td>Specify a class name to use as
 				default zombie.</td></tr>
-				<tr><td class="code">"default"</td><td>Use the default class in the class
+				<tr><td class="valueoption">"default"</td><td>Use the default class in the class
 				configuration.</td></tr>
-				<tr><td class="code">"random"</td><td>Select a random zombie class from the class
+				<tr><td class="valueoption">"random"</td><td>Select a random zombie class from the class
 				configuration.</td></tr>
 			</table>
 		</td>
@@ -1516,12 +1520,12 @@ Place these console variables in the main configuration file:</p>
 			exist it will use the class selected by the player.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td class="code">&lt;class name&gt;</td><td>Specify a class name to use as
+				<tr><td class="valueoption">&lt;class name&gt;</td><td>Specify a class name to use as
 				default mother zombie.</td></tr>
-				<tr><td class="code">"random"</td><td>Select a random regular zombie class.</td></tr>
-				<tr><td class="code">"motherzombies"</td><td>Select a random zombie class with
+				<tr><td class="valueoption">"random"</td><td>Select a random regular zombie class.</td></tr>
+				<tr><td class="valueoption">"motherzombies"</td><td>Select a random zombie class with
 				mother zombie flag.</td></tr>
-				<tr><td class="code">"disabled"</td><td>No change. Use the zombie class selected by
+				<tr><td class="valueoption">"disabled"</td><td>No change. Use the zombie class selected by
 				the player.</td></tr>
 			</table>
 		</td>
@@ -1536,11 +1540,11 @@ Place these console variables in the main configuration file:</p>
 			<p>Default human class selected for all players when they connect.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td class="code">&lt;class name&gt;</td><td>Specify a class name to use as
+				<tr><td class="valueoption">&lt;class name&gt;</td><td>Specify a class name to use as
 				default human.</td></tr>
-				<tr><td class="code">"default"</td><td>Use the default class in the class
+				<tr><td class="valueoption">"default"</td><td>Use the default class in the class
 				configuration.</td></tr>
-				<tr><td class="code">"random"</td><td>Select a random human class from the class
+				<tr><td class="valueoption">"random"</td><td>Select a random human class from the class
 				configuration.</td></tr>
 			</table>
 		</td>
@@ -1555,13 +1559,15 @@ Place these console variables in the main configuration file:</p>
 			<p><b>Note:</b> This feature is incomplete!</p>
 			<p>Default admin-mode class selected for all players when they connect, if found. This
 			feature is incomplete and ignored.</p>
+			<p>Do not confuse this with admin-only classes. Admin-mode is a special spawn mode for
+			admins.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td class="code">&lt;class name&gt;</td><td>Specify a class name to use as
+				<tr><td class="valueoption">&lt;class name&gt;</td><td>Specify a class name to use as
 				default admin-mode class.</td></tr>
-				<tr><td class="code">"default"</td><td>Use the default class in the class
+				<tr><td class="valueoption">"default"</td><td>Use the default class in the class
 				configuration.</td></tr>
-				<tr><td class="code">"random"</td><td>Select a random admin-mode class from the
+				<tr><td class="valueoption">"random"</td><td>Select a random admin-mode class from the
 				class configuration.</td></tr>
 			</table>
 		</td>
@@ -1611,16 +1617,17 @@ Place these console variables in the main configuration file:</p>
 
 <h4><a name="3.7.5" />5. Modifying Class Attributes</h4>
 
-<p>Classes can be modified after they're loaded. This is useful in map configs
-to do stuff like scaling knockback to tune map balance.</p>
+<p>Classes can be modified after they're loaded. This is useful in map configs to do stuff like
+scaling knockback to tune map balance.</p>
 
-<p>All attributes can be modified, and some can also be scaled with a multiplier.
-The value in the original class cache is multiplied with the specified value
-and written back to the modified cache.</p>
+<p>All attributes can be modified, and some can also be scaled with a multiplier. The value in the
+original class cache is multiplied with the specified value and written back to the modified cache.</p>
 
-<p>When multiplying, the value is always based on the original value, not
-multiplying the earlier multiplied value. This also makes it easy to restore
-the original value.</p>
+<p>When multiplying, the value is always based on the original value, not multiplying the earlier
+multiplied value. This also makes it easy to restore the original value.</p>
+
+<p><b>Note:</b>These commands must be used in a <a href="#3.4"><b>post</b> map config files</a>,
+otherwise they won't have any effect because class data isn't loaded yet.</p>
 
 <p><b>Console commands:</b></p>
 
@@ -1638,21 +1645,21 @@ the original value.</p>
 			<p>Parameters:</p>
 			<table>
 				<tr>
-					<td class="code">class|team</td>
+					<td class="parameter">class|team</td>
 					<td>The class to modify. Can be any valid class name, or one of the following team
 					names: <br />
 					"all", "humans", "zombies" or "admins".</td>
 				</tr>
 				<tr>
-					<td class="code">attribute</td>
+					<td class="parameter">attribute</td>
 					<td>The name of the class attribute to modify.</td>
 				</tr>
 				<tr>
-					<td class="code">value</td>
+					<td class="parameter">value</td>
 					<td>Value to set, or multiplier if a multiplier.</td>
 				</tr>
 				<tr>
-					<td class="code">is_multiplier</td>
+					<td class="parameter">is_multiplier</td>
 					<td>Optional. Specifies wether the original value should be multiplied by the
 					specified value. Default is false.</td>
 				</tr>
@@ -1689,29 +1696,32 @@ values may cause unexpected behaviour, or even crash the plugin.</p>
 			<p>Parameters:</p>
 			<table>
 				<tr>
-					<td class="code">team</td>
+					<td class="parameter">team</td>
 					<td>What multiplier set to use. Options:<br />
 					"zombies" or "humans"</td>
 				</tr>
 				<tr>
-					<td class="code">attribute</td>
+					<td class="parameter">attribute</td>
 					<td>A numeric class attribute. See <a href="#3.7.2">Class Attributes (3.7.2)</a>
 						for details on attributes. Valid attribute multipliers:
 						<ul>
-							<li>"napalm_time" (zombies only)</li>
-							<li>"health"</li>
-							<li>"health_regen_interval"</li>
-							<li>"health_regen_amount"</li>
-							<li>"health_infect_gain" (zombies only)</li>
-							<li>"speed"</li>
-							<li>"knockback" (zombies only)</li>
-							<li>"jump_height"</li>
-							<li>"jump_distance"</li>
+							<li class="code">health</li>
+							<li class="code">health_regen_interval</li>
+							<li class="code">health_regen_amount</li>
+							<li class="code">speed</li>
+							<li class="code">jump_height</li>
+							<li class="code">jump_distance</li>
+						</ul>
+						Multipliers for zombies only:
+						<ul>
+							<li class="code">napalm_time</li>
+							<li class="code">health_infect_gain </li>
+							<li class="code">knockback</li>
 						</ul>
 					</td>
 				</tr>
 				<tr>
-					<td class="code">value</td>
+					<td class="parameter">value</td>
 					<td>Value to set, or multiplier if a multiplier.</td>
 				</tr>
 			</table>
@@ -1740,10 +1750,8 @@ This only applies to players who already are the same class.</p>
 			<p>Refreshes the player cache and reloads class attributes on one or more players.</p>
 			<p>Parameters:</p>
 			<table>
-				<tr>
-					<td class="code">target</td>
-					<td>Target player(s) to refresh cache on. A name or a SourceMod target specifier.</td>
-				</tr>
+				<tr><td class="parameter">target</td><td>Target player(s) to refresh cache on. A name
+				or a SourceMod target specifier.</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -1767,7 +1775,7 @@ This only applies to players who already are the same class.</p>
 			<p>Parameters:</p>
 			<table>
 				<tr>
-					<td class="code">cachetype</td>
+					<td class="parameter">cachetype</td>
 					<td>Cache to read from. Cache types:
 						<table>
 							<tr><td>"original"</td><td>Unmodified raw class data.</td></tr>
@@ -1777,7 +1785,7 @@ This only applies to players who already are the same class.</p>
 					</td>
 				</tr>
 				<tr>
-					<td class="code">index|targetname</td>
+					<td class="parameter">index|targetname</td>
 					<td>Class index, or name of player if "player" cache type is used.</td>
 				</tr>
 			</table>
@@ -1803,11 +1811,8 @@ multipliers.</p>
 			<p>Dumps class attribute multipliers for the specified team.</p>
 			<p>Parameters:</p>
 			<table>
-				<tr>
-					<td class="code">team</td>
-					<td>The multiplier set to dump. Valid options are:<br />
-					"humans" or "zombies"</td>
-				</tr>
+				<tr><td class="parameter">team</td><td>The multiplier set to dump. Valid options
+				are:<br />"humans" or "zombies"</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -1846,16 +1851,16 @@ map configuration files it must be in a pre configuration file.</p>
 			<p>A list of weapon groups and the weapon type.</p>
 			<p>Pre-defined options:</p>
 			<ul>
-				<li>All</li>
-				<li>Pistol</li>
-				<li>Shotgun</li>
-				<li>SMG</li>
-				<li>Rifle</li>
-				<li>Sniper</li>
-				<li>Machine Gun</li>
-				<li>Melee</li>
-				<li>Projectile</li>
-				<li>Equipment</li>
+				<li class="code">All</li>
+				<li class="code">Pistol</li>
+				<li class="code">Shotgun</li>
+				<li class="code">SMG</li>
+				<li class="code">Rifle</li>
+				<li class="code">Sniper</li>
+				<li class="code">Machine Gun</li>
+				<li class="code">Melee</li>
+				<li class="code">Projectile</li>
+				<li class="code">Equipment</li>
 			</ul>
 		</td>
 	</tr>
@@ -1870,10 +1875,10 @@ map configuration files it must be in a pre configuration file.</p>
 			<p>The slot index the weapon resides in. Don't change this!</p>
 			<p>Options:</p>
 			<table>
-				<tr><td>0</td><td>Primary weapon slot</td></tr>
-				<tr><td>1</td><td>Secondary weapon slot</td></tr>
-				<tr><td>2</td><td>Knife slot</td></tr>
-				<tr><td>3</td><td>Equipment slot</td></tr>
+				<tr><td class="valueoption">0</td><td>Primary weapon slot</td></tr>
+				<tr><td class="valueoption">1</td><td>Secondary weapon slot</td></tr>
+				<tr><td class="valueoption">2</td><td>Knife slot</td></tr>
+				<tr><td class="valueoption">3</td><td>Equipment slot</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -1888,8 +1893,8 @@ map configuration files it must be in a pre configuration file.</p>
 			<p>The default restricted status of the weapon on map start.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td>"yes"</td><td>Enable</td></tr>
-				<tr><td>"no"</td><td>Disable</td></tr>
+				<tr><td class="valueoption">"yes"</td><td>Enable</td></tr>
+				<tr><td class="valueoption">"no"</td><td>Disable</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -1904,8 +1909,8 @@ map configuration files it must be in a pre configuration file.</p>
 			<p>Enable weapon to have restrictions toggled mid-game.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td>"yes"</td><td>Enable</td></tr>
-				<tr><td>"no"</td><td>Disable</td></tr>
+				<tr><td class="valueoption">"yes"</td><td>Enable</td></tr>
+				<tr><td class="valueoption">"no"</td><td>Disable</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -1920,16 +1925,16 @@ map configuration files it must be in a pre configuration file.</p>
 			<p>Ammo entity that belongs to weapons. Don't change this!</p>
 			<p>Options:</p>
 			<table>
-				<tr><td>ammo_50ae</td><td>deagle</td></tr>
-				<tr><td>ammo_762mm</td><td>scout, ak47, g3sg1, aug</td></tr>
-				<tr><td>ammo_556mm_box</td><td>m249</td></tr>
-				<tr><td>ammo_556mm</td><td>galil, sg552, famas, m4a1, sg550</td></tr>
-				<tr><td>ammo_338mag</td><td>awp</td></tr>
-				<tr><td>ammo_9mm</td><td>mp5navy, tmp, glock, elite</td></tr>
-				<tr><td>ammo_buckshot</td><td>m3, xm1014</td></tr>
-				<tr><td>ammo_45acp</td><td>ump45, mac10, usp</td></tr>
-				<tr><td>ammo_357sig</td><td>P228</td></tr>
-				<tr><td>ammo_57mm</td><td>p90, fiveseven</td></tr>
+				<tr><td class="valueoption">ammo_50ae</td><td>deagle</td></tr>
+				<tr><td class="valueoption">ammo_762mm</td><td>scout, ak47, g3sg1, aug</td></tr>
+				<tr><td class="valueoption">ammo_556mm_box</td><td>m249</td></tr>
+				<tr><td class="valueoption">ammo_556mm</td><td>galil, sg552, famas, m4a1, sg550</td></tr>
+				<tr><td class="valueoption">ammo_338mag</td><td>awp</td></tr>
+				<tr><td class="valueoption">ammo_9mm</td><td>mp5navy, tmp, glock, elite</td></tr>
+				<tr><td class="valueoption">ammo_buckshot</td><td>m3, xm1014</td></tr>
+				<tr><td class="valueoption">ammo_45acp</td><td>ump45, mac10, usp</td></tr>
+				<tr><td class="valueoption">ammo_357sig</td><td>P228</td></tr>
+				<tr><td class="valueoption">ammo_57mm</td><td>p90, fiveseven</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -1988,7 +1993,7 @@ sub section for each weapon using short names from the list below.</p>
 
 <blockquote><table>
 	<tr>
-		<th class="namewidth">Weapon name:</th>
+		<th class="mediumwidth">Weapon name:</th>
 		<th>Type:</th>
 		<th>Full name:</th>
 	</tr>
@@ -2153,8 +2158,8 @@ file, or on a per-map basis with map configuration files.</p>
 			<p>Restricts one or more weapons or weapon types (group).</p>
 			<p>Parameters:</p>
 			<table>
-				<tr><td>weapon</td><td>The weapon name.</td></tr>
-				<tr><td>weapon type</td><td>The weapon type group.</td></tr>
+				<tr><td class="parameter">weapon</td><td>The weapon name.</td></tr>
+				<tr><td class="parameter">weapon type</td><td>The weapon type group.</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -2167,8 +2172,8 @@ file, or on a per-map basis with map configuration files.</p>
 			<p>Unrestricts one or more weapons or weapon types (group).</p>
 			<p>Parameters:</p>
 			<table>
-				<tr><td>weapon</td><td>The weapon name.</td></tr>
-				<tr><td>weapon type</td><td>The weapon type group.</td></tr>
+				<tr><td class="parameter">weapon</td><td>The weapon name.</td></tr>
+				<tr><td class="parameter">weapon type</td><td>The weapon type group.</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -2210,22 +2215,22 @@ This is useful for fine tuning game balance.</p>
 			<p>Parameters:</p>
 			<table>
 				<tr>
-					<td>hitgrup name</td>
+					<td class="parameter">hitgrup name</td>
 					<td>Name of the hit group to adjust. Options:
                         <ul>
-							<li>generic</li>
-							<li>head</li>
-							<li>chest</li>
-							<li>stomach</li>
-							<li>leftarm</li>
-							<li>rightarm</li>
-							<li>leftleg</li>
-							<li>rightleg</li>
-							<li>gear</li>
+							<li class="code">generic</li>
+							<li class="code">head</li>
+							<li class="code">chest</li>
+							<li class="code">stomach</li>
+							<li class="code">leftarm</li>
+							<li class="code">rightarm</li>
+							<li class="code">leftleg</li>
+							<li class="code">rightleg</li>
+							<li class="code">gear</li>
 						</ul>
 					</td>
 				</tr>
-				<tr><td>value</td><td>Optional. Enable hit group damage. Default action is to toggle
+				<tr><td class="parameter">value</td><td>Optional. Enable hit group damage. Default action is to toggle
 				setting. Options: 0 or 1</td></tr>
 			</table>
 		</td>
@@ -2251,15 +2256,15 @@ This is useful for fine tuning game balance.</p>
 			<p>The hit group index.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td>0</td><td>Generic</td></tr>
-				<tr><td>1</td><td>Head</td></tr>
-				<tr><td>2</td><td>Chest</td></tr>
-				<tr><td>3</td><td>Stomach</td></tr>
-				<tr><td>4</td><td>Left Arm</td></tr>
-				<tr><td>5</td><td>Right Arm</td></tr>
-				<tr><td>6</td><td>Left Leg</td></tr>
-				<tr><td>7</td><td>Right Leg</td></tr>
-				<tr><td>8</td><td>Gear</td></tr>
+				<tr><td class="valueoption">0</td><td>Generic</td></tr>
+				<tr><td class="valueoption">1</td><td>Head</td></tr>
+				<tr><td class="valueoption">2</td><td>Chest</td></tr>
+				<tr><td class="valueoption">3</td><td>Stomach</td></tr>
+				<tr><td class="valueoption">4</td><td>Left Arm</td></tr>
+				<tr><td class="valueoption">5</td><td>Right Arm</td></tr>
+				<tr><td class="valueoption">6</td><td>Left Leg</td></tr>
+				<tr><td class="valueoption">7</td><td>Right Leg</td></tr>
+				<tr><td class="valueoption">8</td><td>Gear</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -2274,8 +2279,8 @@ This is useful for fine tuning game balance.</p>
 			<p>Allows damage to be done on the specified hit group for zombies.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td>yes</td><td>Allow damage</td></tr>
-				<tr><td>no</td><td>Ignore damage</td></tr>
+				<tr><td class="valueoption">yes</td><td>Allow damage</td></tr>
+				<tr><td class="valueoption">no</td><td>Ignore damage</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -2401,9 +2406,9 @@ tune game balance.</p>
 			<p>Enable explosion effects. If disabled, this setting will also disable the following
 			CVARs:</p>
 			<ul>
-				<li>zr_infect_fireball</li>
-				<li>zr_infect_smoke</li>
-				<li>zr_infect_smoke</li>
+				<li class="code">zr_infect_fireball</li>
+				<li class="code">zr_infect_smoke</li>
+				<li class="code">zr_infect_smoke</li>
 			</ul>
 			<p>Options:<br />
 			0 or 1</p>
@@ -2516,8 +2521,8 @@ tune game balance.</p>
 			<p>Infects one or more players.</p>
 			<p>Parameters:</p>
 			<table>
-				<tr><td>target</td><td>A SourceMod target string with one or more players.</td></tr>
-				<tr><td>respawn</td><td>Teleport players to spawn.</td></tr>
+				<tr><td class="parameter">target</td><td>A SourceMod target string with one or more players.</td></tr>
+				<tr><td class="parameter">respawn</td><td>Teleport players to spawn.</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -2530,8 +2535,8 @@ tune game balance.</p>
 			<p>Turn one or more zombies into humans.</p>
 			<p>Parameters:</p>
 			<table>
-				<tr><td>target</td><td>A SourceMod target string with one or more players.</td></tr>
-				<tr><td>respawn</td><td>Teleport players to spawn.</td></tr>
+				<tr><td class="parameter">target</td><td>A SourceMod target string with one or more players.</td></tr>
+				<tr><td class="parameter">respawn</td><td>Teleport players to spawn.</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -2871,9 +2876,9 @@ in progress by the SourceMod team).</p>
 			representing amount of red, green and blue.</p>
 			<p>Examples</p>
 			<table>
-				<tr><td>255 255 0</td><td>Yellow</td></tr>
-				<tr><td>255 0 255</td><td>Purpule</td></tr>
-				<tr><td>96 96 96</td><td>Dark grey</td></tr>
+				<tr><td class="valueoption">255 255 0</td><td>Yellow</td></tr>
+				<tr><td class="valueoption">255 0 255</td><td>Purpule</td></tr>
+				<tr><td class="valueoption">96 96 96</td><td>Dark grey</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -2889,9 +2894,9 @@ in progress by the SourceMod team).</p>
 			representing amount of red, green and blue.</p>
 			<p>Examples</p>
 			<table>
-				<tr><td>255 255 0</td><td>Yellow</td></tr>
-				<tr><td>255 0 255</td><td>Purpule</td></tr>
-				<tr><td>96 96 96</td><td>Dark grey</td></tr>
+				<tr><td class="valueoption">255 255 0</td><td>Yellow</td></tr>
+				<tr><td class="valueoption">255 0 255</td><td>Purpule</td></tr>
+				<tr><td class="valueoption">96 96 96</td><td>Dark grey</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -2965,12 +2970,12 @@ in progress by the SourceMod team).</p>
 			<p>Dissolve effect to use when removing bodies.</p>
 			<p>Options:</p>
 			<table>
-				<tr><td>-2</td><td>No effect</td></tr>
-				<tr><td>-1</td><td>Random effect</td></tr>
-				<tr><td>0</td><td>Energy dissolve</td></tr>
-				<tr><td>1</td><td>Heavy electrical dissolve</td></tr>
-				<tr><td>2</td><td>Light electrical dissolve</td></tr>
-				<tr><td>3</td><td>Core dissolve</td></tr>
+				<tr><td class="valueoption">-2</td><td>No effect</td></tr>
+				<tr><td class="valueoption">-1</td><td>Random effect</td></tr>
+				<tr><td class="valueoption">0</td><td>Energy dissolve</td></tr>
+				<tr><td class="valueoption">1</td><td>Heavy electrical dissolve</td></tr>
+				<tr><td class="valueoption">2</td><td>Light electrical dissolve</td></tr>
+				<tr><td class="valueoption">3</td><td>Core dissolve</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -3331,8 +3336,10 @@ right after they've spawned.</p>
 			<p>Force one or more players to spawn.</p>
 			<p>Parameters:</p>
 			<table>
-				<tr><td>target</td><td>A SourceMod target string with one or more players.</td></tr>
-				<tr><td>spawn team</td><td>Optional. Specify what team to spawn to. Options:<br />
+				<tr><td class="parameter">target</td><td>A SourceMod target string with one or more
+				players.</td></tr>
+				<tr><td class="parameter">spawn team</td><td>Optional. Specify what team to spawn to.
+				Options:<br />
 				0 (humans) or 1 (zombies)</td></tr>
 			</table>
 		</td>
@@ -3468,8 +3475,8 @@ protection.</p>
 			<p>Force teleport on a player. Does not add delay or add to teleport count.</p>
 			<p>Parameters:</p>
 			<table>
-				<tr><td>client</td><td>Single target player. Support SourceMod targets like
-				@me and @aim.</td></tr>
+				<tr><td class="parameter">client</td><td>Single target player. Support SourceMod
+				targets like @me and @aim.</td></tr>
 			</table>
 		</td>
 	</tr>
@@ -3617,15 +3624,325 @@ each model used in the game. Data for these models are stored in the following f
 
 <h3><a name="3.23" />3.23 Volumetric Feature Configuration</h3>
 
-<p>(Feature exist, but incomplete documentation)</p>
+<p>Volumetric Features is a way to do various stuff on players when they enter custom created
+volumes in a map. A volume is rectangular and is created by using two coordinates in the map that
+defines the three-dimensional area.</p>
 
-<h4><a name="3.23.1" />1. Volume Attributes</h4>
-<h4><a name="3.23.2" />2. Feature Attributes</h4>
-<h4><a name="3.23.3" />3. Anti-Camp</h4>
-<h4><a name="3.23.4" />4. Class Editor</h4>
+<p class="imagetext"><img src="images/zm_crazys_warehouse_be4_anticamp.jpg" width="700" height="342"
+alt="Visualized anti-camp volume" />
+<br />This is a visualized volume where the red border is the volume, and the blue or green circles are
+examples of what points in the map that could be used.</p>
+
+<p>Known issues/bugs:</p>
+<ul>
+	<li>Volumes placed in spawn areas won't take effect on them until they leave the area and go
+	back in. There's a bug where it doesn't apply to spawned players.</li>
+	<li>Avoid overlapping volumes of same type. There's currently no conflict handling and whichever
+	volume the player enter or leave last will be triggered.</li>
+</ul>
+
+<h4><a name="3.23.1" />1. Creating A Volume</h4>
+
+<p>To create a volume go into spectactor mode (or no-clip). Enable position display in the client
+(<span class="code">cl_showpos 1</span>), the numbers appear in the top right corner of the scteen.
+Visualize a rectangular area and move to one of its corners. Get the x, y and z coordinates (make
+sure you don't miss the "-" if it's a negative number). Go to the diagonally oposite corner, in the
+oposite height and get the second set of coordinates.</p>
+
+<p>Use the <span class="code">zr_vol_add</span> console command in map configs to add volumes.</p>
+
+<p>Short summary:</p>
+
+<ol>
+	<li>Go into spectator mode or no-clip</li>
+	<li>Enable position display: <span class="code">cl_showpos 1</span></li>
+	<li>Go to one of the corners, get the coordinates</li>
+	<li>Go to the diagonally oposite corner, in the oposite height and get the second set of
+	coordinates.</li>
+	<li>Use these coordinates in the <span class="code">zr_vol_add</span> command along with
+	additional attributes.</li>
+</ol>
+
+<h4><a name="3.23.2" />2. Volume Attributes</h4>
+
+<p>Each volume has a set of standard attributes that tell how it should behave and look like.
+In addition each feature has a set of attributes. All attributes have default values and are
+not required, except the type attribute.</p>
+
+<p>These are the generic attributes and apply to all volumes:</p>
+
+<blockquote><table>
+	<tr>
+		<th class="namewidth">Attribute:</th>
+		<th class="mediumwidth">Value type:</th>
+		<th class="mediumwidth">Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">type</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">-</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Note:</b> This attribute is required!</p>
+			<p>Specified the volumetric feature type.</p>
+			<p>Valid options:</p>
+			<table>
+				<tr><td class="valueoption">anticamp</td><td><a href="#3.23.4">Anti-Camp</a> volume.</td></tr>
+				<tr><td class="valueoption">classedit</td><td><a href="#3.23.5">Class editor</a> volume.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">teamfilter</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"all"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Sets the team filtering settings.</p>
+			<p>Valid options:</p>
+			<table>
+				<tr><td class="valueoption">all</td><td>Applies to all players.</td></tr>
+				<tr><td class="valueoption">humans</td><td>Applies to humans only.</td></tr>
+				<tr><td class="valueoption">zombies</td><td>Applies to zombies only.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">delay</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Trigger delay. Number of seconds to wait when a player enter the volume before
+			triggering actions. Time is in seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">effect</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"none"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Note:</b> Incomplete, this attribute is ignored.</p>
+			<p>What effect to apply to the volume</p>
+			<p>Valid options:</p>
+			<table>
+				<tr><td class="valueoption">none</td><td>No effect.</td></tr>
+				<tr><td class="valueoption">wireframe</td><td>Draw a wireframe.</td></tr>
+				<tr><td class="valueoption">smoke</td><td>Put smoke in the volume.</td></tr>
+				<tr><td class="valueoption">fire</td><td>Put fire in the volume.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">effect_color</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"0,0,0"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><b>Note:</b> Incomplete, this attribute is ignored.</p>
+			<p>Color of the effect. RGB format, represented by three numbers from 0 to 255 separated
+			by a comma. Syntax: <span class="code">&lt;red&gt;,&lt;green&gt;,&lt;blue&gt;</span></p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">enabled</td>
+		<td class="commandheader">boolean</td>
+		<td class="commandheader">1</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Set the initial enabled setting on the volume. Usually this attribute won't be used.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h4><a name="3.23.3" />3. Volume Commands</h4>
+
+<blockquote><table>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_vol_add &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt;
+		&lt;z2&gt; &lt;type&gt; [params]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Creates a rectangular volume in the map.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td class="parameter">x1, y1, z1</td><td>First set of coordinates.</td></tr>
+				<tr><td class="parameter">x2, y2, z2</td><td>Second set of coordinates.</td></tr>
+				<tr><td class="parameter">type</td><td>Volumetric feature type. Described in
+				<a href="#3.23.2">Volume Attributes</a>.</td></tr>
+				<tr><td class="parameter">params</td><td>Additional key-value chain of volume
+				attributes, separated by space. Syntax: <span class="code">attribute=value
+				attribute=value ...</span></td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_vol_remove &lt;volume index&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Removes an existing volume in the map.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td class="parameter">volume index</td><td>Zero-based index of volume (ID) to
+				remove.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_vol_list [volume index]</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Lists existing volumes in the map, or dumps volume details.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td class="parameter">volume index</td><td>Optional. Zero-based index of volume
+				(ID) to dump.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_vol_dumpstates &lt;userid|targetname&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Dumps a list of all volumes and a indicator whether the target is in it or not.</p>
+			<p>Parameters:</p>
+			<table>
+				<tr><td class="parameter">userid|targetname</td><td>A SourceMod target string to a single player.</td></tr>
+			</table>
+		</td>
+	</tr>
+</table></blockquote>
 
 
-<h2><a name="4" />4. How To Play</h4>
+<h4><a name="3.23.4" />4. Anti-Camp</h4>
+
+<p>The anti-camp feature can be used to force players to leave areas that are considered unfair or
+not allowed. It uses a timer to trigger actions at a specified interval. In addition warning messages
+can be displayed to player that enter the volume.</p>
+
+<p>Anti-camp spesific attributes:</p>
+
+<blockquote><table>
+	<tr>
+		<th class="namewidth">Attribute:</th>
+		<th class="mediumwidth">Value type:</th>
+		<th class="mediumwidth">Default:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">interval</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">5</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Trigger interval. How often to apply actions on players in the volume. Time is in
+			seconds.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">action</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"damage"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>What kind of action to apply.</p>
+			<p>Valid options:</p>
+			<table>
+				<tr><td class="valueoption">none</td><td>Do nothing. Useful for just giving warning
+				messages.</td></tr>
+				<tr><td class="valueoption">damage</td><td>Hurt player.</td></tr>
+				<tr><td class="valueoption">slay</td><td>Kill player.</td></tr>
+				<tr><td class="valueoption">drug</td><td>(Incomplete!) Drug player. Players will be
+				un-drugged when leaving volume.</td></tr>
+				<tr><td class="valueoption">ignite</td><td>Set player on fire. Players will be extinguished
+				when leaving volume.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">amount</td>
+		<td class="commandheader">decimal</td>
+		<td class="commandheader">5.0</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Specifies amount to apply depending on action type.</p>
+			<p>Amount type for action:</p>
+			<table>
+				<tr><td class="valueoption">none</td><td>(ignored)</td></tr>
+				<tr><td class="valueoption">damage</td><td>Healt points</td></tr>
+				<tr><td class="valueoption">slay</td><td>(ignored)</td></tr>
+				<tr><td class="valueoption">drug</td><td>Time in seconds</td></tr>
+				<tr><td class="valueoption">ignite</td><td>Time in seconds</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">"chat"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Where to show warning message.</p>
+			<p>Valid options:</p>
+			<table>
+				<tr><td class="valueoption">none</td><td>Don't show a warning message.</td></tr>
+				<tr><td class="valueoption">chat</td><td>Display in client's chat area.</td></tr>
+				<tr><td class="valueoption">center</td><td>Display warning text centered on the screen.</td></tr>
+				<tr><td class="valueoption">menu</td><td>Display warning in a menu panel, stays open for
+				30 seconds or when closed.</td></tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">message</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">""</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Use custom warning message (max 255 byte). Leave blank to use default warning
+			message.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h4><a name="3.23.5" />5. Class Editor</h4>
+
+<p>(Docs incomplete.)</p>
+
+<h2><a name="4" />4. How To Play</h2>
 
 <p>(Incomplete) Feel free to contribute to this section. Make a new thread with suggestions in the
 <a href="http://forums.alliedmods.net/forumdisplay.php?f=132">Zombie:Reloaded Forum</a>.</p>
@@ -3699,7 +4016,7 @@ might help.</p>
 <p>When jumping it's not easy for humans to hit the head and they can't get that good knock back
 anymore. With multiple zombies jumping fast, pushing eachother on their way into a tube, the humans
 are doomed. The tube camping problem much better balanced. This problem can also be solved by
-using a <a href="#3.23.4">class editor volume</a> or <a href="#3.23.3">anti-camp</a> in tubes and
+using a <a href="#3.23.4">class editor volume</a> or <a href="#3.23.4">anti-camp</a> in tubes and
 vents.</p>
 
 
@@ -3709,6 +4026,10 @@ vents.</p>
 <h4><a name="5.2" />5.2 Startup</h4>
 <h4><a name="5.3" />5.3 Error Messages</h4>
 <h4><a name="5.4" />5.4 Common Problems</h4>
+<h4><a name="5.5" />5.5 Known Issues</h4>
+
+<p>Conflicts with WCS Races plugin and other plugins who change player model/skin and speed.</p>
+<p>Do not run es_tools, it's not compatible with SourceMod.</p>
 
 
 <h3><a name="6" />6. Gameplay Guidelines</h3>
@@ -3732,12 +4053,14 @@ href="http://forums.alliedmods.net/forumdisplay.php?f=132">Zombie:Reloaded forum
 	issue. If you're unsure about this, just make new threads.</li>
 	<li>Tell us what version you use. If you use a old version the problem might be solved in a
 	newer version.</li>
-	<li>Use a short thread title that describes your problem (keyworks is enough).</li>
+	<li>Use a short thread title that describes your problem (keywords is enough).</li>
 	<li>If you found a bug, start the thread title with [BUG] or similar.</li>
 	<li>If your problem were solved you could share the solution in your thread. Also add [SOLVED]
 	or similar in the thread title.</li>
 </ul>
 
+<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10"
+height="31" width="88" alt="Valid XHTML 1.0 Strict" class="noborder" /></a></p>
 
 <!-- Templates:
 <h4><a name="a" /></h4>

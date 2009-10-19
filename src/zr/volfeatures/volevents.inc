@@ -74,6 +74,10 @@ VolOnPlayerLeave(client, volumeIndex)
     new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
     switch (voltype)
     {
+        case VolFeature_Anticamp:
+        {
+            VolAnticampOnPlayerLeave(client, volumeIndex);
+        }
         case VolFeature_ClassEdit:
         {
             VolClassEditOnPlayerLeave(client, volumeIndex);

@@ -46,7 +46,7 @@ Parameters:
 
 Example:
 
-    zr_vol_add 0 0 0 100 200 300 anticamp team=humans delay=5 effect=wireframe effect_color=255,0,0
+    zr_vol_add 0 0 0 100 200 300 anticamp team=humans delay=5 amount=100
 */
 
 

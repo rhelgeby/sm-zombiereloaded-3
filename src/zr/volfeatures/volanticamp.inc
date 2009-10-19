@@ -268,6 +268,29 @@ VolAnticampInit()
 }
 
 /**
+ * Called when a player leave a anticamp volume.
+ *
+ * @param client        The client index.
+ * @param volumeIndex   Index of volume the player left.
+ */
+VolAnticampOnPlayerLeave(client, volumeIndex)
+{
+    new dataindex = Volumes[volumeIndex][Vol_DataIndex];
+    
+    switch (AnticampData[dataindex][Anticamp_Action])
+    {
+        case Anticamp_Drug:
+        {
+            // TODO: Un-drug player.
+        }
+        case Anticamp_Ignite:
+        {
+            ExtinguishEntity(client);
+        }
+    }
+}
+
+/**
  * Timer callback for anticamp volumes. Applies actions on players in volumes.
  */
 public Action:Event_VolAnticampTrigger(Handle:timer, any:volumeIndex)
@@ -575,6 +598,10 @@ VolAnticampActionToString(VolAnticampAction:actionType, String:buffer[], maxlen,
         {
             return shortName ? strcopy(buffer, maxlen, "damage") : strcopy(buffer, maxlen, "Damage player");
         }
+        case Anticamp_Slay:
+        {
+            return shortName ? strcopy(buffer, maxlen, "slay") : strcopy(buffer, maxlen, "Kill player");
+        }
         case Anticamp_Drug:
         {
             return shortName ? strcopy(buffer, maxlen, "drug") : strcopy(buffer, maxlen, "Drug player ");
@@ -609,6 +636,10 @@ stock VolAnticampAction:VolAnticampStringToAction(const String:action[])
     else if (StrEqual(action, "damage", false))
     {
         return Anticamp_Damage;
+    }
+    else if (StrEqual(action, "slay", false))
+    {
+        return Anticamp_Slay;
     }
     else if (StrEqual(action, "drug", false))
     {
