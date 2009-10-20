@@ -55,6 +55,13 @@ enum OperationTypes
  */
 stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = OperationType_Generic)
 {
+    // Check if console.
+    if (client == 0)
+    {
+        // Console always has full access no matter what.
+        return true;
+    }
+    
     // Validate client index.
     if (!ZRIsClientValid(client))
     {
