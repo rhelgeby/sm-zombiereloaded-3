@@ -224,7 +224,7 @@ VolOnEnabled(volumeIndex)
     
     new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
     
-    // Forward stop event to features.
+    // Forward enable event to features.
     switch (voltype)
     {
         case VolFeature_Anticamp:
