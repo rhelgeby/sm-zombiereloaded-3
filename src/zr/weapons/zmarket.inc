@@ -1017,6 +1017,7 @@ stock ZMarketArrayToCookies(client, String:rebuyweapons[WeaponsSlot][], maxweapo
         // Find cookie handle, and retrieve its value.
         rebuycookie = FindClientCookie(rebuycookiename);
         SetClientCookie(client, rebuycookie, rebuyweapons[x]);
+        CloseHandle(rebuycookie);
     }
 }
 
@@ -1042,6 +1043,7 @@ stock ZMarketCookiesToArray(client, String:rebuyweapons[WeaponsSlot][], maxweapo
         // Find cookie handle, and retrieve its value.
         rebuycookie = FindClientCookie(rebuycookiename);
         GetClientCookie(client, rebuycookie, rebuyweapons[x], maxlen);
+        CloseHandle(rebuycookie);
     }
 }
 
@@ -1067,6 +1069,7 @@ stock ZMarketSetRebuyCookie(client, WeaponsSlot:slot, const String:value[])
     
     // Set weapon to cookie.
     SetClientCookie(client, rebuycookie, value);
+    CloseHandle(rebuycookie);
 }
 
 /**
