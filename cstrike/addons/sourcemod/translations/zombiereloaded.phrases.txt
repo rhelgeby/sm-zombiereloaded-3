@@ -59,6 +59,11 @@
 		"en"		"This feature is reserved for admins only."
 	}
 
+	"No access to command"
+	{
+		"en"		"You do not have access to this command."
+	}
+
 	"Must be alive"
 	{
 		"en"		"This feature requires that you are alive."

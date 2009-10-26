@@ -126,8 +126,8 @@ RestrictLoad()
 RestrictOnCommandsCreate()
 {
     // Create weapon admin commands.
-    RegAdminCmd("zr_restrict", RestrictCommand, ADMFLAG_CONFIG, "Restricts a weapon or a weapon type. Usage: zr_restrict <weapon|weapon type> [weapon2|weapontype2] ...");
-    RegAdminCmd("zr_unrestrict", UnrestrictCommand, ADMFLAG_CONFIG, "Unrestricts a weapon or a weapon type. Usage: zr_unrestrict <weapon|weapon type> [weapon2|weapontype2] ...");
+    RegConsoleCmd("zr_restrict", RestrictCommand, "Restricts a weapon or a weapon type. Usage: zr_restrict <weapon|weapon type> [weapon2|weapontype2] ...");
+    RegConsoleCmd("zr_unrestrict", UnrestrictCommand, "Unrestricts a weapon or a weapon type. Usage: zr_unrestrict <weapon|weapon type> [weapon2|weapontype2] ...");
 }
 
 /**
@@ -657,6 +657,13 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
  */
 public Action:RestrictCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
@@ -711,6 +718,13 @@ public Action:RestrictCommand(client, argc)
  */
 public Action:UnrestrictCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)

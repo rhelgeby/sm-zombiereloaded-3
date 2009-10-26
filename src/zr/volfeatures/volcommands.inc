@@ -55,8 +55,8 @@ Example:
  */
 VolOnCommandsCreate()
 {
-    RegAdminCmd("zr_vol_add", VolAddVolumeCommand, ADMFLAG_CONFIG, "Creates a rectangular volume in the map. Usage: zr_vol_add <x1> <y1> <z1> <x2> <y2> <z2> <type> [params]");
-    RegAdminCmd("zr_vol_remove", VolRemoveVolumeCommand, ADMFLAG_CONFIG, "Removes an existing volume in the map. Usage: zr_vol_remove <volume index>");
+    RegConsoleCmd("zr_vol_add", VolAddVolumeCommand, "Creates a rectangular volume in the map. Usage: zr_vol_add <x1> <y1> <z1> <x2> <y2> <z2> <type> [params]");
+    RegConsoleCmd("zr_vol_remove", VolRemoveVolumeCommand, "Removes an existing volume in the map. Usage: zr_vol_remove <volume index>");
     RegConsoleCmd("zr_vol_list", VolListCommand, "Lists existing volumes in the map, or dumps detail data to the specified volume. Usage: zr_vol_list [volume index]");
     RegConsoleCmd("zr_vol_dumpstates", VolDumpStatesCommand, "Dumps volume states for the specified player. Usage: zr_vol_dumpstates <index|targetname>");
 }
@@ -69,6 +69,13 @@ public Action:VolAddVolumeCommand(client, argc)
     decl String:buffer[640];
     buffer[0] = 0;
     
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+
     if (argc < 7)
     {
         // Write syntax info.
@@ -255,6 +262,13 @@ public Action:VolRemoveVolumeCommand(client, argc)
     decl String:arg[16];
     new volindex;
     
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     if (argc < 1)
     {
         // Write syntax info.
@@ -439,6 +453,13 @@ public Action:VolDumpStatesCommand(client, argc)
 {
     decl String:target[64];
     new targetclient;
+    
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Generic))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
     
     if (argc < 1)
     {

@@ -470,8 +470,8 @@ LogModuleFilterCacheUpdate()
 LogOnCommandsCreate()
 {
     RegConsoleCmd("zr_log_list", Command_LogList, "List available logging flags and modules with their status values.");
-    RegAdminCmd("zr_log_add_module", Command_LogAddModule, ADMFLAG_CONFIG, "Add one or more modules to the module filter. Usage: zr_log_add_module <module> [module] ...");
-    RegAdminCmd("zr_log_remove_module", Command_LogRemoveModule, ADMFLAG_CONFIG, "Remove one or more modules from the module filter. Usage: zr_log_remove_module <module> [module] ...");
+    RegConsoleCmd("zr_log_add_module", Command_LogAddModule, "Add one or more modules to the module filter. Usage: zr_log_add_module <module> [module] ...");
+    RegConsoleCmd("zr_log_remove_module", Command_LogRemoveModule, "Remove one or more modules from the module filter. Usage: zr_log_remove_module <module> [module] ...");
 }
 
 /**
@@ -567,6 +567,13 @@ public Action:Command_LogAddModule(client, argc)
     decl String:argument[32];
     buffer[0] = 0;
     
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     new LogModules:logmodule;
     
     // Check if no arguments.
@@ -617,6 +624,13 @@ public Action:Command_LogRemoveModule(client, argc)
     decl String:buffer[256];
     decl String:argument[32];
     buffer[0] = 0;
+    
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
     
     new LogModules:logmodule;
     

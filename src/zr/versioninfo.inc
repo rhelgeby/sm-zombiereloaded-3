@@ -36,25 +36,27 @@ public Action:Command_Version(client, argc)
     buffer[0] = 0;
     linebuffer[0] = 0;
     
+    #define FORMATSTRING "%24s: %s\n"
+    
     Format(linebuffer, sizeof(linebuffer), "%s\n", ZR_VER_PRODUCT_NAME);
     StrCat(buffer, sizeof(buffer), linebuffer);
     
     Format(linebuffer, sizeof(linebuffer), "%s\n\n", ZR_VER_COPYRIGHT);
     StrCat(buffer, sizeof(buffer), linebuffer);
     
-    Format(linebuffer, sizeof(linebuffer), "Version:            %s\n", ZR_VER_VERSION);
+    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Version", ZR_VER_VERSION);
     StrCat(buffer, sizeof(buffer), linebuffer);
     
-    Format(linebuffer, sizeof(linebuffer), "Development branch: %s\n", ZR_VER_BRANCH);
+    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Compile date", ZR_VER_DATE);
     StrCat(buffer, sizeof(buffer), linebuffer);
     
-    Format(linebuffer, sizeof(linebuffer), "Revision:           %s\n", ZR_VER_REVISION);
+    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "License", ZR_VER_LICENSE);
     StrCat(buffer, sizeof(buffer), linebuffer);
     
-    Format(linebuffer, sizeof(linebuffer), "License:            %s\n", ZR_VER_LICENSE);
+    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Build", ZR_VER_REVISION);
     StrCat(buffer, sizeof(buffer), linebuffer);
     
-    Format(linebuffer, sizeof(linebuffer), "Compile date:       %s", ZR_VER_DATE);
+    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Development branch", ZR_VER_BRANCH);
     StrCat(buffer, sizeof(buffer), linebuffer);
     
     ReplyToCommand(client, buffer);

@@ -105,8 +105,8 @@ InfectLoad()
  */
 InfectOnCommandsCreate()
 {
-    RegAdminCmd("zr_infect", InfectInfectCommand, ADMFLAG_GENERIC, "Infect a client. Usage: zr_infect <filter> [respawn - 1/0]");
-    RegAdminCmd("zr_human", InfectHumanCommand, ADMFLAG_GENERIC, "Turn a client into a human. Usage: zr_human <filter> [respawn - 1/0]");
+    RegConsoleCmd("zr_infect", InfectInfectCommand, "Infect a client. Usage: zr_infect <filter> [respawn - 1/0]");
+    RegConsoleCmd("zr_human", InfectHumanCommand, "Turn a client into a human. Usage: zr_human <filter> [respawn - 1/0]");
 }
 
 /**
@@ -1073,6 +1073,13 @@ stock InfectManualHuman(client, targets[], count, bool:respawn = false, bool:pro
  */
 public Action:InfectInfectCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Generic))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If not enough arguments given, then stop.
     if (argc < 1)
     {
@@ -1124,6 +1131,13 @@ public Action:InfectInfectCommand(client, argc)
  */
 public Action:InfectHumanCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Generic))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If not enough arguments given, then stop.
     if (argc < 1)
     {

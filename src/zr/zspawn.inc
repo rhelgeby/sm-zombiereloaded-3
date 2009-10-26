@@ -44,7 +44,7 @@ ZSpawnOnCommandsCreate()
     RegConsoleCmd(SAYHOOKS_KEYWORD_ZSPAWN, ZSpawnCommand, "Spawn into the game after joining late.");
     
     // Register admin command to force ZSpawn.
-    RegAdminCmd("zr_zspawn_force", ZSpawnForceCommand, ADMFLAG_GENERIC, "Force ZSpawn on a client. Usage: zr_zspawn_force <client> ['0' = Spawn as human | '1' = Spawn as zombie]");
+    RegConsoleCmd("zr_zspawn_force", ZSpawnForceCommand, "Force ZSpawn on a client. Usage: zr_zspawn_force <client> ['0' = Spawn as human | '1' = Spawn as zombie]");
 }
 
 /**
@@ -331,6 +331,13 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
  */
 public Action:ZSpawnCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Generic))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If client is console, then stop and tell them this feature is for players only.
     if (ZRIsConsole(client))
     {

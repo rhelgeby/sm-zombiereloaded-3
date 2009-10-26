@@ -71,6 +71,9 @@ bool:ZAdminMenu(client)
         return false;
     }
     
+    // Boolean that tell if client is allowed to do configuration.
+    new bool:configallowed = ZRIsClientPrivileged(client, OperationType_Configuration);
+    
     // Create menu handle.
     new Handle:menu_zadmin = CreateMenu(ZAdminMenuHandle);
     
@@ -94,15 +97,15 @@ bool:ZAdminMenu(client)
     Format(ztele, sizeof(ztele), "%t", "ZAdmin main force ztele");
     
     // Get conditions for options.
-    new configdraw = MenuGetItemDraw(ZRIsClientPrivileged(client, OperationType_Configuration));
+    new configdraw = MenuGetItemDraw(configallowed);
     new moderatordraw = MenuGetItemDraw(ZRIsClientPrivileged(client, OperationType_Generic));
-    new bool:hitgroupsenabled = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]) && ZRIsClientPrivileged(client, OperationType_Configuration);
+    new hitgroupdraw = MenuGetItemDraw(GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]) && configallowed);
     
     // Add items to menu.
     SetMenuTitle(menu_zadmin, title);
     AddMenuItem(menu_zadmin, "classmultipliers", classmultipliers, configdraw);
     AddMenuItem(menu_zadmin, "weapons", weapons, configdraw);
-    AddMenuItem(menu_zadmin, "hitgroups", hitgroups, MenuGetItemDraw(hitgroupsenabled));
+    AddMenuItem(menu_zadmin, "hitgroups", hitgroups, hitgroupdraw);
     AddMenuItem(menu_zadmin, "infect", infect, moderatordraw);
     AddMenuItem(menu_zadmin, "zspawn", zspawn, moderatordraw);
     AddMenuItem(menu_zadmin, "ztele", ztele, moderatordraw);

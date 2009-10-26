@@ -187,8 +187,8 @@ enum ConfigKvAction
 ConfigOnCommandsCreate()
 {
     // Create config admin commands.
-    RegAdminCmd("zr_config_reload", ConfigReloadCommand, ADMFLAG_CONFIG, "Reloads a config file. Usage: zr_config_reload <file alias>");
-    RegAdminCmd("zr_config_reloadall", ConfigReloadAllCommand, ADMFLAG_CONFIG, "Reloads all config files. Usage: zr_config_reloadall");
+    RegConsoleCmd("zr_config_reload", ConfigReloadCommand, "Reloads a config file. Usage: zr_config_reload <file alias>");
+    RegConsoleCmd("zr_config_reloadall", ConfigReloadAllCommand, "Reloads all config files. Usage: zr_config_reloadall");
 }
 
 /**
@@ -786,6 +786,13 @@ stock ConfigFile:ConfigAliasToConfigFile(const String:alias[])
  */
 public Action:ConfigReloadCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If not enough arguments given, then stop.
     if (argc < 1)
     {
@@ -847,6 +854,13 @@ public Action:ConfigReloadCommand(client, argc)
  */
 public Action:ConfigReloadAllCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // Begin statistics.
     TranslationReplyToCommand(client, "Config command reload all stats begin");
     

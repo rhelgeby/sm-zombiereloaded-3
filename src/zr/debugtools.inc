@@ -28,10 +28,13 @@
 DebugOnCommandsCreate()
 {
     // Custom test commands:
+    /*
     RegConsoleCmd("zr_getparametercount", Command_GetParameterCount, "Test GetParameterCount function in paramtools.inc. Usage: zr_getparametercount <paramstring>");
     RegConsoleCmd("zr_getparametervalue", Command_GetParameterValue, "Test GetParameterValue function in paramtools.inc. Usage: zr_getparametervalue <paramname> <paramstring>");
+    */
 }
 
+/*
 public Action:Command_GetParameterCount(client, argc)
 {
     if (argc < 1)
@@ -103,3 +106,4 @@ public Action:Command_GetParameterValue(client, argc)
     
     return Plugin_Handled;
 }
+*/

@@ -24,7 +24,6 @@
 	{
 		"no"		"{1}"
 	}
-	// Set string to "{1}" for all languages.
 
 	"Feature is disabled"
 	{
@@ -44,6 +43,11 @@
 	"Must be admin"
 	{
 		"no"		"Denne funksjonen gjelder kun for administratorer."
+	}
+
+	"No access to command"
+	{
+		"no"		"Du har ikke tilgang til denne kommandoen."
 	}
 
 	"Must be alive"

@@ -59,7 +59,7 @@ ZTeleOnCommandsCreate()
     RegConsoleCmd(SAYHOOKS_KEYWORD_ZTELE, ZTeleCommand, "Teleport back to spawn if you are stuck.");
     
     // Register admin command to force ZTele.
-    RegAdminCmd("zr_ztele_force", ZTeleForceCommand, ADMFLAG_GENERIC, "Force ZTele on a client. Usage: zr_ztele_force <client>");
+    RegConsoleCmd("zr_ztele_force", ZTeleForceCommand, "Force ZTele on a client. Usage: zr_ztele_force <client>");
 }
 
 /**
@@ -299,6 +299,13 @@ public ZTeleForceHandle(Handle:menu_ztele_force, MenuAction:action, client, slot
  */
 public Action:ZTeleForceCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Generic))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If not enough arguments given, then stop.
     if (argc < 1)
     {
@@ -340,10 +347,10 @@ public Action:ZTeleForceCommand(client, argc)
                 TranslationReplyToCommand(client, "ZTele command force unsuccessful", targetname);
             }
         }
+        
+        // Log action to game events.
+        LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZTele, "Force ZTele", "\"%L\" teleported \"%L\" to spawn.", client, targets[x]);
     }
-    
-    // Log action to game events.
-    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZTele, "Force ZTele", "Admin \"%L\" forced player(s) to teleport to spawn. (zr_ztele_force)", client);
     
     return Plugin_Handled;
 }

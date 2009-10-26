@@ -68,9 +68,9 @@ new Handle:arrayHitgroups = INVALID_HANDLE;
 HitgroupsOnCommandsCreate()
 {
     // Create config admin commands.
-    RegAdminCmd("zr_hitgroup", HitgroupsCommand, ADMFLAG_CONFIG, "Toggles or sets if a zombie's hitgroup can be damaged. Usage: zr_hitgroup <hitgroup name> [1/0]");
-    RegAdminCmd("zr_hitgroup_enable_all", HitgroupsEnableAllCommand, ADMFLAG_CONFIG, "Enables all zombie hitgroups to be damaged.  Usage: zr_hitgroup_enable_all");
-    RegAdminCmd("zr_hitgroup_headshots_only", HitgroupsHeadshotsOnlyCommand, ADMFLAG_CONFIG, "Disables all zombie hitgroups but the head.  Usage: zr_hitgroup_headshots_only");
+    RegConsoleCmd("zr_hitgroup", HitgroupsCommand, "Toggles or sets if a zombie's hitgroup can be damaged. Usage: zr_hitgroup <hitgroup name> [1/0]");
+    RegConsoleCmd("zr_hitgroup_enable_all", HitgroupsEnableAllCommand, "Enables all zombie hitgroups to be damaged.  Usage: zr_hitgroup_enable_all");
+    RegConsoleCmd("zr_hitgroup_headshots_only", HitgroupsHeadshotsOnlyCommand, "Disables all zombie hitgroups but the head.  Usage: zr_hitgroup_headshots_only");
 }
     
 /**
@@ -507,6 +507,13 @@ public HitgroupsMenuHitgroupsHandle(Handle:menu_hitgroups, MenuAction:action, cl
  */
 public Action:HitgroupsCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If module is disabled, then stop.
     new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
     if (!hitgroups)
@@ -593,6 +600,13 @@ public Action:HitgroupsCommand(client, argc)
  */
 public Action:HitgroupsEnableAllCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If module is disabled, then stop.
     new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
     if (!hitgroups)
@@ -627,6 +641,13 @@ public Action:HitgroupsEnableAllCommand(client, argc)
  */
 public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If module is disabled, then stop.
     new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
     if (!hitgroups)

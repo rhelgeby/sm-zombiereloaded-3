@@ -99,7 +99,7 @@ AntiStickOnCommandsCreate()
     RegConsoleCmd("zr_antistick_list_models", AntiStickListModelsCommand, "Lists all players and their model data in console. Usage: zr_antistick_list_models");
     
     // Create admin command to set model hull width.
-    RegAdminCmd("zr_antistick_set_width", AntiStickSetWidthCommand, ADMFLAG_GENERIC, "Sets the width of a model's hull. (See zr_antistick_list_models) Usage: zr_antistick_set_width <model/player> <width>");
+    RegConsoleCmd("zr_antistick_set_width", AntiStickSetWidthCommand, "Sets the width of a model's hull. (See zr_antistick_list_models) Usage: zr_antistick_set_width <model/player> <width>");
     
     RegConsoleCmd("zr_antistick_dump_group", AntiStickDumpGroupCommand, "Dumps collision group data on one or more players. Usage zr_antistick_dump_group [#userid|name]");
 }
@@ -733,6 +733,13 @@ public Action:AntiStickListModelsCommand(client, argc)
  */
 public Action:AntiStickSetWidthCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If not enough arguments given, then stop.
     if (argc < 2)
     {

@@ -26,7 +26,7 @@
  */
 
 /**
- * @section Pre-defined group names for authenticating players.
+ * @section Pre-defined SourceMod group names for authenticating players.
  */
 #define ZR_GROUP_ADMINS         "zr_admins"
 #define ZR_GROUP_MODERATORS     "zr_moderators"
@@ -68,7 +68,7 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
         return false;
     }
     
-    // Check if group permissions is enabled.
+    // Check if group authentication is used.
     new bool:groupauth = GetConVarBool(g_hCvarsList[CVAR_PERMISSIONS_USE_GROUPS]);
     if (groupauth)
     {
