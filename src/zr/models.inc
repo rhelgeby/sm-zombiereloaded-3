@@ -148,6 +148,8 @@ ModelsLoad()
             modelfilecount++;
         }
         
+        CloseHandle(modeldir);
+        
         // Increment variable if model files are valid.
         if (modelfilecount)
         {
