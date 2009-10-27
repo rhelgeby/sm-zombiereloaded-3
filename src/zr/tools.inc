@@ -148,6 +148,6 @@ ToolsSetupGameData()
     // If offset "CSWeaponDrop" can't be found, then stop the plugin.
     if(g_hToolsCSWeaponDrop == INVALID_HANDLE)
     {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "GameData", "Signature \"CBasePlaye::CSWeaponDrop\" was not found.");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "GameData", "Signature \"CBasePlayer::CSWeaponDrop\" was not found.");
     }
 }

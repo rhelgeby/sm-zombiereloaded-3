@@ -90,7 +90,7 @@ bool:AmbientSoundsValidateConfig()
     if (ambientvolume <= 0.0)
     {
         // Log invalid ambient sound volume error.
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_SEffects, "Config Validation", "Ambient sound volume specified in \"zr_ambientsounds_volume\"is either muted or invalid.");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_SEffects, "Config Validation", "Ambient sound volume specified in \"zr_ambientsounds_volume\" is either muted or invalid.");
         
         return false;
     }

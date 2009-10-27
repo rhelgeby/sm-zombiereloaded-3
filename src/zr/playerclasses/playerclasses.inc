@@ -1081,7 +1081,7 @@ ClassClientSetDefaultIndexes(client = -1)
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get specified zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get the specified zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".");
         
         // Use default class.
         zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, filter);
@@ -1091,7 +1091,7 @@ ClassClientSetDefaultIndexes(client = -1)
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get specified human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".");
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get the specified human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".");
         
         // Use default class.
         humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, filter);

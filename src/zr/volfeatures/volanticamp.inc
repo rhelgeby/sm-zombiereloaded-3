@@ -123,6 +123,8 @@ VolAnticampEnable(volumeIndex)
 
 /**
  * Starts all existing anticamp timers.
+ *
+ * TODO: Reuse code! This is almost duplicate of VolAnticampEnable.
  */
 stock VolAnticampEnableAll()
 {
@@ -682,7 +684,7 @@ VolAnticampWarningToString(VolAnticampeWarningType:warningType, String:buffer[],
         }
         case Anticamp_Menu:
         {
-            return shortName ? strcopy(buffer, maxlen, "meny") : strcopy(buffer, maxlen, "Message in menu panel");
+            return shortName ? strcopy(buffer, maxlen, "menu") : strcopy(buffer, maxlen, "Message in menu panel");
         }
     }
     

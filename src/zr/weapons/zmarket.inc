@@ -839,7 +839,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         
         if (grenadetype == GrenadeType_Invalid)
         {
-            LogEvent(false, LogType_Error, LOG_GAME_EVENTS, LogModule_Weapons, "Grenades", "Client \"%L\" attempted to buy weapon entity \"%s\" marked as a Projectile.  Check your weapon config.", client, weaponentity);
+            LogEvent(false, LogType_Error, LOG_GAME_EVENTS, LogModule_Weapons, "Grenades", "Client \"%L\" attempted to buy weapon entity \"%s\" marked as a projectile. Check your weapon config.", client, weaponentity);
             return false;
         }
         

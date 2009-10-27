@@ -4113,29 +4113,690 @@ might help.</p>
 <p>When jumping it's not easy for humans to hit the head and they can't get that good knock back
 anymore. With multiple zombies jumping fast, pushing eachother on their way into a tube, the humans
 are doomed. The tube camping problem much better balanced. This problem can also be solved by
-using a <a href="#3.23.4">class editor volume</a> or <a href="#3.23.4">anti-camp</a> in tubes and
+using a <a href="#3.23.5">class editor volume</a> or <a href="#3.23.4">anti-camp</a> in tubes and
 vents.</p>
 
 
-<h3><a name="5" />5. Troubleshooting</h3>
+<h2><a name="5" />5. Troubleshooting</h2>
 
-<h4><a name="5.1" />5.1 Verifying Requirements</h4>
-<h4><a name="5.2" />5.2 Startup</h4>
-<h4><a name="5.3" />5.3 Error Messages</h4>
-<h4><a name="5.4" />5.4 Common Problems</h4>
-<h4><a name="5.5" />5.5 Known Issues</h4>
+<h3><a name="5.1" />5.1 Verifying Requirements</h3>
+<h3><a name="5.2" />5.2 Startup</h3>
+
+<h3><a name="5.3" />5.3 Error Messages</h3>
+
+<p>There are several error levels that are handled differently in the plugin. <em>Fatal</em> errors
+will stop the plugin, <em>errors</em> might disable features, and <em>warnings</em> will usually fall
+back to a default action.</p>
+
+<blockquote><table>
+	<caption>Error Messages</caption>
+	<tr>
+		<th class="mediumwidth">Module:</th>
+		<th class="tinywidth">Type:</th>
+		<th>Message:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">-</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Unexpected error encountered loading: &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Something wrong happened when trying to parse/open a
+			configuration file.</p>
+			<p><strong>Cause:</strong> File permissions, or (for developers:) that invalid file
+			structure were specified when loading.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">account</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CCSPlayer::m_iAccount" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for accessing players' money value
+			wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">config</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Invalid reload function for config: &lt;module config&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't get the function for reloading the specified
+			module. This should never happend, unless someone tampered with the code.</p>
+			<p><strong>For developers:</strong> If you're doing modifications/additions in the config
+			system make sure you "register" the module as described in top of
+			<code>config.inc</code>.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">downloads</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Missing downloads file: &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Startup validation failed because the
+			<a href="#3.6">list of downloads</a> could not be found.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">downloads</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Missing file &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't find the specified file during validation of
+			download list content. Verify that the path is correct (path is relative to the
+			<code>cstrike</code> folder). Check for typos.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">hitgroups</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Missing hitgroups file: &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Cause:</strong>Startup validation failed because the <a href="#3.9">hit groups
+			file</a> could not be found.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">hitgroups</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">No usable data found in hitgroups config file: &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Cause:</strong> The hit groups file is empty, - or there's a typo so the parser
+			think it's empty. Check for missing quotes (") or brackets ({ }).</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">hitgroups</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Unexpected error caching data from hitgroups config file: &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Something wrong happened when trying to parse/open a
+			configuration file.</p>
+			<p><strong>Cause:</strong> Usually file permissions, or (for developers:) that invalid
+			file structure were specified when loading.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">hitgroups</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Couldn't cache hitgroup data for: &lt;hit group name&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't find the specified hit group name in the
+			configuration file.</p>
+			<p><strong>Cause:</strong> A quote is missing somewhere, or the hit group section is
+			actually missing.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Missing models file: &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Startup validation failed because the
+			<a href="#3.5">list of models</a> could not be found.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Error opening model path directory: &lt;directory&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The model path doesn't exist. Check for typos. Path
+			is relative to the <code>cstrike</code> folder.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Missing model files on server (&lt;file&gt;)</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The model file doesn't exist. Check for typos. Path
+			is relative to the <code>cstrike</code> folder.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">No usable (public) model paths in &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> There's no public models to be assigned zombies and humans.</p>
+			<p><strong>Cause:</strong> Typos or invalid paths in model list.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CBaseEntity::m_nWaterLevel" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' water level
+			wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CBasePlayer::m_vecVelocity[0]" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' velocity
+			wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CCSPlayer::m_flLaggedMovementValue" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' speed/movement
+			wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CCSPlayer::m_bHasNightVision" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' night vision
+			settings wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CCSPlayer::m_bNightVisionOn" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' night vision
+			setttings wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CBasePlayer::m_iDefaultFOV" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' field of
+			view setting wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Can't load game config file (plugin.zombiereloaded.txt) from the
+		gamedata directory.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required configuration file with offsets and
+			function signatures wasn't found, or couldn't be loaded.</p>
+			<p><strong>Cause:</strong> Usually file permissions.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Signature "CGameRules::TerminateRound" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required function signature for terminating the
+			round wasn't found</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">offsets</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Signature "CBasePlaye::CSWeaponDrop" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required function signature for dropping players'
+			weapons wasn't found</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Failed to set &lt;class name&gt; as default spawn class
+		for team &lt;team id&gt;. The class doesn't exist or the team IDs doesn't match. Falling
+		back to the first class in the team.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't find the specified class name, or there's no
+			class with that name and team id. Default class in class configuration will be used.</p>
+			<p><strong>Cause:</strong> Typo in plugin configuration or class configuration, the
+			specified class is a human class while it expected a zombie class (or oposite), - or
+			the class has wrong team id set.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Missing playerclasses config file &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't find the specified class configuration file.
+			Verify that the <code>zr_config_path_playerclasses</code> console variable is correct.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Can't find any classes in &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> There's no classes.</p>
+			<p><strong>Cause:</strong> Usually a missing quote (") or bracket ({ }).</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Maximum classes reached (&lt;max classes&gt;). Skipping
+		other classes.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Maximum number of classes reached during parsing.
+			Additional classes are skipped.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Invalid class at index &lt;class index&gt;, disabled class.
+		Class error flags: &lt;flags&gt;.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The specified class has one or more invalid attribute
+			values. Class will be disabled. Check the <a href="#3.7.3">flag value</a> to find out
+			what attributes that are invalid.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">The class configuration doesn't match the team requirements.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Class requirement conditions not met. See
+			<a href="#3.7.3">Class Requirements (3.7.3)</a> for details. Zombie:Reloaded will not
+			start without valid classes.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Couldn't find a default class for one or more teams. At least one
+		class per team must be marked as default.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Missing a default class for humans or zombies. See
+			<a href="#3.7.3">Class Requirements (3.7.3)</a> for details. Zombie:Reloaded will not
+			start without valid classes.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Failed to get the specified zombie class, falling back
+		to default class in class config. Check spelling in "zr_classes_default_zombie".</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't find the class specified in
+			<code>zr_classes_default_zombie</code>. Check for typos.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">playerclasses</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Failed to get the specified human class, falling back
+		to default class in class config. Check spelling in "zr_classes_default_human".</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't find the class specified in
+			<code>zr_classes_default_human</code>. Check for typos.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">soundeffects</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Invalid sound file specified in "zr_ambientsounds_file": &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't find the sound file. The path is relative to
+			the <code>cstrike/sound</code> folder. Check for typos.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">soundeffects</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Ambient sound volume specified in "zr_ambientsounds_volume" is either muted or invalid.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Volume has a invalid value (zero or negative). Valid
+			range is from 0.1 to 1.0.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">soundeffects</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Ambient sound length specified in "zr_ambientsounds_length" is invalid.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The specified sound file length is zero or negative. Must be positive.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">visualeffects</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CCSPlayer::m_hRagdoll" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' ragdoll
+			wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">visualeffects</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Couldn't find handle to cvar: "sv_skyname"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Couldn't find cvar <code>sv_skyname</code>.</p>
+			<p><strong>Cause:</strong> This is most likely caused by running Zombie:Reloaded on
+			another mod than it's made for. Counter-Strike: Source is required.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">volfeatures</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Invalid interval &lt;interval&gt; in anticamp volume
+		&lt;id&gt;.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Invalid attribute value. Must be positive and non-zero.
+			Volume will be disabled.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">volfeatures</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Console variable "zr_vol_update_interval" is zero or
+		negative. Must be positive. Volumetric Features will be disabled.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Invalid value. Must be positive and non-zero.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">volfeatures</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Console variable "zr_vol_trigger_interval" is zero or
+		negative. Must be positive. Volumetric Features will be disabled.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Invalid value. Must be positive and non-zero.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CBaseCombatWeapon::m_iClip1" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' primary
+			ammo value wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CBaseCombatWeapon::m_iClip2" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' secondary
+			ammo value wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CBasePlayer::m_iAmmo" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' reserve
+			ammo value wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CBasePlayer::m_hActiveWeapon" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' active
+			weapon index wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Missing weapons config file: &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Could not find the <a href="#3.8">weapons configuration
+			file</a>. Check for typos in console variable <code>zr_config_path_weapons</code>.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">No usable data found in weapons config file: &lt;file&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Cause:</strong> The weapon config file is empty, - or there's a typo so the
+			parser think it's empty. Check for missing quotes (") or brackets ({ }).</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Couldn't cache weapon data for: &lt;weapon name&gt; (check weapons
+		config)</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The specified weapon name wasn't found in weapon
+			configuration file.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Offset "CCSPlayer::m_bInBuyZone" was not found.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The required offset for getting players' buy zone
+			state wasn't found.</p>
+			<p><strong>Cause:</strong> Usually a update by Valve. Report to a Zombie:Reloaded
+			developer, or the SourceMod team.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Invalid weapon (&lt;weapon name&gt;) selected from the ZMarket menu.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Something went wrong when converting a weapon name
+			to a weapon index. This should never happend, and if so it's a bug.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapons</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Client &lt;player name&gt; attempted to buy weapon entity &lt;weapon
+		name&gt; marked as a projectile. Check your weapon config.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The weapon is probably not a grenade type. Check the
+			<code>weapontype</code> attribute of that weapon.</p>
+		</td>
+	</tr>
+</table></blockquote>
+
+<h3><a name="5.4" />5.4 Common Problems</h3>
+<h3><a name="5.5" />5.5 Known Issues</h3>
 
 <p>Conflicts with WCS Races plugin and other plugins who change player model/skin and speed.</p>
 <p>Do not run es_tools, it's not compatible with SourceMod.</p>
 
 
-<h3><a name="6" />6. Gameplay Guidelines</h3>
+<h2><a name="6" />6. Gameplay Guidelines</h2>
 
-<h4><a name="6.1" />6.1 Briefing - Map Configuration Files</h4>
-<h4><a name="6.2" />6.2 Map Balance</h4>
-<h4><a name="6.3" />6.3 Knock Back Settings</h4>
-<h4><a name="6.4" />6.4 Map Time</h4>
-<h4><a name="6.5" />6.5 Servers With Unlimited Ammo And No Reloading</h4>
+<h3><a name="6.1" />6.1 Briefing - Map Configuration Files</h3>
+<h3><a name="6.2" />6.2 Map Balance</h3>
+<h3><a name="6.3" />6.3 Knock Back Settings</h3>
+<h3><a name="6.4" />6.4 Map Time</h3>
+<h3><a name="6.5" />6.5 Servers With Unlimited Ammo And No Reloading</h3>
 
 
 <h3><a name="7" />7. Reporting Bugs And Problems</h3>

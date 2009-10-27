@@ -1177,7 +1177,7 @@ stock ClassGetDefaultSpawnClass(teamid, filter[ClassFilter] = ClassNoSpecialClas
                 if (ClassValidateIndex(classindex))
                 {
                     // Log a warning.
-                    LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Default Spawn Class", "Warning: The default class name \"%s\" does not exist or matches the team ID.", classname);
+                    //LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Default Spawn Class", "Warning: The default class name \"%s\" does not exist or matches the team ID.", classname);
                     return classindex;
                 }
                 else

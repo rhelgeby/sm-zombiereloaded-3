@@ -104,7 +104,7 @@ td
 {
     text-align: left;
     vertical-align: top;
-    padding: 3px;
+    padding: 5px;
 }
 
 td.commandheader
@@ -128,7 +128,7 @@ th
     color: #900000;
     vertical-align: top;
     text-align: left;
-    padding: 3px;
+    padding: 5px;
     border-bottom-style: solid;
     border-bottom-width: 2px;
 }
