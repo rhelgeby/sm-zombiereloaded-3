@@ -10,6 +10,8 @@
 <body>
 
 <div class="container">
+<div class="shadow">
+<div class="content">
 <h1><a name="top" />Zombie:Reloaded User Manual</h1>
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
@@ -217,7 +219,7 @@ plugin is compatible with all existing Zombie Mod maps.</p>
 <h6>Concept</h6>
 <ul>
 	<li>
-		<p><b>c0ldfyr3</b></p>
+		<p><strong>c0ldfyr3</strong></p>
 		<p>The developer of Zombie Mod (<a href="http://www.zombiemod.com">www.zombiemod.com</a>).</p>
 	</li>
 </ul>
@@ -225,21 +227,21 @@ plugin is compatible with all existing Zombie Mod maps.</p>
 <h6>Developers and testers</h6>
 <ul>
 	<li>
-		<p><b>Greyscale</b></p>
+		<p><strong>Greyscale</strong></p>
 		<p>Author of Zombie:Reloaded. The one who started remaking Zombie Mod for the SourceMod platform.</p>
 		<p>Related server: "#1 Pro's Playground - 24/7 Zombie Mod [ Rank / Reload / Napalm ]"
 		(74.201.57.54:27015) - USA, Washington</p>
 	</li>
-    
-    <li>
-		<p><b>Richard Helgeby</b></p>
+
+	<li>
+		<p><strong>Richard Helgeby</strong></p>
 		<p>Zombie:Reloaded developer. Started working on the plugin from version 2.5.1. Fixed bugs and
 		made new features.</p>
 		<p>Related server: (same as Cpt. Moore)</p>
 	</li>
-    
-    <li>
-		<p><b>Cpt. Moore</b></p>
+
+	<li>
+		<p><strong>Cpt. Moore</strong></p>
 		<p>Helped debuging issues and made some new features. Used the server for testing.</p>
 		<p>Related server: "Zombie World Domination by SwissQuake" (85.195.74.201:13010)
 		 - Switzerland, Basel</p>
@@ -267,7 +269,7 @@ plugin is compatible with all existing Zombie Mod maps.</p>
 	<li><p>SourceMod - A scripting platform:</p>
 	<ul>
 		<li><a href="http://wiki.alliedmods.net/Installing_SourceMod">Installing SourceMod</a></li>
-        <li><a href="http://wiki.alliedmods.net/index.php/Category:SourceMod_Documentation">SourceMod Documentation</a></li>
+		<li><a href="http://wiki.alliedmods.net/index.php/Category:SourceMod_Documentation">SourceMod Documentation</a></li>
 	</ul></li>
 	
 	<li>
@@ -298,10 +300,10 @@ If the plugin doesn't work at all or there are errors logged, see <a href="#5">T
 is optional or not.</p>
 
 <p>Example syntax of a command:</p>
-	<blockquote><p class="code">zr_class_modify &lt;classname|"zombies"|"humans"|"admins"&gt; &lt;attribute&gt; &lt;value&gt; [is_multiplier]</p></blockquote>
+	<blockquote><p><code>zr_class_modify &lt;classname|"zombies"|"humans"|"admins"&gt; &lt;attribute&gt; &lt;value&gt; [is_multiplier]</code></p></blockquote>
 
 <p>Some paths may look like:</p>
-	<blockquote><p class="code">cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</p></blockquote>
+	<blockquote><p><code>cfg/sourcemod/zombiereloaded/&lt;mapname&gt;.cfg</code></p></blockquote>
 
 <p>How to read syntaxes like this is explained below.</p>
 
@@ -311,11 +313,11 @@ is optional or not.</p>
 with brackets.</p>
 
 <p>Example:</p>
-	<blockquote><p class="code">zr_somecommand [number]</p></blockquote>
+	<blockquote><p><code>zr_somecommand [number]</code></p></blockquote>
 
 <p>Usage examples:</p>
-	<blockquote><p class="code">zr_somecommand<br />
-	zr_somecommand 10</p></blockquote>
+	<blockquote><p><code>zr_somecommand<br />
+	zr_somecommand 10</code></p></blockquote>
 <p></p>
 
 <h4><a name="3.1.2" />2. Required Parameters</h4>
@@ -326,12 +328,12 @@ written the command replies with some info about the syntax.</p>
 <p>Less than (&lt;) and greather than (&gt;) symbols marks required parameters.</p>
 
 <p>Examples:</p>
-	<blockquote><p class="code">zr_somecommand &lt;number&gt;<br />
-	zr_infect &lt;target&gt;</p></blockquote>
+	<blockquote><p><code>zr_somecommand &lt;number&gt;<br />
+	zr_infect &lt;target&gt;</code></p></blockquote>
 
 <p>Usage examples:</p>
-	<blockquote><p class="code">zr_somecommand 100<br />
-	zr_infect "unnamed"</p></blockquote>
+	<blockquote><p><code>zr_somecommand 100<br />
+	zr_infect "unnamed"</code></p></blockquote>
 
 <h4><a name="3.1.3" />3. Multiple Options In The Same Parameter</h4>
 
@@ -340,12 +342,12 @@ Usually it's specifying a name, a index or a predefined value. Each option is
 separated by a "|" symbol. Only one of the options listed is used in a command.</p>
 
 <p>Example:</p>
-	<blockquote><p class="code">zr_do_something &lt;index|name|"all"&gt;</p></blockquote>
+	<blockquote><p><code>zr_do_something &lt;index|name|"all"&gt;</code></p></blockquote>
 
 <p>Usage examples:</p>
-	<blockquote><p class="code">zr_do_something 1<br />
+	<blockquote><p><code>zr_do_something 1<br />
 	zr_do_something "all"<br />
-	zr_do_something "unnamed"</p></blockquote>
+	zr_do_something "unnamed"</code></p></blockquote>
 
 <h4><a name="3.1.4" />4. Text As Parameters</h4>
 
@@ -353,11 +355,11 @@ separated by a "|" symbol. Only one of the options listed is used in a command.<
 do this on all string parameters to avoid parsing mistakes.</p>
 
 <p>Example:</p>
-	<blockquote><p class="code">zr_infect "unnamed" "player"<br />
-	zr_do_something "example text. test."</p></blockquote>
+	<blockquote><p><code>zr_infect "unnamed" "player"<br />
+	zr_do_something "example text. test."</code></p></blockquote>
 
 <p>Example of bad usage:</p>
-	<blockquote><p class="code">zr_do_something example text. test.</p></blockquote>
+	<blockquote><p><code>zr_do_something example text. test.</code></p></blockquote>
 
 <p>The last example actually have 3 parameters while it should be only one. This may cause unexpected
 results and is an example of why strings should be quoted.</p>
@@ -367,6 +369,7 @@ results and is an example of why strings should be quoted.</p>
 <p>These are the default configuration files. The paths are relative to the "cstrike" folder.</p>
 
 <blockquote><table>
+	<caption>Default Configuration Files</caption>
 	<tr>
 		<th class="mediumwidth">Type:</th>
 		<th>File:</th>
@@ -431,9 +434,8 @@ zr_log_add_module is too late.</p>
 <p>There are console variables for different log settings and exceptions. Place them in the main
 configuration file.</p>
 
-<p><b>Console variables:</b></p>
-
 <blockquote><table>
+	<caption>Log Console variables</caption>
 	<tr>
 		<th class="namewidth">Console variable:</th>
 		<th>Default:</th>
@@ -516,9 +518,8 @@ configuration file.</p>
 	</tr>
 </table></blockquote>
 
-<p><b>Console commands:</b></p>
-
 <blockquote><table>
+	<caption>Log Console commands</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -567,6 +568,7 @@ configuration file.</p>
 <h4><a name="3.3.1" />1. Log Flags</h4>
 
 <blockquote><table>
+	<caption>Log Flags</caption>
 	<tr>
 		<th class="namewidth">Flag:</th>
 		<th class="tinywidth">Bit No.:</th>
@@ -611,8 +613,8 @@ configuration file.</p>
 <p>To combine several logging flags use the sum of their values. A combination could be "3", which
 is these log flags:</p>
 
-	<blockquote><p class="code">LOG_CORE_EVENTS + LOG_GAME_EVENTS<br />
-	1 + 2</p></blockquote>
+	<blockquote><p><code>LOG_CORE_EVENTS + LOG_GAME_EVENTS<br />
+	1 + 2</code></p></blockquote>
 
 <p>Most server setups donesn't need different flag settings. Default is fine.</p>
 
@@ -622,8 +624,8 @@ what bits that are 1. Look up the bit number (not value) in the table above.</p>
 <p>As an example on using the number 11 it's 1011 in binary. Counting from right
 we see that the following bit numbers are on: 1, 2, and 4. That is the flags:</p>
 
-	<blockquote><p class="code">LOG_CORE_EVENTS + LOG_GAME_EVENTS + LOG_DEBUG<br />
-	1 + 2 + 8</p></blockquote>
+	<blockquote><p><code>LOG_CORE_EVENTS + LOG_GAME_EVENTS + LOG_DEBUG<br />
+	1 + 2 + 8</code></p></blockquote>
 
 <p>Most operating systems or distributions have a calculator that can convert
 between binary and decimal numbers with scientific mode enabled. An online
@@ -636,6 +638,7 @@ unit converter like below can also be used.</p>
 <h4><a name="3.3.2" />2. List Of Modules</h4>
 
 <blockquote><table>
+	<caption>List Of Modules</caption>
 	<tr>
 		<th>Short name:</th>
 		<th>Description:</th>
@@ -733,6 +736,7 @@ modules like classes. Post map configuration files are executed after the module
 stuff have to be placed in this one to be effective, like changing class attributes.</p>
 
 <blockquote><table>
+	<caption>Map Configuration File Types</caption>
 	<tr>
 		<th class="tinywidth">Type:</th>
 		<th class="mediumwidth">Executed:</th>
@@ -755,7 +759,7 @@ stuff have to be placed in this one to be effective, like changing class attribu
 
 <h3><a name="3.5" />3.5 Model Configuration</h3>
 
-<p><b>Note:</b> Work in progress. Some flags explained in this section doesn't exist yet.</p>
+<p><strong>Note:</strong> Work in progress. Some flags explained in this section doesn't exist yet.</p>
 
 <p>The model configuration file is a list of models used on the server. Each line contains the path
 including the model name, but not the file extension.</p>
@@ -771,11 +775,10 @@ admins/donators, hidden from random selection or only for mother zombies.</p>
 specified it's treated as a regular public model.</p>
 
 <p>Model line syntax:</p>
-	<blockquote><p class="code">&lt;model path&gt;[; flag]</p></blockquote>
-
-<p>Available flags:</p>
+	<blockquote><p><code>&lt;model path&gt;[; flag]</code></p></blockquote>
 
 <blockquote><table>
+	<caption>Model Flags</caption>
 	<tr>
 		<td class="valueoption">adminonly</td>
 		<td>Can only be used by admins.</td>
@@ -796,14 +799,14 @@ specified it's treated as a regular public model.</p>
 
 <p>Example usages:</p>
 
-	<blockquote><p class="code">models/player/zh/zh_charple001<br />
+	<blockquote><p><code>models/player/zh/zh_charple001<br />
 	models/player/zh/zh_corpse002; adminonly<br />
 	models/player/zh/zh_zombie003; hidden<br />
-	models/player/ics/hellknight_red/t_guerilla; motherzombie</p></blockquote>
+	models/player/ics/hellknight_red/t_guerilla; motherzombie</code></p></blockquote>
 
 <p>Put the list of models in:</p>
 
-	<blockquote><p class="code">addons/sourcemod/configs/zr/models.txt</p></blockquote>
+	<blockquote><p><code>addons/sourcemod/configs/zr/models.txt</code></p></blockquote>
 
 
 <h3><a name="3.6" />3.6 Download List</h3>
@@ -813,7 +816,7 @@ download them. The paths must be relative to the "cstrike" folder.</p>
 
 <p>List files to be downloaded in:</p>
 
-	<blockquote><p class="code">addons/sourcemod/configs/zr/downloads.txt</p></blockquote>
+	<blockquote><p><code>addons/sourcemod/configs/zr/downloads.txt</code></p></blockquote>
 
 
 <h3><a name="3.7" />3.7 Class Configuration</h3>
@@ -828,9 +831,9 @@ variable with per-map configuration files to have different sets of classes on o
 
 <p>Default path is:</p>
 
-	<blockquote><p class="code">configs/zr/playerclasses.txt</p></blockquote>
+	<blockquote><p><code>configs/zr/playerclasses.txt</code></p></blockquote>
 
-<p><b>Note:</b> The path is relative to the "sourcemod" folder.</p>
+<p><strong>Note:</strong> The path is relative to the "sourcemod" folder.</p>
 
 <p>The file contains a short description of all attributes. Details are explained below.</p>
 
@@ -848,6 +851,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 <p>The list below explains all available class attributes in detail:</p>
 
 <blockquote><table>
+	<caption>Class Attributes</caption>
 	<tr>
 		<th class="namewidth">Attribute:</th>
 		<th class="mediumwidth">Value type:</th>
@@ -883,7 +887,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 			</table></blockquote>
 			<p>The admin-mode class type sets the player in spectacting like mode, but allow
 			admins to walk around. They can't take or give damage, and they won't affect the game
-			rules in any way. <b>Admin-mode is incomplete</b> and classes of this type is ignored
+			rules in any way. <strong>Admin-mode is incomplete</strong> and classes of this type is ignored
 			in the game.</p>
 			<p>See the <span class="code">flags</span> attribute for admin-only classes.</p>
 		</td>
@@ -1076,7 +1080,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Human classes only.</b> Specifies whether the human can trow napalm grenades or
+			<p><strong>Human classes only.</strong> Specifies whether the human can trow napalm grenades or
 			not.</p>
 		</td>
 	</tr>
@@ -1088,7 +1092,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Zombie classes only.</b> Specifies how long in seconds zombies will burn when hit by
+			<p><strong>Zombie classes only.</strong> Specifies how long in seconds zombies will burn when hit by
 			napalm grenades. 0.0 or a negative value will disable this feature on the current
 			class. This attribute has no effect on human classes.</p>
 		</td>
@@ -1101,7 +1105,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Note: Incomplete feature!</b></p>
+			<p><strong>Note: Incomplete feature!</strong></p>
 			<p>The immunity mode. This feature is currently incomplete and values are ignored.</p>
 		</td>
 	</tr>
@@ -1113,7 +1117,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Note: Incomplete feature!</b></p>
+			<p><strong>Note: Incomplete feature!</strong></p>
 			<p>The value for the specified immunity mode. This feature is currently incomplete and
 			values are ignored.</p>
 		</td>
@@ -1160,7 +1164,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Zombie classes only.</b> How many health points to give the zombie each time it
+			<p><strong>Zombie classes only.</strong> How many health points to give the zombie each time it
 			infect a human.</p>
 		</td>
 	</tr>
@@ -1172,7 +1176,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Zombie classes only.</b> How many extra points to give the killer of this zombie.
+			<p><strong>Zombie classes only.</strong> How many extra points to give the killer of this zombie.
 			If this is 0, the default value of 1 point will be given.</p>
 		</td>
 	</tr>
@@ -1195,7 +1199,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Zombie classes only.</b> Force to apply on the zombie when shot at. The zombie is
+			<p><strong>Zombie classes only.</strong> Force to apply on the zombie when shot at. The zombie is
 			pushed in the same direction as the bullet.</p>
 		</td>
 	</tr>
@@ -1231,7 +1235,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 <p>At least one zombie class and one human class with no special flags set is
 required. Otherwise the plugin will fail to load.</p>
 
-<p><b>Requirements:</b></p>
+<p><strong>Requirements:</strong></p>
 
 <ul>
 	<li>At least one human class (teamid 1).</li>
@@ -1249,9 +1253,8 @@ have invalid values.</p>
 index and the error flags (bit field) in the log message tells what attributes that failed to
 validate.</p>
 
-<p><b>Attribute flags:</b></p>
-
 <blockquote><table>
+	<caption>Attribute Flags</caption>
 	<tr>
 		<th class="commandheader">Attribute:</th>
 		<th class="commandheader">Bit:</th>
@@ -1411,20 +1414,19 @@ didn't validate.</p>
 <p>There are several console variables to set default class settings for players.
 Place these console variables in the main configuration file:</p>
 
-	<blockquote><p class="code">cfg/sourcemod/zombiereloaded/zombiereloaded.cfg</p></blockquote>
+	<blockquote><p><code>cfg/sourcemod/zombiereloaded/zombiereloaded.cfg</code></p></blockquote>
 
 <p>And/or in a map config file:</p>
 
-	<blockquote><p class="code">cfg/sourcemod/zombiereloaded/&lt;map name&gt;[.post].cfg</p></blockquote>
+	<blockquote><p><code>cfg/sourcemod/zombiereloaded/&lt;map name&gt;[.post].cfg</code></p></blockquote>
 
 <p>Example map config files:</p>
 
-	<blockquote><p class="code">cfg/sourcemod/zombiereloaded/zm_panic.cfg<br />
-    cfg/sourcemod/zombiereloaded/zm_panic.post.cfg</p></blockquote>
-
-<p><b>Class console variables:</b></p>
+	<blockquote><p><code>cfg/sourcemod/zombiereloaded/zm_panic.cfg<br />
+	cfg/sourcemod/zombiereloaded/zm_panic.post.cfg</code></p></blockquote>
 
 <blockquote><table>
+	<caption>Class Console Variables</caption>
 	<tr>
 		<th class="namewidth">Console variable:</th>
 		<th>Default:</th>
@@ -1565,7 +1567,7 @@ Place these console variables in the main configuration file:</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> This feature is incomplete!</p>
+			<p><strong>Note:</strong> This feature is incomplete!</p>
 			<p>Default admin-mode class selected for all players when they connect, if found. This
 			feature is incomplete and ignored.</p>
 			<p>Do not confuse this with admin-only classes. Admin-mode is a special spawn mode for
@@ -1614,7 +1616,7 @@ Place these console variables in the main configuration file:</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b>This feature is incomplete!</p>
+			<p><strong>Note:</strong>This feature is incomplete!</p>
 			<p>Allow admins to select admin classes. Disable this option to force certain classes
 			on admins depending on what zr_classes_default_admin is set to, - and if admin mode is
 			enabled on the player.</p>
@@ -1635,12 +1637,11 @@ original class cache is multiplied with the specified value and written back to 
 <p>When multiplying, the value is always based on the original value, not multiplying the earlier
 multiplied value. This also makes it easy to restore the original value.</p>
 
-<p><b>Note:</b>These commands must be used in a <a href="#3.4"><b>post</b> map config files</a>,
+<p><strong>Note:</strong>These commands must be used in a <a href="#3.4"><strong>post</strong> map config files</a>,
 otherwise they won't have any effect because class data isn't loaded yet.</p>
 
-<p><b>Console commands:</b></p>
-
 <blockquote><table>
+	<caption>Modifying Class Command</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -1686,12 +1687,13 @@ useful.</p>
 <p>With class attribute multipliers, numeric class attributes can be scaled and configured with
 map configuration files. There's a set of multipliers for both humans and zombies.</p>
 
-<p><b>Warning:</b> Currently these multipliers aren't validated, so using too high or negative
+<p><strong>Warning:</strong> Currently these multipliers aren't validated, so using too high or negative
 values may cause unexpected behaviour, or even crash the plugin.</p>
 
 <p>Attribute multipliers are set using this console command:</p>
 
 <blockquote><table>
+	<caption>Attribute Multiplier Command</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -1747,6 +1749,7 @@ menu is useful for finding the correct value, and then use it in a map configura
 This only applies to players who already are the same class.</p>
 
 <blockquote><table>
+	<caption>Reload Attributes Command</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -1771,6 +1774,7 @@ This only applies to players who already are the same class.</p>
 <p>For debug purposes class attributes also can be dumped.</p>
 
 <blockquote><table>
+	<caption>Dump Attributes Command</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -1808,6 +1812,7 @@ This only applies to players who already are the same class.</p>
 multipliers.</p>
 
 <blockquote><table>
+	<caption>Dump Multipliers Command</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -1836,7 +1841,7 @@ multipliers.</p>
 
 <p>Weapon attributes are stored by default in:</p>
 
-	<blockquote><p class="code">addons/sourcemod/configs/zr/weapons.txt</p></blockquote>
+	<blockquote><p><code>addons/sourcemod/configs/zr/weapons.txt</code></p></blockquote>
 
 <p>Custom file may be specified in the console variable "zr_config_path_weapons". If used in per
 map configuration files it must be in a pre configuration file.</p>
@@ -1844,6 +1849,7 @@ map configuration files it must be in a pre configuration file.</p>
 <p>These are the allowed attributes:</p>
 
 <blockquote><table>
+	<caption>Weapon Attributes</caption>
 	<tr>
 		<th>Attribute:</th>
 		<th>Type:</th>
@@ -2001,6 +2007,7 @@ sub section for each weapon using short names from the list below.</p>
 <h4><a name="3.8.2" />2. Weapon List</h4>
 
 <blockquote><table>
+	<caption>Weapon List</caption>
 	<tr>
 		<th class="mediumwidth">Weapon name:</th>
 		<th>Type:</th>
@@ -2155,6 +2162,7 @@ sub section for each weapon using short names from the list below.</p>
 file, or on a per-map basis with map configuration files.</p>
 
 <blockquote><table>
+	<caption>Weapon Commands</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -2206,11 +2214,10 @@ This is useful for fine tuning game balance.</p>
 
 <p>The default file is:</p>
 
-	<blockquote><p class="code">addons/sourcemod/configs/zr/hitgroups.txt</p></blockquote>
-
-<p>Console commands:</p>
+	<blockquote><p><code>addons/sourcemod/configs/zr/hitgroups.txt</code></p></blockquote>
 
 <blockquote><table>
+	<caption>Hit Group Commands</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -2226,7 +2233,7 @@ This is useful for fine tuning game balance.</p>
 				<tr>
 					<td class="parameter">hitgrup name</td>
 					<td>Name of the hit group to adjust. Options:
-                        <ul>
+						<ul>
 							<li class="code">generic</li>
 							<li class="code">head</li>
 							<li class="code">chest</li>
@@ -2249,6 +2256,7 @@ This is useful for fine tuning game balance.</p>
 <h4><a name="3.9.1" />1. Hit Group Attributes</h4>
 
 <blockquote><table>
+	<caption>Hit Group Attributes</caption>
 	<tr>
 		<th>Attribute:</th>
 		<th>Type:</th>
@@ -2320,6 +2328,7 @@ tune game balance.</p>
 <p>These are the console variables for the infection module:</p>
 
 <blockquote><table>
+	<caption>Infection Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -2515,9 +2524,8 @@ tune game balance.</p>
 	</tr>
 </table></blockquote>
 
-<p>Console commands:</p>
-
 <blockquote><table>
+	<caption>Infect Commands</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -2557,9 +2565,8 @@ tune game balance.</p>
 <p>With damage control it's possible to block suicide attempts, fall damage, blast damage and hit
 group damage. See <a href="#3.9">Hit Group Configuration (3.9)</a> on how to configure hit groups.</p>
 
-<p>Damage control console variables:</p>
-
 <blockquote><table>
+	<caption>Damage Control Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -2653,8 +2660,8 @@ group damage. See <a href="#3.9">Hit Group Configuration (3.9)</a> on how to con
 
 <h3><a name="3.12" />3.12 Overlay Settings</h3>
 
-<p>Overlays are pictures displayed on players' screen on certain events. However, these <b>overlays
-require DirectX 9 or higher</b> to work. Players with lower DirectX version won't see these overlays.</p>
+<p>Overlays are pictures displayed on players' screen on certain events. However, these <strong>overlays
+require DirectX 9 or higher</strong> to work. Players with lower DirectX version won't see these overlays.</p>
 
 <p>Since these overlays doesn't last forever, they must be redisplayed at a certain interval. A
 refresh once per second seems to be enough.</p>
@@ -2664,9 +2671,8 @@ team.</p>
 
 <p>Overlays are also used as a class attribute, like the zombie vision effect.</p>
 
-<p>These are the overlay console variables:</p>
-
 <blockquote><table>
+	<caption>Overlay Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -2721,6 +2727,7 @@ team.</p>
 <p>Players' cash can be modified and reset on every spawn if enabled.</p>
 
 <blockquote><table>
+	<caption>Money Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -2780,9 +2787,8 @@ in progress by the SourceMod team).</p>
 
 <p>Currently, fog can only be modified if the map already has a env_fog_controller entity.</p>
 
-<p>Console variables for visual effects:</p>
-
 <blockquote><table>
+	<caption>Visual Effect Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -2853,7 +2859,7 @@ in progress by the SourceMod team).</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p><strong>Note:</strong> Incomplete. May or may not work.</p>
 			<p>Enable fog on the map.</p>
 			<p>Options:<br />
 			0 or 1</p>
@@ -2866,7 +2872,7 @@ in progress by the SourceMod team).</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p><strong>Note:</strong> Incomplete. May or may not work.</p>
 			<p>Override existing fog on the map. If fog exists already on the map, replace it with
 			the new modified fog.</p>
 			<p>Options:<br />
@@ -2880,7 +2886,7 @@ in progress by the SourceMod team).</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p><strong>Note:</strong> Incomplete. May or may not work.</p>
 			<p>Sets the primary fog color. Three values from 0 to 255 separated by a space,
 			representing amount of red, green and blue.</p>
 			<p>Examples</p>
@@ -2898,7 +2904,7 @@ in progress by the SourceMod team).</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p><strong>Note:</strong> Incomplete. May or may not work.</p>
 			<p>Sets the secondary fog color. Three values from 0 to 255 separated by a space,
 			representing amount of red, green and blue.</p>
 			<p>Examples</p>
@@ -2916,7 +2922,7 @@ in progress by the SourceMod team).</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p><strong>Note:</strong> Incomplete. May or may not work.</p>
 			<p>Density (thickness) of the fog. The value is in percent, 0.0 to 1.0.</p>
 			<p>Options:<br />
 			0.0 to 1.0</p>
@@ -2929,7 +2935,7 @@ in progress by the SourceMod team).</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> Incomplete. May or may not work.</p>
+			<p><strong>Note:</strong> Incomplete. May or may not work.</p>
 			<p>Distance from player to start rendering foremost fog. Distance is in game units (1
 			unit is ~1 inch). For reference, default player models are ~75 units tall.</p>
 		</td>
@@ -3025,9 +3031,8 @@ pre-configured. Instead it's possible to specify how often the sounds should be 
 <p>The lenght of the ambience file must be specified because SourceMod currently can't detect lenght
 of MP3 files.</p>
 
-<p>Sound effect console variables:</p>
-
 <blockquote><table>
+	<caption>Sound Effect Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -3125,9 +3130,8 @@ less annoying for people who don't like to wait too much.</p>
 
 <p>If the mother zombie haven't spawned yet, players are always spawned as humans.</p>
 
-<p>Respawn console variables:</p>
-
 <blockquote><table>
+	<caption>Respawn Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -3189,9 +3193,8 @@ less annoying for people who don't like to wait too much.</p>
 avoid abusing there are settings that decides what team to spawn on, and a time limit when the
 command is allowed to be used.</p>
 
-<p>ZSpawn console variables:</p>
-
 <blockquote><table>
+	<caption>ZSpawn Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -3276,9 +3279,8 @@ command is allowed to be used.</p>
 <p>Humans can have spawn protection settings that give them certain advantages for a limited time
 right after they've spawned.</p>
 
-<p>Spawn protection console variables:</p>
-
 <blockquote><table>
+	<caption>Spawn Protection Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -3330,9 +3332,8 @@ right after they've spawned.</p>
 	</tr>
 </table></blockquote>
 
-<p>Console commands:</p>
-
 <blockquote><table>
+	<caption>ZSpawn Command</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -3361,9 +3362,8 @@ right after they've spawned.</p>
 <p>Zombie:Reloaded has a built in teleport feature with support for limits, delays and abuse
 protection.</p>
 
-<p>Teleport console variables:</p>
-
 <blockquote><table>
+	<caption>Teleport Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -3469,9 +3469,8 @@ protection.</p>
 	</tr>
 </table></blockquote>
 
-<p>Teleport console commands:</p>
-
 <blockquote><table>
+	<caption>Teleport Console Command</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -3497,9 +3496,8 @@ protection.</p>
 <p>The HP display is a small panel on the center at the bottom of the screen that displays players'
 health. Players can disable this, and the setting can also be saved in player cookies.</p>
 
-<p>Console variables:</p>
-
 <blockquote><table>
+	<caption>HP Display Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -3536,13 +3534,12 @@ health. Players can disable this, and the setting can also be saved in player co
 <p>Jump boost can be abused to do bunny hops. There are settings for configuring maximum allowed
 velocity when jumping. If maximum speed is reached no jump boost is applied.</p>
 
-<p><b>Note:</b> This is not a real bunny hop protection feature. Players who do bunny jumping will
+<p><strong>Note:</strong> This is not a real bunny hop protection feature. Players who do bunny jumping will
 still be able to do it, but they won't get jump boost after a certain speed if the speed limit is
 enabled.</p>
 
-<p>Console variables:</p>
-
 <blockquote><table>
+	<caption>Jump Boost Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -3568,7 +3565,7 @@ enabled.</p>
 		<td class="indent" colspan="2">
 			<p>Maximum horizontal velocity allowed when jumping. Normal running speed for the player
 			is 300.0</p>
-			<p><b>Note:</b> The first jump does not have a speed limit, but subsequent jumps won't
+			<p><strong>Note:</strong> The first jump does not have a speed limit, but subsequent jumps won't
 			get any boost if the speed limit is reached.</p>
 		</td>
 	</tr>
@@ -3580,15 +3577,14 @@ enabled.</p>
 <p>The anti-stick system is a automatic no-block system that turn off collisions on players
 that are stuck together, and enable collision again when they're unstuck.</p>
 
-<p>(<b>Note:</b> This file is obsolete!) To know if players are stuck, it needs some extra info about
+<p>(<strong>Note:</strong> This file is obsolete!) To know if players are stuck, it needs some extra info about
 each model used in the game. Data for these models are stored in the following file (relative to
 "sourcemod" folder):</p>
 
-	<blockquote><p class="code">data/antistick.dat</p></blockquote>
-
-<p>Console variables:</p>
+	<blockquote><p><code>data/antistick.dat</code></p></blockquote>
 
 <blockquote><table>
+	<caption>Anti-Stick Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -3612,7 +3608,7 @@ each model used in the game. Data for these models are stored in the following f
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> Obsolete! Do not chnage default value!</p>
+			<p><strong>Note:</strong> Obsolete! Do not chnage default value!</p>
 			<p>Default model width used to detect if players are stuck together. Width is in game
 			units.</p>
 		</td>
@@ -3624,7 +3620,7 @@ each model used in the game. Data for these models are stored in the following f
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><b>Note:</b> Obsolete! Just ignore this file.</p>
+			<p><strong>Note:</strong> Obsolete! Just ignore this file.</p>
 			<p>File to store anti-stick model hull data. Path is default to the "sourcemod" folder.</p>
 		</td>
 	</tr>
@@ -3681,6 +3677,7 @@ not required, except the type attribute.</p>
 <p>These are the generic attributes and apply to all volumes:</p>
 
 <blockquote><table>
+	<caption>Generic Volume Attributes</caption>
 	<tr>
 		<th class="namewidth">Attribute:</th>
 		<th class="mediumwidth">Value type:</th>
@@ -3694,7 +3691,7 @@ not required, except the type attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Note:</b> This attribute is required!</p>
+			<p><strong>Note:</strong> This attribute is required!</p>
 			<p>Specified the volumetric feature type.</p>
 			<p>Valid options:</p>
 			<table>
@@ -3740,7 +3737,7 @@ not required, except the type attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Note:</b> Incomplete, this attribute is ignored.</p>
+			<p><strong>Note:</strong> Incomplete, this attribute is ignored.</p>
 			<p>What effect to apply to the volume</p>
 			<p>Valid options:</p>
 			<table>
@@ -3759,7 +3756,7 @@ not required, except the type attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Note:</b> Incomplete, this attribute is ignored.</p>
+			<p><strong>Note:</strong> Incomplete, this attribute is ignored.</p>
 			<p>Color of the effect. RGB format, represented by three numbers from 0 to 255 separated
 			by a comma. Syntax: <span class="code">&lt;red&gt;,&lt;green&gt;,&lt;blue&gt;</span></p>
 		</td>
@@ -3780,6 +3777,7 @@ not required, except the type attribute.</p>
 <h4><a name="3.23.3" />3. Volume Commands</h4>
 
 <blockquote><table>
+	<caption>Volume Commands</caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -3853,9 +3851,8 @@ not required, except the type attribute.</p>
 not allowed. It uses a timer to trigger actions at a specified interval. In addition warning messages
 can be displayed to player that enter the volume.</p>
 
-<p>Anti-camp spesific attributes:</p>
-
 <blockquote><table>
+	<caption>Anti-Camp Attributes</caption>
 	<tr>
 		<th class="namewidth">Attribute:</th>
 		<th class="mediumwidth">Value type:</th>
@@ -3941,7 +3938,7 @@ can be displayed to player that enter the volume.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><b>Note:</b> Incomplete, this attribute is ignored.</p>
+			<p><strong>Note:</strong> Incomplete, this attribute is ignored.</p>
 			<p>Use custom warning message (max 255 byte). Leave blank to use default warning
 			message.</p>
 		</td>
@@ -3972,6 +3969,7 @@ do certain types of operations. Below is a list of all flags used in Zombie:Relo
 of operation they grant:</p>
 
 <blockquote><table>
+	<caption>Admin Flags Used In Zombie:Reloaded</caption>
 	<tr>
 		<th>Flag:</th>
 		<th>Operation type:</th>
@@ -3995,6 +3993,7 @@ of operation they grant:</p>
 following operations:</p>
 
 <blockquote><table>
+	<caption>Predefined Admin Groups</caption>
 	<tr>
 		<th>Group:</th>
 		<th>Operation type:</th>
@@ -4019,6 +4018,7 @@ following operations:</p>
 <h4><a name="3.24.3" />3. Console Variables</h4>
 
 <blockquote><table>
+	<caption>Permission Console Variables</caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -4162,13 +4162,14 @@ height="31" width="88" alt="Valid XHTML 1.0 Strict" class="noborder" /></a></p>
 <!-- Templates:
 <h4><a name="a" /></h4>
 <p></p>
-<blockquote><p class="code"></p></blockquote>
+<blockquote><p><code></code></p></blockquote>
 
 			<table>
 				<tr><td></td><td></td></tr>
 			</table>
 
 <blockquote><table>
+	<caption></caption>
 	<tr>
 		<th>Console variable:</th>
 		<th>Default:</th>
@@ -4188,6 +4189,7 @@ height="31" width="88" alt="Valid XHTML 1.0 Strict" class="noborder" /></a></p>
 </table></blockquote>
 
 <blockquote><table>
+	<caption></caption>
 	<tr>
 		<th>Syntax:</th>
 	</tr>
@@ -4203,6 +4205,8 @@ height="31" width="88" alt="Valid XHTML 1.0 Strict" class="noborder" /></a></p>
 </table></blockquote>
 -->
 
+</div>
+</div>
 </div>
 
 </body>
