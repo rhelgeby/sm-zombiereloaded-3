@@ -331,13 +331,6 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
  */
 public Action:ZSpawnCommand(client, argc)
 {
-    // Check if privileged.
-    if (!ZRIsClientPrivileged(client, OperationType_Generic))
-    {
-        TranslationReplyToCommand(client, "No access to command");
-        return Plugin_Handled;
-    }
-    
     // If client is console, then stop and tell them this feature is for players only.
     if (ZRIsConsole(client))
     {
@@ -361,6 +354,13 @@ public Action:ZSpawnCommand(client, argc)
  */
 public Action:ZSpawnForceCommand(client, argc)
 {
+    // Check if privileged.
+    if (!ZRIsClientPrivileged(client, OperationType_Generic))
+    {
+        TranslationReplyToCommand(client, "No access to command");
+        return Plugin_Handled;
+    }
+    
     // If not enough arguments given, then stop.
     if (argc < 1)
     {
