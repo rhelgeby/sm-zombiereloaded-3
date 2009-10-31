@@ -16,7 +16,7 @@
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
 Written by Richard Helgeby</p>
-<p class="headerinfo">Manual last modified: 2009.10.30</p>
+<p class="headerinfo">Manual last modified: 2009.10.31</p>
 
 <h2>Index</h2>
 
@@ -36,6 +36,7 @@ Written by Richard Helgeby</p>
 			<li><a href="#2.1">Requirements</a></li>
 			<li><a href="#2.2">Plugin Installation</a></li>
 			<li><a href="#2.3">Test Run</a></li>
+			<li><a href="#2.3">Upgrading</a></li>
 		</ol>
 	</li>
 	
@@ -220,15 +221,18 @@ plugin is compatible with all existing Zombie Mod maps.</p>
 <ul>
 	<li>
 		<p><strong>c0ldfyr3</strong></p>
-		<p>The developer of Zombie Mod (<a href="http://www.zombiemod.com">www.zombiemod.com</a>).</p>
+		<p>The developer of the popular <em>Zombie Mod</em>
+		(<a href="http://www.zombiemod.com">www.zombiemod.com</a>). There wouldn't be any
+		Zombie:Reloaded without Zombie Mod.</p>
 	</li>
 </ul>
 
 <h6>Developers and testers</h6>
 <ul>
 	<li>
-		<p><strong>Greyscale</strong></p>
+		<p><strong>Greyscale / sumguy14</strong></p>
 		<p>Author of Zombie:Reloaded. The one who started remaking Zombie Mod for the SourceMod platform.</p>
+		<p>Made overlays and zombie ambient sound file.</p>
 		<p>Related server: "#1 Pro's Playground - 24/7 Zombie Mod [ Rank / Reload / Napalm ]"
 		(74.201.57.54:27015) - USA, Washington</p>
 	</li>
@@ -241,8 +245,9 @@ plugin is compatible with all existing Zombie Mod maps.</p>
 	</li>
 
 	<li>
-		<p><strong>Cpt. Moore</strong></p>
-		<p>Helped debuging issues and made some new features. Used the server for testing.</p>
+		<p><strong>Cpt. Moore and SwissQuake</strong></p>
+		<p>Helped debuging issues and made some new features. Most credits go for letting us use the
+		SwissQuake zombie server for testing.</p>
 		<p>Related server: "Zombie World Domination by SwissQuake" (85.195.74.201:13010)
 		 - Switzerland, Basel</p>
 	</li>
@@ -289,6 +294,15 @@ bring up the zombie menu to confirm that the plugin is running.</p>
 
 <p>Next check error logs from SourceMod and look if there are any entries from "zombiereloaded.smx".
 If the plugin doesn't work at all or there are errors logged, see <a href="#5">Troubleshooting (5)</a>.</p>
+
+<h3><a name="2.4" />2.4 Upgrading</h3>
+
+<p>When upgrading there might be changes to configuration files. They must either be reconfigured
+or merged with old settings.</p>
+
+<p>Reloading Zombie:Reloaded with SourceMod is not recommended. Changing the map works in most
+cases, but some console variables might not be updated. Do a server restart for a complete
+refresh of console variables.</p>
 
 
 <h2><a name="3" />3. Configuration</h2>
@@ -822,12 +836,12 @@ download them. The paths must be relative to the "cstrike" folder.</p>
 <h3><a name="3.7" />3.7 Class Configuration</h3>
 
 <p>The class system makes it possible to have different zombies and humans with customized skills.
-It cannot be turned off, but class selection options can be disabled. If there is only one class in
+It cannot be turned off, but class selection menus can be disabled. If there is only one class in
 each team, the class selections menus are automatically disabled.</p>
 
 <p>The class configurations are stored in Valve's key/value format, and the file that's loaded
-should be specified in the "zr_classes_file" console variable. It's possible to change this
-variable with per-map configuration files to have different sets of classes on one or more maps.</p>
+should be specified in the "zr_config_path_playerclasses" console variable. It's possible to change
+this variable with per-map configuration files to have different sets of classes on one or more maps.</p>
 
 <p>Default path is:</p>
 
@@ -1443,7 +1457,7 @@ Place these console variables in the main configuration file:</p>
 			<p>Path is relative to "sourcemod".</p>
 			<p>If used in map configuration files this console variable must be placed in pre map
 			configuration files. Post configuration files won't have any effect because the class
-			module is done loading.</p>
+			module is already done loading.</p>
 		</td>
 	</tr>
 	
@@ -2136,23 +2150,28 @@ sub section for each weapon using short names from the list below.</p>
 	</tr>
 	<tr>
 		<td class="code">hegrenade</td>
-		<td>Grenade</td>
+		<td>Projectile</td>
 		<td>High explosive grenade</td>
 	</tr>
 	<tr>
 		<td class="code">flashbang</td>
-		<td>Grenade</td>
+		<td>Projectile</td>
 		<td>Flash bang</td>
 	</tr>
 	<tr>
 		<td class="code">smokegrenade</td>
-		<td>Grenade</td>
+		<td>Projectile</td>
 		<td>Smoke grenade</td>
 	</tr>
 	<tr>
 		<td class="code">NVGs</td>
 		<td>Equipment</td>
 		<td>Night vision goggles</td>
+	</tr>
+	<tr>
+		<td class="code">knife</td>
+		<td>Melee</td>
+		<td>Knife</td>
 	</tr>
 </table></blockquote>
 
@@ -3857,6 +3876,9 @@ not required, except the type attribute.</p>
 not allowed. It uses a timer to trigger actions at a specified interval. In addition warning messages
 can be displayed to player that enter the volume.</p>
 
+<p>Do not overuse anti-camp volumes in maps, players don't like that. Instead look for alternate
+solutions like using a class editor volume to set knock back in tubes/vents.</p>
+
 <blockquote><table>
 	<caption>Anti-Camp Attributes</caption>
 	<tr>
@@ -4151,8 +4173,8 @@ back to a default action.</p>
 		<td class="indent" colspan="3">
 			<p><strong>Description:</strong> Something wrong happened when trying to parse/open a
 			configuration file.</p>
-			<p><strong>Cause:</strong> File permissions, or (for developers:) that invalid file
-			structure were specified when loading.</p>
+			<p><strong>Cause:</strong> File does not exist, file permissions, or (for developers:)
+			that invalid file structure were specified when loading.</p>
 		</td>
 	</tr>
 	
@@ -4792,9 +4814,12 @@ back to a default action.</p>
 <h3><a name="5.4" />5.4 Common Problems</h3>
 <h3><a name="5.5" />5.5 Known Issues</h3>
 
-<p>Conflicts with WCS Races plugin and other plugins who change player model/skin and speed.</p>
-<p>Do not run es_tools, it's not compatible with SourceMod.</p>
-
+<ul>
+	<li>Conflicts with WCS Races plugin and other plugins who change player model/skin and speed.</li>
+	<li>Do not run es_tools, it's not compatible with SourceMod.</li>
+	<li>Anti-Stick seems to work fine on some servers, but cause bouncing props on others. This may
+	be map dependent.</li>
+</ul>
 
 <h2><a name="6" />6. Gameplay Guidelines</h2>
 

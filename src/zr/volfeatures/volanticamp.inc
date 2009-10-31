@@ -111,7 +111,7 @@ VolAnticampEnable(volumeIndex)
         // Validate interval.
         if (interval > 0.0)
         {
-            AnticampData[dataindex][Anticamp_Timer] = CreateTimer(interval, Event_VolAnticampTrigger, volumeIndex, TIMER_REPEAT);
+            AnticampData[dataindex][Anticamp_Timer] = CreateTimer(interval, Event_VolAnticampTrigger, volumeIndex, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
             LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Vol state", "Enabled anticamp volume %d.", volumeIndex);
         }
         else
@@ -161,7 +161,7 @@ stock VolAnticampEnableAll()
             // Validate interval.
             if (interval > 0.0)
             {
-                AnticampData[dataindex][Anticamp_Timer] = CreateTimer(interval, Event_VolAnticampTrigger, volumeindex, TIMER_REPEAT);
+                AnticampData[dataindex][Anticamp_Timer] = CreateTimer(interval, Event_VolAnticampTrigger, volumeindex, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
                 LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Vol state", "Enabled anticamp volume %d.", volumeIndex);
             }
             else

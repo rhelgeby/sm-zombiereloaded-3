@@ -45,7 +45,7 @@ ClassHealthRegenStart(client, Float:interval)
         tHealthRegen[client] = INVALID_HANDLE;
     }
     
-    tHealthRegen[client] = CreateTimer(interval, ClassHealthRegenTimer, client, TIMER_REPEAT);
+    tHealthRegen[client] = CreateTimer(interval, ClassHealthRegenTimer, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 ClassHealthRegenStop(client)

@@ -1120,7 +1120,7 @@ stock ClassGetDefaultSpawnClass(teamid, filter[ClassFilter] = ClassNoSpecialClas
         }
         case ZR_CLASS_TEAM_ADMINS:
         {
-            GetConVarString(g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN], classname, sizeof(classname));
+            GetConVarString(g_hCvarsList[CVAR_CLASSES_DEFAULT_ADMIN_MODE], classname, sizeof(classname));
         }
         default:
         {

@@ -285,7 +285,7 @@ bool:VolStartUpdateTimer()
     if (interval > 0.0)
     {
         // Create a new timer.
-        hVolUpdateTimer = CreateTimer(interval, Event_VolUpdateTimer, _, TIMER_REPEAT);
+        hVolUpdateTimer = CreateTimer(interval, Event_VolUpdateTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
         
         // Also start the trigger delay timer.
         VolStartTriggerTimer();
@@ -337,7 +337,7 @@ bool:VolStartTriggerTimer()
     if (VolTriggerInterval > 0.0)
     {
         // Start the timer.
-        hVolTriggerTimer = CreateTimer(VolTriggerInterval, Event_VolTriggerTimer, _, TIMER_REPEAT);
+        hVolTriggerTimer = CreateTimer(VolTriggerInterval, Event_VolTriggerTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
         
         // Trigger timer started.
         return true;

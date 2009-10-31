@@ -325,6 +325,8 @@ bool:ClassApplyHealthRegen(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER
     }
     else
     {
+        // Make sure old timers are stopped.
+        ClassHealthRegenStop(client);
         return false;
     }
 }
