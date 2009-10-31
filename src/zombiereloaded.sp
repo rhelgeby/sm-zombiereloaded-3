@@ -171,6 +171,16 @@ public OnMapStart()
 public OnMapEnd()
 {
     // Forward event to modules.
+    VolOnMapEnd();
+}
+
+/**
+ * Main configs were just executed.
+ */
+public OnAutoConfigsBuffered()
+{
+	// Load map configurations.
+    ConfigLoad();
 }
 
 /**
@@ -179,7 +189,6 @@ public OnMapEnd()
 public OnConfigsExecuted()
 {
     // Forward event to modules. (OnConfigsExecuted)
-    ConfigLoad();
     ModelsLoad();
     DownloadsLoad();
     WeaponsLoad();

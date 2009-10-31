@@ -181,6 +181,15 @@ VolOnRoundEnd()
 }
 
 /**
+ * Called right before the map ends.
+ */
+VolOnMapEnd()
+{
+	// Make sure timers and volumes are stopped. Foreward event.
+	VolOnRoundEnd();
+}
+
+/**
  * Called when a volume is disabled.
  * @param volumeIndex   The volume index.
  */
