@@ -183,7 +183,7 @@ Written by Richard Helgeby</p>
 	</li>
 	
 	<li>
-		<a href="#6">Gameplay Guidelines</a>
+		<a href="#6">Server Administration Guide</a>
 		<ol>
 			<li><a href="#6.1">Briefing - Map Configuration Files</a></li>
 			<li><a href="#6.2">Map Balance</a></li>
@@ -773,20 +773,23 @@ stuff have to be placed in this one to be effective, like changing class attribu
 
 <h3><a name="3.5" />3.5 Model Configuration</h3>
 
-<p><strong>Note:</strong> Work in progress. Some flags explained in this section doesn't exist yet.</p>
+<p><strong>Note:</strong> Work in progress. Model list data structure is about to be changed
+with support for human models and model restrictions. Currently, assume all models to be public
+zombie models that everyone can use.</p>
 
 <p>The model configuration file is a list of models used on the server. Each line contains the path
 including the model name, but not the file extension.</p>
 
 <p>The models listed in this file are also precached when the server starts. Custom models used,
-but not listed in this file will cause a "model not precached" error on the server, so remember to
-list them in this file.</p>
+but not listed in this file will cause a "model not precached" error on the server, so they must be
+listed in this file.</p>
 
 <p>In addition certain flags can be added to mark the model as special, such as only for
 admins/donators, hidden from random selection or only for mother zombies.</p>
 
-<p>Each line is separated into two fields with ";". The last field is optional and if no flag is
-specified it's treated as a regular public model.</p>
+<p>Each line is separated into two fields with ";". The last field is optional.</p>
+
+<p>If no flag is specified it's treated as a regular public model.</p>
 
 <p>Model line syntax:</p>
 	<blockquote><p><code>&lt;model path&gt;[; flag]</code></p></blockquote>
@@ -794,20 +797,24 @@ specified it's treated as a regular public model.</p>
 <blockquote><table>
 	<caption>Model Flags</caption>
 	<tr>
+		<td class="valueoption">public</td>
+		<td>Everyone can use the model.</td>
+	</tr>
+	<tr>
 		<td class="valueoption">adminonly</td>
-		<td>Can only be used by admins.</td>
+		<td>(Incomplete) Can only be used by admins.</td>
 	</tr>
 	<tr>
 		<td class="valueoption">donator</td>
-		<td>Can only be used by donators.</td>
+		<td>(Incomplete) Can only be used by donators.</td>
 	</tr>
 	<tr>
 		<td class="valueoption">hidden</td>
-		<td>Is not included in random selections.</td>
+		<td>(Incomplete) Is not included in random selections.</td>
 	</tr>
 	<tr>
 		<td class="valueoption">motherzombie</td>
-		<td>Can only be used on mother zombies.</td>
+		<td>(Incomplete) Can only be used on mother zombies.</td>
 	</tr>
 </table></blockquote>
 
@@ -826,11 +833,16 @@ specified it's treated as a regular public model.</p>
 <h3><a name="3.6" />3.6 Download List</h3>
 
 <p>Custom models, materials and overlays must be listed in the download list so clients will
-download them. The paths must be relative to the "cstrike" folder.</p>
+download them. Use one line per file with paths relative to the "cstrike" folder.</p>
 
-<p>List files to be downloaded in:</p>
+<p>List files to be downloaded in the following file:</p>
 
 	<blockquote><p><code>addons/sourcemod/configs/zr/downloads.txt</code></p></blockquote>
+
+<p>Look at the default downloads in that file for an example on how to list files to be
+downloaded.</p>
+
+<p><strong>Note:</strong> The ambient sound file do not need to be listed here.</p>
 
 
 <h3><a name="3.7" />3.7 Class Configuration</h3>
@@ -1630,7 +1642,7 @@ Place these console variables in the main configuration file:</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p><strong>Note:</strong>This feature is incomplete!</p>
+			<p><strong>Note:</strong> This feature is incomplete!</p>
 			<p>Allow admins to select admin classes. Disable this option to force certain classes
 			on admins depending on what zr_classes_default_admin is set to, - and if admin mode is
 			enabled on the player.</p>
@@ -3190,8 +3202,8 @@ less annoying for people who don't like to wait too much.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p>Respawn as zombie. If the mother zombie haven't spawned yet, players are always spawned
-			as humans.</p>
+			<p>Respawn as zombie. If the mother zombie haven't spawned yet, players are always
+			respawned as humans.</p>
 			<p>Options:<br />
 			0 or 1</p>
 		</td>
@@ -3203,8 +3215,9 @@ less annoying for people who don't like to wait too much.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p>Respawn as zombie if the player was killed by world damage. If the mother zombie
-			haven't spawned yet, players are always spawned as humans.</p>
+			<p>Respawn as zombie if a <strong>zombie</strong> was killed by world damage (doors,
+			elevators, explosions, or any kind of suicide). If the mother zombie haven't spawned yet,
+			players are always respawned as humans.</p>
 			<p>Options:<br />
 			0 or 1</p>
 		</td>
@@ -3692,6 +3705,9 @@ oposite height and get the second set of coordinates.</p>
 	<li>Use these coordinates in the <span class="code">zr_vol_add</span> command along with
 	additional attributes.</li>
 </ol>
+
+<p><strong>Note:</strong> Make sure all volumes start a little bit <em>below</em> players' feet so
+they are covered by the volume. Otherwise nothing will happend.</p>
 
 <h4><a name="3.23.2" />2. Volume Attributes</h4>
 
@@ -4821,7 +4837,21 @@ back to a default action.</p>
 	be map dependent.</li>
 </ul>
 
-<h2><a name="6" />6. Gameplay Guidelines</h2>
+
+<h2><a name="6" />6. Server Administration Guide</h2>
+
+<h3><a name="6.1" />6.1 Adding Custom Content</h3>
+
+<h4><a name="6.1.1" />6.1.1 Managing Resources</h4>
+
+<p>Resources like models, materials and sounds must be made available for download to players on
+the server. Zombie:Reloaded need a list of what files do be downloaded on the players' client.
+Currently it's only two lists; models and downloads.</p>
+
+<h4><a name="6.1.2" />6.1.2 Adding Models</h4>
+
+
+
 
 <h3><a name="6.1" />6.1 Briefing - Map Configuration Files</h3>
 <h3><a name="6.2" />6.2 Map Balance</h3>
@@ -4830,7 +4860,7 @@ back to a default action.</p>
 <h3><a name="6.5" />6.5 Servers With Unlimited Ammo And No Reloading</h3>
 
 
-<h3><a name="7" />7. Reporting Bugs And Problems</h3>
+<h2><a name="7" />7. Reporting Bugs And Problems</h2>
 
 <p>Currently we have no public bug tracker, so issues have to be reported in the <a
 href="http://forums.alliedmods.net/forumdisplay.php?f=132">Zombie:Reloaded forum</a>.</p>
