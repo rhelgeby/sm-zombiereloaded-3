@@ -138,7 +138,17 @@ RestrictOnCommandsCreate()
 RestrictClientInit(client)
 {
     // Hook "Weapon_CanUse" on client.
-    g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    #if defined USE_SDKHOOKS
+        SDKHook(client, SDKHook_WeaponEquip, RestrictCanUse);
+        
+        // Note: Do we need to use WeaponSwitch too? On infection all weapons
+        //       are removed anyways.
+        
+        // Set dummy value so it think it's hooked.
+        g_iCanUseHookID[client] = 1;
+    #else
+        g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    #endif
     
     // Reset block weapons flag.
     g_bRestrictBlockWeapon[client] = false;
@@ -154,7 +164,12 @@ RestrictOnClientDisconnect(client)
     // Unhook "Weapon_CanUse" callback, and reset variable.
     if (g_iCanUseHookID[client] != -1)
     {
-        ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
+        #if defined USE_SDKHOOKS
+            SDKUnhook(client, SDKHook_WeaponEquip, RestrictCanUse);
+        #else
+            ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
+        #endif
+        
         g_iCanUseHookID[client] = -1;
     }
 }
@@ -167,8 +182,14 @@ RestrictOnClientDisconnect(client)
 RestrictOnClientSpawn(client)
 {
     // Re-hook "canuse" on client.
-    ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
-    g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    #if defined USE_SDKHOOKS
+        SDKUnhook(client, SDKHook_WeaponEquip, RestrictCanUse);     // <--- What happens if it's not already hooked???
+        SDKHook(client, SDKHook_WeaponEquip, RestrictCanUse);
+        g_iCanUseHookID[client] = 1;
+    #else
+        ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
+        g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
+    #endif
     
     // H4x.  Unfortunately I can't disable this flag early enough for CS:S to give start USP/Glock.
     // So I have to give BOOTLEG weapons.  (Sorry Valve)
@@ -583,7 +604,11 @@ stock bool:RestrictIsTypeUniform(bool:restricted, index)
  * @return          Return ZRTools_Handled to stop weapon pickup.
  *                  ZRTools_Continue to allow weapon pickup.
  */
+#if defined USE_SDKHOOKS
+public Action:RestrictCanUse(client, weapon)
+#else
 public ZRTools_Action:RestrictCanUse(client, weapon)
+#endif
 {
     new String:weaponentity[WEAPONS_MAX_LENGTH];
     GetEdictClassname(weapon, weaponentity, sizeof(weaponentity));
@@ -591,33 +616,33 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
     // If weapon is a knife, then allow pickup.
     if (StrEqual(weaponentity, "weapon_knife"))
     {
-        return ZRTools_Continue;
+        return ACTION_CONTINUE;
     }
     
     // If the player is a zombie, then prevent pickup.
     if (InfectIsClientInfected(client))
     {
-        return ZRTools_Handled;
+        return ACTION_HANDLED;
     }
     
     // If client is flagged for not picking up weapons, then stop.
     if (g_bRestrictBlockWeapon[client])
     {
-        return ZRTools_Handled;
+        return ACTION_HANDLED;
     }
     
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
     {
-        return ZRTools_Continue;
+        return ACTION_CONTINUE;
     }
     
     // If restrict module is disabled, then stop.
     new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
     if (!restrict)
     {
-        return ZRTools_Continue;
+        return ACTION_CONTINUE;
     }
     
     // If the weapon is restricted, then prevent pickup.
@@ -628,20 +653,20 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
     if (weaponindex == -1)
     {
         // Allow pickup.
-        return ZRTools_Continue;
+        return ACTION_CONTINUE;
     }
     
     // If weapon is restricted, then stop.
     if (RestrictIsWeaponRestricted(weaponindex))
     {
-        return ZRTools_Handled;
+        return ACTION_HANDLED;
     }
     
     // Forward event to weapons module.
     WeaponsOnItemPickup(client, weapon);
     
     // Allow pickup.
-    return ZRTools_Continue;
+    return ACTION_CONTINUE;
 }
 
 /**

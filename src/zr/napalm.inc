@@ -86,7 +86,11 @@ NapalmOnTakeDamage(client, damagetype)
                 ExtinguishEntity(client);
                 
                 // Stop the last bit of inflicted burn damage.
-                return _:ZRTools_Handled;
+                #if defined USE_SDKHOOKS
+                    return _:Plugin_Handled;
+                #else
+                    return _:ZRTools_Handled;
+                #endif
             }
         }
     }
