@@ -480,7 +480,7 @@ new String:ClassOriginalPlayerModel[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
  * @param keepMultipliers   Optional. Don't reset multipliers. Default is
  *                          false.
  */
-ClassLoad(bool:keepMultipliers = false)
+ClassLoad()
 {
     // Register config file.
     ConfigRegisterConfig(File_Classes, Structure_Keyvalue, CONFIG_FILE_ALIAS_CLASSES);
@@ -630,12 +630,6 @@ ClassLoad(bool:keepMultipliers = false)
     // Reset selected class indexes for next spawn.
     ClassResetNextIndexes();
     
-    // Reset attribute multipliers, if not keeping.
-    if (!keepMultipliers)
-    {
-        ClassResetMultiplierCache();
-    }
-    
     // Mark classes as valid.
     ClassValidated = true;
     
@@ -660,7 +654,7 @@ ClassLoad(bool:keepMultipliers = false)
 public ClassOnConfigReload(ConfigFile:config)
 {
     // Reload class config.
-    ClassLoad(true);
+    ClassLoad();
 }
 
 /**

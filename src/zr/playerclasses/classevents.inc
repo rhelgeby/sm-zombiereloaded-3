@@ -50,6 +50,16 @@ ClassOnModulesLoaded()
 }
 
 /**
+ * Called when map is loading, before configs are loaded. Used for
+ * initializing class module.
+ */
+ClassOnMapStart()
+{
+	// Clear multipliers.
+	ClassResetMultiplierCache();
+}
+
+/**
  * Called when a client connects to the server (OnClientPutInServer).
  */
 ClassClientInit(client)
