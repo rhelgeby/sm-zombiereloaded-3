@@ -54,6 +54,7 @@
 
 // Header includes.
 #include "zr/log.h"
+#include "zr/models.h"
 
 #if defined ADD_VERSION_INFO
 #include "zr/hgversion.h"
@@ -79,10 +80,10 @@
 #include "zr/paramtools"
 #include "zr/paramparser"
 #include "zr/shoppinglist"
-#include "zr/models"
 #include "zr/downloads"
 #include "zr/overlays"
 #include "zr/playerclasses/playerclasses"
+#include "zr/models"
 #include "zr/weapons/weapons"
 #include "zr/hitgroups"
 #include "zr/roundstart"

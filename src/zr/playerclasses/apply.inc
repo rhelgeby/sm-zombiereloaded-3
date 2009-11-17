@@ -77,24 +77,64 @@ bool:ClassApplyAttributes(client, bool:improved = false)
  */
 bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
+    new bool:isAttributePreset = false;
     decl String:modelpath[PLATFORM_MAX_PATH];
+    new index;
+    new ModelTeam:team;
+    new access;
+    new model;
     
-    // Get the model path from the specified cache.
+    // Get correct index according to cache type.
     if (cachetype == ZR_CLASS_CACHE_PLAYER)
     {
-        ClassGetModelPath(client, modelpath, sizeof(modelpath), cachetype);
+        index = client;
     }
     else
     {
-        ClassGetModelPath(classindex, modelpath, sizeof(modelpath), cachetype);
+        index = classindex;
     }
     
-    // Check if the user specified a pre-defined model setting.
+    // Get the model path from the specified cache.
+    ClassGetModelPath(index, modelpath, sizeof(modelpath), cachetype);
+    
+    // Get model team setting from the specified cache.
+    team = ModelsTeamIdToTeam(ClassGetTeamID(index, cachetype));
+    
+    // Check if the user specified a pre-defined model setting. If so, setup
+    // model filter settings.
     if (StrEqual(modelpath, "random", false))
     {
-        // TODO: Make a function that gets a random model from the specified team.
-        ModelsGetRandomModelIndex(modelpath, sizeof(modelpath), false, true);
-        Format(modelpath, sizeof(modelpath), "%s.mdl", modelpath);
+        // Set access filter flags.
+        access = MODEL_ACCESS_PUBLIC | MODEL_ACCESS_ADMINS;
+        
+        // Specify client for including admin models if client is admin.
+        index = client;
+        
+        isAttributePreset = true;
+    }
+    else if (StrEqual(modelpath, "random_public", false))
+    {
+        access = MODEL_ACCESS_PUBLIC;
+        index = -1;
+        isAttributePreset = true;
+    }
+    else if (StrEqual(modelpath, "random_hidden", false))
+    {
+        access = MODEL_ACCESS_HIDDEN;
+        index = -1;
+        isAttributePreset = true;
+    }
+    else if (StrEqual(modelpath, "random_admin", false))
+    {
+        access = MODEL_ACCESS_ADMINS;
+        index = -1;
+        isAttributePreset = true;
+    }
+    else if (StrEqual(modelpath, "random_mother_zombie", false))
+    {
+        access = MODEL_ACCESS_MOTHER_ZOMBIES;
+        index = -1;
+        isAttributePreset = true;
     }
     else if (StrEqual(modelpath, "default", false))
     {
@@ -112,10 +152,31 @@ bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
             return true;
         }
     }
-    else if (StrEqual(modelpath, "nochange", false))
+    else if (StrEqual(modelpath, "no_change", false))
     {
         // Do nothing.
         return true;
+    }
+    
+    // Check if model setting is a attribute preset.
+    if (isAttributePreset)
+    {
+        // Get model based on filter settings set up earlier.
+        model = ModelsGetRandomModel(index, team, access);
+        
+        // Check if found.
+        if (model >= 0)
+        {
+            // Get model path.
+            ModelsGetFullPath(model, modelpath, sizeof(modelpath));
+        }
+        else
+        {
+            // Couldn't find any models based on filter. Fall back to a random
+            // public model. Then get its path.
+            model = ModelsGetRandomModel(-1, team, MODEL_ACCESS_PUBLIC);
+            ModelsGetFullPath(model, modelpath, sizeof(modelpath));
+        }
     }
     
     SetEntityModel(client, modelpath);

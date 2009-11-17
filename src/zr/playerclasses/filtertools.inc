@@ -162,8 +162,12 @@ stock ClassValidateAttributes(classindex)
     }
     else
     {
-        // Check if a model different from a pre-defined setting.
+        // Validate only if not a pre-defined setting.
         if (!StrEqual(model_path, "random", false) &&
+            !StrEqual(model_path, "random_public", false) &&
+            !StrEqual(model_path, "random_hidden", false) &&
+            !StrEqual(model_path, "random_admins", false) &&
+            !StrEqual(model_path, "random_mother_zombies", false) &&
             !StrEqual(model_path, "default", false) &&
             !StrEqual(model_path, "nochange", false))
         {
@@ -172,7 +176,7 @@ stock ClassValidateAttributes(classindex)
             {
                 flags += ZR_CLASS_MODEL_PATH;
             }
-        }        
+        }
     }
     
     // Alpha, initial.
@@ -705,8 +709,8 @@ stock bool:ClassFilterMatch(index, filter[ClassFilter], cachetype = ZR_CLASS_CAC
 stock bool:ClassFlagFilterMatch(index, require, deny, cachetype)
 {
     new flags;
-    new bool:requirepassed;
-    new bool:denypassed;
+    new bool:requirepassed = false;
+    new bool:denypassed = false;
     
     // Do quick check for optimization reasons: Check if no flags are specified.
     if (require == 0 && deny == 0)
@@ -723,22 +727,12 @@ stock bool:ClassFlagFilterMatch(index, require, deny, cachetype)
         // All required flags are set.
         requirepassed = true;
     }
-    else
-    {
-        // Not all required flags are set.
-        requirepassed = false;
-    }
     
     // Match deny filter.
     if (deny == 0 || !(flags & deny))
     {
         // No denied flags are set.
         denypassed = true;
-    }
-    else
-    {
-        // It has denied flags set.
-        denypassed = false;
     }
     
     // Check if required and denied flags passed the filter.
@@ -747,11 +741,9 @@ stock bool:ClassFlagFilterMatch(index, require, deny, cachetype)
         // The class pass the filter.
         return true;
     }
-    else
-    {
-        // The class didn't pass the filter.
-        return false;
-    }
+    
+    // The class didn't pass the filter.
+    return false;
 }
 
 /**

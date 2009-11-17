@@ -377,11 +377,6 @@ new ClassNoFilter[ClassFilter];
 new ClassNoSpecialClasses[ClassFilter] = {false, 0, ZR_CLASS_SPECIALFLAGS, -1};
 
 /**
- * Keyvalue handle to store class data.
- */
-new Handle:kvClassData = INVALID_HANDLE;
-
-/**
  * The original class data. This array only changed when class data is loaded.
  * ZR_CLASS_CACHE_ORIGINAL is the cache type to this array.
  */
@@ -413,7 +408,7 @@ new Float:ClassMultiplierCache[ZR_CLASS_TEAMCOUNT][ClassMultipliers];
 new ClassCount;
 
 /**
- * Specifies wether the class team requirement and attributes are valid or not.
+ * Specifies whether the class team requirements and attributes are valid or not.
  * Used to block events that happend before the module is done loading.
  */
 new bool:ClassValidated;
@@ -485,11 +480,9 @@ ClassLoad()
     // Register config file.
     ConfigRegisterConfig(File_Classes, Structure_Keyvalue, CONFIG_FILE_ALIAS_CLASSES);
     
+    new Handle:kvClassData;
+    
     // Make sure kvClassData is ready to use.
-    if (kvClassData != INVALID_HANDLE)
-    {
-        CloseHandle(kvClassData);
-    }
     kvClassData = CreateKeyValues(CONFIG_FILE_ALIAS_CLASSES);
     
     // Get weapons config path.

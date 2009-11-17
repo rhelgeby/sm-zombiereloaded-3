@@ -3,28 +3,96 @@
 //                              ZOMBIE:RELOADED
 //                            Model configuration
 //
-// Check the weapon configuration section in the manual for detailed info.
+// See Model Configuration (3.5) section in the manual for detailed info.
 //
 // ============================================================================
-// Format:
+//
+// SHORT DESCRIPTIONS
+//
+// Attribute:   Description:
 // ----------------------------------------------------------------------------
-// the/path/to/the/model	;public/hidden/adminonly/etc
-// * ;public - The model will be treated as a model that any client has access to.
-// * ;hidden - The model can only be accessed through explicit use of a player class.
-//             E.g. If a class uses the "random" setting for model, then any non-public
-//                  models will not be chosen.
-// ============================================================================
-// * Each uncommented line will be used as a model path for clients to download,
-//   and classes to utilize.
-// * If no ;<string> is specified, the model will be assumed as public.
-// ----------------------------------------------------------------------------
-// Defaults:
-// ----------------------------------------------------------------------------
+// name     Name of model file, without extension.
+// path     Path to model files. MUST end with "/".
+// team     Model type:
+//              "zombies"
+//              "humans"
+// access   Access type:
+//              "public"        - Everyone can use the model.
+//              "admins"        - Model can only be used by admins.    
+//              "hidden"        - Model is excluded from public random selections.
+//              "motherzombies" - Model can only be used by mother zombies.
+//              "group"         - Use group authentication.
+// group    If access is "group": A SourceMod group name. Otherwise blank ("").
 
-models/player/zh/zh_charple001			;public
-models/player/zh/zh_zombie003			;public
-models/player/zh/zh_corpse002			;public
-models/player/ics/hellknight_red/t_guerilla	;public
-// models/player/adminmodels/1337model		;adminonly   // None of these models will be randomly chosen.
-// models/player/donatormodels/donatormodel	;donator
-// models/player/hiddenmodels/myhiddenmodel	;non-public
+"models"
+{
+    "zh_charple001"
+    {
+        "name"      "zh_charple001"
+        "path"      "models/player/zh/"
+        "team"      "zombies"
+        "access"    "public"
+        "group"     ""
+    }
+    
+    "zh_zombie003"
+    {
+        "name"      "zh_zombie003"
+        "path"      "models/player/zh/"
+        "team"      "zombies"
+        "access"    "public"
+        "group"     ""
+    }
+    
+    "zh_corpse002"
+    {
+        "name"      "zh_corpse002"
+        "path"      "models/player/zh/"
+        "team"      "zombies"
+        "access"    "public"
+        "group"     ""
+    }
+    
+    "t_guerilla"
+    {
+        "name"      "t_guerilla"
+        "path"      "models/player/ics/hellknight_red/"
+        "team"      "zombies"
+        "access"    "public"
+        "group"     ""
+    }
+    
+    // Special model examples:
+    // -----------------------
+    
+    // Only admins can use this zombie model.
+    //"admin_zombie"
+    //{
+    //    "name"      "1337model"
+    //    "path"      "models/player/adminmodels/"
+    //    "team"      "zombies"
+    //    "access"    "admins"
+    //    "group"     ""
+    //}
+    
+    // Only members of the zr_vip group in SourceMod can use this human model.
+    //"vip_human"
+    //{
+    //    "name"      "vipmodel"
+    //    "path"      "models/player/vip/"
+    //    "team"      "humans"
+    //    "access"    "group"
+    //    "group"     "zr_vip"
+    //}
+    
+    // This model will be excluded from public random selections. Only classes
+    // that use "randomhidden" or explicit specify this model will be able to use it.
+    //"hidden"
+    //{
+    //    "name"      "hiddenmodel"
+    //    "path"      "models/player/"
+    //    "team"      "humans"
+    //    "access"    "hidden"
+    //    "group"     ""
+    //}
+}

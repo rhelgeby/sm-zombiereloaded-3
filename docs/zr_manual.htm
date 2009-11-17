@@ -16,7 +16,7 @@
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
 Written by Richard Helgeby</p>
-<p class="headerinfo">Manual last modified: 2009.10.31</p>
+<p class="headerinfo">Manual last modified: 2009.11.17</p>
 
 <h2>Index</h2>
 
@@ -747,6 +747,9 @@ configuration files are optional.</p>
 certain maps. That could be scaling knockback, restricting certain weapons, changing class
 attributes or changing ambience sound.</p>
 
+<p>Other map configuration plugins should also work if certain features that doesn't exist in
+Zombie:Reloaded map configurations is needed.</p>
+
 <h4><a name="3.4.1" />1. Types</h4>
 <p>There are two kinds of map configs; pre and post. Pre map configuration files are executed
 before the modules and data is loaded. They're useful for changing configuration sets for certain
@@ -777,57 +780,96 @@ stuff have to be placed in this one to be effective, like changing class attribu
 
 <h3><a name="3.5" />3.5 Model Configuration</h3>
 
-<p><strong>Note:</strong> Work in progress. Model list data structure is about to be changed
-with support for human models and model restrictions. Currently, assume all models to be public
-zombie models that everyone can use.</p>
-
-<p>The model configuration file is a list of models used on the server. Each line contains the path
-including the model name, but not the file extension.</p>
+<p>The model configuration file is a list of models used on the server stored in Valve's key/value
+format.</p>
 
 <p>The models listed in this file are also precached when the server starts. Custom models used,
 but not listed in this file will cause a "model not precached" error on the server, so they must be
 listed in this file.</p>
 
-<p>In addition certain flags can be added to mark the model as special, such as only for
-admins/donators, hidden from random selection or only for mother zombies.</p>
+<p>In addition models can be restricted to certain groups using the "access" attribute.</p>
 
-<p>Each line is separated into two fields with ";". The last field is optional.</p>
-
-<p>If no flag is specified it's treated as a regular public model.</p>
-
-<p>Model line syntax:</p>
-	<blockquote><p><code>&lt;model path&gt;[; flag]</code></p></blockquote>
+<p>List of available model attributes:</p>
 
 <blockquote><table>
-	<caption>Model Flags</caption>
+	<caption>Model Attributes</caption>
+	
+	
 	<tr>
-		<td class="valueoption">public</td>
-		<td>Everyone can use the model.</td>
+		<th class="namewidth">Attribute:</th>
+		<th class="mediumwidth">Value type:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">name</td>
+		<td class="commandheader">text</td>
 	</tr>
 	<tr>
-		<td class="valueoption">adminonly</td>
-		<td>(Incomplete) Can only be used by admins.</td>
+		<td class="indent" colspan="2">
+			<p>File name of model file, without extension.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">path</td>
+		<td class="commandheader">text</td>
 	</tr>
 	<tr>
-		<td class="valueoption">donator</td>
-		<td>(Incomplete) Can only be used by donators.</td>
+		<td class="indent" colspan="2">
+			<p>Path to model files. <strong>Must</strong> end with "/". Windows servers can use "\"
+			in paths, but they also work with "/".</p>
+			<p>The path is relative to "cstrike".</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">team</td>
+		<td class="commandheader">text</td>
 	</tr>
 	<tr>
-		<td class="valueoption">hidden</td>
-		<td>(Incomplete) Is not included in random selections.</td>
+		<td class="indent" colspan="2">
+			<p>What team the model belongs to.</p>
+			<p>Options:</p>
+			<blockquote><table>
+				<tr><td class="valueoption">zombies</td><td>Zombie players. Includes mother zombies.</td></tr>
+				<tr><td class="valueoption">humans</td><td>Human players.</td></tr>
+			</table></blockquote>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">access</td>
+		<td class="commandheader">text</td>
 	</tr>
 	<tr>
-		<td class="valueoption">motherzombie</td>
-		<td>(Incomplete) Can only be used on mother zombies.</td>
+		<td class="indent" colspan="2">
+			<p>Access mode of the model.</p>
+			<p>Options:</p>
+			<blockquote><table>
+				<tr><td class="valueoption">public</td><td>Everyone can use the model. Included in
+				public random selections.</td></tr>
+				<tr><td class="valueoption">admins</td><td>Model can only be used by admins. Included
+				in public random selections but only applied to admins.</td></tr>
+				<tr><td class="valueoption">hidden</td><td>Model is excluded from public random selections.</td></tr>
+				<tr><td class="valueoption">motherzombies</td><td>Model can only be used by mother zombies.</td></tr>
+				<tr><td class="valueoption">group</td><td>Use group authentication. See "group" attribute.</td></tr>
+			</table></blockquote>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">group</td>
+		<td class="commandheader">text</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Name of SourceMod group to use for model authentication if access is "group". If
+			access is anything else than "group" this setting is ignored and can be blank ("").</p>
+		</td>
 	</tr>
 </table></blockquote>
 
-<p>Example usages:</p>
-
-	<blockquote><p><code>models/player/zh/zh_charple001<br />
-	models/player/zh/zh_corpse002; adminonly<br />
-	models/player/zh/zh_zombie003; hidden<br />
-	models/player/ics/hellknight_red/t_guerilla; motherzombie</code></p></blockquote>
+<p>For example usages see examples in default model configuration.</p>
 
 <p>Put the list of models in:</p>
 
@@ -837,7 +879,7 @@ admins/donators, hidden from random selection or only for mother zombies.</p>
 <h3><a name="3.6" />3.6 Download List</h3>
 
 <p>Custom models, materials and overlays must be listed in the download list so clients will
-download them. Use one line per file with paths relative to the "cstrike" folder.</p>
+download them. Use one line per file, with paths relative to the "cstrike" folder.</p>
 
 <p>List files to be downloaded in the following file:</p>
 
@@ -1011,8 +1053,8 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p>The model file to use on the player, path is relative to the "cstrike" folder. There
-			are a few special values supported by this attribute:</p>
+			<p>Model file path to use on the player, relative to the "cstrike" folder. There are a
+			few presets supported by this attribute:</p>
 			<blockquote><table>
 				<tr>
 					<td class="valueoption">default</td>
@@ -1020,12 +1062,31 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 				</tr>
 				<tr>
 					<td class="valueoption">random</td>
-					<td>Selects a random model for the current team.</td>
+					<td>Selects a random public or admin model for the current team. Admin models
+					are only applied to admins.</td>
 				</tr>
 				<tr>
-					<td class="valueoption">nochange</td>
-					<td>Don't change model. To be used in combination with other plugins that
-					change model on players.</td>
+					<td class="valueoption">random_public</td>
+					<td>Selects a random public model for the current team.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">random_admin</td>
+					<td>Selects a random admin model for the current team. Model permissions will
+					be ignored.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">random_hidden</td>
+					<td>Selects a random hidden model for the current team.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">random_mother_zombie</td>
+					<td><strong>Zombies only.</strong> Selects a random mother zombie model.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">no_change</td>
+					<td>Don't change model. Use this setting to keep default Counter-Strike: Source
+					model, or to fix a compatibility issue with other plugins that change model on
+					players.</td>
 				</tr>
 			</table></blockquote>	
 		</td>
