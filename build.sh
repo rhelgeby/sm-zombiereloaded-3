@@ -4,10 +4,11 @@ RELEASEDIR=release
 BUILDDIR=build
 ZIPFILE=$(hg id -b)-$(hg id -n).zip
 
-PLUGINFILES=cstrike
-DOCS=docs
+PLUGINFILES="cstrike/*"
+DOCS="docs/*"
+DOCS_DEST=zrdocs
 PLUGINFILE=zombiereloaded.smx
-PLUGINDIR=cstrike/addons/sourcemod/plugins
+PLUGINDIR=addons/sourcemod/plugins
 
 # Clean release directory if specified and exit.
 if [ "$1" = "clean" ]
@@ -17,8 +18,9 @@ then
     exit 0
 fi
 
-# Make release directory.
+# Make release directories.
 mkdir -p $RELEASEDIR
+mkdir -p $RELEASEDIR/$DOCS_DEST
 
 # Check if the plugin is built.
 if [ ! -e $BUILDDIR/$PLUGINFILE ]
@@ -29,8 +31,8 @@ fi
 
 # Copy files.
 echo "Copying files..."
-cp -r "$PLUGINFILES" "$RELEASEDIR"
-cp -r "$DOCS" "$RELEASEDIR"
+cp -r $PLUGINFILES $RELEASEDIR
+cp -r $DOCS $RELEASEDIR/$DOCS_DEST
 
 mkdir -p $RELEASEDIR/$PLUGINDIR
 cp -r $BUILDDIR/$PLUGINFILE $RELEASEDIR/$PLUGINDIR/$PLUGINFILE
