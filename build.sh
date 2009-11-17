@@ -6,21 +6,22 @@ ZIPFILE=$(hg id -b)-$(hg id -n).zip
 
 PLUGINFILES="cstrike/*"
 DOCS="docs/*"
-DOCS_DEST=zrdocs
+DOCS_DEST=$RELEASEDIR/zrdocs
 PLUGINFILE=zombiereloaded.smx
-PLUGINDIR=addons/sourcemod/plugins
+PLUGINDIR=$RELEASEDIR/addons/sourcemod/plugins
+ZRTOOLS_SOURCE=/home/zrdev/archive/zrtools
+EXTENSIONDIR=$RELEASEDIR/addons/sourcemod/extensions
 
 # Clean release directory if specified and exit.
 if [ "$1" = "clean" ]
 then
-    rm -r $RELEASEDIR
+    rm -rf $RELEASEDIR
     echo "Cleaned release directory."
     exit 0
 fi
 
-# Make release directories.
+# Make release directory.
 mkdir -p $RELEASEDIR
-mkdir -p $RELEASEDIR/$DOCS_DEST
 
 # Check if the plugin is built.
 if [ ! -e $BUILDDIR/$PLUGINFILE ]
@@ -30,12 +31,21 @@ then
 fi
 
 # Copy files.
-echo "Copying files..."
+echo "Copying plugin files..."
 cp -r $PLUGINFILES $RELEASEDIR
-cp -r $DOCS $RELEASEDIR/$DOCS_DEST
 
-mkdir -p $RELEASEDIR/$PLUGINDIR
-cp -r $BUILDDIR/$PLUGINFILE $RELEASEDIR/$PLUGINDIR/$PLUGINFILE
+echo "Copying documentation..."
+mkdir -p $DOCS_DEST
+cp -r $DOCS $DOCS_DEST
+
+echo "Copying plugin binaries..."
+mkdir -p $PLUGINDIR
+cp -r $BUILDDIR/$PLUGINFILE $PLUGINDIR/$PLUGINFILE
+
+echo "Copying extension binaries..."
+mkdir -p $EXTENSIONDIR
+cp $ZRTOOLS_SOURCE/zrtools.ext.so $EXTENSIONDIR
+cp $ZRTOOLS_SOURCE/zrtools.ext.dll $EXTENSIONDIR
 
 # Make release package.
 echo "Compressing files..."
