@@ -66,6 +66,7 @@ cp -r $BUILDDIR/$PLUGINFILE $PLUGINDIR/$PLUGINFILE
 
 if [ $MAKEPATCH = "false" ]
 then
+    # Copy all files.
     echo "Copying plugin files..."
     cp -r $PLUGINFILES $RELEASEDIR
     
@@ -74,7 +75,7 @@ then
     cp $ZRTOOLS_SOURCE/zrtools.ext.so $EXTENSIONDIR
     cp $ZRTOOLS_SOURCE/zrtools.ext.dll $EXTENSIONDIR
 else
-    # Copy only plugin binary and changed files.
+    # Copy only changed files.
     CHANGEDFILES=$(hg status --rev $PATCHREV | grep "cstrike/" | cut -d ' ' -f2 | cut -d '/' -f2-)
     
     echo "Copying plugin files..."
