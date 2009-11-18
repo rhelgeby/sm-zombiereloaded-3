@@ -2,7 +2,8 @@
 
 RELEASEDIR=release
 BUILDDIR=build
-ZIPFILE=$(hg id -b)-$(hg id -n).zip
+VERSION=$(hg id -b)-$(hg id -n)
+ZIPFILE=$VERSION.zip
 
 PLUGINFILES="cstrike/*"
 DOCS="docs/*"
@@ -12,16 +13,39 @@ PLUGINDIR=$RELEASEDIR/addons/sourcemod/plugins
 ZRTOOLS_SOURCE=/home/zrdev/archive/zrtools
 EXTENSIONDIR=$RELEASEDIR/addons/sourcemod/extensions
 
-# Clean release directory if specified and exit.
+MAKEPATCH=false
+
+
+# Clean release directory.
+rm -rf $RELEASEDIR
+echo "Cleaned release directory."
+
+
+# Exit if cleaning only.
 if [ "$1" = "clean" ]
 then
-    rm -rf $RELEASEDIR
-    echo "Cleaned release directory."
     exit 0
 fi
 
+
+# Check if patch mode is enabled.
+if [ "$1" = "patch" ]
+then
+    if [ "$2" ]
+    then
+        MAKEPATCH=true
+        PATCHREV="$2"
+        ZIPFILE=$VERSION-patch.zip
+    else
+        echo "Missing base revision number. Usage: build.sh patch <base rev>"
+        exit 1
+    fi
+fi
+
+
 # Make release directory.
 mkdir -p $RELEASEDIR
+
 
 # Check if the plugin is built.
 if [ ! -e $BUILDDIR/$PLUGINFILE ]
@@ -30,22 +54,35 @@ then
     exit 1
 fi
 
-# Copy files.
-echo "Copying plugin files..."
-cp -r $PLUGINFILES $RELEASEDIR
 
+# Copy files.
 echo "Copying documentation..."
 mkdir -p $DOCS_DEST
 cp -r $DOCS $DOCS_DEST
 
-echo "Copying plugin binaries..."
+echo "Copying plugin binary..."
 mkdir -p $PLUGINDIR
 cp -r $BUILDDIR/$PLUGINFILE $PLUGINDIR/$PLUGINFILE
 
-echo "Copying extension binaries..."
-mkdir -p $EXTENSIONDIR
-cp $ZRTOOLS_SOURCE/zrtools.ext.so $EXTENSIONDIR
-cp $ZRTOOLS_SOURCE/zrtools.ext.dll $EXTENSIONDIR
+if [ $MAKEPATCH = "false" ]
+then
+    echo "Copying plugin files..."
+    cp -r $PLUGINFILES $RELEASEDIR
+    
+    echo "Copying extension binaries..."
+    mkdir -p $EXTENSIONDIR
+    cp $ZRTOOLS_SOURCE/zrtools.ext.so $EXTENSIONDIR
+    cp $ZRTOOLS_SOURCE/zrtools.ext.dll $EXTENSIONDIR
+else
+    # Copy only plugin binary and changed files.
+    CHANGEDFILES=$(hg status --rev $PATCHREV | grep "cstrike/" | cut -d ' ' -f2 | cut -d '/' -f2-)
+    
+    echo "Copying plugin files..."
+    cd cstrike
+    cp --parents $CHANGEDFILES "../$RELEASEDIR"
+    cd ..
+fi
+
 
 # Make release package.
 echo "Compressing files..."
