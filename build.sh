@@ -35,7 +35,7 @@ then
     then
         MAKEPATCH=true
         PATCHREV="$2"
-        ZIPFILE=$VERSION-patch.zip
+        ZIPFILE=$VERSION-patch_$PATCHREV.zip
     else
         echo "Missing base revision number. Usage: build.sh patch <base rev>"
         exit 1
