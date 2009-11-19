@@ -55,10 +55,15 @@ fi
 mkdir -p $RELEASEDIR
 
 
+# Clean and compile plugin.
+make clean
+make
+
+
 # Check if the plugin is built.
 if [ ! -e $BUILDDIR/$PLUGINFILE ]
 then
-    echo "Cannot build release package, plugin is not built. Missing file '$BUILDDIR/$PLUGINFILE'."
+    echo "Cannot build release package, plugin build failed. Missing file '$BUILDDIR/$PLUGINFILE'."
     exit 1
 fi
 
