@@ -402,8 +402,8 @@ CvarsCreate()
     // ===========================
     
     // Voice
-    g_hCvarsList[CVAR_VOICE]                            =    CreateConVar("zr_voice",                   "1",                            "Modify sv_alltalk to obey zombie/human teams instead of t/ct.");
-    g_hCvarsList[CVAR_VOICE_ZOMBIES_MUTE]               =    CreateConVar("zr_voice_zombies_mute",      "0",                            "Only allow humans to communicate, block verbal zombie communication.");
+    g_hCvarsList[CVAR_VOICE]                            =    CreateConVar("zr_voice",                   "0",                            "(Incomplete) Modify sv_alltalk to obey zombie/human teams instead of t/ct.");
+    g_hCvarsList[CVAR_VOICE_ZOMBIES_MUTE]               =    CreateConVar("zr_voice_zombies_mute",      "0",                            "(Incomplete) Only allow humans to communicate, block verbal zombie communication.");
     
     // Zombie Sounds
     g_hCvarsList[CVAR_SEFFECTS_MOAN]                    =    CreateConVar("zr_seffects_moan",           "30.0",                         "Time between emission of a moan sound from a zombie.");
