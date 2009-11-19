@@ -43,7 +43,7 @@ then
             exit 1
         fi
         
-        ZIPFILE=$VERSION-patch-$REVISION-$PATCHREV.zip
+        ZIPFILE=$VERSION-patch-$PATCHREV-$REVISION.zip
     else
         echo "Missing base revision number. Usage: build.sh patch <base rev>"
         exit 1
