@@ -2,8 +2,9 @@
 
 RELEASEDIR=release
 BUILDDIR=build
-VERSION=$(hg id -b)-$(hg id -n)
-ZIPFILE=$VERSION.zip
+VERSION=$(hg id -b)
+REVISION=$(hg id -n)
+ZIPFILE=$VERSION-$REVISION.zip
 
 PLUGINFILES="cstrike/*"
 DOCS="docs/*"
@@ -35,7 +36,14 @@ then
     then
         MAKEPATCH=true
         PATCHREV="$2"
-        ZIPFILE=$VERSION-patch_$PATCHREV.zip
+        
+        if [ "$2" = $REVISION ]
+        then
+            echo "No changes since base revision."
+            exit 1
+        fi
+        
+        ZIPFILE=$VERSION-patch-$REVISION-$PATCHREV.zip
     else
         echo "Missing base revision number. Usage: build.sh patch <base rev>"
         exit 1
