@@ -458,6 +458,11 @@ new bool:ClassAllowInstantChange[MAXPLAYERS + 1];
  */
 new String:ClassOriginalPlayerModel[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
 
+/**
+ * Specifies whether a player has spawned.
+ */
+new bool:ClassPlayerSpawned[MAXPLAYERS + 1];
+
 #include "zr/playerclasses/filtertools"
 #include "zr/playerclasses/attributes"
 #include "zr/playerclasses/apply"

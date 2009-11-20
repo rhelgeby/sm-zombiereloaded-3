@@ -75,6 +75,9 @@ ClassClientInit(client)
         // Forward event to sub-modules.
         ClassOverlayClientInit(client);
     }
+    
+    // Reset spawn flag.
+    ClassPlayerSpawned[client] = false;
 }
 
 /**
@@ -176,10 +179,12 @@ ClassOnClientSpawn(client)
             TranslationPrintToChat(client, "Classes random assignment", classname);
         }
         
-        // Display class menu if enabled.
-        new bool:classmenu = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SPAWN]);
-        if (classmenu)
+        // Display class menu if either menu cvar is set.
+        new bool:menuspawn = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_SPAWN]);
+        new bool:menujoin = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_JOIN]);
+        if (menuspawn || (menujoin && !ClassPlayerSpawned[client]))
         {
+            ClassPlayerSpawned[client] = true;
             ClassMenuMain(client);
         }
     }
