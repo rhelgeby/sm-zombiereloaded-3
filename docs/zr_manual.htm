@@ -16,7 +16,7 @@
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
 Written by Richard Helgeby</p>
-<p class="headerinfo">Manual last modified: 2009.11.17</p>
+<p class="headerinfo">Manual last modified: 2009.11.20</p>
 
 <h2>Index</h2>
 
@@ -281,9 +281,9 @@ plugin is compatible with all existing Zombie Mod maps.</p>
 		<p>ZRTools extension (bundled). Provides some extra functions needed by Zombie:Reloaded.
 		See <a href="#2.2">Plugin Installation (2.2)</a>.</p>
 		
-		<p>- Or, depending on version -</p>
+		<p>- Or, depending on Zombie:Reloaded release -</p>
 		<p><a href="http://forums.alliedmods.net/showthread.php?t=106748">SDK Hooks Extension</a>
-		(version 1.1 or newer). Provides some extra functions needed by Zombie:Reloaded.</p>
+		(version 1.1 or newer).</p>
 	</li>
 </ol>
 
@@ -865,6 +865,8 @@ listed in this file.</p>
 		<td class="indent" colspan="2">
 			<p>Name of SourceMod group to use for model authentication if access is "group". If
 			access is anything else than "group" this setting is ignored and can be blank ("").</p>
+			<p>Only players that is a member of this group can use this model. Root admins can't
+			use this model if they're not a member.</p>
 		</td>
 	</tr>
 </table></blockquote>
@@ -1948,13 +1950,25 @@ map configuration files it must be in a pre configuration file.</p>
 	</tr>
 	
 	<tr>
-		<td class="commandheader">weapontype</td>
+		<td class="commandheader">weaponentity</td>
 		<td class="commandheader">text</td>
-		<td class="commandheader">Separate items by ", "</td>
+		<td class="commandheader">Name of a valid weapon entity</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p>A list of weapon groups and the weapon type.</p>
+			<p>Name of the weapon entity. See <a href="#3.8.2">Weapon List (3.8.2)</a> for a list of valid
+			weapon names.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">weapontype</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">Separate items with ", "</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The weapon type and a optional list of custom weapon groups.</p>
 			<p>Pre-defined options:</p>
 			<ul>
 				<li class="code">All</li>
@@ -1978,7 +1992,8 @@ map configuration files it must be in a pre configuration file.</p>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p>The slot index the weapon resides in. Don't change this!</p>
+			<p>The slot index the weapon resides in. It's just here to avoid hard coding indexes.
+			Don't change this in the default configuration!</p>
 			<p>Options:</p>
 			<table>
 				<tr><td class="valueoption">0</td><td>Primary weapon slot</td></tr>
@@ -2763,7 +2778,7 @@ group damage. See <a href="#3.9">Hit Group Configuration (3.9)</a> on how to con
 <h3><a name="3.12" />3.12 Overlay Settings</h3>
 
 <p>Overlays are pictures displayed on players' screen on certain events. However, these <strong>overlays
-require DirectX 9 or higher</strong> to work. Players with lower DirectX version won't see these overlays.</p>
+require DirectX 9 or newer</strong> to work. Players with lower DirectX version won't see these overlays.</p>
 
 <p>Since these overlays doesn't last forever, they must be redisplayed at a certain interval. A
 refresh once per second seems to be enough.</p>
@@ -4892,14 +4907,83 @@ back to a default action.</p>
 	</tr>
 </table></blockquote>
 
+
 <h3><a name="5.4" />5.4 Common Problems</h3>
+
+<h4>Unable to load extension "zrtools.ext.so": Could not find interface: IPlayerManager</h4>
+
+<p>ZR Tools in beta 1 was compiled based on a development snapshot of SourceMod so it requred
+a newer version of SourceMod than the latest stable release at that time. It's now compiled based
+on SourceMod 1.2.</p>
+
+<p><strong>Solution:</strong> Update SourceMod.</p>
+
+
+<h4>"ERROR" models or pink (checkerboard) models</h4>
+
+<p>Big "ERROR" models on zombies/humans is usually caused by missing files. Common causes
+are:</p>
+
+<ul>
+    <li>Model files missing in download list</li>
+    <li>Model files missing on server</li>
+    <li>Typo in model list</li>
+    <li>Typo in class configuration ("model_path" attribute)</li>
+    <li>Missing or incorrect whitelist settings on pure servers</li>
+</ul>
+
+
+<h4>Model not precached</h4>
+
+<p>This is usually caused by classes that specify models that isn't added to the model list.</p>
+
+<p>The model list is limited and models after that limit is ignored. Check error logs for warnings
+about full model list.</p>
+
+
+<h4>Freeze/lag on infection</h4>
+
+<p>When a human get infected the server freeze for a short amount of time. This might be caused
+by too detailed models, or a cache problem.</p>
+
+<p><strong>Solution:</strong> Try "sv_forcepreload 1" in the server's configuration file.
+"cl_forcepreload 1" on the client might help too, but servers can't set that console variable
+on clients.</p>
+
+
+<h4>Bouncing props</h4>
+
+<p>This is bug in the Source engine and we can't do anything about it, but avoid stuff that is
+known to trigger this bug.</p>
+
+<p>Anti-Stick might trigger this bug in some cases, but it also might depend on the map.</p>
+
+<p>More info: <a href="http://forums.alliedmods.net/showthread.php?t=106081">Engine Bug:
+"Physical Mayhem" Discussion</a></p>
+
+
+<h4>Compatibility problems with Duke Hacks</h4>
+
+<p>This is not confirmed, but ZR Tools and Duke Hacks might not work well together on the same
+server. Try disable plugins that use Duke Hacks if wierd problems show up.</p>
+
+
+<h4>Deleting/removing all main plugin configuration files solved random crashes</h4>
+
+<p>We got reports about random crashes and one discovered that deleting main plugin configuration
+files so they are regenerated stopped random crashes. This might work because some configs might
+have invalid values that could crash some plugins.</p>
+
+<p>Instead of deleting configuration files, they can be moved outside the mods root folder so
+they're not loaded. Don't move all files at once, move one by one so it's possible to figure out
+what plugin that is causing random crashes.</p>
+
+
 <h3><a name="5.5" />5.5 Known Issues</h3>
 
 <ul>
-	<li>Conflicts with WCS Races plugin and other plugins who change player model/skin and speed.</li>
+	<li>Zombie:Reloaded conflicts with plugins that change player model/skin and speed.</li>
 	<li>Do not run es_tools, it's not compatible with SourceMod.</li>
-	<li>Anti-Stick seems to work fine on some servers, but cause bouncing props on others. This may
-	be map dependent.</li>
 </ul>
 
 
@@ -4932,12 +5016,13 @@ href="http://forums.alliedmods.net/forumdisplay.php?f=132">Zombie:Reloaded forum
 
 <p>A few guidelines while posing issues or questions:</p>
 <ul>
+    <li>Check if you use the newest official release of Zombie:Reloaded.</li>
 	<li>Use a single thread per topic. It's much easier to browse a few pages of threads than
 	browsing 1000 posts. Make new threads - or post in existing threads if someone have the same
 	issue. If you're unsure about this, just make new threads.</li>
 	<li>Tell us what version you use. If you use a old version the problem might be solved in a
 	newer version.</li>
-	<li>Use a short thread title that describes your problem (keywords is enough).</li>
+	<li>Use a short thread title that describes your problem (some keywords is enough).</li>
 	<li>If you found a bug, start the thread title with [BUG] or similar.</li>
 	<li>If your problem were solved you could share the solution in your thread. Also add [SOLVED]
 	or similar in the thread title.</li>
