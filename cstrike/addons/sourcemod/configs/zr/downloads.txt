@@ -3,7 +3,7 @@
 //                              ZOMBIE:RELOADED
 //                           Downloads configuration
 //
-// Check the downloads configuration section in the manual for detailed info.
+// See Download List (3.6) section in the manual for detailed info.
 //
 // ============================================================================
 // * Each uncommented line will be used as a file path for clients to download.

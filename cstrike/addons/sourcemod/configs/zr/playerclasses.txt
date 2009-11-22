@@ -42,8 +42,8 @@
 // kill_bonus               number      How many points to give per kill. Zombies only.
 // speed                    decimal     The player speed.
 // knockback                decimal     Force of the knockback when shot at. Zombies only.
-// jump_height              decimal     Multiplier of the players jump height. 0.0 means no jump, 1.0 is normal.
-// jump_distance            decimal     Multiplier of the players jump distance. 0.0 means no forward jump, 1.0 is normal.
+// jump_height              decimal     Multiplier of the players jump height. 0.0 means no jump boost, 1.0 is normal.
+// jump_distance            decimal     Multiplier of the players jump distance. 0.0 means no forward jump boost, 1.0 is normal.
 
 "classes"
 {
@@ -264,7 +264,7 @@
         "health_regen_interval" "0.25"
         "health_regen_amount"   "10"
         "health_infect_gain"    "700"
-        "kill_bonus"            "1"
+        "kill_bonus"            "4"
         
         "speed"                 "400"
         "knockback"             "2.8"
@@ -373,7 +373,7 @@
         "team"                  "1"
         "team_default"          "yes"
         "flags"                 "0"
-        "group"                 ""
+        "group"                 "zr_vip"
         
         "name"                  "VIP Human"
         "description"           "Human class for important players"
@@ -396,18 +396,18 @@
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "no"
+        "no_fall_damage"        "yes"
         
         "health"                "200"
         "health_regen_interval" "1.0"
         "health_regen_amount"   "10"
         "health_infect_gain"    "0"
-        "kill_bonus"            "2"
+        "kill_bonus"            "1"
         
         "speed"                 "320"
         "knockback"             "0"
-        "jump_height"           "1.1"
-        "jump_distance"         "1.1"
+        "jump_height"           "1.2"
+        "jump_distance"         "1.2"
     }
     
     "human_admin"
@@ -446,12 +446,12 @@
         "health_regen_interval" "1.0"
         "health_regen_amount"   "10"
         "health_infect_gain"    "0"
-        "kill_bonus"            "2"
+        "kill_bonus"            "1"
         
         "speed"                 "320"
         "knockback"             "0"
-        "jump_height"           "1.1"
-        "jump_distance"         "1.1"
+        "jump_height"           "1.2"
+        "jump_distance"         "1.2"
     }
     
     "human_speedy"
@@ -528,7 +528,7 @@
         // Player behaviour
         "immunity_mode"         "0"
         "immunity_amount"       "0.0"
-        "no_fall_damage"        "no"
+        "no_fall_damage"        "yes"
         
         "health"                "100"
         "health_regen_interval" "0.0"

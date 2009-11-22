@@ -335,7 +335,7 @@
 
 	"Classes Attrib Knockback"
 	{
-		"en"		"Knock back"
+		"en"		"Knock Back"
 	}
 
 	"Classes Attrib Jump Height"
