@@ -69,6 +69,7 @@ bool:AmbientSoundsValidateConfig()
     new bool:ambience = GetConVarBool(g_hCvarsList[CVAR_AMBIENTSOUNDS]);
     if (!ambience)
     {
+        g_bAmbientSounds = false;
         return false;
     }
     
@@ -108,6 +109,7 @@ bool:AmbientSoundsValidateConfig()
     // Add sound file to downloads table.
     AddFileToDownloadsTable(sound);
     
+    g_bAmbientSounds = true;
     return true;
 }
 
