@@ -204,7 +204,7 @@ ModelsLoad()
             Format(buffer, sizeof(buffer), "%s%s", buffer, file);
             
             // Precache model file and add to downloads table.
-            PrecacheModel(buffer);
+            PrecacheModel(buffer, true);
             AddFileToDownloadsTable(buffer);
         }
         
