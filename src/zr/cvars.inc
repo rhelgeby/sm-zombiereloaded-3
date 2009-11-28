@@ -271,12 +271,12 @@ CvarsCreate()
     g_hCvarsList[CVAR_CLASSES_ADMIN_SELECT]             =    CreateConVar("zr_classes_admin_select",            "1",            "Allow admins to select admin mode classes. (Not to be confused by admin-only classes!)");
     
     // Menu
-    g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]           =    CreateConVar("zr_classes_menu_autoclose",      "0",            "Automatically close class selection menu after selecting a class.");
+    g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]           =    CreateConVar("zr_classes_menu_autoclose",      "1",            "Automatically close class selection menu after selecting a class.");
     
     // Overlays
     g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]           =    CreateConVar("zr_classes_overlay_toggle",      "1",            "Allow players to toggle class overlay.");
     g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds",  "nightvision",  "List of commands to hook that players can use to toggle class overlay. [Dependency: zr_classes_overlay_toggle | Delimiter: \", \"]");
-    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default",     "0",            "Default class overlay toggle state set on connecting player.");
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default",     "1",            "Default class overlay toggle state set on connecting player.");
     
     
     // ===========================

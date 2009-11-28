@@ -90,6 +90,7 @@ ModelsLoad()
     ModelCount = 0;
     new failedCount;
     new publicCount;
+    new downloadCount;
     
     // Loop through all models and store attributes in ModelData array.
     do
@@ -148,7 +149,7 @@ ModelsLoad()
         }
         else
         {
-            // Increment public model counter.
+            // Increment public model counter for the current team.
             if (ModelData[ModelCount][Model_Access] == ModelAccess_Public)
             {
                 publicCount++;
@@ -173,6 +174,9 @@ ModelsLoad()
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Error opening directory: %s", dir);
             continue;
         }
+        
+        // Reset file counter for the current model.
+        downloadCount = 0;
         
         new FileType:type;
         decl String:file[64];
@@ -206,11 +210,23 @@ ModelsLoad()
             // Precache model file and add to downloads table.
             PrecacheModel(buffer, true);
             AddFileToDownloadsTable(buffer);
+            
+            // Increment file counter for the current model.
+            downloadCount++;
         }
         
         CloseHandle(dir);
         
-        ModelCount++;
+        // Check if no model files were found.
+        if (!downloadCount)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Couldn't find any model files for \"%s\". Check name and path.", name);
+        }
+        else
+        {
+            // Increment model counter.
+            ModelCount++;
+        }
     } while (KvGotoNextKey(kvModels));
     
     CloseHandle(kvModels);
@@ -218,7 +234,7 @@ ModelsLoad()
     // Check if there are no public models.
     if (!publicCount)
     {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Couldn't find any public model in \"%s\". There must be at least one public model.", modelPath);
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Missing public model in \"%s\". There must be at least one public model.", modelPath);
     }
     
     // Log model validation info.

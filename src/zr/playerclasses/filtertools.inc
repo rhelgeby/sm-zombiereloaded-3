@@ -169,7 +169,7 @@ stock ClassValidateAttributes(classindex)
             !StrEqual(model_path, "random_admins", false) &&
             !StrEqual(model_path, "random_mother_zombies", false) &&
             !StrEqual(model_path, "default", false) &&
-            !StrEqual(model_path, "nochange", false))
+            !StrEqual(model_path, "no_change", false))
         {
             // Check if the file exists.
             if (!FileExists(model_path))

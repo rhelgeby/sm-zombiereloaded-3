@@ -16,7 +16,7 @@
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
 Written by Richard Helgeby</p>
-<p class="headerinfo">Manual last modified: 2009.11.22</p>
+<p class="headerinfo">Manual last modified: 2009.11.28</p>
 
 <h2>Index</h2>
 
@@ -4384,7 +4384,7 @@ back to a default action.</p>
 	<tr>
 		<td class="commandheader">models</td>
 		<td class="commandheader">fatal</td>
-		<td class="commandheader">Missing models file: &lt;file&gt;</td>
+		<td class="commandheader">Missing model list: &lt;file&gt;</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
@@ -4395,37 +4395,119 @@ back to a default action.</p>
 	
 	<tr>
 		<td class="commandheader">models</td>
-		<td class="commandheader">error</td>
-		<td class="commandheader">Error opening model path directory: &lt;directory&gt;</td>
+		<td class="commandheader">fatal</td>
+		<td class="commandheader">Can't find any models in&lt;file&gt;</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><strong>Description:</strong> The model path doesn't exist. Check for typos. Path
-			is relative to the <code>cstrike</code> folder.</p>
+			<p><strong>Description:</strong> The model file is empty or corrupt. Check for missing
+			quotes, etc.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Maximum number of models reached (&lt;max models&gt;).
+		Skipping other models.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> There's too many models in the model list, and the
+			rest of the list is ignored.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Invalid model name/path setting at index &lt;index&gt;.
+		File not found: &lt;model file&gt;.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The specified model file could not be found, verify
+			<code>path</code> and <code>name</code> attributes. Path must end with "/".</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Invalid model team setting at index &lt;index&gt;: 
+		&lt;attribute value&gt;.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Model <code>team</code> attribute failed validation.
+			Check for typos and that it has a valid value.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Invalid model access setting at index &lt;index&gt;: 
+		&lt;attribute value&gt;.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Model <code>access</code> attribute failed validation.
+			Check for typos and that it has a valid value.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">warning</td>
+		<td class="commandheader">Warning: Invalid model group setting at index &lt;index&gt;.
+		Couldn't find SourceMod group &lt;group name&gt;.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> The specified group name does not exist in the 
+			<a href="http://wiki.alliedmods.net/Adding_Groups_(SourceMod)">SourceMod group list</a>.</p>
 		</td>
 	</tr>
 	
 	<tr>
 		<td class="commandheader">models</td>
 		<td class="commandheader">error</td>
-		<td class="commandheader">Missing model files on server (&lt;file&gt;)</td>
+		<td class="commandheader">Error opening directory: &lt;directory&gt;</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><strong>Description:</strong> The model file doesn't exist. Check for typos. Path
-			is relative to the <code>cstrike</code> folder.</p>
+			<p><strong>Description:</strong> Couldn't open the directory specified in
+			<code>path</code> attribute. Verify that the game server has read access, and access to
+			list files in that directory.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">models</td>
+		<td class="commandheader">error</td>
+		<td class="commandheader">Couldn't find any model files for &lt;model name&gt;. Check
+		<code>name</code> and <code>path</code>.</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p><strong>Description:</strong> Files starting with the model name could not be found
+			in the specified path. Verify that the <code>name</code> attribute only contains the
+			model name, and not the path.</p>
 		</td>
 	</tr>
 	
 	<tr>
 		<td class="commandheader">models</td>
 		<td class="commandheader">fatal</td>
-		<td class="commandheader">No usable (public) model paths in &lt;file&gt;</td>
+		<td class="commandheader">Missing public model in &lt;model list file&gt;. There must be at
+		least one public model.</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><strong>Description:</strong> There's no public models to be assigned zombies and humans.</p>
-			<p><strong>Cause:</strong> Typos or invalid paths in model list.</p>
+			<p><strong>Description:</strong> There's no public models to be assigned either/both
+			zombies and humans. Verify that <code>access</code> attribute is "public" on at least
+			one model per team.</p>
 		</td>
 	</tr>
 	
