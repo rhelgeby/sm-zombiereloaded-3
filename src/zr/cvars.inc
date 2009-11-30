@@ -275,7 +275,7 @@ CvarsCreate()
     
     // Overlays
     g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]           =    CreateConVar("zr_classes_overlay_toggle",      "1",            "Allow players to toggle class overlay.");
-    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds",  "nightvision",  "List of commands to hook that players can use to toggle class overlay. [Dependency: zr_classes_overlay_toggle | Delimiter: \", \"]");
+    g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS]       =    CreateConVar("zr_classes_overlay_togglecmds",  "nightvision",  "List of commands to hook that players can use to toggle class overlay. [Dependency: zr_classes_overlay_toggle | Delimiter: \",\"]");
     g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]          =    CreateConVar("zr_classes_overlay_default",     "1",            "Default class overlay toggle state set on connecting player.");
     
     

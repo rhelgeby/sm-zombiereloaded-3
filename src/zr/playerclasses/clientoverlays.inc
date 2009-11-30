@@ -45,29 +45,24 @@
 new Handle:g_hOverlayEnabledCookie = INVALID_HANDLE;
 
 /**
- * Hook commands related to overlay here.
+ * Creates command clallbacks for listed overlay commands.
  */
 ClassOverlayOnCommandsHook()
 {
-    // Create command callbacks (intercepts) for listed suicide commands.
     decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
     GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
     
-    // Create array to store cmds
+    // Array to store commands.
     new String:arrayCmds[CLASSOVERLAY_TOGGLE_MAX_CMDS][CLASSOVERLAY_TOGGLE_MAX_LENGTH];
     
-    // Explode string into array indexes.
+    // Put the commands into an array.
     new cmdcount = ExplodeString(togglecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
     
-    // x = Array index.
-    // arrayCmds[x] = suicide command.
-    for (new x = 0; x <= cmdcount - 1; x++)
+    // Register all overlay commands.
+    for (new i = 0; i < cmdcount; i++)
     {
-        // Trim whitespace.
-        TrimString(arrayCmds[x]);
-        
-        // Prepare intercept for this command.
-        RegConsoleCmd(arrayCmds[x], ClassOverlayEnableCommand);
+        TrimString(arrayCmds[i]);
+        RegConsoleCmd(arrayCmds[i], ClassOverlayEnableCommand);
     }
 }
 
