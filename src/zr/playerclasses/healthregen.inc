@@ -38,13 +38,10 @@ ClassHealthRegenInitialize(client, Float:interval, amount, max)
 
 ClassHealthRegenStart(client, Float:interval)
 {
-    // Kill the timer if it exist.
-    if (tHealthRegen[client] != INVALID_HANDLE)
-    {
-        KillTimer(tHealthRegen[client]);
-        tHealthRegen[client] = INVALID_HANDLE;
-    }
+    // Stop timer if it already exist.
+    ClassHealthRegenStop(client);
     
+    // Create new timer.
     tHealthRegen[client] = CreateTimer(interval, ClassHealthRegenTimer, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 

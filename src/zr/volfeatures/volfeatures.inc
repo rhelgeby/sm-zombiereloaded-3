@@ -140,12 +140,12 @@ new Float:VolPlayerCountDown[MAXPLAYERS + 1][ZR_VOLUMES_MAX];
  *
  * Note: Some features may have its own timer for actions on players.
  */
-new Handle:hVolUpdateTimer;
+new Handle:hVolUpdateTimer = INVALID_HANDLE;
 
 /**
  * The handle for a timer that do count down on trigger delays.
  */
-new Handle:hVolTriggerTimer;
+new Handle:hVolTriggerTimer = INVALID_HANDLE;
 
 /**
  * Cached interval value for trigger timer.
