@@ -54,6 +54,7 @@ enum SDKHookType
 	SDKHook_Touch,
 	SDKHook_TraceAttack,
 	SDKHook_TraceAttackPost,
+	SDKHook_WeaponCanUse,
 	SDKHook_WeaponDrop,
 	SDKHook_WeaponEquip,
 	SDKHook_WeaponSwitch
@@ -73,6 +74,7 @@ funcenum SDKHookCB
 	public(entity, other),
 	// SetTransmit
 	Action:public(entity, client),
+	// WeaponCanUse
 	// WeaponDrop
 	// WeaponEquip
 	// WeaponSwitch

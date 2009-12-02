@@ -165,7 +165,7 @@ RestrictOnClientDisconnect(client)
     if (g_iCanUseHookID[client] != -1)
     {
         #if defined USE_SDKHOOKS
-            SDKUnhook(client, SDKHook_WeaponEquip, RestrictCanUse);
+            SDKUnhook(client, SDKHook_WeaponCanUse, RestrictCanUse);
         #else
             ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
         #endif
@@ -183,8 +183,8 @@ RestrictOnClientSpawn(client)
 {
     // Re-hook "canuse" on client.
     #if defined USE_SDKHOOKS
-        SDKUnhook(client, SDKHook_WeaponEquip, RestrictCanUse);     // <--- What happens if it's not already hooked???
-        SDKHook(client, SDKHook_WeaponEquip, RestrictCanUse);
+        SDKUnhook(client, SDKHook_WeaponCanUse, RestrictCanUse);     // <--- What happens if it's not already hooked???
+        SDKHook(client, SDKHook_WeaponCanUse, RestrictCanUse);
         g_iCanUseHookID[client] = 1;
     #else
         ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
