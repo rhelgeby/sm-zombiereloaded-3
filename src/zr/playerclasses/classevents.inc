@@ -57,6 +57,9 @@ ClassOnMapStart()
 {
 	// Clear multipliers.
 	ClassResetMultiplierCache();
+	
+	// Prepare hp regeneration module.
+	ClassHealthRegenInit();
 }
 
 /**

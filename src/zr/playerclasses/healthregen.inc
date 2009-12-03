@@ -27,15 +27,41 @@
 
 new ClientHealthRegenAmount[MAXPLAYERS + 1];
 new ClientHealthRegenMax[MAXPLAYERS + 1];
-new Handle:tHealthRegen[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
+new Handle:tHealthRegen[MAXPLAYERS + 1];
 
-ClassHealthRegenInitialize(client, Float:interval, amount, max)
+/**
+ * Resets all timer handles. (called from classevents)
+ */
+ClassHealthRegenInit()
+{
+    for (new client = 0; client < MAXPLAYERS + 1; client++)
+    {
+        tHealthRegen[client] = INVALID_HANDLE;
+    }
+}
+
+/**
+ * Prepares and starts HP regeneration on a client.
+ *
+ * @param client        The client to apply HP regeneration on.
+ * @param interval      Regeneration interval.
+ * @param amount        HP amount per interval.
+ * @param max           Regeneration limit. Don't give HP if player HP is above
+ *                      this value.
+ */
+ClassHealthRegenInitClient(client, Float:interval, amount, max)
 {
     ClientHealthRegenAmount[client] = amount;
     ClientHealthRegenMax[client] = max;
     ClassHealthRegenStart(client, interval);
 }
 
+/**
+ * Starts HP regeneration on a client using current client settings.
+ *
+ * @param client        The client index.
+ * @param interval      Regeneration interval.
+ */
 ClassHealthRegenStart(client, Float:interval)
 {
     // Stop timer if it already exist.
@@ -45,6 +71,11 @@ ClassHealthRegenStart(client, Float:interval)
     tHealthRegen[client] = CreateTimer(interval, ClassHealthRegenTimer, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
+/**
+ * Stops HP regeneration on a client.
+ *
+ * @param client    The client index.
+ */
 ClassHealthRegenStop(client)
 {
     // Kill the timer if it exist.
@@ -55,6 +86,9 @@ ClassHealthRegenStop(client)
     }
 }
 
+/**
+ * Timer callback for HP regeneration.
+ */
 public Action:ClassHealthRegenTimer(Handle:timer, any:client)
 {
     // Kill the timer if the player is dead or not in game.

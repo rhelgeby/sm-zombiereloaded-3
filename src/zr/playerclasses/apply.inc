@@ -381,7 +381,7 @@ bool:ClassApplyHealthRegen(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER
     
     if (interval > 0)
     {
-        ClassHealthRegenInitialize(client, interval, amount, max);
+        ClassHealthRegenInitClient(client, interval, amount, max);
         return true;
     }
     else
