@@ -207,11 +207,7 @@ ModelsLoad()
             strcopy(buffer, sizeof(buffer), path);
             Format(buffer, sizeof(buffer), "%s%s", buffer, file);
             
-            // Precache model file and add to downloads table.
-            PrecacheModel(buffer, true);
             AddFileToDownloadsTable(buffer);
-            
-            // Increment file counter for the current model.
             downloadCount++;
         }
         
@@ -224,7 +220,6 @@ ModelsLoad()
         }
         else
         {
-            // Increment model counter.
             ModelCount++;
         }
     } while (KvGotoNextKey(kvModels));
@@ -236,6 +231,9 @@ ModelsLoad()
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Missing public model in \"%s\". There must be at least one public model.", modelPath);
     }
+    
+    // Precache models.
+    ModelsPrecache();
     
     // Log model validation info.
     LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Successful: %d | Unsuccessful: %d", ModelCount, failedCount);
@@ -252,6 +250,21 @@ public ModelsOnConfigReload(ConfigFile:config)
 {
     // Reload models config.
     ModelsLoad();
+}
+
+/**
+ * Precaches all models.
+ */
+ModelsPrecache()
+{
+    decl String:file[PLATFORM_MAX_PATH];
+
+    // Loop through all models, build full path and cache them.
+    for (new model = 0; model < ModelCount; model++)
+    {
+        ModelsGetFullPath(model, file, sizeof(file));
+        PrecacheModel(file);
+    }
 }
 
 /**
