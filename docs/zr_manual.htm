@@ -178,7 +178,6 @@ Written by Richard Helgeby</p>
 			<li><a href="#5.2">Startup</a></li>
 			<li><a href="#5.3">Error and Warning Messages</a></li>
 			<li><a href="#5.4">Common Problems</a></li>
-			<li><a href="#5.5">Known Issues</a></li>
 		</ol>
 	</li>
 	
@@ -5063,25 +5062,33 @@ what plugin that is causing random crashes.</p>
 
 
 <h4>Server is crashing on certain maps after a few seconds</h4>
+
 <p>We've seen servers that crash only on certain maps. The map is loaded but after a few seconds
 the server crash (probably when a mother zombie is infected).</p>
+
 <p>The problem was a typo in the map config file for that map (a missing quote (&quot;) in this
 case). Rename the map config so it's not executed and try again. If the crash disappeared look
 for typos.</p>
 
 
 <h4>Problem with big config files</h4>
+
 <p>The main plugin configuration file is sometimes executed late, after map configs. This is
 caused by a bug in SourceMod where <a href="https://bugs.alliedmods.net/show_bug.cgi?id=3828">
 commands are executed late</a>.</p>
 
 
-<h3><a name="5.5" />5.5 Known Issues</h3>
+<h4>Zombie:Reloaded conflicts with plugins that change player model/skin and speed.</h4>
 
-<ul>
-	<li>Zombie:Reloaded conflicts with plugins that change player model/skin and speed.</li>
-	<li>Do not run es_tools, it's not compatible with SourceMod.</li>
-</ul>
+<p>Other mods and plugins that change player models (like Mani Admin Pugin) is conflicting
+with Zombie:Reloaded because of the class system.</p>
+
+<p>A possible solution is to use "no_change" in the <code>model_path</code> class attribute
+on all human classes. Then human players' model control will be released to other plugins.</p>
+
+
+<h4>Do not run ESTools, it's not compatible with SourceMod.</h4>
+<p>ESTools is causing wierd problems when running along with SourceMod.</p>
 
 
 <h2><a name="6" />6. Server Administration Guide</h2>
