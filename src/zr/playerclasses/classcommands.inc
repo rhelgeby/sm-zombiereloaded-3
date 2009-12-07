@@ -563,6 +563,7 @@ public Action:ClassSetMultiplierCommand(client, argc)
     if (attribute == ClassM_Invalid)
     {
         ReplyToCommand(client, "Attribute is invalid or not a multiplier: %s", attributename);
+        return Plugin_Handled;
     }
     
     // Get value.
