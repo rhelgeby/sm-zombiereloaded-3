@@ -16,7 +16,7 @@
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, (not released)<br />
 Written by Richard Helgeby</p>
-<p class="headerinfo">Manual last modified: 2009.11.28</p>
+<p class="headerinfo">Manual last modified: 2009.12.07</p>
 
 <h2>Index</h2>
 
@@ -5060,6 +5060,20 @@ have invalid values that could crash some plugins.</p>
 <p>Instead of deleting configuration files, they can be moved outside the mods root folder so
 they're not loaded. Don't move all files at once, move one by one so it's possible to figure out
 what plugin that is causing random crashes.</p>
+
+
+<h4>Server is crashing on certain maps after a few seconds</h4>
+<p>We've seen servers that crash only on certain maps. The map is loaded but after a few seconds
+the server crash (probably when a mother zombie is infected).</p>
+<p>The problem was a typo in the map config file for that map (a missing quote (&quot;) in this
+case). Rename the map config so it's not executed and try again. If the crash disappeared look
+for typos.</p>
+
+
+<h4>Problem with big config files</h4>
+<p>The main plugin configuration file is sometimes executed late, after map configs. This is
+caused by a bug in SourceMod where <a href="https://bugs.alliedmods.net/show_bug.cgi?id=3828">
+commands are executed late</a>.</p>
 
 
 <h3><a name="5.5" />5.5 Known Issues</h3>
