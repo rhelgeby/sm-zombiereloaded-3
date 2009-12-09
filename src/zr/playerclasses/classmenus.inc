@@ -388,12 +388,12 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
                     // Player isn't alive. The class can be directly changed.
                     ClassSelected[client][teamid] = classindex;
                 }
-                
-                // Save selected class index in cookie if enabled.
-                if (GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]))
-                {
-                    CookiesSetInt(client, g_hClassCookieClassSelected[teamid], classindex + 1);
-                }
+            }
+            
+            // Save selected class index in cookie if enabled.
+            if (GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]))
+            {
+                CookiesSetInt(client, g_hClassCookieClassSelected[teamid], classindex + 1);
             }
         }
         case MenuAction_Cancel:
