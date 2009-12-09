@@ -86,7 +86,7 @@
     //}
     
     // This model will be excluded from public random selections. Only classes
-    // that use "randomhidden" or explicit specify this model will be able to use it.
+    // that use "random_hidden" or explicit specify this model will be able to use it.
     //"hidden"
     //{
     //    "name"      "hiddenmodel"
