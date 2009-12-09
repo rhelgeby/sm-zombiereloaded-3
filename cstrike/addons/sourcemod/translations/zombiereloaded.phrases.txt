@@ -1135,7 +1135,7 @@
 
 	"Vol Anticamp Message"
 	{
-		"en"		"This area is restricted, please move along."
+		"en"		"This area is restricted, please move."
 	}
 
 	"Vol Slay"
