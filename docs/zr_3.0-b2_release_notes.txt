@@ -1,0 +1,71 @@
+===============================================================================
+
+                         Zombie:Reloaded Release Notes
+
+              Targets plugin version 3.0.0 Beta 2, (not released)
+                          Written by Richard Helgeby
+
+                           Last modified: 2009.12.09
+
+===============================================================================
+
+Release Notes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+(...)
+
+Richard Helgeby &
+Greyscale
+
+
+Changelog
+-----------
+Added a cvar to either reset the burn time when naded, or to use the original burn-time. (r408)
+Added norwegian translations (r413).
+Added cvars for disallowing class selection, per team. (r421)
+Added cvar to redisplay class selection menu every spawn. (r424)
+Added feature for allowing instant class change on humans after spawning, with a time limit. (r424)
+Added feature for using group based authentication on admin commands in Zombie:Reloaded, using SourceMod groups. (425)
+Added support for group authentication on classes (makes VIP and donator classes possible). (r427)
+Added feature for saving class selections in cookies. (r432)
+Added zr_version command for dumping version info. Useful when reporting problems. (r442)
+Added support for Grenade Pack plugin (by Greyscale). (r447)
+Added class editor volumetric feature that can modify certain class attributes on players in a volume. (r469)
+Added HTML version of the user manual. (r486)
+Added HTML version of the user manual. (r486)
+Added more random model selection presets for classes: public, admins, hidden and mother zombies. (r506)
+Added cvar for displaying class menu on first spawn. (r518)
+Changed lightstyle cvar default to be disabled. (r414)
+Changed classes to support not changing player model (for compatibility with other plugins). (r431)
+Changed maximum class limit to 48 classes. (r478)
+Changed class dumping commands to admin commands. (r479)
+Changed sky and sun cvars default to be disabled (to mach default lightstyle setting). (r483)
+Changed default setting to allow humans to use teleport after mother zombie spawn. (r486)
+Changed admin teleport command to also log target names. (r493)
+Changed map config files to be loaded at correct time. (r500)
+Changed model config to key/value format and improved model module features. (r506)
+Fixed translation buffers too short for languages that use unicode characters. (r409)
+Fixed some potential problems in ZMarket handling NVGs. (r410)
+Fixed some menus not properly translating into the client's language. (r411)
+Fixed translation issues in class menus (r412).
+Fixed ZMarket auto-rebuy possibly being stuck on if market was disabled. Now auto-disables if market is disabled. (r416)
+Fixed missing quote in english translation file. (r421)
+Fixed default class assignment assigning classes players doesn't have access to. (r433)
+Fixed teleport not resetting velocity. (r434)
+Fixed no fall damage class attribute not working on human classes. (r435)
+Fixed weapon type restriction menu not translating the first time. (r443)
+Fixed ZMarket weapon type selection menu title not translated.
+Fixed too short title string buffer in ZMarket loadout, ZTele force, ZSpawn force and hit group menus. (r443)
+Fixed "empty" phrase not translated. (r443)
+Fixed on/off translation string space too short in hit group menu. (r443)
+Fixed not all grenades being removed when infected. (r458)
+Fixed players ignited twice on some anticamp volumes. (r561)
+Fixed health regeneration timer not stopping if a player were kicked or timed out. (r469)
+Fixed existing volumes not removed after a map change. (r469)
+Fixed server console not having full access to admin commands. (r488)
+Fixed memory leak in ZMarket. (r489)
+Fixed memory leak in model list parser. (r492)
+Fixed timer handle error on map end. (r500)
+Fixed ambience sound still playing when disabled. (r520)
+Fixed health regeneration timer handle error. (r527)
+Fixed zr_class_set_multiplier not aborting when there's a invalid attribute name specified. (r529)
