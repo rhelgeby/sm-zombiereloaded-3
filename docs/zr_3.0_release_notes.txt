@@ -18,9 +18,9 @@ Clean install of configuration files and reconfiguring is recommended.
 A lot of work is put into this plugin. The entire plugin is completely recoded
 with lots of improvements and fixes.
 
-Our code base have expanded at least five times compared to version 2.5.1 (now
-with source files above 20 000 lines). Of course, made with optimizing in mind.
-This is, as far as we know, the biggest SourceMod plugin ever made!
+Our code base have expanded at least five times compared to version 2.5.1
+(source have reached 30 000 lines total). Of course, made with optimizing in
+mind. This is, as far as we know, the biggest SourceMod plugin ever made!
 
 We also hope Zombie:Reloaded will be a good learning resource for new or
 existing coders to find out how certain things are done. The code is well
@@ -29,7 +29,7 @@ structured and documented with comments explaining almost what every line do.
 In addition we try to make this a quality release with a well tested release
 and a full user manual. Read the user manual for details on how to use or
 configure individual features. Better quality and less time spent on support
-gives more time for us to what we really want to do.
+gives more time for us to do more.
 
 
 Richard Helgeby &
