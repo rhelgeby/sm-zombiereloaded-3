@@ -430,6 +430,46 @@ results and is an example of why strings should be quoted.</p>
 that modify loaded data must be put in post configuration files. How to configure each file is
 explained in their own sections.</p>
 
+<p>Configuration files also can be reloaded in-game when testing or tuning stuff.</p>
+
+<blockquote><table>
+	<caption>Configuration File Console Commands</caption>
+	<tr>
+		<th>Syntax:</th>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_config_reload &lt;file alias&gt;</td>
+	</tr>
+	<tr>
+		<td class="indent">
+			<p>Reloads a config file.</p>
+			<p>Parameters:</p>
+			<blockquote><table>
+				<tr>
+					<td class="parameter">file alias</td>
+					<td>The module to reload. Available options:
+					<ul>
+						<li><code>models</code></li>
+						<li><code>downloads</code></li>
+						<li><code>classes</code></li>
+						<li><code>weapons</code></li>
+						<li><code>hitgroups</code></li>
+					</ul>
+					</td>
+				</tr>
+			</table></blockquote>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_config_reloadall</td>
+	</tr>
+	<tr>
+		<td class="indent"><p>Reloads all config files.</p></td>
+	</tr>
+</table></blockquote>
+
 
 <h3><a name="3.3" />3.3 Logging</h3>
 
