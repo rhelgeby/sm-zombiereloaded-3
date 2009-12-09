@@ -344,7 +344,7 @@
 
 	"Infect infected"
 	{
-		"no"		"Du er blitt infisert! Smitt det videre til så mange mennesker du klarer."
+		"no"		"Du er blitt infisert! Smitt så mange mennesker du klarer ved å bruke kniven."
 	}
 
 	"Infect human"
