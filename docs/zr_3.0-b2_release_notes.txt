@@ -32,7 +32,6 @@ Added zr_version command for dumping version info. Useful when reporting problem
 Added support for Grenade Pack plugin (by Greyscale). (r447)
 Added class editor volumetric feature that can modify certain class attributes on players in a volume. (r469)
 Added HTML version of the user manual. (r486)
-Added HTML version of the user manual. (r486)
 Added more random model selection presets for classes: public, admins, hidden and mother zombies. (r506)
 Added cvar for displaying class menu on first spawn. (r518)
 Changed lightstyle cvar default to be disabled. (r414)
