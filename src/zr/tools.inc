@@ -32,7 +32,7 @@ new g_iToolsVelocity;
 new g_iToolsLMV;
 new g_iToolsHasNightVision;
 new g_iToolsNightVisionOn;
-new g_iToolsDefaultFOV;
+new g_iToolsFOV;
 
 /**
  * @endsection
@@ -96,11 +96,11 @@ ToolsFindOffsets()
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CCSPlayer::m_bNightVisionOn\" was not found.");
     }
     
-    // If offset "m_iDefaultFOV" can't be found, then stop the plugin.
-    g_iToolsDefaultFOV = FindSendPropInfo("CBasePlayer", "m_iDefaultFOV");
-    if (g_iToolsDefaultFOV == -1)
+    // If offset "m_iFOV" can't be found, then stop the plugin.
+    g_iToolsFOV = FindSendPropInfo("CBasePlayer", "m_iFOV");
+    if (g_iToolsFOV == -1)
     {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_iDefaultFOV\" was not found.");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_iFOV\" was not found.");
     }
     
     // Forward event to modules.

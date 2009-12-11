@@ -124,7 +124,7 @@ stock ToolsSetClientNightVision(client, bool:enable, bool:ownership = true)
  */
 stock ToolsSetClientDefaultFOV(client, FOV)
 {
-    SetEntData(client, g_iToolsDefaultFOV, FOV, 1, true);
+    SetEntData(client, g_iToolsFOV, FOV, 1, true);
 }
 
 /**
