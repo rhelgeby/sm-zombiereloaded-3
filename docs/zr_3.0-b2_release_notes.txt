@@ -2,17 +2,51 @@
 
                          Zombie:Reloaded Release Notes
 
-              Targets plugin version 3.0.0 Beta 2, (not released)
+              Targets plugin version 3.0.0 Beta 2, 2009.12.11
                           Written by Richard Helgeby
 
-                           Last modified: 2009.12.09
+                           Last modified: 2009.12.11
 
 ===============================================================================
 
 Release Notes For Changes In Beta 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(...)
+Almost all known issues is now fixed. Beta 2 is a result of six months of work
+on our spare time, which is pretty good in our opinion. There's a few new
+features and some changes. These are the major news (also see changelog below):
+
+* Support for group authentication on admin commands, models and classes.
+  See Admin Authentication (3.24) in the user manual for usage information.
+
+* Class selections and other settings can be saved in cookies (stored in a
+  database or a file on the server).
+
+* Class editor for volumetric features. Modify class attributes on players in a
+  certain area. This could be extra jump boost in some places, or lower knock
+  back in tubes and vents. Note that this feature is still a work in progress.
+  
+  Documentation for this one isn't written yet. This syntax should help:
+  zr_vol_add <x1> <y1> <z1> <x2> <y2> <z2> classedit <class attribute>=<value>
+  
+  This will make players run fast in a certain area (replace coordinates):
+  zr_vol_add -492 -522 497 511 534 681 classedit speed=500
+
+* Changed model list to Valve's key/values format (same as classes use). Now
+  it's possible to separate models into different groups and teams.
+
+* There's a compatibility fix in classes for servers with plugins that change
+  models. "model_path" in a class can be set to "no_change" so model can be
+  changed by another plugin than Zombie:Reloaded.
+
+* The user manual is converted to a nice looking HTML manual with links for
+  quick navigation. Don't forget to have a look at it, at least if you have
+  problems.
+  
+  Troubleshooting section is updated with explanation of all error messages
+  and some info about common problems. Otherwise look at the configuration
+  section on how to configure every feature.
+
 
 Richard Helgeby &
 Greyscale
