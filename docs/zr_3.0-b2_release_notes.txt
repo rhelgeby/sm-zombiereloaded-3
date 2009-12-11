@@ -21,7 +21,7 @@ Greyscale
 Changelog
 -----------
 Added a cvar to either reset the burn time when naded, or to use the original burn-time. (r408)
-Added norwegian translations (r413).
+Added norwegian translations. (r413)
 Added cvars for disallowing class selection, per team. (r421)
 Added cvar to redisplay class selection menu every spawn. (r424)
 Added feature for allowing instant class change on humans after spawning, with a time limit. (r424)
