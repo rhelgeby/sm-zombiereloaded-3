@@ -369,7 +369,7 @@
     "human_vip"
     {
         // General
-        "enabled"               "yes"
+        "enabled"               "no"
         "team"                  "1"
         "team_default"          "yes"
         "flags"                 "0"
