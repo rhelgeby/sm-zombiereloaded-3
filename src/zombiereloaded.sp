@@ -46,7 +46,7 @@
     #define ACTION_HANDLED      ZRTools_Handled
 #endif
 
-#define VERSION "3.0.0-dev"
+#define VERSION "3.0.0-b2"
 
 // Comment this line to exclude version info command. Enable this if you have
 // the repository and HG installed (Mercurial or TortoiseHG).
