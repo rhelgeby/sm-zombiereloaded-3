@@ -914,7 +914,7 @@ stock bool:ConfigSettingToBool(const String:option[])
  * 
  * @param bOption   True/false value to be converted to "yes/on"/"no/off", respectively.
  * @param option    Destination string buffer to store "yes/on" or "no/off" in.
- * @param maxlen    Length of destination string buffer (wont't be more than 4).
+ * @param maxlen    Length of destination string buffer.
  * @param yesno     When true, returns "yes/no", false returns "on/off."
  * @param target    The target to use as translation language.
  */

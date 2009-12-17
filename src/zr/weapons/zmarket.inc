@@ -281,7 +281,7 @@ bool:ZMarketMenuMain(client)
     decl String:weaponslist[MENU_LINE_REG_LENGTH];
     
     // Get auto-rebuy setting.
-    decl String:rebuyautosetting[8];
+    decl String:rebuyautosetting[MENU_LINE_SMALL_LENGTH];
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie), rebuyautosetting, sizeof(rebuyautosetting), true, client);
     
     // Format menu options.
@@ -418,7 +418,7 @@ bool:ZMarketMenuLoadout(client)
     }
     
     // Copy "Yes/No" to NVGs string.
-    decl String:nvgsbool[8];
+    decl String:nvgsbool[MENU_LINE_SMALL_LENGTH];
     ConfigBoolToSetting(bool:rebuyweapons[Slot_NVGs][0], nvgsbool, sizeof(nvgsbool), true, client);
     
     decl String:title[MENU_LINE_HUGE_LENGTH];
