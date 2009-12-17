@@ -47,9 +47,9 @@ ZCookiesMenuMain(client)
     // Make client global translations target.
     SetGlobalTransTarget(client);
     
-    decl String:autorebuyenabled[4];
-    decl String:zhpenabled[4];
-    decl String:overlayenabled[4];
+    decl String:autorebuyenabled[MENU_LINE_SMALL_LENGTH];
+    decl String:zhpenabled[MENU_LINE_SMALL_LENGTH];
+    decl String:overlayenabled[MENU_LINE_SMALL_LENGTH];
     
     // Get the current toggle state of the cookies.
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie), autorebuyenabled, sizeof(autorebuyenabled), false, client);
