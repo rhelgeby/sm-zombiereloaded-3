@@ -373,7 +373,7 @@
         "team"                  "1"
         "team_default"          "yes"
         "flags"                 "0"
-        "group"                 "zr_vip"
+        "group"                 ""      // Write the name of a SourceMod group for vip players ("zr_vip"), then make it in SourceMod.
         
         "name"                  "VIP Human"
         "description"           "Human class for important players"
