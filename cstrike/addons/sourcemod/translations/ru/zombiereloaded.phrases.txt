@@ -204,7 +204,7 @@
 
 	"Classes random assignment"
 	{
-		"ru"		"Вам был случайным образом присвоен класс @green\"{1}\" @default."
+		"ru"		"Вам был случайным образом присвоен класс @green\"{1}\"@default."
 	}
 
 	// Center Text/HUD
@@ -379,27 +379,27 @@
 
 	"Infect command infect successful"
 	{
-		"ru"		"Игрок @green{1} @defaultбыл успешно инфицирован."
+		"ru"		"Игрок @green{1}@default был успешно инфицирован."
 	}
 
 	"Infect command infect mother successful"
 	{
-		"ru"		"Игрок @green{1} @defaultбыл успешно инфицирован и стал первым зомби."
+		"ru"		"Игрок @green{1}@default был успешно инфицирован и стал первым зомби."
 	}
 
 	"Infect command infect unsuccessful"
 	{
-		"ru"		"Игрок @green{1} @уже является зомби."
+		"ru"		"Игрок @green{1}@default уже является зомби."
 	}
 
 	"Infect command human successful"
 	{
-		"ru"		"Игрок @green{1} @default был успешно превращен обратно в человека."
+		"ru"		"Игрок @green{1}@default был успешно превращен обратно в человека."
 	}
 
 	"Infect command human unsuccessful"
 	{
-		"ru"		"Игрок@green{1} @defaultуже является человеком."
+		"ru"		"Игрок@green{1}@default уже является человеком."
 	}
 
 	// ===========================
@@ -472,57 +472,57 @@
 
 	"Restrict weapon"
 	{
-		"ru"		"Оружие @green\"{1}\" @defaultбыло запрещено."
+		"ru"		"Оружие @green\"{1}\"@default было запрещено."
 	}
 
 	"Unrestrict weapon"
 	{
-		"ru"		"Оружие @green\"{1}\" @defaultбыло разрешено."
+		"ru"		"Оружие @green\"{1}\"@default было разрешено."
 	}
 
 	"Restrict weapon stopped"
 	{
-		"ru"		"Оружие @green\"{1}\" @defaultуже является запрещенным."
+		"ru"		"Оружие @green\"{1}\"@default уже является запрещенным."
 	}
 
 	"Unrestrict weapon stopped"
 	{
-		"ru"		"Оружие @green\"{1}\" @defaultне является запрещенным."
+		"ru"		"Оружие @green\"{1}\"@default не является запрещенным."
 	}
 
 	"Restrict weapon type"
 	{
-		"ru"		"Оружие типа @green\"{1}\" @default было запрещено."
+		"ru"		"Оружие типа @green\"{1}\"@default было запрещено."
 	}
 
 	"Unrestrict weapon type"
 	{
-		"ru"		"Оружие типа @green\"{1}\" @defaultбыло разрешено."
+		"ru"		"Оружие типа @green\"{1}\"@default было разрешено."
 	}
 
 	"Restrict weapon type stopped"
 	{
-		"ru"		"Оружие типа @green\"{1}\" @defaultуже является запрещенным."
+		"ru"		"Оружие типа @green\"{1}\"@default уже является запрещенным."
 	}
 
 	"Unrestrict weapon type stopped"
 	{
-		"ru"		"Оружие типа @green\"{1}\" @defaultне является запрещенным."
+		"ru"		"Оружие типа @green\"{1}\"@default не является запрещенным."
 	}
 
 	"Restrict weapon untoggleable"
 	{
-		"ru"		"Оружие @green\"{1}\" @defaultне может быть запрещено."
+		"ru"		"Оружие @green\"{1}\"@default не может быть запрещено."
 	}
 
 	"Weapon invalid"
 	{
-		"ru"		"Оружие @green\"{1}\" @defaultне является правильным именем или типом оружия."
+		"ru"		"Оружие @green\"{1}\"@default не является правильным именем или типом оружия."
 	}
 
 	"Weapon is restricted"
 	{
-		"ru"		"Оружие @green{1} @defaultзапрещено."
+		"ru"		"Оружие @green{1}@default запрещено."
 	}
 
 	// ZMarket
@@ -534,12 +534,12 @@
 
 	"Weapons zmarket purchase"
 	{
-		"ru"		"Вы приобрели оружие @green{1}. @defaultВыберите его еще раз для покупки патрон."
+		"ru"		"Вы приобрели оружие @green{1}@default. Выберите его еще раз для покупки патрон."
 	}
 
 	"Weapons zmarket purchase max"
 	{
-		"ru"		"Оружие @green{1} @defaultимеет лимит покупок @green{2}@default.  Попробуйте приобрести его в следующий раз."
+		"ru"		"Оружие @green{1}@default имеет лимит покупок @green{2}@default.  Попробуйте приобрести его в следующий раз."
 	}
 
 	"Weapons zmarket grenade max"
