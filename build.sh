@@ -2,7 +2,7 @@
 
 RELEASEDIR=release
 BUILDDIR=build
-VERSION="zombiereloaded-3.0-dev"
+VERSION="zombiereloaded-3.0-b2"
 REVISION=$(hg id -n)
 ZIPFILE=$VERSION-r$REVISION.zip
 
