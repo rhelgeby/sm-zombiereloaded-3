@@ -2,9 +2,9 @@
 
 RELEASEDIR=release
 BUILDDIR=build
-VERSION=$(hg id -b)
+VERSION="zombiereloaded-3.0-dev"
 REVISION=$(hg id -n)
-ZIPFILE=$VERSION-$REVISION.zip
+ZIPFILE=$VERSION-r$REVISION.zip
 
 PLUGINFILES="cstrike/*"
 DOCS="docs/*"
@@ -43,7 +43,7 @@ then
             exit 1
         fi
         
-        ZIPFILE=$VERSION-patch-$PATCHREV-$REVISION.zip
+        ZIPFILE=$VERSION-patch-r$PATCHREV-r$REVISION.zip
     else
         echo "Missing base revision number. Usage: build.sh patch <base rev>"
         exit 1
