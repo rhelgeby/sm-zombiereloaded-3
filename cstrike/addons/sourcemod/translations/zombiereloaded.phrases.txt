@@ -1,15 +1,4 @@
-﻿// =======================================
-//              CHANGELOG
-// =======================================
-// RECORD ALLLLL CHANGES TO THIS FILE HERE.
-//
-// 8/25/09 5:15 PM
-// Added phrase "Weapons zmarket grenade max"  Line 588.
-//
-//
-//
-
-"Phrases"
+﻿"Phrases"
 {
 	// ===========================
 	// General (base)
@@ -226,7 +215,6 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"You have randomly been assigned to the @green\"{1}\" @defaultclass."
-		"ru"		"Вам был случайным образом установлен класс \"{1}\"."
 	}
 
 	// Center Text/HUD
@@ -361,7 +349,6 @@
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"Blocking Overlay - DX{1} Detected (DX{2} Required)"
-		"ru"		"Оверлей Отключен - Обнаружен DX{1} (Необходим DX{2})"
 	}
 
 	// ===========================
@@ -383,7 +370,6 @@
 	"Infect disconnect"
 	{
 		"en"		"The last zombie has left the game, and has passed the infection on to you."
-		"ru"		"Последний зомби покинул игру и передал свою инфекцию вам."
 	}
 
 	// Menu
@@ -500,7 +486,6 @@
 	"Zombie cant use weapon"
 	{
 		"en"		"Zombies can't use weapons!"
-		"ru"		"Зомби не могут использовать оружие!"
 	}
 
 	// Restrict
@@ -569,7 +554,6 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Weapon @green{1} @defaultis restricted."
-		"ru"		"Оружие @green{1} @default запрещено."
 	}
 
 	// ZMarket
@@ -936,13 +920,11 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Zombies are present, you have {1} seconds to find a safe place before you lose immunity."
-		"ru"		"Зомби на свободе, у вас {1} секунд, чтобы найти безопасное место, пока не потеряли иммунитет."
 	}
 
 	"Spawn protection end"
 	{
 		"en"		"You are now susceptible to zombie infection."
-		"ru"		"Теперь вы восприимчивы к зомби инфекции."
 	}
 
 	// HUD
@@ -1117,7 +1099,6 @@
 	"ZHP disable"
 	{
 		"en"		"HP display disabled."
-		"ru"		"Отображение здоровья включено."
 	}
 
 	// HUD
@@ -1126,7 +1107,6 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"HP: {1}"
-		"ru"		"Здоровье: {1}"
 	}
 
 	// ===========================
