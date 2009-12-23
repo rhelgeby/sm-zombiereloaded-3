@@ -17,9 +17,10 @@ EXTENSIONDIR=$RELEASEDIR/addons/sourcemod/extensions
 MAKEPATCH=false
 
 
-# Clean release directory.
+# Clean build and release directory.
+make clean
 rm -rf $RELEASEDIR
-echo "Cleaned release directory."
+echo "Cleaned build and release directory."
 
 
 # Exit if cleaning only.
@@ -55,8 +56,7 @@ fi
 mkdir -p $RELEASEDIR
 
 
-# Clean and compile plugin.
-make clean
+# Compile plugin.
 make
 
 
