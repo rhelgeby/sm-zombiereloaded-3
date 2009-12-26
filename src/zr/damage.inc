@@ -418,7 +418,7 @@ public Action:DamageSuicideIntercept(client, argc)
     }
     
     // Tell client their command has been intercepted.
-    TranslationReplyToCommand(client, "Damage suicide intercept");
+    TranslationPrintToChat(client, "Damage suicide intercept");
     
     // Log suicide interception
     LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Damage, "Suicide Intercept", "Player \"%L\" attempted suicide.", client);
