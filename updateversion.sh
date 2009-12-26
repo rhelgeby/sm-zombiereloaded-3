@@ -6,9 +6,16 @@
 # Program for printing date.
 ZR_DATEPATH='date'
 
+ZR_UNOFFICIAL=false
+
 if [ "$1" ]
 then
-    ZR_DATEPATH=$1
+    if [ "$1" = "--unofficial" ]
+    then
+        ZR_UNOFFICIAL=true
+    else
+        ZR_DATEPATH=$1
+    fi
 fi
 
 ZR_VERSION_FILE="src/zr/hgversion.h.inc"
@@ -23,8 +30,7 @@ echo "#define ZR_VER_PRODUCT_NAME     \"$ZR_PRODUCT_NAME\"" > $ZR_VERSION_FILE
 echo "#define ZR_VER_COPYRIGHT        \"$ZR_COPYRIGHT\"" >> $ZR_VERSION_FILE
 echo "#define ZR_VER_VERSION          VERSION" >> $ZR_VERSION_FILE
 echo "#define ZR_VER_BRANCH           \"$ZR_BRANCH\"" >> $ZR_VERSION_FILE
-#echo "#define ZR_VER_BRANCH           \"$(hg id -b)\"" >> $ZR_VERSION_FILE
-echo "#define ZR_VER_REVISION         \"$(hg id -n):$(hg id -i)\"" >> $ZR_VERSION_FILE
+echo "#define ZR_VER_REVISION         \"$ZR_REVISION\"" >> $ZR_VERSION_FILE
 echo "#define ZR_VER_LICENSE          \"$ZR_LICENSE\"" >> $ZR_VERSION_FILE
 echo "#define ZR_VER_DATE             \"$ZR_DATE\"" >> $ZR_VERSION_FILE
 

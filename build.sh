@@ -67,6 +67,9 @@ then
     exit 1
 fi
 
+# Rebuild hgversion.h.inc for unofficial builds.
+sh updateversion.sh --unofficial
+
 
 # Copy files.
 echo "Copying documentation..."
@@ -76,6 +79,10 @@ cp -r $DOCS $DOCS_DEST
 echo "Copying plugin binary..."
 mkdir -p $PLUGINDIR
 cp -r $BUILDDIR/$PLUGINFILE $PLUGINDIR/$PLUGINFILE
+
+echo "Copying plugin source code..."
+mkdir -p $SOURCE_DEST
+cp -r $SOURCEDIR $SOURCE_DEST
 
 if [ $MAKEPATCH = "false" ]
 then
