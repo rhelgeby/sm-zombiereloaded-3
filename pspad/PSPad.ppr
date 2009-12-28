@@ -1,0 +1,171 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.HideOutput=0
+Compilator.LogType=0
+DefaultCPIndex=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+[Project tree]
+ZR
+	+Base
+		..\src\zombiereloaded.sp
+	-Plugin Includes
+		-Classes
+			..\src\zr\playerclasses\apply.inc
+			..\src\zr\playerclasses\attributes.inc
+			..\src\zr\playerclasses\classcommands.inc
+			..\src\zr\playerclasses\classevents.inc
+			..\src\zr\playerclasses\classmenus.inc
+			..\src\zr\playerclasses\clientalpha.inc
+			..\src\zr\playerclasses\clientoverlays.inc
+			..\src\zr\playerclasses\filtertools.inc
+			..\src\zr\playerclasses\healthregen.inc
+			..\src\zr\playerclasses\playerclasses.inc
+		-Sound Effects
+			..\src\zr\soundeffects\ambientsounds.inc
+			..\src\zr\soundeffects\soundeffects.inc
+			..\src\zr\soundeffects\voice.inc
+			..\src\zr\soundeffects\zombiesounds.inc
+		-Visual Effects
+			..\src\zr\visualeffects\ragdoll.inc
+			..\src\zr\visualeffects\visualambience.inc
+			..\src\zr\visualeffects\visualeffects.inc
+		-Volumetric
+			..\src\zr\volfeatures\volanticamp.inc
+			..\src\zr\volfeatures\volclassedit.inc
+			..\src\zr\volfeatures\volcommands.inc
+			..\src\zr\volfeatures\volevents.inc
+			..\src\zr\volfeatures\volfeatures.inc
+			..\src\zr\volfeatures\volgenericattributes.inc
+			..\src\zr\volfeatures\voltools.inc
+		-Weapons
+			..\src\zr\weapons\menu_weapons.inc
+			..\src\zr\weapons\restrict.inc
+			..\src\zr\weapons\weaponalpha.inc
+			..\src\zr\weapons\weaponammo.inc
+			..\src\zr\weapons\weapons.inc
+			..\src\zr\weapons\zmarket.inc
+		..\src\zr\account.inc
+		..\src\zr\admintools.inc
+		..\src\zr\antistick.inc
+		..\src\zr\commands.inc
+		..\src\zr\config.inc
+		..\src\zr\cookies.inc
+		..\src\zr\cvars.inc
+		..\src\zr\damage.inc
+		..\src\zr\debugtools.inc
+		..\src\zr\downloads.inc
+		..\src\zr\event.inc
+		..\src\zr\global.inc
+		..\src\zr\hitgroups.inc
+		..\src\zr\infect.inc
+		..\src\zr\jumpboost.inc
+		..\src\zr\knockback.inc
+		..\src\zr\log.h.inc
+		..\src\zr\log.inc
+		..\src\zr\menu.inc
+		..\src\zr\models.h.inc
+		..\src\zr\models.inc
+		..\src\zr\napalm.inc
+		..\src\zr\overlays.inc
+		..\src\zr\paramparser.inc
+		..\src\zr\paramtools.inc
+		..\src\zr\respawn.inc
+		..\src\zr\roundstart.inc
+		..\src\zr\roundend.inc
+		..\src\zr\sayhooks.inc
+		..\src\zr\shoppinglist.inc
+		..\src\zr\spawnprotect.inc
+		..\src\zr\steamidcache.inc
+		..\src\zr\tools.inc
+		..\src\zr\tools_functions.inc
+		..\src\zr\translation.inc
+		..\src\zr\versioninfo.inc
+		..\src\zr\zadmin.inc
+		..\src\zr\zcookies.inc
+		..\src\zr\zhp.inc
+		..\src\zr\zombiereloaded.inc
+		..\src\zr\zspawn.inc
+		..\src\zr\ztele.inc
+	-Config Files
+		-Executable
+			..\cstrike\cfg\sourcemod\zombiereloaded\zombiereloaded.cfg
+		..\cstrike\addons\sourcemod\configs\zr\downloads.txt
+		..\cstrike\addons\sourcemod\configs\zr\hitgroups.txt
+		..\cstrike\addons\sourcemod\configs\zr\models.txt
+		..\cstrike\addons\sourcemod\configs\zr\playerclasses.txt
+		..\cstrike\addons\sourcemod\configs\zr\weapons.txt
+	-SM Includes
+		..\env\include\admin.inc
+		..\env\include\adminmenu.inc
+		..\env\include\adt.inc
+		..\env\include\adt_array.inc
+		..\env\include\adt_stack.inc
+		..\env\include\adt_trie.inc
+		..\env\include\banning.inc
+		..\env\include\bitbuffer.inc
+		..\env\include\clientprefs.inc
+		..\env\include\clients.inc
+		..\env\include\commandfilters.inc
+		..\env\include\console.inc
+		..\env\include\core.inc
+		..\env\include\cstrike.inc
+		..\env\include\datapack.inc
+		..\env\include\dbi.inc
+		..\env\include\entity.inc
+		..\env\include\entity_prop_stocks.inc
+		..\env\include\events.inc
+		..\env\include\files.inc
+		..\env\include\float.inc
+		..\env\include\functions.inc
+		..\env\include\geoip.inc
+		..\env\include\halflife.inc
+		..\env\include\handles.inc
+		..\env\include\helpers.inc
+		..\env\include\keyvalues.inc
+		..\env\include\lang.inc
+		..\env\include\logging.inc
+		..\env\include\mapchooser.inc
+		..\env\include\menus.inc
+		..\env\include\nextmap.inc
+		..\env\include\profiler.inc
+		..\env\include\regex.inc
+		..\env\include\sdktools.inc
+		..\env\include\sdktools_engine.inc
+		..\env\include\sdktools_entinput.inc
+		..\env\include\sdktools_entoutput.inc
+		..\env\include\sdktools_functions.inc
+		..\env\include\sdktools_sound.inc
+		..\env\include\sdktools_stocks.inc
+		..\env\include\sdktools_stringtables.inc
+		..\env\include\sdktools_tempents.inc
+		..\env\include\sdktools_tempents_stocks.inc
+		..\env\include\sdktools_trace.inc
+		..\env\include\sdktools_voice.inc
+		..\env\include\sorting.inc
+		..\env\include\sourcemod.inc
+		..\env\include\string.inc
+		..\env\include\textparse.inc
+		..\env\include\tf2.inc
+		..\env\include\tf2_stocks.inc
+		..\env\include\timers.inc
+		..\env\include\topmenus.inc
+		..\env\include\usermessages.inc
+		..\env\include\vector.inc
+		..\env\include\version.inc
+	-Gamedata
+		..\cstrike\addons\sourcemod\gamedata\plugin.zombiereloaded.txt
+	-Translations
+		..\cstrike\addons\sourcemod\translations\zombiereloaded.phrases.txt
+[Open project files]
+0=..\src\zombiereloaded.sp
+[Selected Project Files]
+Main=
+Selected=..\src\zombiereloaded.sp
+[..\src\zombiereloaded.sp]
+TopLine=1
+Caret=1,1
