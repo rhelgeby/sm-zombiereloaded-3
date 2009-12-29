@@ -83,8 +83,14 @@ NapalmOnTakeDamage(client, damagetype)
             if (NapalmGetClientWaterLevel(client) >= douse)
             {
                 // Put the fire out.
-                ExtinguishEntity(client);
                 
+                //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
+                
+                // This works.
+                new ent = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+                if (IsValidEdict(ent))
+                     SetEntPropFloat(ent, Prop_Data, "m_flLifetime", 0.0);
+
                 // Stop the last bit of inflicted burn damage.
                 #if defined USE_SDKHOOKS
                     return _:Plugin_Handled;
