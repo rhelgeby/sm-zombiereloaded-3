@@ -296,7 +296,7 @@
         "fov"                   "110"
         
         // Effects
-        "has_napalm"            "0"
+        "has_napalm"            "no"
         "napalm_time"           "3.0"
         
         // Player behaviour
@@ -390,7 +390,7 @@
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "1"
+        "has_napalm"            "yes"
         "napalm_time"           "0.0"
         
         // Player behaviour
@@ -434,7 +434,7 @@
         "fov"                   "90"
         
         // Effects
-        "has_napalm"            "1"
+        "has_napalm"            "yes"
         "napalm_time"           "0.0"
         
         // Player behaviour
