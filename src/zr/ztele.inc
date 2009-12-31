@@ -214,12 +214,12 @@ bool:ZTeleClient(client, bool:force = false)
         // Teleport client to spawn.
         ZTeleTeleportClient(client);
         
+        // Increment teleport count.
+        g_iZTeleCount[client]++;
+        
         // If we're forcing the ZTele, then don't increment the count or print how many teleports they have used.
         // Tell client they've been teleported.
         TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
-        
-        // Increment teleport count.
-        g_iZTeleCount[client]++;
     }
     
     return true;
