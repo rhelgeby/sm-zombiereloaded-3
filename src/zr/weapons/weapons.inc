@@ -188,9 +188,7 @@ WeaponsLoad()
     // Unexpected error, stop plugin.
     if (!success)
     {
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "Unexpected error encountered loading: %s", pathweapons);
-        
-        return;
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "Unexpected error encountered loading: %s", pathweapons);
     }
     
     // Validate weapons config.
@@ -227,7 +225,7 @@ WeaponsCacheData()
     
     if (!success)
     {
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "Unexpected error caching data from weapons config file: %s", pathweapons);
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Weapons, "Config Validation", "Unexpected error caching data from weapons config file: %s", pathweapons);
     }
     
     decl String:weaponname[WEAPONS_MAX_LENGTH];
