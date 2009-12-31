@@ -900,7 +900,7 @@ public Action:ConfigReloadAllCommand(client, argc)
 stock bool:ConfigSettingToBool(const String:option[])
 {
     // If option is equal to "yes," then return true.
-    if (StrEqual(option, "yes", false) || StrEqual(option, "on", false))
+    if (StrEqual(option, "yes", false) || StrEqual(option, "on", false) || StrEqual(option, "1", false))
     {
         return true;
     }
