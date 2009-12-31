@@ -377,7 +377,7 @@ CvarsCreate()
     
     // Sky
     g_hCvarsList[CVAR_VEFFECTS_SKY]                     =    CreateConVar("zr_veffects_sky",                "0",                    "Change map skybox.");
-    g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path",           "sky_borealis01up.vmt", "Skybox file, relative to \"materials/skybox\" folder, to change map skybox to. [Dependency: zr_veffects_sky]");
+    g_hCvarsList[CVAR_VEFFECTS_SKY_PATH]                =    CreateConVar("zr_veffects_sky_path",           "sky_borealis01up.vmt", "Skybox file, relative to \"materials/skybox\" folder, to change map skybox to.  This file is automatically downloaded to clients. [Dependency: zr_veffects_sky]");
     
     // Sun
     g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]             =    CreateConVar("zr_veffects_sun_disable",        "0",                    "Disable sun rendering on map.");
@@ -414,7 +414,7 @@ CvarsCreate()
     
     // Ambient Sounds
     g_hCvarsList[CVAR_AMBIENTSOUNDS]                    =    CreateConVar("zr_ambientsounds",           "1",                            "Play an ambient sound to all players during gameplay.");
-    g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE]               =    CreateConVar("zr_ambientsounds_file",      "ambient/zr/zr_ambience.mp3",   "Sound file, relative to \"sound\" folder, to play as ambience. [Dependency: zr_ambientsounds]");
+    g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE]               =    CreateConVar("zr_ambientsounds_file",      "ambient/zr/zr_ambience.mp3",   "Sound file, relative to \"sound\" folder, to play as ambience.  This file is automatically downloaded to clients. [Dependency: zr_ambientsounds]");
     g_hCvarsList[CVAR_AMBIENTSOUNDS_LENGTH]             =    CreateConVar("zr_ambientsounds_length",    "60.0",                         "Length of the ambient sound. [Dependency: zr_ambientsounds]");
     g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]             =    CreateConVar("zr_ambientsounds_volume",    "0.8",                          "Volume of the ambient sound. [1.0 = Max volume | 0.0001 = Not audible | Dependency: zr_ambientsounds]");
     
