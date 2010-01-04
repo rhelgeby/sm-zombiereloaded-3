@@ -72,6 +72,7 @@ enum CvarsList
     Handle:CVAR_CLASSES_ADMIN_SELECT,
     Handle:CVAR_WEAPONS,
     Handle:CVAR_WEAPONS_RESTRICT,
+    Handle:CVAR_WEAPONS_RESTRICT_ENDEQUIP,
     Handle:CVAR_WEAPONS_ZMARKET,
     Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
     Handle:CVAR_WEAPONS_ZMARKET_REBUY,
@@ -288,6 +289,7 @@ CvarsCreate()
     
     // Restrict
     g_hCvarsList[CVAR_WEAPONS_RESTRICT]                 =    CreateConVar("zr_weapons_restrict",            "1",    "Enable weapon restriction module, disabling this will disable weapon restriction commands.");
+    g_hCvarsList[CVAR_WEAPONS_RESTRICT_ENDEQUIP]        =    CreateConVar("zr_weapons_restrict_endequip",   "1",    "Restricts zombies from picking up weapons after the round has ended but before the next round has begun.");
     
     // ZMarket
     g_hCvarsList[CVAR_WEAPONS_ZMARKET]                  =    CreateConVar("zr_weapons_zmarket",             "1",            "Allow player to buy from a list of weapons in the weapons config.");

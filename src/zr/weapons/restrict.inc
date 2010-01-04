@@ -214,6 +214,12 @@ RestrictOnClientSpawn(client)
  */
 RestrictOnRoundEnd()
 {
+    new bool:restrictzombieequip = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT_ENDEQUIP]);
+    if (!restrictzombieequip)
+    {
+        return;
+    }
+    
     // x = Client index.
     for (new x = 1; x <= MaxClients; x++)
     {
