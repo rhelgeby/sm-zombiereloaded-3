@@ -166,8 +166,8 @@ stock ClassValidateAttributes(classindex)
         if (!StrEqual(model_path, "random", false) &&
             !StrEqual(model_path, "random_public", false) &&
             !StrEqual(model_path, "random_hidden", false) &&
-            !StrEqual(model_path, "random_admins", false) &&
-            !StrEqual(model_path, "random_mother_zombies", false) &&
+            !StrEqual(model_path, "random_admin", false) &&
+            !StrEqual(model_path, "random_mother_zombie", false) &&
             !StrEqual(model_path, "default", false) &&
             !StrEqual(model_path, "no_change", false))
         {
