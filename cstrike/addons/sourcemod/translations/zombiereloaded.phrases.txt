@@ -673,17 +673,17 @@
 
 	"Weapons menu zmarket main get loadout"
 	{
-		"en"		"Get Current Loadout"
+		"en"		"Save Current Setup"
 	}
 
 	"Weapons menu zmarket main view loadout"
 	{
-		"en"		"View My Loadout"
+		"en"		"View Saved Setup"
 	}
 
 	"Weapons menu zmarket main rebuy"
 	{
-		"en"		"Rebuy My Loadout"
+		"en"		"Buy Saved Setup"
 	}
 
 	"Weapons menu zmarket main auto-rebuy"
@@ -694,12 +694,12 @@
 
 	"Weapons menu zmarket main weapons list"
 	{
-		"en"		"View Weapons List"
+		"en"		"Buy Weapons"
 	}
 
 	"Weapons menu zmarket loadout title"
 	{
-		"en"		"ZMarket\nMy Current Loadout:\nSelect weapon slot to clear.\nNote: Rebuy refers to these weapons."
+		"en"		"ZMarket\nMy Current Setup:\nSelect weapon slot to clear.\nNote: Rebuy refers to these weapons."
 	}
 
 	"Weapons menu zmarket loadout primary"

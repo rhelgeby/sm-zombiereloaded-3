@@ -644,7 +644,7 @@
 
 	"Weapons menu zmarket main rebuy"
 	{
-		"no"		"Kjøp gjeldende våpenvalg"
+		"no"		"Kjøp lagret våpenvalg"
 	}
 
 	"Weapons menu zmarket main auto-rebuy"
