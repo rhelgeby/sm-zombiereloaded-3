@@ -239,7 +239,7 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
     // Forward event to modules.
     ClassAlphaUpdate(index);
     InfectOnClientHurt(index, attacker, weapon);
-    AccountOnClientHurt(attacker, dmg_health);
+    AccountOnClientHurt(index, attacker, dmg_health);
     SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
     NapalmOnClientHurt(index, attacker, weapon);
