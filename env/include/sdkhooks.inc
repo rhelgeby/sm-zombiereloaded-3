@@ -54,6 +54,7 @@ enum SDKHookType
 	SDKHook_Touch,
 	SDKHook_TraceAttack,
 	SDKHook_TraceAttackPost,
+	SDKHook_WeaponCanSwitchTo,
 	SDKHook_WeaponCanUse,
 	SDKHook_WeaponDrop,
 	SDKHook_WeaponEquip,
@@ -74,6 +75,7 @@ funcenum SDKHookCB
 	public(entity, other),
 	// SetTransmit
 	Action:public(entity, client),
+	// WeaponCanSwitchTo
 	// WeaponCanUse
 	// WeaponDrop
 	// WeaponEquip
@@ -84,7 +86,7 @@ funcenum SDKHookCB
 	// OnTakeDamagePost
 	public(victim, attacker, inflictor, Float:damage, damagetype),
 	// FireBullets
-	public(client, shots, String:weaponname[]),
+	public(client, shots, const String:weaponname[]),
 	// TraceAttack
 	Action:public(victim, &attacker, &inflictor, &Float:damage, &damagetype, &ammotype, hitbox, hitgroup),
 	// TraceAttackPost
