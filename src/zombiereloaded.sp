@@ -26,7 +26,7 @@
  */
 
 // Comment to use ZR Tools Extension, otherwise SDK Hooks Extension will be used.
-//#define USE_SDKHOOKS
+#define USE_SDKHOOKS
 
 #pragma semicolon 1
 #include <sourcemod>

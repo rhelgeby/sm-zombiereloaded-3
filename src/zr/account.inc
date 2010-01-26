@@ -74,7 +74,7 @@ AccountOnClientSpawn(client)
  * @param attacker  The attacker index.
  * @param dmg       The amount of damage inflicted.
  */
-AccountOnClientHurt(attacker, dmg_health)
+AccountOnClientHurt(client, attacker, dmg_health)
 {
     // If attacker isn't valid, then stop.
     if (!ZRIsClientValid(attacker))
@@ -85,6 +85,18 @@ AccountOnClientHurt(attacker, dmg_health)
     // If cashdmg cvar is disabled, then stop.
     new bool:accountcashdmg = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHDMG]);
     if (!accountcashdmg)
+    {
+        return;
+    }
+    
+    // If attacker is hurting themself, then stop.
+    if (client == attacker)
+    {
+        return;
+    }
+    
+    // If attacker isn't a human, then stop.
+    if (!InfectIsClientHuman(attacker))
     {
         return;
     }
