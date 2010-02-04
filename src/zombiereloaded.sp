@@ -243,6 +243,17 @@ public OnClientPutInServer(client)
 }
 
 /**
+ * Client is authorized and fully in-game.
+ *
+ * @param client    Client index.
+ */
+public OnClientPostAdminCheck(client)
+{
+    // Forward authorized event to modules that depend on client admin info.
+    ClassOnClientAuthorized(client);
+}
+
+/**
  * Client is leaving the server.
  * 
  * @param client    The client index.

@@ -67,20 +67,31 @@ ClassOnMapStart()
  */
 ClassClientInit(client)
 {
-    // Check if there are valid classes and the client is valid.
-    // To prevent bots or SourceTV causing errors. If classes are invalid this
-    // event was executed before classes were loaded. 
+    // Check if classes are loaded successfully and the client is valid.
     if (ClassValidated && ZRIsClientValid(client))
     {
-        // Set default class indexes on the player.
-        ClassClientSetDefaultIndexes(client);
-        
         // Forward event to sub-modules.
         ClassOverlayClientInit(client);
     }
     
     // Reset spawn flag.
     ClassPlayerSpawned[client] = false;
+}
+
+/**
+ * Event callback for authorized clients when they're connecting.
+ * (OnClientPostAdminCheck)
+ *
+ * @param client    Client index.
+ */
+ClassOnClientAuthorized(client)
+{
+    // Check if classes are loaded successfully and the client is valid.
+    if (ClassValidated && ZRIsClientValid(client))
+    {
+        // Set default class indexes on the player.
+        ClassClientSetDefaultIndexes(client);
+    }
 }
 
 /**
