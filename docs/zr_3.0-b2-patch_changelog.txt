@@ -1,0 +1,61 @@
+===============================================================================
+
+                            Zombie:Reloaded Beta 2
+
+                                Patch Changelog
+
+===============================================================================
+
+2009.12.11 - r545
+-------------------
+
+* Initial beta 2 release. See zr_3.0-b2_release_notes.txt.
+
+
+2009.12.17 - r555
+-------------------
+
+* Fixed too short translation buffer on yes/no phrases.
+* Fixed warning about invalid class attribute.
+
+
+2009.12.23 - r557
+-------------------
+
+* Added russian translation by exvel.
+
+
+2009.12.25 - r565
+-------------------
+
+* Fixed incorrect link in docs.
+* Removed redundant check for class menu command.
+* Fixed suicide intercept message not displayed in chat. Text from chat will
+  still appear in console if written from console.
+* Added source code for current snapshot in release package.
+
+
+2010.01.07 - r580
+-------------------
+
+* Added zrdocs/changes.diff in patches that will describe changes in text files
+  since the main release, in unified diff format. Use a editor that support
+  diff coloring for easier reading.
+* Fixed players not extinguished properly when in water.
+* Fixed invalid default values in some has_napalm class attributes.
+* Fixed the display bug in ZTele showing 0/X uses instead of 1/X.
+* Changed to error types to be fatal and stop plugin to prevent further errors
+  (fixes rare invalid handle error in weapon module).
+* Fixed weapon not rendering correctly in rare cases.
+* Added a cvar to allow zombies to pick up weapons at the end of the round.
+
+
+2010.01.25 - r584
+-------------------
+
+* Simplified english and norwegian zmarket menu phrases.
+* Fixed account module giving money to zombies hurting themself with
+  self-inflicted damage
+* Fixed zr_damage_suicide_human not working when enabled.
+* Switched the plugin to use SDK Hooks extension instead of ZR Tools (r584 and
+  newer). Run this on SourceMod 1.3 or newer.
