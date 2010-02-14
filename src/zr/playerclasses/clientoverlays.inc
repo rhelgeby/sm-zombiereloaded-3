@@ -155,6 +155,12 @@ ClassOverlayInitialize(client, const String:overlay[])
  */
 public Action:ClassOverlayEnableCommand(client, argc)
 {
+    // If client isn't valid, then stop.
+    if (!ZRIsClientValid(client))
+    {
+        return;
+    }
+    
     // If overlay toggle is disabled, then stop.
     new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
     if (!overlaytoggle)
