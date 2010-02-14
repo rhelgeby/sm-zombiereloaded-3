@@ -188,6 +188,7 @@ public OnMapEnd()
 {
     // Forward event to modules.
     VolOnMapEnd();
+    VEffectsOnMapEnd();
 }
 
 /**

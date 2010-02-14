@@ -29,6 +29,15 @@
 #include "zr/visualeffects/ragdoll"
 
 /**
+ * The map is ending.
+ */
+VEffectsOnMapEnd()
+{
+    // Forward event to sub-modules.
+    VAmbienceOnMapEnd();
+}
+
+/**
  * Visual effect loading.
  */
 VEffectsLoad()
