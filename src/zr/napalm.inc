@@ -77,7 +77,7 @@ NapalmOnTakeDamage(client, damagetype)
         // Only take action if it isn't disabled, or the option is valid.
         new douse = GetConVarInt(g_hCvarsList[CVAR_NAPALM_DOUSE]);
         
-        if (douse > 0 && douse <= 3)
+        if (douse > NAPALM_WLEVEL_DRY && douse <= NAPALM_WLEVEL_FULL)
         {
             // If the client water-level is equal or higher than the given, then we want to extinguish the flame.
             if (NapalmGetClientWaterLevel(client) >= douse)
@@ -87,16 +87,24 @@ NapalmOnTakeDamage(client, damagetype)
                 //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
                 
                 // This works.
-                new ent = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
-                if (IsValidEdict(ent))
-                     SetEntPropFloat(ent, Prop_Data, "m_flLifetime", 0.0);
-
-                // Stop the last bit of inflicted burn damage.
-                #if defined USE_SDKHOOKS
-                    return _:Plugin_Handled;
-                #else
-                    return _:ZRTools_Handled;
-                #endif
+                new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+                if (IsValidEntity(fire))
+                {
+                    // Make sure the entity is a flame, so we can extinguish it.
+                    decl String:classname[64];
+                    GetEdictClassname(fire, classname, sizeof(classname));
+                    if (StrEqual(classname, "entityflame", false))
+                    {
+                        SetEntPropFloat(fire, Prop_Data, "m_flLifetime", 0.0);
+                    }
+                    // Log what entity was in that property, for future reference.
+                    else
+                    {
+                        LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Napalm, "Napalm Douse", "Found unexpected entity in prop \"m_flLifetime\": \"%s\"", classname);
+                    }
+                }
+                
+                return _:ACTION_CONTINUE;
             }
         }
     }
