@@ -285,6 +285,15 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
         // Get the client index of the selected client.
         new target = MenuGetClientIndex(menu_zspawn_force, slot);
         
+        // If the target is 0, then the client left before being selected from the menu.
+        if (target == 0)
+        {
+            // Re-send the menu.
+            MenuClientList(client, ZSpawnForceHandle, true, true, false, "ZSpawn clients title");
+            
+            return;
+        }
+        
         // Get the target's name for future use.
         decl String:targetname[MAX_NAME_LENGTH];
         GetClientName(target, targetname, sizeof(targetname));
