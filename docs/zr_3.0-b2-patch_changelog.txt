@@ -65,6 +65,8 @@
 -------------------
 
 * Added patch changelog.
+* Fixed unlimited ammo exploit in ZMarket menu.
+* Fixed admin classes not restored from cookies.
 * Fixed a bug in client listing menus when selecting a client that left the
   game caused errors.
 * Fixed the default sky on the first map not reverting properly if
