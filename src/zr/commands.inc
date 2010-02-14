@@ -54,5 +54,4 @@ CommandsInit()
     
     // Forward event to modules. (hook commands)
     ClassOnCommandsHook();
-    DamageOnCommandsHook();
 }

@@ -211,6 +211,7 @@ public OnConfigsExecuted()
     WeaponsLoad();
     HitgroupsLoad();
     InfectLoad();
+    DamageLoad();
     VEffectsLoad();
     SEffectsLoad();
     AntiStickLoad();
