@@ -59,3 +59,20 @@
 * Fixed zr_damage_suicide_human not working when enabled.
 * Switched the plugin to use SDK Hooks extension instead of ZR Tools (r584 and
   newer). Run this on SourceMod 1.3 or newer.
+
+
+2010.02.14 - r595
+-------------------
+
+* Added patch changelog.
+* Fixed a bug in client listing menus when selecting a client that left the
+  game caused errors.
+* Fixed the default sky on the first map not reverting properly if
+  zr_veffects_sky was enabled in zombiereloaded.cfg.
+* Fixed players not extinguished when in water.
+* Stopped the "Zombies can't use weapons" message when using autobuy outside of
+  a buyzone.
+* Fixed problems that came up if a client was infected through admin after the
+  round started, but before the freezetime expired.
+* Fixed a bug where zr_suicide_cmds was being ignored and only the default
+  value was being used.
