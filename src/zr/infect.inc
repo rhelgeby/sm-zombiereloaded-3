@@ -362,6 +362,12 @@ InfectOnRoundFreezeEnd()
         KillTimer(tInfect);
     }
     
+    // If the zombie has spawned already (had to be through admin) then stop.
+    if (g_bZombieSpawned)
+    {
+        return;
+    }
+    
     // Get min and max times.
     new Float:infectspawntimemin = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]);
     new Float:infectspawntimemax = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]);
