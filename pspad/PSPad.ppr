@@ -55,6 +55,7 @@ ZR
 		..\src\zr\commands.inc
 		..\src\zr\config.inc
 		..\src\zr\cookies.inc
+		..\src\zr\credits.inc
 		..\src\zr\cvars.inc
 		..\src\zr\damage.inc
 		..\src\zr\debugtools.inc

@@ -224,6 +224,15 @@ public OnConfigsExecuted()
 }
 
 /**
+ * Client has just connected to the server.
+ */
+public OnClientConnected(client)
+{
+    // Forward event to modules.
+    ClassOnClientConnected(client);
+}
+
+/**
  * Client is joining the server.
  * 
  * @param client    The client index.
@@ -245,14 +254,32 @@ public OnClientPutInServer(client)
 }
 
 /**
- * Client is authorized and fully in-game.
+ * Called once a client's saved cookies have been loaded from the database.
+ * 
+ * @param client		Client index.
+ */
+public OnClientCookiesCached(client)
+{
+    // Forward "OnCookiesCached" event to modules.
+    ClassOnCookiesCached(client);
+    WeaponsOnCookiesCached(client);
+    ZHPOnCookiesCached(client);
+}
+
+/**
+ * Called once a client is authorized and fully in-game, and 
+ * after all post-connection authorizations have been performed.  
  *
- * @param client    Client index.
+ * This callback is gauranteed to occur on all clients, and always 
+ * after each OnClientPutInServer() call.
+ *
+ * @param client		Client index.
+ * @noreturn
  */
 public OnClientPostAdminCheck(client)
 {
     // Forward authorized event to modules that depend on client admin info.
-    ClassOnClientAuthorized(client);
+    ClassOnClientPostAdminCheck(client);
 }
 
 /**

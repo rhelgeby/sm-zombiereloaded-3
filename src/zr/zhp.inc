@@ -68,6 +68,17 @@ ZHPOnCookiesCreate()
  */
 ZHPClientInit(client)
 {
+    // Reset timer handle.
+    tZHP[client] = INVALID_HANDLE;
+}
+
+/**
+ * Called once a client's saved cookies have been loaded from the database.
+ * 
+ * @param client		Client index.
+ */
+ZHPOnCookiesCached(client)
+{
     // Get default client setting from cvar.
     new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
     
@@ -81,9 +92,6 @@ ZHPClientInit(client)
         // Set cookie to default value from cvar.
         CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, zhp);
     }
-    
-    // Reset timer handle.
-    tZHP[client] = INVALID_HANDLE;
 }
 
 /**

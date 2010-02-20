@@ -109,7 +109,15 @@ ZMarketClientInit(client)
     
     // Create a new array handle to store purchase count data for client.
     g_hZMarketPurchaseCount[client] = CreateTrie();
-    
+}
+
+/**
+ * Called once a client's saved cookies have been loaded from the database.
+ * 
+ * @param client		Client index.
+ */
+ZMarketOnCookiesCached(client)
+{
     // Initialize auto-rebuy data.
     decl String:zmarketautorebuy[8];
     GetClientCookie(client, g_hZMarketAutoRebuyCookie, zmarketautorebuy, sizeof(zmarketautorebuy));

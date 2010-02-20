@@ -10,6 +10,11 @@
  * ============================================================================
  */
 
+/**
+ * Keeps track of if a client has been authorized as an admin.
+ */
+new bool:g_bAdminChecked[MAXPLAYERS + 1];
+
 /* ------------------------------------
  *
  * GAME EVENTS
@@ -63,31 +68,70 @@ ClassOnMapStart()
 }
 
 /**
+ * Client has just connected to the server.
+ */
+ClassOnClientConnected(client)
+{
+    // Initialize the admin checked variable.
+    g_bAdminChecked[client] = false;
+}
+
+/**
  * Called when a client connects to the server (OnClientPutInServer).
  */
 ClassClientInit(client)
 {
-    // Check if classes are loaded successfully and the client is valid.
-    if (ClassValidated && ZRIsClientValid(client))
-    {
-        // Forward event to sub-modules.
-        ClassOverlayClientInit(client);
-    }
-    
     // Reset spawn flag.
     ClassPlayerSpawned[client] = false;
 }
 
 /**
- * Event callback for authorized clients when they're connecting.
- * (OnClientPostAdminCheck)
+ * Called once a client is authorized and fully in-game, and 
+ * after all post-connection authorizations have been performed.  
  *
- * @param client    Client index.
+ * This callback is gauranteed to occur on all clients, and always 
+ * after each OnClientPutInServer() call.
+ *
+ * @param client		Client index.
+ * @noreturn
  */
-ClassOnClientAuthorized(client)
+ClassOnClientPostAdminCheck(client)
 {
+    // Client has been checked.
+    g_bAdminChecked[client] = true;
+    
+    // Below this depends on client cookies.
+    if (!AreClientCookiesCached(client))
+        return;
+    
     // Check if classes are loaded successfully and the client is valid.
-    if (ClassValidated && ZRIsClientValid(client))
+    if (ClassValidated)
+    {
+        // Set default class indexes on the player.
+        ClassClientSetDefaultIndexes(client);
+    }
+}
+
+/**
+ * Called once a client's saved cookies have been loaded from the database.
+ * 
+ * @param client		Client index.
+ */
+ClassOnCookiesCached(client)
+{
+    // Check if classes are loaded successfully.
+    if (ClassValidated)
+    {
+        // Forward event to sub-modules.
+        ClassOverlayOnCookiesCached(client);
+    }
+    
+    // Below this depends on client authorization.
+    if (!g_bAdminChecked[client])
+        return;
+    
+    // Check if classes are loaded successfully and the client is valid.
+    if (ClassValidated)
     {
         // Set default class indexes on the player.
         ClassClientSetDefaultIndexes(client);

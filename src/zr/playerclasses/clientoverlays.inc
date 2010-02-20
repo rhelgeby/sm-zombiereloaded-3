@@ -79,11 +79,11 @@ ClassOverlayOnCookiesCreate()
 }
 
 /**
- * Client is joining the server.
+ * Called once a client's saved cookies have been loaded from the database.
  * 
- * @param client    The client index.  
+ * @param client		Client index.
  */
-ClassOverlayClientInit(client)
+ClassOverlayOnCookiesCached(client)
 {
     // Get overlay toggle cvar values.
     new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);

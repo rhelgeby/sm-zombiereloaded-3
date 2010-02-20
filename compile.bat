@@ -20,3 +20,5 @@ echo Starting compiler:
 %SPCOMP% -i%SOURCEDIR% -i%SOURCEDIR%/include -i%SMINCLUDES% -o%BUILDDIR%/zombiereloaded.smx %SOURCEDIR%\zombiereloaded.sp
 
 pause
+
+compile.bat
