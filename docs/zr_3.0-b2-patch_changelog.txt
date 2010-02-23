@@ -78,3 +78,8 @@
   round started, but before the freezetime expired.
 * Fixed a bug where zr_suicide_cmds was being ignored and only the default
   value was being used.
+
+2010.02.23 - r598
+-------------------
+
+* Fixed cookies being reset on some occasions and admin-dependant classes are restored properly as well.
