@@ -6,6 +6,10 @@
 
 ===============================================================================
 
+For detailed info about changes in configuration files, see diff-files in the
+"changes" directory. They describe added and removed lines for each patch
+released. If the file is empty there are no config changes in that patch.
+
 2009.12.11 - r545
 -------------------
 

@@ -82,8 +82,8 @@ then
     cp $ZRTOOLS_SOURCE/zrtools.ext.so $EXTENSIONDIR
     cp $ZRTOOLS_SOURCE/zrtools.ext.dll $EXTENSIONDIR
 else
-    # Make diff file with changes since base revision.
-    sh changes.sh $PATCHREV "tip"
+    # Make diff files with config changes for each patch.
+    sh diffgen.sh
     
     # Copy only changed files.
     CHANGEDFILES=$(hg status --rev $PATCHREV | grep "cstrike/" | cut -d ' ' -f2 | cut -d '/' -f2-)
