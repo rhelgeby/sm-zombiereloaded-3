@@ -9,7 +9,6 @@ SYNTAX="Usage: $0 [--patch <base rev>]"
 BUILDDIR=build
 PLUGINFILE=zombiereloaded.smx
 PLUGINFILES="cstrike/*"
-ZRTOOLS_SOURCE=/home/zrdev/archive/zrtools
 DOCS="docs/*"
 SOURCEDIR="src/*"
 
@@ -76,11 +75,6 @@ then
     # Copy all files.
     echo "Copying plugin files..."
     cp -r $PLUGINFILES $RELEASEDIR
-    
-    echo "Copying extension binaries..."
-    mkdir -p $EXTENSIONDIR
-    cp $ZRTOOLS_SOURCE/zrtools.ext.so $EXTENSIONDIR
-    cp $ZRTOOLS_SOURCE/zrtools.ext.dll $EXTENSIONDIR
 else
     # Make diff files with config changes for each patch.
     sh diffgen.sh

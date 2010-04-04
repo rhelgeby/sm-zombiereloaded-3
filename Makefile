@@ -1,3 +1,4 @@
+# Script made by [SG-10]Cpt.Moore
 
 SOURCEDIR=src
 SMINCLUDES=env/include
