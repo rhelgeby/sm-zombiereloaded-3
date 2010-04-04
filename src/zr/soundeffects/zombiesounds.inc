@@ -71,6 +71,16 @@ enum ZombieSounds
 new Handle:tSEffectsMoan[MAXPLAYERS + 1];
 
 /**
+ * Number of sound commands executed by the player.
+ */
+new g_SEffectsCommandCount[MAXPLAYERS + 1];
+
+/**
+ * Timers for resetting sound command counters.
+ */
+new Handle:g_hSEffectsCommandTimer[MAXPLAYERS + 1];
+
+/**
  * Client is joining the server.
  * 
  * @param client    The client index.
@@ -79,6 +89,10 @@ ZombieSoundsClientInit(client)
 {
     // Reset timer handle.
     tSEffectsMoan[client] = INVALID_HANDLE;
+    
+    // Reset command counter and make sure there's no timer running.
+    g_SEffectsCommandCount[client] = 0;
+    ZREndTimer(g_hSEffectsCommandTimer[client]);
 }
 
 /**
@@ -96,6 +110,10 @@ ZombieSoundsOnClientSpawn(client)
     
     // Reset timer handle.
     tSEffectsMoan[client] = INVALID_HANDLE;
+    
+    // Reset command counter and kill timer.
+    g_SEffectsCommandCount[client] = 0;
+    ZREndTimer(g_hSEffectsCommandTimer[client]);
 }
 
 /**
@@ -113,6 +131,10 @@ ZombieSoundsOnClientDeath(client)
     
     // Reset timer handle.
     tSEffectsMoan[client] = INVALID_HANDLE;
+    
+    // Reset command counter and kill timer.
+    g_SEffectsCommandCount[client] = 0;
+    ZREndTimer(g_hSEffectsCommandTimer[client]);
     
     // If player isn't a zombie, then stop.
     if (!InfectIsClientInfected(client))
@@ -187,6 +209,21 @@ ZombieSoundsOnClientInfected(client)
     
     // Start repeating timer.
     tSEffectsMoan[client] = CreateTimer(interval, ZombieSoundsMoanTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+/**
+ * Round ended.
+ */
+ZombieSoundsOnRoundEnd()
+{
+    ZombieSoundsResetCmdCounters();
+    ZombieSoundsResetCmdTimers();
+}
+
+ZombieSoundsOnCommandsCreate()
+{
+    RegConsoleCmd("scream", ZombieSoundsScreamCommand, "Emits a scream sound, if the player is a zombie.");
+    RegConsoleCmd("moan", ZombieSoundsMoanCommand, "Emits a moan sound, if the player is a zombie.");
 }
 
 /**
@@ -270,13 +307,147 @@ public Action:ZombieSoundsMoanTimer(Handle:timer, any:client)
         return Plugin_Stop;
     }
     
+    // Emit moan sound.
+    ZombieSoundsMoan(client);
+    
+    // Allow timer to continue.
+    return Plugin_Continue;
+}
+
+/**
+ * Emits a moan sound from the specified client.
+ *
+ * @param client    Client index.
+ */
+ZombieSoundsMoan(client)
+{
     // Get random moan sound.
     decl String:sound[SOUND_MAX_PATH];
     ZombieSoundsGetRandomSound(sound, Moan);
     
     // Emit sound from client.
     SEffectsEmitSoundFromClient(client, sound, SNDLEVEL_SCREAMING);
+}
+
+/**
+ * Emits the scream sound (on infection) from the specified client.
+ *
+ * @param client    Client index.
+ */
+ZombieSoundsScream(client)
+{
+    decl String:sound[PLATFORM_MAX_PATH];
+    GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
     
-    // Allow timer to continue.
-    return Plugin_Continue;
+    // If cvar contains path, then continue.
+    if (sound[0])
+    {
+        // Emit infect sound from infected client.
+        SEffectsEmitSoundFromClient(client, sound, SNDLEVEL_SCREAMING);
+    }
+}
+
+/**
+ * Starts a reset timer for the client's command counter if not already started.
+ *
+ * @param client    Client index.
+ */
+ZombieSoundsCmdTimerCheck(client)
+{
+    // Only create timer if it doesn't exist.
+    if (g_hSEffectsCommandTimer[client] == INVALID_HANDLE)
+    {
+        new Float:timespan = GetConVarFloat(g_hCvarsList[CVAR_SEFFECTS_COMMAND_TIMESPAN]);
+        
+        // Only create timer if time span is enabled.
+        if (timespan > 0.0)
+        {
+            g_hSEffectsCommandTimer[client] = CreateTimer(timespan, ZombieSoundsCmdTimer, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+        }
+    }
+}
+
+/**
+ * Resets all command counters.
+ */
+ZombieSoundsResetCmdCounters()
+{
+    for (new client = 0; client <= MAXPLAYERS; client++)
+    {
+        g_SEffectsCommandCount[client] = 0;
+    }
+}
+
+/**
+ * Stops all command counter timers.
+ */
+ZombieSoundsResetCmdTimers()
+{
+    for (new client = 0; client <= MAXPLAYERS; client++)
+    {
+        ZREndTimer(g_hSEffectsCommandTimer[client]);
+    }
+}
+
+/**
+ * Returns whether a player is allowed to play a zombie sound or not.
+ *
+ * @param client    Client index.
+ * @return          True if allowed, false otherwise.
+ */
+bool:ZombieSoundsCommandAllowed(client)
+{
+    new limit = GetConVarInt(g_hCvarsList[CVAR_SEFFECTS_COMMAND_LIMIT]);
+    
+    if (limit <= 0 ||
+        g_SEffectsCommandCount[client] < limit)
+    {
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Scream command handler.
+ */
+public Action:ZombieSoundsScreamCommand(client, argc)
+{
+    if (IsClientInGame(client) &&
+        IsPlayerAlive(client) &&
+        InfectIsClientInfected(client) &&
+        ZombieSoundsCommandAllowed(client))
+    {
+        ZombieSoundsScream(client);
+        g_SEffectsCommandCount[client]++;
+        ZombieSoundsCmdTimerCheck(client);
+    }
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Moan command handler.
+ */
+public Action:ZombieSoundsMoanCommand(client, argc)
+{
+    if (IsClientInGame(client) &&
+        IsPlayerAlive(client) &&
+        InfectIsClientInfected(client) &&
+        ZombieSoundsCommandAllowed(client))
+    {
+        ZombieSoundsMoan(client);
+        g_SEffectsCommandCount[client]++;
+        ZombieSoundsCmdTimerCheck(client);
+    }
+    
+    return Plugin_Handled;
+}
+
+/**
+ * Command counter reset timer.
+ */
+public Action:ZombieSoundsCmdTimer(Handle:timer, any:client)
+{
+    g_SEffectsCommandCount[client] = 0;
 }

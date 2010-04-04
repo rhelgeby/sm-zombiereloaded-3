@@ -45,6 +45,7 @@ CommandsInit()
     ZTeleOnCommandsCreate();
     ZHPOnCommandsCreate();
     VolOnCommandsCreate();
+    ZombieSoundsOnCommandsCreate();
     
     #if defined ADD_VERSION_INFO
         VersionOnCommandsCreate();

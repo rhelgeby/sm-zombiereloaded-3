@@ -132,6 +132,8 @@ enum CvarsList
     Handle:CVAR_SEFFECTS_MOAN,
     Handle:CVAR_SEFFECTS_GROAN,
     Handle:CVAR_SEFFECTS_DEATH,
+    Handle:CVAR_SEFFECTS_COMMAND_LIMIT,
+    Handle:CVAR_SEFFECTS_COMMAND_TIMESPAN,
     Handle:CVAR_AMBIENTSOUNDS,
     Handle:CVAR_AMBIENTSOUNDS_FILE,
     Handle:CVAR_AMBIENTSOUNDS_LENGTH,
@@ -410,9 +412,11 @@ CvarsCreate()
     g_hCvarsList[CVAR_VOICE_ZOMBIES_MUTE]               =    CreateConVar("zr_voice_zombies_mute",      "0",                            "(Incomplete) Only allow humans to communicate, block verbal zombie communication.");
     
     // Zombie Sounds
-    g_hCvarsList[CVAR_SEFFECTS_MOAN]                    =    CreateConVar("zr_seffects_moan",           "30.0",                         "Time between emission of a moan sound from a zombie.");
-    g_hCvarsList[CVAR_SEFFECTS_GROAN]                   =    CreateConVar("zr_seffects_groan",          "5",                            "The probability that a groan sound will be emitted from a zombie when shot. ['100' = 1% chance | '50' = 2% chance | '1' = 100% chance]");
-    g_hCvarsList[CVAR_SEFFECTS_DEATH]                   =    CreateConVar("zr_seffects_death",          "1",                            "Emit a death sound when a zombie dies.");
+    g_hCvarsList[CVAR_SEFFECTS_MOAN]                    =    CreateConVar("zr_seffects_moan",               "30.0",                     "Time between emission of a moan sound from a zombie.");
+    g_hCvarsList[CVAR_SEFFECTS_GROAN]                   =    CreateConVar("zr_seffects_groan",              "5",                        "The probability that a groan sound will be emitted from a zombie when shot. ['100' = 1% chance | '50' = 2% chance | '1' = 100% chance]");
+    g_hCvarsList[CVAR_SEFFECTS_DEATH]                   =    CreateConVar("zr_seffects_death",              "1",                        "Emit a death sound when a zombie dies.");
+    g_hCvarsList[CVAR_SEFFECTS_COMMAND_LIMIT]           =    CreateConVar("zr_seffects_command_limit",      "4",                        "Number of sound commands allowed within the time span, or total limit if time span is disabled. ['0' = Disable sound command limit]");
+    g_hCvarsList[CVAR_SEFFECTS_COMMAND_TIMESPAN]        =    CreateConVar("zr_seffects_command_timespan",   "10",                       "Time span for sound command limiter (in seconds). ['0' = Disable time span check | positive number = Time span]");
     
     // Ambient Sounds
     g_hCvarsList[CVAR_AMBIENTSOUNDS]                    =    CreateConVar("zr_ambientsounds",           "1",                            "Play an ambient sound to all players during gameplay.");

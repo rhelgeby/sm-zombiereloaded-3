@@ -749,14 +749,8 @@ InfectFireEffects(client)
         VEffectsCreateExplosion(clientloc, flags);
     }
     
-    // If cvar contains path, then continue.
-    decl String:sound[PLATFORM_MAX_PATH];
-    GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
-    if (sound[0])
-    {
-        // Emit infect sound from infected client.
-        SEffectsEmitSoundFromClient(client, sound, SNDLEVEL_SCREAMING);
-    }
+    // Emit scream sound if enabled.
+    ZombieSoundsScream(client);
     
     // If energy splash effect is enabled, then continue.
     new bool:esplash = GetConVarBool(g_hCvarsList[CVAR_INFECT_ESPLASH]);

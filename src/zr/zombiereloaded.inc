@@ -107,6 +107,50 @@ stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false
 }
 
 /**
+ * Checks if a timer is currently running.
+ * 
+ * @param timer     The timer handle.
+ */
+stock bool:ZRIsTimerRunning(Handle:timer)
+{
+    // Return true if the handle isn't empty.
+    return (timer != INVALID_HANDLE);
+}
+
+/**
+ * Wrapper functions for KilLTimer.
+ * Ends a timer if running, and resets its timer handle variable.
+ * 
+ * @param timer     The timer handle.
+ * @param kill      True to kill the timer and reset the variable, false to only reset the variable.
+ *                  Using false is useful when calling from the timer callback, because the timer is already killed.
+ * 
+ * @return          True if the handle wasn't INVALID_HANDLE, false if the handle wasn't valid.
+ */
+stock bool:ZREndTimer(&Handle:timer, bool:kill = true)
+{
+    // If the timer is running, then kill it.
+    if (ZRIsTimerRunning(timer))
+    {
+        // Kill if caller says to.
+        if (kill)
+        {
+            KillTimer(timer);
+        }
+        
+        // Reset variable.
+        timer = INVALID_HANDLE;
+        
+        return true;
+    }
+    
+    // Reset variable.
+    timer = INVALID_HANDLE;
+    
+    return false;
+}
+
+/**
  * Check if a client index is a valid player.
  * 
  * @param client    The client index.
