@@ -1022,9 +1022,12 @@ ClassClientSetDefaultIndexes(client = -1)
         //       class index when restored.
         
         // Check if class indexes are set and that the client pass the filter.
+        // Also check that the saved class' team id match with the loaded class.
         // If not, fall back to default class indexes. Otherwise substract
         // index by one.
-        if (zombieindex <= 0 || !ClassFilterMatch(zombieindex - 1, filter))
+        if (zombieindex <= 0 ||
+            !(ClassGetTeamID(zombieindex - 1) == ZR_CLASS_TEAM_ZOMBIES) ||
+            !ClassFilterMatch(zombieindex - 1, filter))
         {
             zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES, filter);
         }
@@ -1034,7 +1037,9 @@ ClassClientSetDefaultIndexes(client = -1)
             haszombie = true;
         }
         
-        if (humanindex <= 0 || !ClassFilterMatch(humanindex - 1, filter))
+        if (humanindex <= 0 ||
+            !(ClassGetTeamID(humanindex - 1) == ZR_CLASS_TEAM_HUMANS) ||
+            !ClassFilterMatch(humanindex - 1, filter))
         {
             humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS, filter);
         }
@@ -1044,7 +1049,9 @@ ClassClientSetDefaultIndexes(client = -1)
             hashuman = true;
         }
         
-        if (adminindex <= 0 || !ClassFilterMatch(adminindex - 1, filter))
+        if (adminindex <= 0 ||
+            !(ClassGetTeamID(adminindex - 1) == ZR_CLASS_TEAM_ADMINS) ||
+            !ClassFilterMatch(adminindex - 1, filter))
         {
             adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS, filter);
         }
