@@ -247,9 +247,10 @@ ClassOnClientSpawn(client)
         }
     }
     
-    // Apply class attributes for the active class.
+    // Load class attributes for the active class.
     ClassReloadPlayerCache(client, ClassGetActiveIndex(client));
-    ClassApplyAttributes(client);
+    
+    // Note: Class attributes are applied in ClassOnClientSpawnPost.
     
     // Check if instant class change cvar is set.
     new Float:instantspawn = GetConVarFloat(g_hCvarsList[CVAR_CLASSES_CHANGE_TIMELIMIT]);
@@ -266,6 +267,23 @@ ClassOnClientSpawn(client)
         // Make sure instant change is not allowed.
         ClassAllowInstantChange[client] = false;
     }
+}
+
+/**
+ * Client have just spawned (delayed event).
+ * 
+ * @param client    The client index.
+ */
+ClassOnClientSpawnPost(client)
+{
+    // Check if there are no valid classes. Block this event if classes aren't
+    // done loading.
+    if (!ClassValidated)
+    {
+        return;
+    }
+    
+    ClassApplyAttributes(client);
 }
 
 /**

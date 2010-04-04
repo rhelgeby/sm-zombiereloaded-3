@@ -214,7 +214,8 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:client)
     // Forward event to modules.
     WeaponsOnClientSpawnPost(client);
     SEffectsOnClientSpawnPost(client);
-    SpawnProtectOnClientSpawnPost(client);
+    ClassOnClientSpawnPost(client);
+    SpawnProtectOnClientSpawnPost(client);	// Must be executed after class attributes are applied.
 }
 
 /**
