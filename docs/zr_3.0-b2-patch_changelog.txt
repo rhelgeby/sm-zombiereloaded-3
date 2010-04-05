@@ -87,3 +87,13 @@ released. If the file is empty there are no config changes in that patch.
 -------------------
 
 * Fixed cookies being reset on some occasions and admin-dependant classes are restored properly as well.
+
+
+2010.04.05 - r607
+-------------------
+
+* Separated patch difflog (changes.diff) into separate file for each patch released.
+* Added scream and moan commands for zombies, with spam protection.
+* Added missing note about no_fall_damage class attribute in docs.
+* Fixed class attributes applied too early (moved to spawn post event). This fixes issues with FOV and bots.
+* Fixed saved classes not validated by team id when restoring from cookies.
