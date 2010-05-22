@@ -90,6 +90,7 @@ enum CvarsList
     Handle:CVAR_SAYHOOKS_QUIET_FILTER,
     Handle:CVAR_SAYHOOKS_QUIET_FLAGS,
     Handle:CVAR_OVERLAYS_UPDATE_TIME,
+    Handle:CVAR_OVERLAYS_MIN_DXLEVEL,
     Handle:CVAR_ROUNDEND_OVERLAY,
     Handle:CVAR_ROUNDEND_OVERLAY_ZOMBIE,
     Handle:CVAR_ROUNDEND_OVERLAY_HUMAN,
@@ -355,6 +356,7 @@ CvarsCreate()
     // Overlays (core)
     // ===========================
     g_hCvarsList[CVAR_OVERLAYS_UPDATE_TIME]             =    CreateConVar("zr_overlays_update_time",    "1.0",      "How often to update overlays on players. [0.0 = Disabled]");
+    g_hCvarsList[CVAR_OVERLAYS_MIN_DXLEVEL]             =    CreateConVar("zr_overlays_min_dxlevel",    "80",       "Minimum DirectX level allowed for overlays (mat_dxlevel).");
     
     
     // ===========================

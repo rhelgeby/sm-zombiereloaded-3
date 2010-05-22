@@ -26,11 +26,6 @@
  */
 
 /**
- * Minimum dx level required to see overlays.
- */
-#define OVERLAYS_DXL_MIN 90
-
-/**
  * Maximum amount of overlay channels.
  */
 #define OVERLAYS_CHANNEL_MAX 2
@@ -202,10 +197,11 @@ OverlaysClientUpdateOverlay(client, OverlaysChannel:channel = OVERLAYS_CHANNEL_N
         return;
     }
     
-    // If client doesn't meet DXLevel requirement, then tell client, then stop.
-    if (g_iOverlaysDXL[client] < OVERLAYS_DXL_MIN)
+    // If client doesn't meet DXLevel requirement, then tell client and stop.
+    new minDxLevel = GetConVarInt(g_hCvarsList[CVAR_OVERLAYS_MIN_DXLEVEL]);
+    if (g_iOverlaysDXL[client] < minDxLevel)
     {
-        TranslationPrintCenterText(client, "Overlays not supported", g_iOverlaysDXL[client], OVERLAYS_DXL_MIN);
+        TranslationPrintCenterText(client, "Overlays not supported", g_iOverlaysDXL[client], minDxLevel);
         return;
     }
     
