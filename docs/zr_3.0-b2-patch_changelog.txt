@@ -97,3 +97,11 @@ released. If the file is empty there are no config changes in that patch.
 * Added missing note about no_fall_damage class attribute in docs.
 * Fixed class attributes applied too early (moved to spawn post event). This fixes issues with FOV and bots.
 * Fixed saved classes not validated by team id when restoring from cookies.
+
+
+2010.06.03 - r611
+-------------------
+
+* Added cvar to enable suicide intercept before the first zombie.
+* Added cvar for minimum dx level on overlays.
+* Fixed classes not always restored from cookies.
