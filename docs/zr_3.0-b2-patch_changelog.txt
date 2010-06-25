@@ -105,3 +105,9 @@ released. If the file is empty there are no config changes in that patch.
 * Added cvar to enable suicide intercept before the first zombie.
 * Added cvar for minimum dx level on overlays.
 * Fixed classes not always restored from cookies.
+
+
+2010.06.03 - 613
+------------------
+
+* Fixed signatures and round end defines that were updated in CS:S OB.
