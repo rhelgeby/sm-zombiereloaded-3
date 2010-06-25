@@ -57,12 +57,7 @@
 /**
  * Default player hull width.
  */
-#define ANTISTICK_DEFAULT_HULL_WIDTH GetConVarFloat(g_hCvarsList[CVAR_ANTISTICK_DEFAULT_WIDTH])
-
-/**
- * Handle to keyvalue structure where data is stored.
- */
-new Handle:g_kvAntiStick = INVALID_HANDLE;
+#define ANTISTICK_DEFAULT_HULL_WIDTH 32.0
 
 /**
  * Stores "StartTouch" HookID's for each client.
@@ -95,31 +90,7 @@ enum AntiStickBoxBound
  */
 AntiStickOnCommandsCreate()
 {
-    // Create public command to list model data.
-    RegConsoleCmd("zr_antistick_list_models", AntiStickListModelsCommand, "Lists all players and their model data in console. Usage: zr_antistick_list_models");
-    
-    // Create admin command to set model hull width.
-    RegConsoleCmd("zr_antistick_set_width", AntiStickSetWidthCommand, "Sets the width of a model's hull. (See zr_antistick_list_models) Usage: zr_antistick_set_width <model/player> <width>");
-    
     RegConsoleCmd("zr_antistick_dump_group", AntiStickDumpGroupCommand, "Dumps collision group data on one or more players. Usage zr_antistick_dump_group [#userid|name]");
-}
-
-/**
- * Creates/loads antistick data file.
- */
-AntiStickLoad()
-{
-    // Create antistick keyvalues if it hasn't been created yet.
-    if (g_kvAntiStick == INVALID_HANDLE)
-    {
-        g_kvAntiStick = CreateKeyValues("antistick");
-    }
-    
-    // Initialize keyvalues.
-    if (!AntiStickLoadData())
-    {
-        AntiStickSaveData();
-    }
 }
 
 /**
@@ -158,120 +129,6 @@ AntiStickOnClientDisconnect(client)
         
         g_iStartTouchHookID[client] = -1;
     }
-}
-
-/**
- * Load antistick data from file.
- * 
- * @return  True if loaded successfully, false if file wasn't found.  
- */
-stock bool:AntiStickLoadData()
-{
-    // Get cvar's path.
-    decl String:filepath[PLATFORM_MAX_PATH];
-    GetConVarString(g_hCvarsList[CVAR_ANTISTICK_FILE_PATH], filepath, sizeof(filepath));
-    
-    // Build full path in return string.
-    decl String:fullpath[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, fullpath, PLATFORM_MAX_PATH, filepath);
-    
-    // Log action to game events.
-    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_AntiStick, "Loaded Data", "Antistick data has been loaded from \"%s\"", fullpath);
-    
-    // Retrieve keyvalue data from a file, and store in server's memory.
-    KvRewind(g_kvAntiStick);
-    return FileToKeyValues(g_kvAntiStick, fullpath);
-}
-
-/**
- * Save antistick data to file.
- */
-stock AntiStickSaveData()
-{
-    // Get cvar's path.
-    decl String:filepath[PLATFORM_MAX_PATH];
-    GetConVarString(g_hCvarsList[CVAR_ANTISTICK_FILE_PATH], filepath, sizeof(filepath));
-    
-    // Build full path in return string.
-    decl String:fullpath[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, fullpath, PLATFORM_MAX_PATH, filepath);
-    
-    // Log action to game events.
-    LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_AntiStick, "Saved Data", "Antistick data has been saved to \"%s\"", fullpath);
-    
-    // Dump keyvalue structure into a file from the server's memory.
-    KvRewind(g_kvAntiStick);
-    KeyValuesToFile(g_kvAntiStick, fullpath);
-}
-
-/**
- * Get hull width on a client's model. (or return default)
- * 
- * @param client    The client index.
- * @param model     If a client index of 0 is given, this model is used.
- */
-stock Float:AntiStickGetModelHullWidth(client, const String:model[] = "")
-{
-    decl String:clientmodel[PLATFORM_MAX_PATH];
-    
-    if (ZRIsClientValid(client))
-    {
-        // Get client's model.
-        GetClientModel(client, clientmodel, sizeof(clientmodel));
-    }
-    else
-    {
-        // Copy given model to 'clientmodel.'
-        strcopy(clientmodel, sizeof(clientmodel), model);
-    }
-    
-    // Find model in antistick data.
-    KvRewind(g_kvAntiStick);
-    if (KvJumpToKey(g_kvAntiStick, clientmodel))
-    {
-        // Return value from file.
-        return KvGetFloat(g_kvAntiStick, "hull_width", ANTISTICK_DEFAULT_HULL_WIDTH);
-    }
-    else
-    {
-        // Return default CS:S hull width.
-        return ANTISTICK_DEFAULT_HULL_WIDTH;
-    }
-}
-
-/**
- * Set hull width on a client's model.
- * 
- * @param client        The client index.
- * @param model     If a client index of 0 is given, this model is used. 
- * @param hull_width    The width of the model hull.
- */
-stock AntiStickSetModelHullWidth(client, const String:model[] = "", Float:hull_width)
-{
-    decl String:clientmodel[PLATFORM_MAX_PATH];
-    
-    if (ZRIsClientValid(client))
-    {
-        // Get client's model.
-        GetClientModel(client, clientmodel, sizeof(clientmodel));
-    }
-    else
-    {
-        // Copy given model to 'clientmodel.'
-        strcopy(clientmodel, sizeof(clientmodel), model);
-    }
-    
-    // Replace "/" with "-" because a slash indicates a new level in keyvalues.
-    ReplaceString(clientmodel, sizeof(clientmodel), "/", "-");
-    
-    // Find model in antistick data.
-    KvRewind(g_kvAntiStick);
-    
-    // Create key if it doesn't already exist.
-    KvJumpToKey(g_kvAntiStick, clientmodel, true);
-    
-    // Set value.
-    KvSetFloat(g_kvAntiStick, "hull_width", hull_width);
 }
 
 /**
@@ -543,13 +400,9 @@ stock bool:AntiStickIsModelBoxColliding(client1, client2)
     new Float:client1modelbox[AntiStickBoxBound][3];
     new Float:client2modelbox[AntiStickBoxBound][3];
     
-    // Get model hull widths.
-    new Float:hull_width1 = AntiStickGetModelHullWidth(client1);
-    new Float:hull_width2 = AntiStickGetModelHullWidth(client2);
-    
     // Build model boxes for each client.
-    AntiStickBuildModelBox(client1, client1modelbox, hull_width1);
-    AntiStickBuildModelBox(client2, client2modelbox, hull_width2);
+    AntiStickBuildModelBox(client1, client1modelbox, ANTISTICK_DEFAULT_HULL_WIDTH);
+    AntiStickBuildModelBox(client2, client2modelbox, ANTISTICK_DEFAULT_HULL_WIDTH);
     
     // Compare x values.
     new Float:max1x = AntiStickGetBoxMaxBoundary(0, client1modelbox);
@@ -702,108 +555,6 @@ AntiStickCollisionGroupToString(collisiongroup, String:buffer[], maxlen)
     
     // No match. Write a blank string.
     return strcopy(buffer, maxlen, "");
-}
-
-/**
- * Command callback (zr_antistick_list_models)
- * Lists all player's models and model hull data.
- * 
- * @param client    The client index.
- * @param argc      Argument count.
- */
-public Action:AntiStickListModelsCommand(client, argc)
-{
-    // Tell client we are listing model data.
-    TranslationPrintToConsole(client, "AntiStick command list models list");
-    
-    decl String:clientname[MAX_NAME_LENGTH];
-    decl String:modelname[PLATFORM_MAX_PATH];
-    new Float:hull_width;
-    
-    // x = Client index.
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        // Get all needed data.
-        GetClientName(x, clientname, sizeof(clientname));
-        GetClientModel(x, modelname, sizeof(modelname));
-        hull_width = AntiStickGetModelHullWidth(x);
-    
-        TranslationPrintToConsole(client, "AntiStick command list models name", clientname, modelname, hull_width);
-    }
-    
-    return Plugin_Handled;
-}
-
-/**
- * Command callback (zr_antistick_set_width)
- * Set the hull width on any model.
- * 
- * @param client    The client index.
- * @param argc      Argument count.
- */
-public Action:AntiStickSetWidthCommand(client, argc)
-{
-    // Check if privileged.
-    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
-    {
-        TranslationReplyToCommand(client, "No access to command");
-        return Plugin_Handled;
-    }
-    
-    // If not enough arguments given, then stop.
-    if (argc < 2)
-    {
-        TranslationReplyToCommand(client, "AntiStick command set width syntax");
-        return Plugin_Handled;
-    }
-    
-    // Get target model.
-    decl String:model[PLATFORM_MAX_PATH];
-    GetCmdArg(1, model, sizeof(model));
-    
-    // If model doesn't exist, then stop.
-    if (!FileExists(model))
-    {
-        new target = FindTarget(client, model);
-        if (target <= 0)
-        {
-            TranslationReplyToCommand(client, "AntiStick command set width invalid model", model);
-            return Plugin_Handled;
-        }
-        else
-        {
-            // Get the target's model.
-            GetClientModel(target, model, sizeof(model));
-        }
-    }
-    
-    // Get the given hull width..
-    decl String:strHullwidth[PLATFORM_MAX_PATH];
-    GetCmdArg(2, strHullwidth, sizeof(strHullwidth));
-    
-    new Float:hull_width = StringToFloat(strHullwidth);
-    if (hull_width <= 0.0)
-    {
-        TranslationReplyToCommand(client, "AntiStick command set width invalid width", hull_width);
-        return Plugin_Handled;
-    }
-    
-    // Set hull width.
-    AntiStickSetModelHullWidth(0, model, hull_width);
-    
-    // Tell client it was successful.
-    TranslationReplyToCommand(client, "AntiStick command set width successful", model, hull_width);
-    
-    // Save data.
-    AntiStickSaveData();
-    
-    return Plugin_Handled;
 }
 
 /**

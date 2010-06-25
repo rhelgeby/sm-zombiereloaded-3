@@ -214,7 +214,6 @@ public OnConfigsExecuted()
     DamageLoad();
     VEffectsLoad();
     SEffectsLoad();
-    AntiStickLoad();
     ClassLoad();
     VolLoad();
     
