@@ -28,22 +28,22 @@
 /**
  * @section All round end reasons.
  */
-#define ROUNDEND_TARGET_BOMBED                          1        // Target Successfully Bombed!
-#define ROUNDEND_VIP_ESCAPED                            2        // The VIP has escaped!
-#define ROUNDEND_VIP_ASSASSINATED                       3        // VIP has been assassinated!
-#define ROUNDEND_TERRORISTS_ESCAPED                     4        // The terrorists have escaped!
-#define ROUNDEND_CTS_PREVENTESCAPE                      5        // The CT's have prevented most of the terrorists from escaping!
-#define ROUNDEND_ESCAPING_TERRORISTS_NEUTRALIZED        6        // Escaping terrorists have all been neutralized!
-#define ROUNDEND_BOMB_DEFUSED                           7        // The bomb has been defused!
-#define ROUNDEND_CTS_WIN                                8        // Counter-Terrorists Win!
-#define ROUNDEND_TERRORISTS_WIN                         9        // Terrorists Win!
-#define ROUNDEND_ROUND_DRAW                             10       // Round Draw!
-#define ROUNDEND_ALL_HOSTAGES_RESCUED                   11       // All Hostages have been rescued!
-#define ROUNDEND_TARGET_SAVED                           12       // Target has been saved!
-#define ROUNDEND_HOSTAGES_NOT_RESCUED                   13       // Hostages have not been rescued!
-#define ROUNDEND_TERRORISTS_NOT_ESCAPED                 14       // Terrorists have not escaped!
-#define ROUNDEND_VIP_NOT_ESCAPED                        15       // VIP has not escaped!
-#define ROUNDEND_GAME_COMMENCING                        16       // Game Commencing!
+#define ROUNDEND_TARGET_BOMBED                          0        // Target Successfully Bombed!
+#define ROUNDEND_VIP_ESCAPED                            1        // The VIP has escaped!
+#define ROUNDEND_VIP_ASSASSINATED                       2        // VIP has been assassinated!
+#define ROUNDEND_TERRORISTS_ESCAPED                     3        // The terrorists have escaped!
+#define ROUNDEND_CTS_PREVENTESCAPE                      4        // The CT's have prevented most of the terrorists from escaping!
+#define ROUNDEND_ESCAPING_TERRORISTS_NEUTRALIZED        5        // Escaping terrorists have all been neutralized!
+#define ROUNDEND_BOMB_DEFUSED                           6        // The bomb has been defused!
+#define ROUNDEND_CTS_WIN                                7        // Counter-Terrorists Win!
+#define ROUNDEND_TERRORISTS_WIN                         8        // Terrorists Win!
+#define ROUNDEND_ROUND_DRAW                             9        // Round Draw!
+#define ROUNDEND_ALL_HOSTAGES_RESCUED                   10       // All Hostages have been rescued!
+#define ROUNDEND_TARGET_SAVED                           11       // Target has been saved!
+#define ROUNDEND_HOSTAGES_NOT_RESCUED                   12       // Hostages have not been rescued!
+#define ROUNDEND_TERRORISTS_NOT_ESCAPED                 13       // Terrorists have not escaped!
+#define ROUNDEND_VIP_NOT_ESCAPED                        14       // VIP has not escaped!
+#define ROUNDEND_GAME_COMMENCING                        15       // Game Commencing!
 /**
  * @endsection
  */
