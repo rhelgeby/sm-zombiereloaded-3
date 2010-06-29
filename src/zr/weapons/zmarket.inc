@@ -913,12 +913,31 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
             return false;
         }
         
-        // Give ammo and preserve client's clip ammo value on both primary/secondary weapons.
-        new prim_clip = WeaponAmmoGetAmmo(weapons[Slot_Primary], true);
-        new sec_clip = WeaponAmmoGetAmmo(weapons[Slot_Secondary], true);
+        // Prevent exploit by refilling ammo by re-buying weapon.
+        // Current clip amounts are stored, ammo is refilled, and then clips are reset.
+        
+        new prim_clip;
+        new sec_clip;
+        
+        if (weapons[Slot_Primary] > 0)
+        {
+            prim_clip = WeaponAmmoGetAmmo(weapons[Slot_Primary], true);
+        }
+        if (weapons[Slot_Secondary] > 0)
+        {
+            sec_clip = WeaponAmmoGetAmmo(weapons[Slot_Secondary], true);
+        }
+        
         GivePlayerItem(client, weaponammo);
-        WeaponAmmoSetAmmo(weapons[Slot_Primary], true, prim_clip);
-        WeaponAmmoSetAmmo(weapons[Slot_Secondary], true, sec_clip);
+        
+        if (weapons[Slot_Primary] > 0)
+        {
+            WeaponAmmoSetAmmo(weapons[Slot_Primary], true, prim_clip);
+        }
+        if (weapons[Slot_Secondary] > 0)
+        {
+            WeaponAmmoSetAmmo(weapons[Slot_Secondary], true, sec_clip);
+        }
     }
     
     return true;
