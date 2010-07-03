@@ -750,10 +750,11 @@ stock bool:ClassFlagFilterMatch(index, require, deny, cachetype)
  * Decides whether a class selection menu should be enabled. The decision is
  * based on zr_class_allow_* console variables.
  *
- * @param team  Optional. Team ID to match. Default is all.
- * @return      True if allowed, false otherwise.
+ * @param team      Optional. Team ID to match. Default is all.
+ * @param filter    Optional. Filter to use on classes.
+ * @return          True if allowed, false otherwise.
  */
-bool:ClassAllowSelection(client, team = -1)
+bool:ClassAllowSelection(client, team = -1, filter[ClassFilter] = ClassNoFilter)
 {
     // Get selection settings.
     new bool:zombie = GetConVarBool(g_hCvarsList[CVAR_CLASSES_ZOMBIE_SELECT]);
@@ -767,10 +768,10 @@ bool:ClassAllowSelection(client, team = -1)
     // Check if player is admin.
     new bool:isadmin = ZRIsClientAdmin(client);
     
-    // Only count admin mode classes if client is admin for better performance.
+    // Only count admin mode classes if client is admin.
     if (isadmin)
     {
-        adminexist = ClassCountTeam(ZR_CLASS_TEAM_ADMINS) > 0;
+        adminexist = ClassCountTeam(ZR_CLASS_TEAM_ADMINS, filter) > 0;
     }
     
     // Check if a team id is specified.

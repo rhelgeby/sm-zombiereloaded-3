@@ -62,10 +62,26 @@ ClassMenuMain(client)
     decl String:adminmode[MENU_LINE_BIG_LENGTH];
     decl String:toggleadminmode[MENU_LINE_BIG_LENGTH];
     
+    // Setup filtering.
+    // ----------------
+    new filter[ClassFilter];
+    
+    // Hide mother zombie classes.
+    filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+    
+    // Hide admin-only classes if not admin.
+    filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+    
+    // Specify client for checking class group permissions.
+    filter[ClassFilter_Client] = client;
+    
+    // Setup item draw style.
+    // ----------------------
+    
     // Get number of enabled classes per team.
-    new zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
-    new humancount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES);
-    new admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS);
+    new zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES, filter);
+    new humancount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES, filter);
+    new admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS, filter);
     
     // Get next class indexes, if set.
     new nextzombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
@@ -75,9 +91,9 @@ ClassMenuMain(client)
     // Set draw style on class options depending on number of enabled classes
     // and selection permissions. Disable class selection if there's only one
     // class.
-    new zombie_itemdraw = (zombiecount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ZOMBIES)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-    new human_itemdraw = (humancount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_HUMANS)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-    new admin_itemdraw = (admincount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ADMINS)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new zombie_itemdraw = (zombiecount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ZOMBIES, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new human_itemdraw = (humancount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_HUMANS, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    new admin_itemdraw = (admincount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ADMINS, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
     
     // Check if the player is in admin mode.
     if (ClassPlayerInAdminMode[client])
