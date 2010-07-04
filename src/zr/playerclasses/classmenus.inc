@@ -80,7 +80,7 @@ ClassMenuMain(client)
     
     // Get number of enabled classes per team.
     new zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES, filter);
-    new humancount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES, filter);
+    new humancount = ClassCountTeam(ZR_CLASS_TEAM_HUMANS, filter);
     new admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS, filter);
     
     // Get next class indexes, if set.
