@@ -124,7 +124,7 @@
 #define ZR_CLASS_DEFAULT_HEALTH_REGEN_AMOUNT    2
 #define ZR_CLASS_DEFAULT_HEALTH_INFECT_GAIN     800
 #define ZR_CLASS_DEFAULT_KILL_BONUS             2
-#define ZR_CLASS_DEFAULT_SPEED                  360.0
+#define ZR_CLASS_DEFAULT_SPEED                  0.0
 #define ZR_CLASS_DEFAULT_KNOCKBACK              2.0
 #define ZR_CLASS_DEFAULT_JUMP_HEIGHT            10.0
 #define ZR_CLASS_DEFAULT_JUMP_DISTANCE          0.2
@@ -163,8 +163,10 @@
 #define ZR_CLASS_HEALTH_INFECT_GAIN_MAX     20000
 #define ZR_CLASS_KILL_BONUS_MIN             0
 #define ZR_CLASS_KILL_BONUS_MAX             16
-#define ZR_CLASS_SPEED_MIN                  10.0
-#define ZR_CLASS_SPEED_MAX                  2000.0
+#define ZR_CLASS_SPEED_LMV_MIN              10.0
+#define ZR_CLASS_SPEED_LMV_MAX              2000.0
+#define ZR_CLASS_SPEED_PROP_MIN             -200.0
+#define ZR_CLASS_SPEED_PROP_MAX             800.0
 #define ZR_CLASS_KNOCKBACK_MIN              -30.0
 #define ZR_CLASS_KNOCKBACK_MAX              30.0
 #define ZR_CLASS_KNOCKBACK_IGNORE           -31.0   /** Used by class editor volumetric feature. */
@@ -367,6 +369,16 @@ enum ClassFilter
 }
 
 /**
+ * Speed methods for applying player speed.
+ */
+enum ClassSpeedMethods
+{
+    ClassSpeed_Invalid = -1,
+    ClassSpeed_LMV,             /** Modifies lagged movement value. */
+    ClassSpeed_Prop,            /** Modifies players' max speed property(m_flMaxspeed). */
+}
+
+/**
  * Empty filter structure.
  */
 new ClassNoFilter[ClassFilter];
@@ -462,6 +474,11 @@ new String:ClassOriginalPlayerModel[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
  * Specifies whether a player has spawned.
  */
 new bool:ClassPlayerSpawned[MAXPLAYERS + 1];
+
+/**
+ * What method used to apply speed on players.
+ */
+new ClassSpeedMethods:ClassSpeedMethod = ClassSpeed_Prop;
 
 #include "zr/playerclasses/filtertools"
 #include "zr/playerclasses/attributes"
@@ -653,6 +670,30 @@ public ClassOnConfigReload(ConfigFile:config)
 {
     // Reload class config.
     ClassLoad();
+}
+
+/** 
+ * Gets the speed method.
+ *
+ * @return  Speed method, or ClassSpeed_Invalid on error.
+ */
+ClassSpeedMethods:ClassGetSpeedMethod()
+{
+    decl String:speedMethod[16];
+    speedMethod[0] = 0;
+    
+    GetConVarString(g_hCvarsList[CVAR_CLASSES_SPEED_METHOD], speedMethod, sizeof(speedMethod));
+    
+    if (StrEqual(speedMethod, "lmv", false))
+    {
+        return ClassSpeed_LMV;
+    }
+    else if (StrEqual(speedMethod, "prop", false))
+    {
+        return ClassSpeed_Prop;
+    }
+    
+    return ClassSpeed_Invalid;
 }
 
 /**

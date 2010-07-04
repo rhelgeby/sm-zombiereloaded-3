@@ -58,16 +58,47 @@ enum SDKHookType
 	SDKHook_WeaponCanUse,
 	SDKHook_WeaponDrop,
 	SDKHook_WeaponEquip,
+	SDKHook_WeaponSwitch,
+	SDKHook_ShouldCollide,
+	SDKHook_PreThinkPost,
+	SDKHook_PostThinkPost,
+	SDKHook_ThinkPost
+};
+
+/*
+	Alphabetized for easy readability
+	
+	SDKHook_EndTouch
+	SDKHook_FireBulletsPost
+	SDKHook_OnTakeDamage
+	SDKHook_OnTakeDamagePost
+	SDKHook_PreThink
+	SDKHook_PreThinkPost
+	SDKHook_PostThink
+	SDKHook_PostThinkPost
+	SDKHook_SetTransmit
+	SDKHook_ShouldCollide
+	SDKHook_Spawn
+	SDKHook_StartTouch
+	SDKHook_Think
+	SDKHook_ThinkPost
+	SDKHook_Touch
+	SDKHook_TraceAttack
+	SDKHook_TraceAttackPost
+	SDKHook_WeaponCanSwitchTo
+	SDKHook_WeaponCanUse
+	SDKHook_WeaponDrop
+	SDKHook_WeaponEquip
 	SDKHook_WeaponSwitch
-}
+*/
 
 funcenum SDKHookCB
 {
-	// PreThink
-	// PostThink
+	// PreThink/Post
+	// PostThink/Post
 	public(client),
 	// Spawn
-	// Think
+	// Think/Post
 	public(entity),
 	// EndTouch
 	// StartTouch
@@ -90,8 +121,10 @@ funcenum SDKHookCB
 	// TraceAttack
 	Action:public(victim, &attacker, &inflictor, &Float:damage, &damagetype, &ammotype, hitbox, hitgroup),
 	// TraceAttackPost
-	public(victim, attacker, inflictor, Float:damage, damagetype, ammotype, hitbox, hitgroup)
-}
+	public(victim, attacker, inflictor, Float:damage, damagetype, ammotype, hitbox, hitgroup),
+	// ShouldCollide
+	Action:public(entity, &collisiongroup, &contentsmask, &bool:result)
+};
 
 
 /**
@@ -137,6 +170,16 @@ forward Action:OnLevelInit(const String:mapName[], String:mapEntities[2097152]);
  * @noreturn
  */
 native SDKHook(entity, SDKHookType:type, SDKHookCB:callback);
+
+/**
+ * @brief Hooks an entity
+ *
+ * @param		entity		Entity index
+ * @param		type			Type of function to hook
+ * @param		callback	Function to call when hook is called
+ * @return		bool		Hook Successful
+ */
+native bool:SDKHookEx(entity, SDKHookType:type, SDKHookCB:callback);
 
 /**
  * @brief Unhooks an entity

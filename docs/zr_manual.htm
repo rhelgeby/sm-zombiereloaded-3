@@ -16,7 +16,7 @@
 
 <p class="headerinfo">Targets plugin version 3.0.0 Beta 2, 2009.12.11<br />
 Written by Richard Helgeby</p>
-<p class="headerinfo">Manual last modified: 2009.12.11</p>
+<p class="headerinfo">Manual last modified: 2010.07.04</p>
 
 <h2>Index</h2>
 
@@ -291,14 +291,8 @@ for both zombies and humans in different classes.</p>
 		<li><a href="http://wiki.alliedmods.net/index.php/Category:SourceMod_Documentation">SourceMod Documentation</a></li>
 	</ul></li>
 	
-	<li>
-		<p>ZRTools extension (bundled). Provides some extra functions needed by Zombie:Reloaded.
-		See <a href="#2.2">Plugin Installation (2.2)</a>.</p>
-		
-		<p>- Or, depending on Zombie:Reloaded release -</p>
-		<p><a href="http://forums.alliedmods.net/showthread.php?t=106748">SDK Hooks Extension</a>
-		(version 1.1 or newer).</p>
-	</li>
+	<li><p><a href="http://forums.alliedmods.net/showthread.php?t=106748">SDK Hooks Extension</a>
+	(version 1.3 or newer).</p></li>
 </ol>
 
 <h3><a name="2.2" />2.2 Plugin Installation</h3>
@@ -1343,11 +1337,14 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	<tr>
 		<td class="commandheader">speed</td>
 		<td class="commandheader">decimal</td>
-		<td class="commandheader">10.0 - 2000.0</td>
+		<td class="commandheader">10.0 - 2000.0 | -200.0 - 800.0</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
 			<p>The player's running speed.</p>
+			<p><strong>Note:</strong> The limits of this attribute depends on the speed method used.
+			In LMV-mode the values are absolute (10 to 2000), but in prop-mode values are offsets from
+			normal speed at 250 (-200 to 800).</p>
 		</td>
 	</tr>
 	
@@ -1781,6 +1778,23 @@ Place these console variables in the main configuration file:</p>
 			enabled on the player.</p>
 			<p>Options:<br />
 			0 or 1</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">zr_classes_speed_method</td>
+		<td class="commandheader">"prop"</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="2">
+			<p>Speed method to use when setting player speed.</p>
+			<p>Options:</p>
+			<table>
+				<tr><td class="valueoption">"lmv"</td><td>Modifies speed with the lagged movement
+				value. This is the old method and is available for compatibility reasons.</td></tr>
+				<tr><td class="valueoption">"prop"</td><td>Modifies speed with the players' speed
+				property.</td></tr>
+			</table>
 		</td>
 	</tr>
 </table></blockquote>

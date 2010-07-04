@@ -26,6 +26,11 @@
  */
 
 /**
+ * Array that stores the client's current speed.
+ */
+new Float:g_flClassApplySpeed[MAXPLAYERS + 1];
+
+/**
  * Applies all class attributes on a player. Changing model, hp, speed, health,
  * effects etc. The players current team will be used to get the class index.
  *
@@ -418,6 +423,80 @@ bool:ClassApplySpeed(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
         speed = ClassGetSpeed(classindex, cachetype);
     }
     
-    ToolsSetClientLMV(client, speed);
+    ClassApplySpeedEx(client, speed);
     return true;
+}
+
+/**
+ * Applies the specified speed to the player.
+ *
+ * @param client    Client to apply to.
+ * @param speed     Speed value.
+ */
+ClassApplySpeedEx(client, Float:speed)
+{
+    // Check what speed method that's used and apply it.
+    switch (ClassSpeedMethod)
+    {
+        case ClassSpeed_LMV:
+        {
+            ToolsSetClientLMV(client, speed);
+        }
+        case ClassSpeed_Prop:
+        {
+            g_flClassApplySpeed[client] = speed;
+        }
+    }
+}
+
+/**
+ * Called before the client can "think"
+ * Here we can change the client's speed through m_flMaxSpeed.
+ * 
+ * @param client    The client index.
+ */
+public ClassPreThinkPost(client)
+{
+    // Only apply speed if the prop method is used.
+    if (ClassSpeedMethod == ClassSpeed_Prop)
+    {
+        if (!IsPlayerAlive(client))
+        {
+            return;
+        }
+        
+        // Note: Default is around 200.0 - 250.0
+        new Float:newspeed = GetEntPropFloat(client, Prop_Data, "m_flMaxspeed") + g_flClassApplySpeed[client];
+        SetEntPropFloat(client, Prop_Data, "m_flMaxspeed", newspeed);
+    }
+}
+
+/**
+ * Called when a clients movement buttons are being processed
+ *
+ * @param client	Index of the client.
+ * @param vel		Players desired velocity.
+ */
+Class_OnPlayerRunCmd(client, Float:vel[3])
+{
+    if (!IsPlayerAlive(client))
+        return;
+    
+    // Only modify speed if the prop method is used.
+    if (ClassSpeedMethod == ClassSpeed_Prop)
+    {
+        // x-axis speed.
+        if (vel[0] < 0.0)
+            vel[0] = -5000.0;
+        
+        else if (vel[0] > 0.0)
+            vel[0] = 5000.0;
+        
+        // y-axis speed.
+        if (vel[1] < 0.0)
+            vel[1] = -5000.0;
+        
+        else if (vel[1] > 0.0)
+            vel[1] = 5000.0;
+    }
 }

@@ -267,7 +267,22 @@ stock ClassValidateAttributes(classindex)
     
     // Speed.
     new Float:speed = ClassData[classindex][Class_Speed];
-    if (!(speed >= ZR_CLASS_SPEED_MIN && speed <= ZR_CLASS_SPEED_MAX))
+    new Float:min;
+    new Float:max;
+    switch (ClassSpeedMethod)
+    {
+        case ClassSpeed_LMV:
+        {
+            min = ZR_CLASS_SPEED_LMV_MIN;
+            max = ZR_CLASS_SPEED_LMV_MAX;
+        }
+        case ClassSpeed_Prop:
+        {
+            min = ZR_CLASS_SPEED_PROP_MIN;
+            max = ZR_CLASS_SPEED_PROP_MAX;
+        }
+    }
+    if (!(speed >= min && speed <= max))
     {
         flags += ZR_CLASS_SPEED;
     }
@@ -419,7 +434,22 @@ stock ClassValidateEditableAttributes(attributes[ClassEditableAttributes])
     new Float:speed = attributes[ClassEdit_Speed];
     if (speed >= 0)
     {
-        if (!(speed >= ZR_CLASS_SPEED_MIN && speed <= ZR_CLASS_SPEED_MAX))
+        new Float:min;
+        new Float:max;
+        switch (ClassSpeedMethod)
+        {
+            case ClassSpeed_LMV:
+            {
+                min = ZR_CLASS_SPEED_LMV_MIN;
+                max = ZR_CLASS_SPEED_LMV_MAX;
+            }
+            case ClassSpeed_Prop:
+            {
+                min = ZR_CLASS_SPEED_PROP_MIN;
+                max = ZR_CLASS_SPEED_PROP_MAX;
+            }
+        }
+        if (!(speed >= min && speed <= max))
         {
             flags += ZR_CLASS_SPEED;
         }

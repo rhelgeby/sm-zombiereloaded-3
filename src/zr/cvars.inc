@@ -70,6 +70,7 @@ enum CvarsList
     Handle:CVAR_CLASSES_ZOMBIE_SELECT,
     Handle:CVAR_CLASSES_HUMAN_SELECT,
     Handle:CVAR_CLASSES_ADMIN_SELECT,
+    Handle:CVAR_CLASSES_SPEED_METHOD,
     Handle:CVAR_WEAPONS,
     Handle:CVAR_WEAPONS_RESTRICT,
     Handle:CVAR_WEAPONS_RESTRICT_ENDEQUIP,
@@ -274,6 +275,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_CLASSES_ZOMBIE_SELECT]            =    CreateConVar("zr_classes_zombie_select",           "1",            "Allow players to select zombie classes.");
     g_hCvarsList[CVAR_CLASSES_HUMAN_SELECT]             =    CreateConVar("zr_classes_human_select",            "1",            "Allow players to select human classes.");
     g_hCvarsList[CVAR_CLASSES_ADMIN_SELECT]             =    CreateConVar("zr_classes_admin_select",            "1",            "Allow admins to select admin mode classes. (Not to be confused by admin-only classes!)");
+    g_hCvarsList[CVAR_CLASSES_SPEED_METHOD]             =    CreateConVar("zr_classes_speed_method",            "prop",         "Speed method to use when applying player speed. Do not touch this if you don't know what you're doing! [\"lmv\" = Lagged movement value | \"prop\" = Player speed property");
     
     // Menu
     g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]           =    CreateConVar("zr_classes_menu_autoclose",      "1",            "Automatically close class selection menu after selecting a class.");

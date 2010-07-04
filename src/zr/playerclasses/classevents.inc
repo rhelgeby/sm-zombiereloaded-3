@@ -68,10 +68,33 @@ ClassOnMapStart()
 }
 
 /**
+ * Called when all configs are executed.
+ */
+ClassOnConfigsExecuted()
+{
+    new ClassSpeedMethods:speedMethod = ClassGetSpeedMethod();
+    
+    if (speedMethod != ClassSpeed_Invalid)
+    {
+        // Set speed method.
+        ClassSpeedMethod = speedMethod;
+    }
+    else
+    {
+        // Fall back on default to avoid errors.
+        ClassSpeedMethod = ClassSpeed_Prop;
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModules:LogModule_Playerclasses, "Config validation", "Warning: Invalid value in zr_classes_speed_method. Using default value.");
+    }
+}
+
+/**
  * Client has just connected to the server.
  */
 ClassOnClientConnected(client)
 {
+    // Unhook "PreThinkPost" on the client.
+    SDKUnhook(client, SDKHook_PreThinkPost, ClassPreThinkPost);
+    
     // Initialize the admin checked variable.
     g_bAdminChecked[client] = false;
 }
@@ -81,6 +104,9 @@ ClassOnClientConnected(client)
  */
 ClassClientInit(client)
 {
+    // Hook "PreThinkPost" on the client.
+    SDKHook(client, SDKHook_PreThinkPost, ClassPreThinkPost);
+    
     // Reset spawn flag.
     ClassPlayerSpawned[client] = false;
 }

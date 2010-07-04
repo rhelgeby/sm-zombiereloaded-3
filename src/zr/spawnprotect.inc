@@ -124,15 +124,44 @@ SpawnProtectStart(client)
         return;
     }
     
-    // Set spawn protect flag on client.
-    bInfectImmune[client][INFECT_TYPE_NORMAL] = true;
-    
     // Get spawn protect attribute cvars.
     new Float:speed = GetConVarFloat(g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]);
     new alpha = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]);
     
+    // Validate attributes
+    new Float:min;
+    new Float:max;
+    switch (ClassSpeedMethod)
+    {
+        case ClassSpeed_LMV:
+        {
+            min = ZR_CLASS_SPEED_LMV_MIN;
+            max = ZR_CLASS_SPEED_LMV_MAX;
+        }
+        case ClassSpeed_Prop:
+        {
+            min = ZR_CLASS_SPEED_PROP_MIN;
+            max = ZR_CLASS_SPEED_PROP_MAX;
+        }
+    }
+    if (speed < min && speed > max)
+    {
+        // Log a warning and abort.
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModules:LogModule_Config, "Config validation", "Out of range value in cvar zr_spawnprotect_speed (%f). Aborting spawn protection.", speed);
+        return;
+    }
+    if (alpha < ZR_CLASS_ALPHA_INITIAL_MIN && alpha > ZR_CLASS_ALPHA_INITIAL_MAX)
+    {
+        // Log a warning and abort.
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModules:LogModule_Config, "Config validation", "Out of range value in cvar zr_spawnprotect_alpha (%d). Aborting spawn protection.", alpha);
+        return;
+    }
+    
+    // Set spawn protect flag on client.
+    bInfectImmune[client][INFECT_TYPE_NORMAL] = true;
+    
     // Set spawn protect attributes.
-    ToolsSetClientLMV(client, speed);
+    ClassApplySpeedEx(client, speed);
     ToolsSetClientAlpha(client, alpha);
     
     // Set time left to zr_protect_time's value.

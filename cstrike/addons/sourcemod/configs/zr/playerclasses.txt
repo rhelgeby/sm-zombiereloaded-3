@@ -90,7 +90,7 @@
         "health_infect_gain"    "700"
         "kill_bonus"            "2"
         
-        "speed"                 "350"
+        "speed"                 "75"
         "knockback"             "4"
         "jump_height"           "1.1"
         "jump_distance"         "1.2"
@@ -134,7 +134,7 @@
         "health_infect_gain"    "500"
         "kill_bonus"            "2"
         
-        "speed"                 "380"
+        "speed"                 "100"
         "knockback"             "4.5"
         "jump_height"           "1.3"
         "jump_distance"         "1.2"
@@ -178,7 +178,7 @@
         "health_infect_gain"    "850"
         "kill_bonus"            "2"
         
-        "speed"                 "275"
+        "speed"                 "-25"
         "knockback"             "3.5"
         "jump_height"           "1.3"
         "jump_distance"         "1.3"
@@ -222,7 +222,7 @@
         "health_infect_gain"    "1000"
         "kill_bonus"            "2"
         
-        "speed"                 "280"
+        "speed"                 "-20"
         "knockback"             "2.5"
         "jump_height"           "0.9"
         "jump_distance"         "0.9"
@@ -266,7 +266,7 @@
         "health_infect_gain"    "700"
         "kill_bonus"            "4"
         
-        "speed"                 "400"
+        "speed"                 "110"
         "knockback"             "2.8"
         "jump_height"           "1.2"
         "jump_distance"         "1.3"
@@ -310,7 +310,7 @@
         "health_infect_gain"    "700"
         "kill_bonus"            "1"
         
-        "speed"                 "425"
+        "speed"                 "115"
         "knockback"             "2.8"
         "jump_height"           "1.2"
         "jump_distance"         "1.3"
@@ -360,7 +360,7 @@
         "health_infect_gain"    "0"
         "kill_bonus"            "2"
         
-        "speed"                 "300"
+        "speed"                 "0"
         "knockback"             "0"
         "jump_height"           "1.0"
         "jump_distance"         "1.0"
@@ -404,7 +404,7 @@
         "health_infect_gain"    "0"
         "kill_bonus"            "1"
         
-        "speed"                 "320"
+        "speed"                 "0"
         "knockback"             "0"
         "jump_height"           "1.2"
         "jump_distance"         "1.2"
@@ -448,7 +448,7 @@
         "health_infect_gain"    "0"
         "kill_bonus"            "1"
         
-        "speed"                 "320"
+        "speed"                 "50"
         "knockback"             "0"
         "jump_height"           "1.2"
         "jump_distance"         "1.2"
@@ -492,7 +492,7 @@
         "health_infect_gain"    "0"
         "kill_bonus"            "1"
         
-        "speed"                 "380"
+        "speed"                 "50"
         "knockback"             "0"
         "jump_height"           "1.0"
         "jump_distance"         "1.0"
@@ -536,7 +536,7 @@
         "health_infect_gain"    "0"
         "kill_bonus"            "1"
         
-        "speed"                 "300"
+        "speed"                 "-30"
         "knockback"             "0"
         "jump_height"           "1.3"
         "jump_distance"         "1.3"

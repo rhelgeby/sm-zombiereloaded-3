@@ -214,6 +214,7 @@ public OnConfigsExecuted()
     DamageLoad();
     VEffectsLoad();
     SEffectsLoad();
+    ClassOnConfigsExecuted();
     ClassLoad();
     VolLoad();
     
@@ -296,4 +297,21 @@ public OnClientDisconnect(client)
     AntiStickOnClientDisconnect(client);
     ZSpawnOnClientDisconnect(client);
     VolOnPlayerDisconnect(client);
+}
+
+/**
+ * Called when a clients movement buttons are being processed
+ *
+ * @param client	Index of the client.
+ * @param buttons	Copyback buffer containing the current commands (as bitflags - see entity_prop_stocks.inc).
+ * @param impulse	Copyback buffer containing the current impulse command.
+ * @param vel		Players desired velocity.
+ * @param angles	Players desired view angles.
+ * @param weapon	Entity index of the new weapon if player switches weapon, 0 otherwise.
+ * @return 			Plugin_Handled to block the commands from being processed, Plugin_Continue otherwise.
+ */
+public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
+{
+    Class_OnPlayerRunCmd(client, vel);
+    return Plugin_Continue;
 }
