@@ -1343,8 +1343,27 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 		<td class="indent" colspan="3">
 			<p>The player's running speed.</p>
 			<p><strong>Note:</strong> The limits of this attribute depends on the speed method used.
-			In LMV-mode the values are absolute (10 to 2000), but in prop-mode values are offsets from
-			normal speed at 250 (-200 to 800).</p>
+			See the table below:</p>
+			<table>
+				<tr>
+					<th>Speed method</th>
+					<th>Min</th>
+					<th>Max</th>
+					<th>CS:S default</th>
+				</tr>
+				<tr>
+					<td class="parameter">LMV</td>
+					<td class="parameter">10.0</td>
+					<td class="parameter">2000.0</td>
+					<td class="parameter">300.0</td>
+				</tr>
+				<tr>
+					<td class="parameter">prop</td>
+					<td class="parameter">-200.0</td>
+					<td class="parameter">800.0</td>
+					<td class="parameter">0.0</td>
+				</tr>
+			</table>
 		</td>
 	</tr>
 	
@@ -3508,12 +3527,29 @@ right after they've spawned.</p>
 	
 	<tr>
 		<td class="commandheader">zr_spawnprotect_speed</td>
-		<td class="commandheader">600.0</td>
+		<td class="commandheader">250.0</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="2">
-			<p>Running speed for spawn protected players. Normal running speed is 300.0, double is
-			600.0.</p>
+			<p>Running speed for spawn protected players. Speed value depends on the speed method used.
+			See the table below for examples:</p>
+			<table>
+				<tr>
+					<th>Speed method</th>
+					<th>Normal speed</th>
+					<th>Double speed</th>
+				</tr>
+				<tr>
+					<td class="parameter">LMV</td>
+					<td class="parameter">300.0</td>
+					<td class="parameter">600.0</td>
+				</tr>
+				<tr>
+					<td class="parameter">prop</td>
+					<td class="parameter">0.0</td>
+					<td class="parameter">250.0</td>
+				</tr>
+			</table>
 		</td>
 	</tr>
 	

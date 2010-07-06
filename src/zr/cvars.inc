@@ -441,7 +441,7 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_SPAWNPROTECT]                     =    CreateConVar("zr_spawnprotect",        "1",            "Player will be protected from infection when spawning into the game late.");
     g_hCvarsList[CVAR_SPAWNPROTECT_TIME]                =    CreateConVar("zr_spawnprotect_time",   "10",           "Amount of time to protect player. [Dependency: zr_spawnprotect]");
-    g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]               =    CreateConVar("zr_spawnprotect_speed",  "600.0",        "Speed of the player during protection. ['300.0' = Normal | '600.0' = Double speed | Dependency: zr_spawnprotect]");
+    g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]               =    CreateConVar("zr_spawnprotect_speed",  "250.0",        "Speed of the player during protection. See the manual for more information. [Dependency: zr_spawnprotect]");
     g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]               =    CreateConVar("zr_spawnprotect_alpha",  "0",            "Alpha of the player during protection. ['255' = Fully visible | '0' = Completely invisible | Dependency: zr_spawnprotect]");
     
     
