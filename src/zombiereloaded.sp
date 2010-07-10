@@ -260,6 +260,12 @@ public OnClientPutInServer(client)
  */
 public OnClientCookiesCached(client)
 {
+    // Check if client disconnected before cookies were done caching.
+    if (!IsClientConnected(client))
+    {
+        return;
+    }
+    
     // Forward "OnCookiesCached" event to modules.
     ClassOnCookiesCached(client);
     WeaponsOnCookiesCached(client);
