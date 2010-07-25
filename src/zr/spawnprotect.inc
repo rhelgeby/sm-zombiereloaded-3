@@ -220,7 +220,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
         
         // Fix attributes.
         ToolsSetClientAlpha(client, ClassGetAlphaInitial(client));
-        ToolsSetClientLMV(client, ClassGetSpeed(client));
+        ClassApplySpeedEx(client, ClassGetSpeed(client));
         
         // Clear timer handle.
         tSpawnProtect[client] = INVALID_HANDLE;
