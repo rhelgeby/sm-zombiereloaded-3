@@ -132,13 +132,15 @@ public Plugin:myinfo =
  * @param late      True if the plugin was loaded after map change, false on map start.
  * @param error     Error message if load failed.
  * @param err_max   Max length of the error message.
+ *
+ * @return          APLRes_Success for load success, APLRes_Failure or APLRes_SilentFailure otherwise.
  */
-public bool:AskPluginLoad(Handle:myself, bool:late, String:error[], err_max)
+public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
     // TODO: EXTERNAL API
     
     // Let plugin load.
-    return true;
+    return APLRes_Success;
 }
 
 /**

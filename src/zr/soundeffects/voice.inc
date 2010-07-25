@@ -111,8 +111,9 @@ stock bool:VoiceSetClientListening(iReceiver, iSender, bool:bListen)
         return false;
     }
     
-    SetClientListening(iReceiver, iSender, bListen);
-    return true;
+    new ListenOverride:override = bListen ? Listen_Yes : Listen_No;
+    
+    return SetListenOverride(iReceiver, iSender, override);
 }
 
 /**
