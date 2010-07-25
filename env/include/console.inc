@@ -473,9 +473,8 @@ native bool:GetConVarBool(Handle:convar);
 /**
  * Sets the boolean value of a console variable.
  *
- * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
- * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
- * is changed.
+ * Note: The replicate and notify params are only relevant for the original, Dark Messiah, and
+ * Episode 1 engines. Newer engines automatically do these things when the convar value is changed.
  *
  * @param convar		Handle to the convar.
  * @param value			New boolean value.
@@ -501,9 +500,8 @@ native GetConVarInt(Handle:convar);
 /**
  * Sets the integer value of a console variable.
  *
- * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
- * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
- * is changed.
+ * Note: The replicate and notify params are only relevant for the original, Dark Messiah, and
+ * Episode 1 engines. Newer engines automatically do these things when the convar value is changed.
  *
  * @param convar		Handle to the convar.
  * @param value			New integer value.
@@ -529,9 +527,8 @@ native Float:GetConVarFloat(Handle:convar);
 /**
  * Sets the floating point value of a console variable.
  *
- * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
- * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
- * is changed.
+ * Note: The replicate and notify params are only relevant for the original, Dark Messiah, and
+ * Episode 1 engines. Newer engines automatically do these things when the convar value is changed.
  *
  * @param convar		Handle to the convar.
  * @param value			New floating point value.
@@ -559,9 +556,8 @@ native GetConVarString(Handle:convar, String:value[], maxlength);
 /**
  * Sets the string value of a console variable.
  *
- * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
- * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
- * is changed.
+ * Note: The replicate and notify params are only relevant for the original, Dark Messiah, and
+ * Episode 1 engines. Newer engines automatically do these things when the convar value is changed.
  *
  * @param convar		Handle to the convar.
  * @param value			New string value.
@@ -578,9 +574,8 @@ native SetConVarString(Handle:convar, const String:value[], bool:replicate=false
 /**
  * Resets the console variable to its default value.
  *
- * Note: The replicate and notify params are ignored on the engines for Episode 2/Orange Box
- * and Left 4 Dead. These engines automatically replicates and notifies as soon as the convar
- * is changed.
+ * Note: The replicate and notify params are only relevant for the original, Dark Messiah, and
+ * Episode 1 engines. Newer engines automatically do these things when the convar value is changed.
  *
  * @param convar		Handle to the convar.
  * @param replicate		If set to true, the new convar value will be set on all clients.
@@ -592,6 +587,17 @@ native SetConVarString(Handle:convar, const String:value[], bool:replicate=false
  * @error				Invalid or corrupt Handle.
  */
 native ResetConVar(Handle:convar, bool:replicate=false, bool:notify=false);
+
+/**
+ * Retrieves the default string value of a console variable.
+ *
+ * @param convar		Handle to the convar.
+ * @param value			Buffer to store the default value of the convar.
+ * @param maxlength		Maximum length of string buffer.
+ * @return				Number of bytes written to the buffer (UTF-8 safe).
+ * @error				Invalid or corrupt Handle.
+ */
+native GetConVarDefault(Handle:convar, String:value[], maxlength);
 
 /**
  * Returns the bitstring of flags on a console variable.
@@ -639,12 +645,12 @@ native SetConVarBounds(Handle:convar, ConVarBounds:type, bool:set, Float:value=0
  * Retrieves the name of a console variable.
  *
  * @param convar		Handle to the convar.
- * @param value			Buffer to store the name of the convar.
+ * @param name			Buffer to store the name of the convar.
  * @param maxlength		Maximum length of string buffer.
  * @noreturn
  * @error				Invalid or corrupt Handle.     
  */
-native GetConVarName(Handle:convar, const String:name[], maxlength);
+native GetConVarName(Handle:convar, String:name[], maxlength);
 
 funcenum ConVarQueryFinished
 {	
@@ -835,3 +841,61 @@ native AddServerTag(const String:tag[]);
  * @noreturn
  */
 native RemoveServerTag(const String:tag[]);
+
+/**
+ * Callback for command listeners. This is invoked whenever any command
+ * reaches the server, from the server console itself or a player.
+ *
+ * Clients may be in the process of connecting when they are executing commands
+ * IsClientConnected(client) is not guaranteed to return true.  Other functions
+ * such as GetClientIP() may not work at this point either.
+ *
+ * Returning Plugin_Handled or Plugin_Stop will prevent the original,
+ * baseline code from running.
+ *
+ * -- TEXT BELOW IS IMPLEMENTATION, AND NOT GUARANTEED --
+ * Even if returning Plugin_Handled or Plugin_Stop, some callbacks will still
+ * trigger. These are:
+ *  * C++ command dispatch hooks from Metamod:Source plugins
+ *  * Reg*Cmd() hooks that did not create new commands.
+ *
+ * @param client        Client, or 0 for server.
+ *                      Client may not be connected or in game.
+ * @param command       Command name, lower case. To get name as typed, use
+ *                      GetCmdArg() and specify argument 0.
+ * @param argc          Argument count.
+ * @return				Action to take (see extended notes above).
+ */
+functag public Action:CommandListener(client, const String:command[], argc);
+
+#define FEATURECAP_COMMANDLISTENER  "command listener"
+
+/**
+ * Adds a callback that will fire when a command is sent to the server.
+ *
+ * Registering commands is designed to create a new command as part of the UI,
+ * whereas this is a lightweight hook on a command string, existing or not.
+ * Using Reg*Cmd to intercept is in poor practice, as it physically creates a
+ * new command and can slow down dispatch in general.
+ *
+ * To see if this feature is available, use FeatureType_Capability and 
+ * FEATURECAP_COMMANDLISTENER.
+ *
+ * @param callback      Callback.
+ * @param command		Command, or if not specified, a global listener.
+ *                      The command is case insensitive.
+ * @return              True if this feature is available on the current game,
+ *                      false otherwise.
+ */
+native bool:AddCommandListener(CommandListener:callback, const String:command[]="");
+
+/**
+ * Removes a previously added command listener, in reverse order of being added.
+ *
+ * @param callback		Callback.
+ * @param command		Command, or if not specified, a global listener.
+ *                      The command is case insensitive.
+ * @error				Callback has no active listeners.
+ */
+native RemoveCommandListener(CommandListener:callback, const String:command[]="");
+

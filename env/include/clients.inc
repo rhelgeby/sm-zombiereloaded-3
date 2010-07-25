@@ -117,6 +117,9 @@ forward OnClientDisconnect_Post(client);
 /**
  * Called when a client is sending a command.
  *
+ * As of SourceMod 1.3, the client is guaranteed to be in-game.
+ * Use command listeners (console.inc) for more advanced hooks.
+ *
  * @param client		Client index.
  * @param args			Number of arguments.
  * @noreturn
@@ -133,9 +136,8 @@ forward OnClientSettingsChanged(client);
 
 /**
  * Called when a client receives a Steam ID.  The state of a client's 
- * authorization via Steam or as an admin is not guaranteed here.  
- * Use OnClientAuthorized() or OnClientPostAdminCheck() for those, 
- * respectively.
+ * authorization as an admin is not guaranteed here.  Use 
+ * OnClientPostAdminCheck() if you need a client's admin status.
  *
  * This is called by bots, but the ID will be "BOT".
  *
@@ -599,7 +601,7 @@ native Float:GetClientTime(client);
  *
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
- * @return				Latency.
+ * @return				Latency, or -1 if network info is not available.
  * @error				Invalid client index, client not in game, or fake client.
  */
 native Float:GetClientLatency(client, NetFlow:flow);
@@ -609,7 +611,7 @@ native Float:GetClientLatency(client, NetFlow:flow);
  *
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
- * @return				Average latency.
+ * @return				Latency, or -1 if network info is not available.
  * @error				Invalid client index, client not in game, or fake client.
  */
 native Float:GetClientAvgLatency(client, NetFlow:flow);
@@ -619,7 +621,7 @@ native Float:GetClientAvgLatency(client, NetFlow:flow);
  *
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
- * @return				Average packet loss.
+ * @return				Average packet loss, or -1 if network info is not available.
  * @error				Invalid client index, client not in game, or fake client.
  */
 native Float:GetClientAvgLoss(client, NetFlow:flow);
@@ -629,7 +631,7 @@ native Float:GetClientAvgLoss(client, NetFlow:flow);
  *
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
- * @return				Average packet choke.
+ * @return				Average packet loss, or -1 if network info is not available.
  * @error				Invalid client index, client not in game, or fake client.
  */
 native Float:GetClientAvgChoke(client, NetFlow:flow);

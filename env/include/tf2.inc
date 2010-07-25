@@ -35,6 +35,20 @@
 #endif
 #define _tf2_included
 
+#define TF_STUNFLAG_SLOWDOWN        (1 << 0)	// activates slowdown modifier
+#define TF_STUNFLAG_BONKSTUCK       (1 << 1)	// bonk sound, stuck
+#define TF_STUNFLAG_LIMITMOVEMENT   (1 << 2)	// disable forward/backward movement
+#define TF_STUNFLAG_CHEERSOUND      (1 << 3)	// cheering sound
+#define TF_STUNFLAG_NOSOUNDOREFFECT (1 << 5)	// no sound or particle
+#define TF_STUNFLAG_THIRDPERSON     (1 << 6)	// panic animation
+#define TF_STUNFLAG_GHOSTEFFECT     (1 << 7)	// ghost particles
+
+#define TF_STUNFLAGS_LOSERSTATE     TF_STUNFLAG_SLOWDOWN|TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_THIRDPERSON
+#define TF_STUNFLAGS_GHOSTSCARE     TF_STUNFLAG_GHOSTEFFECT|TF_STUNFLAG_THIRDPERSON
+#define TF_STUNFLAGS_SMALLBONK      TF_STUNFLAG_THIRDPERSON|TF_STUNFLAG_SLOWDOWN
+#define TF_STUNFLAGS_NORMALBONK     TF_STUNFLAG_BONKSTUCK
+#define TF_STUNFLAGS_BIGBONK        TF_STUNFLAG_CHEERSOUND|TF_STUNFLAG_BONKSTUCK
+
 enum TFClassType
 {
 	TFClass_Unknown = 0,
@@ -57,6 +71,41 @@ enum TFTeam
 	TFTeam_Blue = 3	
 };
 
+enum TFCond
+{
+	TFCond_Slowed = 0,
+	TFCond_Zoomed,
+	TFCond_Disguising,
+	TFCond_Disguised,
+	TFCond_Cloaked,
+	TFCond_Ubercharged,
+	TFCond_TeleportedGlow,
+	TFCond_Taunting,
+	TFCond_UberchargeFading,
+	TFCond_Unknown1,
+	TFCond_Teleporting,
+	TFCond_Kritzkrieged,
+	TFCond_Unknown2,
+	TFCond_DeadRingered,
+	TFCond_Bonked,
+	TFCond_Dazed,
+	TFCond_Buffed,
+	TFCond_Charging,
+	TFCond_DemoBuff,
+	TFCond_CritCola,
+	TFCond_Healing,
+	TFCond_OnFire,
+	TFCond_Overhealed,
+	TFCond_Jarated
+};
+
+enum TFHoliday
+{
+	TFHoliday_None = 1,
+	TFHoliday_Halloween,
+	TFHoliday_Birthday
+};
+
 /**
  * Sets a client on fire for 10 seconds.
  *
@@ -74,6 +123,46 @@ native TF2_IgnitePlayer(client, target);
  * @error				Invalid client index, client not in game, or no mod support.
  */
 native TF2_RespawnPlayer(client);
+
+/**
+ * Regenerates a client's health and ammunition
+ *
+ * @param client		Player's index.
+ * @noreturn
+ * @error				Invalid client index, client not in game, or no mod support.
+ */
+native TF2_RegeneratePlayer(client);
+
+/**
+ * Adds a condition to a player
+ *
+ * @param client		Player's index.
+ * @param condition		Integer identifier of condition to apply.
+ * @param duration		Duration of condition (does not apply to all conditions).
+ * @noreturn
+ * @error				Invalid client index, client not in game, or no mod support.
+ */
+native TF2_AddCondition(client, TFCond:condition, Float:duration);
+
+/**
+ * Removes a condition from a player
+ *
+ * @param client		Player's index.
+ * @param condition		Integer identifier of condition to remove.
+ * @noreturn
+ * @error				Invalid client index, client not in game, or no mod support.
+ */
+native TF2_RemoveCondition(client, TFCond:condition);
+
+/**
+ * Enables/disables PowerPlay mode on a player.
+ *
+ * @param client		Player's index.
+ * @param enabled		Whether to enable or disable PowerPlay on player.
+ * @noreturn
+ * @error				Invalid client index, client not in game, or no mod support.
+ */
+native TF2_SetPlayerPowerPlay(client, bool:enabled);
 
 /**
  * Disguises a client to the given model and team. Only has an effect on spies.
@@ -96,6 +185,19 @@ native TF2_DisguisePlayer(client, TFTeam:team, TFClassType:class);
  * @error				Invalid client index, client not in game, or no mod support.
  */
 native TF2_RemovePlayerDisguise(client);
+
+/**
+ * Stuns a client
+ *
+ * @param client		Player's index.
+ * @param float			Duration of stun.
+ * @param float			Slowdown percent (as decimal, 0.00-1.00)
+ *						(ignored if TF_STUNFLAG_SLOWDOWN is not set.
+ * @param int			Stun flags.
+ * @param attacker		Attacker's index (0 is allowed for world).
+ * @noreturn
+ */
+native TF2_StunPlayer(client, Float:duration, Float:slowdown=0.0, stunflags, attacker=0);
 
 /**
  * Retrieves the entity index of the CPlayerResource entity
@@ -130,16 +232,43 @@ native TFClassType:TF2_GetClass(const String:classname[]);
 forward Action:TF2_CalcIsAttackCritical(client, weapon, String:weaponname[], &bool:result);
 
 /**
+ * Called when the game checks to see if the current day is one of its tracked holidays
+ *
+ * @note Change the value of holiday and return Plugin_Changed to override.
+ *       Return Plugin_Continue for no change.
+ *
+ * @param holiday		Current Holiday
+ */
+forward Action:TF2_OnGetHoliday(&TFHoliday:holiday);
+
+/**
  * Do not edit below this line!
  */
 public Extension:__ext_tf2 = 
 {
 	name = "TF2 Tools",
 	file = "game.tf2.ext",
-	autoload = 1,
+	autoload = 0,
 #if defined REQUIRE_EXTENSIONS
 	required = 1,
 #else
 	required = 0,
 #endif
 };
+
+#if !defined REQUIRE_EXTENSIONS
+public __ext_tf2_SetNTVOptional()
+{
+	MarkNativeAsOptional("TF2_IgnitePlayer");
+	MarkNativeAsOptional("TF2_RespawnPlayer");
+	MarkNativeAsOptional("TF2_RegeneratePlayer");
+	MarkNativeAsOptional("TF2_AddCondition");
+	MarkNativeAsOptional("TF2_RemoveCondition");
+	MarkNativeAsOptional("TF2_SetPlayerPowerPlay");
+	MarkNativeAsOptional("TF2_DisguisePlayer");
+	MarkNativeAsOptional("TF2_RemovePlayerDisguise");
+	MarkNativeAsOptional("TF2_StunPlayer");
+	MarkNativeAsOptional("TF2_GetResourceEntity");
+	MarkNativeAsOptional("TF2_GetClass");
+}
+#endif

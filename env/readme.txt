@@ -1,7 +1,7 @@
 Compiling:
 
 - Windows: Use compile.bat in the source code repository.
-- Linux: Use the makefile.
+- Linux: Use the Makefile script.
 
 The binary will be made in <repos>/build.
 

@@ -85,16 +85,23 @@ enum CookieMenuAction
 /**
  * Creates a new Client preference cookie.
  *
+ * Handles returned by RegClientCookie can be closed via CloseHandle() when
+ * no longer needed.
+ *
  * @param name			Name of the new preference cookie.
  * @param description	Optional description of the preference cookie.
  * @param access		What CookieAccess level to assign to this cookie.
- * @return				A handle to the newly created cookie. If the cookie already exists, a handle to it will still be returned.
+ * @return				A handle to the newly created cookie. If the cookie already
+ *                      exists, a handle to it will still be returned.
  * @error				Cookie name is blank.
  */
 native Handle:RegClientCookie(const String:name[], const String:description[], CookieAccess:access);
 
 /**
  * Searches for a Client preference cookie.
+ *
+ * Handles returned by FindClientCookie can be closed via CloseHandle() when
+ * no longer needed.
  *
  * @param name			Name of cookie to find.
  * @return				A handle to the cookie if it is found. INVALID_HANDLE otherwise.
@@ -221,6 +228,15 @@ native bool:ReadCookieIterator(Handle:iter,
  * @error				Invalid cookie handle.	
  */
 native CookieAccess:GetCookieAccess(Handle:cookie);
+
+/**
+ * Returns the last updated timestamp for a client cookie
+ *
+ * @param client		Client index.
+ * @param cookie		Cookie handle.
+ * @return			Last updated timestamp.
+ */
+native GetClientCookieTime(client, Handle:cookie);
 
 /**
  * Do not edit below this line!
