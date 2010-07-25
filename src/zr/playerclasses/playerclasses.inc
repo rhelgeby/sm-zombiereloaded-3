@@ -166,7 +166,7 @@
 #define ZR_CLASS_SPEED_LMV_MIN              10.0
 #define ZR_CLASS_SPEED_LMV_MAX              2000.0
 #define ZR_CLASS_SPEED_PROP_MIN             -200.0
-#define ZR_CLASS_SPEED_PROP_MAX             800.0
+#define ZR_CLASS_SPEED_PROP_MAX             1750.0
 #define ZR_CLASS_KNOCKBACK_MIN              -30.0
 #define ZR_CLASS_KNOCKBACK_MAX              30.0
 #define ZR_CLASS_KNOCKBACK_IGNORE           -31.0   /** Used by class editor volumetric feature. */

@@ -1337,13 +1337,15 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	<tr>
 		<td class="commandheader">speed</td>
 		<td class="commandheader">decimal</td>
-		<td class="commandheader">10.0 - 2000.0 | -200.0 - 800.0</td>
+		<td class="commandheader">-200.0 - 1750.0 | 10.0 - 2000.0</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
 			<p>The player's running speed.</p>
 			<p><strong>Note:</strong> The limits of this attribute depends on the speed method used.
-			See the table below:</p>
+			In LMV-mode the speed values are <em>absolute</em>, but in prop-mode values are
+			<em>offsets</em> from normal speed at 250 (the class speed value is just added to this
+			value). See the table below for limits:</p>
 			<table>
 				<tr>
 					<th>Speed method</th>
@@ -1360,7 +1362,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 				<tr>
 					<td class="parameter">prop</td>
 					<td class="parameter">-200.0</td>
-					<td class="parameter">800.0</td>
+					<td class="parameter">1750.0</td>
 					<td class="parameter">0.0</td>
 				</tr>
 			</table>
