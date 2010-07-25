@@ -350,7 +350,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie",   "0",                                    "Intercept suicide commands attempted by zombies.");
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_MZOMBIE]           =    CreateConVar("zr_damage_suicide_mzombie",  "1",                                    "Intercept suicide commands attempted by mother zombies.");
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]             =    CreateConVar("zr_damage_suicide_human",    "0",                                    "Intercept suicide commands attempted by humans.");
-    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds",     "kill, spectate, jointeam, joinclass",  "List of client commands to intercept as suicide attempts. [Delimiter: \", \"]");
+    g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS]              =    CreateConVar("zr_damage_suicide_cmds",     "kill, spectate, jointeam, joinclass, explode",  "List of client commands to intercept as suicide attempts. [Delimiter: \", \"]");
     g_hCvarsList[CVAR_SUICIDE_AFTER_INFECT]             =    CreateConVar("zr_damage_suicide_after_infect",    "1",                             "Intercept suicide commands only after the first zombie has spawned.");
     
     
