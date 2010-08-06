@@ -28,7 +28,7 @@
 // alpha_damaged            number      Transparency when damaged.
 // alpha_damage             number      How much damage to do before switching alpha.
 // overlay_path             text        Overlay displayed at the player.
-// nvgs                     yes/no      Give night vision.
+// nvgs                     yes/no      Give and turn on night vision.
 // fov                      number      Field of view value. 90 is default.
 // has_napalm               yes/no      Allows player to throw napalm grenades. Humans only.
 // napalm_time              decimal     Napalm burn duration. Zombies only.
