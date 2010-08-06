@@ -191,7 +191,10 @@ ZMarketOnClientSpawnPost(client)
 ZMarketResetPurchaseCount(client)
 {
     // Clear out the trie of all data.
-    ClearTrie(g_hZMarketPurchaseCount[client]);
+    if (g_hZMarketPurchaseCount[client] != INVALID_HANDLE)
+    {
+        ClearTrie(g_hZMarketPurchaseCount[client]);
+    }
 }
 
 /**
