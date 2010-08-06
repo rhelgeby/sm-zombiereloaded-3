@@ -98,46 +98,66 @@ stock bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
  * check if they have invalid values. Boolean settings are not validated.
  *
  * @param classindex    The index of the class to validate.
+ * @param logErrors     Log invalid attributes.
  * @return              A value with attribute error flags.
  */
-stock ClassValidateAttributes(classindex)
+stock ClassValidateAttributes(classindex, bool:logErrors = false)
 {
     // TODO: Validate immunity mode and amount.
     
     new flags;
     
     // Team.
-    if (ClassData[classindex][Class_Team] < ZR_CLASS_TEAM_MIN || ClassData[classindex][Class_Team] > ZR_CLASS_TEAM_MAX)
+    new team = ClassData[classindex][Class_Team];
+    if (team < ZR_CLASS_TEAM_MIN || team > ZR_CLASS_TEAM_MAX)
     {
         flags += ZR_CLASS_TEAM;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid team at index %d: %d", classindex, team);
+        }
     }
     
     // Class flags.
-    if (ClassData[classindex][Class_Flags] < ZR_CLASS_FLAGS_MIN || ClassData[classindex][Class_Flags] > ZR_CLASS_FLAGS_MAX)
+    new class_flags = ClassData[classindex][Class_Flags];
+    if (class_flags < ZR_CLASS_FLAGS_MIN || class_flags > ZR_CLASS_FLAGS_MAX)
     {
         flags += ZR_CLASS_FLAGS;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid flags at index %d: %d", classindex, class_flags);
+        }
     }
     
     // Group.
-    if (strlen(ClassData[classindex][Class_Group]))
+    decl String:group[64];
+    group[0] = 0;
+    if (strcopy(group, sizeof(group), ClassData[classindex][Class_Group]) > 0)
     {
         // Check if the group exist.
-        if (FindAdmGroup(ClassData[classindex][Class_Group]) == INVALID_GROUP_ID)
+        if (FindAdmGroup(group) == INVALID_GROUP_ID)
         {
             flags += ZR_CLASS_GROUP;
+            if (logErrors)
+            {
+                LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid group at index %d: \"%s\"", classindex, group);
+            }
         }
     }
     
     // Name.
-    if (strlen(ClassData[classindex][Class_Name]) < ZR_CLASS_NAME_MIN)
+    decl String:name[64];
+    name[0] = 0;
+    if (strcopy(name, sizeof(name), ClassData[classindex][Class_Name]) < ZR_CLASS_NAME_MIN)
     {
         flags += ZR_CLASS_NAME;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Missing name at index %d.", classindex);
+        }
     }
     else
     {
-        decl String:name[64];
-        strcopy(name, sizeof(name), ClassData[classindex][Class_Name]);
-        
         // Check for reserved name keyworks. These aren't allowed as names.
         if (StrEqual(name, "all", false) ||
             StrEqual(name, "humans", false) ||
@@ -145,6 +165,10 @@ stock ClassValidateAttributes(classindex)
             StrEqual(name, "admins", false))
         {
             flags += ZR_CLASS_NAME;
+            if (logErrors)
+            {
+                LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid name at index %d. Cannot be a team name: \"%s\"", classindex, name);
+            }
         }
     }
     
@@ -152,6 +176,10 @@ stock ClassValidateAttributes(classindex)
     if (strlen(ClassData[classindex][Class_Description]) < ZR_CLASS_DESCRIPTION_MIN)
     {
         flags += ZR_CLASS_DESCRIPTION;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Missing description at index %d.", classindex);
+        }
     }
     
     // Model path.
@@ -159,6 +187,10 @@ stock ClassValidateAttributes(classindex)
     if (strcopy(model_path, sizeof(model_path), ClassData[classindex][Class_ModelPath]) == 0)
     {
         flags += ZR_CLASS_MODEL_PATH;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Missing model_path at index %d.", classindex, model_path);
+        }
     }
     else
     {
@@ -175,6 +207,10 @@ stock ClassValidateAttributes(classindex)
             if (!FileExists(model_path))
             {
                 flags += ZR_CLASS_MODEL_PATH;
+                if (logErrors)
+                {
+                    LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid model_path at index %d. File not found: \"%s\"", classindex, model_path);
+                }
             }
         }
     }
@@ -184,6 +220,10 @@ stock ClassValidateAttributes(classindex)
     if (!(alpha_initial >= ZR_CLASS_ALPHA_INITIAL_MIN && alpha_initial <= ZR_CLASS_ALPHA_INITIAL_MAX))
     {
         flags += ZR_CLASS_ALPHA_INITIAL;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid alpha_inital at index %d: %d", classindex, alpha_initial);
+        }
     }
     
     // Alpha, damaged.
@@ -191,6 +231,10 @@ stock ClassValidateAttributes(classindex)
     if (!(alpha_damaged >= ZR_CLASS_ALPHA_DAMAGED_MIN && alpha_damaged <= ZR_CLASS_ALPHA_DAMAGED_MAX))
     {
         flags += ZR_CLASS_ALPHA_DAMAGED;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid alpha_damaged at index %d: %d", classindex, alpha_damaged);
+        }
     }
     
     // Alpha, damage.
@@ -198,6 +242,10 @@ stock ClassValidateAttributes(classindex)
     if (!(alpha_damage >= ZR_CLASS_ALPHA_DAMAGE_MIN && alpha_damage <= ZR_CLASS_ALPHA_DAMAGE_MAX))
     {
         flags += ZR_CLASS_ALPHA_DAMAGE;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid alpha_damage at index %d: %d", classindex, alpha_damage);
+        }
     }
     
     // Overlay path.
@@ -210,6 +258,10 @@ stock ClassValidateAttributes(classindex)
         if (!FileExists(overlay))
         {
             flags += ZR_CLASS_OVERLAY_PATH;
+            if (logErrors)
+            {
+                LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid overlay_path at index %d. File not found: \"%s\"", classindex, overlay_path);
+            }
         }
     }
     
@@ -218,6 +270,10 @@ stock ClassValidateAttributes(classindex)
     if (!(fov >= ZR_CLASS_FOV_MIN && fov <= ZR_CLASS_FOV_MAX))
     {
         flags += ZR_CLASS_FOV;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid fov at index %d: %d", classindex, fov);
+        }
     }
     
     // Napalm time.
@@ -225,6 +281,10 @@ stock ClassValidateAttributes(classindex)
     if (!(napalm_time >= ZR_CLASS_NAPALM_TIME_MIN && napalm_time <= ZR_CLASS_NAPALM_TIME_MAX))
     {
         flags += ZR_CLASS_NAPALM_TIME;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid napalm_time at index %d: %0.2f", classindex, napalm_time);
+        }
     }
     
     // Immunity mode (not implemented).
@@ -235,6 +295,10 @@ stock ClassValidateAttributes(classindex)
     if (!(health >= ZR_CLASS_HEALTH_MIN && health <= ZR_CLASS_HEALTH_MAX))
     {
         flags += ZR_CLASS_HEALTH;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid health at index %d: %d", classindex, health);
+        }
     }
     
     // Health regen interval.
@@ -242,6 +306,10 @@ stock ClassValidateAttributes(classindex)
     if (!(regen_interval >= ZR_CLASS_REGEN_INTERVAL_MIN && regen_interval <= ZR_CLASS_REGEN_INTERVAL_MAX))
     {
         flags += ZR_CLASS_HEALTH_REGEN_INTERVAL;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid health_regen_interval at index %d: %0.2f", classindex, regen_interval);
+        }
     }
     
     // Health regen amount.
@@ -249,6 +317,10 @@ stock ClassValidateAttributes(classindex)
     if (!(regen_amount >= ZR_CLASS_REGEN_AMOUNT_MIN && regen_amount <= ZR_CLASS_REGEN_AMOUNT_MAX))
     {
         flags += ZR_CLASS_HEALTH_REGEN_AMOUNT;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid health_regen_amount at index %d: %d", classindex, regen_amount);
+        }
     }
     
     // Health infect gain.
@@ -256,6 +328,10 @@ stock ClassValidateAttributes(classindex)
     if (!(infect_gain >= ZR_CLASS_HEALTH_INFECT_GAIN_MIN && infect_gain <= ZR_CLASS_HEALTH_INFECT_GAIN_MAX))
     {
         flags += ZR_CLASS_HEALTH_INFECT_GAIN;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid health_infect_gain at index %d: %d", classindex, infect_gain);
+        }
     }
     
     // Kill bonus.
@@ -263,6 +339,10 @@ stock ClassValidateAttributes(classindex)
     if (!(kill_bonus >= ZR_CLASS_KILL_BONUS_MIN && kill_bonus <= ZR_CLASS_KILL_BONUS_MAX))
     {
         flags += ZR_CLASS_KILL_BONUS;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid kill_bonus at index %d: %d", classindex, kill_bonus);
+        }
     }
     
     // Speed.
@@ -285,6 +365,10 @@ stock ClassValidateAttributes(classindex)
     if (!(speed >= min && speed <= max))
     {
         flags += ZR_CLASS_SPEED;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid speed at index %d: %0.2f", classindex, speed);
+        }
     }
     
     // Knockback.
@@ -292,6 +376,10 @@ stock ClassValidateAttributes(classindex)
     if (!(knockback >= ZR_CLASS_KNOCKBACK_MIN && knockback <= ZR_CLASS_KNOCKBACK_MAX))
     {
         flags += ZR_CLASS_KNOCKBACK;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid knockback at index %d: %0.2f", classindex, knockback);
+        }
     }
     
     // Jump height.
@@ -299,6 +387,10 @@ stock ClassValidateAttributes(classindex)
     if (!(jump_height >= ZR_CLASS_JUMP_HEIGHT_MIN && jump_height <= ZR_CLASS_JUMP_HEIGHT_MAX))
     {
         flags += ZR_CLASS_JUMP_HEIGHT;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid jump_height at index %d: %0.2f", classindex, jump_height);
+        }
     }
     
     // Jump distance.
@@ -306,6 +398,10 @@ stock ClassValidateAttributes(classindex)
     if (!(jump_distance >= ZR_CLASS_JUMP_DISTANCE_MIN && jump_distance <= ZR_CLASS_JUMP_DISTANCE_MAX))
     {
         flags += ZR_CLASS_JUMP_DISTANCE;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid jump_distance at index %d: %0.2f", classindex, jump_distance);
+        }
     }
     
     return flags;

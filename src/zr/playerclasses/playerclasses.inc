@@ -612,7 +612,7 @@ ClassLoad()
         ClassData[ClassCount][Class_JumpDistance] = KvGetFloat(kvClassData, "jump_distance", ZR_CLASS_DEFAULT_JUMP_DISTANCE);
         
         // Validate the class attributes.
-        ClassErrorFlags = ClassValidateAttributes(ClassCount);
+        ClassErrorFlags = ClassValidateAttributes(ClassCount, true);
         if (ClassErrorFlags > 0)
         {
             // There's one or more invalid class attributes. Disable the class
