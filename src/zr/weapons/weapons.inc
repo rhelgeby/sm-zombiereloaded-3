@@ -482,6 +482,12 @@ stock WeaponsNameToIndex(const String:weapon[])
  */
 stock WeaponsEntityToDisplay(const String:entityname[], String:display[], displaymaxlen, noprefix = false)
 {
+    // Check if weapon data is loaded.
+    if (arrayWeapons == INVALID_HANDLE)
+    {
+        return -1;
+    }
+    
     decl String:weaponentity[WEAPONS_MAX_LENGTH];
     
     // Initialize string to null.
