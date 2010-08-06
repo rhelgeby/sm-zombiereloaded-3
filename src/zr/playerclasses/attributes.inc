@@ -935,7 +935,26 @@ stock Float:ClassGetSpeed(index, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
         case ZR_CLASS_CACHE_PLAYER:
         {
-            return ClassPlayerCache[index][Class_Speed] * ClassGetAttributeMultiplier(index, ClassM_Speed);
+            new Float:speed = ClassPlayerCache[index][Class_Speed];
+            new Float:multiplier = ClassGetAttributeMultiplier(index, ClassM_Speed);
+            
+            // Apply multiplier.
+            if (ClassSpeedMethod == ClassSpeed_Prop)
+            {
+                // Prop speed is an offset. Convert to absolute value.
+                speed += 250;
+                
+                // Apply multiplier.
+                speed *= multiplier;
+                
+                // Convert back to speed offset.
+                speed -= 250;
+            }
+            else
+            {
+                speed *= multiplier;
+            }
+            return speed;
         }
     }
     return -1.0;
