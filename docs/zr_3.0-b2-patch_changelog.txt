@@ -107,14 +107,14 @@ released. If the file is empty there are no config changes in that patch.
 * Fixed classes not always restored from cookies.
 
 
-2010.06.03 - 613
-------------------
+2010.06.03 - r613
+-------------------
 
 * Fixed signatures and round end defines that were updated in CS:S OB.
 
 
-2010.07.25 - 633
-------------------
+2010.07.25 - r633
+-------------------
 
 * Added support for different speed methods, defaulted to prop offset method. See the manual
   for more information about the class speed attribute.
@@ -129,3 +129,17 @@ released. If the file is empty there are no config changes in that patch.
 * Fixed class menus being disabled and not checking if the player have access to private classes.
 * Fixed client not connected error in class module.
 * Updated compiler. ZR now requires SourceMod 1.3 or newer.
+
+
+2010.08.28 - r643
+-------------------
+
+* Fixed function signatures that were changed after a CS update.
+* Fixed class speed multiplier not properly applied with prop speed method (bug 199).
+* Fixed invalid handle error in ZMarket module (bug 152).
+* Fixed a rare case where removing weapons didn't work.
+* Possibly fixed invalid handle error with WeaponsEntityToDisplay (bug 163).
+* Lowered sv_maxspeed to work around a acceleration issue with spectators.
+* Added validation error messages for individual attributes when loading classes. Easier than
+  reading bits from a number.
+* Improved confusing description of the NVGs class attribute.
