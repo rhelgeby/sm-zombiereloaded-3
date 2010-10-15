@@ -134,7 +134,7 @@ released. If the file is empty there are no config changes in that patch.
 2010.08.28 - r643
 -------------------
 
-* Fixed function signatures that were changed after a CS update.
+* Fixed function signatures that were changed after a CS update. Credit goes to psychonic.
 * Fixed class speed multiplier not properly applied with prop speed method (bug 199).
 * Fixed invalid handle error in ZMarket module (bug 152).
 * Fixed a rare case where removing weapons didn't work.
@@ -143,3 +143,11 @@ released. If the file is empty there are no config changes in that patch.
 * Added validation error messages for individual attributes when loading classes. Easier than
   reading bits from a number.
 * Improved confusing description of the NVGs class attribute.
+
+2010.10.15 - r644
+-------------------
+
+* Changed default speed method to LMV because prop speed offsets are broken at the moment. This
+  will introduce some side effects again; jump and fall speed is affected. Weapon recoil is also
+  affected, but it's not confirmed that it has negative impact on bullets or aiming itself.
+  Note: Those who already changed speed method back to LMV don't need this patch.
