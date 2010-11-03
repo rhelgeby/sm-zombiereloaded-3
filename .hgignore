@@ -5,6 +5,7 @@ src/zr/hgversion.h.inc
 
 build/*
 release/*
+docs/changes/*
 
 patch.diff
 patch.txt
