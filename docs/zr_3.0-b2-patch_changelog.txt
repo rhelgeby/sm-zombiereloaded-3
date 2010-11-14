@@ -151,3 +151,24 @@ released. If the file is empty there are no config changes in that patch.
   will introduce some side effects again; jump and fall speed is affected. Weapon recoil is also
   affected, but it's not confirmed that it has negative impact on bullets or aiming itself.
   Note: Those who already changed speed method back to LMV don't need this patch.
+
+2010.11.14 - r647
+-------------------
+
+* Added external plugin API for ZR with basic infection and respawn tools. The following natives
+  and forwards are now available:
+      ZR_IsClientZombie
+      ZR_IsClientHuman
+      ZR_InfectClient
+      ZR_HumanClient
+      ZR_OnClientInfect
+      ZR_OnClientInfected
+      ZR_OnClientHuman
+      ZR_OnClientHumanPost
+      ZR_RespawnClient
+      ZR_OnClientRespawn
+      ZR_OnClientRespawned
+      ZR_SetKilledByWorld
+      ZR_GetKilledByWorld
+  See addons/sourcemod/scripting/include/zr in the package for details.
+  Also see addons/sourcemod/scripting/testsuite/zr for API usage examples.
