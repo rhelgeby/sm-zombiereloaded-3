@@ -263,9 +263,7 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
     }
     
     // Tell respawn module to respawn client.
-    RespawnSpawnClient(client, teamzombie);
-    
-    return true;
+    return RespawnSpawnClient(client, teamzombie, false);
 }
 
 /**

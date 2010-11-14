@@ -563,6 +563,15 @@ public Action:InfectMotherZombie(Handle:timer)
  */
 InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respawnoverride = false, bool:respawn = false)
 {
+    // Forward pre-event to modules.
+    new Action:result = APIOnClientInfect(client, attacker, motherinfect, respawnoverride, respawn);
+    
+    // Check if infection should be blocked.
+    if (result == Plugin_Handled)
+    {
+        return;
+    }
+    
     // Mark player as zombie.
     bZombie[client] = true;
     
@@ -650,6 +659,7 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     SEffectsOnClientInfected(client);
     ZTeleOnClientInfected(client);
     ZHPOnClientInfected(client);
+    APIOnClientInfected(client, attacker, motherinfect, respawnoverride, respawn);
 }
 
 /**
@@ -662,6 +672,15 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
  */
 InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
 {
+    // Forward pre-event to modules.
+    new Action:result = APIOnClientHuman(client, respawn, protect);
+    
+    // Check if action should be blocked.
+    if (result == Plugin_Handled)
+    {
+        return;
+    }
+    
     // Mark player as human.
     bZombie[client] = false;
     
@@ -702,6 +721,7 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     
     // Forward event to modules.
     SEffectsOnClientHuman(client);
+    APIOnClientHumanPost(client, respawn, protect);
 }
 
 /**

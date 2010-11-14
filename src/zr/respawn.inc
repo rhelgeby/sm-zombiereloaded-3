@@ -26,6 +26,17 @@
  */
 
 /**
+ * Conditions for respawning players.
+ */
+enum RespawnCondition
+{
+    Repsawn_Default = -1,       /** Let ZR decide according to its settings. */
+    Respawn_Human = 0,          /** Respawn as a human. */
+    Respawn_Zombie,             /** Respawn as a zombie. */
+    Respawn_ZombieIfSuicide     /** Respawn as a zombie if killed by world damage. */
+}
+
+/**
  * Array for storing respawn timer handles per client.
  */
 new Handle:tRespawn[MAXPLAYERS + 1];
@@ -133,37 +144,59 @@ RespawnOnRoundEnd()
 /**
  * Spawns a player into the round.
  * 
- * @param client    The client index.
+ * @param client            The client index.
+ * @param zombie            Respawn as zombie.
+ * @param zombieIfSuicide   Respawn as zombie if killed by world damage.
+ *
+ * @return      True if the player was spawned, false otherwise.
  */
-RespawnSpawnClient(client, bool:zombie = false)
+bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = false)
 {
     // If client isn't in-game, then stop.
     if (!IsClientInGame(client))
     {
-        return;
+        return false;
     }
+    
+    // Get respawn condition.
+    //new bool:zombieIfSuicide = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]);
+    new RespawnCondition:condition = RespawnToContition(zombie, zombieIfSuicide);
+    
+    // Trigger API forward.
+    new Action:result = APIOnClientRespawn(client, condition);
+    
+    // Check if respawn should be stopped.
+    if (result == Plugin_Handled)
+    {
+        return false;
+    }
+    
+    // Restore respawn condition.
+    RespawnRestoreCondition(condition, zombie, zombieIfSuicide);
     
     // Spawn player.
     CS_RespawnPlayer(client);
     
-    // Stop here if the first zombie hasn't spawned yet.
-    if (!g_bZombieSpawned)
+    // Check if first zombie has spawned.
+    if (g_bZombieSpawned)
     {
-        return;
+        // Infect if player should spawn as zombie.
+        if (zombie)
+        {
+            InfectHumanToZombie(client);
+        }
+        // Infect if player committed suicide by world damage.
+        else if (zombieIfSuicide && bKilledByWorld[client])
+        {
+            InfectHumanToZombie(client);
+            bKilledByWorld[client] = false;
+        }
     }
     
-    // Infect if zombie is true.
-    if (zombie)
-    {
-        InfectHumanToZombie(client);
-        return;
-    }
+    // Forward event to modules.
+    APIOnClientRespawned(client, condition);
     
-    if (GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]) && bKilledByWorld[client])
-    {
-        InfectHumanToZombie(client);
-        bKilledByWorld[client] = false;
-    }
+    return true;
 }
 
 /**
@@ -183,7 +216,7 @@ public Action:RespawnTimer(Handle:timer, any:client)
         return;
     }
     
-    // If player isn't alive, then stop.
+    // If player already is alive, then stop.
     if (IsPlayerAlive(client))
     {
         return;
@@ -202,5 +235,52 @@ public Action:RespawnTimer(Handle:timer, any:client)
     new bool:respawn_zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
     
     // Spawn player.
-    RespawnSpawnClient(client, respawn_zombie);
+    RespawnSpawnClient(client, respawn_zombie, true);
+}
+
+/**
+ * Converts separate conditions into a single condition value.
+ */
+RespawnCondition:RespawnToContition(bool:zombie, bool:zombieIfSuicide)
+{
+    if (zombieIfSuicide)
+    {
+        return Respawn_ZombieIfSuicide;
+    }
+    else if (zombie)
+    {
+        return Respawn_Zombie;
+    }
+    
+    return Respawn_Human;
+}
+
+/**
+ * Restores respawn condition to individual variables. If the condition invalid,
+ * nothing will be changed.
+ *
+ * @param condition         Condition to restore.
+ * @param zombie            Output.
+ * @param zombieIfSucidie   Output.
+ */
+RespawnRestoreCondition(RespawnCondition:condition, &bool:zombie, &bool:zombieIfSuicide)
+{
+    switch (condition)
+    {
+        case Respawn_Human:
+        {
+            zombie = false;
+            zombieIfSuicide = false;
+        }
+        case Respawn_Zombie:
+        {
+            zombie = true;
+            zombieIfSuicide = false;
+        }
+        case Respawn_ZombieIfSuicide:
+        {
+            zombie = false;
+            zombieIfSuicide = true;
+        }
+    }
 }

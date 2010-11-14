@@ -113,6 +113,8 @@
 #include "zr/volfeatures/volfeatures"
 #include "zr/debugtools"
 
+#include "zr/api/api"
+
 /**
  * Record plugin info.
  */
@@ -137,7 +139,8 @@ public Plugin:myinfo =
  */
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-    // TODO: EXTERNAL API
+    // Load API.
+    APIInit();
     
     // Let plugin load.
     return APLRes_Success;

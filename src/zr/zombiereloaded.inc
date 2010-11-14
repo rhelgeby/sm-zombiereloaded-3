@@ -40,6 +40,16 @@
  */
 
 /**
+ * Options that a condition must pass to be eligible.
+ */
+enum EligibleCondition
+{
+    Condition_False = 0,    /** Condition must be false. */
+    Condition_True = 1,     /** Condition must be true. */
+    Condition_Either = -1   /** Condition can be either true or false. */
+}
+
+/**
  * Global variable set to true when the first zombie(s) is/are spawned.
  */
 new bool:g_bZombieSpawned;
