@@ -172,3 +172,8 @@ released. If the file is empty there are no config changes in that patch.
       ZR_GetKilledByWorld
   See addons/sourcemod/scripting/include/zr in the package for details.
   Also see addons/sourcemod/scripting/testsuite/zr for API usage examples.
+
+2010.11.17 - r648
+-------------------
+
+* Fixed players not respawning as zombies when they are supposed to.

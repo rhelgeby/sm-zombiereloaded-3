@@ -243,13 +243,13 @@ public Action:RespawnTimer(Handle:timer, any:client)
  */
 RespawnCondition:RespawnToContition(bool:zombie, bool:zombieIfSuicide)
 {
-    if (zombieIfSuicide)
-    {
-        return Respawn_ZombieIfSuicide;
-    }
-    else if (zombie)
+    if (zombie)
     {
         return Respawn_Zombie;
+    }
+    else if (zombieIfSuicide)
+    {
+        return Respawn_ZombieIfSuicide;
     }
     
     return Respawn_Human;
