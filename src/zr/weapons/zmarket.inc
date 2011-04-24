@@ -773,8 +773,8 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     // Get slot index of the weapon being purchased.
     new WeaponsSlot:slot = WeaponsGetSlot(weaponindex);
     
-    // If client is a zombie, then update weapon loadout and stop.
-    if (InfectIsClientInfected(client))
+    // If client is dead or a zombie, update weapon loadout instead.
+    if (!IsPlayerAlive(client) || InfectIsClientInfected(client))
     {
         // Update cookie with new weapon.
         ZMarketSetRebuyCookie(client, slot, weapon);
@@ -1098,6 +1098,13 @@ stock ZMarketSetRebuyCookie(client, WeaponsSlot:slot, const String:value[])
  */
 ZMarketRebuy(client, bool:autorebuy = false)
 {
+    // If client is dead, then stop.
+    if (!IsPlayerAlive(client))
+    {
+        TranslationPrintToChat(client, "Must be alive");
+        return;
+    }
+    
     // If client is a zombie, then stop.
     if (InfectIsClientInfected(client))
     {
