@@ -577,9 +577,20 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     
     // Check if consecutive infection protection is enabled.
     new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]);
-    
-    // Flag player to be immune from being mother zombie twice, if consecutive infect protection is enabled.
-    bInfectImmune[client][INFECT_TYPE_MOTHER] = infectconsecutiveblock ? motherinfect : false;
+    if (infectconsecutiveblock)
+    {
+        // If this is a mother infect, flag the player as immune for next mother
+        // infection. Otherwise do nothing and keep the current flag.
+        if (motherinfect)
+        {
+            bInfectImmune[client][INFECT_TYPE_MOTHER] = true;
+        }
+    }
+    else
+    {
+        // Consecutive infection protection is disabled. No immunity.
+        bInfectImmune[client][INFECT_TYPE_MOTHER] = false;
+    }
     
     // Apply effects.
     InfectFireEffects(client);
