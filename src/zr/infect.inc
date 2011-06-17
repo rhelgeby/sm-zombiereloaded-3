@@ -203,7 +203,7 @@ InfectOnClientDisconnect(client)
     }
     
     // Get a random valid array index.
-    new randindex = GetRandomInt(0, eligibleclients - 1);
+    new randindex = Math_GetRandomInt(0, eligibleclients - 1);
     
     // Get the client stored in the random array index.
     new randclient = GetArrayCell(arrayEligibleClients, randindex);
