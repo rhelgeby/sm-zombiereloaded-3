@@ -178,8 +178,9 @@ released. If the file is empty there are no config changes in that patch.
 
 * Fixed players not respawning as zombies when they are supposed to.
 
-2011.06.17 - r651
--------------------
+2011.06.17 - r651, r653
+-------------------------
 
+* Added improved random number generator from SMLIB.
 * Fixed dead players being able to get weapons through ZMarket.
 * Fixed consecutive mother zombie infection prevention not always working.
