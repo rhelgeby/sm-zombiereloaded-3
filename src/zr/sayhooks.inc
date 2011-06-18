@@ -28,8 +28,6 @@
 /**
  * @section SM core config info.
  */
-#define SAYHOOKS_CORE_KVNAME "Core"
-#define SAYHOOKS_CORE_KVPATH "configs/core.cfg"
 #define SAYHOOKS_CHAT_PUBLIC_DEFAULT "!"
 #define SAYHOOKS_CHAT_SILENT_DEFAULT "/"
 /**
@@ -55,89 +53,3 @@
 /**
  * @endsection
  */
-
-/**
- * Hack function to get the public chat trigger value.
- * 
- * @param trigger   The string to store value in.
- * @param maxlen    The maximum length of the string.
- */
-SayHooksGetPublicChatTrigger(String:trigger[], maxlen)
-{
-    // Create kv handle.
-    new Handle:kvCore = CreateKeyValues(SAYHOOKS_CORE_KVNAME);
-    
-    // Build path to file.
-    decl String:filepath[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, filepath, PLATFORM_MAX_PATH, SAYHOOKS_CORE_KVPATH);
-    
-    // Load kv into memory.
-    new bool:success = FileToKeyValues(kvCore, filepath);
-    
-    // If the file couldn't be loaded, then return the default value.
-    if (!success)
-    {
-        strcopy(trigger, maxlen, SAYHOOKS_CHAT_PUBLIC_DEFAULT);
-        
-        // Close the handle.
-        CloseHandle(kvCore);
-        
-        return;
-    }
-    
-    // Rewind and find value.
-    KvRewind(kvCore);
-    KvGetString(kvCore, "PublicChatTrigger", trigger, maxlen, SAYHOOKS_CHAT_PUBLIC_DEFAULT);
-    
-    // If trigger is disabled, then display as "N/A".
-    if (!trigger[0])
-    {
-        strcopy(trigger, maxlen, "N/A");
-    }
-    
-    // Close the handle.
-    CloseHandle(kvCore);
-}
-
-/**
- * Hack function to get the silent chat trigger value.
- * 
- * @param trigger   The string to store value in.
- * @param maxlen    The maximum length of the string.
- */
-SayHooksGetSilentChatTrigger(String:trigger[], maxlen)
-{
-    // Create kv handle.
-    new Handle:kvCore = CreateKeyValues(SAYHOOKS_CORE_KVNAME);
-    
-    // Build path to file.
-    decl String:filepath[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, filepath, PLATFORM_MAX_PATH, SAYHOOKS_CORE_KVPATH);
-    
-    // Load kv into memory.
-    new bool:success = FileToKeyValues(kvCore, filepath);
-    
-    // If the file couldn't be loaded, then return the default value.
-    if (!success)
-    {
-        strcopy(trigger, maxlen, SAYHOOKS_CHAT_SILENT_DEFAULT);
-        
-        // Close the handle.
-        CloseHandle(kvCore);
-        
-        return;
-    }
-    
-    // Rewind and find value.
-    KvRewind(kvCore);
-    KvGetString(kvCore, "SilentChatTrigger", trigger, maxlen, SAYHOOKS_CHAT_SILENT_DEFAULT);
-    
-    // If trigger is disabled, then display as "N/A".
-    if (!trigger[0])
-    {
-        strcopy(trigger, maxlen, "N/A");
-    }
-    
-    // Close the handle.
-    CloseHandle(kvCore);
-}

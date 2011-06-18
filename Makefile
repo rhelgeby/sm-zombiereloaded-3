@@ -3,7 +3,7 @@
 SOURCEDIR=src
 SMINCLUDES=env/include
 BUILDDIR=build
-SPCOMP=env/linux/bin/spcomp-1.3.4
+SPCOMP=env/linux/bin/spcomp-1.4.0-3218
 VERSIONDUMP=./updateversion.sh
 
 vpath %.sp $(SOURCEDIR)

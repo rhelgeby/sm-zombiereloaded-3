@@ -80,13 +80,6 @@ ZMenuMain(client)
     // Create menu handle.
     new Handle:menu_main = CreateMenu(ZMenuMainHandle);
     
-    decl String:publictrigger[4];
-    decl String:silenttrigger[4];
-    
-    // Get public/silent chat triggers.
-    SayHooksGetPublicChatTrigger(publictrigger, sizeof(publictrigger));
-    SayHooksGetSilentChatTrigger(silenttrigger, sizeof(silenttrigger));
-    
     SetGlobalTransTarget(client);
     
     // Initialize menu lines.
@@ -100,7 +93,7 @@ ZMenuMain(client)
     decl String:zmarket[MENU_LINE_HUGE_LENGTH];
     
     // Translate each line into client's language.
-    Format(title, sizeof(title), "%t\n ", "Menu main title", publictrigger, silenttrigger);
+    Format(title, sizeof(title), "%t\n ", "Menu main title", SAYHOOKS_CHAT_PUBLIC_DEFAULT, SAYHOOKS_CHAT_SILENT_DEFAULT);
     Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin");
     Format(zclass, sizeof(zclass), "%t", "Menu main zclass");
     Format(zcookies, sizeof(zcookies), "%t", "Menu main zcookies");

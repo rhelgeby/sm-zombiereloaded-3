@@ -43,18 +43,8 @@ RoundStartOnClientSpawn(client)
         return;
     }
     
-    // Get public chat trigger prefix.
-    decl String:publictrigger[4];
-    SayHooksGetPublicChatTrigger(publictrigger, sizeof(publictrigger));
-    
-    // If public chat trigger is disabled, then don't print message.
-    if (StrEqual(publictrigger, "N/A", false))
-    {
-        return;
-    }
-    
     // Print to client, how to access ZMenu.
-    TranslationPrintToChat(client, "General zmenu reminder", publictrigger, SAYHOOKS_KEYWORD_ZMENU);
+    TranslationPrintToChat(client, "General zmenu reminder", SAYHOOKS_CHAT_PUBLIC_DEFAULT, SAYHOOKS_KEYWORD_ZMENU);
 }
 
 /**
