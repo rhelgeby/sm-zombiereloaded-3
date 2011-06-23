@@ -184,3 +184,8 @@ released. If the file is empty there are no config changes in that patch.
 * Added improved random number generator from SMLIB.
 * Fixed dead players being able to get weapons through ZMarket.
 * Fixed consecutive mother zombie infection prevention not always working.
+
+2011.06.23 - r657
+-----------------
+
+* Added spanish translation by Franc1sco.
