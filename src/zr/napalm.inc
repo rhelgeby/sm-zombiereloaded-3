@@ -84,8 +84,25 @@ NapalmOnTakeDamage(client, damagetype)
             {
                 // Put the fire out.
                 
-                //ExtinguishEntity(client);
-                ExtinguishEntity2(client);
+                //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
+                
+                // This works.
+                new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+                if (IsValidEntity(fire))
+                {
+                    // Make sure the entity is a flame, so we can extinguish it.
+                    decl String:classname[64];
+                    GetEdictClassname(fire, classname, sizeof(classname));
+                    if (StrEqual(classname, "entityflame", false))
+                    {
+                        SetEntPropFloat(fire, Prop_Data, "m_flLifetime", 0.0);
+                    }
+                    // Log what entity was in that property, for future reference.
+                    else
+                    {
+                        LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Napalm, "Napalm Douse", "Found unexpected entity in prop \"m_flLifetime\": \"%s\"", classname);
+                    }
+                }
                 
                 return _:ACTION_CONTINUE;
             }
@@ -94,27 +111,6 @@ NapalmOnTakeDamage(client, damagetype)
     
     // Let the damage module continue as usual.
     return -1;
-}
-
-ExtinguishEntity2(client)
-{
-    // This works.
-    new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
-    if (IsValidEntity(fire))
-    {
-        // Make sure the entity is a flame, so we can extinguish it.
-        decl String:classname[64];
-        GetEdictClassname(fire, classname, sizeof(classname));
-        if (StrEqual(classname, "entityflame", false))
-        {
-            SetEntPropFloat(fire, Prop_Data, "m_flLifetime", 0.0);
-        }
-        // Log what entity was in that property, for future reference.
-        else
-        {
-            LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Napalm, "Napalm Douse", "Found unexpected entity in prop \"m_flLifetime\": \"%s\"", classname);
-        }
-    }
 }
 
 /**
@@ -159,7 +155,8 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
         
         if (reset || !(flags & FL_ONFIRE))
         {
-            ExtinguishEntity2(client);
+            // This stops the fire before re-ignition.
+            ExtinguishEntity(client);
             
             // Ignite client.
             IgniteEntity(client, napalm_time);
