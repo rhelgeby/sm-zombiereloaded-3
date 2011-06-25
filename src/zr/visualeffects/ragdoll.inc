@@ -152,6 +152,14 @@ public Action:RagdollTimer(Handle:timer, any:ragdoll)
         return;
     }
     
+    // Make sure this edict is still a ragdoll and not become a new valid entity.
+    decl String:classname[64];
+    GetEdictClassname(ragdoll, classname, sizeof(classname));
+    if (!StrEqual(classname, "cs_ragdoll"))
+    {
+        return;
+    }
+    
     // Remove the ragdoll.
     RagdollRemove(ragdoll);
 }
