@@ -126,19 +126,16 @@
 
 	"Config command reload syntax aliases"
 	{
-		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s}"
 		"es"		"Archivo alias:\n* \"{1}\"\n* \"{2}\"\n* \"{3}\"\n* \"{4}\"\n* \"{5}\""
 	}
 
 	"Config command reload invalid"
 	{
-		"#format"	"{1:s}"
 		"es"		"Invalido archivo de alias: \"{1}\""
 	}
 
 	"Config command reload not loaded"
 	{
-		"#format"	"{1:s}"
 		"es"		"Archivo de configuracion \"{1}\" no se pudo cargar. (Cualquier desajuste o invalido el contenido del archivo.)"
 	}
 
@@ -149,13 +146,11 @@
 
 	"Config command reload all stats successful"
 	{
-		"#format"	"{1:s}"
 		"es"		"\"{1}\" - Exito."
 	}
 
 	"Config command reload all stats failed"
 	{
-		"#format"	"{1:s}"
 		"es"		"\"{1}\" - Fallo. (Cualquier desajuste o invalido el contenido del archivo.)"
 	}
 
@@ -209,7 +204,6 @@
 
 	"Classes random assignment"
 	{
-		"#format"	"{1:s}"
 		"es"		"Has sido aleatoriamente asignado a la clase @green\"{1}\"."
 	}
 
@@ -217,7 +211,6 @@
 
 	"Classes overlay toggle"
 	{
-		"#format"	"{1:s}"
 		"es"		"Cambiar clase de comandos del Overlay: {1}"
 	}
 
@@ -230,13 +223,11 @@
 
 	"Classes menu active"
 	{
-		"#format"	"{1:s}"
 		"es"		"Activo: {1}"
 	}
 
 	"Classes menu next"
 	{
-		"#format"	"{1:s}"
 		"es"		"Siguiente aparicion: {1}"
 	}
 
