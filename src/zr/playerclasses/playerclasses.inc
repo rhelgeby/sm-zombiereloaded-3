@@ -42,10 +42,9 @@
 */
 
 /**
- * Total number of classes that can be stored in each cache. A total of 32
- * classes should be enough. Too many classes will confuse players.
+ * Total number of classes that can be stored in each cache.
  */
-#define ZR_CLASS_MAX 48
+#define ZR_CLASS_MAX 64
 
 /**
  * @section Class cache types. Specifies what data array to use.
@@ -549,7 +548,7 @@ ClassLoad()
     // Loop through all classes and store attributes in the ClassData array.
     do
     {
-        if (ClassCount > ZR_CLASS_MAX)
+        if (ClassCount >= ZR_CLASS_MAX)
         {
             // Maximum classes reached. Write a warning and exit the loop.
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Maximum classes reached (%d). Skipping other classes.", ZR_CLASS_MAX + 1);
