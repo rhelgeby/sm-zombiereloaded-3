@@ -189,3 +189,12 @@ released. If the file is empty there are no config changes in that patch.
 -----------------
 
 * Added spanish translation by Franc1sco.
+
+2011.08.05 - r666
+-----------------
+
+* Increased class limit to 64 classes.
+* Fixed the ragdoll module unintentionally removing other valid entities if a ragdoll was attempted to be removed after the round restarted.
+* Fixed format settings in spanish translation spamming logs.
+* Fixed index out of bounds error when class limit is reached.
+* Fixed double inclusion of jump boost module preventing code from compiling on newer compilers.
