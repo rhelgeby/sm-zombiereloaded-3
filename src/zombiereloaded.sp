@@ -109,7 +109,6 @@
 #include "zr/ztele"
 #include "zr/zhp"
 #include "zr/zcookies"
-#include "zr/jumpboost"
 #include "zr/volfeatures/volfeatures"
 #include "zr/debugtools"
 
