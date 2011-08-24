@@ -247,7 +247,7 @@ RestrictOnRoundEnd()
 public Action:RestrictBuyCommand(client, argc)
 {
     // If client isn't valid, then stop.
-    if (!ZRIsClientValid(client))
+    if (!ZRIsClientValid(client) || !IsClientInGame(client))
     {
         return Plugin_Continue;
     }
