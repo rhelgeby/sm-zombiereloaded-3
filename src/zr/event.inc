@@ -192,7 +192,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     VolOnPlayerSpawn(index);
     
     // Fire post player_spawn event.
-    CreateTimer(0.0, EventPlayerSpawnPost, index);
+    CreateTimer(0.1, EventPlayerSpawnPost, index);
 }
 
 /**
