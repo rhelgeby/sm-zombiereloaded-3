@@ -198,3 +198,9 @@ released. If the file is empty there are no config changes in that patch.
 * Fixed format settings in spanish translation spamming logs.
 * Fixed index out of bounds error when class limit is reached.
 * Fixed double inclusion of jump boost module preventing code from compiling on newer compilers.
+
+2011.10.30 - r669
+-----------------
+
+* Fixed internal player spawn post event fired too early (causing invisible models).
+* Possibly fixed invalid entity error (bug 195).
