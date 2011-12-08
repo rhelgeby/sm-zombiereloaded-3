@@ -204,3 +204,8 @@ released. If the file is empty there are no config changes in that patch.
 
 * Fixed internal player spawn post event fired too early (causing invisible models).
 * Possibly fixed invalid entity error (bug 195).
+
+2011.12.08 - r671
+-----------------
+
+* Updated gamedata file. Thanks to pillepallus.
