@@ -11,44 +11,44 @@
 		{
 			"TraceAttack"
 			{
-				"windows"	"58"
-				"linux"		"59"
+				"windows"	"59"
+				"linux"		"60"
 			}
 
 			"OnTakeDamage"
 			{
-				"windows"	"60"
-				"linux"		"61"
+				"windows"	"61"
+				"linux"		"62"
 			}
 
 			"StartTouch"
 			{
-				"windows"	"88"
-				"linux"		"89"
+				"windows"	"96"
+				"linux"		"97"
 			}
 
 			"Touch"
 			{
-				"windows"	"89"
-				"linux"		"90"
+				"windows"	"97"
+				"linux"		"98"
 			}
 
 			"EndTouch"
 			{
-				"windows"	"90"
-				"linux"		"91"
+				"windows"	"98"
+				"linux"		"99"
 			}
 
 			"Weapon_CanUse"
 			{
-				"windows"	"216"
-				"linux"		"217"
+				"windows"	"253"
+				"linux"		"254"
 			}
 
 			"Weapon_Drop"
 			{
-				"windows"	"219"
-				"linux"		"220"
+				"windows"	"256"
+				"linux"		"257"
 			}
 		}
 
