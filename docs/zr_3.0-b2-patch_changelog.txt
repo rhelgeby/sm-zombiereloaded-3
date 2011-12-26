@@ -209,3 +209,8 @@ released. If the file is empty there are no config changes in that patch.
 -----------------
 
 * Updated gamedata file. Thanks to pillepallus.
+
+2011.12.26 - r673
+-----------------
+
+* Added infection countdown. Backported from zr-dev:52955b169945 (655).
