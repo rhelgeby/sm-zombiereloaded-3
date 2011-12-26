@@ -358,6 +358,13 @@
 		"es"		"El ultimo zombi a dejado el juego, y te ha pasado la infeccion a ti. (luego se lo agradeces xD)"
 	}
 
+	// Center Text
+
+	"Infect countdown"
+	{
+		"en"		"First infection in {1} seconds."
+	}
+
 	// Menu
 
 	"Infect menu clients title"

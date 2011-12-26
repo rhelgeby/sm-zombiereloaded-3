@@ -100,6 +100,7 @@ enum CvarsList
     Handle:CVAR_INFECT_CONSECUTIVE_BLOCK,
     Handle:CVAR_INFECT_WEAPONS_DROP,
     Handle:CVAR_INFECT_MZOMBIE_RATIO,
+    Handle:CVAR_INFECT_MZOMBIE_COUNTDOWN,
     Handle:CVAR_INFECT_MZOMBIE_RESPAWN,
     Handle:CVAR_INFECT_EXPLOSION,
     Handle:CVAR_INFECT_FIREBALL,
@@ -316,6 +317,7 @@ CvarsCreate()
     
     // General
     g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]             =    CreateConVar("zr_infect_mzombie_ratio",        "5",                                "Number of mother zombies to infect (when infect timer is up) in proportion to number of humans on the server.");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]         =    CreateConVar("zr_infect_mzombie_countdown",    "0",                                "Counts down to the first infection of the round.  Countdown is printed in the middle of the client's screen.");
     g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]           =    CreateConVar("zr_infect_mzombie_respawn",      "0",                                "Teleport mother zombies back to spawn on infect.");
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]             =    CreateConVar("zr_infect_spawntime_min",        "30.0",                             "Minimum time from the start of the round until picking the mother zombie(s).");
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]             =    CreateConVar("zr_infect_spawntime_max",        "50.0",                             "Maximum time from the start of the round until picking the mother zombie(s).");

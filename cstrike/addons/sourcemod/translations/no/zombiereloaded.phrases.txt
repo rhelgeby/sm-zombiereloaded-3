@@ -357,6 +357,13 @@
 		"no"		"Den siste zombien har forlatt spillet. Du er blitt valgt som erstatning."
 	}
 
+	// Center Text
+
+	"Infect countdown"
+	{
+		"en"		"Første infeksjon om {1} sekunder."
+	}
+
 	// Menu
 
 	"Infect menu clients title"

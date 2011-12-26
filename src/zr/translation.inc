@@ -275,6 +275,46 @@ stock TranslationPrintCenterText(client, any:...)
 }
 
 /**
+ * Print center text to all clients. (with style)
+ * 
+ * @param client    The client index.
+ * @param ...       Translation formatting parameters.  
+ */
+stock TranslationPrintCenterTextAll(bool:admin, any:...)
+{
+    for (new client = 1; client <= MaxClients; client++)
+    {
+        // Skip clients not in game.
+        if (!IsClientInGame(client))
+        {
+            continue;
+        }
+        
+        // Skip clients who haven't selected a team yet (team menu open).
+        if (GetClientTeam(client) == CS_TEAM_NONE)
+        {
+            continue;
+        }
+        
+        // Skip non-admins if only printing to admins.
+        if (admin && !ZRIsClientAdmin(client))
+        {
+            continue;
+        }
+        
+        // Set translation target
+        SetGlobalTransTarget(client);
+        
+        // Translate phrase.
+        decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+        VFormat(translation, sizeof(translation), "%t", 2);
+        
+        // Print translated phrase to client.
+        PrintCenterText(client, translation);
+    }
+}
+
+/**
  * Print HUD text to client. (with style)
  * 
  * @param client    The client index.

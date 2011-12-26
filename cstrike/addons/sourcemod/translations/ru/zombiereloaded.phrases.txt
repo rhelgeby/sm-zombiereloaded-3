@@ -358,6 +358,13 @@
 		"ru"		"Последний зомби покинул игру, поэтому вам досталась его инфекция."
 	}
 
+	// Center Text
+
+	"Infect countdown"
+	{
+		"en"		"First infection in {1} seconds."
+	}
+
 	// Menu
 
 	"Infect menu clients title"
