@@ -86,16 +86,19 @@ released. If the file is empty there are no config changes in that patch.
 2010.02.23 - r598
 -------------------
 
-* Fixed cookies being reset on some occasions and admin-dependant classes are restored properly as well.
+* Fixed cookies being reset on some occasions and admin-dependant classes are
+  restored properly as well.
 
 
 2010.04.05 - r607
 -------------------
 
-* Separated patch difflog (changes.diff) into separate file for each patch released.
+* Separated patch difflog (changes.diff) into separate file for each patch
+  released.
 * Added scream and moan commands for zombies, with spam protection.
 * Added missing note about no_fall_damage class attribute in docs.
-* Fixed class attributes applied too early (moved to spawn post event). This fixes issues with FOV and bots.
+* Fixed class attributes applied too early (moved to spawn post event). This
+  fixes issues with FOV and bots.
 * Fixed saved classes not validated by team id when restoring from cookies.
 
 
@@ -116,17 +119,23 @@ released. If the file is empty there are no config changes in that patch.
 2010.07.25 - r633
 -------------------
 
-* Added support for different speed methods, defaulted to prop offset method. See the manual
-  for more information about the class speed attribute.
-  Important: Class speeds and spawn protection speed must be updated! Use this conversion formula:
+* Added support for different speed methods, defaulted to prop offset method.
+  See the manual for more information about the class speed attribute.
+  Important: Class speeds and spawn protection speed must be updated! Use this
+  conversion formula:
       prop speed offset = ((lmv speed / 300) * 250) - 250
-  If you don't want to update speed values right now, use "zr_classes_speed_method lmv" in
-  zombiereloaded.cfg for backwards compatibility.
+  If you don't want to update speed values right now, use
+  "zr_classes_speed_method lmv" in zombiereloaded.cfg for backwards
+  compatibility.
 * Added 'explode' suicide command from OB update to intercept list (bug 190).
-* Removed unnecessary antistick commands for model hull width, all models have the same hull width.
-* Removed hint sound on hp display and spawn protection timer. Credits goes to to Tauphi.
-* Fixed an error that happened when buying ammo and not having a weapon in prim/sec slot.
-* Fixed class menus being disabled and not checking if the player have access to private classes.
+* Removed unnecessary antistick commands for model hull width, all models have
+  the same hull width.
+* Removed hint sound on hp display and spawn protection timer. Credits goes to
+  to Tauphi.
+* Fixed an error that happened when buying ammo and not having a weapon in
+  prim/sec slot.
+* Fixed class menus being disabled and not checking if the player have access
+  to private classes.
 * Fixed client not connected error in class module.
 * Updated compiler. ZR now requires SourceMod 1.3 or newer.
 
@@ -134,29 +143,33 @@ released. If the file is empty there are no config changes in that patch.
 2010.08.28 - r643
 -------------------
 
-* Fixed function signatures that were changed after a CS update. Credit goes to psychonic.
-* Fixed class speed multiplier not properly applied with prop speed method (bug 199).
+* Fixed function signatures that were changed after a CS update. Credit goes to
+  psychonic.
+* Fixed class speed multiplier not properly applied with prop speed method (bug
+  199).
 * Fixed invalid handle error in ZMarket module (bug 152).
 * Fixed a rare case where removing weapons didn't work.
 * Possibly fixed invalid handle error with WeaponsEntityToDisplay (bug 163).
 * Lowered sv_maxspeed to work around a acceleration issue with spectators.
-* Added validation error messages for individual attributes when loading classes. Easier than
-  reading bits from a number.
+* Added validation error messages for individual attributes when loading
+  classes. Easier than reading bits from a number.
 * Improved confusing description of the NVGs class attribute.
 
 2010.10.15 - r644
 -------------------
 
-* Changed default speed method to LMV because prop speed offsets are broken at the moment. This
-  will introduce some side effects again; jump and fall speed is affected. Weapon recoil is also
-  affected, but it's not confirmed that it has negative impact on bullets or aiming itself.
-  Note: Those who already changed speed method back to LMV don't need this patch.
+* Changed default speed method to LMV because prop speed offsets are broken at
+  the moment. This will introduce some side effects again; jump and fall speed
+  is affected. Weapon recoil is also affected, but it's not confirmed that it
+  has negative impact on bullets or aiming itself.
+  Note: Those who already changed speed method back to LMV don't need this
+  patch.
 
 2010.11.14 - r647
 -------------------
 
-* Added external plugin API for ZR with basic infection and respawn tools. The following natives
-  and forwards are now available:
+* Added external plugin API for ZR with basic infection and respawn tools. The
+  following natives and forwards are now available:
       ZR_IsClientZombie
       ZR_IsClientHuman
       ZR_InfectClient
@@ -194,15 +207,18 @@ released. If the file is empty there are no config changes in that patch.
 -----------------
 
 * Increased class limit to 64 classes.
-* Fixed the ragdoll module unintentionally removing other valid entities if a ragdoll was attempted to be removed after the round restarted.
+* Fixed the ragdoll module unintentionally removing other valid entities if a
+  ragdoll was attempted to be removed after the round restarted.
 * Fixed format settings in spanish translation spamming logs.
 * Fixed index out of bounds error when class limit is reached.
-* Fixed double inclusion of jump boost module preventing code from compiling on newer compilers.
+* Fixed double inclusion of jump boost module preventing code from compiling on
+  newer compilers.
 
 2011.10.30 - r669
 -----------------
 
-* Fixed internal player spawn post event fired too early (causing invisible models).
+* Fixed internal player spawn post event fired too early (causing invisible
+  models).
 * Possibly fixed invalid entity error (bug 195).
 
 2011.12.08 - r671
@@ -214,3 +230,15 @@ released. If the file is empty there are no config changes in that patch.
 -----------------
 
 * Added infection countdown. Backported from zr-dev:52955b169945 (655).
+
+2011.12.27 - r675
+-----------------
+
+* Added cvar for disabling team balancing on round end (for use with custom
+  team balancer): zr_roundend_balance_teams. Disabling this will cause players
+  to remain on their current team when a new round starts. If zombies win,
+  everyone will remain on the terrorists team.
+* Fixed invalid handle error after a map change.
+* Fixed language code typo in translations.
+* Infection countdown is no longer displayed if the infection delay is just one
+  second.
