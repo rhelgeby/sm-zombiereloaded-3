@@ -361,7 +361,7 @@
 
 	"Infect countdown"
 	{
-		"en"		"Første infeksjon om {1} sekunder."
+		"no"		"Første infeksjon om {1} sekunder."
 	}
 
 	// Menu

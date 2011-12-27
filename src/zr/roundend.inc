@@ -185,8 +185,11 @@ RoundEndOnRoundEnd(reason)
     // Display the overlay to all clients.
     RoundEndOverlayStart(outcome);
     
-    // Balance teams.    
-    RoundEndBalanceTeams();
+    // Balance teams if enabled.
+    if (GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_BALANCE_TEAMS]))
+    {
+        RoundEndBalanceTeams();
+    }
 }
 
 /**
@@ -327,9 +330,7 @@ RoundEndTerminateRound(Float:delay, RoundEndOutcome:outcome = Restart)
 }
 
 /**
- * Balances teams
- * 
- * @param spawn     If true, it will respawn player after switching their team.
+ * Balances teams.
  */
 RoundEndBalanceTeams()
 {

@@ -362,7 +362,7 @@
 
 	"Infect countdown"
 	{
-		"en"		"First infection in {1} seconds."
+		"es"		"First infection in {1} seconds."
 	}
 
 	// Menu

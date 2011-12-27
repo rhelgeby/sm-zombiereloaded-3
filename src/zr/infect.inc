@@ -78,9 +78,10 @@ new bool:bInfectImmune[MAXPLAYERS + 1][2];
  */
 InfectOnMapStart()
 {
-    // Stop timers if running.
-    ZREndTimer(tInfect);
-    ZREndTimer(tInfectCountdown);
+    // Reset timer handles. Infect timers are invalidated on a map change if
+    // they are still running, so these handles no longer point to valid timers.
+    tInfect = INVALID_HANDLE;
+    tInfectCountdown = INVALID_HANDLE;
 }
 
 /**
@@ -378,7 +379,7 @@ InfectOnRoundFreezeEnd()
     
     // Check cvar and start a countdown timer if enabled.
     new bool:countdown = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]);
-    if (countdown)
+    if (countdown && randomtime > 1.0)
     {
         // Store the time until infection, and initialize the counter.
         new Handle:hCountdownData = CreateDataPack();
