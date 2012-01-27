@@ -63,6 +63,13 @@ RagdollOnOffsetsFound()
  */
 RagdollOnClientDeath(client)
 {
+    // If ragdoll removal is disabled, then stop.
+    new bool:ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
+    if (!ragdollremove)
+    {
+        return;
+    }
+    
     new ragdoll = RagdollGetClientRagdoll(client);
     
     // If the ragdoll is invalid, then stop.
