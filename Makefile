@@ -1,10 +1,23 @@
 # Script made by [SG-10]Cpt.Moore
+# Note that this script will convert line endings in source files to LF.
 
 SOURCEDIR=src
 SMINCLUDES=env/include
 BUILDDIR=build
-SPCOMP=env/linux/bin/spcomp-1.4.0-3218
+SPCOMP_LINUX=env/linux/bin/spcomp-1.4.1
+SPCOMP_DARWIN=env/darwin/bin/spcomp-1.4.1
+DOS2UNIX_LINUX=dos2unix -p
+DOS2UNIX_DARWIN=env/darwin/bin/dos2unix -p
 VERSIONDUMP=./updateversion.sh
+
+OS = $(shell uname -s)
+ifeq "$(OS)" "Darwin"
+	SPCOMP = $(SPCOMP_DARWIN)
+	DOS2UNIX = $(DOS2UNIX_DARWIN)
+else
+	SPCOMP = $(SPCOMP_LINUX)
+	DOS2UNIX = $(DOS2UNIX_LINUX)
+endif
 
 vpath %.sp $(SOURCEDIR)
 vpath %.inc $(SOURCEDIR)/zr
@@ -19,8 +32,9 @@ prepare: prepare_newlines prepare_builddir
 
 prepare_newlines:
 	@echo "Removing windows newlines"
-	@find $(SOURCEDIR)/zr -name \*.inc -exec dos2unix -p '{}' \;
-	@find $(SOURCEDIR)  -name \*.sp -exec dos2unix -p '{}' \;
+	@find $(SOURCEDIR)  -name \*.inc -exec $(DOS2UNIX) '{}' \;
+	@find $(SOURCEDIR)  -name \*.sp  -exec $(DOS2UNIX) '{}' \;
+	@find $(SMINCLUDES) -name \*.inc -exec $(DOS2UNIX) '{}' \;
 
 prepare_builddir:
 	@echo "Creating build directory"
@@ -28,9 +42,8 @@ prepare_builddir:
 
 %.smx: %.sp
 	$(VERSIONDUMP)
-	$(SPCOMP) -i$(SOURCEDIR) -i$(SOURCEDIR)/include -i$(SMINCLUDES) -o$(BUILDDIR)/$@ $<
+	$(SPCOMP) -i$(SOURCEDIR) -i$(SMINCLUDES) -o$(BUILDDIR)/$@ $<
 
 clean:
 	@echo "Removing build directory"
 	@rm -fr $(BUILDDIR)
-

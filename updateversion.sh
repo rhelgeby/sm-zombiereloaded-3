@@ -21,7 +21,7 @@ fi
 ZR_VERSION_FILE="src/zr/hgversion.h.inc"
 
 ZR_PRODUCT_NAME="Zombie:Reloaded"
-ZR_COPYRIGHT="Copyright (C) 2009  Greyscale, Richard Helgeby"
+ZR_COPYRIGHT="Copyright (C) 2009-2012  Greyscale, Richard Helgeby"
 ZR_BRANCH="zr-3.0-b2"
 ZR_REVISION=$(hg id -n):$(hg id -i)
 

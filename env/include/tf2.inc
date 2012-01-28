@@ -82,10 +82,12 @@ enum TFCond
 	TFCond_TeleportedGlow,
 	TFCond_Taunting,
 	TFCond_UberchargeFading,
-	TFCond_Unknown1,
+	TFCond_Unknown1, //9
+	TFCond_CloakFlicker = 9,
 	TFCond_Teleporting,
 	TFCond_Kritzkrieged,
-	TFCond_Unknown2,
+	TFCond_Unknown2, //12
+	TFCond_TmpDamageBonus = 12,
 	TFCond_DeadRingered,
 	TFCond_Bonked,
 	TFCond_Dazed,
@@ -93,17 +95,51 @@ enum TFCond
 	TFCond_Charging,
 	TFCond_DemoBuff,
 	TFCond_CritCola,
+	TFCond_InHealRadius,
 	TFCond_Healing,
 	TFCond_OnFire,
 	TFCond_Overhealed,
-	TFCond_Jarated
+	TFCond_Jarated,
+	TFCond_Bleeding,
+	TFCond_DefenseBuffed,
+	TFCond_Milked,
+	TFCond_MegaHeal,
+	TFCond_RegenBuffed,
+	TFCond_MarkedForDeath,
+	TFCond_NoHealingDamageBuff,
+	TFCond_SpeedBuffAlly,
+	TFCond_HalloweenCritCandy,
+	
+	TFCond_CritHype = 36,
+	TFCond_CritOnFirstBlood,
+	TFCond_CritOnWin,
+	TFCond_CritOnFlagCapture,
+	TFCond_CritOnKill,
+	TFCond_RestrictToMelee
 };
 
 enum TFHoliday
 {
-	TFHoliday_None = 1,
+	TFHoliday_Birthday = 1,
 	TFHoliday_Halloween,
-	TFHoliday_Birthday
+	TFHoliday_FullMoon,
+	TFHoliday_HalloweenOrFullMoon,
+};
+
+enum TFObjectType
+{
+	TFObject_CartDispenser = 0,
+	TFObject_Dispenser = 0,
+	TFObject_Teleporter = 1,
+	TFObject_Sentry = 2,
+	TFObject_Sapper = 3
+};
+
+enum TFObjectMode
+{
+	TFObjectMode_None = 0,
+	TFObjectMode_Entrance = 0,
+	TFObjectMode_Exit = 1
 };
 
 /**
@@ -172,10 +208,11 @@ native TF2_SetPlayerPowerPlay(client, bool:enabled);
  * @param client		Player's index.
  * @param team			Team to disguise the player as (only TFTeam_Red and TFTeam_Blue have an effect)
  * @param class			TFClassType class to disguise the player as
+ * @param target		Specific target player to disguise as (0 for any)
  * @noreturn
  * @error				Invalid client index, client not in game, or no mod support.
  */
-native TF2_DisguisePlayer(client, TFTeam:team, TFClassType:class);
+native TF2_DisguisePlayer(client, TFTeam:team, TFClassType:class, target=0);
 
 /**
  * Removes the current disguise from a client. Only has an effect on spies.
@@ -198,6 +235,16 @@ native TF2_RemovePlayerDisguise(client);
  * @noreturn
  */
 native TF2_StunPlayer(client, Float:duration, Float:slowdown=0.0, stunflags, attacker=0);
+
+/**
+ * Induces the bleed effect on a client
+ *
+ * @param client		Player's index.
+ * @param attacker		Attacker's index.
+ * @param float			Duration of bleeding (in seconds).
+ * @noreturn
+ */
+native TF2_MakeBleed(client, attacker, Float:duration);
 
 /**
  * Retrieves the entity index of the CPlayerResource entity
@@ -232,14 +279,61 @@ native TFClassType:TF2_GetClass(const String:classname[]);
 forward Action:TF2_CalcIsAttackCritical(client, weapon, String:weaponname[], &bool:result);
 
 /**
- * Called when the game checks to see if the current day is one of its tracked holidays
- *
- * @note Change the value of holiday and return Plugin_Changed to override.
- *       Return Plugin_Continue for no change.
- *
- * @param holiday		Current Holiday
+ * @deprecated		No longer called. Use TF2_OnIsHolidayActive.
  */
+#pragma deprecated No longer called. Use TF2_OnIsHolidayActive.
 forward Action:TF2_OnGetHoliday(&TFHoliday:holiday);
+
+/**
+ * Called at various times when the game checks to see if the given holiday is active.
+ * Return Plugin_Continue to let the original calculation or return a higher
+ * action to override the decision with the value of 'result'
+ *
+ * @param holiday		Holiday being checked.
+ * @param result		Buffer param for the result of the decision.
+ * @return				Plugin_Continue for original calculation, higher value to use 'result'.
+ */
+forward Action:TF2_OnIsHolidayActive(TFHoliday:holiday, &bool:result);
+
+/**
+ * Returns whether or not a client (Player) is in a duel.
+ *
+ * @param client    Client Index.
+ * @return          Boolean of whether or not the client/player is dueling.
+ */
+native bool:TF2_IsPlayerInDuel(client);
+
+/**
+ * Called after a condition is added to a player
+ *
+ * @param client		Index of the client to which the conditon is being added.
+ * @param condition     Condition that is being added.
+ * @noreturn
+ */
+forward TF2_OnConditionAdded(client, TFCond:condition);
+
+/**
+ * Called after a condition is removed from a player
+ *
+ * @param client		Index of the client to which the condition is being removed.
+ * @param condition		Condition that is being removed.
+ * @noreturn
+ */
+forward TF2_OnConditionRemoved(client, TFCond:condition);
+
+/**
+ * Called when the server enters the Waiting for Players round state
+ *
+ * @noreturn
+ */
+forward TF2_OnWaitingForPlayersStart();
+
+/**
+ * Called when the server exits the Waiting for Players round state
+ *
+ * @noreturn
+ */
+forward TF2_OnWaitingForPlayersEnd();
 
 /**
  * Do not edit below this line!
@@ -268,7 +362,9 @@ public __ext_tf2_SetNTVOptional()
 	MarkNativeAsOptional("TF2_DisguisePlayer");
 	MarkNativeAsOptional("TF2_RemovePlayerDisguise");
 	MarkNativeAsOptional("TF2_StunPlayer");
+	MarkNativeAsOptional("TF2_MakeBleed");
 	MarkNativeAsOptional("TF2_GetResourceEntity");
 	MarkNativeAsOptional("TF2_GetClass");
+	MarkNativeAsOptional("TF2_IsPlayerInDuel");
 }
 #endif

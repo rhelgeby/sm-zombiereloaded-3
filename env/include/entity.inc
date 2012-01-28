@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2011 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -246,7 +246,7 @@ native SetEntData(entity, offset, any:value, size=4, bool:changeState=false);
 native Float:GetEntDataFloat(entity, offset);
 
 /**
- * Peeks into an entity's object data and sets the integer value at 
+ * Peeks into an entity's object data and sets the float value at 
  * the given offset.
  *
  * @param entity		Edict index.
@@ -489,10 +489,11 @@ stock GetEntSendPropOffs(ent, const String:prop[], bool:actual=false)
  * @param size			Number of bytes to write (valid values are 1, 2, or 4).
  *						This value is auto-detected, and the size parameter is 
  *						only used as a fallback in case detection fails.
+ * @param element		Element # (starting from 0) if property is an array.
  * @return				Value at the given property offset.
  * @error				Invalid entity or property not found.
  */
-native GetEntProp(entity, PropType:type, const String:prop[], size=4);
+native GetEntProp(entity, PropType:type, const String:prop[], size=4, element=0);
 
 /**
  * Sets an integer value in an entity's property.
@@ -503,13 +504,15 @@ native GetEntProp(entity, PropType:type, const String:prop[], size=4);
  * @param entity		Entity/edict index.
  * @param type			Property type.
  * @param prop			Property name.
+ * @param value			Value to set.
  * @param size			Number of bytes to write (valid values are 1, 2, or 4).
  *						This value is auto-detected, and the size parameter is 
  *						only used as a fallback in case detection fails.
+ * @param element		Element # (starting from 0) if property is an array.
  * @error				Invalid entity or offset out of reasonable bounds.
  * @noreturn
  */
-native SetEntProp(entity, PropType:type, const String:prop[], any:value, size=4);
+native SetEntProp(entity, PropType:type, const String:prop[], any:value, size=4, element=0);
 
 /**
  * Retrieves a float value from an entity's property.
@@ -520,10 +523,11 @@ native SetEntProp(entity, PropType:type, const String:prop[], any:value, size=4)
  * @param entity		Entity/edict index.
  * @param type			Property type.
  * @param prop			Property name.
+ * @param element		Element # (starting from 0) if property is an array.
  * @return				Value at the given property offset.
  * @error				Invalid entity or offset out of reasonable bounds.
  */
-native Float:GetEntPropFloat(entity, PropType:type, const String:prop[]);
+native Float:GetEntPropFloat(entity, PropType:type, const String:prop[], element=0);
 
 /**
  * Sets a float value in an entity's property.
@@ -535,10 +539,11 @@ native Float:GetEntPropFloat(entity, PropType:type, const String:prop[]);
  * @param type			Property type.
  * @param prop			Property name.
  * @param value			Value to set.
+ * @param element		Element # (starting from 0) if property is an array.
  * @noreturn
  * @error				Invalid entity or offset out of reasonable bounds.
  */
-native SetEntPropFloat(entity, PropType:type, const String:prop[], Float:value);
+native SetEntPropFloat(entity, PropType:type, const String:prop[], Float:value, element=0);
 
 /**
  * Retrieves an entity index from an entity's property.
@@ -549,12 +554,13 @@ native SetEntPropFloat(entity, PropType:type, const String:prop[], Float:value);
  * @param entity		Entity/edict index.
  * @param type			Property type.
  * @param prop			Property name.
+ * @param element		Element # (starting from 0) if property is an array.
  * @return				Entity index at the given property.
  *						If there is no entity, or the entity is not valid, 
  *						then -1 is returned.
  * @error				Invalid entity or offset out of reasonable bounds.
  */
-native GetEntPropEnt(entity, PropType:type, const String:prop[]);
+native GetEntPropEnt(entity, PropType:type, const String:prop[], element=0);
 
 /**
  * Sets an entity index in an entity's property.
@@ -566,10 +572,11 @@ native GetEntPropEnt(entity, PropType:type, const String:prop[]);
  * @param type			Property type.
  * @param prop			Property name.
  * @param other			Entity index to set, or -1 to unset.
+ * @param element		Element # (starting from 0) if property is an array.
  * @noreturn
  * @error				Invalid entity or offset out of reasonable bounds.
  */
-native SetEntPropEnt(entity, PropType:type, const String:prop[], other);
+native SetEntPropEnt(entity, PropType:type, const String:prop[], other, element=0);
 
 /**
  * Retrieves a vector of floats from an entity, given a named network property.
@@ -581,11 +588,12 @@ native SetEntPropEnt(entity, PropType:type, const String:prop[], other);
  * @param type			Property type.
  * @param prop			Property name.
  * @param vec			Vector buffer to store data in.
+ * @param element		Element # (starting from 0) if property is an array.
  * @noreturn
  * @error				Invalid entity, property not found, or property not 
  *						actually a vector data type.
  */
-native GetEntPropVector(entity, PropType:type, const String:prop[], Float:vec[3]);
+native GetEntPropVector(entity, PropType:type, const String:prop[], Float:vec[3], element=0);
 
 /**
  * Sets a vector of floats in an entity, given a named network property.
@@ -597,11 +605,12 @@ native GetEntPropVector(entity, PropType:type, const String:prop[], Float:vec[3]
  * @param type			Property type.
  * @param prop			Property name.
  * @param vec			Vector to set.
+ * @param element		Element # (starting from 0) if property is an array.
  * @noreturn
  * @error				Invalid entity, property not found, or property not 
  *						actually a vector data type.
  */
-native SetEntPropVector(entity, PropType:type, const String:prop[], const Float:vec[3]);
+native SetEntPropVector(entity, PropType:type, const String:prop[], const Float:vec[3], element=0);
 
 /**
  * Gets a network property as a string.
@@ -611,10 +620,11 @@ native SetEntPropVector(entity, PropType:type, const String:prop[], const Float:
  * @param prop			Property to use.
  * @param buffer		Destination string buffer.
  * @param maxlen		Maximum length of output string buffer.		
+ * @param element		Element # (starting from 0) if property is an array.
  * @return				Number of non-null bytes written.
  * @error				Invalid entity, offset out of reasonable bounds, or property is not a valid string.
  */
-native GetEntPropString(entity, PropType:type, const String:prop[], String:buffer[], maxlen);
+native GetEntPropString(entity, PropType:type, const String:prop[], String:buffer[], maxlen, element=0);
 
 /**
  * Sets a network property as a string.
@@ -630,6 +640,17 @@ native GetEntPropString(entity, PropType:type, const String:prop[], String:buffe
  * @error				Invalid entity, offset out of reasonable bounds, or property is not a valid string.
  */
 native SetEntPropString(entity, PropType:type, const String:prop[], const String:buffer[]);
+
+/**
+ * Retrieves the count of values that an entity property's array can store.
+ * 
+ * @param entity		Entity/edict index.
+ * @param type			Property type.
+ * @param prop			Property name.
+ * @return				Size of array (in elements) or 1 if property is not an array.
+ * @error				Invalid entity or property not found.
+ */
+native GetEntPropArraySize(entity, PropType:type, const String:prop[]);
 
 /**
  * Copies an array of cells from an entity at a given offset.
@@ -668,4 +689,19 @@ stock SetEntDataArray(entity, offset, const array[], arraySize, dataSize=4, bool
 	{
 		SetEntData(entity, offset + i*dataSize, array[i], dataSize, changeState);
 	}
+}
+
+/**
+ * Retrieves the classname of an entity.
+ * This is like GetEdictClassname(), except it works for ALL
+ * entities, not just edicts.
+ *
+ * @param edict			Index of the entity.
+ * @param clsname		Buffer to store the classname.
+ * @param maxlength		Maximum length of the buffer.
+ * @return				True on success, false if there is no classname set.
+ */
+stock bool:GetEntityClassname(entity, String:clsname[], maxlength)
+{
+	return !!GetEntPropString(entity, Prop_Data, "m_iClassname", clsname, maxlength);
 }

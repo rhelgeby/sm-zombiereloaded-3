@@ -53,7 +53,7 @@ enum NetFlow
  * not be used in OnPluginStart().
  */
 
-#define MAXPLAYERS		64	/**< Maximum number of players SourceMod supports */
+#define MAXPLAYERS		65	/**< Maximum number of players SourceMod supports */
 #define MAX_NAME_LENGTH 32	/**< Maximum buffer required to store a client name */
 
 public const MaxClients;	/**< Maximum number of players the server supports (dynamic) */
@@ -313,6 +313,22 @@ native bool:IsClientAuthorized(client);
  * @return				True if player is a fake client, false otherwise.
  */
 native bool:IsFakeClient(client);
+
+/**
+ * Returns if a certain player is the SourceTV bot.
+ *
+ * @param client		Player index.
+ * @return				True if player is the SourceTV bot, false otherwise.
+ */
+native bool:IsClientSourceTV(client);
+
+/**
+ * Returns if a certain player is the Replay bot.
+ *
+ * @param client		Player index.
+ * @return				True if player is the Replay bot, false otherwise.
+ */
+native bool:IsClientReplay(client);
 
 /**
  * Returns if a certain player is an observer/spectator.

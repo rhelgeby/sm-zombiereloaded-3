@@ -49,6 +49,8 @@
 #include <sdktools_entinput>
 #include <sdktools_entoutput>
 #include <sdktools_hooks>
+#include <sdktools_gamerules>
+#include <sdktools_client>
 
 enum SDKCallType
 {
@@ -57,6 +59,7 @@ enum SDKCallType
 	SDKCall_Player,		/**< CBasePlayer call */
 	SDKCall_GameRules,	/**< CGameRules call */
 	SDKCall_EntityList,	/**< CGlobalEntityList call */ 
+	SDKCall_Raw,		/**< |this| pointer with an arbitrary address */ 
 };
 
 enum SDKLibrary

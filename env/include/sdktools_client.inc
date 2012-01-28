@@ -29,14 +29,24 @@
  *
  * Version: $Id$
  */
- 
-#if defined _version_included
- #endinput
+
+#if defined _sdktools_client_included
+  #endinput
 #endif
-#define _version_included
+#define _sdktools_client_included
 
-#define SOURCEMOD_V_MAJOR		1				/**< SourceMod Major version */
-#define SOURCEMOD_V_MINOR		4				/**< SourceMod Minor version */
-#define SOURCEMOD_V_RELEASE		1				/**< SourceMod Release version */
+/**
+ * Sets the client to an inactive state waiting for a new map
+ *
+ * @param client		The client index
+ * @noreturn
+ */
+native InactivateClient(client);
 
-#define SOURCEMOD_VERSION	"1.4.1"	/**< SourceMod version string (major.minor.release.build) */
+/**
+ * Reconnect a client without dropping the netchannel
+ *
+ * @param client		The client index
+ * @noreturn
+ */
+native ReconnectClient(client);

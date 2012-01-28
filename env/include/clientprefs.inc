@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2011 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -132,6 +132,17 @@ native SetClientCookie(client, Handle:cookie, const String:value[]);
 native GetClientCookie(client, Handle:cookie, String:buffer[], maxlen);
 
 /**
+ * Sets the value of a Client preference cookie based on an authID string.
+ *
+ * @param authID		String Auth/STEAM ID of player to set.
+ * @param cookie		Client preference cookie handle.
+ * @param value			String value to set.
+ * @noreturn
+ * @error			Invalid cookie handle.
+ */
+native SetAuthIdCookie(const String:authID[], Handle:cookie, const String:value[]);
+
+/**
  * Checks if a clients cookies have been loaded from the database.
  *
  * @param client		Client index.
@@ -241,7 +252,7 @@ native GetClientCookieTime(client, Handle:cookie);
 /**
  * Do not edit below this line!
  */
-public Extension:__ext_clientprefs = 
+public Extension:__ext_cprefs = 
 {
 	name = "Client Preferences",
 	file = "clientprefs.ext",
@@ -252,3 +263,21 @@ public Extension:__ext_clientprefs =
 	required = 0,
 #endif
 };
+
+#if !defined REQUIRE_EXTENSIONS
+public __ext_cprefs_SetNTVOptional()
+{
+	MarkNativeAsOptional("RegClientCookie");
+	MarkNativeAsOptional("FindClientCookie");
+	MarkNativeAsOptional("SetClientCookie");
+	MarkNativeAsOptional("GetClientCookie");
+	MarkNativeAsOptional("AreClientCookiesCached");
+	MarkNativeAsOptional("SetCookiePrefabMenu");
+	MarkNativeAsOptional("SetCookieMenuItem");
+	MarkNativeAsOptional("ShowCookieMenu");
+	MarkNativeAsOptional("GetCookieIterator");
+	MarkNativeAsOptional("ReadCookieIterator");
+	MarkNativeAsOptional("GetCookieAccess");
+	MarkNativeAsOptional("GetClientCookieTime");
+}
+#endif

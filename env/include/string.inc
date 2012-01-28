@@ -379,7 +379,7 @@ native bool:IsCharLower(chr);
 
 /**
  * Strips a quote pair off a string if it exists.  That is, the following 
- * replace rule is applied once:  $"(.*)"^ -> $\1^
+ * replace rule is applied once:  ^"(.*)"$ -> ^\1$
  *
  * Note that the leading and trailing quotes will only be removed if both 
  * exist.  Otherwise, the string is left unmodified.  This function should 
@@ -490,35 +490,35 @@ stock StrCat(String:buffer[], maxlength, const String:source[])
  * @param buffers			An array of string buffers (2D array).
  * @param maxStrings		Number of string buffers (first dimension size).
  * @param maxStringLength	Maximum length of each string buffer.
+ * @param copyRemainder		False (default) discard excess pieces, true to ignore
+ *							delimiters after last piece.
  * @return					Number of strings retrieved.
  */
-stock ExplodeString(const String:text[], const String:split[], String:buffers[][], maxStrings, maxStringLength)
+stock ExplodeString(const String:text[], const String:split[], String:buffers[][], maxStrings,
+                    maxStringLength, bool:copyRemainder = false)
 {
 	new reloc_idx, idx, total;
-	
-	if (maxStrings < 1 || split[0] == '\0')
+
+	if (maxStrings < 1 || !split[0])
 	{
 		return 0;
 	}
-	
+
 	while ((idx = SplitString(text[reloc_idx], split, buffers[total], maxStringLength)) != -1)
 	{
 		reloc_idx += idx;
-		if (text[reloc_idx] == '\0')
+		if (++total == maxStrings)
 		{
-			break;
-		}
-		if (++total >= maxStrings)
-		{
+			if (copyRemainder)
+			{
+				strcopy(buffers[total-1], maxStringLength, text[reloc_idx-idx]);
+			}
 			return total;
 		}
 	}
-	
-	if (text[reloc_idx] != '\0' && total <= maxStrings - 1)
-	{
-		strcopy(buffers[total++], maxStringLength, text[reloc_idx]);
-	}
-	
+
+	strcopy(buffers[total++], maxStringLength, text[reloc_idx]);
+
 	return total;
 }
 
