@@ -792,7 +792,7 @@ stock WeaponsSlot:WeaponsGetDeployedWeaponSlot(client)
 }
 
 /**
- * Forces player to drop weapon index.
+ * Forces player to drop weapon index. (Simplified wrapper)
  * 
  * @param client    The client index.
  * @param weapon    The weapon index to force client to drop.
@@ -800,7 +800,7 @@ stock WeaponsSlot:WeaponsGetDeployedWeaponSlot(client)
 stock WeaponsForceClientDrop(client, weapon)
 {
     // Force client to drop weapon.
-    SDKCall(g_hToolsCSWeaponDrop, client, weapon, true, false);
+    CS_DropWeapon(client, weapon, true, false);
 }
 
 /**

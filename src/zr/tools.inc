@@ -38,16 +38,6 @@ new g_iToolsFOV;
  * @endsection
  */
 
-/**
- * Initialize global SDKTools handles.
- */
-new Handle:g_hToolsGameConfig = INVALID_HANDLE;
-new Handle:g_hToolsTerminateRound = INVALID_HANDLE;
-new Handle:g_hToolsCSWeaponDrop = INVALID_HANDLE;
-/**
- * @endsection
- */
-
 // Tools Functions (core)
 #include "zr/tools_functions"
 
@@ -58,9 +48,6 @@ ToolsInit()
 {
     // Find offsets.
     ToolsFindOffsets();
-    
-    // Setup SDKTools
-    ToolsSetupGameData();
 }
 
 /**
@@ -108,46 +95,4 @@ ToolsFindOffsets()
     AccountOnOffsetsFound();
     VEffectsOnOffsetsFound();
     NapalmOnOffsetsFound();
-}
-
-/**
- * Sets up gamedata for the plugin.
- */
-ToolsSetupGameData()
-{
-    // Load game config file.
-    g_hToolsGameConfig = LoadGameConfigFile("plugin.zombiereloaded");
-    
-    // If gamedata file can't be loaded, then stop the plugin.
-    if (g_hToolsGameConfig == INVALID_HANDLE)
-    {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "GameData", "Can't load game config file (plugin.zombiereloaded.txt) from the gamedata directory.");
-    }
-    
-    // Prep the SDKCall for "TerminateRound."
-    StartPrepSDKCall(SDKCall_GameRules);
-    PrepSDKCall_SetFromConf(g_hToolsGameConfig, SDKConf_Signature, "TerminateRound");
-    PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
-    PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-    g_hToolsTerminateRound = EndPrepSDKCall();
-    
-    // If offset "TerminateRound" can't be found, then stop the plugin.
-    if(g_hToolsTerminateRound == INVALID_HANDLE)
-    {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "GameData", "Signature \"CGameRules::TerminateRound\" was not found.");
-    }
-    
-    // Prep the SDKCall for "CSWeaponDrop."
-    StartPrepSDKCall(SDKCall_Player);
-    PrepSDKCall_SetFromConf(g_hToolsGameConfig, SDKConf_Signature, "CSWeaponDrop");
-    PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
-    PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
-    PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
-    g_hToolsCSWeaponDrop = EndPrepSDKCall();
-    
-    // If offset "CSWeaponDrop" can't be found, then stop the plugin.
-    if(g_hToolsCSWeaponDrop == INVALID_HANDLE)
-    {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "GameData", "Signature \"CBasePlayer::CSWeaponDrop\" was not found.");
-    }
 }

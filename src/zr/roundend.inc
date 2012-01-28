@@ -309,22 +309,22 @@ RoundEndTerminateRound(Float:delay, RoundEndOutcome:outcome = Restart)
         // Round is restarting.
         case Restart:
         {
-            SDKCall(g_hToolsTerminateRound, delay, ROUNDEND_GAME_COMMENCING);
+            CS_TerminateRound(delay, CSRoundEnd_GameStart, false);
         }
         // Round was a draw.
         case Draw:
         {
-            SDKCall(g_hToolsTerminateRound, delay, ROUNDEND_ROUND_DRAW);
+            CS_TerminateRound(delay, CSRoundEnd_Draw, false);
         }
         // Zombies won.
         case ZombiesWin:
         {
-            SDKCall(g_hToolsTerminateRound, delay, ROUNDEND_TERRORISTS_WIN);
+            CS_TerminateRound(delay, CSRoundEnd_TerroristWin, false);
         }
         // Humans won.
         case HumansWin:
         {
-            SDKCall(g_hToolsTerminateRound, delay, ROUNDEND_CTS_WIN);
+            CS_TerminateRound(delay, CSRoundEnd_CTWin, false);
         }
     }
 }
