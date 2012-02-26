@@ -50,9 +50,15 @@ new g_iZMarketCurType[MAXPLAYERS + 1];
 new Handle:g_hZMarketPurchaseCount[MAXPLAYERS + 1];
 
 /**
- * Cookie handle for auti-rebuy.
+ * Cookie handle for auto-rebuy.
  */
 new Handle:g_hZMarketAutoRebuyCookie = INVALID_HANDLE;
+
+/**
+ * Whether weapons has been bought automatically. Used to prevent double rebuy
+ * when cookies are loaded after the player was spawned.
+ */
+new bool:g_bZMarketWeaponsBought[MAXPLAYERS + 1];
 
 /**
  * Cookie handle array for weapon loadouts.
@@ -109,6 +115,9 @@ ZMarketClientInit(client)
     
     // Create a new array handle to store purchase count data for client.
     g_hZMarketPurchaseCount[client] = CreateTrie();
+    
+    // No weapons bought automatically.
+    g_bZMarketWeaponsBought[client] = false;
 }
 
 /**
@@ -127,6 +136,13 @@ ZMarketOnCookiesCached(client)
     {
         // Set cookie to false.
         CookiesSetClientCookieBool(client, g_hZMarketAutoRebuyCookie, false);
+        return;
+    }
+    
+    // Rebuy wapons (if auto-rebuy is enabled, and not bought already).
+    if (!g_bZMarketWeaponsBought[client])
+    {
+        ZMarketCheckRebuy(client);
     }
 }
 
@@ -157,6 +173,17 @@ ZMarketOnClientSpawnPost(client)
     // Reset purchase counts for client.
     ZMarketResetPurchaseCount(client);
     
+    // Rebuy if auto-rebuy is enabled.
+    ZMarketCheckRebuy(client);
+}
+
+/**
+ * Rebuys weapons if auto-rebuy is enabled and player is a human (alive).
+ *
+ * @param client    The client index.
+ */
+ZMarketCheckRebuy(client)
+{
     // If auto-rebuy is disabled, then ensure it is also disabled on the client as well.
     new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);
     if (!zmarketrebuyauto)
@@ -180,6 +207,7 @@ ZMarketOnClientSpawnPost(client)
     if (CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie))
     {
         ZMarketRebuy(client, true);
+        g_bZMarketWeaponsBought[client] = true;
     }
 }
 
