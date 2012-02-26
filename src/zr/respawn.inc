@@ -174,6 +174,13 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
     // Restore respawn condition.
     RespawnRestoreCondition(condition, zombie, zombieIfSuicide);
     
+    new bool:ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
+    if (!ragdollremove)
+    {
+        // Detatch ragdoll so it's not removed on respawn.
+        RagdollResetClientRagdoll(client);
+    }
+    
     // Spawn player.
     CS_RespawnPlayer(client);
     

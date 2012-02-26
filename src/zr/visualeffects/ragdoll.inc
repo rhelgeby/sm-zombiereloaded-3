@@ -179,3 +179,12 @@ RagdollGetClientRagdoll(client)
 {
     return GetEntDataEnt2(client, g_iToolsRagdoll);
 }
+
+/**
+ * Removes the ragdoll entity of a client.
+ * @param client    The client index.
+ */
+RagdollResetClientRagdoll(client)
+{
+    SetEntDataEnt2(client, g_iToolsRagdoll, -1);
+}
