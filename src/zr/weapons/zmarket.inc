@@ -192,7 +192,7 @@ ZMarketCheckRebuy(client)
     }
     
     // If client hasn't spawned into the game yet, then stop.
-    if (!IsPlayerAlive(client))
+    if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
     {
         return;
     }
