@@ -397,15 +397,9 @@ InfectOnRoundFreezeEnd()
  */
 InfectOnRoundEnd()
 {
-    // If infect timer is running, then kill it.
-    if (tInfect != INVALID_HANDLE)
-    {
-        // Kill timer.
-        KillTimer(tInfect);
-        
-        // Reset timer handle.
-        tInfect = INVALID_HANDLE;
-    }
+    // Stop infect timers if running.
+    ZREndTimer(tInfect);
+    ZREndTimer(tInfectCountdown);
     
     // x = client index.
     for (new x = 1; x <=  MaxClients; x++)
@@ -590,7 +584,7 @@ public Action:InfectCountdown(Handle:timer, Handle:hCountdownData)
     if (counter >= length)
     {
         // Kill timer.
-        ZREndTimer(tInfectCountdown, false);
+        ZREndTimer(tInfectCountdown);
         CloseHandle(hCountdownData);
         return Plugin_Stop;
     }
