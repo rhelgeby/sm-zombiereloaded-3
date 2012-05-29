@@ -76,12 +76,12 @@ new bool:bInfectImmune[MAXPLAYERS + 1][2];
 /**
  * Map is starting.
  */
-InfectOnMapStart()
+InfectOnMapEnd()
 {
-    // Reset timer handles. Infect timers are invalidated on a map change if
-    // they are still running, so these handles no longer point to valid timers.
-    tInfect = INVALID_HANDLE;
-    tInfectCountdown = INVALID_HANDLE;
+    // Reset timers. Infect timers are invalidated on a map change if they are
+    // still running.
+    ZREndTimer(tInfect);
+    ZREndTimer(tInfectCountdown);
 }
 
 /**
