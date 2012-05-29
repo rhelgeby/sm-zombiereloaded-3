@@ -179,7 +179,6 @@ public OnMapStart()
     ClassOnMapStart();
     OverlaysOnMapStart();
     RoundEndOnMapStart();
-    InfectOnMapStart();
     SEffectsOnMapStart();
     ZSpawnOnMapStart();
     VolInit();
@@ -191,6 +190,7 @@ public OnMapStart()
 public OnMapEnd()
 {
     // Forward event to modules.
+    InfectOnMapEnd();
     VolOnMapEnd();
     VEffectsOnMapEnd();
 }
