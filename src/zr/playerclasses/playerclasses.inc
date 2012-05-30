@@ -610,16 +610,19 @@ ClassLoad()
         ClassData[ClassCount][Class_JumpHeight] = KvGetFloat(kvClassData, "jump_height", ZR_CLASS_DEFAULT_JUMP_HEIGHT);
         ClassData[ClassCount][Class_JumpDistance] = KvGetFloat(kvClassData, "jump_distance", ZR_CLASS_DEFAULT_JUMP_DISTANCE);
         
-        // Validate the class attributes.
-        ClassErrorFlags = ClassValidateAttributes(ClassCount, true);
-        if (ClassErrorFlags > 0)
+        // Validate class attributes if class is enabled.
+        if (ClassData[ClassCount][Class_Enabled])
         {
-            // There's one or more invalid class attributes. Disable the class
-            // and log an error message.
-            ClassData[ClassCount][Class_Enabled] = false;
-            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", ClassCount, ClassErrorFlags);
-            
-            failedcount++;
+            ClassErrorFlags = ClassValidateAttributes(ClassCount, true);
+            if (ClassErrorFlags > 0)
+            {
+                // There's one or more invalid class attributes. Disable the class
+                // and log an error message.
+                ClassData[ClassCount][Class_Enabled] = false;
+                LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", ClassCount, ClassErrorFlags);
+                
+                failedcount++;
+            }
         }
         
         // Update the counter.
