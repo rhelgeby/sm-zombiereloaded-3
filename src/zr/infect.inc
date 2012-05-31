@@ -55,6 +55,11 @@ new Handle:tInfectCountdown = INVALID_HANDLE;
  */
 
 /**
+ * Infection countdown data pack.
+ */
+new Handle:hInfectCountdownData = INVALID_HANDLE;
+
+/**
  * Array for flagging client as zombie.
  */
 new bool:bZombie[MAXPLAYERS + 1];
@@ -82,6 +87,7 @@ InfectOnMapEnd()
     // still running.
     ZREndTimer(tInfect);
     ZREndTimer(tInfectCountdown);
+    InfectStopCountdown();
 }
 
 /**
@@ -381,14 +387,17 @@ InfectOnRoundFreezeEnd()
     new bool:countdown = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]);
     if (countdown && randomtime > 1.0)
     {
+        // Stop old countdown timer, if it exists.
+        InfectStopCountdown();
+        
         // Store the time until infection, and initialize the counter.
-        new Handle:hCountdownData = CreateDataPack();
-        WritePackFloat(hCountdownData, randomtime);
-        WritePackFloat(hCountdownData, 0.0);
-        tInfectCountdown = CreateTimer(1.0, InfectCountdown, hCountdownData, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+        hInfectCountdownData = CreateDataPack();
+        WritePackFloat(hInfectCountdownData, randomtime);
+        WritePackFloat(hInfectCountdownData, 0.0);
+        tInfectCountdown = CreateTimer(1.0, InfectCountdown, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
         
         // Display initial tick.
-        InfectCountdown(tInfectCountdown, hCountdownData);
+        InfectCountdown(tInfectCountdown);
     }
 }
 
@@ -564,28 +573,24 @@ public Action:InfectMotherZombie(Handle:timer)
  * 
  * @param timer     The timer handle.  
  */ 
-public Action:InfectCountdown(Handle:timer, Handle:hCountdownData)
+public Action:InfectCountdown(Handle:timer)
 {
     new bool:countdown = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]);
     if (!countdown)
     {
-        // Kill the timer.
-        ZREndTimer(tInfectCountdown, false);
-        CloseHandle(hCountdownData);
+        InfectStopCountdown();
         return Plugin_Stop;
     }
     
     // Read the info from the datapack.
-    ResetPack(hCountdownData);
-    new Float:length = ReadPackFloat(hCountdownData);
-    new Float:counter = ReadPackFloat(hCountdownData);
+    ResetPack(hInfectCountdownData);
+    new Float:length = ReadPackFloat(hInfectCountdownData);
+    new Float:counter = ReadPackFloat(hInfectCountdownData);
     
     // Check if the countdown has finished.
     if (counter >= length)
     {
-        // Kill timer.
-        ZREndTimer(tInfectCountdown);
-        CloseHandle(hCountdownData);
+        InfectStopCountdown();
         return Plugin_Stop;
     }
     
@@ -595,11 +600,27 @@ public Action:InfectCountdown(Handle:timer, Handle:hCountdownData)
     counter++;
     
     // Write the new counter value to the datapack.
-    ResetPack(hCountdownData);
-    WritePackFloat(hCountdownData, length);
-    WritePackFloat(hCountdownData, counter);
+    ResetPack(hInfectCountdownData);
+    WritePackFloat(hInfectCountdownData, length);
+    WritePackFloat(hInfectCountdownData, counter);
     
     return Plugin_Continue;
+}
+
+/**
+ * Stops the infection countdown timer.
+ */
+InfectStopCountdown()
+{
+    // Kill the timer.
+    ZREndTimer(tInfectCountdown);
+    
+    // Destroy data pack.
+    if (hInfectCountdownData != INVALID_HANDLE)
+    {
+        CloseHandle(hInfectCountdownData);
+        hInfectCountdownData = INVALID_HANDLE;
+    }
 }
 
 /**
