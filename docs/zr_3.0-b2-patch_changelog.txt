@@ -242,3 +242,11 @@ released. If the file is empty there are no config changes in that patch.
 * Fixed language code typo in translations.
 * Infection countdown is no longer displayed if the infection delay is just one
   second.
+
+2012.06.10 - r689
+-----------------
+* Fixed ragdoll removal not being entirely disabled.
+* Fixed disabled classes still being validated.
+* Fixed memory leak in infection countdown feature.
+* Updated to use new natives in cstrike extension instead of SDK calls (fixing ZR not finding some signatures in some cases). Requires SourceMod 1.4.0 or newer.
+* Changed ZMarket to auto-buy weapons once settings are loaded (if auto-buy is enabled).
