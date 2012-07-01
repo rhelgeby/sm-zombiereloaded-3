@@ -824,7 +824,7 @@ stock WeaponsRemoveClientGrenades(client, bool:weaponsdrop)
         else
         {
             RemovePlayerItem(client, grenade);
-            RemoveEdict(grenade);
+            AcceptEntityInput(grenade, "Kill");
         }
         
         // Find next grenade.
@@ -854,7 +854,7 @@ stock WeaponsRefreshClientWeapon(client, WeaponsSlot:slot)
     
     // Refresh weapon.
     RemovePlayerItem(client, weaponindex);
-    RemoveEdict(weaponindex);
+    AcceptEntityInput(weaponindex, "Kill");
     GivePlayerItem(client, entityname);
 }
 
@@ -885,7 +885,7 @@ stock WeaponsRemoveAllClientWeapons(client, bool:weaponsdrop)
         {
             // Strip knife.
             RemovePlayerItem(client, weapons[x]);
-            RemoveEdict(weapons[x]);
+            AcceptEntityInput(weapons[x], "Kill");
             continue;
         }
         
@@ -898,7 +898,7 @@ stock WeaponsRemoveAllClientWeapons(client, bool:weaponsdrop)
         {
             // Strip weapon.
             RemovePlayerItem(client, weapons[x]);
-            RemoveEdict(weapons[x]);
+            AcceptEntityInput(weapons[x], "Kill");
         }
     }
     

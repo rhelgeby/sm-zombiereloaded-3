@@ -105,7 +105,7 @@ RagdollRemove(ragdoll)
     if (dissolve == VEFFECTS_RAGDOLL_DISSOLVE_EFFECTLESS)
     {
         // Remove entity from world.
-        RemoveEdict(ragdoll);
+        AcceptEntityInput(ragdoll, "Kill");
         return;
     }
     
@@ -135,7 +135,7 @@ RagdollRemove(ragdoll)
     AcceptEntityInput(dissolver, "Dissolve");
     
     // Remove the dissolver.
-    RemoveEdict(dissolver); 
+    AcceptEntityInput(dissolver, "Kill");
 }
 
 /**

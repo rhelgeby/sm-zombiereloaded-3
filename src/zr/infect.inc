@@ -786,7 +786,7 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     if (knife != -1)
     {
         RemovePlayerItem(client, knife);
-        RemoveEdict(knife);
+        AcceptEntityInput(knife, "Kill");
         GivePlayerItem(client, "weapon_knife");
     }
     

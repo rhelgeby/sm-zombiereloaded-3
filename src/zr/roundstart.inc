@@ -85,7 +85,7 @@ stock RoundStartKillObjectives()
         if(StrContains(ROUNDSTART_OBJECTIVE_ENTITIES, classname) > -1)
         {
             // Entity is an objective, kill it.
-            RemoveEdict(x);
+            AcceptEntityInput(x, "Kill");
         }
     }
 }

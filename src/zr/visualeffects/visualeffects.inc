@@ -126,7 +126,7 @@ VEffectsCreateExplosion(const Float:origin[3], flags)
     AcceptEntityInput(explosion, "Explode");
     
     // Remove entity from world.
-    RemoveEdict(explosion);
+    AcceptEntityInput(explosion, "Kill");
 }
 
 /**

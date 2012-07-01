@@ -317,7 +317,7 @@ VAmbienceApplyFog(bool:override = false)
         if (fogindex != -1)
         {
             // Delete fog.
-            RemoveEdict(fogindex);
+            AcceptEntityInput(fogindex, "Kill");
         }
     }
     
