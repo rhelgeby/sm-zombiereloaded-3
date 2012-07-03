@@ -250,3 +250,8 @@ released. If the file is empty there are no config changes in that patch.
 * Fixed memory leak in infection countdown feature.
 * Updated to use new natives in cstrike extension instead of SDK calls (fixing ZR not finding some signatures in some cases). Requires SourceMod 1.4.0 or newer.
 * Changed ZMarket to auto-buy weapons once settings are loaded (if auto-buy is enabled).
+
+2012.07.03 - r692
+-----------------
+* Replaced RemoveEdict with kill entity input command. This might fix some rare crashes.
+* Updated gamedata file. Thanks to psychonic and TnTSCS.
