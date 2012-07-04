@@ -255,3 +255,7 @@ released. If the file is empty there are no config changes in that patch.
 -----------------
 * Replaced RemoveEdict with kill entity input command. This might fix some rare crashes.
 * Updated gamedata file. Thanks to psychonic and TnTSCS.
+
+2012.07.04 - r693
+-----------------
+* Fixed incorrect offsets in gamedata file.
