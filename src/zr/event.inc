@@ -271,6 +271,14 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     
+    // Validate client.
+    if (!ZRIsClientValid(index))
+    {
+        // If the client isn't a player, a player really didn't die now. Some
+        // other mods might sent this event with bad data.
+        return;
+    }
+    
     // Forward event to modules.
     ClassOnClientDeath(index);
     InfectOnClientDeath(index, attacker);
