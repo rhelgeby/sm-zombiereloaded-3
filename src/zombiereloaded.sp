@@ -150,6 +150,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
  */
 public OnPluginStart()
 {
+    UpdateGameFolder();
+    
     // Forward event to modules.
     LogInit();          // Doesn't depend on CVARs.
     TranslationInit();

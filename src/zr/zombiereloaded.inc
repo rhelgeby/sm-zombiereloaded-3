@@ -55,6 +55,46 @@ enum EligibleCondition
 new bool:g_bZombieSpawned;
 
 /**
+ * Supported games.
+ */
+enum Game
+{
+    Game_Unknown = -1,
+    Game_CSS,
+    Game_CSGO
+}
+
+/**
+ * Current game.
+ */
+new Game:g_game = Game_Unknown;
+
+/**
+ * Updates g_game. Will log a warning if a unsupported game is detected.
+ */
+UpdateGameFolder()
+{
+    new String:gameFolder[PLATFORM_MAX_PATH];
+    GetGameFolderName(gameFolder, sizeof(gameFolder));
+    
+    if (StrEqual(gameFolder, "cstrike", false))
+    {
+        g_game = Game_CSS;
+        PrintToServer("Game detected: cstrike");
+        return;
+    }
+    else if (StrEqual(gameFolder, "csgo", false))
+    {
+        g_game = Game_CSGO;
+        PrintToServer("Game detected: csgo");
+        return;
+    }
+    
+    LogError("Warning: Zombie:Reloaded doesn't support this game: %s", gameFolder);
+    g_game = Game_Unknown;
+}
+
+/**
  * Function to convert numbers to defined units.
  * 
  * @param number        The number to convert.
