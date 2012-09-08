@@ -43,6 +43,7 @@
 
 #include "zr/api/infect.api"
 #include "zr/api/respawn.api"
+#include "zr/api/class.api"
 
 /**
  * Initializes all main natives and forwards.
@@ -52,6 +53,7 @@ APIInit()
     // Forward event to sub-modules.
     APIInfectInit();
     APIRespawnInit();
+    APIClassInit();
 }
 
 /**
@@ -68,12 +70,14 @@ stock APIValidateClientIndex(client, EligibleCondition:alive = Condition_Either)
     if (client < 1 || client > MaxClients)
     {
         ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index. (%d)", client);
+        return;
     }
     
     // Verify that the client is connected.
     if (!IsClientConnected(client))
     {
         ThrowNativeError(SP_ERROR_NATIVE, "Client %d is not connected.", client);
+        return;
     }
     
     // Check if the player must be dead or alive.

@@ -378,6 +378,16 @@ enum ClassSpeedMethods
 }
 
 /**
+ * Results when selecting a class for a player.
+ */
+enum ClassSelectResult
+{
+    ClassSelected_NoChange,     /** No class change was necessary (class already selected). */
+    ClassSelected_Instant,      /** Class was instantly changed. */
+    ClassSelected_NextSpawn     /** Class will be used next spawn. */
+}
+
+/**
  * Empty filter structure.
  */
 new ClassNoFilter[ClassFilter];
@@ -1194,6 +1204,86 @@ ClassClientSetDefaultIndexes(client = -1)
             ClassReloadPlayerCache(client, humanindex);
         }
     }
+}
+
+/**
+ * Selects a class for a player.
+ *
+ * Human class attribute may be instantly applied if player is alive, human and
+ * instant class change is enabled. Otherwise only the selected index will be
+ * updated for next spawn.
+ *
+ * Class selection will be saved in client cookies if enabled.
+ *
+ * @param client            Client index.
+ * @param classIndex        Class index.
+ * @param applyIfPossible   Optional. Apply class attributes if conditions allow
+ *                          it. Default is true.
+ * @param saveIfEnabled     Optional. Save class selection in client cookies if
+ *                          enabled. Default is true.
+ *
+ * @return                  Class selection result. See enum ClassSelectResult.
+ */
+ClassSelectResult:ClassSelectClientClass(client, classIndex, bool:applyIfPossible = true, bool:saveIfEnabled = true)
+{
+    new bool:iszombie = InfectIsClientInfected(client);
+    new teamid = ClassGetTeamID(classIndex, ZR_CLASS_CACHE_MODIFIED);
+    new ClassSelectResult:selectResult = ClassSelected_NoChange;
+    
+    // Allow instant class change if enabled and both class and player is human.
+    if (applyIfPossible &&
+        ClassAllowInstantChange[client] &&
+        !iszombie && teamid == ZR_CLASS_TEAM_HUMANS)
+    {
+        // Update selected class index.
+        ClassSelected[client][teamid] = classIndex;
+        
+        // Update cache and apply attributes.
+        ClassReloadPlayerCache(client, classIndex);
+        ClassApplyAttributes(client);
+        
+        selectResult = ClassSelected_Instant;
+    }
+    else
+    {
+        // Set next spawn index if the player is changing the class on
+        // his active team.
+        if (IsPlayerAlive(client) &&
+            (iszombie && teamid == ZR_CLASS_TEAM_ZOMBIES) ||
+            (!iszombie && teamid == ZR_CLASS_TEAM_HUMANS) ||
+            (ClassPlayerInAdminMode[client] && teamid == ZR_CLASS_TEAM_ADMINS))
+        {
+            // Check if selecting the same class that the player already is.
+            if (ClassSelected[client][teamid] == classIndex)
+            {
+                // Player is already the specified class. No need to change
+                // class next spawn.
+                ClassSelectedNext[client][teamid] = -1;
+                selectResult = ClassSelected_NoChange;
+            }
+            else
+            {
+                // Set class to be used on next spawn.
+                ClassSelectedNext[client][teamid] = classIndex;
+                selectResult = ClassSelected_NextSpawn;
+            }
+        }
+        else
+        {
+            // Directly change the selected class index.
+            ClassSelected[client][teamid] = classIndex;
+            selectResult = ClassSelected_NextSpawn;
+        }
+    }
+    
+    // Save selected class index in cookie if enabled.
+    // Note: Saved indexes are increased by one.
+    if (saveIfEnabled && GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]))
+    {
+        CookiesSetInt(client, g_hClassCookieClassSelected[teamid], classIndex + 1);
+    }
+    
+    return selectResult;
 }
 
 /**

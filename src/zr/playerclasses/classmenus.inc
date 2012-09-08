@@ -340,77 +340,22 @@ ClassMenuSelect(client, teamid)
  */
 public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
 {
-    decl String:classname[MENU_LINE_REG_LENGTH];
-    new classindex;
-    new teamid;
+    decl String:className[MENU_LINE_REG_LENGTH];
+    new classIndex;
     new bool:autoclose = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]);
-    new bool:iszombie = InfectIsClientInfected(client);
     
     switch (action)
     {
         case MenuAction_Select:
         {
             // Get class name from the information string.
-            GetMenuItem(menu, slot, classname, sizeof(classname));
+            GetMenuItem(menu, slot, className, sizeof(className));
             
             // Solve class index from the name.
-            classindex = ClassGetIndex(classname);
+            classIndex = ClassGetIndex(className);
             
-            // Solve teamid from the class index.
-            teamid = ClassGetTeamID(classindex, ZR_CLASS_CACHE_MODIFIED);
-            
-            // Allow instant class change if enabled and both class and player is human.
-            if (ClassAllowInstantChange[client] && !iszombie && teamid == ZR_CLASS_TEAM_HUMANS)
-            {
-                // Directly change the selected class index.
-                ClassSelected[client][teamid] = classindex;
-                
-                // Update cache and apply attributes.
-                ClassReloadPlayerCache(client, classindex);
-                ClassApplyAttributes(client);
-            }
-            else
-            {
-                // Check if the player is alive.
-                if (IsPlayerAlive(client))
-                {
-                    // Set next spawn index if the player is changing the class on
-                    // his active team.
-                    if ((iszombie && teamid == ZR_CLASS_TEAM_ZOMBIES) ||
-                        (!iszombie && teamid == ZR_CLASS_TEAM_HUMANS) ||
-                        (ClassPlayerInAdminMode[client] && teamid == ZR_CLASS_TEAM_ADMINS))
-                    {
-                        // Check if player selected the same class that he already is.
-                        if (ClassSelected[client][teamid] == classindex)
-                        {
-                            // Player is already the specified class. Disable
-                            // next class for the specified team.
-                            ClassSelectedNext[client][teamid] = -1;
-                        }
-                        else
-                        {
-                            // Set class to be used on next spawn.
-                            ClassSelectedNext[client][teamid] = classindex;
-                        }
-                    }
-                    else
-                    {
-                        // Directly change the selected class index.
-                        ClassSelected[client][teamid] = classindex;
-                    }
-                }
-                else
-                {
-                    // Player isn't alive. The class can be directly changed.
-                    ClassSelected[client][teamid] = classindex;
-                }
-            }
-            
-            // Save selected class index in cookie if enabled.
-            if (GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]))
-            {
-                CookiesSetInt(client, g_hClassCookieClassSelected[teamid], classindex + 1);
-            }
+            // Select (and eventually apply) class.
+            ClassSelectClientClass(client, classIndex);
         }
         case MenuAction_Cancel:
         {

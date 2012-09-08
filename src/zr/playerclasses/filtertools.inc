@@ -587,12 +587,12 @@ stock ClassValidateEditableAttributes(attributes[ClassEditableAttributes])
 /**
  * Checks if the specified class index is a valid index.
  *
- * @param classindex    The class index to validate.
+ * @param classIndex    The class index to validate.
  * @return              True if the class exist, false otherwise.
  */
-stock bool:ClassValidateIndex(classindex)
+stock bool:ClassValidateIndex(classIndex)
 {
-    if (classindex >= 0 && classindex < ClassCount)
+    if (classIndex >= 0 && classIndex < ClassCount)
     {
         return true;
     }
@@ -660,10 +660,10 @@ stock ClassGetIndex(const String:name[], cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
     decl String:current_name[64];
 
-    // Check if there are no classes.
-    if (ClassCount == 0)
+    // Check if there are no classes, or reading from player cache.
+    if (ClassCount == 0 || cachetype == ZR_CLASS_CACHE_PLAYER)
     {
-        return false;
+        return -1;
     }
     
     // Loop through all classes.

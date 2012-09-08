@@ -68,6 +68,7 @@ enum Game
  * Current game.
  */
 new Game:g_game = Game_Unknown;
+#pragma unused g_game
 
 /**
  * Updates g_game. Will log a warning if a unsupported game is detected.

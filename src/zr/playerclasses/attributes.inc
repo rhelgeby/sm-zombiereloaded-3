@@ -235,7 +235,7 @@ stock ClassGetGroup(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_P
 }
 
 /**
- * Gets the class name to be displayed in the class menu.
+ * Gets the class name displayed in the class menu.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
