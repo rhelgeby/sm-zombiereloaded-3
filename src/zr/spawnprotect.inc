@@ -173,7 +173,6 @@ SpawnProtectStart(client)
     
     // Send time left in a hud message.
     TranslationPrintHintText(client, "Spawn Protect", pSpawnProtectTime[client]);
-    StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
     
     // Start repeating timer.
     tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);

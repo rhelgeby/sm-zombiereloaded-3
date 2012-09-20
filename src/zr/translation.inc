@@ -331,6 +331,12 @@ stock TranslationPrintHintText(client, any:...)
     
     // Print translated phrase to client.
     PrintHintText(client, translation);
+    
+    // Stop hint text sound in CS:S.
+    if (g_Game == Game_CSS)
+    {
+        StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+    }
 }
 
 /**

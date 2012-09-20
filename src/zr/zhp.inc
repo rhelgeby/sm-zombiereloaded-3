@@ -250,7 +250,6 @@ ZHPUpdateHUD(client)
     
     // Display HP
     TranslationPrintHintText(client, "Display HP", health);
-    StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 }
 
 /**
