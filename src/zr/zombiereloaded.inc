@@ -67,8 +67,8 @@ enum Game
 /**
  * Current game.
  */
-new Game:g_game = Game_Unknown;
-#pragma unused g_game
+new Game:g_Game = Game_Unknown;
+#pragma unused g_Game
 
 /**
  * Updates g_game. Will log a warning if a unsupported game is detected.
@@ -80,19 +80,19 @@ UpdateGameFolder()
     
     if (StrEqual(gameFolder, "cstrike", false))
     {
-        g_game = Game_CSS;
+        g_Game = Game_CSS;
         PrintToServer("Game detected: cstrike");
         return;
     }
     else if (StrEqual(gameFolder, "csgo", false))
     {
-        g_game = Game_CSGO;
+        g_Game = Game_CSGO;
         PrintToServer("Game detected: csgo");
         return;
     }
     
     LogError("Warning: Zombie:Reloaded doesn't support this game: %s", gameFolder);
-    g_game = Game_Unknown;
+    g_Game = Game_Unknown;
 }
 
 /**

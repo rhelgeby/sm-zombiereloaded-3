@@ -68,6 +68,21 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
 }
 
 /**
+ * Gets client's velocity.
+ *
+ * @param client        The client index.
+ * @param vecVelocity   Array to store vector in.
+ */
+stock ToolsGetClientVelocity(client, Float:vecVelocity[3])
+{
+    // x = vector component.
+    for (new x = 0; x < 3; x++)
+    {
+        vecVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
+    }
+}
+
+/**
  * Set a client's lagged movement value.
  * @param client    The client index.
  * @param value     LMV value. (300.0 = default, 600.0 = double)
