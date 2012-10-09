@@ -195,6 +195,7 @@ public OnMapEnd()
     InfectOnMapEnd();
     VolOnMapEnd();
     VEffectsOnMapEnd();
+    ZombieSoundsOnMapEnd();
 }
 
 /**

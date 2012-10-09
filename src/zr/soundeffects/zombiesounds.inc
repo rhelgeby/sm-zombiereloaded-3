@@ -220,6 +220,11 @@ ZombieSoundsOnRoundEnd()
     ZombieSoundsResetCmdTimers();
 }
 
+ZombieSoundsOnMapEnd()
+{
+    ZombieSoundsOnRoundEnd();
+}
+
 ZombieSoundsOnCommandsCreate()
 {
     RegConsoleCmd("scream", ZombieSoundsScreamCommand, "Emits a scream sound, if the player is a zombie.");
