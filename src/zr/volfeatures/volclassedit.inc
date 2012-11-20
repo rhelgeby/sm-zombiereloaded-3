@@ -458,7 +458,7 @@ VolClassEditDumpData(dataIndex, String:buffer[], maxlen)
  */
 VolClassEditApply(client, dataIndex)
 {
-    switch (VolClassEditData[client][VolClassEdit_Mode])
+    switch (VolClassEditData[dataIndex][VolClassEdit_Mode])
     {
         case ClassEditMode_Name:
         {
@@ -494,7 +494,7 @@ VolClassEditRestore(client, dataIndex)
 {
     new classindex = ClassGetActiveIndex(client);
     
-    switch (VolClassEditData[client][VolClassEdit_Mode])
+    switch (VolClassEditData[dataIndex][VolClassEdit_Mode])
     {
         case ClassEditMode_Name:
         {
