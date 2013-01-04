@@ -640,7 +640,7 @@ stock Float:ClassGetNapalmTime(index, cachetype = ZR_CLASS_CACHE_PLAYER)
  */
 
 /**
- * Gets the immunity mode to the specified class.
+ * Gets the immunity mode for the specified class.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -649,9 +649,10 @@ stock Float:ClassGetNapalmTime(index, cachetype = ZR_CLASS_CACHE_PLAYER)
  *                  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
  *                  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
  *                  is used, index will be used as a client index.
- * @return  Current immunity mode to the specified class. -1 on error.
+ * @return  Current immunity mode to the specified class. Immunity_Invalid on
+ *          error.
  */
-stock ClassGetImmunityMode(index, cachetype = ZR_CLASS_CACHE_PLAYER)
+stock ImmunityMode:ClassGetImmunityMode(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     switch (cachetype)
     {
@@ -668,11 +669,11 @@ stock ClassGetImmunityMode(index, cachetype = ZR_CLASS_CACHE_PLAYER)
             return ClassPlayerCache[index][Class_ImmunityMode];
         }
     }
-    return -1;
+    return Immunity_Invalid;
 }
 
 /**
- * Gets the immunity amount to the specified class.
+ * Gets the immunity amount for the specified class.
  *
  * @param index     Index of the class in a class cache or a client index,
  *                  depending on the cache type specified.
@@ -681,9 +682,9 @@ stock ClassGetImmunityMode(index, cachetype = ZR_CLASS_CACHE_PLAYER)
  *                  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
  *                  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
  *                  is used, index will be used as a client index.
- * @return  Current immunity amount to the specified class. -1.0 on error.
+ * @return  Current immunity amount fot the specified class. -1 on error.
  */
-stock Float:ClassGetImmunityAmount(index, cachetype = ZR_CLASS_CACHE_PLAYER)
+stock ClassGetImmunityAmount(index, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     switch (cachetype)
     {
@@ -700,7 +701,39 @@ stock Float:ClassGetImmunityAmount(index, cachetype = ZR_CLASS_CACHE_PLAYER)
             return ClassPlayerCache[index][Class_ImmunityAmount];
         }
     }
-    return -1.0;
+    return -1;
+}
+
+/**
+ * Gets the immunity cooldown for the specified class.
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
+ *                  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
+ *                  is used, index will be used as a client index.
+ * @return  Current immunity cooldown for the specified class. -1 on error.
+ */
+stock ClassGetImmunityCooldown(index, cachetype = ZR_CLASS_CACHE_PLAYER)
+{
+    switch (cachetype)
+    {
+        case ZR_CLASS_CACHE_ORIGINAL:
+        {
+            return ClassData[index][Class_ImmunityCooldown];
+        }
+        case ZR_CLASS_CACHE_MODIFIED:
+        {
+            return ClassDataCache[index][Class_ImmunityCooldown];
+        }
+        case ZR_CLASS_CACHE_PLAYER:
+        {
+            return ClassPlayerCache[index][Class_ImmunityCooldown];
+        }
+    }
+    return -1;
 }
 
 /**

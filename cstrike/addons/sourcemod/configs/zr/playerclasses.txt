@@ -32,8 +32,17 @@
 // fov                      number      Field of view value. 90 is default.
 // has_napalm               yes/no      Allows player to throw napalm grenades. Humans only.
 // napalm_time              decimal     Napalm burn duration. Zombies only.
-// immunity_mode            number      Sets the immunity mode.
-// immunity_amount          decimal     Sets the immunity value.
+// immunity_mode            test        How the human is infected (humans only):
+//                                      "none"   - Instant infection.
+//                                      "full"   - Immune to infection. Careful with this, it might not be that fun.
+//                                      "damage" - Allow zombies to stab humans to death, or below a HP threshold.
+//                                      "delay"  - Delay infection for a certain number of seconds.
+//                                      "shield" - Allow human to deploy a shield that will give a temporary full immunity against infections.
+// immunity_amount          number      Immunity data value (humans only). Depends on the immunity mode above:
+//                                      "damage" - HP threshold. Infection will be allowed when HP go below this value. Zero will enable stabbing to death.
+//                                      "delay"  - Number of seconds the infection is delayed since first hit by a zombie.
+//                                      "shield" - Number of seconds the shield is active.
+// immunity_cooldown        number      Number of seconds of cooldown for temporary immunity effects (currently just shield mode).
 // no_fall_damage           on/off      Disables fall damage.
 // health                   number      How many health points to give.
 // health_regen_interval    decimal     Sets the regeneration interval. 0 to disable.
@@ -79,9 +88,9 @@
         "has_napalm"            "no"
         "napalm_time"           "10.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "2500"
@@ -123,9 +132,9 @@
         "has_napalm"            "no"
         "napalm_time"           "5.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "2000"
@@ -167,9 +176,9 @@
         "has_napalm"            "no"
         "napalm_time"           "15.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "3500"
@@ -211,9 +220,9 @@
         "has_napalm"            "no"
         "napalm_time"           "20.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "4000"
@@ -255,9 +264,9 @@
         "has_napalm"            "0"
         "napalm_time"           "5.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "2500"
@@ -299,9 +308,9 @@
         "has_napalm"            "no"
         "napalm_time"           "3.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "3500"
@@ -349,9 +358,9 @@
         "has_napalm"            "yes"
         "napalm_time"           "0.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "no"
         
         "health"                "100"
@@ -393,9 +402,9 @@
         "has_napalm"            "yes"
         "napalm_time"           "0.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "200"
@@ -437,9 +446,9 @@
         "has_napalm"            "yes"
         "napalm_time"           "0.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "200"
@@ -481,9 +490,9 @@
         "has_napalm"            "no"
         "napalm_time"           "0.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "0"
         
         "health"                "100"
@@ -525,9 +534,9 @@
         "has_napalm"            "yes"
         "napalm_time"           "0.0"
         
-        // Player behaviour
-        "immunity_mode"         "0"
-        "immunity_amount"       "0.0"
+        // Player behavior
+        "immunity_mode"         "none"
+        "immunity_amount"       "0"
         "no_fall_damage"        "yes"
         
         "health"                "100"

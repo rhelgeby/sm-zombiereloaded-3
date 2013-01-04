@@ -103,8 +103,6 @@ stock bool:ClassValidateTeamDefaults(cachetype = ZR_CLASS_CACHE_ORIGINAL)
  */
 stock ClassValidateAttributes(classindex, bool:logErrors = false)
 {
-    // TODO: Validate immunity mode and amount.
-    
     new flags;
     
     // Team.
@@ -287,8 +285,19 @@ stock ClassValidateAttributes(classindex, bool:logErrors = false)
         }
     }
     
-    // Immunity mode (not implemented).
+    // Immunity mode.
+    new ImmunityMode:immunityMode = ClassData[classindex][Class_ImmunityMode];
+    if (immunityMode == Immunity_Invalid)
+    {
+        flags += ZR_CLASS_IMMUNITY_MODE;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid immunity_mode at index %d.", classindex);
+        }
+    }
     
+    // Immunity amount.
+    // TODO: Validate amount value. This depends on the immunity mode.
     
     // Health.
     new health = ClassData[classindex][Class_Health];
@@ -484,8 +493,16 @@ stock ClassValidateEditableAttributes(attributes[ClassEditableAttributes])
         }
     }
     
-    // Immunity mode not implemented yet.
-        
+    // Immunity mode.
+    new ImmunityMode:immunityMode = attributes[ClassEdit_ImmunityMode];
+    if (immunityMode == Immunity_Invalid)
+    {
+        flags += ZR_CLASS_IMMUNITY_MODE;
+    }
+    
+    // Immunity amount.
+    // TODO: Validate amount value. This depends on the immunity mode.
+    
     // Health regen interval.
     new Float:healthRegenInterval = attributes[ClassEdit_RegenInterval];
     if (healthRegenInterval >= 0.0)

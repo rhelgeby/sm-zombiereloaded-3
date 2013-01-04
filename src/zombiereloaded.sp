@@ -55,6 +55,7 @@
 // Header includes.
 #include "zr/log.h"
 #include "zr/models.h"
+#include "zr/immunityhandler.h"
 
 #if defined ADD_VERSION_INFO
 #include "zr/hgversion.h"
@@ -89,6 +90,7 @@
 #include "zr/roundstart"
 #include "zr/roundend"
 #include "zr/infect"
+#include "zr/immunityhandler"
 #include "zr/damage"
 #include "zr/event"
 #include "zr/zadmin"

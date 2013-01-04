@@ -41,8 +41,9 @@ new VolEmptyAttributes[ClassEditableAttributes] = {
     
     -1,                             /** HasNapalm */
     -1.0,                           /** NapalmTime */
-    -1,                             /** ImmunityMode */
-    -1.0,                           /** ImmunityAmount */
+    Immunity_Invalid,               /** ImmunityMode */
+    -1,                             /** ImmunityAmount */
+    -1,                             /** ImmunityCooldown */
     -1,                             /** NoFallDamage */
     
     -1.0,                           /** RegenInterval */

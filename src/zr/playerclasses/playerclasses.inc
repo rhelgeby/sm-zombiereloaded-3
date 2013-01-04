@@ -115,8 +115,9 @@
 #define ZR_CLASS_DEFAULT_FOV                    90
 #define ZR_CLASS_DEFAULT_HAS_NAPALM             "no"
 #define ZR_CLASS_DEFAULT_NAPALM_TIME            10.0
-#define ZR_CLASS_DEFAULT_IMMUNITY_MODE          ZR_CLASS_IMMUNITY_DISABLED
-#define ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT        0.0
+#define ZR_CLASS_DEFAULT_IMMUNITY_MODE          "none"
+#define ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT        1
+#define ZR_CLASS_DEFAULT_IMMUNITY_COOLDOWN      60
 #define ZR_CLASS_DEFAULT_NO_FALL_DAMAGE         "yes"
 #define ZR_CLASS_DEFAULT_HEALTH                 6000
 #define ZR_CLASS_DEFAULT_HEALTH_REGEN_INTERVAL  0.0
@@ -152,6 +153,8 @@
 #define ZR_CLASS_FOV_MAX                    165
 #define ZR_CLASS_NAPALM_TIME_MIN            0.0
 #define ZR_CLASS_NAPALM_TIME_MAX            600.0
+#define ZR_CLASS_IMMUNITY_COOLDOWN_MIN      0
+#define ZR_CLASS_IMMUNITY_COOLDOWN_MAX      600
 #define ZR_CLASS_HEALTH_MIN                 1
 #define ZR_CLASS_HEALTH_MAX                 20000
 #define ZR_CLASS_REGEN_INTERVAL_MIN         0.0
@@ -198,16 +201,17 @@
 #define ZR_CLASS_NAPALM_TIME            (1<<15)
 #define ZR_CLASS_IMMUNITY_MODE          (1<<16)
 #define ZR_CLASS_IMMUNITY_AMOUNT        (1<<17)
-#define ZR_CLASS_NO_FALL_DAMAGE         (1<<18)
-#define ZR_CLASS_HEALTH                 (1<<19)
-#define ZR_CLASS_HEALTH_REGEN_INTERVAL  (1<<20)
-#define ZR_CLASS_HEALTH_REGEN_AMOUNT    (1<<21)
-#define ZR_CLASS_HEALTH_INFECT_GAIN     (1<<22)
-#define ZR_CLASS_KILL_BONUS             (1<<23)
-#define ZR_CLASS_SPEED                  (1<<24)
-#define ZR_CLASS_KNOCKBACK              (1<<25)
-#define ZR_CLASS_JUMP_HEIGHT            (1<<26)
-#define ZR_CLASS_JUMP_DISTANCE          (1<<27)
+#define ZR_CLASS_IMMUNITY_COOLDOWN      (1<<18)
+#define ZR_CLASS_NO_FALL_DAMAGE         (1<<19)
+#define ZR_CLASS_HEALTH                 (1<<20)
+#define ZR_CLASS_HEALTH_REGEN_INTERVAL  (1<<21)
+#define ZR_CLASS_HEALTH_REGEN_AMOUNT    (1<<22)
+#define ZR_CLASS_HEALTH_INFECT_GAIN     (1<<23)
+#define ZR_CLASS_KILL_BONUS             (1<<24)
+#define ZR_CLASS_SPEED                  (1<<25)
+#define ZR_CLASS_KNOCKBACK              (1<<26)
+#define ZR_CLASS_JUMP_HEIGHT            (1<<27)
+#define ZR_CLASS_JUMP_DISTANCE          (1<<28)
 /**
  * @endsection
  */
@@ -258,8 +262,9 @@ enum ClassAttributes
     Float:Class_NapalmTime,
     
     /* Player behaviour */
-    Class_ImmunityMode,
-    Float:Class_ImmunityAmount,
+    ImmunityMode:Class_ImmunityMode,
+    Class_ImmunityAmount,
+    Class_ImmunityCooldown,
     bool:Class_NoFallDamage,
     
     Class_Health,
@@ -300,9 +305,10 @@ enum ClassEditableAttributes
     ClassEdit_HasNapalm,
     Float:ClassEdit_NapalmTime,
     
-    /* Player behaviour */
-    ClassEdit_ImmunityMode,
-    Float:ClassEdit_ImmunityAmount,
+    /* Player behavior */
+    ImmunityMode:ClassEdit_ImmunityMode,
+    ClassEdit_ImmunityAmount,
+    ClassEdit_ImmunityCooldown,
     
     ClassEdit_NoFallDamage,
     Float:ClassEdit_RegenInterval,
@@ -398,13 +404,13 @@ new ClassNoFilter[ClassFilter];
 new ClassNoSpecialClasses[ClassFilter] = {false, 0, ZR_CLASS_SPECIALFLAGS, -1};
 
 /**
- * The original class data. This array only changed when class data is loaded.
- * ZR_CLASS_CACHE_ORIGINAL is the cache type to this array.
+ * The original class data. This array is only changed when class data is
+ * loaded. ZR_CLASS_CACHE_ORIGINAL is the cache type to this array.
  */
 new ClassData[ZR_CLASS_MAX][ClassAttributes];
 
 /**
- * The class thata cache that can be modified. ZR_CLASS_CACHE_MODIFIED is the
+ * The class data cache that can be modified. ZR_CLASS_CACHE_MODIFIED is the
  * cache type to this array.
  */
 new ClassDataCache[ZR_CLASS_MAX][ClassAttributes];
@@ -545,11 +551,12 @@ ClassLoad()
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Can't find any classes in \"%s\"", pathclasses);
     }
     
-    decl String:name[64];
-    decl String:group[64];
-    decl String:description[256];
-    decl String:model_path[PLATFORM_MAX_PATH];
-    decl String:overlay_path[PLATFORM_MAX_PATH];
+    new String:name[64];
+    new String:group[64];
+    new String:description[256];
+    new String:model_path[PLATFORM_MAX_PATH];
+    new String:immunity_mode[32];
+    new String:overlay_path[PLATFORM_MAX_PATH];
     
     ClassCount = 0;
     new failedcount;
@@ -605,8 +612,9 @@ ClassLoad()
         
         
         /* Player behaviour */
-        ClassData[ClassCount][Class_ImmunityMode] = KvGetNum(kvClassData, "immunity_mode", ZR_CLASS_DEFAULT_IMMUNITY_MODE);
-        ClassData[ClassCount][Class_ImmunityAmount] = KvGetFloat(kvClassData, "immunity_amount", ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT);
+        KvGetString(kvClassData, "immunity_mode", immunity_mode, sizeof(immunity_mode), ZR_CLASS_DEFAULT_IMMUNITY_MODE);
+        ClassData[ClassCount][Class_ImmunityMode] = ImmunityStringToMode(immunity_mode);
+        ClassData[ClassCount][Class_ImmunityAmount] = KvGetNum(kvClassData, "immunity_amount", ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT);
         ClassData[ClassCount][Class_NoFallDamage] = ConfigKvGetStringBool(kvClassData, "no_fall_damage", ZR_CLASS_DEFAULT_NO_FALL_DAMAGE);
         
         ClassData[ClassCount][Class_Health] = KvGetNum(kvClassData, "health", ZR_CLASS_DEFAULT_HEALTH);
