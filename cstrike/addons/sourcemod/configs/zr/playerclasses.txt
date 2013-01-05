@@ -34,18 +34,18 @@
 // napalm_time              decimal     Napalm burn duration. Zombies only.
 // immunity_mode            text        Special immunity modes. Some modes only works on humans or zombies:
 //                                      "none"   - Instant infection.
-//                                      (Not implemented) "full"   - Completely immune. Humans can't be infected, zombies don't receive damage or knock back. Careful with this, it might not be that fun.
+//                                      "full"   - Completely immune. Humans can't be infected, zombies don't receive damage or knock back. Careful with this, it might not be that fun.
 //                                      "infect" - Humans are immune to infections until HP go below a threshold. Threshold at zero enable stabbing to death.
-//                                      (Not implemented) "damage" - Zombies are immune to damage from humans/grenades, but still vulnerable to knock back.
+//                                      "damage" - Zombies are immune to damage from humans/grenades, but still vulnerable to knock back.
 //                                      "delay"  - Delay infection for a certain number of seconds.
 //                                      (Not implemented) "shield" - Shield against infections (humans) or knock back (zombies) for a certain amount of seconds (similar to TF2's übercharge).
 // immunity_amount          number      Immunity data value (humans only). Depends on the immunity mode above:
 //                                      "infect" - HP threshold. Infection will be allowed when HP go below this value. Zero will enable stabbing to death.
-//                                      (Not implemented) "delay"  - Number of seconds the infection is delayed since first hit by a zombie.
+//                                      "delay"  - Number of seconds the infection is delayed since first hit by a zombie.
 //                                      (Not implemented) "shield" - Number of seconds the shield is active.
 // immunity_cooldown        number      Number of seconds of cooldown for temporary immunity effects, depending on mode.
-//                                      "shield" - Number of seconds the player has to wait before the shield can be used again.
 //                                      "delay"  - Number of seconds the delay is reduced every time a zombie attack, while a delayed infection is in progress.
+//                                      "shield" - Number of seconds the player has to wait before the shield can be used again.
 // no_fall_damage           on/off      Disables fall damage.
 // health                   number      How many health points to give.
 // health_regen_interval    decimal     Sets the regeneration interval. 0 to disable.
@@ -503,9 +503,9 @@
         "napalm_time"           "0.0"
         
         // Player behavior
-        "immunity_mode"         "delay"     // Delay infection
-        "immunity_amount"       "10"        // 10 seconds.
-        "immunity_cooldown"     "2"         // Reduce delay 2 seconds every subsequent attack (infect faster).
+        "immunity_mode"         "none"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "0"
         
         "health"                "100"
@@ -548,8 +548,8 @@
         "napalm_time"           "0.0"
         
         // Player behavior
-        "immunity_mode"         "infect"        // Immune against infection,
-        "immunity_amount"       "10"            // when HP is above 10.
+        "immunity_mode"         "none"
+        "immunity_amount"       "1"
         "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         

@@ -297,7 +297,26 @@ stock ClassValidateAttributes(classindex, bool:logErrors = false)
     }
     
     // Immunity amount.
-    // TODO: Validate amount value. This depends on the immunity mode.
+    new immunityAmount = ClassData[classindex][Class_ImmunityAmount];
+    if (!ImmunityIsValidAmount(immunityMode, immunityAmount))
+    {
+        flags += ZR_CLASS_IMMUNITY_AMOUNT;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid immunity_amount at index %d.", classindex);
+        }
+    }
+    
+    // Immunity cooldown.
+    new immunityCooldown = ClassData[classindex][Class_ImmunityCooldown];
+    if (!ImmunityIsValidCooldown(immunityMode, immunityCooldown))
+    {
+        flags += ZR_CLASS_IMMUNITY_COOLDOWN;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid immunity_cooldown at index %d.", classindex);
+        }
+    }
     
     // Health.
     new health = ClassData[classindex][Class_Health];

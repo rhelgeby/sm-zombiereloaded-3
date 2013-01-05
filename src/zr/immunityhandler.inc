@@ -26,9 +26,14 @@
  */
 
 /**
- * Current immunity modes.
+ * Maximum delay of infection.
  */
-//new ImmunityMode:PlayerImmunityMode[MAXPLAYERS + 1] = {Immunity_None, ...};
+#define IMMUNITY_MAX_DELAY          300
+
+/**
+ * Maximum shield duration.
+ */
+#define IMMUNITY_MAX_SHIELD_TIME    300
 
 /**
  * Timers for handling timed immunity actions.
@@ -139,7 +144,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
     {
         case Immunity_Full:
         {
-            // Block damage.
+            // Block damage (implies blocking knock back on zombies).
             return true;
         }
         case Immunity_Infect:
@@ -166,6 +171,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             // Client must be zombie.
             if (!InfectIsClientInfected(client))
             {
+                // Allow damage.
                 return false;
             }
             
@@ -192,6 +198,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
         }
     }
     
+    // Allow damage.
     return false;
 }
 
@@ -364,7 +371,6 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
     if (!IsClientInGame(client) || !IsPlayerAlive(client))
     {
         // Client disconnected or died. Abort immunity action.
-        PlayerImmunityTimer[client] = INVALID_HANDLE;
         ImmunityAbortHandler(client, false);
         return Plugin_Stop;
     }
@@ -377,7 +383,6 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
     {
         // Time is up. Reset data.
         PlayerImmunityDuration[client] = 0;
-        //PlayerImmunityTimer[client] = INVALID_HANDLE;
         ImmunityAbortHandler(client);
         
         // Infect client.
@@ -405,7 +410,7 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
  */
 bool:ImmunityShieldModeHandler(client, bool:asZombie = true)
 {
-    // Check cooldown.
+    // Stop if cooldown is still in progress.
     
     // Deploy shield.
     if (asZombie)
@@ -680,4 +685,138 @@ ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
     }
     
     return 0;
+}
+
+/**
+ * Returns whether the amount value is valid for the specified mode.
+ *
+ * @param mode      Immunity mode to validate against.
+ * @param amount    Amount value to test.
+ *
+ * @return          True if valid, false otherwise.
+ */
+bool:ImmunityIsValidAmount(ImmunityMode:mode, amount)
+{
+    switch (mode)
+    {
+        case Immunity_Invalid:
+        {
+            return false;
+        }
+        case Immunity_None:
+        {
+            // Immunity mode disabled, amount ignored.
+            return true;
+        }
+        case Immunity_Full:
+        {
+            // Amount isn't used in this mode.
+            return true;
+        }
+        case Immunity_Infect:
+        {
+            // Check if HP threshold is negative.
+            if (amount < 0)
+            {
+                return false;
+            }
+            
+            // There's no upper limit. If the value is too high it will
+            // overflow and become negative.
+        }
+        case Immunity_Damage:
+        {
+            // Amount isn't used in this mode.
+            return true;
+        }
+        case Immunity_Delay:
+        {
+            if (amount <= 0 || amount > IMMUNITY_MAX_DELAY)
+            {
+                return false;
+            }
+        }
+        case Immunity_Shield:
+        {
+            if (amount <= 0 || amount > IMMUNITY_MAX_SHIELD_TIME)
+            {
+                return false;
+            }
+        }
+        default:
+        {
+            // Invalid mode.
+            return false;
+        }
+    }
+    
+    // Passed.
+    return true;
+}
+
+/**
+ * Returns whether the cooldown value is valid for the specified mode.
+ *
+ * @param mode      Immunity mode to validate against.
+ * @param cooldown  Cooldown value to test.
+ *
+ * @return          True if valid, false otherwise.
+ */
+bool:ImmunityIsValidCooldown(ImmunityMode:mode, cooldown)
+{
+    switch (mode)
+    {
+        case Immunity_Invalid:
+        {
+            return false;
+        }
+        case Immunity_None:
+        {
+            // Immunity mode disabled, amount ignored.
+            return true;
+        }
+        case Immunity_Full:
+        {
+            // Cooldown isn't used in this mode.
+            return true;
+        }
+        case Immunity_Infect:
+        {
+            // Cooldown isn't used in this mode.
+            return true;
+        }
+        case Immunity_Damage:
+        {
+            // Cooldown isn't used in this mode.
+            return true;
+        }
+        case Immunity_Delay:
+        {
+            if (cooldown < 0)
+            {
+                return false;
+            }
+            
+            // No upper limit. It may be intentional to use a high value so that
+            // the section attack will remove all delay and infect instantly.
+        }
+        case Immunity_Shield:
+        {
+            if (cooldown < 0)
+            {
+                return false;
+            }
+            
+            // No upper limit. It may be intentional to use a high value so that
+            // the shield can only be used once per life.
+        }
+        default:
+        {
+            // Invalid mode.
+            return false;
+        }
+    }
+    
+    // Passed.
+    return true;
 }

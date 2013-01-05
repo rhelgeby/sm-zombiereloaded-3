@@ -220,7 +220,6 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     if (ImmunityOnClientTraceAttack(client, attacker, damage, hitgroup, damagetype))
     {
         // Block damage.
-        PrintToChatAll("DamageTraceAttack - Blocking damage.");
         return ACTION_HANDLED;
     }
     
