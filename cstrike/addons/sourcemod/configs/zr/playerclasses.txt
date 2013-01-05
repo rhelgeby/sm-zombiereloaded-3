@@ -32,18 +32,18 @@
 // fov                      number      Field of view value. 90 is default.
 // has_napalm               yes/no      Allows player to throw napalm grenades. Humans only.
 // napalm_time              decimal     Napalm burn duration. Zombies only.
-// immunity_mode            test        Special immunity modes. Some modes only works on humans or zombies:
+// immunity_mode            text        Special immunity modes. Some modes only works on humans or zombies:
 //                                      "none"   - Instant infection.
-//                                      "full"   - Completely immune. Humans can't be infected, zombies don't receive damage or knock back. Careful with this, it might not be that fun.
+//                                      (Not implemented) "full"   - Completely immune. Humans can't be infected, zombies don't receive damage or knock back. Careful with this, it might not be that fun.
 //                                      "infect" - Humans are immune to infections until HP go below a threshold. Threshold at zero enable stabbing to death.
-//                                      "damage" - Zombies are immune to damage from humans/grenades, but still vulnerable to knock back.
-//                                      "delay"  - Delay infection for a certain number of seconds.
-//                                      "shield" - Shield against infections (humans) or knock back (zombies) for a certain amount of seconds (similar to TF2's übercharge).
+//                                      (Not implemented) "damage" - Zombies are immune to damage from humans/grenades, but still vulnerable to knock back.
+//                                      (Not implemented) "delay"  - Delay infection for a certain number of seconds.
+//                                      (Not implemented) "shield" - Shield against infections (humans) or knock back (zombies) for a certain amount of seconds (similar to TF2's übercharge).
 // immunity_amount          number      Immunity data value (humans only). Depends on the immunity mode above:
 //                                      "infect" - HP threshold. Infection will be allowed when HP go below this value. Zero will enable stabbing to death.
-//                                      "delay"  - Number of seconds the infection is delayed since first hit by a zombie.
-//                                      "shield" - Number of seconds the shield is active.
-// immunity_cooldown        number      Number of seconds of cooldown for temporary immunity effects (currently just shield mode).
+//                                      (Not implemented) "delay"  - Number of seconds the infection is delayed since first hit by a zombie.
+//                                      (Not implemented) "shield" - Number of seconds the shield is active.
+// immunity_cooldown        number      (Not implemented) Number of seconds of cooldown for temporary immunity effects (currently just shield mode).
 // no_fall_damage           on/off      Disables fall damage.
 // health                   number      How many health points to give.
 // health_regen_interval    decimal     Sets the regeneration interval. 0 to disable.
