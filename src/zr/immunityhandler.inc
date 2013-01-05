@@ -67,7 +67,7 @@ new bool:PlayerImmunityThresholdPassed[MAXPLAYERS + 1] = {false, ...};
  */
 bool:ImmunityOnClientInfect(client, attacker)
 {
-    PrintToChatAll("ImmunityOnClientInfect(client=%d, attacker=%d)", client, attacker);
+    //PrintToChatAll("ImmunityOnClientInfect(client=%d, attacker=%d)", client, attacker);
     
     // Get immunity mode from client class.
     new ImmunityMode:mode = ClassGetImmunityMode(client);
@@ -118,7 +118,7 @@ bool:ImmunityOnClientInfect(client, attacker)
  */
 bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damageType)
 {
-    PrintToChatAll("ImmunityOnClientTraceAttack(client=%d, attacker=%d, damage=%f, hitgroup=%d, damageType=%d)", client, attacker, damage, hitgroup, damageType);
+    //PrintToChatAll("ImmunityOnClientTraceAttack(client=%d, attacker=%d, damage=%f, hitgroup=%d, damageType=%d)", client, attacker, damage, hitgroup, damageType);
     
     // Check if there is no attacker (world damage).
     if (!ZRIsClientValid(attacker))
@@ -150,7 +150,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             // Check if damage give HP below the infection threshold.
             if (ImmunityBelowInfectThreshold(client, damage))
             {
-                PrintToChatAll("ImmunityOnClientTraceAttack - Threshold passed");
+                //PrintToChatAll("ImmunityOnClientTraceAttack - Threshold passed");
                 PlayerImmunityThresholdPassed[client] = true;
             }
             else
@@ -239,7 +239,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
  */
 bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
 {
-    PrintToChatAll("ImmunityOnClientDamage(client=%d, attacker=%d, damage=%f)", client, attacker, damage);
+    //PrintToChatAll("ImmunityOnClientDamage(client=%d, attacker=%d, damage=%f)", client, attacker, damage);
     
     // Check if there is no attacker (world damage).
     if (!ZRIsClientValid(attacker))
@@ -259,7 +259,7 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
             // attacking, and stab to death is disabled (threshold above zero).
             if (ImmunityBelowInfectThreshold(client, damage))
             {
-                PrintToChatAll("ImmunityOnClientDamage - Below threshold, removing damage.");
+                //PrintToChatAll("ImmunityOnClientDamage - Below threshold, removing damage.");
                 // Client is about to be infected. Remove damage so the client
                 // won't die.
                 //damage = 0.0;
@@ -303,20 +303,20 @@ bool:ImmunityOnClientKnockBack(client)
  */
 bool:ImmunityInfectModeHandler(client, attacker)
 {
-    PrintToChatAll("ImmunityInfectModeHandler(client=%d, attacker=%d)", client, attacker);
+    //PrintToChatAll("ImmunityInfectModeHandler(client=%d, attacker=%d)", client, attacker);
     
     // Note: ImmunityOnClientDamage and ImmunityOnClientTraceAttack hook into
     //       the damage module to prevent humans with low HP from dying when
     //       they're not supposed to.
     
     new threshold = ClassGetImmunityAmount(client);
-    PrintToChatAll("threshold=%d", threshold);
+    //PrintToChatAll("threshold=%d", threshold);
     
     // Check if infection is disabled.
     if (threshold == 0)
     {
         // Infection is handled here: blocked.
-        PrintToChatAll("Infection disabled, block infection.");
+        //PrintToChatAll("Infection disabled, block infection.");
         return true;
     }
     
@@ -326,16 +326,7 @@ bool:ImmunityInfectModeHandler(client, attacker)
         return false;
     }
     
-    /*new clientHP = GetClientHealth(client);
-    PrintToChatAll("clientHP=%d", clientHP);
-    
-    if (clientHP < threshold)
-    {
-        // Client HP below threshold, allow instant infection.
-        return false;
-    }*/
-    
-    PrintToChatAll("Above threshold, block infection.");
+    //PrintToChatAll("Above threshold, block infection.");
     return true;
 }
 
@@ -505,7 +496,7 @@ bool:ImmunityBelowInfectThreshold(client, Float:damage)
     new clientHP = GetClientHealth(client);
     new dmg = RoundToNearest(damage);
     
-    PrintToChatAll("threshold=%d, clientHp=%d", threshold, clientHP);
+    //PrintToChatAll("threshold=%d, clientHp=%d", threshold, clientHP);
     
     // Check if the damage go below the HP threshold.
     if (clientHP - dmg <= 0.0 && threshold > 0)

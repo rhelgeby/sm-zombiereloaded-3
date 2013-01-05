@@ -279,7 +279,7 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
 public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:damage, damagetype, ammotype)
 #endif
 {
-    PrintToChatAll("DamageOnTakeDamage - damage:%f", damage);
+    //PrintToChatAll("DamageOnTakeDamage - damage:%f", damage);
     
     // Get classname of the inflictor.
     decl String:classname[64];
