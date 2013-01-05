@@ -222,7 +222,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
         }
     }
     
-    PrintToChatAll("Allow damage.");
+    //PrintToChatAll("Allow damage.");
     return false;
 }
 

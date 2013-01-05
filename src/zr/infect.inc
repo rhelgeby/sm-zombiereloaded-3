@@ -343,7 +343,7 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
     // Check if the immunity module is handling the infection.
     if (ImmunityOnClientInfect(client, attacker))
     {
-        PrintToChatAll("InfectOnClientHurt - Infect blocked.");
+        //PrintToChatAll("InfectOnClientHurt - Infect blocked.");
         return;
     }
     
