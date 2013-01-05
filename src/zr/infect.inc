@@ -751,6 +751,7 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     ZTeleOnClientInfected(client);
     ZHPOnClientInfected(client);
     APIOnClientInfected(client, attacker, motherinfect, respawnoverride, respawn);
+    ImmunityOnClientInfected(client);
 }
 
 /**

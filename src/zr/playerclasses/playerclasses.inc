@@ -615,6 +615,7 @@ ClassLoad()
         KvGetString(kvClassData, "immunity_mode", immunity_mode, sizeof(immunity_mode), ZR_CLASS_DEFAULT_IMMUNITY_MODE);
         ClassData[ClassCount][Class_ImmunityMode] = ImmunityStringToMode(immunity_mode);
         ClassData[ClassCount][Class_ImmunityAmount] = KvGetNum(kvClassData, "immunity_amount", ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT);
+        ClassData[ClassCount][Class_ImmunityCooldown] = KvGetNum(kvClassData, "immunity_cooldown", ZR_CLASS_DEFAULT_IMMUNITY_COOLDOWN);
         ClassData[ClassCount][Class_NoFallDamage] = ConfigKvGetStringBool(kvClassData, "no_fall_damage", ZR_CLASS_DEFAULT_NO_FALL_DAMAGE);
         
         ClassData[ClassCount][Class_Health] = KvGetNum(kvClassData, "health", ZR_CLASS_DEFAULT_HEALTH);
@@ -756,9 +757,10 @@ bool:ClassReloadDataCache()
         ClassDataCache[classindex][Class_HasNapalm] = ClassData[classindex][Class_HasNapalm];
         ClassDataCache[classindex][Class_NapalmTime] = ClassData[classindex][Class_NapalmTime];
         
-        /* Player behaviour */
+        /* Player behavior */
         ClassDataCache[classindex][Class_ImmunityMode] = ClassData[classindex][Class_ImmunityMode];
         ClassDataCache[classindex][Class_ImmunityAmount] = ClassData[classindex][Class_ImmunityAmount];
+        ClassDataCache[classindex][Class_ImmunityCooldown] = ClassData[classindex][Class_ImmunityCooldown];
         ClassDataCache[classindex][Class_NoFallDamage] = ClassData[classindex][Class_NoFallDamage];
         ClassDataCache[classindex][Class_Health] = ClassData[classindex][Class_Health];
         ClassDataCache[classindex][Class_HealthRegenInterval] = ClassData[classindex][Class_HealthRegenInterval];
@@ -821,9 +823,10 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             ClassPlayerCache[client][Class_HasNapalm] = ClassData[classindex][Class_HasNapalm];
             ClassPlayerCache[client][Class_NapalmTime] = ClassData[classindex][Class_NapalmTime];
             
-            /* Player behaviour */
+            /* Player behavior */
             ClassPlayerCache[client][Class_ImmunityMode] = ClassData[classindex][Class_ImmunityMode];
             ClassPlayerCache[client][Class_ImmunityAmount] = ClassData[classindex][Class_ImmunityAmount];
+            ClassPlayerCache[client][Class_ImmunityCooldown] = ClassData[classindex][Class_ImmunityCooldown];
             ClassPlayerCache[client][Class_NoFallDamage] = ClassData[classindex][Class_NoFallDamage];
             ClassPlayerCache[client][Class_Health] = ClassData[classindex][Class_Health];
             ClassPlayerCache[client][Class_HealthRegenInterval] = ClassData[classindex][Class_HealthRegenInterval];
@@ -861,9 +864,10 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             ClassPlayerCache[client][Class_HasNapalm] = ClassDataCache[classindex][Class_HasNapalm];
             ClassPlayerCache[client][Class_NapalmTime] = ClassDataCache[classindex][Class_NapalmTime];
             
-            /* Player behaviour */
+            /* Player behavior */
             ClassPlayerCache[client][Class_ImmunityMode] = ClassDataCache[classindex][Class_ImmunityMode];
             ClassPlayerCache[client][Class_ImmunityAmount] = ClassDataCache[classindex][Class_ImmunityAmount];
+            ClassPlayerCache[client][Class_ImmunityCooldown] = ClassDataCache[classindex][Class_ImmunityCooldown];
             ClassPlayerCache[client][Class_NoFallDamage] = ClassDataCache[classindex][Class_NoFallDamage];
             ClassPlayerCache[client][Class_Health] = ClassDataCache[classindex][Class_Health];
             ClassPlayerCache[client][Class_HealthRegenInterval] = ClassDataCache[classindex][Class_HealthRegenInterval];
@@ -1376,10 +1380,14 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
     Format(attribute, sizeof(attribute), "napalm_time:           \"%f\"\n", ClassGetNapalmTime(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
     
-    Format(attribute, sizeof(attribute), "immunity_mode:         \"%d\"\n", ClassGetImmunityMode(index, cachetype));
+    ImmunityModeToString(ClassGetImmunityMode(index, cachetype), format_buffer, sizeof(format_buffer));
+    Format(attribute, sizeof(attribute), "immunity_mode:         \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
     
-    Format(attribute, sizeof(attribute), "immunity_amount:       \"%f\"\n", ClassGetImmunityAmount(index, cachetype));
+    Format(attribute, sizeof(attribute), "immunity_amount:       \"%d\"\n", ClassGetImmunityAmount(index, cachetype));
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "immunity_cooldown:     \"%d\"\n", ClassGetImmunityCooldown(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
     
     Format(attribute, sizeof(attribute), "no_fall_damage:        \"%d\"\n", ClassGetNoFallDamage(index, cachetype));

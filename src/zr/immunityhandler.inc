@@ -55,6 +55,8 @@ new PlayerImmunityLastUse[MAXPLAYERS + 1] = {0, ...};
  */
 new bool:PlayerImmunityThresholdPassed[MAXPLAYERS + 1] = {false, ...};
 
+/*____________________________________________________________________________*/
+
 /**
  * Handles immunity when a client is about to be infected. This function may
  * delay or block infection according to the immunity mode class settings.
@@ -103,6 +105,8 @@ bool:ImmunityOnClientInfect(client, attacker)
     return false;
 }
 
+/*____________________________________________________________________________*/
+
 /**
  * TraceAttack hook.
  *
@@ -150,35 +154,12 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             // Check if damage give HP below the infection threshold.
             if (ImmunityBelowInfectThreshold(client, damage))
             {
-                //PrintToChatAll("ImmunityOnClientTraceAttack - Threshold passed");
                 PlayerImmunityThresholdPassed[client] = true;
             }
             else
             {
                 PlayerImmunityThresholdPassed[client] = false;
             }
-            
-            /*new threshold = ClassGetImmunityAmount(client);
-            new clientHP = GetClientHealth(client);
-            new dmg = RoundToNearest(damage);
-            PrintToChatAll("threshold=%d, clientHp=%d", threshold, clientHP);
-            
-            // Prevent humans with low HP from dying when a zombie is
-            // attacking, and stab to death is disabled (threshold above zero).
-            if (clientHP - dmg <= 0.0 && threshold > 0)
-            {
-                // Client is about to be infected. Remove damage, but don't
-                // block the damage event. The infect module need it to detect
-                // zombie attack.
-                damage = 0.0;
-                
-                // Client is about to be infected, re-add HP so they aren't
-                // killed by knife. Don't block the damage, the infect
-                // module need the damage event.
-                //PrintToChatAll("Re-add HP.");
-                //SetEntityHealth(client, clientHP + dmg);
-                return false;
-            }*/
         }
         case Immunity_Damage:
         {
@@ -209,22 +190,12 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             // Block damage from attacker.
             return true;
         }
-        case Immunity_Delay:
-        {
-            // Client must be human.
-            if (InfectIsClientInfected(client))
-            {
-                return false;
-            }
-            
-            // Block damage if there's an infection in progress.
-            
-        }
     }
     
-    //PrintToChatAll("Allow damage.");
     return false;
 }
+
+/*____________________________________________________________________________*/
 
 /**
  * TakeDamage hook.
@@ -239,8 +210,6 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
  */
 bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
 {
-    //PrintToChatAll("ImmunityOnClientDamage(client=%d, attacker=%d, damage=%f)", client, attacker, damage);
-    
     // Check if there is no attacker (world damage).
     if (!ZRIsClientValid(attacker))
     {
@@ -259,11 +228,6 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
             // attacking, and stab to death is disabled (threshold above zero).
             if (ImmunityBelowInfectThreshold(client, damage))
             {
-                //PrintToChatAll("ImmunityOnClientDamage - Below threshold, removing damage.");
-                // Client is about to be infected. Remove damage so the client
-                // won't die.
-                //damage = 0.0;
-                
                 // Fake hurt event because it's not triggered when the damage
                 // was removed (because no one is actually hurt).
                 InfectOnClientHurt(client, attacker, "knife");
@@ -272,11 +236,24 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
                 return true;
             }
         }
+        case Immunity_Delay:
+        {
+            // Fake hurt event because it's not triggered when the damage
+            // was removed (because no one is actually hurt). This event must
+            // still be triggered so that subsequent attacks are registered,
+            // without dealing any damage.
+            InfectOnClientHurt(client, attacker, "knife");
+            
+            // Block damage to prevent player from dying.
+            return true;
+        }
     }
     
     // Allow damage.
     return false;
 }
+
+/*____________________________________________________________________________*/
 
 /**
  * Client is about to receive knock back (zombie).
@@ -288,6 +265,8 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
 /*bool:ImmunityOnClientKnockBack(client)
 {
 }*/
+
+/*____________________________________________________________________________*/
 
 /**
  * Handles infect mode immunity.
@@ -303,20 +282,15 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
  */
 bool:ImmunityInfectModeHandler(client)
 {
-    //PrintToChatAll("ImmunityInfectModeHandler(client=%d, attacker=%d)", client, attacker);
-    
     // Note: ImmunityOnClientDamage and ImmunityOnClientTraceAttack hook into
     //       the damage module to prevent humans with low HP from dying when
     //       they're not supposed to.
     
     new threshold = ClassGetImmunityAmount(client);
-    //PrintToChatAll("threshold=%d", threshold);
-    
     // Check if infection is disabled.
     if (threshold == 0)
     {
         // Infection is handled here: blocked.
-        //PrintToChatAll("Infection disabled, block infection.");
         return true;
     }
     
@@ -326,9 +300,10 @@ bool:ImmunityInfectModeHandler(client)
         return false;
     }
     
-    //PrintToChatAll("Above threshold, block infection.");
     return true;
 }
+
+/*____________________________________________________________________________*/
 
 /**
  * Handles delayed infections.
@@ -346,27 +321,46 @@ bool:ImmunityDelayModeHandler(client, attacker)
         // Additional attacks while a delayed infection is in progress will
         // speedup the infection.
         
-        // Trigger timer event to reduce duration.
-        ImmunityDelayTimerHandler(PlayerImmunityTimer[client], client);
+        // Get reduction amount for subsequent zombie attack.
+        new reduction = ClassGetImmunityCooldown(client);
+        if (reduction > 0)
+        {
+            // Reduce duration. Add one because the timer handler itself reduce
+            // duration by one.
+            PlayerImmunityDuration[client] -= reduction + 1;
+            
+            // Note: This feature can be used to trigger an instant infection
+            //       when a human receive a second attack, by setting the
+            //       reduction value high enough.
+            
+            // Trigger timer event to reduce delay and infect faster.
+            ImmunityDelayTimerHandler(PlayerImmunityTimer[client], client);
+        }
         
         // Block infection.
-        return false;
+        return true;
     }
     
     // Start a delayed infection. Initialize duration and attacker.
     PlayerImmunityDuration[client] = ClassGetImmunityAmount(client);
     PlayerImmunityAttacker[client] = attacker;
     
-    // Create repated 1-second timer.
+    // Create repated 1-second timer for handling the countdown.
     PlayerImmunityTimer[client] = CreateTimer(1.0, ImmunityDelayTimerHandler, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
     
     // Block infection.
-    return false;
+    return true;
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Delayed infection timer handler. Handles countdown and infection when time
+ * is up.
+ */
 public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
 {
-    // Verify that client is connected and alive.
+    // Verify that client is still connected and alive.
     if (!IsClientInGame(client) || !IsPlayerAlive(client))
     {
         // Client disconnected or died. Abort immunity action.
@@ -375,19 +369,16 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
         return Plugin_Stop;
     }
     
-    // TODO: Read cvar for reduction amount.
-    new reduction = 2;
-    
     // Reduce duration.
-    PlayerImmunityDuration[client] -= reduction;
+    PlayerImmunityDuration[client] -= 1;
     
     // Check if time is up.
     if (PlayerImmunityDuration[client] <= 0)
     {
         // Time is up. Reset data.
         PlayerImmunityDuration[client] = 0;
-        PlayerImmunityTimer[client] = INVALID_HANDLE;
-        ZREndTimer(PlayerImmunityTimer[client]);
+        //PlayerImmunityTimer[client] = INVALID_HANDLE;
+        ImmunityAbortHandler(client);
         
         // Infect client.
         InfectHumanToZombie(client, PlayerImmunityAttacker[client]);
@@ -397,6 +388,8 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
     
     return Plugin_Continue;
 }
+
+/*____________________________________________________________________________*/
 
 /**
  * Handles shield mode immunity.
@@ -427,6 +420,8 @@ bool:ImmunityShieldModeHandler(client, bool:asZombie = true)
     return false;
 }
 
+/*____________________________________________________________________________*/
+
 /**
  * Aborts any immunity mode in action (shields, delays, etc.). Resets values.
  *
@@ -449,6 +444,8 @@ ImmunityAbortHandler(client, bool:resetLastUse = true)
     }
 }
 
+/*____________________________________________________________________________*/
+
 /**
  * Aborts all immunity modes in action.
  *
@@ -462,26 +459,63 @@ ImmunityAbortAll(bool:resetLastUse = true)
     }
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Client was infected.
+ */
+ImmunityOnClientInfected(client)
+{
+    // In case client was infected through an admin command or mother zombie
+    // selection, abort other actions in progress.
+    ImmunityAbortHandler(client);
+}
+
+/*____________________________________________________________________________*/
+
+/**
+ * Client was turned back into a human.
+ */
 ImmunityOnClientHuman(client)
 {
     ImmunityAbortHandler(client);
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Client died.
+ */
 ImmunityOnClientDeath(client)
 {
     ImmunityAbortHandler(client, false);
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Client connected to the server.
+ */
 ImmunityClientInit(client)
 {
     ImmunityAbortHandler(client);
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Client spawned.
+ */
 ImmunityClientSpawn(client)
 {
     ImmunityAbortHandler(client, false);
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Client disconnected.
+ */
 ImmunityOnClientDisconnect(client)
 {
     ImmunityAbortHandler(client);
@@ -498,28 +532,53 @@ ImmunityOnClientDisconnect(client)
     }
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Client changed team.
+ */
 ImmunityOnClientTeam(client)
 {
     ImmunityAbortHandler(client);
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Round ended.
+ */
 ImmunityOnRoundEnd()
 {
     ImmunityAbortAll();
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Map ended.
+ */
 ImmunityOnMapEnd()
 {
     ImmunityAbortAll();
 }
 
+/*____________________________________________________________________________*/
+
+/**
+ * Returns whether the specified damage will take a client's HP below the
+ * infection threshold. Only used by "infect" immunity mode.
+ *
+ * @param client    Client index.
+ * @param damage    Damage applied to client.
+ *
+ * @return          True if client HP go below threshold (immunity_amount) when
+ *                  applying damage, false otherwise.
+ */
 bool:ImmunityBelowInfectThreshold(client, Float:damage)
 {
     new threshold = ClassGetImmunityAmount(client);
     new clientHP = GetClientHealth(client);
     new dmg = RoundToNearest(damage);
-    
-    //PrintToChatAll("threshold=%d, clientHp=%d", threshold, clientHP);
     
     // Check if the damage go below the HP threshold.
     if (clientHP - dmg <= 0.0 && threshold > 0)
@@ -529,6 +588,8 @@ bool:ImmunityBelowInfectThreshold(client, Float:damage)
     
     return false;
 }
+
+/*____________________________________________________________________________*/
 
 /**
  * Converts a string to an immunity mode.
@@ -571,6 +632,8 @@ ImmunityMode:ImmunityStringToMode(const String:mode[])
     
     return Immunity_Invalid;
 }
+
+/*____________________________________________________________________________*/
 
 /**
  * Converts an immunity mode to a string.
