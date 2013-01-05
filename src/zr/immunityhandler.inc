@@ -28,7 +28,7 @@
 /**
  * Current immunity modes.
  */
-new ImmunityMode:PlayerImmunityMode[MAXPLAYERS + 1] = {Immunity_None, ...};
+//new ImmunityMode:PlayerImmunityMode[MAXPLAYERS + 1] = {Immunity_None, ...};
 
 /**
  * Timers for handling timed immunity actions.
@@ -87,7 +87,7 @@ bool:ImmunityOnClientInfect(client, attacker)
         }
         case Immunity_Infect:
         {
-            return ImmunityInfectModeHandler(client, attacker);
+            return ImmunityInfectModeHandler(client);
         }
         case Immunity_Delay:
         {
@@ -285,9 +285,9 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
  *
  * @return      True if knock back should be blocked, false otherwise.
  */
-bool:ImmunityOnClientKnockBack(client)
+/*bool:ImmunityOnClientKnockBack(client)
 {
-}
+}*/
 
 /**
  * Handles infect mode immunity.
@@ -301,7 +301,7 @@ bool:ImmunityOnClientKnockBack(client)
  * @return          True if infection will be handled by this module, false if
  *                  infection can be applied instantly.
  */
-bool:ImmunityInfectModeHandler(client, attacker)
+bool:ImmunityInfectModeHandler(client)
 {
     //PrintToChatAll("ImmunityInfectModeHandler(client=%d, attacker=%d)", client, attacker);
     
@@ -412,6 +412,18 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
  */
 bool:ImmunityShieldModeHandler(client, bool:asZombie = true)
 {
+    // Check cooldown.
+    
+    // Deploy shield.
+    if (asZombie)
+    {
+        // Enable knock back shield.
+    }
+    else
+    {
+        // Enable infection shield.
+    }
+    
     return false;
 }
 
@@ -472,7 +484,18 @@ ImmunityClientSpawn(client)
 
 ImmunityOnClientDisconnect(client)
 {
+    ImmunityAbortHandler(client);
+    
     // Loop through attacker cache and remove client (set to 0).
+    for (new victim = 0; victim < sizeof(PlayerImmunityAttacker); victim++)
+    {
+        if (PlayerImmunityAttacker[victim] == client)
+        {
+            // The victim was attacked by this client, but the client is
+            // disconnecting now. Reset the attacker index to the world index.
+            PlayerImmunityAttacker[victim] = 0;
+        }
+    }
 }
 
 ImmunityOnClientTeam(client)
@@ -547,4 +570,51 @@ ImmunityMode:ImmunityStringToMode(const String:mode[])
     }
     
     return Immunity_Invalid;
+}
+
+/**
+ * Converts an immunity mode to a string.
+ *
+ * @param mode      Mode to convert.
+ * @param buffer    Destination string buffer.
+ * @param maxlen    Size of buffer.
+ *
+ * @return          Number of cells written.
+ */
+ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
+{
+    if (mode == Immunity_Invalid)
+    {
+        return 0;
+    }
+    
+    switch (mode)
+    {
+        case Immunity_None:
+        {
+            return strcopy(buffer, maxlen, "none");
+        }
+        case Immunity_Full:
+        {
+            return strcopy(buffer, maxlen, "full");
+        }
+        case Immunity_Infect:
+        {
+            return strcopy(buffer, maxlen, "infect");
+        }
+        case Immunity_Damage:
+        {
+            return strcopy(buffer, maxlen, "damage");
+        }
+        case Immunity_Delay:
+        {
+            return strcopy(buffer, maxlen, "delay");
+        }
+        case Immunity_Shield:
+        {
+            return strcopy(buffer, maxlen, "shield");
+        }
+    }
+    
+    return 0;
 }

@@ -813,6 +813,7 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     // Forward event to modules.
     SEffectsOnClientHuman(client);
     APIOnClientHumanPost(client, respawn, protect);
+    ImmunityOnClientHuman(client);
 }
 
 /**

@@ -290,7 +290,7 @@ public Action:ClassModifyCommand(client, argc)
         StrCat(syntax, sizeof(syntax), "class:           The class to modify. Can be any class name, or one of the following team names; all, humans, zombies or admins.\n");
         StrCat(syntax, sizeof(syntax), "attribute:       The name of the class attribute.\n");
         StrCat(syntax, sizeof(syntax), "value:           Value to set. Use quotes if value is a string.\n");
-        StrCat(syntax, sizeof(syntax), "is_multiplier:   Optional. specifies wether the original value should be multiplied by the specified value. Not all attributes support multiplying. Defaults to false.\n\n");
+        StrCat(syntax, sizeof(syntax), "is_multiplier:   Optional. specifies wether the original value should be multiplied by the specified value. Not all attributes support multipliers. Defaults to false.\n\n");
         StrCat(syntax, sizeof(syntax), "Note: Original values are retrieved from the original class cache, not the modified class cache.");
         ReplyToCommand(client, syntax);
         
@@ -734,9 +734,22 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
             ClassDataCache[classindex][Class_Fov] = value;
             return true;
         }
-        case ZR_CLASS_IMMUNITY_MODE:
+        case ZR_CLASS_IMMUNITY_AMOUNT:
         {
-            ClassDataCache[classindex][Class_ImmunityMode] = value;
+            if (ismultiplier)
+            {
+                value = ClassData[classindex][Class_ImmunityAmount] * value;
+            }
+            ClassDataCache[classindex][Class_ImmunityAmount] = value;
+            return true;
+        }
+        case ZR_CLASS_IMMUNITY_COOLDOWN:
+        {
+            if (ismultiplier)
+            {
+                value = ClassData[classindex][Class_ImmunityCooldown] * value;
+            }
+            ClassDataCache[classindex][Class_ImmunityCooldown] = value;
             return true;
         }
         case ZR_CLASS_HEALTH:
@@ -809,15 +822,6 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
                 value = ClassData[classindex][Class_NapalmTime] * value;
             }
             ClassDataCache[classindex][Class_NapalmTime] = value;
-            return true;
-        }
-        case ZR_CLASS_IMMUNITY_AMOUNT:
-        {
-            if (ismultiplier)
-            {
-                value = ClassData[classindex][Class_ImmunityAmount] * value;
-            }
-            ClassDataCache[classindex][Class_ImmunityAmount] = value;
             return true;
         }
         case ZR_CLASS_HEALTH_REGEN_INTERVAL:
@@ -913,6 +917,22 @@ stock ClassModifyString(classindex, attributeflag, const String:value[])
         {
             strcopy(ClassDataCache[classindex][Class_OverlayPath], PLATFORM_MAX_PATH, value);
             return true;
+        }
+        case ZR_CLASS_IMMUNITY_MODE:
+        {
+            // Convert to mode.
+            new ImmunityMode:mode = ImmunityStringToMode(value);
+            
+            // Validate.
+            if (mode != Immunity_Invalid)
+            {
+                ClassDataCache[classindex][Class_ImmunityMode] = mode;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
     

@@ -1177,6 +1177,10 @@ stock ClassAttributeNameToFlag(const String:attributename[])
     {
         return ZR_CLASS_IMMUNITY_AMOUNT;
     }
+    else if (StrEqual(attributename, "immunity_cooldown", false))
+    {
+        return ZR_CLASS_IMMUNITY_COOLDOWN;
+    }
     else if (StrEqual(attributename, "no_fall_damage", false))
     {
         return ZR_CLASS_NO_FALL_DAMAGE;
@@ -1299,7 +1303,8 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
               ZR_CLASS_ALPHA_DAMAGED,
               ZR_CLASS_ALPHA_DAMAGE,
               ZR_CLASS_FOV,
-              ZR_CLASS_IMMUNITY_MODE,
+              ZR_CLASS_IMMUNITY_AMOUNT,
+              ZR_CLASS_IMMUNITY_COOLDOWN,
               ZR_CLASS_HEALTH,
               ZR_CLASS_HEALTH_REGEN_AMOUNT,
               ZR_CLASS_HEALTH_INFECT_GAIN,
@@ -1310,7 +1315,6 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
         
         // Float.
         case ZR_CLASS_NAPALM_TIME,
-              ZR_CLASS_IMMUNITY_AMOUNT,
               ZR_CLASS_HEALTH_REGEN_INTERVAL,
               ZR_CLASS_SPEED,
               ZR_CLASS_KNOCKBACK,
@@ -1325,7 +1329,8 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
               ZR_CLASS_NAME,
               ZR_CLASS_DESCRIPTION,
               ZR_CLASS_MODEL_PATH,
-              ZR_CLASS_OVERLAY_PATH:
+              ZR_CLASS_OVERLAY_PATH,
+              ZR_CLASS_IMMUNITY_MODE:
         {
             return ClassDataType_String;
         }
