@@ -216,6 +216,14 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     
     // Here we know that attacker and client are different teams.
     
+    // Check if immunity module requires damage to be blocked.
+    if (ImmunityOnClientTraceAttack(client, attacker, damage, hitgroup, damagetype))
+    {
+        // Block damage.
+        PrintToChatAll("DamageTraceAttack - Blocking damage.");
+        return ACTION_HANDLED;
+    }
+    
     // If client is a human, then allow damage.
     if (InfectIsClientHuman(client))
     {
@@ -271,6 +279,8 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
 public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:damage, damagetype, ammotype)
 #endif
 {
+    PrintToChatAll("DamageOnTakeDamage - damage:%f", damage);
+    
     // Get classname of the inflictor.
     decl String:classname[64];
     GetEdictClassname(inflictor, classname, sizeof(classname));
@@ -323,12 +333,22 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
             return ACTION_CONTINUE;
         }
         
-        // Client is about to be infected, re-add HP so they aren't killed by knife.
-        new health = GetClientHealth(client);
-        SetEntityHealth(client, health + RoundToNearest(damage));
+        // Check if immunity module blocked the damage.
+        if (ImmunityOnClientDamage(client, attacker, damage))
+        {
+            return ACTION_HANDLED;
+        }
         
-        // Allow damage.
-        return ACTION_CONTINUE;
+        // Client is about to be infected, re-add HP so they aren't killed by
+        // knife. But only do this when immunity mode is disabled.
+        if (ClassGetImmunityMode(client) == Immunity_None)
+        {
+            new health = GetClientHealth(client);
+            SetEntityHealth(client, health + RoundToNearest(damage));
+            
+            // Allow damage.
+            return ACTION_CONTINUE;
+        }
     }
     // Client was damaged by explosion.
     else if (damagetype & DMG_CSS_BLAST)

@@ -32,14 +32,15 @@
 // fov                      number      Field of view value. 90 is default.
 // has_napalm               yes/no      Allows player to throw napalm grenades. Humans only.
 // napalm_time              decimal     Napalm burn duration. Zombies only.
-// immunity_mode            test        How the human is infected (humans only):
+// immunity_mode            test        Special immunity modes. Some modes only works on humans or zombies:
 //                                      "none"   - Instant infection.
-//                                      "full"   - Immune to infection. Careful with this, it might not be that fun.
-//                                      "damage" - Allow zombies to stab humans to death, or below a HP threshold.
+//                                      "full"   - Completely immune. Humans can't be infected, zombies don't receive damage or knock back. Careful with this, it might not be that fun.
+//                                      "infect" - Humans are immune to infections until HP go below a threshold. Threshold at zero enable stabbing to death.
+//                                      "damage" - Zombies are immune to damage from humans/grenades, but still vulnerable to knock back.
 //                                      "delay"  - Delay infection for a certain number of seconds.
-//                                      "shield" - Allow human to deploy a shield that will give a temporary full immunity against infections.
+//                                      "shield" - Shield against infections (humans) or knock back (zombies) for a certain amount of seconds (similar to TF2's übercharge).
 // immunity_amount          number      Immunity data value (humans only). Depends on the immunity mode above:
-//                                      "damage" - HP threshold. Infection will be allowed when HP go below this value. Zero will enable stabbing to death.
+//                                      "infect" - HP threshold. Infection will be allowed when HP go below this value. Zero will enable stabbing to death.
 //                                      "delay"  - Number of seconds the infection is delayed since first hit by a zombie.
 //                                      "shield" - Number of seconds the shield is active.
 // immunity_cooldown        number      Number of seconds of cooldown for temporary immunity effects (currently just shield mode).
@@ -90,7 +91,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "2500"
@@ -134,7 +136,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "2000"
@@ -178,7 +181,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "3500"
@@ -222,7 +226,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "4000"
@@ -266,7 +271,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "2500"
@@ -310,7 +316,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "3500"
@@ -360,7 +367,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "no"
         
         "health"                "100"
@@ -404,7 +412,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "200"
@@ -448,7 +457,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "200"
@@ -492,7 +502,8 @@
         
         // Player behavior
         "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_amount"       "1"
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "0"
         
         "health"                "100"
@@ -535,8 +546,9 @@
         "napalm_time"           "0.0"
         
         // Player behavior
-        "immunity_mode"         "none"
-        "immunity_amount"       "0"
+        "immunity_mode"         "infect"        // Immune against infection,
+        "immunity_amount"       "10"            // when HP is above 10.
+        "immunity_cooldown"     "60"
         "no_fall_damage"        "yes"
         
         "health"                "100"

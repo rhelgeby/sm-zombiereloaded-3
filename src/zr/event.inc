@@ -144,6 +144,7 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     RespawnOnRoundEnd();
     ZSpawnOnRoundEnd();
     VolOnRoundEnd();
+    ImmunityOnRoundEnd();
 }
 
 /**
@@ -162,6 +163,7 @@ public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadc
     
     // Forward event to modules.
     InfectOnClientTeam(index, team);
+    ImmunityOnClientTeam(index);
     
     return Plugin_Handled;
 }
@@ -190,6 +192,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     ZTeleOnClientSpawn(index);
     ZHPOnClientSpawn(index);
     VolOnPlayerSpawn(index);
+    ImmunityClientSpawn(index);
     
     // Fire post player_spawn event.
     CreateTimer(0.1, EventPlayerSpawnPost, index);
@@ -292,6 +295,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     ZHPOnClientDeath(index);
     VolOnPlayerDeath(index);
     RoundEndOnClientDeath();
+    ImmunityOnClientDeath(index);
 }
 
 /**

@@ -301,7 +301,8 @@ InfectOnClientDeath(client, attacker)
     ToolsClientScore(attacker, true, true, score + bonus);
 }
 
-/** Client has been hurt.
+/**
+ * Client has been hurt.
  *
  * @param client        The client index.
  * @param attacker      The attacker index.
@@ -336,6 +337,13 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
     // If weapon isn't a knife, then stop.
     if (!StrEqual(weapon, "knife"))
     {
+        return;
+    }
+    
+    // Check if the immunity module is handling the infection.
+    if (ImmunityOnClientInfect(client, attacker))
+    {
+        PrintToChatAll("InfectOnClientHurt - Infect blocked.");
         return;
     }
     

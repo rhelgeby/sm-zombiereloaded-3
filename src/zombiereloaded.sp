@@ -38,11 +38,13 @@
     #include <sdkhooks>
     
     #define ACTION_CONTINUE     Plugin_Continue
+    #define ACTION_CHANGED      Plugin_Changed
     #define ACTION_HANDLED      Plugin_Handled
 #else
     #include <zrtools>
     
     #define ACTION_CONTINUE     ZRTools_Continue
+    #define ACTION_CHANGED      ZRTools_Changed
     #define ACTION_HANDLED      ZRTools_Handled
 #endif
 
@@ -198,6 +200,7 @@ public OnMapEnd()
     VolOnMapEnd();
     VEffectsOnMapEnd();
     ZombieSoundsOnMapEnd();
+    ImmunityOnMapEnd();
 }
 
 /**
@@ -260,6 +263,7 @@ public OnClientPutInServer(client)
     RespawnClientInit(client);
     ZTeleClientInit(client);
     ZHPClientInit(client);
+    ImmunityClientInit(client);
 }
 
 /**
@@ -312,6 +316,7 @@ public OnClientDisconnect(client)
     AntiStickOnClientDisconnect(client);
     ZSpawnOnClientDisconnect(client);
     VolOnPlayerDisconnect(client);
+    ImmunityOnClientDisconnect(client);
 }
 
 /**
