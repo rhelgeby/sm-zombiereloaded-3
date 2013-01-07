@@ -328,6 +328,25 @@
 	}
 
 	// ===========================
+	// Immunity
+	// ===========================
+
+	"Immunity Shield Not Available"
+	{
+		"en"		"Du har ikke skjold."
+	}
+
+	"Immunity Shield Cooldown"
+	{
+		"en"		"{1} sekunder igjen til skjoldet er tilgjengelig."
+	}
+
+	"Immunity Shield Time Left"
+	{
+		"en"		"Tid igjen med skjold: {1}"
+	}
+
+	// ===========================
 	// Overlays (core)
 	// ===========================
 

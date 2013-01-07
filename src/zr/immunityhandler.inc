@@ -63,6 +63,39 @@ new bool:PlayerImmunityThresholdPassed[MAXPLAYERS + 1] = {false, ...};
 /*____________________________________________________________________________*/
 
 /**
+ * Console commands are being created.
+ */
+ImmunityOnCommandsCreate()
+{
+    RegConsoleCmd("zr_shield", Command_DeployShield, "Deploy the shield, if available.");
+}
+
+/*____________________________________________________________________________*/
+
+/** 
+ * Client executed the deploy shield command.
+ *
+ * @param client    Client index.
+ * @param argc      Number of arguments.
+ */
+public Action:Command_DeployShield(client, argc)
+{
+    // Block console.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+    
+    // Attempt to deploy shield.
+    ImmunityDeployShield(client);
+    
+    return Plugin_Handled;
+}
+
+/*____________________________________________________________________________*/
+
+/**
  * Handles immunity when a client is about to be infected. This function may
  * delay or block infection according to the immunity mode class settings.
  *
@@ -196,6 +229,23 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             // Block damage from attacker.
             return true;
         }
+        case Immunity_Shield:
+        {
+            // Client must be human.
+            if (InfectIsClientInfected(client))
+            {
+                // Allow damage.
+                return false;
+            }
+            
+            // Check if shield is active.
+            if (PlayerImmunityTimer[client] != INVALID_HANDLE)
+            {
+                // Block damage for humans with shield enabled (preventing
+                // zombies from stabbing them to death).
+                return true;
+            }
+        }
     }
     
     // Allow damage.
@@ -259,19 +309,6 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
     // Allow damage.
     return false;
 }
-
-/*____________________________________________________________________________*/
-
-/**
- * Client is about to receive knock back (zombie).
- *
- * @param       Client that's receiving knock back.
- *
- * @return      True if knock back should be blocked, false otherwise.
- */
-/*bool:ImmunityOnClientKnockBack(client)
-{
-}*/
 
 /*____________________________________________________________________________*/
 
@@ -371,7 +408,7 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
     if (!IsClientInGame(client) || !IsPlayerAlive(client))
     {
         // Client disconnected or died. Abort immunity action.
-        ImmunityAbortHandler(client, false);
+        ImmunityAbortHandler(client);
         return Plugin_Stop;
     }
     
@@ -397,32 +434,84 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
 /*____________________________________________________________________________*/
 
 /**
- * Handles shield mode immunity.
+ * Handles shield mode immunity when client is about to become infected.
  *
  * Zombies will get a shield against knock back, while humans become immune of
  * infections.
  *
  * @param client    Client deploying shield.
- * @param asZombie  Client is a zombie.
  *
  * @return          True if infection will be handled by this module, false if
  *                  infection can be applied instantly.
  */
-bool:ImmunityShieldModeHandler(client, bool:asZombie = true)
+bool:ImmunityShieldModeHandler(client)
 {
-    // Stop if cooldown is still in progress.
-    
-    // Deploy shield.
-    if (asZombie)
+    // Check if shield is active.
+    if (PlayerImmunityTimer[client] != INVALID_HANDLE)
     {
-        // Enable knock back shield.
-    }
-    else
-    {
-        // Enable infection shield.
+        // Block infection.
+        return true;
     }
     
+    // Shield is not active, allow infection.
     return false;
+}
+
+/*____________________________________________________________________________*/
+
+/**
+ * Attempts to deploy the shield.
+ *
+ * @param client    Client index.
+ */
+ImmunityDeployShield(client)
+{
+    // Check if shield is available.
+    if (!ImmunityCanDeployShield(client))
+    {
+        // Not available.
+        return;
+    }
+    
+    // Deploy the shield.
+    PlayerImmunityDuration[client] = ClassGetImmunityAmount(client);
+    PlayerImmunityLastUse[client] = GetTime();
+    PlayerImmunityTimer[client] = CreateTimer(1.0, ImmunityShieldTimerHandler, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+    
+    // Trigger initial countdown.
+    ImmunityShieldTimerHandler(PlayerImmunityTimer[client], client);
+}
+
+/*____________________________________________________________________________*/
+
+/**
+ * Shield timer handler. Handles countdown and shield removal when time is up.
+ */
+public Action:ImmunityShieldTimerHandler(Handle:timer, any:client)
+{
+    // Verify that client is still connected and alive.
+    if (!IsClientInGame(client) || !IsPlayerAlive(client))
+    {
+        // Client disconnected or died. Abort immunity action.
+        ImmunityAbortHandler(client);
+        return Plugin_Stop;
+    }
+    
+    // Reduce duration.
+    PlayerImmunityDuration[client] -= 1;
+    
+    // Print remaining shield time.
+    TranslationPrintCenterText(client, "Immunity Shield Time Left", PlayerImmunityDuration[client]);
+    
+    // Check if time is up.
+    if (PlayerImmunityDuration[client] <= 0)
+    {
+        // Time is up. Reset data, but not last use timestamp.
+        ImmunityAbortHandler(client, false);
+        return Plugin_Stop;
+    }
+    
+    return Plugin_Continue;
 }
 
 /*____________________________________________________________________________*/
@@ -462,6 +551,40 @@ ImmunityAbortAll(bool:resetLastUse = true)
     {
         ImmunityAbortHandler(resetLastUse);
     }
+}
+
+/*____________________________________________________________________________*/
+
+/**
+ * Client is about to receive knock back.
+ *
+ * @param       Client that's receiving knock back.
+ *
+ * @return      True if knock back should be blocked, false otherwise.
+ */
+bool:ImmunityOnClientKnockBack(client)
+{
+    // Knock back filter is currently only used in shield mode.
+    if (ClassGetImmunityMode(client) == Immunity_Shield)
+    {
+        // Client must be zombie. (In case a future change allow knock back
+        // on humans.)
+        if (!InfectIsClientInfected(client))
+        {
+            // Client is human, allow knock back.
+            return false;
+        }
+        
+        // Block knock back if shield is deployed.
+        if (PlayerImmunityTimer[client] != INVALID_HANDLE)
+        {
+            // Block knock back.
+            return true;
+        }
+    }
+    
+    // Allow knock back.
+    return false;
 }
 
 /*____________________________________________________________________________*/
@@ -687,6 +810,8 @@ ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
     return 0;
 }
 
+/*____________________________________________________________________________*/
+
 /**
  * Returns whether the amount value is valid for the specified mode.
  *
@@ -754,6 +879,8 @@ bool:ImmunityIsValidAmount(ImmunityMode:mode, amount)
     return true;
 }
 
+/*____________________________________________________________________________*/
+
 /**
  * Returns whether the cooldown value is valid for the specified mode.
  *
@@ -818,5 +945,57 @@ bool:ImmunityIsValidCooldown(ImmunityMode:mode, cooldown)
     }
     
     // Passed.
+    return true;
+}
+
+/*____________________________________________________________________________*/
+
+/**
+ * Returns whether the client is allowed to deploy a shield now. Tests whether
+ * the client has shield immunity mode and whether cooldown is done, or a shield
+ * is already active.
+ *
+ * @param client            Client index.
+ * @param printResponse     Whether a response message is printed on the
+ *                          client's screen.
+ *
+ * @return                  True if shield can be deployed, false otherwise.
+ */
+bool:ImmunityCanDeployShield(client, bool:printResponse = true)
+{
+    // Check immunity mode.
+    if (ClassGetImmunityMode(client) != Immunity_Shield)
+    {
+        if (printResponse)
+        {
+            TranslationPrintToChat(client, "Immunity Shield Not Available");
+        }
+        return false;
+    }
+    
+    // Check if cooldown is still in progress.
+    new cooldown = ClassGetImmunityCooldown(client);
+    new timeLeft = PlayerImmunityLastUse[client] + cooldown - GetTime();
+    if (timeLeft > 0)
+    {
+        if (printResponse)
+        {
+            TranslationPrintToChat(client, "Immunity Shield Cooldown", timeLeft);
+        }
+        return false;
+    }
+    
+    // Check if a shield is already deployed.
+    if (PlayerImmunityTimer[client] != INVALID_HANDLE)
+    {
+        return false;
+    }
+    
+    // Humans cannot deploy shield before first zombie.
+    if (!g_bZombieSpawned)
+    {
+        return false;
+    }
+    
     return true;
 }
