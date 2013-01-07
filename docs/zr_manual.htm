@@ -1138,7 +1138,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 					model, or to fix a compatibility issue with other plugins that change model on
 					players.</td>
 				</tr>
-			</table></blockquote>	
+			</table></blockquote>
 		</td>
 	</tr>
 	
@@ -1241,26 +1241,114 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 	
 	<tr>
 		<td class="commandheader">immunity_mode</td>
-		<td class="commandheader">number</td>
-		<td class="commandheader">0 - 2</td>
+		<td class="commandheader">text</td>
+		<td class="commandheader">One of the options below</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><strong>Note: Incomplete feature!</strong></p>
-			<p>The immunity mode. This feature is currently incomplete and values are ignored.</p>
+			<p>An immunity mode is a mode where the class is resistent of a certain type of damage
+			or action. Basically this is infections, knock back and bullet/explosion damage.</p>
+			<p>Be careful when using certain immunity modes. The class may become very strong (or
+			completely invulnerable) which may break the game balance.</p>
+			<p>But it's also possible to spice up the game by letting zombies hurt humans a bit
+			("infect" mode) or allowing use of temporary shields.</p>
+			<blockquote><table>
+				<tr>
+					<td class="valueoption">none</td>
+					<td>No immunity mode. Instant infection of humans.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">full</td>
+					<td>Completely immune. Careful with this mode, it will break the game.
+					Humans can't be infected and zombies don't receive damage or knock back. Admin
+					commands may override this.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">infect</td>
+					<td><strong>Humans only.</strong> Humans are immune to infections until HP
+					go below a threshold (immunity_amount value). If you set the threshold to zero
+					zombies can stab humans to death. If you set the threshold too high (higher
+					than initial HP) humans can't be infected (similar to "full" immunity mode).</td>
+				</tr>
+				<tr>
+					<td class="valueoption">damage</td>
+					<td><strong>Zombies only.</strong> Zombies are immune to damage from humans/
+					grenades, but are still vulnerable to knock back.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">delay</td>
+					<td><strong>Humans only.</strong> Delay infection for a certain amount of
+					seconds (immunity_amount value).
+					<br/><br/>
+					Subsequent zombie attacks will reduce the delay time with the number of
+					seconds specified in the immunity_cooldown attribute. If you don't want
+					subsequent attack to count, set immunity_cooldown to 0. This will make the
+					human immune to further attacks, but he <i>will</i> be infected when the time
+					is up - unless the human suicides (which can be <a href="#3.11">blocked</a>).</td>
+				</tr>
+				<tr>
+					<td class="valueoption">shield</td>
+					<td>This is a temporary immunity mode which is activated by the player with
+					the <code>zr_shield</code> command. It will give a shield against infections (humans) or
+					knock back (zombies) for a certain amount of seconds (immunity_amount value).
+					<br/><br/>
+					It also has a cooldown delay before the shield can be deployed again.
+					By setting this delay very high (longer than the round time) the shield can
+					only be used once.</td>
+				</tr>
+			</table></blockquote>
 		</td>
 	</tr>
 	
 	<tr>
 		<td class="commandheader">immunity_amount</td>
-		<td class="commandheader">decimal</td>
-		<td class="commandheader">(incomplete)</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 300, or a positive number</td>
 	</tr>
 	<tr>
 		<td class="indent" colspan="3">
-			<p><strong>Note: Incomplete feature!</strong></p>
-			<p>The value for the specified immunity mode. This feature is currently incomplete and
-			values are ignored.</p>
+			<p>Immunity data value. The value depends on which immunity mode that's in use:</p>
+			<blockquote><table>
+				<tr>
+					<td class="valueoption">infect</td>
+					<td>HP threshold value. When the human's HP go below this value he will become
+					vulnerable to infection.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">delay</td>
+					<td>Number of seconds to delay infection since the first attack from a zombie.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">shield</td>
+					<td>Number of seconds the shield is active.</td>
+				</tr>
+			</table></blockquote>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">immunity_cooldown</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - 300, or a positive number</td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>Number of seconds before temporary immunity actions can be used again. Usage depends
+			on immunity mode:</p>
+			<blockquote><table>
+				<tr>
+					<td class="valueoption">delay</td>
+					<td>Number of seconds to reduce the delay before infection. Set this to 0 to
+					block subsequent attacks, or a high value (enough to eliminate the delay
+					completely) to allow instant infection on second attack.</td>
+				</tr>
+				<tr>
+					<td class="valueoption">shield</td>
+					<td>Number of seconds the the player has to wait before the shield is available
+					again. Set this to a high value (longer than the round time) to allow one use
+					only.</td>
+				</tr>
+			</table></blockquote>
 		</td>
 	</tr>
 	
@@ -1430,165 +1518,11 @@ required. Otherwise the plugin will fail to load.</p>
 <p>Errors are logged to SourceMod error logs if it can't parse the file or if class attributes
 have invalid values.</p>
 
-<p>In case of incorrect values a warning will be logged and the class will be disabled. The class
-index and the error flags (bit field) in the log message tells what attributes that failed to
-validate.</p>
+<p>In case of incorrect values a warning will be logged and the class will be disabled. There will
+be a log entry for each attribute that failed validation.</p>
 
-<blockquote><table>
-	<caption>Attribute Flags</caption>
-	<tr>
-		<th class="commandheader">Attribute:</th>
-		<th class="commandheader">Bit:</th>
-		<th class="commandheader">Value:</th>
-	</tr>
-	<tr>
-		<td class="code">enabled</td>
-		<td>1</td>
-		<td>1</td>
-	</tr>
-	<tr>
-		<td class="code">team</td>
-		<td>2</td>
-		<td>2</td>
-	</tr>
-	<tr>
-		<td class="code">team_default</td>
-		<td>3</td>
-		<td>4</td>
-	</tr>
-	<tr>
-		<td class="code">flags</td>
-		<td>4</td>
-		<td>8</td>
-	</tr>
-	<tr>
-		<td class="code">group</td>
-		<td>5</td>
-		<td>16</td>
-	</tr>
-	<tr>
-		<td class="code">name</td>
-		<td>6</td>
-		<td>32</td>
-	</tr>
-	<tr>
-		<td class="code">description</td>
-		<td>7</td>
-		<td>64</td>
-	</tr>
-	<tr>
-		<td class="code">model_path</td>
-		<td>8</td>
-		<td>128</td>
-	</tr>
-	<tr>
-		<td class="code">alpha_initial</td>
-		<td>9</td>
-		<td>256</td>
-	</tr>
-	<tr>
-		<td class="code">alpha_damaged</td>
-		<td>10</td>
-		<td>512</td>
-	</tr>
-	<tr>
-		<td class="code">alpha_damage</td>
-		<td>11</td>
-		<td>1024</td>
-	</tr>
-	<tr>
-		<td class="code">overlay_path</td>
-		<td>12</td>
-		<td>2048</td>
-	</tr>
-	<tr>
-		<td class="code">nvgs</td>
-		<td>13</td>
-		<td>4096</td>
-	</tr>
-	<tr>
-		<td class="code">fov</td>
-		<td>14</td>
-		<td>8192</td>
-	</tr>
-	<tr>
-		<td class="code">has_napalm</td>
-		<td>15</td>
-		<td>16384</td>
-	</tr>
-	<tr>
-		<td class="code">napalm_time</td>
-		<td>16</td>
-		<td>32768</td>
-	</tr>
-	<tr>
-		<td class="code">immunity_mode</td>
-		<td>17</td>
-		<td>65536</td>
-	</tr>
-	<tr>
-		<td class="code">immunity_amount</td>
-		<td>18</td>
-		<td>131072</td>
-	</tr>
-	<tr>
-		<td class="code">no_fall_damage</td>
-		<td>19</td>
-		<td>262144</td>
-	</tr>
-	<tr>
-		<td class="code">health</td>
-		<td>20</td>
-		<td>524288</td>
-	</tr>
-	<tr>
-		<td class="code">health_regen_interval</td>
-		<td>21</td>
-		<td>1048576</td>
-	</tr>
-	<tr>
-		<td class="code">health_regen_amount</td>
-		<td>22</td>
-		<td>2097152</td>
-	</tr>
-	<tr>
-		<td class="code">infect_gain</td>
-		<td>23</td>
-		<td>4194304</td>
-	</tr>
-	<tr>
-		<td class="code">kill_bonus</td>
-		<td>24</td>
-		<td>8388608</td>
-	</tr>
-	<tr>
-		<td class="code">speed</td>
-		<td>25</td>
-		<td>16777216</td>
-	</tr>
-	<tr>
-		<td class="code">knockback</td>
-		<td>26</td>
-		<td>33554432</td>
-	</tr>
-	<tr>
-		<td class="code">jump_height</td>
-		<td>27</td>
-		<td>67108864</td>
-	</tr>
-	<tr>
-		<td class="code">jump_distance</td>
-		<td>28</td>
-		<td>134217728</td>
-	</tr>
-</table></blockquote>
-
-<p>The error flags are stored in a bit field (explained in <a href="#3.3">Logging (3.3)</a>).</p>
-
-<p>Another quick way to decode it would be to use the calculator in Windows. Enable scientific
-mode and enter the decimal value. Then switch to binary mode (F8) and count from right to left
-what bits that are 1. Look up the bit numbers in the table above to see what attributes that
-didn't validate.</p>
+<p>Note that class indexes start at zero and include all classes that aren't commented out in the
+class configuration.</p>
 
 <h4><a name="3.7.4" />4. Class Console Variables</h4>
 
