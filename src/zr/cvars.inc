@@ -101,7 +101,10 @@ enum CvarsList
     Handle:CVAR_INFECT_SPAWNTIME_MAX,
     Handle:CVAR_INFECT_CONSECUTIVE_BLOCK,
     Handle:CVAR_INFECT_WEAPONS_DROP,
+    Handle:CVAR_INFECT_MZOMBIE_MODE,
     Handle:CVAR_INFECT_MZOMBIE_RATIO,
+    Handle:CVAR_INFECT_MZOMBIE_MIN,
+    Handle:CVAR_INFECT_MZOMBIE_MAX,
     Handle:CVAR_INFECT_MZOMBIE_COUNTDOWN,
     Handle:CVAR_INFECT_MZOMBIE_RESPAWN,
     Handle:CVAR_INFECT_EXPLOSION,
@@ -319,7 +322,10 @@ CvarsCreate()
     // ===========================
     
     // General
-    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]             =    CreateConVar("zr_infect_mzombie_ratio",        "5",                                "Number of mother zombies to infect (when infect timer is up) in proportion to number of humans on the server.");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_MODE]              =    CreateConVar("zr_infect_mzombie_mode",         "dynamic",                          "Mother zombie infection mode. ['dynamic' = every n-th zombie (ratio) | 'absolute' = n zombies (ratio) | 'range' = min/max]");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]             =    CreateConVar("zr_infect_mzombie_ratio",        "7",                                "Dynamic mode: Infection ratio. Every n-th player is infected. | Absolute mode: Number of zombies to infect (positive ratio), or number of humans to keep (negative ratio).");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_MIN]               =    CreateConVar("zr_infect_mzombie_min",          "1",                                "Minimum number of mother zombies. Range mode only, cannot be zero.");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_MAX]               =    CreateConVar("zr_infect_mzombie_max",          "3",                                "Maximum number of mother zombies. Range mode only, cannot be zero.");
     g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]         =    CreateConVar("zr_infect_mzombie_countdown",    "0",                                "Counts down to the first infection of the round.  Countdown is printed in the middle of the client's screen.");
     g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]           =    CreateConVar("zr_infect_mzombie_respawn",      "0",                                "Teleport mother zombies back to spawn on infect.");
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]             =    CreateConVar("zr_infect_spawntime_min",        "30.0",                             "Minimum time from the start of the round until picking the mother zombie(s).");
