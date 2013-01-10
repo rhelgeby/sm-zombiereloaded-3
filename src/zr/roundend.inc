@@ -135,6 +135,14 @@ RoundEndOnRoundFreezeEnd()
     // Convert to seconds.
     roundtime *= 60.0;
     
+    // Subtract one second if running CS: GO to prevent round draw when round
+    // ends. For some reason the timing doesn't match the actual round end.
+    // Thanks to Jargon.
+    if (g_Game == Game_CSGO)
+    {
+        roundtime--;
+    }
+    
     // Start timer.
     tRoundEnd = CreateTimer(roundtime, RoundEndTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 }
