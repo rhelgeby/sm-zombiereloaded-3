@@ -67,7 +67,7 @@ new bool:PlayerImmunityThresholdPassed[MAXPLAYERS + 1] = {false, ...};
  */
 ImmunityOnCommandsCreate()
 {
-    RegConsoleCmd("zr_shield", Command_DeployShield, "Deploy the shield, if available.");
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZSHIELD, Command_DeployShield, "Deploy the shield, if available.");
 }
 
 /*____________________________________________________________________________*/
