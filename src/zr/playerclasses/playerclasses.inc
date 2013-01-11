@@ -156,7 +156,7 @@
 #define ZR_CLASS_IMMUNITY_COOLDOWN_MIN      0
 #define ZR_CLASS_IMMUNITY_COOLDOWN_MAX      600
 #define ZR_CLASS_HEALTH_MIN                 1
-#define ZR_CLASS_HEALTH_MAX                 20000
+#define ZR_CLASS_HEALTH_MAX                 100000
 #define ZR_CLASS_REGEN_INTERVAL_MIN         0.0
 #define ZR_CLASS_REGEN_INTERVAL_MAX         900.0
 #define ZR_CLASS_REGEN_AMOUNT_MIN           0
