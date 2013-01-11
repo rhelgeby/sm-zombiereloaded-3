@@ -738,6 +738,9 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     // Apply effects.
     InfectFireEffects(client);
     
+    // Stop coundown, if running.
+    InfectStopCountdown();
+    
     // If attacker is valid, then continue.
     if (ZRIsClientValid(attacker))
     {
