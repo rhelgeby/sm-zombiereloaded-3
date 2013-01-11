@@ -1258,6 +1258,11 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 					<td>No immunity mode. Instant infection of humans.</td>
 				</tr>
 				<tr>
+					<td class="valueoption">kill</td>
+					<td><strong>Humans only.</strong> Humans will die instantly instead of turning
+					zombies when attacked by zombies.</td>
+				</tr>
+				<tr>
 					<td class="valueoption">full</td>
 					<td>Completely immune. Careful with this mode, it will break the game.
 					Humans can't be infected and zombies don't receive damage or knock back. Admin
@@ -1273,12 +1278,15 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 				<tr>
 					<td class="valueoption">damage</td>
 					<td><strong>Zombies only.</strong> Zombies are immune to damage from humans/
-					grenades, but are still vulnerable to knock back.</td>
+					grenades, but are still vulnerable to knock back. Since damage is blocked,
+					zombies aren't slowed down by bullet hits, but knock back alone. You might
+					need to increase knock back a bit.</td>
 				</tr>
 				<tr>
 					<td class="valueoption">delay</td>
 					<td><strong>Humans only.</strong> Delay infection for a certain amount of
-					seconds (immunity_amount value).
+					seconds (immunity_amount value). There's no notification, so humans need to
+					be careful.
 					<br/><br/>
 					Subsequent zombie attacks will reduce the delay time with the number of
 					seconds specified in the immunity_cooldown attribute. If you don't want

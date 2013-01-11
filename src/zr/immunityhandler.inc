@@ -107,8 +107,6 @@ public Action:Command_DeployShield(client, argc)
  */
 bool:ImmunityOnClientInfect(client, attacker)
 {
-    //PrintToChatAll("ImmunityOnClientInfect(client=%d, attacker=%d)", client, attacker);
-    
     // Get immunity mode from client class.
     new ImmunityMode:mode = ClassGetImmunityMode(client);
     
@@ -119,6 +117,11 @@ bool:ImmunityOnClientInfect(client, attacker)
         {
             // Instant infection.
             return false;
+        }
+        case Immunity_Kill:
+        {
+            // Block infection. Damage is increased in ImmunityOnClientDamage.
+            return true;
         }
         case Immunity_Full:
         {
@@ -160,8 +163,6 @@ bool:ImmunityOnClientInfect(client, attacker)
  */
 bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damageType)
 {
-    //PrintToChatAll("ImmunityOnClientTraceAttack(client=%d, attacker=%d, damage=%f, hitgroup=%d, damageType=%d)", client, attacker, damage, hitgroup, damageType);
-    
     // Check if there is no attacker (world damage).
     if (!ZRIsClientValid(attacker))
     {
@@ -262,16 +263,25 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
  * @param client    Client index.
  * @param attacker  Attacker client, if any.
  * @param damage    Damage received by client.
+ * @param weapon    Weapon entity.
  *
- * @return          True if damage was blocked, false otherwise.
+ * @return          Plugin_Handled if damage was blocked, Plugin_Changed if
+ *                  damage was modified, Plugin_Continue otherwise.
  */
-bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
+Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
 {
     // Check if there is no attacker (world damage).
     if (!ZRIsClientValid(attacker))
     {
         // Allow damage.
-        return false;
+        return Plugin_Continue;
+    }
+    
+    // Check if spawn protection is on.
+    if (bInfectImmune[client][INFECT_TYPE_NORMAL])
+    {
+        // Block damage.
+        return Plugin_Handled;
     }
     
     // Get immunity mode from client class.
@@ -279,6 +289,27 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
     
     switch(mode)
     {
+        case Immunity_Kill:
+        {
+            // Client must be human and attacker must be zombie.
+            if (InfectIsClientInfected(client)
+                || !InfectIsClientInfected(attacker))
+            {
+                // Don't modify damage.
+                return Plugin_Continue;
+            }
+            
+            // A zombie is attacking a human in kill immunity mode. Increase
+            // damage so human will be instantly killed. (Using a high damage
+            // value in case the human class has a lot of HP.)
+            damage = 60000.0;
+            
+            // Update score and health gain.
+            InfectUpdateScore(attacker, client);
+            
+            // Damage was changed.
+            return Plugin_Changed;
+        }
         case Immunity_Infect:
         {
             // Prevent humans with low HP from dying when a zombie is
@@ -290,7 +321,7 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
                 InfectOnClientHurt(client, attacker, "knife");
                 
                 // Block damage to prevent player from dying.
-                return true;
+                return Plugin_Handled;
             }
         }
         case Immunity_Delay:
@@ -302,12 +333,12 @@ bool:ImmunityOnClientDamage(client, attacker, &Float:damage)
             InfectOnClientHurt(client, attacker, "knife");
             
             // Block damage to prevent player from dying.
-            return true;
+            return Plugin_Handled;
         }
     }
     
     // Allow damage.
-    return false;
+    return Plugin_Continue;
 }
 
 /*____________________________________________________________________________*/
@@ -696,11 +727,14 @@ ImmunityOnMapEnd()
  * Returns whether the specified damage will take a client's HP below the
  * infection threshold. Only used by "infect" immunity mode.
  *
+ * If threshold is disabled (zero) this function will always return false.
+ *
  * @param client    Client index.
  * @param damage    Damage applied to client.
  *
  * @return          True if client HP go below threshold (immunity_amount) when
- *                  applying damage, false otherwise.
+ *                  applying damage, false if above threshold or if threshold
+ *                  is disabled (zero).
  */
 bool:ImmunityBelowInfectThreshold(client, Float:damage)
 {
@@ -708,8 +742,9 @@ bool:ImmunityBelowInfectThreshold(client, Float:damage)
     new clientHP = GetClientHealth(client);
     new dmg = RoundToNearest(damage);
     
-    // Check if the damage go below the HP threshold.
-    if (clientHP - dmg <= 0.0 && threshold > 0)
+    // Check if the damage go below the HP threshold. Client can only go below
+    // threshold when threshold is enabled (above zero).
+    if (clientHP - dmg <= threshold && threshold > 0)
     {
         return true;
     }
@@ -736,6 +771,10 @@ ImmunityMode:ImmunityStringToMode(const String:mode[])
     if (StrEqual(mode, "none", false))
     {
         return Immunity_None;
+    }
+    if (StrEqual(mode, "kill", false))
+    {
+        return Immunity_Kill;
     }
     else if (StrEqual(mode, "full", false))
     {
@@ -785,6 +824,10 @@ ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
         {
             return strcopy(buffer, maxlen, "none");
         }
+        case Immunity_Kill:
+        {
+            return strcopy(buffer, maxlen, "kill");
+        }
         case Immunity_Full:
         {
             return strcopy(buffer, maxlen, "full");
@@ -831,6 +874,11 @@ bool:ImmunityIsValidAmount(ImmunityMode:mode, amount)
         case Immunity_None:
         {
             // Immunity mode disabled, amount ignored.
+            return true;
+        }
+        case Immunity_Kill:
+        {
+            // Amount isn't used in this mode.
             return true;
         }
         case Immunity_Full:
@@ -900,6 +948,11 @@ bool:ImmunityIsValidCooldown(ImmunityMode:mode, cooldown)
         case Immunity_None:
         {
             // Immunity mode disabled, amount ignored.
+            return true;
+        }
+        case Immunity_Kill:
+        {
+            // Cooldown isn't used in this mode.
             return true;
         }
         case Immunity_Full:

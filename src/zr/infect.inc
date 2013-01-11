@@ -751,23 +751,8 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
             FireEvent(event, false);
         }
         
-        // Give client's infector a point.
-        new score = ToolsClientScore(attacker, true, false);
-        ToolsClientScore(attacker, true, true, ++score);
-        
-        // Add a death to the zombie's score.
-        new deaths = ToolsClientScore(client, false, false);
-        ToolsClientScore(client, false, true, ++deaths);
-        
-        // Apply infect HP gain.
-        new healthgain = ClassGetHealthInfectGain(attacker);
-        new health = GetClientHealth(attacker);
-        
-        // Set attacker's new health.
-        SetEntityHealth(attacker, health + healthgain);
-        
-        // Forward event to modules.
-        ZHPOnHealthInfectGain(attacker);
+        // Apply score and health gain.
+        InfectUpdateScore(attacker, client);
     }
     
     // Get a list of all client's weapon indexes.
@@ -878,6 +863,30 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     SEffectsOnClientHuman(client);
     APIOnClientHumanPost(client, respawn, protect);
     ImmunityOnClientHuman(client);
+}
+
+/**
+ * Updates score for attacker and victim. Applies health gain for attacker.
+ */
+InfectUpdateScore(attacker, victim)
+{
+    // Give client's infector a point.
+    new score = ToolsClientScore(attacker, true, false);
+    ToolsClientScore(attacker, true, true, ++score);
+    
+    // Add a death to the zombie's score.
+    new deaths = ToolsClientScore(victim, false, false);
+    ToolsClientScore(victim, false, true, ++deaths);
+    
+    // Apply infect HP gain.
+    new healthgain = ClassGetHealthInfectGain(attacker);
+    new health = GetClientHealth(attacker);
+    
+    // Set attacker's new health.
+    SetEntityHealth(attacker, health + healthgain);
+    
+    // Forward event to modules.
+    ZHPOnHealthInfectGain(attacker);
 }
 
 /**

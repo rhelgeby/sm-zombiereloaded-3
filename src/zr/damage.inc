@@ -278,8 +278,6 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
 public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:damage, damagetype, ammotype)
 #endif
 {
-    //PrintToChatAll("DamageOnTakeDamage - damage:%f", damage);
-    
     // Get classname of the inflictor.
     decl String:classname[64];
     GetEdictClassname(inflictor, classname, sizeof(classname));
@@ -332,10 +330,12 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
             return ACTION_CONTINUE;
         }
         
-        // Check if immunity module blocked the damage.
-        if (ImmunityOnClientDamage(client, attacker, damage))
+        // Check if immunity module blocked or modified the damage.
+        new Action:immunityAction = ImmunityOnClientDamage(client, attacker, damage);
+        if (immunityAction != Plugin_Continue)
         {
-            return ACTION_HANDLED;
+            // Damage was blocked or modified.
+            return immunityAction;
         }
         
         // Client is about to be infected, re-add HP so they aren't killed by
