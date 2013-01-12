@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION="zombiereloaded-3.0-b2"
+VERSION="zombiereloaded-3.1"
 REVISION=$(hg id -n)
 
 SYNTAX="Usage: $0 [--patch <base rev>]"
