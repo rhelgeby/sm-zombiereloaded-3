@@ -178,7 +178,7 @@ Snapshot builds will be available at:
   * http://www.helgeby.net/zrdev/release/auto/zr-3.1
 
 Note that helgeby.net has limited bandwith and if we want a few people to try a
-certain snapshot we'll upload it too our site at Google Code for faster
+certain snapshot we'll upload it on our site at Google Code for faster
 downloads.
 
 Also note that we don't support snapshot builds. Only official releases and
