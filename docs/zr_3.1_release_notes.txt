@@ -10,14 +10,212 @@
 Release Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(...)
+Zombie:Reloaded is now mature enough to be called stable and we bump the version
+to 3.1. The patches since the beta 2 release have fixed several issues and
+improved a few things.
+
+There's no official CS: GO support yet, as it's not our primary focus.
 
 
 Richard Helgeby &
 Greyscale
 
+2013.01.12
 
-OVERVIEW OF MAJOR CHANGES
----------------------------
 
-* 
+MAJOR NEWS IN THIS RELEASE
+----------------------------
+
+IMMUNITY MODES
+
+Immunity modes is an old idea that has been around since ZR 3.0 beta 1. It was
+never given priority, until now.
+
+These modes change the way attacks are received either as zombie or human. It's
+now possible to do the following:
+
+  * Slow infection. Zombies can hurt humans so they'll loose HP. Either humans
+    are stabbed to death, or they can be infected if go below a HP threshold. If
+    some maps have medkits (or implement them) humans will get multiple chances
+    of getting away from zombies.
+  
+  * Delayed infection. Instead of instantly turning a zombie, the infection is
+    delayed a few seconds (customizable). It's also possible to enable that
+    subsequent zombie attacks will reduce the delay by a certain amount of
+    seconds and speedup the infection. A possible feature that can be
+    implemented later is a cure for infection so that humans can cure themself
+    before the time is up.
+  
+  * Instant kill. Zombies will instantly kill humans when attacking instead of
+    infecting.
+  
+  * Block damage. Zombies can't take damage from humans, but are still
+    vulnerable to knock back. With this mode, humans can only win by surviving
+    the entire round.
+  
+  * Deploy a shield. This is a temporary immunity mode similar to TF2's
+    übercharge and activated by the "zshield" command (in chat or console).
+    Humans will be immune to infection and zombies will not receive knock back
+    (they still receive damage). The shield only last for a few seconds and need
+    a cooldown before it can be used again. Both values can be customized.
+    Currently there are no visual effects when the shield is deployed, but this
+    makes it possible for humans to use themself as a decoy.
+  
+  * Be completely immune. Humans can't be infected and zombies don't receive
+    damage or knock back. There's no use for this mode itself and it will break
+    the game, but it's there if someone want to be creative with addon plugins.
+    It's practically the same as a permanent spawn protection, only that it
+    works on zombie classes too.
+
+It's of course possible to make various classes with different modes, so you're
+not bound to use only one of them.
+
+These modes can drastically improve the gameplay and make it more fun to play.
+
+
+INFECTION MODES
+
+It's now possible to get better control of how many humans that are infected
+when the round has started. It has three modes:
+
+  * Dynamic (default). This is the old one that scales number of zombies
+    according to a ratio and number of players on the server.
+  
+  * Absolute. Infect an absolute number of humans. This mode also has an option
+    to invert the infection so that everyone but a small group of humans are
+    infected (like a survivor game mode).
+  
+  * Range. Infects a random number of players between a minimum and maximum
+    range.
+
+
+GAME MODE CONFIGS
+
+With the introduction of immunity modes and infection modes it's possible to
+make a few game modes. These are not real game modes, but various configurations
+of Zombie:Reloaded.
+
+A few example configs are provided (based on the Zombie Plague plugin):
+
+  * Nemesis. Only one zombie is spawned, but it's very powerful and do instant
+    kills (64K HP, speed, jump boost, and very low knock back). Humans must
+    survive the round or kill it. Teamwork is essential in this mode.
+  
+  * Survivor. Everyone is infected but a small group of humans.
+  
+  * Swarm. 50% is infected. Humans fight to the death - humans are stabbed to
+    death instead of infected. This requires a post map config to modify the
+    immunity mode on all humans.
+
+When the map is changed or reloaded the default configuration is restored. You
+need to use map configs to enable these modes. It might work to enable some of
+them after the map is loaded, but some modes require the class config to be
+reloaded and reapplied on all players (zr_config_reload and zr_class_reload
+commands).
+
+
+INSTALLATION
+--------------
+
+Install the following requirements:
+
+* Metamod:Source 1.8.6+
+  http://sourcemm.net/
+  
+* SourceMod 1.4.0+
+  http://sourcemod.net/
+  
+* SDK Hooks extension 2.0+
+  http://forums.alliedmods.net/showthread.php?t=106748
+
+The version numbers listed above are minimum requirements. You should always get
+the latest stable version.
+
+See their documentation on how to install the requirements. Though, SDK Hooks is
+easily installed by just extracting the contents into the "cstrike" folder on
+the dedicated server and all files should go in the correct folders.
+
+Note: Verify that both Metamod:Source and SourceMod is running before
+      continuing. Type these commands in the server console: "meta version" and
+      "sm version". If both give version information it's working. If not, go
+      through their installation instructions again and verify that everything
+      is in the correct place.
+
+When the requirements are installed the Zombie:Reloaded release package can be
+extracted into the "cstrike" folder and all files should go in the correct
+place.
+
+Start the dedicated server and verify that Zombie:Reloaded is running by typing
+this command in the server console: "zr_version".
+
+Check the SourceMod error logs if it's not working. Zombie:Reloaded will
+validate and log errors if something is wrong. Look for messages from
+zombiereloaded.smx.
+
+See the manual in docs/zr_manual.htm for details about configuration settings.
+It's recommended to look through it to get to know details about the features
+and how to configure them. Make sure you check it before reporting problems.
+
+
+SOURCE CODE
+-------------
+
+The source code is bundled in every release and patch. It's located in
+addons/sourcemod/scripting/ and prepared to compile once the SDK Hooks include
+file is installed.
+
+Source code repositories with build scripts are available on our side at Google
+Code:
+
+  * http://code.google.com/p/zombiereloaded/wiki/Source?tm=4
+
+The repositories are bundled with all requirements except Mercurial itself and
+should compile out of box.
+
+Snapshot builds will be available at:
+
+  * http://code.google.com/p/zombiereloaded/downloads/list
+  * http://www.helgeby.net/zrdev/release/auto/zr-3.1
+
+Note that helgeby.net has limited bandwith and if we want a few people to try a
+certain snapshot we'll upload it too our site at Google Code for faster
+downloads.
+
+Also note that we don't support snapshot builds. Only official releases and
+patches are supported.
+
+
+ADDON PLUGINS
+---------------
+
+A few people from the Allied Modders community have developed some addon plugins
+as a supplement to Zombie:Reloaded. A list of them are available here:
+
+  * http://forums.alliedmods.net/showthread.php?t=159596
+
+
+LIST OF CHANGES
+-----------------
+
+These are the changes since the beta 2 release:
+
+  * Many bug fixes and minor changes (50+).
+  * Added a cvar to allow zombies to pick up weapons at the end of the round.
+  * Added scream and moan commands for zombies, with spam protection.
+  * Added cvar to enable suicide intercept before the first zombie.
+  * Added cvar for minimum dx level on overlays.
+  * Added validation error messages for individual attributes when loading
+    classes. Easier than reading bits from a number.
+  * Added external plugin API for ZR with basic infection, respawn and class
+    tools.
+  * Added improved random number generator from SMLIB. (Better random zombie
+    selection, etc.)
+  * Added infection countdown.
+  * Added cvar for disabling team balancing on round end (when using a custom
+    team balancing plugin).
+  * Added knock back boost workaround for CS: GO.
+  * Added immunity modes.
+  * Added infection modes.
+  * Changed class limit to 64 classes.
+  * Changed Zombie:Reloaded to use the SDK Hooks extension instead of our old ZR
+    Tools extension.
