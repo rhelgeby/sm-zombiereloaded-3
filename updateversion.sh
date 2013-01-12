@@ -21,13 +21,13 @@ fi
 ZR_VERSION_FILE="src/zr/hgversion.h.inc"
 
 ZR_PRODUCT_NAME="Zombie:Reloaded"
-ZR_COPYRIGHT="Copyright (C) 2009-2012  Greyscale, Richard Helgeby"
-ZR_BRANCH="zr-3.0-b2"
+ZR_COPYRIGHT="Copyright (C) 2009-2013  Greyscale, Richard Helgeby"
+ZR_BRANCH="zr-3.1"
 ZR_REVISION=$(hg id -n):$(hg id -i)
 
 if [ $ZR_UNOFFICIAL = "true" ]
 then
-    ZR_REVISION="Unofficial build - based on $ZR_REVISION"
+    ZR_REVISION="$ZR_REVISION+"
 fi
 
 ZR_LICENSE="GNU GPL, Version 3"

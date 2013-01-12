@@ -7,7 +7,7 @@
  *  Type:          Core 
  *  Description:   Handles overlays on clients, as a part of class attributes.
  *
- *  Copyright (C) 2009  Greyscale, Richard Helgeby
+ *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

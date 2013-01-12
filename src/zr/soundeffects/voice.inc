@@ -7,7 +7,7 @@
  *  Type:          Module
  *  Description:   Alter listening/speaking states of humans/zombies.
  *
- *  Copyright (C) 2009  Greyscale, Richard Helgeby
+ *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

@@ -7,7 +7,7 @@
  *  Type:          Test plugin
  *  Description:   Dumps damage information.
  *
- *  Copyright (C) 2009-2012  Greyscale, Richard Helgeby
+ *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
