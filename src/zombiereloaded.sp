@@ -174,6 +174,24 @@ public OnAllPluginsLoaded()
 {
     // Forward event to modules.
     WeaponsOnAllPluginsLoaded();
+    ConfigOnAllPluginsLoaded();
+}
+
+/**
+ * A library was added.
+ */
+public OnLibraryAdded(const String:name[])
+{
+    // Forward event to modules.
+    ConfigOnLibraryAdded(name);
+}
+
+/**
+ * A library was removed.
+ */
+public OnLibraryRemoved(const String:name[])
+{
+    ConfigOnLibraryRemoved(name);
 }
 
 /**

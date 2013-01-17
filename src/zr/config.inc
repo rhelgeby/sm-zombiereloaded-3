@@ -171,6 +171,11 @@ enum ConfigData
 new g_ConfigData[ConfigFile][ConfigData];
 
 /**
+ * Stores status of the optional ConfigList plugin.
+ */
+new bool:g_ConfigListAvailable = false;
+
+/**
  * Actions to use when working on key/values.
  */
 enum ConfigKvAction
@@ -250,11 +255,51 @@ ConfigOnModulesLoaded()
         return;
     }
     
+    // Check if ConfigList is available.
+    if (g_ConfigListAvailable)
+    {
+        // Execute the zr_post_exec list before the map config file. This list
+        // may not exist, but that's ok.
+        ServerCommand("cfglist_exec_list zr_post_exec");
+    }
+    
     // Execute config file.
     ServerCommand("exec %s", mapconfig);
     
     // Log action.
     LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Config, "Post Map Configs", "Executed post map config file: %s", path);
+}
+
+/**
+ * All plugins have finished loading.
+ */
+ConfigOnAllPluginsLoaded()
+{
+    g_ConfigListAvailable = LibraryExists("configlist");
+}
+
+/**
+ * A library was added.
+ */
+ConfigOnLibraryAdded(const String:name[])
+{
+    if (StrEqual(name, "configlist"))
+    {
+        // ConfigList loaded.
+        g_ConfigListAvailable = true;
+    }
+}
+
+/**
+ * A library was removed.
+ */
+ConfigOnLibraryRemoved(const String:name[])
+{
+    if (StrEqual(name, "configlist"))
+    {
+        // ConfigList was unloaded.
+        g_ConfigListAvailable = false;
+    }
 }
 
 /**
