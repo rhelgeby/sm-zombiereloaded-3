@@ -139,14 +139,33 @@ VEffectsCreateExplosion(const Float:origin[3], flags)
  */
 VEffectsShakeClientScreen(client, Float:amplitude, Float:frequency, Float:duration)
 {
-    // If shake usermsg isn't invalid, then stop.
     new Handle:hShake = StartMessageOne("Shake", client);
+    
+    // Validate.
     if (hShake == INVALID_HANDLE)
     {
         return;
     }
     
-    // Write shake information to usermsg handle.
+    // Future code using protocol buffers (not tested). Enabling this will bump
+    // SourceMod version requirement to a snapshot, we don't want to do that
+    // until that branch is declared stable.
+    /*if (GetUserMessageType() == UM_Protobuf)
+    {
+        PbSetInt(hShake, "command", 0);
+        PbSetFloat(hShake, "local_amplitude", amplitude);
+        PbSetFloat(hShake, "frequency", frequency);
+        PbSetFloat(hShake, "duration", duration);
+    }
+    else
+    {
+        BfWriteByte(hShake, 0);
+        BfWriteFloat(hShake, amplitude);
+        BfWriteFloat(hShake, frequency);
+        BfWriteFloat(hShake, duration);
+    }*/
+    
+    // Write shake information to message handle.
     BfWriteByte(hShake, 0);
     BfWriteFloat(hShake, amplitude);
     BfWriteFloat(hShake, frequency);
