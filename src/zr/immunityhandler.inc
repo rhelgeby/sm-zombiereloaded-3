@@ -449,12 +449,15 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
     // Check if time is up.
     if (PlayerImmunityDuration[client] <= 0)
     {
+        // Get attacker before cleaning up.
+        new attacker = PlayerImmunityAttacker[client];
+        
         // Time is up. Reset data.
         PlayerImmunityDuration[client] = 0;
         ImmunityAbortHandler(client);
         
-        // Infect client.
-        InfectHumanToZombie(client, PlayerImmunityAttacker[client]);
+        // Infect client. Give credit to the stored attacker.
+        InfectHumanToZombie(client, attacker);
         
         return Plugin_Stop;
     }
