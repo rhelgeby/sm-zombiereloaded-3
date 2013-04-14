@@ -53,7 +53,7 @@
 // health_regen_amount      number      How much HP to give per interval.
 // health_infect_gain       number      How much HP to give when the player infects someone. Zombies only.
 // kill_bonus               number      How many points to give per kill. Zombies only.
-// speed                    decimal     The player speed.
+// speed                    decimal     The player speed. In LMV mode 300 is normal speed, 600 is double speed.
 // knockback                decimal     Force of the knockback when shot at. Zombies only.
 // jump_height              decimal     Multiplier of the players jump height. 0.0 means no jump boost, 1.0 is normal.
 // jump_distance            decimal     Multiplier of the players jump distance. 0.0 means no forward jump boost, 1.0 is normal.
