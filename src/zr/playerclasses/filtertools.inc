@@ -202,7 +202,7 @@ stock ClassValidateAttributes(classindex, bool:logErrors = false)
             !StrEqual(model_path, "no_change", false))
         {
             // Check if the file exists.
-            if (!FileExists(model_path))
+            if (!FileExists(model_path, true))
             {
                 flags += ZR_CLASS_MODEL_PATH;
                 if (logErrors)
@@ -253,7 +253,7 @@ stock ClassValidateAttributes(classindex, bool:logErrors = false)
     {
         // Check if the file exists.
         Format(overlay, sizeof(overlay), "materials/%s.vmt", overlay_path);
-        if (!FileExists(overlay))
+        if (!FileExists(overlay, true))
         {
             flags += ZR_CLASS_OVERLAY_PATH;
             if (logErrors)
@@ -485,7 +485,7 @@ stock ClassValidateEditableAttributes(attributes[ClassEditableAttributes])
         {
             // Check if the file exists.
             Format(overlay, sizeof(overlay), "materials/%s.vmt", overlay_path);
-            if (!FileExists(overlay))
+            if (!FileExists(overlay, true))
             {
                 flags += ZR_CLASS_OVERLAY_PATH;
             }

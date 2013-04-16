@@ -125,7 +125,7 @@ ModelsLoad()
         strcopy(buffer, sizeof(buffer), path);
         StrCat(buffer, sizeof(buffer), name);
         StrCat(buffer, sizeof(buffer), ".mdl");
-        if (!FileExists(buffer))
+        if (!FileExists(buffer, true))
         {
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Warning: Invalid model name/path setting at index %d. File not found: \"%s\".", ModelCount + failedCount, buffer);
             failedCount++;

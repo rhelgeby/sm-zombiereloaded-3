@@ -75,7 +75,7 @@ DownloadsLoad()
         GetArrayString(arrayDownloads, x, downloadpath, sizeof(downloadpath));
         
         // If file doesn't exist, then remove, log, and stop.
-        if (!FileExists(downloadpath))
+        if (!FileExists(downloadpath, true))
         {
             // Remove client from array.
             RemoveFromArray(arrayDownloads, x);
