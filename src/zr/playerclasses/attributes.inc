@@ -348,6 +348,38 @@ stock ClassGetModelPath(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CAC
 }
 
 /**
+ * Gets the model skin index from the specified class.
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
+ *                  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
+ *                  is used, index will be used as a client index.
+ * @return  The model skin index in the specified class. -1 on error.
+ */
+stock ClassGetModelSkinIndex(index, cachetype = ZR_CLASS_CACHE_PLAYER)
+{
+    switch (cachetype)
+    {
+        case ZR_CLASS_CACHE_ORIGINAL:
+        {
+            return ClassData[index][Class_ModelSkinIndex];
+        }
+        case ZR_CLASS_CACHE_MODIFIED:
+        {
+            return ClassDataCache[index][Class_ModelSkinIndex];
+        }
+        case ZR_CLASS_CACHE_PLAYER:
+        {
+            return ClassPlayerCache[index][Class_ModelSkinIndex];
+        }
+    }
+    return -1;
+}
+
+/**
  * Gets the initial alpha value from the specified class.
  *
  * @param index     Index of the class in a class cache or a client index,
@@ -1137,6 +1169,10 @@ stock ClassAttributeNameToFlag(const String:attributename[])
     {
         return ZR_CLASS_MODEL_PATH;
     }
+    else if (StrEqual(attributename, "model_skin_index", false))
+    {
+        return ZR_CLASS_MODEL_SKIN_INDEX;
+    }
     else if (StrEqual(attributename, "alpha_initial", false))
     {
         return ZR_CLASS_ALPHA_INITIAL;
@@ -1299,6 +1335,7 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
         
         // Integer.
         case ZR_CLASS_FLAGS,
+              ZR_CLASS_MODEL_SKIN_INDEX,
               ZR_CLASS_ALPHA_INITIAL,
               ZR_CLASS_ALPHA_DAMAGED,
               ZR_CLASS_ALPHA_DAMAGE,

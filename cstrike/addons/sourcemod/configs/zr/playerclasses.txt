@@ -24,6 +24,7 @@
 // name                     text        The class name used in class menu.
 // description              text        The class description used in class menu.
 // model_path               text        Path to model to use. Relative to cstrike folder.
+// model_skin_index         number      Model skin index to use if model support multiple skins. First skin is 0.
 // alpha_initial            number      Initial transparency setting.
 // alpha_damaged            number      Transparency when damaged.
 // alpha_damage             number      How much damage to do before switching alpha.
@@ -79,6 +80,7 @@
         
         // Model
         "model_path"            "models/player/zh/zh_corpse002.mdl"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -124,6 +126,7 @@
         
         // Model
         "model_path"            "models/player/zh/zh_charple001.mdl"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -169,6 +172,7 @@
         
         // Model
         "model_path"            "models/player/zh/zh_zombie003.mdl"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -214,6 +218,7 @@
         
         // Model
         "model_path"            "models/player/ics/hellknight_red/t_guerilla.mdl"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -259,6 +264,7 @@
         
         // Model
         "model_path"            "models/player/zh/zh_zombie003.mdl"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -304,6 +310,7 @@
         
         // Model
         "model_path"            "models/player/zh/zh_charple001.mdl"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -355,6 +362,7 @@
         
         // Model
         "model_path"            "default"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -400,6 +408,7 @@
         
         // Model
         "model_path"            "default"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -445,6 +454,7 @@
         
         // Model
         "model_path"            "default"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -490,6 +500,7 @@
         
         // Model
         "model_path"            "default"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"
@@ -535,6 +546,7 @@
         
         // Model
         "model_path"            "default"
+        "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
         "alpha_damage"          "0"

@@ -31,6 +31,7 @@
  * Empty attribute structure with all settings set to be ignored.
  */
 new VolEmptyAttributes[ClassEditableAttributes] = {
+    -1,                             /** ModelSkinIndex */
     -1,                             /** AlphaInitial */
     -1,                             /** AlphaDamaged */
     -1,                             /** AlphaDamage */

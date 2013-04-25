@@ -213,6 +213,17 @@ stock ClassValidateAttributes(classindex, bool:logErrors = false)
         }
     }
     
+    // Model skin index.
+    new model_skin_index = ClassData[classindex][Class_ModelSkinIndex];
+    if (model_skin_index < ZR_CLASS_MODEL_SKIN_INDEX_MIN)
+    {
+        flags += ZR_CLASS_MODEL_SKIN_INDEX;
+        if (logErrors)
+        {
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid model_skin_index at index %d: %d", classindex, model_skin_index);
+        }
+    }
+    
     // Alpha, initial.
     new alpha_initial = ClassData[classindex][Class_AlphaInitial];
     if (!(alpha_initial >= ZR_CLASS_ALPHA_INITIAL_MIN && alpha_initial <= ZR_CLASS_ALPHA_INITIAL_MAX))
@@ -445,6 +456,13 @@ stock ClassValidateAttributes(classindex, bool:logErrors = false)
 stock ClassValidateEditableAttributes(attributes[ClassEditableAttributes])
 {
     new flags;
+    
+    // Model skin index.
+    new model_skin_index = attributes[ClassEdit_ModelSkinIndex];
+    if (model_skin_index < ZR_CLASS_MODEL_SKIN_INDEX_MIN)
+    {
+        flags += ZR_CLASS_MODEL_SKIN_INDEX;
+    }
     
     // Alpha initial.
     new alphaInitial = attributes[ClassEdit_AlphaInitial];

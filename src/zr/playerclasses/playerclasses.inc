@@ -107,6 +107,7 @@
 #define ZR_CLASS_DEFAULT_NAME                   "classic"
 #define ZR_CLASS_DEFAULT_DESCRIPTION            "Need brains!!! Arrrrggghh!"
 #define ZR_CLASS_DEFAULT_MODEL_PATH             "models/player/zh/zh_zombie003.mdl"
+#define ZR_CLASS_DEFAULT_MODEL_SKIN_INDEX       0
 #define ZR_CLASS_DEFAULT_ALPHA_INITIAL          255
 #define ZR_CLASS_DEFAULT_ALPHA_DAMAGED          255
 #define ZR_CLASS_DEFAULT_ALPHA_DAMAGE           0
@@ -142,6 +143,7 @@
 #define ZR_CLASS_NAME_MIN                   1
 #define ZR_CLASS_DESCRIPTION_MIN            1
 /** Model path is checked for existance. */
+#define ZR_CLASS_MODEL_SKIN_INDEX_MIN       0
 #define ZR_CLASS_ALPHA_INITIAL_MIN          0
 #define ZR_CLASS_ALPHA_INITIAL_MAX          255
 #define ZR_CLASS_ALPHA_DAMAGED_MIN          0
@@ -191,27 +193,28 @@
 #define ZR_CLASS_NAME                   (1<<5)
 #define ZR_CLASS_DESCRIPTION            (1<<6)
 #define ZR_CLASS_MODEL_PATH             (1<<7)
-#define ZR_CLASS_ALPHA_INITIAL          (1<<8)
-#define ZR_CLASS_ALPHA_DAMAGED          (1<<9)
-#define ZR_CLASS_ALPHA_DAMAGE           (1<<10)
-#define ZR_CLASS_OVERLAY_PATH           (1<<11)
-#define ZR_CLASS_NVGS                   (1<<12)
-#define ZR_CLASS_FOV                    (1<<13)
-#define ZR_CLASS_HAS_NAPALM             (1<<14)
-#define ZR_CLASS_NAPALM_TIME            (1<<15)
-#define ZR_CLASS_IMMUNITY_MODE          (1<<16)
-#define ZR_CLASS_IMMUNITY_AMOUNT        (1<<17)
-#define ZR_CLASS_IMMUNITY_COOLDOWN      (1<<18)
-#define ZR_CLASS_NO_FALL_DAMAGE         (1<<19)
-#define ZR_CLASS_HEALTH                 (1<<20)
-#define ZR_CLASS_HEALTH_REGEN_INTERVAL  (1<<21)
-#define ZR_CLASS_HEALTH_REGEN_AMOUNT    (1<<22)
-#define ZR_CLASS_HEALTH_INFECT_GAIN     (1<<23)
-#define ZR_CLASS_KILL_BONUS             (1<<24)
-#define ZR_CLASS_SPEED                  (1<<25)
-#define ZR_CLASS_KNOCKBACK              (1<<26)
-#define ZR_CLASS_JUMP_HEIGHT            (1<<27)
-#define ZR_CLASS_JUMP_DISTANCE          (1<<28)
+#define ZR_CLASS_MODEL_SKIN_INDEX       (1<<8)
+#define ZR_CLASS_ALPHA_INITIAL          (1<<9)
+#define ZR_CLASS_ALPHA_DAMAGED          (1<<10)
+#define ZR_CLASS_ALPHA_DAMAGE           (1<<11)
+#define ZR_CLASS_OVERLAY_PATH           (1<<12)
+#define ZR_CLASS_NVGS                   (1<<13)
+#define ZR_CLASS_FOV                    (1<<14)
+#define ZR_CLASS_HAS_NAPALM             (1<<15)
+#define ZR_CLASS_NAPALM_TIME            (1<<16)
+#define ZR_CLASS_IMMUNITY_MODE          (1<<17)
+#define ZR_CLASS_IMMUNITY_AMOUNT        (1<<18)
+#define ZR_CLASS_IMMUNITY_COOLDOWN      (1<<19)
+#define ZR_CLASS_NO_FALL_DAMAGE         (1<<20)
+#define ZR_CLASS_HEALTH                 (1<<21)
+#define ZR_CLASS_HEALTH_REGEN_INTERVAL  (1<<22)
+#define ZR_CLASS_HEALTH_REGEN_AMOUNT    (1<<23)
+#define ZR_CLASS_HEALTH_INFECT_GAIN     (1<<24)
+#define ZR_CLASS_KILL_BONUS             (1<<25)
+#define ZR_CLASS_SPEED                  (1<<26)
+#define ZR_CLASS_KNOCKBACK              (1<<27)
+#define ZR_CLASS_JUMP_HEIGHT            (1<<28)
+#define ZR_CLASS_JUMP_DISTANCE          (1<<29)
 /**
  * @endsection
  */
@@ -232,6 +235,7 @@
  * ClassGetAttributeType
  * ClassValidateAttributes
  * ClassModify* in classcommands.inc
+ * VolEmptyAttributes
  * Update docs with detailed attribute description
  */
 enum ClassAttributes
@@ -248,6 +252,7 @@ enum ClassAttributes
     
     /* Model */
     String:Class_ModelPath[PLATFORM_MAX_PATH],
+    Class_ModelSkinIndex,
     Class_AlphaInitial,
     Class_AlphaDamaged,
     Class_AlphaDamage,
@@ -292,7 +297,8 @@ enum ClassAttributes
 enum ClassEditableAttributes
 {
     /* Model */
-    ClassEdit_AlphaInitial = 0,
+    ClassEdit_ModelSkinIndex = 0,
+    ClassEdit_AlphaInitial,
     ClassEdit_AlphaDamaged,
     ClassEdit_AlphaDamage,
     
@@ -593,6 +599,7 @@ ClassLoad()
         KvGetString(kvClassData, "model_path", model_path, sizeof(model_path), ZR_CLASS_DEFAULT_MODEL_PATH);
         strcopy(ClassData[ClassCount][Class_ModelPath], PLATFORM_MAX_PATH, model_path);
         
+        ClassData[ClassCount][Class_ModelSkinIndex] = KvGetNum(kvClassData, "model_skin_index", ZR_CLASS_DEFAULT_MODEL_SKIN_INDEX);
         ClassData[ClassCount][Class_AlphaInitial] = KvGetNum(kvClassData, "alpha_initial", ZR_CLASS_DEFAULT_ALPHA_INITIAL);
         ClassData[ClassCount][Class_AlphaDamaged] = KvGetNum(kvClassData, "alpha_damaged", ZR_CLASS_DEFAULT_ALPHA_DAMAGED);
         ClassData[ClassCount][Class_AlphaDamage] = KvGetNum(kvClassData, "alpha_damage", ZR_CLASS_DEFAULT_ALPHA_DAMAGE);
@@ -744,6 +751,7 @@ bool:ClassReloadDataCache()
         
         /* Model */
         strcopy(ClassDataCache[classindex][Class_ModelPath], PLATFORM_MAX_PATH, ClassData[classindex][Class_ModelPath]);
+        ClassDataCache[classindex][Class_ModelSkinIndex] = ClassData[classindex][Class_ModelSkinIndex];
         ClassDataCache[classindex][Class_AlphaInitial] = ClassData[classindex][Class_AlphaInitial];
         ClassDataCache[classindex][Class_AlphaDamaged] = ClassData[classindex][Class_AlphaDamaged];
         ClassDataCache[classindex][Class_AlphaDamage] = ClassData[classindex][Class_AlphaDamage];
@@ -810,6 +818,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             
             /* Model */
             strcopy(ClassPlayerCache[client][Class_ModelPath], PLATFORM_MAX_PATH, ClassData[classindex][Class_ModelPath]);
+            ClassPlayerCache[client][Class_ModelSkinIndex] = ClassData[classindex][Class_ModelSkinIndex];
             ClassPlayerCache[client][Class_AlphaInitial] = ClassData[classindex][Class_AlphaInitial];
             ClassPlayerCache[client][Class_AlphaDamaged] = ClassData[classindex][Class_AlphaDamaged];
             ClassPlayerCache[client][Class_AlphaDamage] = ClassData[classindex][Class_AlphaDamage];
@@ -851,6 +860,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             
             /* Model */
             strcopy(ClassPlayerCache[client][Class_ModelPath], PLATFORM_MAX_PATH, ClassDataCache[classindex][Class_ModelPath]);
+            ClassPlayerCache[client][Class_ModelSkinIndex] = ClassDataCache[classindex][Class_ModelSkinIndex];
             ClassPlayerCache[client][Class_AlphaInitial] = ClassDataCache[classindex][Class_AlphaInitial];
             ClassPlayerCache[client][Class_AlphaDamaged] = ClassDataCache[classindex][Class_AlphaDamaged];
             ClassPlayerCache[client][Class_AlphaDamage] = ClassDataCache[classindex][Class_AlphaDamage];
@@ -1353,6 +1363,9 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
     
     ClassGetModelPath(index, format_buffer, sizeof(format_buffer), cachetype);
     Format(attribute, sizeof(attribute), "model_path:            \"%s\"\n", format_buffer);
+    cellcount += StrCat(buffer, maxlen, attribute);
+    
+    Format(attribute, sizeof(attribute), "model_skin_index:      \"%d\"\n", ClassGetModelSkinIndex(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
     
     Format(attribute, sizeof(attribute), "alpha_initial:         \"%d\"\n", ClassGetAlphaInitial(index, cachetype));

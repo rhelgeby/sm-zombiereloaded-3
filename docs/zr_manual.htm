@@ -1138,11 +1138,28 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 					players.</td>
 				</tr>
 			</table></blockquote>
+			<p><strong>Warning:</strong> If specifying a model path here, remember to add a
+			matching model entry in the model config file (models.txt), or you will get an error
+			about model was not precached. In worst case the server will crash.</p>
 		</td>
 	</tr>
 	
 	<tr>
-		<td class="commandheader">alpha_spawn</td>
+		<td class="commandheader">model_skin_index</td>
+		<td class="commandheader">number</td>
+		<td class="commandheader">0 - <em>last skin index</em></td>
+	</tr>
+	<tr>
+		<td class="indent" colspan="3">
+			<p>The model skin index to use if the model support multiple skins. First skin is 0.</p>
+			<p><strong>Warning:</strong> Zombie:Reloaded doesn't know how many skins a model has,
+			make sure you use a valid index if modifying it. An invalid value might in worst case
+			crash the server/client.</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="commandheader">alpha_initial</td>
 		<td class="commandheader">number</td>
 		<td class="commandheader">0 - 255</td>
 	</tr>
@@ -1462,7 +1479,7 @@ the admin-only flag in the <span class="code">flags</span> attribute.</p>
 				</tr>
 			</table>
 			<p>Formula for converting LMV speed into a prop speed offset:</p>
-			<blockquote><code><em>prop speed offset</em> = ((<em>lmv speed</em> / 300) * 250) - 250</code></blockquote>
+			<blockquote><div><code><em>prop speed offset</em> = ((<em>lmv speed</em> / 300) * 250) - 250</code></div></blockquote>
 			<p>This calculation can be done directly on a calculator, without any use of parentheses
 			(they aren't needed in this one anyways).</p>
 		</td>

@@ -702,6 +702,11 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
             ClassDataCache[classindex][Class_Flags] = value;
             return true;
         }
+        case ZR_CLASS_MODEL_SKIN_INDEX:
+        {
+            ClassDataCache[classindex][Class_ModelSkinIndex] = value;
+            return true;
+        }
         case ZR_CLASS_ALPHA_INITIAL:
         {
             if (ismultiplier)
