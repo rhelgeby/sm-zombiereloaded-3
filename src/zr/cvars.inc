@@ -463,7 +463,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_RESPAWN]                          =    CreateConVar("zr_respawn",                     "0",    "Respawn players after death. [Recommended: (Enable) zr_zspawn*]");
     g_hCvarsList[CVAR_RESPAWN_DELAY]                    =    CreateConVar("zr_respawn_delay",               "1",    "Time after death to delay player respawn. [Dependency: zr_respawn]");
     g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]              =    CreateConVar("zr_respawn_team_zombie",         "1",    "Respawn player as a zombie. [Dependency: zr_respawn]");
-    g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]        =    CreateConVar("zr_respawn_team_zombie_world",   "1",    "Respawn player as a zombie if player was killed by the world. [Override: zr_respawn_team_zombie]");
+    g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]        =    CreateConVar("zr_respawn_team_zombie_world",   "1",    "Respawn player as a zombie if player was a zombie and killed by world damage. [Override: zr_respawn_team_zombie]");
     
     
     // ===========================

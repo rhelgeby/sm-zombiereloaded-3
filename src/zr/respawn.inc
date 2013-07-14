@@ -159,7 +159,6 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
     }
     
     // Get respawn condition.
-    //new bool:zombieIfSuicide = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]);
     new RespawnCondition:condition = RespawnToContition(zombie, zombieIfSuicide);
     
     // Trigger API forward.
@@ -238,11 +237,14 @@ public Action:RespawnTimer(Handle:timer, any:client)
         return;
     }
     
-    // Get respawn team.
-    new bool:respawn_zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+    // Get whether player should respawn as zombie.
+    new bool:zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+    
+    // Get whether zombies died by suicide should respawn as zombies.
+    new bool:zombieIfSuicide = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]);
     
     // Spawn player.
-    RespawnSpawnClient(client, respawn_zombie, true);
+    RespawnSpawnClient(client, zombie, zombieIfSuicide);
 }
 
 /**
