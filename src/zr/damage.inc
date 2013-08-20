@@ -231,6 +231,8 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     }
     
     // If damage hitgroups cvar is disabled, then allow damage.
+    // TODO: There are two cvars: zr_hitgroups and zr_damage_hitgroups. Maybe
+    //       just use zr_hitgroups?
     new bool:damagehitgroups = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_HITGROUPS]);
     if (!damagehitgroups)
     {
