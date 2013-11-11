@@ -121,12 +121,6 @@ RoundEndOnRoundStart()
         // Reset timer handle.
         tRoundEnd = INVALID_HANDLE;
     }
-    
-    // Balance teams if enabled.
-    if (GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_BALANCE_TEAMS]))
-    {
-        RoundEndBalanceTeams();
-    }
 }
 
 /**
@@ -198,6 +192,12 @@ RoundEndOnRoundEnd(reason)
     
     // Display the overlay to all clients.
     RoundEndOverlayStart(outcome);
+    
+    // Balance teams if enabled.
+    if (GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_BALANCE_TEAMS]))
+    {
+        RoundEndBalanceTeams();
+    }
 }
 
 /**
