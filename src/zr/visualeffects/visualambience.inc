@@ -299,9 +299,6 @@ VAmbienceApplyFog(bool:override = false)
     // If fog is disabled, then stop.
     new bool:fog = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG]);
     
-    // DUE TO SOURCEMOD NOT SUPPORT FOG, DISABLE.
-    fog = false;
-    
     if (!fog)
     {
         return;
