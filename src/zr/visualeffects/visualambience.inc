@@ -315,6 +315,7 @@ VAmbienceApplyFog(bool:override = false)
         {
             // Delete fog.
             AcceptEntityInput(fogindex, "Kill");
+            fogindex = -1;
         }
     }
     
