@@ -81,6 +81,16 @@ WeaponAlphaOnClientDisconnect(client)
  */
 WeaponAlphaOnItemPickupPost(client, weapon)
 {
+    if (Entity_HasChildren(weapon))
+    {
+        // Don't apply alpha value if weapon has children. Render mode is
+        // recursively applied to child entities that may not have the render
+        // mode attribute - and cause errors like this:
+        // Native "SetEntProp" reported: Property "m_nRenderMode" not found
+        // (entity 666/info_particle_system)
+        return;
+    }
+    
     // Get client's current alpha.
     new alpha = ToolsGetEntityAlpha(client);
     
