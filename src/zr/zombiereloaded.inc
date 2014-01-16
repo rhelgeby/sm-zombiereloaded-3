@@ -477,3 +477,44 @@ stock Math_GetRandomInt(min, max)
 
 	return RoundToCeil(float(random) / (float(SIZE_OF_INT) / float(max - min + 1))) + min - 1;
 }
+
+/**
+ * (from SMLIB)
+ * Gets the parent entity of an entity.
+ * 
+ * @param entity		Entity Index.
+ * @return				Entity Index of the parent.
+ */
+stock Entity_GetParent(entity)
+{
+	return GetEntPropEnt(entity, Prop_Data, "m_pParent");
+}
+
+/**
+ * Returns whether an entity is referred to as the parent entity.
+ *
+ * @praram entity       Entity index.
+ *
+ * @return              True if entity has children, false otherwise.
+ */
+stock bool:Entity_HasChildren(entity)
+{
+    new maxEntities = GetMaxEntities();
+    
+    // Loop through all entity indexes, after players.
+    for (new loopEntity = MAXPLAYERS + 1; loopEntity < maxEntities; loopEntity++)
+    {
+        if (!IsValidEntity(loopEntity))
+        {
+            continue;
+        }
+        
+        new parentEntity = Entity_GetParent(loopEntity);
+        if (parentEntity == entity)
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
