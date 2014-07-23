@@ -23,7 +23,7 @@ ZR_VERSION_FILE="src/zr/hgversion.h.inc"
 ZR_PRODUCT_NAME="Zombie:Reloaded"
 ZR_COPYRIGHT="Copyright (C) 2009-2013  Greyscale, Richard Helgeby"
 ZR_BRANCH="zr-3.1"
-ZR_REVISION=$(hg id -n):$(hg id -i)
+ZR_REVISION=$(git rev-parse --short HEAD)
 
 if [ $ZR_UNOFFICIAL = "true" ]
 then
@@ -31,7 +31,7 @@ then
 fi
 
 ZR_LICENSE="GNU GPL, Version 3"
-ZR_DATE=$($ZR_DATEPATH -R)
+ZR_DATE=$($ZR_DATEPATH)
 
 echo "#define ZR_VER_PRODUCT_NAME     \"$ZR_PRODUCT_NAME\"" > $ZR_VERSION_FILE
 echo "#define ZR_VER_COPYRIGHT        \"$ZR_COPYRIGHT\"" >> $ZR_VERSION_FILE
