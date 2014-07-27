@@ -1,0 +1,10 @@
+*.sp text eol=native
+*.inc text eol=native
+
+*.txt text eol=crlf
+*.cfg text eol=crlf
+
+*.sh text eol=lf
+*.bat text eol=crlf
+
+Makefile text eol=lf
