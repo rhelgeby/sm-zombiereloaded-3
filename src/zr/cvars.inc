@@ -83,6 +83,7 @@ enum CvarsList
     Handle:CVAR_DAMAGE_HITGROUPS,
     Handle:CVAR_DAMAGE_BLOCK_FF,
     Handle:CVAR_DAMAGE_BLOCK_BLAST,
+    Handle:CVAR_DAMAGE_BLOCK_FIRE,
     Handle:CVAR_DAMAGE_SUICIDE_ZOMBIE,
     Handle:CVAR_DAMAGE_SUICIDE_MZOMBIE,
     Handle:CVAR_DAMAGE_SUICIDE_HUMAN,
@@ -356,7 +357,8 @@ CvarsCreate()
     // Block Damage Types
     g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]                  =    CreateConVar("zr_damage_block_ff",         "1",                            "Block friendly fire.");
     g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]               =    CreateConVar("zr_damage_block_blast",      "1",                            "Block blast damage inflicted on self or teammates.");
-    
+    g_hCvarsList[CVAR_DAMAGE_BLOCK_FIRE]                =    CreateConVar("zr_damage_block_fire",         "1",                            "Block fire damage inflicted on self or teammates.");
+
     // Suicide Intercept
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]            =    CreateConVar("zr_damage_suicide_zombie",   "0",                                    "Intercept suicide commands attempted by zombies.");
     g_hCvarsList[CVAR_DAMAGE_SUICIDE_MZOMBIE]           =    CreateConVar("zr_damage_suicide_mzombie",  "1",                                    "Intercept suicide commands attempted by mother zombies.");
