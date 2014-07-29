@@ -168,15 +168,30 @@ SEffectsOnClientHuman(client)
 SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client = -1)
 {
     // Precache sound before playing.
-    PrecacheSound(sound);
+    if (g_Game == Game_CSGO)
+    {
+        PrecacheSoundAny(sound);
+    }
+    else
+    {
+        PrecacheSound(sound);
+    }
     
     if (ZRIsClientValid(client))
     {
         // Emit ambient sound.
-        EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
+        if (g_Game == Game_CSGO)
+        {
+            EmitSoundToClientAny(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
+        }
+        else
+        {
+            EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
+        }
         
         // Flag client that sound is playing.
         bAmbientSoundsIsPlaying[client] = true;
+        
     }
     else
     {
@@ -189,7 +204,14 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
             }
             
             // Emit ambient sound.
-            EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
+            if (g_Game == Game_CSGO)
+            {
+                EmitSoundToClientAny(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
+            }
+            else
+            {
+	            EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
+            }
         }
     }
 }
@@ -230,9 +252,18 @@ SEffectsStopAmbientSound(const String:sound[])
  */
 SEffectsEmitSoundFromClient(client, const String:sound[], level = SNDLEVEL_NORMAL)
 {
-    // Precache sound before playing.
-    PrecacheSound(sound);
-    
-    // Emit sound from client.
-    EmitSoundToAll(sound, client, _, level);
+    if (g_Game == Game_CSGO)
+    {
+        // Precache sound before playing.// Emit sound from client.
+        PrecacheSoundAny(sound);
+        // Emit sound from client.
+    	EmitSoundToAllAny(sound, client, _, level);
+    }
+	else
+    {
+        // Precache sound before playing.// Emit sound from client.
+        PrecacheSound(sound);
+        // Emit sound from client.
+    	EmitSoundToAll(sound, client, _, level);
+    }
 }
