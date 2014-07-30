@@ -4,8 +4,8 @@
 SOURCEDIR=src
 SMINCLUDES=env/include
 BUILDDIR=build
-SPCOMP_LINUX=env/linux/bin/spcomp-1.4.1
-SPCOMP_DARWIN=env/darwin/bin/spcomp-1.4.1
+SPCOMP_LINUX=env/linux/bin/spcomp-1.6.0
+SPCOMP_DARWIN=env/darwin/bin/spcomp-1.6.0
 DOS2UNIX_LINUX=dos2unix -p
 DOS2UNIX_DARWIN=env/darwin/bin/dos2unix -p
 VERSIONDUMP=./updateversion.sh

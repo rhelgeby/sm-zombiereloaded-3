@@ -345,6 +345,7 @@ native GetMenuTitle(Handle:menu, String:buffer[], maxlength);
  * Creates a raw MenuPanel based off the menu's style.
  * The Handle must be freed with CloseHandle().
  *
+ * @param menu				Menu Handle.
  * @return					A new MenuPanel Handle.
  * @error					Invalid Handle.
  */
@@ -404,6 +405,16 @@ native bool:GetMenuExitBackButton(Handle:menu);
  */
 native SetMenuExitBackButton(Handle:menu, bool:button);
 
+/**
+ * Sets whether or not the menu has a "no vote" button in slot 1.
+ * By default, menus do not have a no vote button.
+ *
+ * @param menu				Menu Handle.
+ * @param button			True to enable the button, false to remove it.
+ * @return 					True if allowed; false on failure.
+ * @error					Invalid Handle.
+ */
+native bool:SetMenuNoVoteButton(Handle:menu, bool:button);
 
 /**
  * Cancels a menu from displaying on all clients.  While the
@@ -489,14 +500,14 @@ native bool:VoteMenu(Handle:menu, clients[], numClients, time, flags=0);
  *							in progress.
  * @error					Invalid Handle.
  */
-stock VoteMenuToAll(Handle:menu, time, flags=0)
+stock bool:VoteMenuToAll(Handle:menu, time, flags=0)
 {
 	new total;
 	decl players[MaxClients];
 	
 	for (new i=1; i<=MaxClients; i++)
 	{
-		if (!IsClientInGame(i))
+		if (!IsClientInGame(i) || IsFakeClient(i))
 		{
 			continue;
 		}
@@ -590,7 +601,7 @@ native Handle:CreatePanel(Handle:hStyle=INVALID_HANDLE);
  * Creates a Menu from a MenuStyle.  The Handle must be closed with 
  * CloseHandle().
  *
- * @parma hStyle		MenuStyle Handle, or INVALID_HANDLE to use the default style.
+ * @param hStyle		MenuStyle Handle, or INVALID_HANDLE to use the default style.
  * @param handler		Function which will receive menu actions.
  * @param actions		Optionally set which actions to receive.  Select, 
  *						Cancel, and End will always be received regardless
@@ -614,7 +625,7 @@ native MenuSource:GetClientMenu(client, Handle:hStyle=INVALID_HANDLE);
 /** 
  * Cancels a menu on a client.  This will only affect non-external menus.
  *
- * @param hstyle		MenuStyle Handle, or INVALID_HANDLE to use the default style.
+ * @param hStyle		MenuStyle Handle, or INVALID_HANDLE to use the default style.
  * @param client		Client index.
  * @param autoIgnore	If true, no menus can be re-drawn on the client during
  *						the cancellation process.
@@ -644,7 +655,7 @@ native Handle:GetPanelStyle(Handle:panel);
  * Sets the panel's title.
  *
  * @param panel			A MenuPanel Handle.
- * @param title			Text to set as the title.
+ * @param text			Text to set as the title.
  * @param onlyIfEmpty	If true, the title will only be set if no title is set.
  * @noreturn
  * @error				Invalid Handle.
@@ -691,6 +702,7 @@ native CanPanelDrawFlags(Handle:panel, style);
  * Sets the selectable key map of a panel.  This is not supported by
  * all styles (only by Radio, as of this writing).  
  *
+ * @param panel			A MenuPanel Handle.
  * @param keys			An integer where each bit N allows key
  *						N+1 to be selected.  If no keys are selectable,
  *						then key 0 (bit 9) is automatically set.

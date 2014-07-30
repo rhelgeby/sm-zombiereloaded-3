@@ -35,13 +35,13 @@
 #endif
 #define _tf2_included
 
-#define TF_STUNFLAG_SLOWDOWN        (1 << 0)	// activates slowdown modifier
-#define TF_STUNFLAG_BONKSTUCK       (1 << 1)	// bonk sound, stuck
-#define TF_STUNFLAG_LIMITMOVEMENT   (1 << 2)	// disable forward/backward movement
-#define TF_STUNFLAG_CHEERSOUND      (1 << 3)	// cheering sound
-#define TF_STUNFLAG_NOSOUNDOREFFECT (1 << 5)	// no sound or particle
-#define TF_STUNFLAG_THIRDPERSON     (1 << 6)	// panic animation
-#define TF_STUNFLAG_GHOSTEFFECT     (1 << 7)	// ghost particles
+#define TF_STUNFLAG_SLOWDOWN        (1 << 0)	/**< activates slowdown modifier */
+#define TF_STUNFLAG_BONKSTUCK       (1 << 1)	/**< bonk sound, stuck */
+#define TF_STUNFLAG_LIMITMOVEMENT   (1 << 2)	/**< disable forward/backward movement */
+#define TF_STUNFLAG_CHEERSOUND      (1 << 3)	/**< cheering sound */
+#define TF_STUNFLAG_NOSOUNDOREFFECT (1 << 5)	/**< no sound or particle */
+#define TF_STUNFLAG_THIRDPERSON     (1 << 6)	/**< panic animation */
+#define TF_STUNFLAG_GHOSTEFFECT     (1 << 7)	/**< ghost particles */
 
 #define TF_STUNFLAGS_LOSERSTATE     TF_STUNFLAG_SLOWDOWN|TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_THIRDPERSON
 #define TF_STUNFLAGS_GHOSTSCARE     TF_STUNFLAG_GHOSTEFFECT|TF_STUNFLAG_THIRDPERSON
@@ -107,23 +107,67 @@ enum TFCond
 	TFCond_RegenBuffed,
 	TFCond_MarkedForDeath,
 	TFCond_NoHealingDamageBuff,
-	TFCond_SpeedBuffAlly,
+	TFCond_SpeedBuffAlly,		//32
 	TFCond_HalloweenCritCandy,
-	
-	TFCond_CritHype = 36,
+	TFCond_CritCanteen,
+	TFCond_CritDemoCharge,
+	TFCond_CritHype,
 	TFCond_CritOnFirstBlood,
 	TFCond_CritOnWin,
 	TFCond_CritOnFlagCapture,
 	TFCond_CritOnKill,
-	TFCond_RestrictToMelee
+	TFCond_RestrictToMelee,
+	TFCond_DefenseBuffNoCritBlock,
+	TFCond_Reprogrammed,
+	TFCond_CritMmmph,
+	TFCond_DefenseBuffMmmph,
+	TFCond_FocusBuff,
+	TFCond_DisguiseRemoved,
+	TFCond_MarkedForDeathSilent,
+	TFCond_DisguisedAsDispenser,
+	TFCond_Sapped,
+	TFCond_UberchargedHidden,
+	TFCond_UberchargedCanteen,
+	TFCond_HalloweenBombHead,
+	TFCond_HalloweenThriller,
+	TFCond_RadiusHealOnDamage,
+	TFCond_CritOnDamage,
+	TFCond_UberchargedOnTakeDamage,
+	TFCond_UberBulletResist,
+	TFCond_UberBlastResist,
+	TFCond_UberFireResist,
+	TFCond_SmallBulletResist,
+	TFCond_SmallBlastResist,
+	TFCond_SmallFireResist,
+	TFCond_Stealthed, // 64
+	TFCond_MedigunDebuff,
+	TFCond_StealthedUserBuffFade,
+	TFCond_BulletImmune,
+	TFCond_BlastImmune,
+	TFCond_FireImmune,
+	TFCond_PreventDeath,
+	TFCond_MVMBotRadiowave,
+	TFCond_HalloweenSpeedBoost,
+	TFCond_HalloweenQuickHeal,
+	TFCond_HalloweenGiant,
+	TFCond_HalloweenTiny,
+	TFCond_HalloweenInHell,
+	TFCond_HalloweenGhostMode,
 };
+
+const Float:TFCondDuration_Infinite = -1.0;
 
 enum TFHoliday
 {
 	TFHoliday_Birthday = 1,
 	TFHoliday_Halloween,
+	TFHoliday_Christmas,
+	TFHoliday_ValentinesDay,
+	TFHoliday_MeetThePyro,
 	TFHoliday_FullMoon,
 	TFHoliday_HalloweenOrFullMoon,
+	TFHoliday_HalloweenOrFullMoonOrValentines,
+	TFHoliday_AprilFools,
 };
 
 enum TFObjectType
@@ -146,10 +190,11 @@ enum TFObjectMode
  * Sets a client on fire for 10 seconds.
  *
  * @param client		Player's index.
+ * @param attacker		Attacker's index.
  * @noreturn
  * @error				Invalid client index, client not in game, or no mod support.
  */
-native TF2_IgnitePlayer(client, target);
+native TF2_IgnitePlayer(client, attacker);
 
 /**
  * Respawns a client
@@ -175,10 +220,12 @@ native TF2_RegeneratePlayer(client);
  * @param client		Player's index.
  * @param condition		Integer identifier of condition to apply.
  * @param duration		Duration of condition (does not apply to all conditions).
+ *                      Pass TFCondDuration_Infinite to apply until manually removed.
+ * @param inflictor		Condition inflictor's index (0 for no inflictor).
  * @noreturn
  * @error				Invalid client index, client not in game, or no mod support.
  */
-native TF2_AddCondition(client, TFCond:condition, Float:duration);
+native TF2_AddCondition(client, TFCond:condition, Float:duration=TFCondDuration_Infinite, inflictor=0);
 
 /**
  * Removes a condition from a player
@@ -227,10 +274,10 @@ native TF2_RemovePlayerDisguise(client);
  * Stuns a client
  *
  * @param client		Player's index.
- * @param float			Duration of stun.
- * @param float			Slowdown percent (as decimal, 0.00-1.00)
- *						(ignored if TF_STUNFLAG_SLOWDOWN is not set.
- * @param int			Stun flags.
+ * @param duration		Duration of stun.
+ * @param slowdown		Slowdown percent (as decimal, 0.00-1.00)
+ *						Ignored if TF_STUNFLAG_SLOWDOWN is not set.
+ * @param stunflags		Stun flags.
  * @param attacker		Attacker's index (0 is allowed for world).
  * @noreturn
  */
@@ -241,7 +288,7 @@ native TF2_StunPlayer(client, Float:duration, Float:slowdown=0.0, stunflags, att
  *
  * @param client		Player's index.
  * @param attacker		Attacker's index.
- * @param float			Duration of bleeding (in seconds).
+ * @param duration		Duration of bleeding (in seconds).
  * @noreturn
  */
 native TF2_MakeBleed(client, attacker, Float:duration);
@@ -251,6 +298,7 @@ native TF2_MakeBleed(client, attacker, Float:duration);
  *
  * @return				The current resource entity index.
  */
+#pragma deprecated Use GetPlayerResourceEntity instead
 native TF2_GetResourceEntity();
 
 /**
@@ -296,6 +344,14 @@ forward Action:TF2_OnGetHoliday(&TFHoliday:holiday);
 forward Action:TF2_OnIsHolidayActive(TFHoliday:holiday, &bool:result);
 
 /**
+ * Returns whether or not a holiday is active
+ *
+ * @param holiday		Holiday being checked.
+ * @return				Boolean of whether or not the holiday is active.
+ */
+native bool:TF2_IsHolidayActive(TFHoliday:holiday);
+
+/**
  * Returns whether or not a client (Player) is in a duel.
  *
  * @param client    Client Index.
@@ -336,6 +392,19 @@ forward TF2_OnWaitingForPlayersStart();
 forward TF2_OnWaitingForPlayersEnd();
 
 /**
+ * Called when a player attempts to use a teleporter to decide if the player should be allowed to teleport.
+ * Return Plugin_Continue to let the original calculation or return a higher
+ * action to override the decision with the value of 'result'
+ *
+ * @param client		Client index.
+ * @param teleporter	Teleporter entity index.
+ * @param result		Buffer param for the result of the decision.
+ *						This is prepopulated with the game's original decision to let a player teleport.
+ * @return				Plugin_Continue for original calculation, higher value to use 'result'.
+ */
+forward Action:TF2_OnPlayerTeleport(client, teleporter, &bool:result);
+ 
+/**
  * Do not edit below this line!
  */
 public Extension:__ext_tf2 = 
@@ -366,5 +435,6 @@ public __ext_tf2_SetNTVOptional()
 	MarkNativeAsOptional("TF2_GetResourceEntity");
 	MarkNativeAsOptional("TF2_GetClass");
 	MarkNativeAsOptional("TF2_IsPlayerInDuel");
+	MarkNativeAsOptional("TF2_IsHolidayActive");
 }
 #endif

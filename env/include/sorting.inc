@@ -84,7 +84,7 @@ native SortFloats(Float:array[], array_size, SortOrder:order = Sort_Ascending);
  * @param order			Sorting order to use.
  * @noreturn
  */
-native SortStrings(String:array[][], num_strings, SortOrder:order = Sort_Ascending);
+native SortStrings(String:array[][], array_size, SortOrder:order = Sort_Ascending);
 
 /**
  * Sort comparison function for 1D array elements.
@@ -125,8 +125,8 @@ native SortCustom1D(array[], array_size, SortFunc1D:sortfunc, Handle:hndl=INVALI
  */
 funcenum SortFunc2D
 {
-	public(array[], array[], const array[][], Handle:hndl),
-	public(String:array[], String:array[], const String:array[][], Handle:hndl),
+	public(elem1[], elem2[], const array[][], Handle:hndl),
+	public(String:elem1[], String:elem2[], const String:array[][], Handle:hndl),
 };
 
 /** 

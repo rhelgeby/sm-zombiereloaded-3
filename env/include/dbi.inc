@@ -137,6 +137,8 @@ stock Handle:SQL_DefConnect(String:error[], maxlength, bool:persistent=true)
  * @param keyvalues		Key/value pairs from a KeyValues handle, describing the connection.
  * @param error			Error buffer.
  * @param maxlength		Maximum length of the error buffer.
+ * @param persistent	True to re-use a previous persistent connection if
+ *						possible, false otherwise.
  * @return				A database connection Handle, or INVALID_HANDLE on failure.
  * 						On failure the error buffer will be filled with a message.
  * @error				Invalid KeyValues handle.
@@ -250,6 +252,18 @@ native SQL_GetDriverIdent(Handle:driver, String:ident[], maxlength);
 native SQL_GetDriverProduct(Handle:driver, String:product[], maxlength);
 
 /**
+ * Sets the character set of the current connection. 
+ * Like SET NAMES .. in mysql, but stays after connection problems.
+ * 
+ * Example: "utf8", "latin1"
+ *
+ * @param database      Database Handle.
+ * @param characterset  The character set string to change to.
+ * @return              True, if character set was changed, false otherwise.
+ */
+native bool:SQL_SetCharset(Handle:database, const String:charset[]);
+
+/**
  * Returns the number of affected rows from the last query.
  *
  * @param hndl			A database OR statement Handle.
@@ -292,7 +306,7 @@ native bool:SQL_GetError(Handle:hndl, String:error[], maxlength);
  * encloses the string in ''. While drivers tend to allow " instead, the string
  * may be not be escaped (for example, on SQLite)!
  *
- * @param hndl			A database Handle.
+ * @param database			A database Handle.
  * @param string		String to quote.
  * @param buffer		Buffer to store quoted string in.
  * @param maxlength		Maximum length of the buffer.
@@ -557,7 +571,7 @@ native SQL_BindParamInt(Handle:statement, param, number, bool:signed=true);
  * 
  * @param statement		A statement (prepared query) Handle.
  * @param param			The parameter index (starting from 0).
- * @param float			The float number to bind.
+ * @param value			The float number to bind.
  * @noreturn
  * @error				Invalid statement Handle or parameter index, or
  *						SQL error.
@@ -621,7 +635,7 @@ native SQL_UnlockDatabase(Handle:database);
 /**
  * General callback for threaded SQL stuff.
  *
- * @param db			Parent object of the Handle (or INVALID_HANDLE if none).
+ * @param owner			Parent object of the Handle (or INVALID_HANDLE if none).
  * @param hndl			Handle to the child object (or INVALID_HANDLE if none).
  * @param error			Error string if there was an error.  The error could be 
  *						empty even if an error condition exists, so it is important 
@@ -654,6 +668,7 @@ native bool:SQL_IsSameConnection(Handle:hndl1, Handle:hndl2);
  * @param callback		Callback; new Handle will be in hndl, owner is the driver.
  *						If no driver was found, the owner is INVALID_HANDLE.
  * @param name			Database name.
+ * @param data			Extra data value to pass to the callback.
  * @noreturn
  */
 native SQL_TConnect(SQLTCallback:callback, const String:name[]="default", any:data=0);
@@ -679,3 +694,69 @@ native SQL_TConnect(SQLTCallback:callback, const String:name[]="default", any:da
  * @error				Invalid database Handle.
  */
 native SQL_TQuery(Handle:database, SQLTCallback:callback, const String:query[], any:data=0, DBPriority:prio=DBPrio_Normal);
+
+/**
+ * Creates a new transaction object. A transaction object is a list of queries
+ * that can be sent to the database thread and executed as a single transaction.
+ *
+ * @return              A transaction handle.
+ */
+native Handle:SQL_CreateTransaction();
+
+/**
+ * Adds a query to a transaction object.
+ *
+ * @param txn           A transaction handle.
+ * @param query         Query string.
+ * @param data			Extra data value to pass to the final callback.
+ * @return              The index of the query in the transaction's query list.
+ * @error               Invalid transaction handle.
+ */
+native SQL_AddQuery(Handle:txn, const String:query[], any:data=0);
+
+/**
+ * Callback for a successful transaction.
+ *
+ * @param db            Database handle.
+ * @param data          Data value passed to SQL_ExecuteTransaction().
+ * @param numQueries    Number of queries executed in the transaction.
+ * @param results       An array of Query handle results, one for each of numQueries. They are closed automatically.
+ * @param queryData     An array of each data value passed to SQL_AddQuery().
+ * @noreturn
+ */
+functag public SQLTxnSuccess(Handle:db, any:data, numQueries, Handle:results[], any:queryData[]);
+
+/**
+ * Callback for a failed transaction.
+ *
+ * @param db            Database handle.
+ * @param data          Data value passed to SQL_ExecuteTransaction().
+ * @param numQueries    Number of queries executed in the transaction.
+ * @param error         Error message.
+ * @param failIndex      Index of the query that failed, or -1 if something else.
+ * @param queryData     An array of each data value passed to SQL_AddQuery().
+ * @noreturn
+ */
+functag public SQLTxnFailure(Handle:db, any:data, numQueries, const String:error[], failIndex, any:queryData[]);
+
+/**
+ * Sends a transaction to the database thread. The transaction handle is
+ * automatically closed. When the transaction completes, the optional
+ * callback is invoked.
+ *
+ * @param db            A database handle.
+ * @param txn           A transaction handle.
+ * @param onSuccess     An optional callback to receive a successful transaction.
+ * @param onError       An optional callback to receive an error message.
+ * @param data          An optional value to pass to callbacks.
+ * @param prio          Priority queue to use.
+ * @noreturn
+ * @error               An invalid handle.
+ */
+native SQL_ExecuteTransaction(
+		Handle:db,
+		Handle:txn,
+		SQLTxnSuccess:onSuccess=SQLTxnSuccess:-1,
+		SQLTxnFailure:onError=SQLTxnFailure:-1,
+		any:data=0,
+		DBPriority:priority=DBPrio_Normal);

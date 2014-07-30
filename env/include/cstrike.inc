@@ -42,66 +42,95 @@
 
 #define CS_SLOT_PRIMARY		0	/**< Primary weapon slot. */
 #define CS_SLOT_SECONDARY	1	/**< Secondary weapon slot. */
+#define CS_SLOT_KNIFE		2	/**< Knife slot. */
 #define CS_SLOT_GRENADE		3	/**< Grenade slot (will only return one grenade). */
 #define CS_SLOT_C4			4	/**< C4 slot. */
 
+#define CS_DMG_HEADSHOT		(1 << 30)	/**< Headshot */
+
 enum CSRoundEndReason
 {
-	CSRoundEnd_TargetBombed = 0,           // Target Successfully Bombed!
-	CSRoundEnd_VIPEscaped,                 // The VIP has escaped!
-	CSRoundEnd_VIPKilled,                  // VIP has been assassinated!
-	CSRoundEnd_TerroristsEscaped,          // The terrorists have escaped!
-	CSRoundEnd_CTStoppedEscape,            // The CTs have prevented most of the terrorists from escaping!
-	CSRoundEnd_TerroristsStopped,          // Escaping terrorists have all been neutralized!
-	CSRoundEnd_BombDefused,                // The bomb has been defused!
-	CSRoundEnd_CTWin,                      // Counter-Terrorists Win!
-	CSRoundEnd_TerroristWin,               // Terrorists Win!
-	CSRoundEnd_Draw,                       // Round Draw!
-	CSRoundEnd_HostagesRescued,            // All Hostages have been rescued!
-	CSRoundEnd_TargetSaved,                // Target has been saved!
-	CSRoundEnd_HostagesNotRescued,         // Hostages have not been rescued!
-	CSRoundEnd_TerroristsNotEscaped,       // Terrorists have not escaped!
-	CSRoundEnd_VIPNotEscaped,              // VIP has not escaped!
-	CSRoundEnd_GameStart                   // Game Commencing!
+	CSRoundEnd_TargetBombed = 0,           /**< Target Successfully Bombed! */
+	CSRoundEnd_VIPEscaped,                 /**< The VIP has escaped! */
+	CSRoundEnd_VIPKilled,                  /**< VIP has been assassinated! */
+	CSRoundEnd_TerroristsEscaped,          /**< The terrorists have escaped! */
+	CSRoundEnd_CTStoppedEscape,            /**< The CTs have prevented most of the terrorists from escaping! */
+	CSRoundEnd_TerroristsStopped,          /**< Escaping terrorists have all been neutralized! */
+	CSRoundEnd_BombDefused,                /**< The bomb has been defused! */
+	CSRoundEnd_CTWin,                      /**< Counter-Terrorists Win! */
+	CSRoundEnd_TerroristWin,               /**< Terrorists Win! */
+	CSRoundEnd_Draw,                       /**< Round Draw! */
+	CSRoundEnd_HostagesRescued,            /**< All Hostages have been rescued! */
+	CSRoundEnd_TargetSaved,                /**< Target has been saved! */
+	CSRoundEnd_HostagesNotRescued,         /**< Hostages have not been rescued! */
+	CSRoundEnd_TerroristsNotEscaped,       /**< Terrorists have not escaped! */
+	CSRoundEnd_VIPNotEscaped,              /**< VIP has not escaped! */
+	CSRoundEnd_GameStart,                  /**< Game Commencing! */
+	
+	// The below only exist on CS:GO
+	CSRoundEnd_TerroristsSurrender,        /**< Terrorists Surrender */
+	CSRoundEnd_CTSurrender,                /**< CTs Surrender */
 };
 
 enum CSWeaponID
 {
-    CSWeapon_NONE,
-    CSWeapon_P228,
-    CSWeapon_GLOCK,
-    CSWeapon_SCOUT,
-    CSWeapon_HEGRENADE,
-    CSWeapon_XM1014,
-    CSWeapon_C4,
-    CSWeapon_MAC10,
-    CSWeapon_AUG,
-    CSWeapon_SMOKEGRENADE,
-    CSWeapon_ELITE,
-    CSWeapon_FIVESEVEN,
-    CSWeapon_UMP45,
-    CSWeapon_SG550,
-    CSWeapon_GALIL,
-    CSWeapon_FAMAS,
-    CSWeapon_USP,
-    CSWeapon_AWP,
-    CSWeapon_MP5NAVY,
-    CSWeapon_M249,
-    CSWeapon_M3,
-    CSWeapon_M4A1,
-    CSWeapon_TMP,
-    CSWeapon_G3SG1,
-    CSWeapon_FLASHBANG,
-    CSWeapon_DEAGLE,
-    CSWeapon_SG552,
-    CSWeapon_AK47,
-    CSWeapon_KNIFE,
-    CSWeapon_P90,
-    CSWeapon_SHIELD,
-    CSWeapon_KEVLAR,
-    CSWeapon_ASSAULTSUIT,
-    CSWeapon_NIGHTVISION
+	CSWeapon_NONE = 0,
+	CSWeapon_P228,
+	CSWeapon_GLOCK,
+	CSWeapon_SCOUT,
+	CSWeapon_HEGRENADE,
+	CSWeapon_XM1014,
+	CSWeapon_C4,
+	CSWeapon_MAC10,
+	CSWeapon_AUG,
+	CSWeapon_SMOKEGRENADE,
+	CSWeapon_ELITE,
+	CSWeapon_FIVESEVEN,
+	CSWeapon_UMP45,
+	CSWeapon_SG550,
+	CSWeapon_GALIL,
+	CSWeapon_FAMAS,
+	CSWeapon_USP,
+	CSWeapon_AWP,
+	CSWeapon_MP5NAVY,
+	CSWeapon_M249,
+	CSWeapon_M3,
+	CSWeapon_M4A1,
+	CSWeapon_TMP,
+	CSWeapon_G3SG1,
+	CSWeapon_FLASHBANG,
+	CSWeapon_DEAGLE,
+	CSWeapon_SG552,
+	CSWeapon_AK47,
+	CSWeapon_KNIFE,
+	CSWeapon_P90,
+	CSWeapon_SHIELD,
+	CSWeapon_KEVLAR,
+	CSWeapon_ASSAULTSUIT,
+	CSWeapon_NIGHTVISION,
+	CSWeapon_GALILAR,
+	CSWeapon_BIZON,
+	CSWeapon_MAG7,
+	CSWeapon_NEGEV,
+	CSWeapon_SAWEDOFF,
+	CSWeapon_TEC9,
+	CSWeapon_TASER,
+	CSWeapon_HKP2000,
+	CSWeapon_MP7,
+	CSWeapon_MP9,
+	CSWeapon_NOVA,
+	CSWeapon_P250,
+	CSWeapon_SCAR17,
+	CSWeapon_SCAR20,
+	CSWeapon_SG556,
+	CSWeapon_SSG08,
+	CSWeapon_KNIFE_GG,
+	CSWeapon_MOLOTOV,
+	CSWeapon_DECOY,
+	CSWeapon_INCGRENADE,
+	CSWeapon_DEFUSER
 };
+
 /**
  * Called when a player attempts to purchase an item.
  * Return Plugin_Continue to allow the purchase or return a
@@ -118,7 +147,7 @@ forward Action:CS_OnBuyCommand(client, const String:weapon[]);
  * higher action to deny.
  *
  * @param client	Client index
- * @param weapon	Weapon index
+ * @param weaponIndex	Weapon index
  */
 forward Action:CS_OnCSWeaponDrop(client, weaponIndex);
 
@@ -236,7 +265,120 @@ native CS_GetClientClanTag(client, String:buffer[], size);
  * @error				Invalid client.
  */
 native CS_SetClientClanTag(client, const String:tag[]);
- 
+
+/**
+ * Gets a team's score
+ * @param team			Team index to get score for.
+ * @return				Returns the internal team score.
+ *
+ * @error				Invalid team index.
+ */
+native CS_GetTeamScore(team);
+
+/**
+ * Sets a team's score
+ * @param team			Team index to set score for.
+ * @param value			Value to set teams score as.
+ * @noreturn
+ *
+ * @error				Invalid team index.
+ * @note				This will update the scoreboard only after the scoreboard update function is called. Use SetTeamScore plus this to update the scoreboard instantly and save values correctly.
+ */
+native CS_SetTeamScore(team, value);
+
+/**
+ * Gets a client's mvp count
+ * @param client		Client index to get mvp count of.
+ * @return				Returns the client's internal MVP count.
+ *
+ * @error				Invalid client.
+ */
+native CS_GetMVPCount(client);
+
+/**
+ * Sets a client's mvp count
+ * @param client		Client index to set mvp count for.
+ * @param value			Value to set client's mvp count as.
+ * @noreturn
+ *
+ * @error				Invalid client.
+ */
+native CS_SetMVPCount(client, value);
+
+/**
+ * Gets a client's contribution score (CS:GO only)
+ * @param client		Client index to get score of.
+ * @return				Returns the client's score.
+ *
+ * @error				Invalid client.
+ */
+native CS_GetClientContributionScore(client);
+
+/**
+ * Sets a client's contribution score (CS:GO only)
+ * @param client		Client index to set score for.
+ * @param value			Value to set client's score as.
+ * @noreturn
+ *
+ * @error				Invalid client.
+ */
+native CS_SetClientContributionScore(client, value);
+
+/**
+ * Gets a client's assists (CS:GO only)
+ * @param client		Client index to get assists of.
+ * @return				Returns the client's assists.
+ *
+ * @error				Invalid client.
+ */
+native CS_GetClientAssists(client);
+
+/**
+ * Sets a client's assists (CS:GO only)
+ * @param client		Client index to set assists for.
+ * @param value			Value to set client's assists as.
+ * @noreturn
+ *
+ * @error				Invalid client.
+ */
+native CS_SetClientAssists(client, value);
+
+/**
+ * Gets a weaponID from a alias
+ * @param alias			Weapon alias to attempt to get an id for.
+ * @return				Returns a weapon id or 0 if failed to find a match.
+ *
+ * @note For best results use CS_GetTranslatedWeaponAlias on the weapon name before passing it.
+ */
+native CSWeaponID:CS_AliasToWeaponID(const String:alias[]);
+
+/**
+ * Gets a alias from a weaponID
+ * @param weaponID		WeaponID to get alias for.
+ * @param destination	Destination string to hold the weapon alias.
+ * @param len			Length of the destination array.
+ * @return				Returns number of cells written.
+ */
+native CS_WeaponIDToAlias(CSWeaponID:weaponID, String:destination[], len);
+
+/**
+ * Returns weather a WeaponID is valid on the current mod (css or csgo)
+ * @param weaponID		WeaponID to check
+ * @return				Returns true if its a valid WeaponID false otherwise.
+ *
+ * @note This will return false always for CSWeapon_NONE
+ */
+native bool:CS_IsValidWeaponID(CSWeaponID:id);
+
+/**
+ * Sets a player's model based on their current class
+ *
+ * @param client		Player's index.
+ * @noreturn
+ * @error			Invalid client index, client not in game.
+ */
+native CS_UpdateClientModel(client);
+
 /**
  * Do not edit below this line!
  */
@@ -263,6 +405,18 @@ public __ext_cstrike_SetNTVOptional()
 	MarkNativeAsOptional("CS_GetWeaponPrice");
 	MarkNativeAsOptional("CS_GetClientClanTag");
 	MarkNativeAsOptional("CS_SetClientClanTag");
+	MarkNativeAsOptional("CS_GetTeamScore");
+	MarkNativeAsOptional("CS_SetTeamScore");
+	MarkNativeAsOptional("CS_GetMVPCount");
+	MarkNativeAsOptional("CS_SetMVPCount");
+	MarkNativeAsOptional("CS_GetClientContributionScore");
+	MarkNativeAsOptional("CS_SetClientContributionScore");
+	MarkNativeAsOptional("CS_GetClientAssists");
+	MarkNativeAsOptional("CS_SetClientAssists");
+	MarkNativeAsOptional("CS_AliasToWeaponID");
+	MarkNativeAsOptional("CS_WeaponIDToAlias");
+	MarkNativeAsOptional("CS_IsValidWeaponID");
+	MarkNativeAsOptional("CS_UpdateClientModel");
 }
 #endif
 
