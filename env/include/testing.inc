@@ -1,7 +1,7 @@
 /**
- * vim: set ts=4 :
+ * vim: set ts=4 sw=4 tw=99 noet :
  * =============================================================================
- * SourceMod (C)2004-2008 AlliedModders LLC.  All rights reserved.
+ * SourceMod (C)2004-2014 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
  * This file is part of the SourceMod/SourcePawn SDK.
@@ -29,21 +29,44 @@
  *
  * Version: $Id$
  */
- 
-#if defined _version_included
- #endinput
-#endif
-#define _version_included
 
-#tryinclude <version_auto>
+static TestNumber = 0;
+static String:TestContext[255];
 
-#if !defined _auto_version_included
-#define SOURCEMOD_V_TAG			"manual"
-#define SOURCEMOD_V_REV			0
-#define SOURCEMOD_V_CSET		"0"
-#define SOURCEMOD_V_MAJOR		1				/**< SourceMod Major version */
-#define SOURCEMOD_V_MINOR		6				/**< SourceMod Minor version */
-#define SOURCEMOD_V_RELEASE		0				/**< SourceMod Release version */
+SetTestContext(const String:context[])
+{
+	strcopy(TestContext, sizeof(TestContext), context);
+}
 
-#define SOURCEMOD_VERSION	"1.6.0-manual"	/**< SourceMod version string (major.minor.release-tag) */
-#endif
+AssertEq(const String:text[], cell1, cell2)
+{
+	TestNumber++;
+	if (cell1 == cell2) {
+		PrintToServer("[%d] %s: %s == %d OK", TestNumber, TestContext, text, cell2);
+	} else {
+		PrintToServer("[%d] %s FAIL: %s should be %d, got %d", TestNumber, TestContext, text, cell2, cell1);
+		ThrowError("test %d (%s in %s) failed", TestNumber, text, TestContext);
+	}
+}
+
+AssertFalse(const String:text[], bool:value)
+{
+	TestNumber++;
+	if (!value) {
+		PrintToServer("[%d] %s: %s == false OK", TestNumber, TestContext, text, value);
+	} else {
+		PrintToServer("[%d] %s FAIL: %s should be false, got true", TestNumber, TestContext, text);
+		ThrowError("test %d (%s in %s) failed", TestNumber, text, TestContext);
+	}
+}
+
+AssertTrue(const String:text[], bool:value)
+{
+	TestNumber++;
+	if (value) {
+		PrintToServer("[%d] %s: %s == true OK", TestNumber, TestContext, text, value);
+	} else {
+		PrintToServer("[%d] %s FAIL: %s should be true, got false", TestNumber, TestContext, text);
+		ThrowError("test %d (%s in %s) failed", TestNumber, text, TestContext);
+	}
+}

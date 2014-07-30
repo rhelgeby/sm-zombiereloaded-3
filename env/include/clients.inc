@@ -210,6 +210,21 @@ forward OnClientPostAdminCheck(client);
 native GetMaxClients();
 
 /**
+ * Returns the maximum number of human players allowed on the server.  This is 
+ * a game-specific function used on newer games to limit the number of humans
+ * that can join a game and can be lower than MaxClients. It is the number often
+ * reflected in the server browser or when viewing the output of the status command.
+ * On unsupported games or modes without overrides, it will return the same value
+ * as MaxClients.
+ *
+ * You should not globally cache the value to GetMaxHumanPlayers() because it can change across
+ * game modes. You may still cache it locally.
+ *
+ * @return				Maximum number of humans allowed.
+ */
+native GetMaxHumanPlayers();
+
+/**
  * Returns the client count put in the server.
  *
  * @param inGameOnly	If false connecting players are also counted.
@@ -232,7 +247,7 @@ native bool:GetClientName(client, String:name[], maxlen);
  * Retrieves a client's IP address.
  *
  * @param client		Player index.
- * @param name			Buffer to store the client's ip address.
+ * @param ip			Buffer to store the client's ip address.
  * @param maxlen		Maximum length of string buffer (includes NULL terminator).
  * @param remport		Remove client's port from the ip string (true by default).
  * @return				True on success, false otherwise.
@@ -246,10 +261,25 @@ native bool:GetClientIP(client, String:ip[], maxlen, bool:remport=true);
  * @param client		Player index.
  * @param auth			Buffer to store the client's auth string.
  * @param maxlen		Maximum length of string buffer (includes NULL terminator).
+ * @param validate		Check backend validation status.
+ * 				DO NOT PASS FALSE UNLESS YOU UNDERSTAND THE CONSEQUENCES,
+ *			        You WILL KNOW if you need to use this, MOST WILL NOT.
  * @return				True on success, false otherwise.
  * @error				If the client is not connected or the index is invalid.
  */
-native bool:GetClientAuthString(client, String:auth[], maxlen);
+native bool:GetClientAuthString(client, String:auth[], maxlen, bool:validate=true);
+
+/**
+ * Returns the client's Steam account ID.
+ *
+ * @param client		Client Index.
+ * @param validate		Check backend validation status.
+ * 				DO NOT PASS FALSE UNLESS YOU UNDERSTAND THE CONSEQUENCES,
+ *			        You WILL KNOW if you need to use this, MOST WILL NOT.
+ * @return				Steam account ID or 0 if not available.
+ * @error				If the client is not connected or the index is invalid.
+ */
+native GetSteamAccountID(client, bool:validate=true);
 
 /**
  * Retrieves a client's user id, which is an index incremented for every client
@@ -590,7 +620,7 @@ native GetClientFrags(client);
  *
  * @param client		Player's index.
  * @return				Data rate.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native GetClientDataRate(client);
 
@@ -599,7 +629,7 @@ native GetClientDataRate(client);
  *
  * @param client		Player's index.
  * @return				True if client is timing out, false otherwise.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native bool:IsClientTimingOut(client);
 
@@ -608,7 +638,7 @@ native bool:IsClientTimingOut(client);
  *
  * @param client		Player's index.
  * @return				Connection time.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native Float:GetClientTime(client);
 
@@ -618,7 +648,7 @@ native Float:GetClientTime(client);
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
  * @return				Latency, or -1 if network info is not available.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native Float:GetClientLatency(client, NetFlow:flow);
 
@@ -628,7 +658,7 @@ native Float:GetClientLatency(client, NetFlow:flow);
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
  * @return				Latency, or -1 if network info is not available.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native Float:GetClientAvgLatency(client, NetFlow:flow);
 
@@ -638,7 +668,7 @@ native Float:GetClientAvgLatency(client, NetFlow:flow);
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
  * @return				Average packet loss, or -1 if network info is not available.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native Float:GetClientAvgLoss(client, NetFlow:flow);
 
@@ -648,7 +678,7 @@ native Float:GetClientAvgLoss(client, NetFlow:flow);
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
  * @return				Average packet loss, or -1 if network info is not available.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native Float:GetClientAvgChoke(client, NetFlow:flow);
 
@@ -658,7 +688,7 @@ native Float:GetClientAvgChoke(client, NetFlow:flow);
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
  * @return				Data flow.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native Float:GetClientAvgData(client, NetFlow:flow);
 
@@ -668,7 +698,7 @@ native Float:GetClientAvgData(client, NetFlow:flow);
  * @param client		Player's index.
  * @param flow			Traffic flowing direction.
  * @return				Packet frequency.
- * @error				Invalid client index, client not in game, or fake client.
+ * @error				Invalid client index, client not connected, or fake client.
  */
 native Float:GetClientAvgPackets(client, NetFlow:flow);
 
@@ -733,6 +763,7 @@ native ChangeClientTeam(client, team);
 /**
  * Returns the clients unique serial identifier.
  *
+ * @param client		Client index.
  * @return	Serial number.
  */
 native GetClientSerial(client);
@@ -740,6 +771,7 @@ native GetClientSerial(client);
 /**
  * Returns the client index by its serial number.
  *
+ * @param serial		Serial number.
  * @return				Client index, or 0 for invalid serial.
  */
 native GetClientFromSerial(serial);

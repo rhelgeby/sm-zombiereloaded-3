@@ -160,7 +160,7 @@ native ServerExecute();
  *
  * @param client		Index of the client.
  * @param fmt			Format of the client command.
- * @param ...			Format parameters/
+ * @param ...			Format parameters
  * @noreturn
  * @error				Invalid client index, or client not connected.
  */
@@ -324,7 +324,7 @@ native FormatActivitySource(client, target, const String:namebuf[], maxlength);
 /**
  * Called when a server-only command is invoked.  
  *
- * @params args			Number of arguments that were in the argument string.
+ * @param args			Number of arguments that were in the argument string.
  * @return				An Action value.  Not handling the command
  *						means that Source will report it as "not found."
  */
@@ -358,7 +358,7 @@ functag public Action:ConCmd(client, args);
  * Creates a console command, or hooks an already existing one.
  *
  * Console commands are case sensitive.  However, if the command already exists in the game, 
- * the a client may enter the command in any case.  SourceMod corrects for this automatically, 
+ * a client may enter the command in any case.  SourceMod corrects for this automatically, 
  * and you should only hook the "real" version of the command.
  *
  * @param cmd			Name of the command to hook or create.
@@ -703,7 +703,7 @@ funcenum ConVarQueryFinished
  * Starts a query to retrieve the value of a client's console variable.
  *
  * @param client		Player index.
- * @param name			Name of client convar to query.
+ * @param cvarName			Name of client convar to query.
  * @param callback		A function to use as a callback when the query has finished.
  * @param value			Optional value to pass to the callback function.
  * @return				A cookie that uniquely identifies the query. 
@@ -938,3 +938,34 @@ native bool:AddCommandListener(CommandListener:callback, const String:command[]=
  */
 native RemoveCommandListener(CommandListener:callback, const String:command[]="");
 
+/**
+ * Returns true if the supplied command exists.
+ *
+ * @param command	Command to find.
+ * @return			True if command is found, false otherwise.
+ */
+stock bool:CommandExists(const String:command[])
+{
+	return (GetCommandFlags(command) != INVALID_FCVAR_FLAGS);
+}
+/**
+ * Global listener for the chat commands.
+ *
+ * @param client		Client index.
+ * @param command		Command name.
+ * @param sArgs			Chat argument string.
+ * 
+ * @return				An Action value. Returning Plugin_Handled bypasses the game function call.
+							Returning Plugin_Stop bypasses the post hook as well as the game function.
+ */
+forward Action:OnClientSayCommand(client, const String:command[], const String:sArgs[]);
+
+/**
+ * Global post listener for the chat commands.
+ *
+ * @param client		Client index.
+ * @param command		Command name.
+ * @param sArgs			Chat argument string.
+ * 
+ */
+forward OnClientSayCommand_Post(client, const String:command[], const String:sArgs[]);

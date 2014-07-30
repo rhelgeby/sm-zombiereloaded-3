@@ -42,10 +42,13 @@
 #define SOURCE_SDK_EPISODE2			30		/**< SDK+Engine released after Episode 2/Orange Box */
 #define SOURCE_SDK_BLOODYGOODTIME	32		/**< Modified version of ep2 engine used by Bloody Good Time (no SDK) */
 #define SOURCE_SDK_EYE				33		/**< Modified version of ep2 engine used by E.Y.E Divine Cybermancy (no SDK) */
-#define SOURCE_SDK_EPISODE2VALVE	35		/**< SDK+Engine released after Episode 2/Orange Box */
+#define SOURCE_SDK_CSS				34		/**< Sometime-older version of Source 2009 SDK+Engine, used for Counter-Strike: Source */
+#define SOURCE_SDK_EPISODE2VALVE	35		/**< SDK+Engine released after Episode 2/Orange Box, "Source 2009" or "Source MP" */
 #define SOURCE_SDK_LEFT4DEAD		40		/**< Engine released after Left 4 Dead (no SDK yet) */
 #define SOURCE_SDK_LEFT4DEAD2		50		/**< Engine released after Left 4 Dead 2 (no SDK yet) */
 #define SOURCE_SDK_ALIENSWARM		60		/**< SDK+Engine released after Alien Swarm */
+#define SOURCE_SDK_CSGO				80		/**< Engine released after CS:GO (no SDK yet) */
+#define SOURCE_SDK_DOTA				90		/**< Engine released after Dota 2 (no SDK) */
 
 #define MOTDPANEL_TYPE_TEXT		0	/**< Treat msg as plain text */
 #define MOTDPANEL_TYPE_INDEX	1	/**< Msg is auto determined by the engine */
@@ -59,6 +62,32 @@ enum DialogType
 	DialogType_Text, 		/**< a richtext dialog */
 	DialogType_Entry, 		/**< an entry box */
 	DialogType_AskConnect	/**< ask the client to connect to a specified IP */
+};
+
+enum EngineVersion
+{
+	Engine_Unknown,				/**< Could not determine the engine version */
+	Engine_Original,				/**< Original Source Engine (used by The Ship) */
+	Engine_SourceSDK2006,		/**< Episode 1 Source Engine (second major SDK) */
+	Engine_SourceSDK2007,		/**< Orange Box Source Engine (third major SDK) */
+	Engine_Left4Dead,			/**< Left 4 Dead */
+	Engine_DarkMessiah,			/**< Dark Messiah Multiplayer (based on original engine) */
+	Engine_Left4Dead2 = 7,		/**< Left 4 Dead 2 */
+	Engine_AlienSwarm,			/**< Alien Swarm (and Alien Swarm SDK) */
+	Engine_BloodyGoodTime,		/**< Bloody Good Time */
+	Engine_EYE,					/**< E.Y.E Divine Cybermancy */
+	Engine_Portal2,				/**< Portal 2 */
+	Engine_CSGO,				/**< Counter-Strike: Global Offensive */
+	Engine_CSS,					/**< Counter-Strike: Source */
+	Engine_DOTA,				/**< Dota 2 */
+	Engine_HL2DM,				/**< Half-Life 2 Deathmatch */
+	Engine_DODS,				/**< Day of Defeat: Source */
+	Engine_TF2,					/**< Team Fortress 2 */
+	Engine_NuclearDawn,			/**< Nuclear Dawn */
+	Engine_SDK2013,				/**< Source SDK 2013 */
+	Engine_Blade,				/**< Blade Symphony */
+	Engine_Insurgency,			/**< Insurgency (2013 Retail version)*/
+	Engine_Contagion,			/**< Contagion */
 };
 
 #define INVALID_ENT_REFERENCE 0xFFFFFFFF
@@ -101,7 +130,7 @@ native GetRandomInt(nmin, nmax);
 /**
  * Returns whether a map is valid or not.
  * 
- * @param 				Map name, excluding .bsp extension.
+ * @param map 			Map name, excluding .bsp extension.
  * @return				True if valid, false otherwise.
  */
 native bool:IsMapValid(const String:map[]);
@@ -126,6 +155,13 @@ native Float:GetEngineTime();
  * @return				Game tick time.
  */
 native Float:GetGameTime();
+
+/** 
+ * Returns the game's internal tick count.
+ *
+ * @return				Game tick count.
+ */
+native GetGameTickCount();
 
 /**
  * Returns the game description from the mod.
@@ -212,7 +248,7 @@ native bool:IsDecalPrecached(const String:decal[]);
 /**
  * Returns if a given generic file is precached.
  *
- * @param decal			Name of the generic file to check.
+ * @param generic		Name of the generic file to check.
  * @return				True if precached, false otherwise.
  */
 native bool:IsGenericPrecached(const String:generic[]);
@@ -254,7 +290,18 @@ native CreateDialog(client, Handle:kv, DialogType:type);
  *
  * @return				SOURCE_SDK version code.
  */
+#pragma deprecated See GetEngineVersion()
 native GuessSDKVersion();
+
+/**
+ * Gets the engine version that the currently-loaded SM core was compiled against.
+ *
+ * The engine version values are not guaranteed to be in any particular order,
+ * and should only be compared by (in)equality.
+ *
+ * @return				An EngineVersion value.
+ */
+native EngineVersion:GetEngineVersion();
 
 /**
  * Prints a message to a specific client in the chat area.
@@ -537,14 +584,17 @@ stock ShowMOTDPanel(client, const String:title[], const String:msg[], type=MOTDP
  *
  * @param client		Client index.
  * @param time			Duration to hold the panel on the client's screen.
- * @param ip			Destionation IP.
+ * @param ip			Destination IP.
+ * @param password		Password to connect to the destination IP. The client will be able to see this.
  * @noreturn
  */
-stock DisplayAskConnectBox(client, Float:time, const String:ip[])
+stock DisplayAskConnectBox(client, Float:time, const String:ip[], const String:password[] = "")
 {
+	decl String:destination[288];
+	FormatEx(destination, sizeof(destination), "%s/%s", ip, password);
 	new Handle:Kv = CreateKeyValues("data");
 	KvSetFloat(Kv, "time", time);
-	KvSetString(Kv, "title", ip);
+	KvSetString(Kv, "title", destination);
 	CreateDialog(client, Kv, DialogType_AskConnect);
 	CloseHandle(Kv);
 }

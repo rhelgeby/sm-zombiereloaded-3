@@ -226,6 +226,7 @@ native GetEntData(entity, offset, size=4);
  *
  * @param entity		Edict index.
  * @param offset		Offset to use.
+ * @param value			Value to set.
  * @param size			Number of bytes to write (valid values are 1, 2, or 4).
  * @param changeState	If true, change will be sent over the network.
  * @return				Value at the given memory location.
@@ -251,6 +252,7 @@ native Float:GetEntDataFloat(entity, offset);
  *
  * @param entity		Edict index.
  * @param offset		Offset to use.
+ * @param value			Value to set.
  * @param changeState	If true, change will be sent over the network.
  * @return				Value at the given memory location.
  * @error				Invalid entity or offset out of reasonable bounds.
@@ -281,7 +283,7 @@ native GetEntDataEnt(entity, offset);
  * reasons explained in the notes.
  *
  * Note: This function uses 0 as an indicator to unset data, but 
- * 0 is also the world entity index.  Thus, the a property cannot 
+ * 0 is also the world entity index.  Thus, a property cannot 
  * be set to the world entity using this native.
  * 
  * @param entity		Edict index.
@@ -447,6 +449,26 @@ native FindDataMapOffs(entity,
 					   const String:prop[],
 					   &PropFieldType:type=PropFieldType:0,
 					   &num_bits=0);
+					   
+/**
+ * Given an entity, finds a nested datamap property offset.
+ * This information is cached for future calls.
+ *
+ * @param entity		Entity index.
+ * @param prop			Property name.
+ * @param type			Optional parameter to store the type.
+ * @param num_bits		Optional parameter to store the number of bits the field 
+ *						uses.  The bit count will either be 1 (for boolean) or 
+ *						divisible by 8 (including 0 if unknown).
+ * @param local_offset	Optional parameter to store the local offset, as 
+ *						FindDataMapOffs() would return.
+ * @return				An offset, or -1 on failure.
+ */
+native FindDataMapInfo(entity, 
+					   const String:prop[],
+					   &PropFieldType:type=PropFieldType:0,
+					   &num_bits=0,
+					   &local_offset=0);
 
 /**
  * Wrapper function for finding a send property for a particular entity.
@@ -692,11 +714,20 @@ stock SetEntDataArray(entity, offset, const array[], arraySize, dataSize=4, bool
 }
 
 /**
+ * Gets the memory address of an entity.
+ * 
+ * @param entity		Entity index.
+ * @return				Address of the entity.
+ * @error				Invalid entity.
+ */
+native Address:GetEntityAddress(entity);
+
+/**
  * Retrieves the classname of an entity.
  * This is like GetEdictClassname(), except it works for ALL
  * entities, not just edicts.
  *
- * @param edict			Index of the entity.
+ * @param entity			Index of the entity.
  * @param clsname		Buffer to store the classname.
  * @param maxlength		Maximum length of the buffer.
  * @return				True on success, false if there is no classname set.

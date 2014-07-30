@@ -132,6 +132,18 @@ enum {
 	TF_CUSTOM_PLASMA_GIB,
 	TF_CUSTOM_PRACTICE_STICKY,
 	TF_CUSTOM_EYEBALL_ROCKET,
+	TF_CUSTOM_HEADSHOT_DECAPITATION,
+	TF_CUSTOM_TAUNT_ARMAGEDDON,
+	TF_CUSTOM_FLARE_PELLET,
+	TF_CUSTOM_CLEAVER,
+	TF_CUSTOM_CLEAVER_CRIT,
+	TF_CUSTOM_SAPPER_RECORDER_DEATH,
+	TF_CUSTOM_MERASMUS_PLAYER_BOMB,
+	TF_CUSTOM_MERASMUS_GRENADE,
+	TF_CUSTOM_MERASMUS_ZAP,
+	TF_CUSTOM_MERASMUS_DECAPITATION,
+	TF_CUSTOM_CANNONBALL_PUSH,
+	TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
 };
 
 // Weapon codes as used in some events, such as player_death
@@ -218,9 +230,28 @@ enum {
 	TF_WEAPON_RAYGUN,
 	TF_WEAPON_PARTICLE_CANNON,
 	TF_WEAPON_MECHANICAL_ARM,
+	TF_WEAPON_DRG_POMSON,
+	TF_WEAPON_BAT_GIFTWRAP,
+	TF_WEAPON_GRENADE_ORNAMENT,
+	TF_WEAPON_RAYGUN_REVENGE,
+	TF_WEAPON_PEP_BRAWLER_BLASTER,
+	TF_WEAPON_CLEAVER,
+	TF_WEAPON_GRENADE_CLEAVER,
+	TF_WEAPON_STICKY_BALL_LAUNCHER,
+	TF_WEAPON_GRENADE_STICKY_BALL,
+	TF_WEAPON_SHOTGUN_BUILDING_RESCUE,
+	TF_WEAPON_CANNON,
+	TF_WEAPON_THROWABLE,
+	TF_WEAPON_GRENADE_THROWABLE,
+	TF_WEAPON_PDA_SPY_BUILD,
+	TF_WEAPON_GRENADE_WATERBALLOON,
+	TF_WEAPON_HARVESTER_SAW,
+	TF_WEAPON_SPELLBOOK,
+	TF_WEAPON_SPELLBOOK_PROJECTILE,
+	TF_WEAPON_SNIPERRIFLE_CLASSIC,
 };
 
-// TF2 Weapon Slots for GetPlayerWeaponSlot
+// TF2 Weapon Loadout Slots
 enum
 {
 	TFWeaponSlot_Primary,
@@ -328,6 +359,7 @@ stock TF2_SetPlayerClass(client, TFClassType:class, bool:weapons=true, bool:pers
  * @return				Value or -1 on failure.
  * @error				Invalid client index, client not in game or failed to find resource entity.
  */
+#pragma deprecated Use GetPlayerResourceEntity and GetEntProp instead
 stock TF2_GetPlayerResourceData(client, TFResourceType:type)
 {
 	if (!IsClientConnected(client))
@@ -363,6 +395,7 @@ stock TF2_GetPlayerResourceData(client, TFResourceType:type)
  * @return				Value or -1 on failure.
  * @error				Invalid client index, client not in game or failed to find resource entity.
  */
+#pragma deprecated Use GetPlayerResourceEntity and SetEntProp instead
 stock bool:TF2_SetPlayerResourceData(client, TFResourceType:type, any:value)
 {
 	if (!IsClientConnected(client))
@@ -403,7 +436,7 @@ stock TF2_RemoveWeaponSlot(client, slot)
 	while ((weaponIndex = GetPlayerWeaponSlot(client, slot)) != -1)
 	{
 		RemovePlayerItem(client, weaponIndex);
-		RemoveEdict(weaponIndex);
+		AcceptEntityInput(weaponIndex, "Kill");
 	}
 }
 
@@ -437,6 +470,7 @@ stock TF2_GetPlayerConditionFlags(client)
  * Check whether or not a condition is set on a player
  *
  * @param client		Player's index.
+ * @param cond			TFCond constant
  * @return				True if set, false otherwise
  */
 stock bool:TF2_IsPlayerInCondition(client, TFCond:cond)
@@ -455,10 +489,18 @@ stock bool:TF2_IsPlayerInCondition(client, TFCond:cond)
 			return true;
 		}
 	}
-	else
+	else if (_:cond < 64)
 	{
 		new bit = (1 << (_:cond - 32));
 		if ((GetEntProp(client, Prop_Send, "m_nPlayerCondEx") & bit) == bit)
+		{
+			return true;
+		}
+	}
+	else
+	{
+		new bit = (1 << (_:cond - 64));
+		if ((GetEntProp(client, Prop_Send, "m_nPlayerCondEx2") & bit) == bit)
 		{
 			return true;
 		}
