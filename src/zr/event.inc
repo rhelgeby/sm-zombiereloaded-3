@@ -260,19 +260,15 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
  */
 public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    // Get the weapon name.
-    decl String:weapon[WEAPONS_MAX_LENGTH];
-    GetEventString(event, "weapon", weapon, sizeof(weapon));
-    
-    // If client is being infected, then stop.
-    if (StrEqual(weapon, "zombie_claws_of_death", false))
+    // Get all required event info.
+    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    new index = GetClientOfUserId(GetEventInt(event, "userid"));
+	
+	// If client is being infected, then stop.
+    if (InfectIsClientInfected(attacker) && index != attacker)
     {
         return;
     }
-    
-    // Get all required event info.
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     
     // Validate client.
     if (!ZRIsClientValid(index))
@@ -281,6 +277,10 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
         // other mods might sent this event with bad data.
         return;
     }
+	
+    // Get the weapon name.
+    decl String:weapon[WEAPONS_MAX_LENGTH];
+    GetEventString(event, "weapon", weapon, sizeof(weapon));
     
     // Forward event to modules.
     ClassOnClientDeath(index);
