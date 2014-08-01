@@ -750,7 +750,7 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
         {
             SetEventInt(event, "userid", GetClientUserId(client));
             SetEventInt(event, "attacker", GetClientUserId(attacker));
-            SetEventString(event, "weapon", "zombie_claws_of_death");
+            SetEventString(event, "weapon", "knife");
             FireEvent(event, false);
         }
         
