@@ -128,7 +128,7 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
     if (g_Game == Game_CSGO)
     {
         // Apply multiplier if client on air
-        if(GetEntPropEnt(client, Prop_Send, "m_hGroundEntity") != 0) knockback *= CSGO_KNOCKBACK_AIRMULTIPLIER;
+        if(GetEntPropEnt(client, Prop_Send, "m_hGroundEntity") == -1) knockback *= CSGO_KNOCKBACK_AIRMULTIPLIER;
     }
     
     // Apply knockback.
