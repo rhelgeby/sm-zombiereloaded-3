@@ -942,5 +942,5 @@ stock WeaponsRefreshAllClientWeapons(client)
 stock bool:WeaponsIsClientInBuyZone(client)
 {
     // Return if client is in buyzone.
-    return bool:GetEntData(client, g_iToolsInBuyZone);
+    return bool:GetEntProp(client, Prop_Send,"m_bInBuyZone");
 }
