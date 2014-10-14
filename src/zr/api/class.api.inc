@@ -35,6 +35,8 @@ APIClassInit()
     // Natives
     CreateNative("ZR_IsValidClassIndex", APIIsValidClassIndex);
     CreateNative("ZR_GetActiveClass", APIGetActiveClass);
+    CreateNative("ZR_GetHumanClass", APIGetHumanClass);
+    CreateNative("ZR_GetZombieClass", APIGetZombieClass);
     CreateNative("ZR_SelectClientClass", APISelectClientClass);
     CreateNative("ZR_GetClassByName", APIGetClassByName);
     CreateNative("ZR_GetClassDisplayName", APIGetClassDisplayName);
@@ -65,6 +67,36 @@ public APIGetActiveClass(Handle:plugin, numParams)
     APIValidateClientIndex(client, Condition_True);
     
     return ClassGetActiveIndex(client);
+}
+
+/**
+ * Native call function (ZR_GetHumanClass)
+ *
+ * native bool:ZR_GetHumanClass(client);
+ */
+public APIGetHumanClass(Handle:plugin, numParams)
+{
+    new client = GetNativeCell(1);
+    
+    // Validate the client index. Player must be alive.
+    APIValidateClientIndex(client, Condition_True);
+    
+    return ClassGetHumanIndex(client);
+}
+
+/**
+ * Native call function (ZR_GetZombieClass)
+ *
+ * native bool:ZR_GetZombieClass(client);
+ */
+public APIGetZombieClass(Handle:plugin, numParams)
+{
+    new client = GetNativeCell(1);
+    
+    // Validate the client index. Player must be alive.
+    APIValidateClientIndex(client, Condition_True);
+    
+    return ClassGetZombieIndex(client);
 }
 
 /**
