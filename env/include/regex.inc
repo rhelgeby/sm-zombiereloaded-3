@@ -43,9 +43,13 @@
 #define PCRE_MULTILINE          0x00000002 /* Multilines (affects ^ and $ so that they match the start/end of a line rather than matching the start/end of the string). */
 #define PCRE_DOTALL             0x00000004 /* Single line (affects . so that it matches any character, even new line characters). */
 #define PCRE_EXTENDED           0x00000008 /* Pattern extension (ignore whitespace and # comments). */
+#define PCRE_ANCHORED           0x00000010 /* Force pattern anchoring. */
+#define PCRE_DOLLAR_ENDONLY		0x00000020 /* $ not to match newline at end. */
 #define PCRE_UNGREEDY           0x00000200 /* Invert greediness of quantifiers */
+#define PCRE_NOTEMPTY			0x00000400 /* An empty string is not a valid match. */
 #define PCRE_UTF8               0x00000800 /* Use UTF-8 Chars */
 #define PCRE_NO_UTF8_CHECK      0x00002000 /* Do not check the pattern for UTF-8 validity (only relevant if PCRE_UTF8 is set) */
+#define PCRE_UCP				0x20000000 /* Use Unicode properties for \ed, \ew, etc. */
 
 
 /**
@@ -76,7 +80,16 @@ enum RegexError
 	REGEX_ERROR_DFA_RECURSE = -20,
 	REGEX_ERROR_RECURSIONLIMIT = -21,
 	REGEX_ERROR_NULLWSLIMIT = -22,  	/* No longer actually used */
-	REGEX_ERROR_BADNEWLINE = -23
+	REGEX_ERROR_BADNEWLINE = -23,
+	REGEX_ERROR_BADOFFSET = -24,
+	REGEX_ERROR_SHORTUTF8 = -25,
+	REGEX_ERROR_RECURSELOOP = -26,
+	REGEX_ERROR_JIT_STACKLIMIT = -27,
+	REGEX_ERROR_BADMODE = -28,
+	REGEX_ERROR_BADENDIANNESS = -29,
+	REGEX_ERROR_DFA_BADRESTART = -30,
+	REGEX_ERROR_JIT_BADOPTION = -31,
+	REGEX_ERROR_BADLENGTH = -32,
 };
 
 /**
@@ -114,7 +127,7 @@ native MatchRegex(Handle:regex, const String:str[], &RegexError:ret = REGEX_ERRO
  * @param regex			The regex handle to extract data from.
  * @param str_id		The index of the expression to get - starts at 0, and ends at substrings - 1.
  * @param buffer		The buffer to set to the matching substring.
- * @param maxLen		The maximum string length of the buffer.
+ * @param maxlen		The maximum string length of the buffer.
  * @return				True if a substring was found, False on fail/error
  */
 native bool:GetRegexSubString(Handle:regex, str_id, String:buffer[], maxlen);

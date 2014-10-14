@@ -178,11 +178,11 @@ native bool:LoadTopMenuConfig(Handle:topmenu, const String:file[], String:error[
  * @param name				Object name (MUST be unique).
  * @param type				Object type.
  * @param handler			Handler for object.
- * @param cmdname			Command name (for access overrides).
- * @param flags				Default access flags.
  * @param parent			Parent object ID, or INVALID_TOPMENUOBJECT for none.
  *							Items must have a category parent.
  *							Categories must not have a parent.
+ * @param cmdname			Command name (for access overrides).
+ * @param flags				Default access flags.
  * @param info_string		Arbitrary storage (max 255 bytes).
  * @return					A new TopMenuObject ID, or INVALID_TOPMENUOBJECT on
  *							failure.
@@ -201,7 +201,7 @@ native TopMenuObject:AddToTopMenu(Handle:topmenu,
  * Retrieves the info string of a top menu item.
  *
  * @param topmenu			TopMenu Handle.
- * @param object			TopMenuObject ID.
+ * @param parent			TopMenuObject ID.
  * @param buffer			Buffer to store info string.
  * @param maxlength			Maximum size of info string.
  * @return					Number of bytes written, not including the 
@@ -248,6 +248,17 @@ native RemoveFromTopMenu(Handle:topmenu, TopMenuObject:object);
 native bool:DisplayTopMenu(Handle:topmenu, client, TopMenuPosition:position);
 
 /**
+ * Displays a TopMenu category to a client.
+ *
+ * @param topmenu			TopMenu Handle.
+ * @param category		Category object id.
+ * @param client			Client index.
+ * @return					True on success, false on failure.
+ * @error					Invalid TopMenu Handle or client not in game.
+ */
+native bool:DisplayTopMenuCategory(Handle:topmenu, TopMenuObject:category, client);
+
+/**
  * Finds a category's object ID in a TopMenu.
  *
  * @param topmenu			TopMenu Handle.
@@ -257,6 +268,17 @@ native bool:DisplayTopMenu(Handle:topmenu, client, TopMenuPosition:position);
  * @error					Invalid TopMenu Handle.
  */
 native TopMenuObject:FindTopMenuCategory(Handle:topmenu, const String:name[]);
+
+/**
+ * Change the menu title caching behaviour of the TopMenu. By default the titles are cached to reduce overhead.
+ * If you need dynamic menu titles, which can change everytime the menu is displayed to a user, set this to false.
+ *
+ * @param topmenu       TopMenu Handle.
+ * @param cache_titles  Cache the menu titles and don't call the handler with TopMenuAction_DisplayTitle everytime the menu is drawn?
+ * @noreturn
+ * @error               Invalid TopMenu Handle
+ */
+native SetTopMenuTitleCaching(Handle:topmenu, bool:cache_titles);
 
 /**
  * Do not edit below this line!
@@ -285,6 +307,8 @@ public __ext_topmenus_SetNTVOptional()
 	MarkNativeAsOptional("AddToTopMenu");
 	MarkNativeAsOptional("RemoveFromTopMenu");
 	MarkNativeAsOptional("DisplayTopMenu");
+	MarkNativeAsOptional("DisplayTopMenuCategory");
 	MarkNativeAsOptional("FindTopMenuCategory");
+	MarkNativeAsOptional("SetTopMenuTitleCaching");
 }
 #endif

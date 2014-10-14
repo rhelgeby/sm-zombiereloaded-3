@@ -1,7 +1,7 @@
 #!/bin/sh
 
 VERSION="zombiereloaded-3.1"
-REVISION=$(hg id -n)
+REVISION=$(git rev-parse --short HEAD)
 
 SYNTAX="Usage: $0 [--patch <base rev>]"
 
@@ -18,7 +18,7 @@ SOURCE_DEST=$RELEASEDIR/addons/sourcemod/scripting
 DOCS_DEST=$RELEASEDIR/zrdocs
 PLUGINDIR=$RELEASEDIR/addons/sourcemod/plugins
 EXTENSIONDIR=$RELEASEDIR/addons/sourcemod/extensions
-ZIPFILE=$VERSION-r$REVISION.zip
+ZIPFILE=$VERSION-$REVISION.zip
 
 MAKEPATCH=false
 
@@ -47,7 +47,7 @@ then
             exit 1
         fi
         
-        ZIPFILE=$VERSION-patch-r$PATCHREV-r$REVISION.zip
+        ZIPFILE=$VERSION-patch-$PATCHREV-$REVISION.zip
     else
         echo "Missing base revision number. $SYNTAX"
         exit 1

@@ -66,6 +66,7 @@ struct Plugin
 #include <console>
 #include <events>
 #include <bitbuffer>
+#include <protobuf>
 #include <usermessages>
 #include <menus>
 #include <halflife>
@@ -277,7 +278,7 @@ native GetPluginFilename(Handle:plugin, String:buffer[], maxlength);
  * @return				True if being debugged, false otherwise.
  * @error				Invalid Handle.
  */
-native bool:IsPluginDebugging(Handle:hndl);
+native bool:IsPluginDebugging(Handle:plugin);
 
 /**
  * Retrieves a plugin's public info.
@@ -327,7 +328,7 @@ native SetFailState(const String:string[], any:...);
  * Aborts the current callback and throws an error.  This function
  * does not return in that no code is executed following it.
  *
- * @param format		String format.
+ * @param fmt		String format.
  * @param ...			Format arguments.
  * @noreturn
  * @error				Always!
@@ -386,7 +387,7 @@ native GameConfGetOffset(Handle:gc, const String:key[]);
  */
 native bool:GameConfGetKeyValue(Handle:gc, const String:key[], String:buffer[], maxlen);
 
-/*
+/**
  * Finds an address calculation in a GameConfig file,
  * performs LoadFromAddress on it as appropriate, then returns the final address.
  *
