@@ -64,6 +64,24 @@ native bool:ZR_IsValidClassIndex(classIndex);
 native bool:ZR_GetActiveClass(client);
 
 /**
+ * Gets the current human class index that the player is using.
+ *
+ * @param client    The client index.
+ *
+ * @return          The human class index.
+ */
+native bool:ZR_GetHumanClass(client);
+
+/**
+ * Gets the current zombie class index that the player is using.
+ *
+ * @param client    The client index.
+ *
+ * @return          The zombie class index.
+ */
+native bool:ZR_GetZombieClass(client);
+
+/**
  * Selects a class for a player.
  *
  * Human class attribute may be instantly applied if player is alive, human and
