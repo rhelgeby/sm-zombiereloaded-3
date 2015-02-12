@@ -432,12 +432,6 @@ InfectOnRoundEnd()
     // x = client index.
     for (new x = 1; x <=  MaxClients; x++)
     {
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
         // Disable zombie flag on client.
         bZombie[x] = false;
     }
