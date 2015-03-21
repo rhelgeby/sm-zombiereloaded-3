@@ -107,7 +107,7 @@ enum TFCond
 	TFCond_RegenBuffed,
 	TFCond_MarkedForDeath,
 	TFCond_NoHealingDamageBuff,
-	TFCond_SpeedBuffAlly,		//32
+	TFCond_SpeedBuffAlly, // 32
 	TFCond_HalloweenCritCandy,
 	TFCond_CritCanteen,
 	TFCond_CritDemoCharge,
@@ -153,22 +153,46 @@ enum TFCond
 	TFCond_HalloweenTiny,
 	TFCond_HalloweenInHell,
 	TFCond_HalloweenGhostMode,
+
+	TFCond_DodgeChance = 79,
+	TFCond_Parachute,
+	TFCond_BlastJumping,
+	TFCond_HalloweenKart,
+	TFCond_HalloweenKartDash,
+	TFCond_BalloonHead,
+	TFCond_MeleeOnly,
+	TFCond_SwimmingCurse,
+	TFCond_HalloweenKartNoTurn,
+	TFCond_HalloweenKartCage,
+	TFCond_HasRune,
+	TFCond_RuneStrength,
+	TFCond_RuneHaste,
+	TFCond_RuneRegen,
+	TFCond_RuneResist,
+	TFCond_RuneVampire,
+	TFCond_RuneWarlock,
+	TFCond_RunePrecision, // 96
+	TFCond_RuneAgility,
 };
 
 const Float:TFCondDuration_Infinite = -1.0;
 
 enum TFHoliday
 {
-	TFHoliday_Birthday = 1,
-	TFHoliday_Halloween,
-	TFHoliday_Christmas,
-	TFHoliday_ValentinesDay,
-	TFHoliday_MeetThePyro,
-	TFHoliday_FullMoon,
-	TFHoliday_HalloweenOrFullMoon,
-	TFHoliday_HalloweenOrFullMoonOrValentines,
-	TFHoliday_AprilFools,
+	TFHoliday_Invalid = -1
 };
+
+public const TFHoliday:TFHoliday_Birthday;
+public const TFHoliday:TFHoliday_Halloween;
+public const TFHoliday:TFHoliday_Christmas;
+public const TFHoliday:TFHoliday_EndOfTheLine;
+public const TFHoliday:TFHoliday_ValentinesDay;
+public const TFHoliday:TFHoliday_MeetThePyro;
+public const TFHoliday:TFHoliday_SpyVsEngyWar;
+public const TFHoliday:TFHoliday_FullMoon;
+public const TFHoliday:TFHoliday_HalloweenOrFullMoon;
+public const TFHoliday:TFHoliday_HalloweenOrFullMoonOrValentines;
+public const TFHoliday:TFHoliday_AprilFools;
 
 enum TFObjectType
 {
@@ -254,12 +278,12 @@ native TF2_SetPlayerPowerPlay(client, bool:enabled);
  *
  * @param client		Player's index.
  * @param team			Team to disguise the player as (only TFTeam_Red and TFTeam_Blue have an effect)
- * @param class			TFClassType class to disguise the player as
+ * @param classType		TFClassType class to disguise the player as
  * @param target		Specific target player to disguise as (0 for any)
  * @noreturn
  * @error				Invalid client index, client not in game, or no mod support.
  */
-native TF2_DisguisePlayer(client, TFTeam:team, TFClassType:class, target=0);
+native TF2_DisguisePlayer(client, TFTeam:team, TFClassType:classType, target=0);
 
 /**
  * Removes the current disguise from a client. Only has an effect on spies.
@@ -360,6 +384,17 @@ native bool:TF2_IsHolidayActive(TFHoliday:holiday);
 native bool:TF2_IsPlayerInDuel(client);
 
 /**
+ * Removes an econ wearable (hat, misc, etc) from a player.
+ * This also deletes the wearable entity.
+ *
+ * @param client	Client index.
+ * @param wearable	Index of the wearable entity.
+ * @noreturn
+ * @error			Invalid client index, client not in game, invalid wearable entity, or no mod support.
+*/
+native TF2_RemoveWearable(client, wearable);
+
+/**
  * Called after a condition is added to a player
  *
  * @param client		Index of the client to which the conditon is being added.
@@ -436,5 +471,6 @@ public __ext_tf2_SetNTVOptional()
 	MarkNativeAsOptional("TF2_GetClass");
 	MarkNativeAsOptional("TF2_IsPlayerInDuel");
 	MarkNativeAsOptional("TF2_IsHolidayActive");
+	MarkNativeAsOptional("TF2_RemoveWearable");
 }
 #endif
