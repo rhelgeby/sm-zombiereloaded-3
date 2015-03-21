@@ -81,7 +81,7 @@ public APIGetHumanClass(Handle:plugin, numParams)
     // Validate the client index. Player must be alive.
     APIValidateClientIndex(client, Condition_True);
     
-    return ClassGetHumanIndex(client);
+    return ClassSelected[client][ZR_CLASS_TEAM_HUMANS];
 }
 
 /**
@@ -96,7 +96,7 @@ public APIGetZombieClass(Handle:plugin, numParams)
     // Validate the client index. Player must be alive.
     APIValidateClientIndex(client, Condition_True);
     
-    return ClassGetZombieIndex(client);
+    return ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES];
 }
 
 /**
