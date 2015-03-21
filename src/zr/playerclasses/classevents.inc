@@ -199,7 +199,6 @@ ClassOnClientDisconnect(client)
 ClassOnClientSpawn(client)
 {
     decl String:originalmodel[PLATFORM_MAX_PATH];
-    decl String:steamid[16];
     decl String:classname[64];
     new filter[ClassFilter];
     
@@ -241,12 +240,11 @@ ClassOnClientSpawn(client)
         // Mark player as not in admin mode.
         ClassPlayerInAdminMode[client] = false;
         
-        // Get random class setting and steam id.
+        // Get random class setting.
         new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
-        GetClientAuthString(client, steamid, sizeof(steamid));
         
         // Assign random classes if enabled. Always do it for bots.
-        if (randomclass || StrEqual(steamid, "BOT"))
+        if (randomclass || IsFakeClient(client))
         {
             // Setup filtering
             // ---------------

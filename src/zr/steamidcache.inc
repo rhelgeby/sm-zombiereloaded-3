@@ -57,8 +57,8 @@ stock bool:SteamidCacheAddClient(Handle:steamidcache, client)
     }
     
     // Get client's SteamID.
-    decl String:steamid[STEAMIDCACHE_MAX_LENGTH];
-    GetClientAuthString(client, steamid, sizeof(steamid));
+    new String:steamid[STEAMIDCACHE_MAX_LENGTH];
+    GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid), true);
     
     // Push SteamID into the SteamID cache.
     PushArrayString(steamidcache, steamid);
@@ -78,7 +78,7 @@ stock bool:SteamidCacheClientExists(Handle:steamidcache, client)
 {
     // Get client's SteamID.
     decl String:steamid[STEAMIDCACHE_MAX_LENGTH];
-    GetClientAuthString(client, steamid, sizeof(steamid));
+    GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid), true);
     
     // Return true if client was found, false otherwise.
     return (FindStringInArray(steamidcache, steamid) != -1);
