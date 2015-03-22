@@ -1048,7 +1048,7 @@ bool:ImmunityCanDeployShield(client, bool:printResponse = true)
     }
     
     // Humans cannot deploy shield before first zombie.
-    if (!g_bZombieSpawned)
+    if (!InfectHasZombieSpawned())
     {
         return false;
     }

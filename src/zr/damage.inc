@@ -413,7 +413,7 @@ public Action:DamageSuicideIntercept(client, argc)
     // match, block it.
     
     // Check general criterias.
-    if ((suicideAfterInfect && !g_bZombieSpawned) ||    // Check if it should block suicides before mother zombie.
+    if ((suicideAfterInfect && !InfectHasZombieSpawned()) || // Check if it should block suicides before mother zombie.
         !ZRIsClientValid(client) ||                     // Validate client (to stop console).
         !IsPlayerAlive(client))                         // Check if dead.
     {

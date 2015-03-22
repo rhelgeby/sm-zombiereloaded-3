@@ -184,7 +184,7 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
     CS_RespawnPlayer(client);
     
     // Check if first zombie has spawned.
-    if (g_bZombieSpawned)
+    if (InfectHasZombieSpawned())
     {
         // Infect if player should spawn as zombie.
         if (zombie)

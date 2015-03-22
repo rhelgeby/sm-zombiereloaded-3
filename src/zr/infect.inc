@@ -158,7 +158,7 @@ InfectOnClientDisconnect(client)
     }
     
     // If zombie hasn't spawned, then stop.
-    if (!g_bZombieSpawned)
+    if (!InfectHasZombieSpawned())
     {
         return;
     }
@@ -270,13 +270,10 @@ InfectOnClientSpawn(client)
     bZombie[client] = false;
     
     // Check if client is spawning on the terrorist team.
-    if (ZRIsClientOnTeam(client, CS_TEAM_T))
+    if (ZRIsClientOnTeam(client, CS_TEAM_T) && InfectHasZombieSpawned())
     {
-        if (g_bZombieSpawned)
-        {
-            CS_SwitchTeam(client, CS_TEAM_CT);
-            CS_RespawnPlayer(client);
-        }
+        CS_SwitchTeam(client, CS_TEAM_CT);
+        CS_RespawnPlayer(client);
     }
 }
 
@@ -385,7 +382,7 @@ InfectOnRoundFreezeEnd()
     ZREndTimer(tInfectCountdown);
     
     // If the zombie has spawned already (had to be through admin) then stop.
-    if (g_bZombieSpawned)
+    if (InfectHasZombieSpawned())
     {
         return;
     }
@@ -1074,6 +1071,11 @@ public InfectMenuClientsHandle(Handle:menu_infect_clients, MenuAction:action, cl
     }
 }
 
+bool:InfectHasZombieSpawned()
+{
+    return g_bZombieSpawned;
+}
+
 /**
  * Returns if a client is infected.
  * 
@@ -1121,7 +1123,7 @@ bool:InfectIsClientHuman(client)
  */
 stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false, bool:respawn = false)
 {
-    new bool:zombiespawned = g_bZombieSpawned;
+    new bool:zombiespawned = InfectHasZombieSpawned();
     
     // If zombie hasn't spawned, then make targetted player(s) mother zombies.
     if (!zombiespawned)

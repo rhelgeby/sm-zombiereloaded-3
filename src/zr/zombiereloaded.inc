@@ -244,7 +244,7 @@ stock bool:ZRIsConsole(index)
 stock bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true, bool:ignorezombiespawned = false)
 {
     // If zombie hasn't spawned and were not only counting humans, then stop.
-    if (!g_bZombieSpawned && !ignorezombiespawned)
+    if (!InfectHasZombieSpawned() && !ignorezombiespawned)
     {
         return false;
     }

@@ -113,7 +113,7 @@ SpawnProtectStart(client)
     }
     
     // If zombie hasn't spawned, then stop.
-    if (!g_bZombieSpawned)
+    if (!InfectHasZombieSpawned())
     {
         return;
     }
