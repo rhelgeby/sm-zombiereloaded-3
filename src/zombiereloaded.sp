@@ -335,6 +335,7 @@ public OnClientDisconnect(client)
     ZSpawnOnClientDisconnect(client);
     VolOnPlayerDisconnect(client);
     ImmunityOnClientDisconnect(client);
+    ZTeleOnClientDisconnect(client);
 }
 
 /**

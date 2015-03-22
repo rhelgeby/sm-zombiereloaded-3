@@ -69,8 +69,7 @@ ZTeleOnCommandsCreate()
  */
 ZTeleClientInit(client)
 {
-    // Reset timer handle.
-    tZTele[client] = INVALID_HANDLE;
+    ZTeleStopTimer(client);
 }
 
 /**
@@ -86,14 +85,7 @@ ZTeleOnClientSpawn(client)
     // Get spawn location.
     GetClientAbsOrigin(client, g_vecZTeleSpawn[client]);
     
-    // If timer is running, kill it.
-    if (tZTele[client] != INVALID_HANDLE)
-    {
-        KillTimer(tZTele[client]);
-    }
-    
-    // Reset timer handle.
-    tZTele[client] = INVALID_HANDLE;
+    ZTeleStopTimer(client);
 }
 
 /**
@@ -103,14 +95,12 @@ ZTeleOnClientSpawn(client)
  */
 ZTeleOnClientDeath(client)
 {
-    // If timer is running, kill it.
-    if (tZTele[client] != INVALID_HANDLE)
-    {
-        KillTimer(tZTele[client]);
-    }
-    
-    // Reset timer handle.
-    tZTele[client] = INVALID_HANDLE;
+    ZTeleStopTimer(client);
+}
+
+ZTeleOnClientDisconnect(client)
+{
+    ZTeleStopTimer(client);
 }
 
 /**
@@ -120,14 +110,7 @@ ZTeleOnClientDeath(client)
  */
 ZTeleOnClientInfected(client)
 {
-    // If timer is running, kill it.
-    if (tZTele[client] != INVALID_HANDLE)
-    {
-        KillTimer(tZTele[client]);
-    }
-    
-    // Reset timer handle.
-    tZTele[client] = INVALID_HANDLE;
+    ZTeleStopTimer(client);
 }
 
 /**
@@ -459,4 +442,13 @@ public Action:ZTeleTimer(Handle:timer, any:client)
     
     // Allow timer to continue repeating.
     return Plugin_Continue;
+}
+
+ZTeleStopTimer(client)
+{
+    if (tZTele[client] != INVALID_HANDLE)
+    {
+        KillTimer(tZTele[client]);
+    }
+    tZTele[client] = INVALID_HANDLE;
 }
