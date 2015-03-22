@@ -448,15 +448,15 @@ ZTeleStopTimer(client)
     tZTele[client] = INVALID_HANDLE;
 }
 
-ZTeleMustBeHuman(client)
+bool ZTeleMustBeHuman(client)
 {
-    new bool:infected = InfectIsClientInfected(client);
-    new bool:ztelezombie = GetConVarBool(g_hCvarsList[CVAR_ZTELE_ZOMBIE]);
+    bool infected = InfectIsClientInfected(client);
+    bool ztelezombie = GetConVarBool(g_hCvarsList[CVAR_ZTELE_ZOMBIE]);
     
     return (infected && !ztelezombie);
 }
 
-ZTeleCanHumanTeleport()
+bool ZTeleCanHumanTeleport()
 {
     // There are individual restrictions whether a human can teleport before or
     // after zombies have spawned.
