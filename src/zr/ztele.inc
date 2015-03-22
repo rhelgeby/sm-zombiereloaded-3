@@ -131,9 +131,7 @@ bool:ZTeleClient(client, bool:force = false)
     
     new bool:infected = InfectIsClientInfected(client);
     
-    // If zombie cvar is disabled and the client is a zombie, then stop.
-    new bool:ztelezombie = GetConVarBool(g_hCvarsList[CVAR_ZTELE_ZOMBIE]);
-    if (!force && infected && !ztelezombie)
+    if (!force && ZTeleMustBeHuman(client))
     {
         // Tell client they must be human to use this feature.
         TranslationPrintToChat(client, "Must be human");
@@ -451,4 +449,12 @@ ZTeleStopTimer(client)
         KillTimer(tZTele[client]);
     }
     tZTele[client] = INVALID_HANDLE;
+}
+
+ZTeleMustBeHuman(client)
+{
+    new bool:infected = InfectIsClientInfected(client);
+    new bool:ztelezombie = GetConVarBool(g_hCvarsList[CVAR_ZTELE_ZOMBIE]);
+    
+    return (infected && !ztelezombie);
 }
