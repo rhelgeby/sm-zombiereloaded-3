@@ -145,12 +145,11 @@ bool:ZTeleClient(client, bool:force = false)
         return false;
     }
     
-    // If the tele limit has been reached, then stop.
-    new ztelemax = infected ? GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]) : GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]);
-    if (!force && g_iZTeleCount[client] >= ztelemax)
+    if (!force && ZTeleHasReachedLimit(client))
     {
         // Tell client that they have already reached their limit.
-        TranslationPrintToChat(client, "ZTele max", ztelemax);
+        int maxTeleports = ZTeleGetClientLimit(client);
+        TranslationPrintToChat(client, "ZTele max", maxTeleports);
         return false;
     }
     
@@ -197,7 +196,8 @@ bool:ZTeleClient(client, bool:force = false)
         
         // If we're forcing the ZTele, then don't increment the count or print how many teleports they have used.
         // Tell client they've been teleported.
-        TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
+        int maxTeleports = ZTeleGetClientLimit(client);
+        TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], maxTeleports);
     }
     
     return true;
@@ -461,4 +461,31 @@ ZTeleCanHumanTeleport()
     // There are individual restrictions whether a human can teleport before or
     // after zombies have spawned.
     return InfectHasZombieSpawned() ? GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_AFTER]) : GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_BEFORE]);
+}
+
+int ZTeleGetZombieLimit()
+{
+    return GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]);
+}
+
+int ZTeleGetHumanLimit()
+{
+    return GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]);
+}
+
+int ZTeleGetTeleportCount(int client)
+{
+    return g_iZTeleCount[client];
+}
+
+int ZTeleGetClientLimit(int client)
+{
+    return InfectIsClientInfected(client) ? ZTeleGetZombieLimit() : ZTeleGetHumanLimit();
+}
+
+bool ZTeleHasReachedLimit(int client)
+{
+    int teleportCount = ZTeleGetTeleportCount(client);
+    int maxTeleports = ZTeleGetClientLimit(client);
+    return teleportCount >= maxTeleports;
 }
