@@ -176,7 +176,7 @@ bool:ZTeleClient(client, bool:force = false)
     GetClientAbsOrigin(client, g_vecZTeleOrigin[client]);
     
     // Set timeleft array to value of respective cvar.
-    g_iZTeleTimeLeft[client] = infected ? GetConVarInt(g_hCvarsList[CVAR_ZTELE_DELAY_ZOMBIE]) : GetConVarInt(g_hCvarsList[CVAR_ZTELE_DELAY_HUMAN]);
+    g_iZTeleTimeLeft[client] = ZTeleGetClientDelay(client);
     if (g_iZTeleTimeLeft[client] > 0)
     {
         // Tell client how much time is left until teleport.
@@ -492,4 +492,19 @@ bool ZTeleHasReachedLimit(int client)
     int teleportCount = ZTeleGetTeleportCount(client);
     int maxTeleports = ZTeleGetClientLimit(client);
     return teleportCount >= maxTeleports;
+}
+
+int ZTeleGetZombieDelay()
+{
+    return GetConVarInt(g_hCvarsList[CVAR_ZTELE_DELAY_ZOMBIE]);
+}
+
+int ZTeleGetHumanDelay()
+{
+    return GetConVarInt(g_hCvarsList[CVAR_ZTELE_DELAY_HUMAN]);
+}
+
+int ZTeleGetClientDelay(int client)
+{
+    InfectIsClientInfected(client) ? ZTeleGetZombieDelay() : ZTeleGetHumanDelay();
 }
