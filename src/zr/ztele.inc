@@ -129,30 +129,6 @@ bool:ZTeleClient(client, bool:force = false)
         return false;
     }
     
-    new bool:infected = InfectIsClientInfected(client);
-    
-    if (!force && ZTeleMustBeHuman(client))
-    {
-        // Tell client they must be human to use this feature.
-        TranslationPrintToChat(client, "Must be human");
-        return false;
-    }
-    
-    if (!force && !infected && !ZTeleCanHumanTeleport())
-    {
-        // Tell client that feature is restricted at this time.
-        TranslationPrintToChat(client, "ZTele restricted human");
-        return false;
-    }
-    
-    if (!force && ZTeleHasReachedLimit(client))
-    {
-        // Tell client that they have already reached their limit.
-        int maxTeleports = ZTeleGetClientLimit(client);
-        TranslationPrintToChat(client, "ZTele max", maxTeleports);
-        return false;
-    }
-    
     // If teleport is already in progress, then stop.
     if (tZTele[client] != INVALID_HANDLE)
     {
@@ -164,13 +140,36 @@ bool:ZTeleClient(client, bool:force = false)
         return false;
     }
     
-    // If we are forcing, then teleport now and stop.
     if (force)
     {
-        // Teleport client to spawn.
+        // Forcing teleport.
         ZTeleTeleportClient(client);
         
+        // Skip everything else.
         return true;
+    }
+    
+    if (ZTeleMustBeHuman(client))
+    {
+        // Tell client they must be human to use this feature.
+        TranslationPrintToChat(client, "Must be human");
+        return false;
+    }
+    
+    new bool:infected = InfectIsClientInfected(client);
+    if (!infected && !ZTeleCanHumanTeleport())
+    {
+        // Tell client that feature is restricted at this time.
+        TranslationPrintToChat(client, "ZTele restricted human");
+        return false;
+    }
+
+    if (ZTeleHasReachedLimit(client))
+    {
+        // Tell client that they have already reached their limit.
+        int maxTeleports = ZTeleGetClientLimit(client);
+        TranslationPrintToChat(client, "ZTele max", maxTeleports);
+        return false;
     }
     
     // Get current location.
