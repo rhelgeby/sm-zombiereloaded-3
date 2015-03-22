@@ -138,10 +138,7 @@ bool:ZTeleClient(client, bool:force = false)
         return false;
     }
     
-    // If zombie has spawned, get before value, get the after value otherwise.
-    // If the cvar is disabled and the client is a human, then stop.
-    new bool:ztelehuman = InfectHasZombieSpawned() ? GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_AFTER]) : GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_BEFORE]);
-    if (!force && !infected && !ztelehuman)
+    if (!force && !infected && !ZTeleCanHumanTeleport())
     {
         // Tell client that feature is restricted at this time.
         TranslationPrintToChat(client, "ZTele restricted human");
@@ -457,4 +454,11 @@ ZTeleMustBeHuman(client)
     new bool:ztelezombie = GetConVarBool(g_hCvarsList[CVAR_ZTELE_ZOMBIE]);
     
     return (infected && !ztelezombie);
+}
+
+ZTeleCanHumanTeleport()
+{
+    // There are individual restrictions whether a human can teleport before or
+    // after zombies have spawned.
+    return InfectHasZombieSpawned() ? GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_AFTER]) : GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_BEFORE]);
 }
