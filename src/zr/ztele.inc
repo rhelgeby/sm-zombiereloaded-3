@@ -130,7 +130,7 @@ bool:ZTeleClient(client, bool:force = false)
     }
     
     // If teleport is already in progress, then stop.
-    if (tZTele[client] != INVALID_HANDLE)
+    if (ZTeleClientInProgress(client))
     {
         if (!force)
         {
@@ -438,9 +438,14 @@ public Action:ZTeleTimer(Handle:timer, any:client)
     return Plugin_Continue;
 }
 
+bool ZTeleClientInProgress(client)
+{
+    return tZTele[client] != INVALID_HANDLE;
+}
+
 ZTeleStopTimer(client)
 {
-    if (tZTele[client] != INVALID_HANDLE)
+    if (ZTeleClientInProgress(client))
     {
         KillTimer(tZTele[client]);
     }
