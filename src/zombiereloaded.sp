@@ -279,7 +279,7 @@ public OnClientPutInServer(client)
     AntiStickClientInit(client);
     SpawnProtectClientInit(client);
     RespawnClientInit(client);
-    ZTeleClientInit(client);
+    ZTele_OnClientPutInServer(client);
     ZHPClientInit(client);
     ImmunityClientInit(client);
 }
@@ -335,7 +335,7 @@ public OnClientDisconnect(client)
     ZSpawnOnClientDisconnect(client);
     VolOnPlayerDisconnect(client);
     ImmunityOnClientDisconnect(client);
-    ZTeleOnClientDisconnect(client);
+    ZTele_OnClientDisconnect(client);
 }
 
 /**

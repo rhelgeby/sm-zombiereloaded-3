@@ -57,13 +57,13 @@ int g_iZTeleTimeLeft[MAXPLAYERS + 1];
 /**
  * Create commands specific to ZTele.
  */
-void ZTeleOnCommandsCreate()
+void ZTele_OnCommandsCreate()
 {
     // Register ZTele command.
-    RegConsoleCmd(SAYHOOKS_KEYWORD_ZTELE, ZTeleCommand, "Teleport back to spawn if you are stuck.");
+    RegConsoleCmd(SAYHOOKS_KEYWORD_ZTELE, ZTele_Command, "Teleport back to spawn if you are stuck.");
     
     // Register admin command to force ZTele.
-    RegConsoleCmd("zr_ztele_force", ZTeleForceCommand, "Force ZTele on a client. Usage: zr_ztele_force <client>");
+    RegConsoleCmd("zr_ztele_force", ZTele_ForceCommand, "Force ZTele on a client. Usage: zr_ztele_force <client>");
 }
 
 /**
@@ -71,9 +71,9 @@ void ZTeleOnCommandsCreate()
  * 
  * @param client    The client index.
  */
-void ZTeleClientInit(int client)
+void ZTele_OnClientPutInServer(int client)
 {
-    ZTeleStopTimer(client);
+    ZTele_StopTimer(client);
 }
 
 /**
@@ -81,7 +81,7 @@ void ZTeleClientInit(int client)
  * 
  * @param client    The client index.
  */
-void ZTeleOnClientSpawn(int client)
+void ZTele_OnClientSpawn(int client)
 {
     // Reset tele count.
     g_iZTeleCount[client] = 0;
@@ -89,7 +89,7 @@ void ZTeleOnClientSpawn(int client)
     // Get spawn location.
     GetClientAbsOrigin(client, g_vecZTeleSpawn[client]);
     
-    ZTeleStopTimer(client);
+    ZTele_StopTimer(client);
 }
 
 /**
@@ -97,14 +97,14 @@ void ZTeleOnClientSpawn(int client)
  * 
  * @param client    The client index.
  */
-void ZTeleOnClientDeath(int client)
+void ZTele_OnClientDeath(int client)
 {
-    ZTeleStopTimer(client);
+    ZTele_StopTimer(client);
 }
 
-void ZTeleOnClientDisconnect(int client)
+void ZTele_OnClientDisconnect(int client)
 {
-    ZTeleStopTimer(client);
+    ZTele_StopTimer(client);
 }
 
 /**
@@ -112,9 +112,9 @@ void ZTeleOnClientDisconnect(int client)
  * 
  * @param client    The client index.
  */
-void ZTeleOnClientInfected(int client)
+void ZTele_OnClientInfected(int client)
 {
-    ZTeleStopTimer(client);
+    ZTele_StopTimer(client);
 }
 
 /**
@@ -134,7 +134,7 @@ bool ZTeleClient(int client, bool force = false)
     }
     
     // If teleport is already in progress, then stop.
-    if (ZTeleClientInProgress(client))
+    if (ZTele_ClientInProgress(client))
     {
         if (!force)
         {
@@ -147,13 +147,13 @@ bool ZTeleClient(int client, bool force = false)
     if (force)
     {
         // Forcing teleport.
-        ZTeleTeleportClient(client);
+        ZTele_TeleportClient(client);
         
         // Skip everything else.
         return true;
     }
     
-    if (ZTeleMustBeHuman(client))
+    if (ZTele_MustBeHuman(client))
     {
         // Tell client they must be human to use this feature.
         TranslationPrintToChat(client, "Must be human");
@@ -161,17 +161,17 @@ bool ZTeleClient(int client, bool force = false)
     }
     
     bool infected = InfectIsClientInfected(client);
-    if (!infected && !ZTeleCanHumanTeleport())
+    if (!infected && !ZTele_CanHumanTeleport())
     {
         // Tell client that feature is restricted at this time.
         TranslationPrintToChat(client, "ZTele restricted human");
         return false;
     }
 
-    if (ZTeleHasReachedLimit(client))
+    if (ZTele_HasReachedLimit(client))
     {
         // Tell client that they have already reached their limit.
-        int maxTeleports = ZTeleGetClientLimit(client);
+        int maxTeleports = ZTele_GetClientLimit(client);
         TranslationPrintToChat(client, "ZTele max", maxTeleports);
         return false;
     }
@@ -180,26 +180,26 @@ bool ZTeleClient(int client, bool force = false)
     GetClientAbsOrigin(client, g_vecZTeleOrigin[client]);
     
     // Set timeleft array to value of respective cvar.
-    g_iZTeleTimeLeft[client] = ZTeleGetClientDelay(client);
+    g_iZTeleTimeLeft[client] = ZTele_GetClientDelay(client);
     if (g_iZTeleTimeLeft[client] > 0)
     {
         // Tell client how much time is left until teleport.
         TranslationPrintCenterText(client, "ZTele countdown", g_iZTeleTimeLeft[client]);
         
         // Start timer.
-        tZTele[client] = CreateTimer(1.0, ZTeleTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+        tZTele[client] = CreateTimer(1.0, ZTele_Timer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
     }
     else
     {
         // Teleport client to spawn.
-        ZTeleTeleportClient(client);
+        ZTele_TeleportClient(client);
         
         // Increment teleport count.
         g_iZTeleCount[client]++;
         
         // If we're forcing the ZTele, then don't increment the count or print how many teleports they have used.
         // Tell client they've been teleported.
-        int maxTeleports = ZTeleGetClientLimit(client);
+        int maxTeleports = ZTele_GetClientLimit(client);
         TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], maxTeleports);
     }
     
@@ -211,7 +211,8 @@ bool ZTeleClient(int client, bool force = false)
  * 
  * @param client    The client index.
  */
-void ZTeleTeleportClient(int client)
+// TODO: This function is called externally, move to interface.
+void ZTele_TeleportClient(int client)
 {
     // Teleport client.
     TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
@@ -226,7 +227,8 @@ void ZTeleTeleportClient(int client)
  * @param client    The client index.
  * @param slot      The menu slot selected. (starting from 0)
  */
-public int ZTeleForceHandle(Handle menu_ztele_force, MenuAction action, int client, int slot)
+// TODO: This function is called externally, move to interface.
+public int ZTele_ForceHandle(Handle menu_ztele_force, MenuAction action, int client, int slot)
 {
     // Client selected an option.
     if (action == MenuAction_Select)
@@ -238,7 +240,7 @@ public int ZTeleForceHandle(Handle menu_ztele_force, MenuAction action, int clie
         if (target == 0)
         {
             // Re-send the menu.
-            MenuClientList(client, ZTeleForceHandle, true, true, false, "ZTele clients title");
+            MenuClientList(client, ZTele_ForceHandle, true, true, false, "ZTele clients title");
             
             return;
         }
@@ -261,7 +263,7 @@ public int ZTeleForceHandle(Handle menu_ztele_force, MenuAction action, int clie
         }
         
         // Re-send the menu.
-        MenuClientList(client, ZTeleForceHandle, true, true, false, "ZTele clients title");
+        MenuClientList(client, ZTele_ForceHandle, true, true, false, "ZTele clients title");
     }
     // Client closed the menu.
     if (action == MenuAction_Cancel)
@@ -287,7 +289,7 @@ public int ZTeleForceHandle(Handle menu_ztele_force, MenuAction action, int clie
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action ZTeleForceCommand(int client, int argc)
+public Action ZTele_ForceCommand(int client, int argc)
 {
     // Check if privileged.
     if (!ZRIsClientPrivileged(client, OperationType_Generic))
@@ -355,7 +357,7 @@ public Action ZTeleForceCommand(int client, int argc)
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action ZTeleCommand(int client, int argc)
+public Action ZTele_Command(int client, int argc)
 {
     // If client is console, then stop and tell them this feature is for players only.
     if (ZRIsConsole(client))
@@ -377,7 +379,7 @@ public Action ZTeleCommand(int client, int argc)
  * @param timer     The timer handle.
  * @param client    The client index.
  */
-public Action ZTeleTimer(Handle timer, int client)
+public Action ZTele_Timer(Handle timer, int client)
 {
     if (!IsClientInGame(client))
     {
@@ -386,10 +388,10 @@ public Action ZTeleTimer(Handle timer, int client)
         return Plugin_Stop;
     }
     
-    if (ZTelePlayerWalkedTooFar(client))
+    if (ZTele_PlayerWalkedTooFar(client))
     {
         // Abort teleport.
-        int maxDistanceInFeet = RoundToNearest(ZTeleGetAutoCancelDistance());
+        int maxDistanceInFeet = RoundToNearest(ZTele_GetAutoCancelDistance());
         
         TranslationPrintCenterText(client, "ZTele autocancel centertext");
         TranslationPrintToChat(client, "ZTele autocancel text", maxDistanceInFeet);
@@ -414,7 +416,7 @@ public Action ZTeleTimer(Handle timer, int client)
         g_iZTeleCount[client]++;
         
         // Get max teleports per round.
-        int ztelemax = InfectIsClientInfected(client) ? ZTeleGetZombieLimit() : ZTeleGetHumanLimit();
+        int ztelemax = InfectIsClientInfected(client) ? ZTele_GetZombieLimit() : ZTele_GetHumanLimit();
         
         // Tell client spawn protection is over.
         TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
@@ -430,60 +432,60 @@ public Action ZTeleTimer(Handle timer, int client)
     return Plugin_Continue;
 }
 
-bool ZTeleClientInProgress(int client)
+bool ZTele_ClientInProgress(int client)
 {
     return tZTele[client] != null;
 }
 
-void ZTeleStopTimer(int client)
+void ZTele_StopTimer(int client)
 {
-    if (ZTeleClientInProgress(client))
+    if (ZTele_ClientInProgress(client))
     {
         KillTimer(tZTele[client]);
     }
     tZTele[client] = null;
 }
 
-bool ZTeleMustBeHuman(int client)
+bool ZTele_MustBeHuman(int client)
 {
     bool infected = InfectIsClientInfected(client);
-    bool ztelezombie = ZTeleZombieCanTeleport();
+    bool ztelezombie = ZTele_ZombieCanTeleport();
     
     return (infected && !ztelezombie);
 }
 
-bool ZTeleCanHumanTeleport()
+bool ZTele_CanHumanTeleport()
 {
     // There are individual restrictions whether a human can teleport before or
     // after zombies have spawned.
-    return InfectHasZombieSpawned() ? ZTeleHumanCanTeleportAfterInfection() : ZTeleHumanCanTeleportBeforeInfection();
+    return InfectHasZombieSpawned() ? ZTele_HumanCanTeleportAfterInfection() : ZTele_HumanCanTeleportBeforeInfection();
 }
 
-int ZTeleGetTeleportCount(int client)
+int ZTele_GetTeleportCount(int client)
 {
     return g_iZTeleCount[client];
 }
 
-int ZTeleGetClientLimit(int client)
+int ZTele_GetClientLimit(int client)
 {
-    return InfectIsClientInfected(client) ? ZTeleGetZombieLimit() : ZTeleGetHumanLimit();
+    return InfectIsClientInfected(client) ? ZTele_GetZombieLimit() : ZTele_GetHumanLimit();
 }
 
-bool ZTeleHasReachedLimit(int client)
+bool ZTele_HasReachedLimit(int client)
 {
-    int teleportCount = ZTeleGetTeleportCount(client);
-    int maxTeleports = ZTeleGetClientLimit(client);
+    int teleportCount = ZTele_GetTeleportCount(client);
+    int maxTeleports = ZTele_GetClientLimit(client);
     return teleportCount >= maxTeleports;
 }
 
-int ZTeleGetClientDelay(int client)
+int ZTele_GetClientDelay(int client)
 {
-    InfectIsClientInfected(client) ? ZTeleGetZombieDelay() : ZTeleGetHumanDelay();
+    InfectIsClientInfected(client) ? ZTele_GetZombieDelay() : ZTele_GetHumanDelay();
 }
 
-bool ZTelePlayerWalkedTooFar(int client)
+bool ZTele_PlayerWalkedTooFar(int client)
 {
-    if (!ZTeleIsAutoCancelEnabled())
+    if (!ZTele_IsAutoCancelEnabled())
     {
         return false;
     }
@@ -492,7 +494,7 @@ bool ZTelePlayerWalkedTooFar(int client)
     GetClientAbsOrigin(client, clientPosition);
     
     float clientDistance = GetVectorDistance(clientPosition, g_vecZTeleOrigin[client]);
-    float maxDistanceInFeet = ZTeleGetAutoCancelDistance();
+    float maxDistanceInFeet = ZTele_GetAutoCancelDistance();
     float maxDistance = ZRConvertUnitsFloat(maxDistanceInFeet, CONVERSION_FEET_TO_UNITS);
     
     return clientDistance > maxDistance;

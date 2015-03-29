@@ -177,7 +177,7 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
                 resend = false;
                 
                 // Send list of clients to infect.
-                MenuClientList(client, ZTeleForceHandle, true, true, false, "ZTele clients title");
+                MenuClientList(client, ZTele_ForceHandle, true, true, false, "ZTele clients title");
             }
         }
         

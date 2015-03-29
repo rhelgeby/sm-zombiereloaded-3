@@ -42,7 +42,7 @@ CommandsInit()
     AntiStickOnCommandsCreate();
     ZCookiesOnCommandsCreate();
     ZSpawnOnCommandsCreate();
-    ZTeleOnCommandsCreate();
+    ZTele_OnCommandsCreate();
     ZHPOnCommandsCreate();
     VolOnCommandsCreate();
     ZombieSoundsOnCommandsCreate();

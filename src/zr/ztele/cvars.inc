@@ -35,7 +35,7 @@ Handle ZTeleCvar_MaxHuman;
 Handle ZTeleCvar_AutoCancel;
 Handle ZTeleCvar_AutoCancelDistance;
 
-void ZTeleOnCvarsCreate()
+void ZTele_OnCvarsCreate()
 {
     ZTeleCvar_Zombie                = CreateConVar("zr_ztele_zombie",               "1",    "Allow zombies to use ZTele.");
     ZTeleCvar_HumanBefore           = CreateConVar("zr_ztele_human_before",         "1",    "Allow humans to use ZTele before the mother zombie has spawned.");
@@ -48,47 +48,47 @@ void ZTeleOnCvarsCreate()
     ZTeleCvar_AutoCancelDistance    = CreateConVar("zr_ztele_autocancel_distance",  "20",   "Maximum distance, in feet, player is allowed to travel before teleport is cancelled. [Dependency: zr_ztele_autocancel]");
 }
 
-bool ZTeleZombieCanTeleport()
+bool ZTele_ZombieCanTeleport()
 {
     return GetConVarBool(ZTeleCvar_Zombie);
 }
 
-bool ZTeleHumanCanTeleportBeforeInfection()
+bool ZTele_HumanCanTeleportBeforeInfection()
 {
     return GetConVarBool(ZTeleCvar_HumanBefore);
 }
 
-bool ZTeleHumanCanTeleportAfterInfection()
+bool ZTele_HumanCanTeleportAfterInfection()
 {
     return GetConVarBool(ZTeleCvar_HumanAfter);
 }
 
-int ZTeleGetZombieDelay()
+int ZTele_GetZombieDelay()
 {
     return GetConVarInt(ZTeleCvar_DelayZombie);
 }
 
-int ZTeleGetHumanDelay()
+int ZTele_GetHumanDelay()
 {
     return GetConVarInt(ZTeleCvar_DelayHuman);
 }
 
-int ZTeleGetZombieLimit()
+int ZTele_GetZombieLimit()
 {
     return GetConVarInt(ZTeleCvar_MaxZombie);
 }
 
-int ZTeleGetHumanLimit()
+int ZTele_GetHumanLimit()
 {
     return GetConVarInt(ZTeleCvar_MaxHuman);
 }
 
-bool ZTeleIsAutoCancelEnabled()
+bool ZTele_IsAutoCancelEnabled()
 {
     return GetConVarBool(ZTeleCvar_AutoCancel);
 }
 
-float ZTeleGetAutoCancelDistance()
+float ZTele_GetAutoCancelDistance()
 {
     return GetConVarFloat(ZTeleCvar_AutoCancelDistance);
 }

@@ -189,7 +189,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     RoundStartOnClientSpawn(index);
     SEffectsOnClientSpawn(index);
     RespawnOnClientSpawn(index);
-    ZTeleOnClientSpawn(index);
+    ZTele_OnClientSpawn(index);
     ZHPOnClientSpawn(index);
     VolOnPlayerSpawn(index);
     ImmunityClientSpawn(index);
@@ -291,7 +291,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     RespawnOnClientDeath(index, attacker, weapon);
     NapalmOnClientDeath(index);
     ZSpawnOnClientDeath(index);
-    ZTeleOnClientDeath(index);
+    ZTele_OnClientDeath(index);
     ZHPOnClientDeath(index);
     VolOnPlayerDeath(index);
     RoundEndOnClientDeath();
