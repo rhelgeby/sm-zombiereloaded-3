@@ -377,38 +377,23 @@ public Action ZTeleCommand(int client, int argc)
  */
 public Action ZTeleTimer(Handle timer, int client)
 {
-    // If client leaves, then stop timer.
     if (!IsClientInGame(client))
     {
+        // Client has left the game.
+        tZTele[client] = INVALID_HANDLE;
         return Plugin_Stop;
     }
     
-    bool zteleautocancel = GetConVarBool(g_hCvarsList[CVAR_ZTELE_AUTOCANCEL]);
-    if (zteleautocancel)
+    if (ZTelePlayerWalkedTooFar(client))
     {
-        // If client has been running around after using ZTele, then stop timer.
-        float vecClient[3];
-        GetClientAbsOrigin(client, vecClient);
+        // Abort teleport.
+        int maxDistanceInFeet = RoundToNearest(ZTeleGetAutoCancelDistance());
         
-        float distance = GetVectorDistance(vecClient, g_vecZTeleOrigin[client]);
-        float autocanceldistance = GetConVarFloat(g_hCvarsList[CVAR_ZTELE_AUTOCANCEL_DISTANCE]);
+        TranslationPrintCenterText(client, "ZTele autocancel centertext");
+        TranslationPrintToChat(client, "ZTele autocancel text", maxDistanceInFeet);
         
-        // Convert cvar units
-        float unitdistance = ZRConvertUnitsFloat(autocanceldistance, CONVERSION_FEET_TO_UNITS);
-        
-        // Check if distance has been surpassed.
-        if (distance > unitdistance)
-        {
-            // Reset timer handle.
-            tZTele[client] = INVALID_HANDLE;
-            
-            // Tell client teleport has been cancelled.
-            TranslationPrintCenterText(client, "ZTele autocancel centertext");
-            TranslationPrintToChat(client, "ZTele autocancel text", RoundToNearest(autocanceldistance));
-            
-            // Stop timer.
-            return Plugin_Stop;
-        }
+        tZTele[client] = INVALID_HANDLE;
+        return Plugin_Stop;
     }
     
     // Decrement time left.
@@ -512,6 +497,33 @@ int ZTeleGetHumanDelay()
 int ZTeleGetClientDelay(int client)
 {
     InfectIsClientInfected(client) ? ZTeleGetZombieDelay() : ZTeleGetHumanDelay();
+}
+
+bool ZTeleIsAutoCancelEnabled()
+{
+    return GetConVarBool(g_hCvarsList[CVAR_ZTELE_AUTOCANCEL]);
+}
+
+float ZTeleGetAutoCancelDistance()
+{
+    return GetConVarFloat(g_hCvarsList[CVAR_ZTELE_AUTOCANCEL_DISTANCE]);
+}
+
+bool ZTelePlayerWalkedTooFar(int client)
+{
+    if (!ZTeleIsAutoCancelEnabled())
+    {
+        return false;
+    }
+    
+    float clientPosition[3];
+    GetClientAbsOrigin(client, clientPosition);
+    
+    float clientDistance = GetVectorDistance(clientPosition, g_vecZTeleOrigin[client]);
+    float maxDistanceInFeet = ZTeleGetAutoCancelDistance();
+    float maxDistance = ZRConvertUnitsFloat(maxDistanceInFeet, CONVERSION_FEET_TO_UNITS);
+    
+    return clientDistance > maxDistance;
 }
 
 #pragma newdecls optional
