@@ -1,6 +1,9 @@
 Zombie:Reloaded Code Guidelines
 ===============================
 
+General Notes
+-------------
+
 This is a draft of coding guidelines for Zombie:Reloaded. If something is not
 mentioned here, study the existing code to ensure consistency.
 
@@ -11,13 +14,31 @@ Highly recommended book:
 Clean Code: A Handbook of Agile Software Craftsmanship (2008)
 Robert C. Martin
 
+Formatting:
 * Curly braces on separate lines.
 * Indent with 4 spaces instead of tabs (configure your editor).
 * Unix line endings.
-* Always use curly braces with control statements (if, for, while, do).
+* Always use curly braces with control statements (if, for, while, do, switch).
 * UTF-8 file encoding without BOM.
-* Extract code into multiple functions if code is too complex. ZR is still bad
-  at following this rule.
+
+Conventions:
+* Try to use good names for variables and functions. By looking at the name
+  alone, it should be obvious what the function does or what the variable
+  contains.
+* Extract code into multiple single-purpose functions if the code is too
+  complex. Then it's also easier to come up with good names. ZR is still bad at
+  following this rule.
 * If the code needs comments, it should be refactored/renamed to better explain
   what it's doing. ZR has a lot of unnecessary comments, mostly because it's not
   following the single purpose-function rule above.
+
+
+Console Variables
+-----------------
+
+Create wrapper functions for console variables (cvars) to avoid tight coupling
+between cvars and logic.
+
+Do create new cvars instead of hard coding settings.
+
+See examples in src/zr/ztele/cvars.inc.
