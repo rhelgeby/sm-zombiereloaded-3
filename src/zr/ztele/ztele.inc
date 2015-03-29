@@ -380,7 +380,7 @@ public Action ZTeleTimer(Handle timer, int client)
     if (!IsClientInGame(client))
     {
         // Client has left the game.
-        tZTele[client] = INVALID_HANDLE;
+        tZTele[client] = null;
         return Plugin_Stop;
     }
     
@@ -392,7 +392,7 @@ public Action ZTeleTimer(Handle timer, int client)
         TranslationPrintCenterText(client, "ZTele autocancel centertext");
         TranslationPrintToChat(client, "ZTele autocancel text", maxDistanceInFeet);
         
-        tZTele[client] = INVALID_HANDLE;
+        tZTele[client] = null;
         return Plugin_Stop;
     }
     
@@ -418,7 +418,7 @@ public Action ZTeleTimer(Handle timer, int client)
         TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
         
         // Clear timer handle.
-        tZTele[client] = INVALID_HANDLE;
+        tZTele[client] = null;
         
         // Stop timer.
         return Plugin_Stop;
@@ -430,7 +430,7 @@ public Action ZTeleTimer(Handle timer, int client)
 
 bool ZTeleClientInProgress(int client)
 {
-    return tZTele[client] != INVALID_HANDLE;
+    return tZTele[client] != null;
 }
 
 void ZTeleStopTimer(int client)
@@ -439,7 +439,7 @@ void ZTeleStopTimer(int client)
     {
         KillTimer(tZTele[client]);
     }
-    tZTele[client] = INVALID_HANDLE;
+    tZTele[client] = null;
 }
 
 bool ZTeleMustBeHuman(int client)
