@@ -5,9 +5,9 @@
  *
  *  File:          ztele.inc
  *  Type:          Module
- *  Description:   ZTele handle functions.
+ *  Description:   Player teleporter.
  *
- *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
+ *  Copyright (C) 2009-2015  Greyscale, Richard Helgeby
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
  */
 
 #pragma newdecls required
+
+#include "zr/ztele/cvars"
 
 /**
  * Array to store client's spawn location.
@@ -412,7 +414,7 @@ public Action ZTeleTimer(Handle timer, int client)
         g_iZTeleCount[client]++;
         
         // Get max teleports per round.
-        int ztelemax = InfectIsClientInfected(client) ? GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]) : GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]);
+        int ztelemax = InfectIsClientInfected(client) ? ZTeleGetZombieLimit() : ZTeleGetHumanLimit();
         
         // Tell client spawn protection is over.
         TranslationPrintCenterText(client, "ZTele countdown end", g_iZTeleCount[client], ztelemax);
@@ -445,7 +447,7 @@ void ZTeleStopTimer(int client)
 bool ZTeleMustBeHuman(int client)
 {
     bool infected = InfectIsClientInfected(client);
-    bool ztelezombie = GetConVarBool(g_hCvarsList[CVAR_ZTELE_ZOMBIE]);
+    bool ztelezombie = ZTeleZombieCanTeleport();
     
     return (infected && !ztelezombie);
 }
@@ -454,17 +456,7 @@ bool ZTeleCanHumanTeleport()
 {
     // There are individual restrictions whether a human can teleport before or
     // after zombies have spawned.
-    return InfectHasZombieSpawned() ? GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_AFTER]) : GetConVarBool(g_hCvarsList[CVAR_ZTELE_HUMAN_BEFORE]);
-}
-
-int ZTeleGetZombieLimit()
-{
-    return GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_ZOMBIE]);
-}
-
-int ZTeleGetHumanLimit()
-{
-    return GetConVarInt(g_hCvarsList[CVAR_ZTELE_MAX_HUMAN]);
+    return InfectHasZombieSpawned() ? ZTeleHumanCanTeleportAfterInfection() : ZTeleHumanCanTeleportBeforeInfection();
 }
 
 int ZTeleGetTeleportCount(int client)
@@ -484,29 +476,9 @@ bool ZTeleHasReachedLimit(int client)
     return teleportCount >= maxTeleports;
 }
 
-int ZTeleGetZombieDelay()
-{
-    return GetConVarInt(g_hCvarsList[CVAR_ZTELE_DELAY_ZOMBIE]);
-}
-
-int ZTeleGetHumanDelay()
-{
-    return GetConVarInt(g_hCvarsList[CVAR_ZTELE_DELAY_HUMAN]);
-}
-
 int ZTeleGetClientDelay(int client)
 {
     InfectIsClientInfected(client) ? ZTeleGetZombieDelay() : ZTeleGetHumanDelay();
-}
-
-bool ZTeleIsAutoCancelEnabled()
-{
-    return GetConVarBool(g_hCvarsList[CVAR_ZTELE_AUTOCANCEL]);
-}
-
-float ZTeleGetAutoCancelDistance()
-{
-    return GetConVarFloat(g_hCvarsList[CVAR_ZTELE_AUTOCANCEL_DISTANCE]);
 }
 
 bool ZTelePlayerWalkedTooFar(int client)
