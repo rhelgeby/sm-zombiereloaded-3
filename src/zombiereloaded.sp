@@ -91,7 +91,7 @@
 #include "zr/hitgroups"
 #include "zr/roundstart"
 #include "zr/roundend"
-#include "zr/infect"
+#include "zr/infect/infect"
 #include "zr/immunityhandler"
 #include "zr/damage"
 #include "zr/event"
