@@ -329,7 +329,7 @@ public OnClientDisconnect(client)
     // Forward event to modules.
     ClassOnClientDisconnect(client);
     WeaponsOnClientDisconnect(client);
-    InfectOnClientDisconnect(client);
+    Infect_OnClientDisconnect(client);
     DamageOnClientDisconnect(client);
     AntiStickOnClientDisconnect(client);
     ZSpawnOnClientDisconnect(client);

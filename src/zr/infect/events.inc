@@ -86,96 +86,97 @@ InfectClientInit(client)
  * 
  * @param client    The client index.
  */
-InfectOnClientDisconnect(client)
+void Infect_OnClientDisconnect(int client)
 {
-    // If client is still connecting, then stop.
     if (!IsClientInGame(client))
     {
+        // Client disconnected before connection process completed.
         return;
     }
     
-    // If zombie hasn't spawned, then stop.
     if (!InfectHasZombieSpawned())
     {
+        // No zombie yet. Do nothing.
         return;
     }
     
-    // If client is dead, then stop.
     if (!IsPlayerAlive(client))
     {
+        // Client is already dead.
         return;
     }
     
-    // Initialize count variables
-    new zombiecount;
-    new humancount;
+    int zombieCount;
+    int humanCount;
     
-    // Count valid clients.
-    ZRCountValidClients(zombiecount, humancount);
+    ZRCountValidClients(zombieCount, humanCount);
     
-    // If client is a human.
     if (InfectIsClientHuman(client))
     {
-        // If there are other humans (ignoring this human), then stop.
-        if (humancount > 1)
-        {
-            return;
-        }
-        
-        // If there are no more clients in the server, then stop.
-        if (!ZRTeamHasClients(CS_TEAM_T))
-        {
-            return;
-        }
-        
-        // Manually terminate round.
-        RoundEndTerminateRound(ROUNDEND_DELAY, ZombiesWin);
-        
-        return;
+        Infect_OnHumanDisconnect(humanCount);
     }
-    
-    // We know here that player is a zombie.
-    
-    // If there is 1 or less humans, then stop.
-    if (humancount <= 1)
+    else
     {
-        return;
+        Infect_OnZombieDisconnect(humanCount, zombieCount);
     }
-    
-    // If there are other zombies (ignoring this zombie), then stop.
-    if (zombiecount - 1)
+}
+
+void Infect_OnHumanDisconnect(int humanCount)
+{
+    if (humanCount > 1)
     {
+        // There are still other humans left.
         return;
     }
     
-    // Create eligible player list.
-    new Handle:arrayEligibleClients = INVALID_HANDLE;
-    
-    // Create eligible client list, with no mother infect immunities
-    new eligibleclients = ZRCreateEligibleClientList(arrayEligibleClients, true, true, true);
-    
-    // If there are no eligible client's then stop.
-    if (!eligibleclients)
+    if (!ZRTeamHasClients(CS_TEAM_T))
     {
-        // Destroy handle.
-        CloseHandle(arrayEligibleClients);
+        // No more clients on the server.
         return;
     }
     
-    // Get a random valid array index.
-    new randindex = Math_GetRandomInt(0, eligibleclients - 1);
+    RoundEndTerminateRound(ROUNDEND_DELAY, ZombiesWin);
+}
+
+void Infect_OnZombieDisconnect(int humanCount, int zombieCount)
+{
+    // If the last zombie disconnects, another player will be infected to
+    // replace the zombie.
     
-    // Get the client stored in the random array index.
-    new randclient = GetArrayCell(arrayEligibleClients, randindex);
+    if (humanCount <= 1)
+    {
+        // The zombie is alone (nothing to do) or there's another human (they
+        // are still fighting).
+        return;
+    }
     
-    // Infect player.
-    InfectHumanToZombie(randclient);
+    if (zombieCount - 1)
+    {
+        // There are other zombies left.
+        return;
+    }
     
-    // Tell client they have been randomly been chosen to replace disconnecting zombie.
-    TranslationPrintToChat(randclient, "Infect disconnect");
+    // Get list of clients eligible as replacement zombie. Skipping clients with
+    // mother zombie immunity.
+    Handle eligibleClients = null;
+    int numEligibleClients = ZRCreateEligibleClientList(eligibleClients, true, true, true);
     
-    // Destroy handle.
-    CloseHandle(arrayEligibleClients);
+    if (!numEligibleClients)
+    {
+        // No eligible clients.
+        CloseHandle(eligibleClients);
+        return;
+    }
+    
+    // Get a random client.
+    int randomIndex = Math_GetRandomInt(0, numEligibleClients - 1);
+    int randomClient = GetArrayCell(eligibleClients, randomIndex);
+    
+    // Infect player and notify about replacing disconnecting zombie.
+    InfectHumanToZombie(randomClient);
+    TranslationPrintToChat(randomClient, "Infect disconnect");
+    
+    CloseHandle(eligibleClients);
 }
 
 /**
