@@ -36,7 +36,7 @@ CommandsInit()
     ClassOnCommandsCreate();
     WeaponsOnCommandsCreate();
     HitgroupsOnCommandsCreate();
-    InfectOnCommandsCreate();
+    Infect_OnCommandsCreate();
     MenuOnCommandsCreate();
     ZAdminOnCommandsCreate();
     AntiStickOnCommandsCreate();

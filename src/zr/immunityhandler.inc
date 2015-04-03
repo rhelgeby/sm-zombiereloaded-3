@@ -318,7 +318,7 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
             {
                 // Fake hurt event because it's not triggered when the damage
                 // was removed (because no one is actually hurt).
-                InfectOnClientHurt(client, attacker, "knife");
+                Infect_OnClientHurt(client, attacker, "knife");
                 
                 // Block damage to prevent player from dying.
                 return Plugin_Handled;
@@ -330,7 +330,7 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
             // was removed (because no one is actually hurt). This event must
             // still be triggered so that subsequent attacks are registered,
             // without dealing any damage.
-            InfectOnClientHurt(client, attacker, "knife");
+            Infect_OnClientHurt(client, attacker, "knife");
             
             // Block damage to prevent player from dying.
             return Plugin_Handled;

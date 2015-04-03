@@ -85,7 +85,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     OverlaysOnRoundStart();
     RoundStartOnRoundStart();
     RoundEndOnRoundStart();
-    InfectOnRoundStart();
+    Infect_OnRoundStart();
     SEffectsOnRoundStart();
     ZSpawnOnRoundStart();
     VolOnRoundStart();
@@ -119,7 +119,7 @@ public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBr
 {
     // Forward events to modules.
     RoundEndOnRoundFreezeEnd();
-    InfectOnRoundFreezeEnd();
+    Infect_OnRoundFreezeEnd();
     ZSpawnOnRoundFreezeEnd();
 }
 
@@ -139,7 +139,7 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     // Forward event to modules.
     WeaponsOnRoundEnd();
     RoundEndOnRoundEnd(reason);
-    InfectOnRoundEnd();
+    Infect_OnRoundEnd();
     SEffectsOnRoundEnd();
     RespawnOnRoundEnd();
     ZSpawnOnRoundEnd();
@@ -162,7 +162,7 @@ public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadc
     new team = GetEventInt(event, "team");
     
     // Forward event to modules.
-    InfectOnClientTeam(index, team);
+    Infect_OnClientTeam(index, team);
     ImmunityOnClientTeam(index);
     
     return Plugin_Handled;
@@ -182,7 +182,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
     new index = GetClientOfUserId(GetEventInt(event, "userid"));
     
     // Forward event to modules.
-    InfectOnClientSpawn(index);     // Some modules depend on this to finish first.
+    Infect_OnClientSpawn(index);    // Some modules depend on this to finish first.
     AccountOnClientSpawn(index);    // Some modules depend on this to finish first.
     ClassOnClientSpawn(index);
     WeaponsOnClientSpawn(index);
@@ -242,7 +242,7 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
     
     // Forward event to modules.
     ClassAlphaUpdate(index);
-    InfectOnClientHurt(index, attacker, weapon);
+    Infect_OnClientHurt(index, attacker, weapon);
     AccountOnClientHurt(index, attacker, dmg_health);
     SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
@@ -284,7 +284,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     
     // Forward event to modules.
     ClassOnClientDeath(index);
-    InfectOnClientDeath(index, attacker);
+    Infect_OnClientDeath(index, attacker);
     VEffectsOnClientDeath(index);
     SEffectsOnClientDeath(index);
     SpawnProtectOnClientDeath(index);

@@ -25,11 +25,10 @@
  * ============================================================================
  */
 
-
 /**
  * Map is ending.
  */
-InfectOnMapEnd()
+void Infect_OnMapEnd()
 {
     // Reset timers. Infect timers are invalidated on a map change if they are
     // still running.
@@ -41,10 +40,10 @@ InfectOnMapEnd()
 /**
  * Loads downloadable content data for infect module.
  */
-InfectLoad()
+void Infect_Load()
 {
     // Get infection sound.
-    decl String:sound[PLATFORM_MAX_PATH];
+    char sound[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
     
     // If infect sound cvar is empty, then stop.
@@ -63,7 +62,7 @@ InfectLoad()
 /**
  * Create commands specific to infect here.
  */
-InfectOnCommandsCreate()
+void Infect_OnCommandsCreate()
 {
     RegConsoleCmd("zr_infect", InfectInfectCommand, "Infect a client. Usage: zr_infect <filter> [respawn - 1/0]");
     RegConsoleCmd("zr_human", InfectHumanCommand, "Turn a client into a human. Usage: zr_human <filter> [respawn - 1/0]");
@@ -74,7 +73,7 @@ InfectOnCommandsCreate()
  * 
  * @param client    The client index.  
  */
-InfectClientInit(client)
+void Infect_ClientInit(int client)
 {
     // Reset infect immunity flags.
     bInfectImmune[client][INFECT_TYPE_MOTHER] = false;
@@ -185,7 +184,7 @@ void Infect_OnZombieDisconnect(int humanCount, int zombieCount)
  * @param client    The client index.
  * @param team      The team index. 
  */
-InfectOnClientTeam(client, team)
+void Infect_OnClientTeam(int client, int team)
 {
     // If client isn't joining spec, then stop.
     if (team != CS_TEAM_SPECTATOR)
@@ -202,7 +201,7 @@ InfectOnClientTeam(client, team)
  * 
  * @param client    The client index.
  */
-InfectOnClientSpawn(client)
+void Infect_OnClientSpawn(int client)
 {
     // Disable zombie flag on client.
     bZombie[client] = false;
@@ -221,7 +220,7 @@ InfectOnClientSpawn(client)
  * @param client    The client index.
  * @param attacker  The attacker index.
  */
-InfectOnClientDeath(client, attacker)
+void Infect_OnClientDeath(int client, int attacker)
 {
     // If attacker isn't valid, then stop.
     if (!ZRIsClientValid(attacker))
@@ -242,8 +241,8 @@ InfectOnClientDeath(client, attacker)
     }
     
     // Add kill bonus to attacker's score.
-    new bonus = ClassGetKillBonus(client);
-    new score = ToolsClientScore(attacker, true, false);
+    int bonus = ClassGetKillBonus(client);
+    int score = ToolsClientScore(attacker, true, false);
     ToolsClientScore(attacker, true, true, score + bonus);
 }
 
@@ -254,7 +253,7 @@ InfectOnClientDeath(client, attacker)
  * @param attacker      The attacker index.
  * @param weapon        The weapon used.
  */
-InfectOnClientHurt(client, attacker, const String:weapon[])
+void Infect_OnClientHurt(int client, int attacker, const char[] weapon)
 {
     // If attacker isn't valid, then stop.
     if (!ZRIsClientValid(attacker))
@@ -300,7 +299,7 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
 /**
  * The round is starting.
  */
-InfectOnRoundStart()
+void Infect_OnRoundStart()
 {
     // Stop infect timers if running.
     ZREndTimer(tInfect);
@@ -313,7 +312,7 @@ InfectOnRoundStart()
 /**
  * The freeze time is ending.
  */
-InfectOnRoundFreezeEnd()
+void Infect_OnRoundFreezeEnd()
 {
     // Stop infect timers if running.
     ZREndTimer(tInfect);
@@ -326,11 +325,11 @@ InfectOnRoundFreezeEnd()
     }
     
     // Get min and max times.
-    new Float:infectspawntimemin = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]);
-    new Float:infectspawntimemax = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]);
+    float infectspawntimemin = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]);
+    float infectspawntimemax = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]);
     
     // Pick random time between min and max.
-    new Float:randomtime = GetRandomFloat(infectspawntimemin, infectspawntimemax);
+    float randomtime = GetRandomFloat(infectspawntimemin, infectspawntimemax);
     
     // Round to the nearest whole number (and convert back to a float) so the countdown is synched with it.
     float(RoundToNearest(randomtime));
@@ -338,7 +337,7 @@ InfectOnRoundFreezeEnd()
     tInfect = CreateTimer(randomtime, InfectMotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
     
     // Check cvar and start a countdown timer if enabled.
-    new bool:countdown = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]);
+    bool countdown = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]);
     if (countdown && randomtime > 1.0)
     {
         // Stop old countdown timer, if it exists.
@@ -358,14 +357,14 @@ InfectOnRoundFreezeEnd()
 /**
  * The round is ending.
  */
-InfectOnRoundEnd()
+void Infect_OnRoundEnd()
 {
     // Stop infect timers if running.
     ZREndTimer(tInfect);
     ZREndTimer(tInfectCountdown);
     
     // x = client index.
-    for (new x = 1; x <=  MaxClients; x++)
+    for (int x = 1; x <=  MaxClients; x++)
     {
         // Disable zombie flag on client.
         bZombie[x] = false;

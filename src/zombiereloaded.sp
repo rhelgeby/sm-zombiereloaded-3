@@ -214,7 +214,7 @@ public OnMapStart()
 public OnMapEnd()
 {
     // Forward event to modules.
-    InfectOnMapEnd();
+    Infect_OnMapEnd();
     VolOnMapEnd();
     VEffectsOnMapEnd();
     ZombieSoundsOnMapEnd();
@@ -240,7 +240,7 @@ public OnConfigsExecuted()
     DownloadsLoad();
     WeaponsLoad();
     HitgroupsLoad();
-    InfectLoad();
+    Infect_Load();
     DamageLoad();
     VEffectsLoad();
     SEffectsLoad();
@@ -273,7 +273,7 @@ public OnClientPutInServer(client)
     ClassClientInit(client);
     OverlaysClientInit(client);
     WeaponsClientInit(client);
-    InfectClientInit(client);
+    Infect_ClientInit(client);
     DamageClientInit(client);
     SEffectsClientInit(client);
     AntiStickClientInit(client);
