@@ -80,7 +80,6 @@ enum CvarsList
     Handle:CVAR_WEAPONS_ZMARKET_REBUY,
     Handle:CVAR_WEAPONS_ZMARKET_REBUY_AUTO,
     Handle:CVAR_HITGROUPS,
-    Handle:CVAR_DAMAGE_HITGROUPS,
     Handle:CVAR_DAMAGE_BLOCK_FF,
     Handle:CVAR_DAMAGE_BLOCK_BLAST,
     Handle:CVAR_DAMAGE_SUICIDE_ZOMBIE,
@@ -340,10 +339,7 @@ CvarsCreate()
     // ===========================
     // Damage (core)
     // ===========================
-    
-    // Hitgroup Damage
-    g_hCvarsList[CVAR_DAMAGE_HITGROUPS]                 =    CreateConVar("zr_damage_hitgroups",        "1",                            "Read hitgroup damage control from hitgroup config file, disabling this allows all zombie hitgroups to be shot.");
-    
+        
     // Block Damage Types
     g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]                  =    CreateConVar("zr_damage_block_ff",         "1",                            "Block friendly fire.");
     g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]               =    CreateConVar("zr_damage_block_blast",      "1",                            "Block blast damage inflicted on self or teammates.");
