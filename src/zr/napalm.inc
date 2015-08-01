@@ -104,7 +104,7 @@ NapalmOnTakeDamage(client, damagetype)
                     }
                 }
                 
-                return _:ACTION_CONTINUE;
+                return _:Plugin_Continue;
             }
         }
     }

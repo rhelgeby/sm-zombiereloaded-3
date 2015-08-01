@@ -60,11 +60,6 @@
 #define ANTISTICK_DEFAULT_HULL_WIDTH 32.0
 
 /**
- * Stores "StartTouch" HookID's for each client.
- */
-new g_iStartTouchHookID[MAXPLAYERS + 1] = {-1, ...};
-
-/**
  * List of components that make up the model's rectangular boundaries.
  * 
  * F = Front
@@ -100,15 +95,7 @@ AntiStickOnCommandsCreate()
  */
 AntiStickClientInit(client)
 {
-    // Hook "StartTouch" and "EndTouch" on client.
-    #if defined USE_SDKHOOKS
-        SDKHook(client, SDKHook_StartTouch, AntiStickStartTouch);
-        
-        // Set dummy value so it think it's hooked.
-        g_iStartTouchHookID[client] = 1;
-    #else
-        g_iStartTouchHookID[client] = ZRTools_HookStartTouch(client, AntiStickStartTouch);
-    #endif
+    SDKHook(client, SDKHook_StartTouch, AntiStickStartTouch);
 }
 
 /**
@@ -118,17 +105,7 @@ AntiStickClientInit(client)
  */
 AntiStickOnClientDisconnect(client)
 {
-    // Unhook "StartTouch" callback, and reset variable.
-    if (g_iStartTouchHookID[client] != -1)
-    {
-        #if defined USE_SDKHOOKS
-            SDKUnhook(client, SDKHook_StartTouch, AntiStickStartTouch);
-        #else
-            ZRTools_UnhookStartTouch(g_iStartTouchHookID[client]);
-        #endif
-        
-        g_iStartTouchHookID[client] = -1;
-    }
+    SDKUnhook(client, SDKHook_StartTouch, AntiStickStartTouch);
 }
 
 /**
@@ -137,11 +114,7 @@ AntiStickOnClientDisconnect(client)
  * @param client        The client index.
  * @param entity        The entity index of the entity being touched.
  */
-#if defined USE_SDKHOOKS
 public AntiStickStartTouch(client, entity)
-#else
-public ZRTools_Action:AntiStickStartTouch(client, entity)
-#endif
 {
     // If antistick is disabled, then stop.
     new bool:antistick = GetConVarBool(g_hCvarsList[CVAR_ANTISTICK]);
