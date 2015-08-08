@@ -320,6 +320,31 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
         // Stop damage.
         return Plugin_Handled;
     }
+    // Client was damaged by fire.
+    else if (damagetype & DMG_BURN)
+    {
+        // If fire damage is blocked, then stop.
+        new bool:damageblockfire = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_BLOCK_FIRE]);
+        if (!damageblockfire)
+        {
+            return Plugin_Continue;
+        }
+        
+        // If attacker isn't valid, then allow damage.
+        if (!ZRIsClientValid(attacker))
+        {
+            return Plugin_Continue;
+        }
+        
+        // If client is a zombie, then allow damage.
+        if (InfectIsClientInfected(client))
+        {
+            return Plugin_Continue;
+        }
+        
+        // Stop damage.
+        return Plugin_Handled;
+    }
     // Client was damaged by falling.
     else if (damagetype & DMG_CSS_FALL)
     {
