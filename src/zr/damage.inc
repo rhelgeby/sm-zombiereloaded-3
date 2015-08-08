@@ -26,18 +26,6 @@
  */
 
 /**
- * @section Counter Strike: Source specific damage flags.
- */
-#define DMG_CSS_FALL        (DMG_FALL)      // Client was damaged by falling.
-#define DMG_CSS_BLAST       (DMG_BLAST)     // Client was damaged by explosion.
-#define DMG_CSS_BURN        (DMG_DIRECT)    // Client was damaged by fire.
-#define DMG_CSS_BULLET      (DMG_NEVERGIB)  // Client was shot or knifed.
-#define DMG_CSS_HEADSHOT    (1 << 30)       // Client was shot in the head.
-/**
- * @endsection
- */
-
-/**
  * @section Suicide intercept defines.
  */
 #define DAMAGE_SUICIDE_MAX_CMDS 5
@@ -252,7 +240,7 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
     }
 
     // Client was shot or knifed.
-    if (damagetype & DMG_CSS_BULLET)
+    if (damagetype & DMG_BULLET || damagetype & DMG_NEVERGIB)
     {
         // If attacker isn't valid, then allow damage.
         if (!ZRIsClientValid(attacker))
@@ -317,7 +305,7 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
         }
     }
     // Client was damaged by explosion.
-    else if (damagetype & DMG_CSS_BLAST)
+    else if (damagetype & DMG_BLAST)
     {
         // If blast damage is blocked, then stop.
         new bool:damageblockblast = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]);
@@ -342,7 +330,7 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
         return Plugin_Handled;
     }
     // Client was damaged by falling.
-    else if (damagetype & DMG_CSS_FALL)
+    else if (damagetype & DMG_FALL)
     {
         // If class has "nofalldamage" disabled, then allow damage.
         new bool:blockfalldamage = ClassGetNoFallDamage(client);
