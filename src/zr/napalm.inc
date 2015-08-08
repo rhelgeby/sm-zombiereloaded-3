@@ -72,7 +72,8 @@ NapalmOnOffsetsFound()
 NapalmOnTakeDamage(client, damagetype)
 {
     // Client was damaged by fire.
-    if (damagetype & DMG_CSS_BURN)
+    // TODO: Is damage type different in CS:S and CS:GO (it was checking only DMG_DIRECT for some reason). Checking both.
+    if (damagetype & DMG_BURN || damagetype & DMG_DIRECT)
     {
         // Only take action if it isn't disabled, or the option is valid.
         new douse = GetConVarInt(g_hCvarsList[CVAR_NAPALM_DOUSE]);
