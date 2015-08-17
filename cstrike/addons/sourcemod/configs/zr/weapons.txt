@@ -777,4 +777,133 @@
 
 		"zmarketprice"		"1000"
 	}
+    "M4A1-S"
+    {
+        // General
+
+        "weaponentity"        "weapon_m4a1_silencer"
+        "weapontype"        "All, Rifle"
+        "weaponslot"        "0"
+
+        // Restrict (core)
+
+        "restrictdefault"    "no"
+        "toggleable"        "yes"
+
+        // Weapon Ammo (core)
+
+        "ammotype"        "ammo_556mm_small"
+        "ammoprice"        "500"
+
+        // Knockback (module)
+
+        "knockback"        "1.0"
+
+        // ZMarket (module)
+
+        "zmarketprice"        "3200"
+    }
+
+    "USP-S"
+    {
+        // General
+
+        "weaponentity"        "weapon_usp_silencer"
+        "weapontype"        "All, Pistol"
+        "weaponslot"        "1"
+
+        // Restrict (core)
+
+        "restrictdefault"    "no"
+        "toggleable"        "yes"
+
+        // Weapon Ammo (core)
+
+        "ammotype"        "ammo_357sig_small"
+        "ammoprice"        "100"
+
+        // Knockback (module)
+
+        "knockback"        "1.1"
+
+        // ZMarket (module)
+
+        "zmarketprice"        "200"
+
+    }
+
+    "CZ75a"
+    {
+        // General
+
+        "weaponentity"        "weapon_cz75a"
+        "weapontype"        "All, Pistol"
+        "weaponslot"        "1"
+
+        // Restrict (core)
+
+        "restrictdefault"    "no"
+        "toggleable"        "yes"
+
+        // Weapon Ammo (core)
+
+        "ammotype"        "357sig_min"
+        "ammoprice"        "100"
+
+        // Knockback (module)
+
+        "knockback"        "1.1"
+
+        // ZMarket (module)
+
+        "zmarketprice"        "500"
+
+    }
+
+    "Tec-9"
+    {
+        // General
+
+        "weaponentity"        "weapon_tec9"
+        "weapontype"        "All, Pistol"
+        "weaponslot"        "1"
+
+        // Restrict (core)
+
+        "restrictdefault"    "no"
+        "toggleable"        "yes"
+
+        // Weapon Ammo (core)
+
+        "ammotype"        "ammo_9mm"
+        "ammoprice"        "100"
+
+        // Knockback (module)
+
+        "knockback"        "1.1"
+
+        // ZMarket (module)
+
+        "zmarketprice"        "500"
+
+    }
+
+    "Taser"
+    {
+        // General
+
+        "weaponentity"        "weapon_taser"
+        "weapontype"        "All, Melee"
+        "weaponslot"        "2"
+
+        // Restrict (core)
+
+        "restrictdefault"    "yes"
+        "toggleable"        "yes"
+
+        // Knockback (module)
+
+        "knockback"        "0.0"
+    }
+
 }
