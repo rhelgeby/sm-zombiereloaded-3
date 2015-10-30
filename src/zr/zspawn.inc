@@ -302,6 +302,7 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
         // Tell admin the outcome of the action.
         if (success)
         {
+            LogAction(client, target, "\"%L\" forced a ZSpawn on \"%L\"", client, target);
             TranslationReplyToCommand(client, "ZSpawn command force successful", targetname);
         }
         else
@@ -404,6 +405,7 @@ public Action:ZSpawnForceCommand(client, argc)
     {
         // Give client the item.
         new bool:success = ZSpawnClient(targets[x], true, zombie);
+        LogAction(client, targets[x], "\"%L\" forced a ZSpawn on \"%L\"%s", client, targets[x], zombie ? " and made them zombie" : "");
         
         // Tell admin the outcome of the command if only 1 client was targetted.
         if (result == 1)
@@ -420,7 +422,7 @@ public Action:ZSpawnForceCommand(client, argc)
     }
     
     // Log action to game events.
-    LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "Admin \"%L\" forced player(s) to spawn. (zr_zspawn_force)", client);
+    //LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "Admin \"%L\" forced player(s) to spawn. (zr_zspawn_force)", client);
     
     return Plugin_Handled;
 }

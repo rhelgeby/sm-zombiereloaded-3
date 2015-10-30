@@ -1184,6 +1184,7 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
         {
             // Turn client into a mother zombie.
             InfectHumanToZombie(targets[x], _, true, respawnoverride, respawn);
+            LogAction(client, targets[x], "\"%L\" turned \"%L\" into a mother zombie", client, targets[x]);
             
             // If there was only 1 player targetted, then let admin know the outcome of the command.
             if (count == 1)
@@ -1196,6 +1197,7 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
         
         // Turn client into a zombie.
         InfectHumanToZombie(targets[x], _, false, respawnoverride, respawn);
+        LogAction(client, targets[x], "\"%L\" turned \"%L\" into a zombie", client, targets[x]);
         
         // If there was only 1 player targetted, then let admin know the outcome of the command.
         if (count == 1)
@@ -1229,6 +1231,7 @@ stock InfectManualHuman(client, targets[], count, bool:respawn = false, bool:pro
         {
             // Turn client into a zombie.
             InfectZombieToHuman(targets[x], respawn, protect);
+            LogAction(client, targets[x], "\"%L\" turned \"%L\" into a human", client, targets[x]);
             
             // If there was only 1 player targetted, then let admin know the outcome of the command.
             if (count == 1)
