@@ -918,8 +918,15 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
             }
         }
         
-        // Give client the weapon.
-        GivePlayerItem(client, weaponentity);
+        if (StrEqual(weaponentity, "item_kevlar"))
+        {
+            SetEntProp(client, Prop_Send, "m_ArmorValue", 100);
+        }
+        else
+        {
+            // Give client the weapon.
+           GivePlayerItem(client, weaponentity);
+        }
         
         // Update cookie with new weapon.
         ZMarketSetRebuyCookie(client, slot, weapon);
