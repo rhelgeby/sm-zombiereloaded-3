@@ -480,7 +480,7 @@ bool ZTele_HasReachedLimit(int client)
 
 int ZTele_GetClientDelay(int client)
 {
-    InfectIsClientInfected(client) ? ZTele_GetZombieDelay() : ZTele_GetHumanDelay();
+    return InfectIsClientInfected(client) ? ZTele_GetZombieDelay() : ZTele_GetHumanDelay();
 }
 
 bool ZTele_PlayerWalkedTooFar(int client)
