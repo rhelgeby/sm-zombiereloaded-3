@@ -42,6 +42,7 @@ new g_iWeaponDropHookID[MAXPLAYERS + 1] = {-1, ...};
  */
 WeaponAlphaClientInit(client)
 {
+    return;
     // Hook "Weapon_Drop" on client.
     #if defined USE_SDKHOOKS
         SDKHook(client, SDKHook_WeaponDrop, WeaponAlphaDrop);
@@ -60,6 +61,7 @@ WeaponAlphaClientInit(client)
  */
 WeaponAlphaOnClientDisconnect(client)
 {
+    return;
     // Unhook "Weapon_Drop" callback, and reset variable.
     if (g_iWeaponDropHookID[client] != -1)
     {
@@ -81,6 +83,7 @@ WeaponAlphaOnClientDisconnect(client)
  */
 WeaponAlphaOnItemPickupPost(client, weapon)
 {
+    return;
     if (Entity_HasChildren(weapon))
     {
         // Don't apply alpha value if weapon has children. Render mode is
@@ -111,6 +114,7 @@ public Action:WeaponAlphaDrop(client, weapon)
 public ZRTools_Action:WeaponAlphaDrop(client, weapon)
 #endif
 {
+    return;
     // If weapon isn't a valid entity, then stop.
     if (weapon < MaxClients)
     {
@@ -128,6 +132,7 @@ public ZRTools_Action:WeaponAlphaDrop(client, weapon)
  */
 WeaponAlphaOnClientAlphaChanged(client, alpha)
 {
+    return;
     // Set new alpha on weapons.
     WeaponAlphaApplyWeaponAlpha(client, alpha);
 }
@@ -141,6 +146,7 @@ WeaponAlphaOnClientAlphaChanged(client, alpha)
  */
 WeaponAlphaApplyWeaponAlpha(entity, alpha)
 {
+    return;
     if (entity > MaxClients)
     {
         // Turn rendermode on, on the weapon.
