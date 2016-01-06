@@ -1192,7 +1192,7 @@ stock ClassAttributeNameToFlag(const String:attributename[])
     {
         return ZR_CLASS_GROUP;
     }
-    else if (StrEqual(attributename, "group", false))
+    else if (StrEqual(attributename, "sm_flags", false))
     {
         return ZR_CLASS_SM_FLAGS;
     }
