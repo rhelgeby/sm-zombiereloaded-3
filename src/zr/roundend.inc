@@ -26,29 +26,6 @@
  */
 
 /**
- * @section All round end reasons.
- */
-#define ROUNDEND_TARGET_BOMBED                          0        // Target Successfully Bombed!
-#define ROUNDEND_VIP_ESCAPED                            1        // The VIP has escaped!
-#define ROUNDEND_VIP_ASSASSINATED                       2        // VIP has been assassinated!
-#define ROUNDEND_TERRORISTS_ESCAPED                     3        // The terrorists have escaped!
-#define ROUNDEND_CTS_PREVENTESCAPE                      4        // The CT's have prevented most of the terrorists from escaping!
-#define ROUNDEND_ESCAPING_TERRORISTS_NEUTRALIZED        5        // Escaping terrorists have all been neutralized!
-#define ROUNDEND_BOMB_DEFUSED                           6        // The bomb has been defused!
-#define ROUNDEND_CTS_WIN                                7        // Counter-Terrorists Win!
-#define ROUNDEND_TERRORISTS_WIN                         8        // Terrorists Win!
-#define ROUNDEND_ROUND_DRAW                             9        // Round Draw!
-#define ROUNDEND_ALL_HOSTAGES_RESCUED                   10       // All Hostages have been rescued!
-#define ROUNDEND_TARGET_SAVED                           11       // Target has been saved!
-#define ROUNDEND_HOSTAGES_NOT_RESCUED                   12       // Hostages have not been rescued!
-#define ROUNDEND_TERRORISTS_NOT_ESCAPED                 13       // Terrorists have not escaped!
-#define ROUNDEND_VIP_NOT_ESCAPED                        14       // VIP has not escaped!
-#define ROUNDEND_GAME_COMMENCING                        15       // Game Commencing!
-/**
- * @endsection
- */
-
-/**
  * Delay between round ending and new round starting. (Normal)
  */
 #define ROUNDEND_DELAY 5.0
@@ -150,9 +127,9 @@ RoundEndOnRoundFreezeEnd()
 /**
  * The round is ending.
  * 
- * @param reason    Reason the round has ended.
+ * @param winner    winner
  */
-RoundEndOnRoundEnd(reason)
+RoundEndOnRoundEnd(winner)
 {
     // If round end timer is running, then kill it.
     if (tRoundEnd != INVALID_HANDLE)
@@ -167,22 +144,19 @@ RoundEndOnRoundEnd(reason)
     // Tell plugin no zombies have been spawned.
     g_bZombieSpawned = false;
     
-    // Get outcome of the round.
-    new RoundEndOutcome:outcome = RoundEndReasonToOutcome(reason);
-    
     // Update team scores.
     new teamscore;
-    switch(outcome)
+    switch(winner)
     {
         // Zombies won the round.
-        case ZombiesWin:
+        case CS_TEAM_T:
         {
             // Increment T score.
             teamscore = GetTeamScore(CS_TEAM_T);
             SetTeamScore(CS_TEAM_T, ++teamscore);
         }
         // Humans won the round.
-        case HumansWin:
+        case CS_TEAM_CT:
         {
             // Increment CT score.
             teamscore = GetTeamScore(CS_TEAM_CT);
@@ -191,44 +165,13 @@ RoundEndOnRoundEnd(reason)
     }
     
     // Display the overlay to all clients.
-    RoundEndOverlayStart(outcome);
+    RoundEndOverlayStart(winner);
     
     // Balance teams if enabled.
     if (GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_BALANCE_TEAMS]))
     {
         RoundEndBalanceTeams();
     }
-}
-
-/**
- * Convert a round_end reason, to a round winner, or draw.
- * 
- * @param reason    The round_end reason.
- * @return          The winner of the round. (see enum RoundEndOutcome)
- */ 
-RoundEndOutcome:RoundEndReasonToOutcome(reason)
-{
-    switch(reason)
-    {
-        // CTs won the round.
-        case ROUNDEND_CTS_WIN:
-        {
-            return HumansWin;
-        }
-        // Ts won the round.
-        case ROUNDEND_TERRORISTS_WIN:
-        {
-            return ZombiesWin;
-        }
-        // Unexpected case.
-        default:
-        {
-            return Draw;
-        }
-    }
-    
-    // Return draw to satisfy compiler. (code will never reach this point.)
-    return Draw;
 }
 
 /**
@@ -388,12 +331,12 @@ RoundEndBalanceTeams()
 }
 
 /**
- * Displays overlays to clients, depending on the outcome.
+ * Displays overlays to clients, depending on the winner.
  * 
  * @param time      Time to display overlays.
- * @param outcome   The outcome of the round.
+ * @param winner   The winner of the round.
  */
-RoundEndOverlayStart(RoundEndOutcome:outcome)
+RoundEndOverlayStart(winner)
 {
     // If round end overlays are disabled, then stop.
     new bool:overlay = GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_OVERLAY]);
@@ -404,15 +347,15 @@ RoundEndOverlayStart(RoundEndOutcome:outcome)
     
     decl String:overlaypath[PLATFORM_MAX_PATH];
     
-    switch(outcome)
+    switch(winner)
     {
         // Show "zombies win" overlay.
-        case ZombiesWin:
+        case CS_TEAM_T:
         {
             GetConVarString(g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE], overlaypath, sizeof(overlaypath));
         }
         // Show "humans win" overlay.
-        case HumansWin:
+        case CS_TEAM_CT:
         {
             GetConVarString(g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN], overlaypath, sizeof(overlaypath));
         }
