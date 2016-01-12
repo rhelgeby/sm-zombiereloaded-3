@@ -134,11 +134,11 @@ public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBr
 public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Get all required event info.
-    new winner = GetEventInt(event, "winner");
+    new reason = GetEventInt(event, "reason");
     
     // Forward event to modules.
     WeaponsOnRoundEnd();
-    RoundEndOnRoundEnd(winner);
+    RoundEndOnRoundEnd(reason);
     InfectOnRoundEnd();
     SEffectsOnRoundEnd();
     RespawnOnRoundEnd();

@@ -40,12 +40,6 @@
  */
 #define WEAPONS_SPAWN_T_WEAPON "weapon_glock"
 #define WEAPONS_SPAWN_CT_WEAPON "weapon_usp"
-
-/**
- * @section CS:GO start weapons.
- */
-#define WEAPONS_SPAWN_T_WEAPON_CSGO "weapon_glock"
-#define WEAPONS_SPAWN_CT_WEAPON_CSGO "weapon_hkp2000"
 /**
  * @endsection
  */

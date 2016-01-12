@@ -1,0 +1,30 @@
+This plugin has a command for dumping detailed version info (zr_version) based
+on info from a automatically generated file (hgversion.h.inc).
+
+There's a script that generate this file and must be executed every time before
+compiling:
+
+    Linux: updateversion.sh
+    Windows: updateversion.bat (Executes updateversion.sh using Cygwin)
+
+Mercurial (or TortoiseHG) must be installed for this script to work. If you
+don't have Mercurial, there's an option to disable version info. In
+zombiereloaded.sp there's a line like this:
+
+    #define ADD_VERSION_INFO
+
+To disable it, comment that line like this:
+
+    //#define ADD_VERSION_INFO
+
+Then you should be able to compile without hgversion.h.inc.
+
+On linux use the makefile to compile since that one will do most of the work.
+Make sure you clean any existing builds before compiling:
+
+    make clean
+    make
+
+For compiling on windows, run:
+
+    compile.bat

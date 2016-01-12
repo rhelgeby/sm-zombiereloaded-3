@@ -1,0 +1,238 @@
+===============================================================================
+
+                         Zombie:Reloaded Release Notes
+
+              Targets plugin version 3.0.0 Beta 1, 2009.07.25
+                          Written by Richard Helgeby
+
+                           Last modified: 2009.12.11
+
+===============================================================================
+
+Release Notes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is a major release and it do break compatibility with older configuration!
+Clean install of configuration files and reconfiguring is recommended.
+
+A lot of work is put into this plugin. The entire plugin is completely recoded
+with lots of improvements and fixes.
+
+Our code base have expanded at least five times compared to version 2.5.1
+(source have reached 30 000 lines total). Of course, made with optimizing in
+mind. This is, as far as we know, the biggest SourceMod plugin ever made!
+
+We also hope Zombie:Reloaded will be a good learning resource for new or
+existing coders to find out how certain things are done. The code is well
+structured and documented with comments explaining almost what every line do.
+
+In addition we try to make this a quality release with a well tested release
+and a full user manual. Read the user manual for details on how to use or
+configure individual features. Better quality and less time spent on support
+gives more time for us to do more.
+
+UPDATE: See "zr_3.0-b2_release_notes.txt" for changes in Beta 2.
+
+
+Richard Helgeby &
+Greyscale
+
+
+OVERVIEW OF MAJOR CHANGES
+---------------------------
+
+* New configuration style. Configuration files and CVARs are also validated so
+  errors and invalid values are caught early.
+
+* Expanded class system with support for human classes and additional
+  attributes like setting transparency on player classes, effects or other
+  special behaviour.
+
+* New weapon configurations that support knock back multipliers per weapon and
+  custom weapon groups for easy restriction.
+
+* Market feature for pre configuring or buying equimpents and weapons from the
+  oposite team, also outside the buy zone if allowed in configuration.
+
+* Improved knock back with support for scaling based on different modules. Now
+  it's possible to fully customize knock back behaviour.
+
+* Volumetric features. Define areas in maps and do certain stuff to players in
+  those areas based on a selection of features like the anti-camp.
+
+* Improved teleport settings. Delays and limits separated per team.
+
+* Admin menu. Configure certain settings in-game, do generic commands like
+  infect, spawn and teleport.
+
+* Cookies. This plugin is using the cookie system of SourceMod so player
+  preferences can be saved until next time they connect.
+
+* New logging system that is fully customizable. Makes it possible to decide
+  what stuff to be logged by setting generic logging flags and applying module
+  filters.
+
+
+CONFIGURATION CHANGES
+-----------------------
+
+Configuration settings are validated when the plugin starts. The plugin will
+stop, use defaults or disable features if there are invalid values. Also a
+warning is logged in the SourceMod error logs.
+
+The validation prevents unexpected or invalid behaviour in the plugin. Dealing
+with errors or warnings in error logs helps a lot troubleshooting eventual
+issues in the plugin caused by incorrect configurations.
+
+It's also possible to specify the path of configuration files. This can be used
+in combination with map configs, so it's possible to have different
+configuration sets per map.
+
+Support for post map configs is made. These are configs executed after the
+plugin and its features are loaded. Some settings can only be changed or
+overridden after loading. Those commands must be placed in post map configs.
+
+
+IMPROVED CLASS SYSTEM
+-----------------------
+
+There's a lot of new features in the class system. The major change is that
+it's made for multiple teams (humans and zombies). Now human classes can be
+made. It has support for extended team filtering where admin-only and mother
+zombie classes can be made.
+
+In addition any attribute on one or more classes can be modified in-game, which
+expands the possibilities in combination with map configs. This makes it easier
+to improve the map balance by adjusting attributes like health, knock back and
+running speed.
+
+One of the new features is transparency on players. There are also immunity
+modes (but it's currently a incomplete feature) that could implement slow
+infection that requires zombies to stab multiple times with its knife before
+the humans get infected, or stab them to death (turning into a zombie).
+
+
+IMPROVED WEAPON SYSTEM
+------------------------
+
+The new weapon system lets makes it possible to do more than just restricting
+weapons. Now it's possible to set knock back multipliers per weapon.
+
+Hit groups can also be configured with knock back multipliers, or disable
+damage on certain hit groups completely.
+
+There's also a new market feature which is a custom buy menu with all available
+weapons, including from the oposite team. It's also possible to buy weapons
+outside the buy zone if the server admins enable that setting.
+
+Weapon selections can be pre configured and even saved using cookies so they
+can be quickly bought on next spawn or on next connect to the server.
+
+
+CUSTOMIZING KNOCK BACK
+------------------------
+
+The knock back is based on three factors that are multiplied into the effective
+knock back:
+
+    - Class knock back. This is the main value.
+
+    - Weapon knock back. Set knock back scale values per weapon.
+
+    - Hit group knock back. Customize or completely disable knock back scale
+      per hit group.
+
+With these factors it's possible to fully customize knock back.
+
+
+VOLUMETRIC FEATURES
+---------------------
+
+(Currently in development)
+
+This is a brand new useful feature where custom defined areas in maps can do
+certain stuff on players. These are the available features:
+
+    - Anti-camp: Slay or warn players that stay too long in a certain area.
+      Useful in unfair camping places, or to avoid glitches in maps.
+
+    - Modify class attributes.
+
+    - Restrict weapons. Takes away ammo, and gives back when leaving area.
+
+    - Modify ammo modes.
+
+    - Modify knock back set on players or knock back in hit groups.
+
+    - Teleporter.
+
+Features that modify settings will be reverted when players leave volumes.
+Example of usage is to only allow pistols in tubes, use the anti-camp to hurt
+humans camping in a certain unfair place, or fine tune knock back for a area in
+the map.
+
+
+TELEPORTER
+------------
+
+The teleporter is improved with more settings like these:
+
+    - Deciding when players can teleport per team, before or after mother
+      zombie.
+
+    - Setting teleport delays per team.
+
+    - Limiting number of teleports per team.
+
+    - Abuse protection: Automatically aborting a teleport in progress if the
+      player moves a certain distance (configurable).
+
+
+ADMIN MENU
+------------
+
+A menu for admins with basic commands to configure certain settings in-game
+or do generic commands. That is:
+
+    - Infecting players.
+
+    - Spawning players.
+
+    - Modifying weapon restrictions.
+
+    - Modifying class data.
+
+    - Configuring log messages.
+
+
+LOGGING SYSTEM
+----------------
+
+The logging system is based on logging flags and filtering that gives full
+control of what log types and events to be logged.
+
+There are a few generic log events and settings, like these:
+
+    - Core events: Executing config files, error messages, etc.
+
+    - Game events: Admin commands, suicide prevention, anticamp kills, etc.
+
+    - Player commands: Commands executed by non-admins: zspawn, teleport, class
+      change, etc.
+
+    - Debug messages, if any. Usually only developers use this one.
+
+    - Debug messages with more detail. It may cause spam, but this can be
+      avoided in combination with module filtering.
+
+    - Ignoring log events caused by server commands (console), like from map
+      configs.
+
+    - Logging to admin chat: A copy of the message is also logged to admins.
+
+In addition a module filter can be enabled. Only log messages from modules
+listed in the filter is logged, other are ignored. Except fatal errors, those
+are logged anyways.
+
+The logging system is made this way so server admins can monitor activity in
+Zombie:Reloaded whithout reading spammed log messages.

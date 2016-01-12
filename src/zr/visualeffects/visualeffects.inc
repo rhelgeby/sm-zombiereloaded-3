@@ -147,7 +147,10 @@ VEffectsShakeClientScreen(client, Float:amplitude, Float:frequency, Float:durati
         return;
     }
     
-    if (GetUserMessageType() == UM_Protobuf)
+    // Future code using protocol buffers (not tested). Enabling this will bump
+    // SourceMod version requirement to a snapshot, we don't want to do that
+    // until that branch is declared stable.
+    /*if (GetUserMessageType() == UM_Protobuf)
     {
         PbSetInt(hShake, "command", 0);
         PbSetFloat(hShake, "local_amplitude", amplitude);
@@ -160,6 +163,14 @@ VEffectsShakeClientScreen(client, Float:amplitude, Float:frequency, Float:durati
         BfWriteFloat(hShake, amplitude);
         BfWriteFloat(hShake, frequency);
         BfWriteFloat(hShake, duration);
-    }
+    }*/
+    
+    // Write shake information to message handle.
+    BfWriteByte(hShake, 0);
+    BfWriteFloat(hShake, amplitude);
+    BfWriteFloat(hShake, frequency);
+    BfWriteFloat(hShake, duration);
+    
+    // End usermsg and send to client.
     EndMessage();
 }

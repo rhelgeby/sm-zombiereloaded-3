@@ -29,7 +29,6 @@
  * @section Defines for min/max moaning sound file index.
  */
 #define SOUND_MOAN_PATH "npc/zombie/zombie_voice_idle%d.wav" // %d is sound file index
-#define SOUND_MOAN_PATH_CSGO "zr/zombie_voice_idle%d.mp3" // %d is sound file index
 #define SOUND_MOAN_MIN 1
 #define SOUND_MOAN_MAX 14
 /**
@@ -40,7 +39,6 @@
  * @section Defines for min/max groan sound file index.
  */
 #define SOUND_GROAN_PATH "npc/zombie/zombie_pain%d.wav" // %d is sound file index
-#define SOUND_GROAN_PATH_CSGO "zr/zombie_pain%d.mp3" // %d is sound file index
 #define SOUND_GROAN_MIN 1
 #define SOUND_GROAN_MAX 6
 /**
@@ -51,7 +49,6 @@
  * @section Defines for min/max death sound file index.
  */
 #define SOUND_DEATH_PATH "npc/zombie/zombie_die%d.wav" // %d is sound file index
-#define SOUND_DEATH_PATH_CSGO "zr/zombie_die%d.mp3" // %d is sound file index
 #define SOUND_DEATH_MIN 1
 #define SOUND_DEATH_MAX 3
 /**
@@ -257,8 +254,7 @@ bool:ZombieSoundsGetRandomSound(String:sound[], ZombieSounds:soundtype)
             soundmax = SOUND_MOAN_MAX;
             
             // Copy path
-            if (g_Game != Game_CSGO) strcopy(soundpath, sizeof(soundpath), SOUND_MOAN_PATH);
-            else strcopy(soundpath, sizeof(soundpath), SOUND_MOAN_PATH_CSGO);
+            strcopy(soundpath, sizeof(soundpath), SOUND_MOAN_PATH);
         }
         // Find groan sound. (zombie shot)
         case Groan:
@@ -268,8 +264,7 @@ bool:ZombieSoundsGetRandomSound(String:sound[], ZombieSounds:soundtype)
             soundmax = SOUND_GROAN_MAX;
             
             // Copy path
-            if (g_Game != Game_CSGO) strcopy(soundpath, sizeof(soundpath), SOUND_GROAN_PATH);
-            else strcopy(soundpath, sizeof(soundpath), SOUND_GROAN_PATH_CSGO);
+            strcopy(soundpath, sizeof(soundpath), SOUND_GROAN_PATH);
         }
         // Find death sound.
         case Death:
@@ -279,8 +274,7 @@ bool:ZombieSoundsGetRandomSound(String:sound[], ZombieSounds:soundtype)
             soundmax = SOUND_DEATH_MAX;
             
             // Copy path
-            if (g_Game != Game_CSGO) strcopy(soundpath, sizeof(soundpath), SOUND_DEATH_PATH);
-            else strcopy(soundpath, sizeof(soundpath), SOUND_DEATH_PATH_CSGO);
+            strcopy(soundpath, sizeof(soundpath), SOUND_DEATH_PATH);
         }
         // Invalid case given.
         default:
