@@ -72,7 +72,7 @@ ImmunityOnCommandsCreate()
 
 /*____________________________________________________________________________*/
 
-/** 
+/**
  * Client executed the deploy shield command.
  *
  * @param client    Client index.
@@ -86,10 +86,10 @@ public Action:Command_DeployShield(client, argc)
         TranslationPrintToServer("Must be player");
         return Plugin_Handled;
     }
-    
+
     // Attempt to deploy shield.
     ImmunityDeployShield(client);
-    
+
     return Plugin_Handled;
 }
 
@@ -109,7 +109,7 @@ bool:ImmunityOnClientInfect(client, attacker)
 {
     // Get immunity mode from client class.
     new ImmunityMode:mode = ClassGetImmunityMode(client);
-    
+
     // Check mode.
     switch(mode)
     {
@@ -141,7 +141,7 @@ bool:ImmunityOnClientInfect(client, attacker)
             return ImmunityShieldModeHandler(client);
         }
     }
-    
+
     // Current mode doesn't apply to infection.
     return false;
 }
@@ -169,10 +169,10 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
         // Allow damage.
         return false;
     }
-    
+
     // Get immunity mode from client class.
     new ImmunityMode:mode = ClassGetImmunityMode(client);
-    
+
     // Check mode.
     switch(mode)
     {
@@ -189,7 +189,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
                 // Allow damage.
                 return false;
             }
-            
+
             // Check if damage give HP below the infection threshold.
             if (ImmunityBelowInfectThreshold(client, damage))
             {
@@ -208,7 +208,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
                 // Allow damage.
                 return false;
             }
-            
+
             // Get attacker weapon.
             decl String:weapon[32];
             weapon[0] = 0;
@@ -223,10 +223,10 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             {
                 GetClientWeapon(attacker, weapon, sizeof(weapon));
             }
-            
+
             // Since damage is blocked, trigger knock back hurt event manually.
             KnockbackOnClientHurt(client, attacker, weapon, hitgroup, RoundToNearest(damage));
-            
+
             // Block damage from attacker.
             return true;
         }
@@ -238,7 +238,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
                 // Allow damage.
                 return false;
             }
-            
+
             // Check if shield is active.
             if (PlayerImmunityTimer[client] != INVALID_HANDLE)
             {
@@ -248,7 +248,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             }
         }
     }
-    
+
     // Allow damage.
     return false;
 }
@@ -276,17 +276,17 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
         // Allow damage.
         return Plugin_Continue;
     }
-    
+
     // Check if spawn protection is on.
     if (bInfectImmune[client][INFECT_TYPE_NORMAL])
     {
         // Block damage.
         return Plugin_Handled;
     }
-    
+
     // Get immunity mode from client class.
     new ImmunityMode:mode = ClassGetImmunityMode(client);
-    
+
     switch(mode)
     {
         case Immunity_Kill:
@@ -298,15 +298,15 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
                 // Don't modify damage.
                 return Plugin_Continue;
             }
-            
+
             // A zombie is attacking a human in kill immunity mode. Increase
             // damage so human will be instantly killed. (Using a high damage
             // value in case the human class has a lot of HP.)
             damage = 60000.0;
-            
+
             // Update score and health gain.
             InfectUpdateScore(attacker, client);
-            
+
             // Damage was changed.
             return Plugin_Changed;
         }
@@ -319,7 +319,7 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
                 // Fake hurt event because it's not triggered when the damage
                 // was removed (because no one is actually hurt).
                 InfectOnClientHurt(client, attacker, "knife");
-                
+
                 // Block damage to prevent player from dying.
                 return Plugin_Handled;
             }
@@ -331,12 +331,12 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
             // still be triggered so that subsequent attacks are registered,
             // without dealing any damage.
             InfectOnClientHurt(client, attacker, "knife");
-            
+
             // Block damage to prevent player from dying.
             return Plugin_Handled;
         }
     }
-    
+
     // Allow damage.
     return Plugin_Continue;
 }
@@ -360,7 +360,7 @@ bool:ImmunityInfectModeHandler(client)
     // Note: ImmunityOnClientDamage and ImmunityOnClientTraceAttack hook into
     //       the damage module to prevent humans with low HP from dying when
     //       they're not supposed to.
-    
+
     new threshold = ClassGetImmunityAmount(client);
     // Check if infection is disabled.
     if (threshold == 0)
@@ -368,13 +368,13 @@ bool:ImmunityInfectModeHandler(client)
         // Infection is handled here: blocked.
         return true;
     }
-    
+
     if (PlayerImmunityThresholdPassed[client])
     {
         // Client HP below threshold, allow instant infection.
         return false;
     }
-    
+
     return true;
 }
 
@@ -395,7 +395,7 @@ bool:ImmunityDelayModeHandler(client, attacker)
     {
         // Additional attacks while a delayed infection is in progress will
         // speedup the infection.
-        
+
         // Get reduction amount for subsequent zombie attack.
         new reduction = ClassGetImmunityCooldown(client);
         if (reduction > 0)
@@ -403,26 +403,26 @@ bool:ImmunityDelayModeHandler(client, attacker)
             // Reduce duration. Add one because the timer handler itself reduce
             // duration by one.
             PlayerImmunityDuration[client] -= reduction + 1;
-            
+
             // Note: This feature can be used to trigger an instant infection
             //       when a human receive a second attack, by setting the
             //       reduction value high enough.
-            
+
             // Trigger timer event to reduce delay and infect faster.
             ImmunityDelayTimerHandler(PlayerImmunityTimer[client], client);
         }
-        
+
         // Block infection.
         return true;
     }
-    
+
     // Start a delayed infection. Initialize duration and attacker.
     PlayerImmunityDuration[client] = ClassGetImmunityAmount(client);
     PlayerImmunityAttacker[client] = attacker;
-    
+
     // Create repated 1-second timer for handling the countdown.
     PlayerImmunityTimer[client] = CreateTimer(1.0, ImmunityDelayTimerHandler, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-    
+
     // Block infection.
     return true;
 }
@@ -442,26 +442,26 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
         ImmunityAbortHandler(client);
         return Plugin_Stop;
     }
-    
+
     // Reduce duration.
     PlayerImmunityDuration[client] -= 1;
-    
+
     // Check if time is up.
     if (PlayerImmunityDuration[client] <= 0)
     {
         // Get attacker before cleaning up.
         new attacker = PlayerImmunityAttacker[client];
-        
+
         // Time is up. Reset data.
         PlayerImmunityDuration[client] = 0;
         ImmunityAbortHandler(client);
-        
+
         // Infect client. Give credit to the stored attacker.
         InfectHumanToZombie(client, attacker);
-        
+
         return Plugin_Stop;
     }
-    
+
     return Plugin_Continue;
 }
 
@@ -486,7 +486,7 @@ bool:ImmunityShieldModeHandler(client)
         // Block infection.
         return true;
     }
-    
+
     // Shield is not active, allow infection.
     return false;
 }
@@ -506,12 +506,12 @@ ImmunityDeployShield(client)
         // Not available.
         return;
     }
-    
+
     // Deploy the shield.
     PlayerImmunityDuration[client] = ClassGetImmunityAmount(client);
     PlayerImmunityLastUse[client] = GetTime();
     PlayerImmunityTimer[client] = CreateTimer(1.0, ImmunityShieldTimerHandler, client, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-    
+
     // Trigger initial countdown.
     ImmunityShieldTimerHandler(PlayerImmunityTimer[client], client);
 }
@@ -530,13 +530,13 @@ public Action:ImmunityShieldTimerHandler(Handle:timer, any:client)
         ImmunityAbortHandler(client);
         return Plugin_Stop;
     }
-    
+
     // Reduce duration.
     PlayerImmunityDuration[client] -= 1;
-    
+
     // Print remaining shield time.
     TranslationPrintCenterText(client, "Immunity Shield Time Left", PlayerImmunityDuration[client]);
-    
+
     // Check if time is up.
     if (PlayerImmunityDuration[client] <= 0)
     {
@@ -544,7 +544,7 @@ public Action:ImmunityShieldTimerHandler(Handle:timer, any:client)
         ImmunityAbortHandler(client, false);
         return Plugin_Stop;
     }
-    
+
     return Plugin_Continue;
 }
 
@@ -560,12 +560,12 @@ ImmunityAbortHandler(client, bool:resetLastUse = true)
 {
     // Stop timer, if running.
     ZREndTimer(PlayerImmunityTimer[client]);
-    
+
     // Reset data.
     PlayerImmunityDuration[client] = -1;
     PlayerImmunityAttacker[client] = 0;
     PlayerImmunityThresholdPassed[client] = false;
-    
+
     if (resetLastUse)
     {
         PlayerImmunityLastUse[client] = 0;
@@ -608,7 +608,7 @@ bool:ImmunityOnClientKnockBack(client)
             // Client is human, allow knock back.
             return false;
         }
-        
+
         // Block knock back if shield is deployed.
         if (PlayerImmunityTimer[client] != INVALID_HANDLE)
         {
@@ -616,7 +616,7 @@ bool:ImmunityOnClientKnockBack(client)
             return true;
         }
     }
-    
+
     // Allow knock back.
     return false;
 }
@@ -681,7 +681,7 @@ ImmunityClientSpawn(client)
 ImmunityOnClientDisconnect(client)
 {
     ImmunityAbortHandler(client);
-    
+
     // Loop through attacker cache and remove client (set to 0).
     for (new victim = 0; victim < sizeof(PlayerImmunityAttacker); victim++)
     {
@@ -744,14 +744,14 @@ bool:ImmunityBelowInfectThreshold(client, Float:damage)
     new threshold = ClassGetImmunityAmount(client);
     new clientHP = GetClientHealth(client);
     new dmg = RoundToNearest(damage);
-    
+
     // Check if the damage go below the HP threshold. Client can only go below
     // threshold when threshold is enabled (above zero).
     if (clientHP - dmg <= threshold && threshold > 0)
     {
         return true;
     }
-    
+
     return false;
 }
 
@@ -770,7 +770,7 @@ ImmunityMode:ImmunityStringToMode(const String:mode[])
     {
         return Immunity_Invalid;
     }
-    
+
     if (StrEqual(mode, "none", false))
     {
         return Immunity_None;
@@ -799,7 +799,7 @@ ImmunityMode:ImmunityStringToMode(const String:mode[])
     {
         return Immunity_Shield;
     }
-    
+
     return Immunity_Invalid;
 }
 
@@ -820,7 +820,7 @@ ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
     {
         return 0;
     }
-    
+
     switch (mode)
     {
         case Immunity_None:
@@ -852,7 +852,7 @@ ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
             return strcopy(buffer, maxlen, "shield");
         }
     }
-    
+
     return 0;
 }
 
@@ -896,7 +896,7 @@ bool:ImmunityIsValidAmount(ImmunityMode:mode, amount)
             {
                 return false;
             }
-            
+
             // There's no upper limit. If the value is too high it will
             // overflow and become negative.
         }
@@ -925,7 +925,7 @@ bool:ImmunityIsValidAmount(ImmunityMode:mode, amount)
             return false;
         }
     }
-    
+
     // Passed.
     return true;
 }
@@ -979,7 +979,7 @@ bool:ImmunityIsValidCooldown(ImmunityMode:mode, cooldown)
             {
                 return false;
             }
-            
+
             // No upper limit. It may be intentional to use a high value so that
             // the section attack will remove all delay and infect instantly.
         }
@@ -989,7 +989,7 @@ bool:ImmunityIsValidCooldown(ImmunityMode:mode, cooldown)
             {
                 return false;
             }
-            
+
             // No upper limit. It may be intentional to use a high value so that
             // the shield can only be used once per life.
         }
@@ -999,7 +999,7 @@ bool:ImmunityIsValidCooldown(ImmunityMode:mode, cooldown)
             return false;
         }
     }
-    
+
     // Passed.
     return true;
 }
@@ -1028,7 +1028,7 @@ bool:ImmunityCanDeployShield(client, bool:printResponse = true)
         }
         return false;
     }
-    
+
     // Check if cooldown is still in progress.
     new cooldown = ClassGetImmunityCooldown(client);
     new timeLeft = PlayerImmunityLastUse[client] + cooldown - GetTime();
@@ -1040,18 +1040,18 @@ bool:ImmunityCanDeployShield(client, bool:printResponse = true)
         }
         return false;
     }
-    
+
     // Check if a shield is already deployed.
     if (PlayerImmunityTimer[client] != INVALID_HANDLE)
     {
         return false;
     }
-    
+
     // Humans cannot deploy shield before first zombie.
     if (!InfectHasZombieSpawned())
     {
         return false;
     }
-    
+
     return true;
 }

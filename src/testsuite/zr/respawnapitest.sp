@@ -44,10 +44,10 @@ new Handle:cvarAllSuicide;
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
-    
+
     RegConsoleCmd("zrtest_killed_by_world", KilledByWorldCommand, "Gets or sets the killed by world value. Usage: zrtest_killed_by_world <target> [1|0]");
     RegConsoleCmd("zrtest_respawn", RespawnClientCommand, "Respawn a player. Usage: zrtest_respawn <target>");
-    
+
     cvarBlockRespawn = CreateConVar("zrtest_block_respawn", "0", "Block respawning.");
     cvarAllSuicide = CreateConVar("zrtest_all_suicide", "0", "Treat all deaths as suicide.");
 }
@@ -56,19 +56,19 @@ public Action:KilledByWorldCommand(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
     }
-    
+
     if (target <= 0)
     {
         ReplyToCommand(client, "Gets or sets the killed by world value. Usage: zrtest_killed_by_world <target> [value]");
         return Plugin_Handled;
     }
-    
+
     if (argc > 1)
     {
         // Set value.
@@ -80,7 +80,7 @@ public Action:KilledByWorldCommand(client, argc)
         // Print value.
         ReplyToCommand(client, "Killed by world: %d", ZR_GetKilledByWorld(target));
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -88,13 +88,13 @@ public Action:RespawnClientCommand(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
     }
-    
+
     if (target < 0)
     {
         ReplyToCommand(client, "Respawn a player. Usage: zrtest_respawn <target>");
@@ -102,7 +102,7 @@ public Action:RespawnClientCommand(client, argc)
     }
 
     ZR_RespawnClient(target, ZR_Repsawn_Default);
-    
+
     return Plugin_Handled;
 }
 
@@ -113,16 +113,16 @@ public Action:ZR_OnClientRespawn(&client, &ZR_RespawnCondition:condition)
         PrintToChatAll("Respawn blocked on client %d.", client);
         return Plugin_Handled;
     }
-    
+
     PrintToChatAll("Client %d is about to respawn. Condition: %d", client, condition);
-    
+
     if (GetConVarBool(cvarAllSuicide))
     {
         // Set client suicide.
         ZR_SetKilledByWorld(client, true);
         PrintToChatAll("Client %d is marked as suicide victim.");
     }
-    
+
     return Plugin_Continue;
 }
 

@@ -52,7 +52,7 @@
  * Delay between round ending and new round starting. (Normal)
  */
 #define ROUNDEND_DELAY 5.0
- 
+
 /**
  * Possible round end outcomes.
  */
@@ -71,7 +71,7 @@ new Handle:tRoundEnd = INVALID_HANDLE;
 
 /**
  * Map is starting.
- */ 
+ */
 RoundEndOnMapStart()
 {
     // Reset timer handle.
@@ -111,13 +111,13 @@ RoundEndOnRoundStart()
 {
     // Stop all overlays.
     RoundEndOverlayStop();
-    
+
     // If round end timer is running, then kill it.
     if (tRoundEnd != INVALID_HANDLE)
     {
         // Kill timer.
         KillTimer(tRoundEnd);
-        
+
         // Reset timer handle.
         tRoundEnd = INVALID_HANDLE;
     }
@@ -131,10 +131,10 @@ RoundEndOnRoundFreezeEnd()
     // Calculate round length, in seconds.
     // Get mp_roundtime. (in minutes)
     new Float:roundtime = GetConVarFloat(FindConVar("mp_roundtime"));
-    
+
     // Convert to seconds.
     roundtime *= 60.0;
-    
+
     // Subtract one second if running CS: GO to prevent round draw when round
     // ends. For some reason the timing doesn't match the actual round end.
     // Thanks to Jargon.
@@ -142,14 +142,14 @@ RoundEndOnRoundFreezeEnd()
     {
         roundtime--;
     }
-    
+
     // Start timer.
     tRoundEnd = CreateTimer(roundtime, RoundEndTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 /**
  * The round is ending.
- * 
+ *
  * @param reason    Reason the round has ended.
  */
 RoundEndOnRoundEnd(reason)
@@ -159,17 +159,17 @@ RoundEndOnRoundEnd(reason)
     {
         // Kill timer.
         KillTimer(tRoundEnd);
-        
+
         // Reset timer handle.
         tRoundEnd = INVALID_HANDLE;
     }
-    
+
     // Tell plugin no zombies have been spawned.
     g_bZombieSpawned = false;
-    
+
     // Get outcome of the round.
     new RoundEndOutcome:outcome = RoundEndReasonToOutcome(reason);
-    
+
     // Update team scores.
     new teamscore;
     switch(outcome)
@@ -189,10 +189,10 @@ RoundEndOnRoundEnd(reason)
             SetTeamScore(CS_TEAM_CT, ++teamscore);
         }
     }
-    
+
     // Display the overlay to all clients.
     RoundEndOverlayStart(outcome);
-    
+
     // Balance teams if enabled.
     if (GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_BALANCE_TEAMS]))
     {
@@ -202,10 +202,10 @@ RoundEndOnRoundEnd(reason)
 
 /**
  * Convert a round_end reason, to a round winner, or draw.
- * 
+ *
  * @param reason    The round_end reason.
  * @return          The winner of the round. (see enum RoundEndOutcome)
- */ 
+ */
 RoundEndOutcome:RoundEndReasonToOutcome(reason)
 {
     switch(reason)
@@ -226,7 +226,7 @@ RoundEndOutcome:RoundEndReasonToOutcome(reason)
             return Draw;
         }
     }
-    
+
     // Return draw to satisfy compiler. (code will never reach this point.)
     return Draw;
 }
@@ -240,20 +240,20 @@ public Action:RoundEndTimer(Handle:timer)
 {
     // Set the global timer handle variable to INVALID_HANDLE.
     tRoundEnd = INVALID_HANDLE;
-    
+
     // If there aren't clients on both teams, then stop.
     if (!ZRTeamHasClients())
     {
         return;
     }
-    
+
     // Terminate the round with humans as the winner.
     RoundEndTerminateRound(ROUNDEND_DELAY, HumansWin);
 }
 
 /**
  * Checks if the round is over.
- * 
+ *
  * @param outcome   Set to the outcome of the round, if round is over.
  * @return          True if the round is over, false otherwise.
  */
@@ -265,30 +265,30 @@ bool:RoundEndGetRoundStatus(&RoundEndOutcome:outcome)
         // Round isn't over.
         return false;
     }
-    
+
     // Initialize count variables
     new zombiecount;
     new humancount;
-    
+
     // Count valid clients. (true to only allow living clients)
     ZRCountValidClients(zombiecount, humancount, true);
-    
+
     // If there are no clients on either teams, then stop.
     if (!zombiecount && !humancount)
     {
         // Round isn't active.
         return false;
     }
-    
+
     // If there are clients on both teams, then stop.
     if (zombiecount && humancount)
     {
         // Round isn't over.
         return false;
     }
-    
+
     // We know here, that either zombiecount or humancount is 0. (not both)
-    
+
     // If there are zombies, then zombies won the round.
     if (zombiecount)
     {
@@ -299,15 +299,15 @@ bool:RoundEndGetRoundStatus(&RoundEndOutcome:outcome)
     {
         outcome = HumansWin;
     }
-    
+
     // Round is over.
     return true;
 }
 
 /**
  * Ends the round with the given outcome and delay.
- * 
- * @param delay     Delay before new round starts. 
+ *
+ * @param delay     Delay before new round starts.
  * @param outcome   The outcome of the round.
  */
 RoundEndTerminateRound(Float:delay, RoundEndOutcome:outcome = Restart)
@@ -345,51 +345,51 @@ RoundEndBalanceTeams()
     // Create eligible player list.
     new Handle:arrayEligibleClients = INVALID_HANDLE;
     new eligibleclients = ZRCreateEligibleClientList(arrayEligibleClients, true);
-    
+
     // If there are no eligible client's then stop.
     if (!eligibleclients)
     {
         // Destroy handle.
         CloseHandle(arrayEligibleClients);
-        
+
         return;
     }
-    
+
     new client;
-    
+
     // Move all clients to T
-    
+
     // x = Array index.
     // client = client index.
     for (new x = 0; x < eligibleclients; x++)
     {
         // Get client stored in array index.
         client = GetArrayCell(arrayEligibleClients, x);
-        
+
         // Switch client to T
         CS_SwitchTeam(client, CS_TEAM_T);
     }
-    
+
     // Move every other client back to CT
-    
+
     // x = array index
     // client = client index.
     for (new x = 0; x < eligibleclients; x += 2)
     {
         // Get client stored in array index.
         client = GetArrayCell(arrayEligibleClients, x);
-        
+
         // Switch client to CT
         CS_SwitchTeam(client, CS_TEAM_CT);
     }
-    
+
     // Destroy handle.
     CloseHandle(arrayEligibleClients);
 }
 
 /**
  * Displays overlays to clients, depending on the outcome.
- * 
+ *
  * @param time      Time to display overlays.
  * @param outcome   The outcome of the round.
  */
@@ -401,9 +401,9 @@ RoundEndOverlayStart(RoundEndOutcome:outcome)
     {
         return;
     }
-    
+
     decl String:overlaypath[PLATFORM_MAX_PATH];
-    
+
     switch(outcome)
     {
         // Show "zombies win" overlay.
@@ -422,7 +422,7 @@ RoundEndOverlayStart(RoundEndOutcome:outcome)
             strcopy(overlaypath, sizeof(overlaypath), "");
         }
     }
-    
+
     // x = client index.
     for (new x = 1; x <= MaxClients; x++)
     {
@@ -431,13 +431,13 @@ RoundEndOverlayStart(RoundEndOutcome:outcome)
         {
             continue;
         }
-        
+
         // If client is fake (or bot), then stop.
         if (IsFakeClient(x))
         {
             continue;
         }
-        
+
         OverlaysClientSetChannelPath(x, OVERLAYS_CHANNEL_ROUNDEND, overlaypath);
         OverlaysClientSetChannelState(x, OVERLAYS_CHANNEL_ROUNDEND, true, false, true);
     }
@@ -453,13 +453,13 @@ RoundEndOverlayStop()
         {
             continue;
         }
-        
+
         // If client is fake (or bot), then stop.
         if (IsFakeClient(x))
         {
             continue;
         }
-        
+
         // Disable roundend overlay channel.
         OverlaysClientSetChannelState(x, OVERLAYS_CHANNEL_ROUNDEND, true, false, false, true);
     }

@@ -46,19 +46,19 @@ new bool:VelocityMonitor[MAXPLAYERS];
 public OnPluginStart()
 {
     hKnockBackMultiplier = CreateConVar("zrtest_knockback", "4.0", "Knock back multiplier.");
-    
+
     if (!HookEventEx("player_hurt", Event_PlayerHurt))
     {
         LogError("Failed to hook event player_hurt.");
     }
-    
+
     // If offset "m_vecVelocity[0]" can't be found, then stop the plugin.
     g_iToolsVelocity = FindSendPropInfo("CBasePlayer", "m_vecVelocity[0]");
     if (g_iToolsVelocity == -1)
     {
         LogError("Offset \"CBasePlayer::m_vecVelocity[0]\" was not found.");
     }
-    
+
     RegConsoleCmd("zrtest_push_player", Command_PushPlayer, "Push a player. Usage: zrtest_push_player <x> <y> <z> [0|1 - base velocity]");
     RegConsoleCmd("zrtest_parent", Command_Parent, "Prints your parent entity.");
     RegConsoleCmd("zrtest_friction", Command_Friction, "Prints your floor friction multiplier.");
@@ -72,25 +72,25 @@ public Action:Command_PushPlayer(client, argc)
         ReplyToCommand(client, "Push a player. Usage: zrtest_push_player <x> <y> <z> [0|1 - base velocity]");
         return Plugin_Handled;
     }
-    
+
     new Float:velocity[3];
     new String:buffer[32];
     new bool:baseVelocity = false;
-    
+
     for (new i = 0; i < 3; i++)
     {
         GetCmdArg(i + 1, buffer, sizeof(buffer));
         velocity[i] = StringToFloat(buffer);
     }
-    
+
     if (argc > 3)
     {
         GetCmdArg(4, buffer, sizeof(buffer));
         baseVelocity = bool:StringToInt(buffer);
     }
-    
+
     PrintToChatAll("Applying velocity on client %d (base: %d): %0.2f | %0.2f | %0.2f", client, baseVelocity, velocity[0], velocity[1], velocity[2]);
-    
+
     if (baseVelocity)
     {
         SetBaseVelocity(client, velocity);
@@ -100,7 +100,7 @@ public Action:Command_PushPlayer(client, argc)
         TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
         //SetVelocity(client, velocity);
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -108,7 +108,7 @@ public Action:Command_Parent(client, argc)
 {
     new parent = GetParent(client);
     ReplyToCommand(client, "Parent index: %d", parent);
-    
+
     return Plugin_Handled;
 }
 
@@ -116,7 +116,7 @@ public Action:Command_Friction(client, argc)
 {
     new Float:friction = GetFriction(client);
     ReplyToCommand(client, "Friction: %0.2f", friction);
-    
+
     return Plugin_Handled;
 }
 
@@ -124,7 +124,7 @@ public Action:Command_MaxSpeed(client, argc)
 {
     new Float:maxSpeed = GetMaxSpeed(client);
     ReplyToCommand(client, "Max speed: %0.2f", maxSpeed);
-    
+
     return Plugin_Handled;
 }
 
@@ -157,7 +157,7 @@ public Action:Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroad
 /*public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damagetype, &weapon, Float:damageForce[3], Float:damagePosition[3])
 {
     KnockbackOnClientHurt(victim, attacker, Float:damage);
-    
+
     // Allow damage.
     return Plugin_Continue;
 }
@@ -192,7 +192,7 @@ public PostThink(client)
     /*{
         PrintVelocity(client, "PostThink");
     }*/
-    
+
     SetMaxSpeed(client, 1000.0);
 }
 
@@ -217,7 +217,7 @@ stock PrintVelocity(client, const String:prefix[])
  * @param client        The client index. (zombie)
  * @param attacker      The attacker index. (human)
  * @param weapon        The weapon used.
- * @param hitgroup      Hitgroup attacker has damaged. 
+ * @param hitgroup      Hitgroup attacker has damaged.
  * @param dmg_health    Damage done.
  */
 KnockbackOnClientHurt(client, attacker, Float:dmg_health)
@@ -227,29 +227,29 @@ KnockbackOnClientHurt(client, attacker, Float:dmg_health)
     {
         return;
     }
-    
+
     // Get zombie knockback value.
     new Float:knockback = GetConVarFloat(hKnockBackMultiplier);
-    
+
     new Float:clientloc[3];
     new Float:attackerloc[3];
-    
+
     GetClientAbsOrigin(client, clientloc);
-    
+
     // Get attackers eye position.
     GetClientEyePosition(attacker, attackerloc);
-    
+
     // Get attackers eye angles.
     new Float:attackerang[3];
     GetClientEyeAngles(attacker, attackerang);
-    
+
     // Calculate knockback end-vector.
     TR_TraceRayFilter(attackerloc, attackerang, MASK_ALL, RayType_Infinite, KnockbackTRFilter);
     TR_GetEndPosition(clientloc);
-    
+
     // Apply damage knockback multiplier.
     knockback *= dmg_health;
-    
+
     // Apply knockback.
     PrintToChat(attacker, "Applying knock back: %0.2f", knockback);
     VelocityMonitor[client] = true;
@@ -258,34 +258,34 @@ KnockbackOnClientHurt(client, attacker, Float:dmg_health)
 
 /**
  * Sets velocity on a player.
- *  
+ *
  * @param client        The client index.
  * @param startpoint    The starting coordinate to push from.
  * @param endpoint      The ending coordinate to push towards.
  * @param magnitude     Magnitude of the push.
- */  
+ */
 KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3], Float:magnitude)
 {
     // Create vector from the given starting and ending points.
     new Float:vector[3];
     MakeVectorFromPoints(startpoint, endpoint, vector);
-    
+
     // Normalize the vector (equal magnitude at varying distances).
     NormalizeVector(vector, vector);
-    
+
     // Changes by zephyrus:
     //new flags = GetEntityFlags(client);
     //if(flags & FL_ONGROUND)
     //    vector[2]=0.5;
-    
+
     // Apply the magnitude by scaling the vector (multiplying each of its components).
     ScaleVector(vector, magnitude);
-    
+
     // Changes by zephyrus:
     //if(flags & FL_ONGROUND)
     //    if(vector[2]>350.0)
     //        vector[2]=350.0;
-    
+
     new flags = GetEntityFlags(client);
     if (flags & FL_ONGROUND)
     {
@@ -294,7 +294,7 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
             vector[2] = 251.0;
         }
     }
-    
+
     // ADD the given vector to the client's current velocity.
     PrintToChatAll("Applying velocity on client %d: %0.2f | %0.2f | %0.2f", client, vector[0], vector[1], vector[2]);
     ToolsClientVelocity(client, vector);
@@ -318,37 +318,37 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
         {
             vecVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
         }
-        
+
         // Stop here.
         return;
     }
-    
+
     // If stack is true, then add client's velocity.
     if (stack)
     {
         // Get client's velocity.
         new Float:vecClientVelocity[3];
-        
+
         // x = vector component.
         for (new x = 0; x < 3; x++)
         {
             vecClientVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
         }
-        
+
         AddVectors(vecClientVelocity, vecVelocity, vecVelocity);
     }
-    
+
     // Apply velocity on client.
     TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVelocity);
 }
 
 /**
  * Trace Ray forward, used as a filter to continue tracing if told so. (See sdktools_trace.inc)
- *  
+ *
  * @param entity        The entity index.
  * @param contentsMask  The contents mask.
- * @return              True to allow hit, false to continue tracing. 
- */ 
+ * @return              True to allow hit, false to continue tracing.
+ */
 public bool:KnockbackTRFilter(entity, contentsMask)
 {
     // If entity is a player, continue tracing.
@@ -356,7 +356,7 @@ public bool:KnockbackTRFilter(entity, contentsMask)
     {
         return false;
     }
-    
+
     // Allow hit.
     return true;
 }

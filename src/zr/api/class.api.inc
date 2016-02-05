@@ -31,7 +31,7 @@
 APIClassInit()
 {
     // Class module natives/forwards (class.zr.inc)
-    
+
     // Natives
     CreateNative("ZR_IsValidClassIndex", APIIsValidClassIndex);
     CreateNative("ZR_GetActiveClass", APIGetActiveClass);
@@ -50,7 +50,7 @@ APIClassInit()
 public APIIsValidClassIndex(Handle:plugin, numParams)
 {
     new classIndex = GetNativeCell(1);
-    
+
     return ClassValidateIndex(classIndex);
 }
 
@@ -62,10 +62,10 @@ public APIIsValidClassIndex(Handle:plugin, numParams)
 public APIGetActiveClass(Handle:plugin, numParams)
 {
     new client = GetNativeCell(1);
-    
+
     // Validate the client index. Player must be alive.
     APIValidateClientIndex(client, Condition_True);
-    
+
     return ClassGetActiveIndex(client);
 }
 
@@ -77,10 +77,10 @@ public APIGetActiveClass(Handle:plugin, numParams)
 public APIGetHumanClass(Handle:plugin, numParams)
 {
     new client = GetNativeCell(1);
-    
+
     // Validate the client index. Player must be alive.
     APIValidateClientIndex(client, Condition_True);
-    
+
     return ClassSelected[client][ZR_CLASS_TEAM_HUMANS];
 }
 
@@ -92,10 +92,10 @@ public APIGetHumanClass(Handle:plugin, numParams)
 public APIGetZombieClass(Handle:plugin, numParams)
 {
     new client = GetNativeCell(1);
-    
+
     // Validate the client index. Player must be alive.
     APIValidateClientIndex(client, Condition_True);
-    
+
     return ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES];
 }
 
@@ -110,17 +110,17 @@ public APISelectClientClass(Handle:plugin, numParams)
     new classIndex = GetNativeCell(2);
     new bool:applyIfPossible = bool:GetNativeCell(3);
     new bool:saveIfEnabled = bool:GetNativeCell(4);
-    
+
     // Validate the client index.
     APIValidateClientIndex(client, Condition_Either);
-    
+
     // Validate class index.
     if (!ClassValidateIndex(classIndex))
     {
         ThrowNativeError(SP_ERROR_NATIVE, "Invalid class index. (%d)", classIndex);
         return -1;
     }
-    
+
     return _:ClassSelectClientClass(client, classIndex, applyIfPossible, saveIfEnabled);
 }
 
@@ -133,21 +133,21 @@ public APIGetClassByName(Handle:plugin, numParams)
 {
     decl String:className[64];
     className[0] = 0;
-    
+
     // Get class name.
     if (GetNativeString(1, className, sizeof(className)) != SP_ERROR_NONE)
     {
         ThrowNativeError(SP_ERROR_NATIVE, "Unexpected error when reading className parameter. Possibly corrupt or missing data.");
         return -1;
     }
-    
+
     new cacheType = GetNativeCell(2);
     if (cacheType == ZR_CLASS_CACHE_PLAYER)
     {
         ThrowNativeError(SP_ERROR_NATIVE, "Invalid cache type. Player cache is not allowed in this function.");
         return -1;
     }
-    
+
     return ClassGetIndex(className, cacheType);
 }
 
@@ -161,13 +161,13 @@ public APIGetClassDisplayName(Handle:plugin, numParams)
     new index = GetNativeCell(1);
     new maxlen = GetNativeCell(3);
     new cacheType = GetNativeCell(4);
-    
+
     if (maxlen <= 0)
     {
         // No buffer size.
         return 0;
     }
-    
+
     // Validate index.
     if (cacheType == ZR_CLASS_CACHE_PLAYER)
     {
@@ -183,17 +183,17 @@ public APIGetClassDisplayName(Handle:plugin, numParams)
             return 0;
         }
     }
-    
+
     decl String:displayName[maxlen];
-    
+
     new bytes = ClassGetName(index, displayName, maxlen, cacheType);
     if (bytes <= 0)
     {
         // The class doesn't have a name for some reason. Make sure the buffer is empty.
         displayName[0] = 0;
     }
-    
+
     SetNativeString(2, displayName, maxlen);
-    
+
     return bytes;
 }

@@ -63,7 +63,7 @@ ZHPOnCookiesCreate()
 
 /**
  * Client is joining the server.
- * 
+ *
  * @param client    The client index.
  */
 ZHPClientInit(client)
@@ -74,18 +74,18 @@ ZHPClientInit(client)
 
 /**
  * Called once a client's saved cookies have been loaded from the database.
- * 
+ *
  * @param client		Client index.
  */
 ZHPOnCookiesCached(client)
 {
     // Get default client setting from cvar.
     new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
-    
+
     // Get ZHP enabled cookie value.
     decl String:zhpenabled[8];
     GetClientCookie(client, g_hZHPEnabledCookie, zhpenabled, sizeof(zhpenabled));
-    
+
     // If the cookie is empty, then set the default value.
     if (!zhpenabled[0])
     {
@@ -96,7 +96,7 @@ ZHPOnCookiesCached(client)
 
 /**
  * Client is spawning into the game.
- * 
+ *
  * @param client    The client index.
  */
 ZHPOnClientSpawn(client)
@@ -106,14 +106,14 @@ ZHPOnClientSpawn(client)
     {
         KillTimer(tZHP[client]);
     }
-    
+
     // Reset timer handle.
     tZHP[client] = INVALID_HANDLE;
 }
 
 /**
  * Client has been killed.
- * 
+ *
  * @param client    The client index.
  */
 ZHPOnClientDeath(client)
@@ -123,14 +123,14 @@ ZHPOnClientDeath(client)
     {
         KillTimer(tZHP[client]);
     }
-    
+
     // Reset timer handle.
     tZHP[client] = INVALID_HANDLE;
 }
 
 /**
  * Client has been infected.
- * 
+ *
  * @param client    The client index.
  */
 ZHPOnClientInfected(client)
@@ -141,23 +141,23 @@ ZHPOnClientInfected(client)
     {
         return;
     }
-    
+
     // Update HP display.
     ZHPUpdateHUD(client);
-    
+
     // If timer is currently running, kill it.
     if (tZHP[client] != INVALID_HANDLE)
     {
         KillTimer(tZHP[client]);
     }
-    
+
     // Start repeating timer to update display.
     tZHP[client] = CreateTimer(5.0, ZHPTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
 /**
  * Client has been hurt.
- * 
+ *
  * @param client    The client index.
  */
 ZHPOnClientHurt(client)
@@ -168,7 +168,7 @@ ZHPOnClientHurt(client)
 
 /**
  * Zombie has gained health for infecting a player.
- * 
+ *
  * @param client    The client index.
  */
 ZHPOnHealthInfectGain(client)
@@ -179,7 +179,7 @@ ZHPOnHealthInfectGain(client)
 
 /**
  * Toggle ZHP on a client.
- * 
+ *
  * @param client    The client index.
  */
 bool:ZHPToggle(client)
@@ -190,17 +190,17 @@ bool:ZHPToggle(client)
     {
         // Tell client feature is disabled.
         TranslationPrintToChat(client, "Feature is disabled");
-        
+
         // Stop.
         return false;
     }
-    
+
     // Get the cookie value.
     new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
-    
+
     // Toggle the value.
     CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, !zhpstate);
-    
+
     // If ZHP was enabled, then tell client it has been disabled.
     if (zhpstate)
     {
@@ -210,19 +210,19 @@ bool:ZHPToggle(client)
     else
     {
         TranslationPrintToChat(client, "ZHP enable");
-        
+
         // Update HP display.
         ZHPUpdateHUD(client);
     }
-    
+
     return true;
 }
 
 /**
  * Update HP display for a player.
- * 
+ *
  * @param client    The client index.
- */ 
+ */
 ZHPUpdateHUD(client)
 {
     // If ZHP is disabled, then stop.
@@ -231,23 +231,23 @@ ZHPUpdateHUD(client)
     {
         return;
     }
-    
+
     // Get ZHP enabled cookie as a bool.
     new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
-    
+
     // If player is a zombie, or has ZHP disabled, then stop.
     if (!InfectIsClientInfected(client) || !zhpstate)
     {
         return;
     }
-    
+
     // Get health, and if below 0 then set back to 0. (for display purposes)
     new health = GetClientHealth(client);
     if (health < 0)
     {
         health = 0;
     }
-    
+
     // Display HP
     TranslationPrintHintText(client, "Display HP", health);
 }
@@ -255,7 +255,7 @@ ZHPUpdateHUD(client)
 /**
  * Command callback (zhp)
  * Shows real HP as zombie.
- * 
+ *
  * @param client    The client index.
  * @param argc      Argument count.
  */
@@ -267,18 +267,18 @@ public Action:ZHPCommand(client, argc)
         TranslationPrintToServer("Must be player");
         return Plugin_Handled;
     }
-    
+
     // Toggle ZHP setting.
     ZHPToggle(client);
-    
+
     // This stops the "Unknown command" message in client's console.
     return Plugin_Handled;
 }
 
 /**
  * Timer callback.  Repetitively calls ZHPUpdateHUD() until stopped.
- * 
- * @param timer     The timer handle. 
+ *
+ * @param timer     The timer handle.
  * @param client    The client index.
  */
 public Action:ZHPTimer(Handle:timer, any:client)
@@ -288,10 +288,10 @@ public Action:ZHPTimer(Handle:timer, any:client)
     {
         return Plugin_Stop;
     }
-    
+
     // Update HP display.
     ZHPUpdateHUD(client);
-    
+
     // Allow timer to continue.
     return Plugin_Continue;
 }

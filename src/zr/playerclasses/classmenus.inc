@@ -41,60 +41,60 @@
 ClassMenuMain(client)
 {
     new Handle:menu = CreateMenu(ClassMenuMainHandle);
-    
+
     SetGlobalTransTarget(client);
-    
+
     decl String:title[MENU_LINE_TITLE_LENGTH];
-    
+
     decl String:zombieclass[MENU_LINE_REG_LENGTH];
     decl String:humanclass[MENU_LINE_REG_LENGTH];
     decl String:adminclass[MENU_LINE_REG_LENGTH];
-    
+
     decl String:nextzombiename[MENU_LINE_REG_LENGTH];
     decl String:nexthumanname[MENU_LINE_REG_LENGTH];
     decl String:nextadminname[MENU_LINE_REG_LENGTH];
-    
+
     decl String:zombieselect[MENU_LINE_BIG_LENGTH];
     decl String:humanselect[MENU_LINE_BIG_LENGTH];
     decl String:adminselect[MENU_LINE_BIG_LENGTH];
-        
+
     decl String:inadminmnode[MENU_LINE_BIG_LENGTH];
     decl String:adminmode[MENU_LINE_BIG_LENGTH];
     decl String:toggleadminmode[MENU_LINE_BIG_LENGTH];
-    
+
     // Setup filtering.
     // ----------------
     new filter[ClassFilter];
-    
+
     // Hide mother zombie classes.
     filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
-    
+
     // Hide admin-only classes if not admin.
     filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
-    
+
     // Specify client for checking class group permissions.
     filter[ClassFilter_Client] = client;
-    
+
     // Setup item draw style.
     // ----------------------
-    
+
     // Get number of enabled classes per team.
     new zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES, filter);
     new humancount = ClassCountTeam(ZR_CLASS_TEAM_HUMANS, filter);
     new admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS, filter);
-    
+
     // Get next class indexes, if set.
     new nextzombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
     new nexthuman = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
     new nextadmin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
-    
+
     // Set draw style on class options depending on number of enabled classes
     // and selection permissions. Disable class selection if there's only one
     // class.
     new zombie_itemdraw = (zombiecount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ZOMBIES, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
     new human_itemdraw = (humancount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_HUMANS, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
     new admin_itemdraw = (admincount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ADMINS, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-    
+
     // Check if the player is in admin mode.
     if (ClassPlayerInAdminMode[client])
     {
@@ -102,19 +102,19 @@ ClassMenuMain(client)
         Format(inadminmnode, sizeof(inadminmnode), "%t\n", "Classes admin mode enabled");
         AddMenuItem(menu, "", inadminmnode, ITEMDRAW_RAWLINE);
     }
-    
+
     // List zombie class options.
     // --------------------------
-    
+
     // Get current class name.
     ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES], zombieclass, sizeof(zombieclass), ZR_CLASS_CACHE_MODIFIED);
-    
+
     // Check if next index is set.
     if (ClassValidateIndex(nextzombie))
     {
         // Get name of previous class index and format item text.
         ClassGetName(nextzombie, nextzombiename, sizeof(nextzombiename), ZR_CLASS_CACHE_MODIFIED);
-        
+
         Format(zombieselect, sizeof(zombieselect), "%t\n    %t\n    %t", "Classes menu select zombie", "Classes menu active", zombieclass, "Classes menu next", nextzombiename);
     }
     else
@@ -122,23 +122,23 @@ ClassMenuMain(client)
         // Use current class name and format item text.
         Format(zombieselect, sizeof(zombieselect), "%t\n    %s", "Classes menu select zombie", zombieclass);
     }
-    
+
     // Add item to list.
     AddMenuItem(menu, "", zombieselect, zombie_itemdraw);
-    
-        
+
+
     // List human class options.
     // -------------------------
-    
+
     // Get current class name.
     ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_HUMANS], humanclass, sizeof(humanclass), ZR_CLASS_CACHE_MODIFIED);
-    
+
     // Check if next index is set.
     if (ClassValidateIndex(nexthuman))
     {
         // Get name of previous class index and format item text.
         ClassGetName(nexthuman, nexthumanname, sizeof(nexthumanname), ZR_CLASS_CACHE_MODIFIED);
-        
+
         Format(humanselect, sizeof(humanselect), "%t\n    %t\n    %t", "Classes menu select human", "Classes menu active", humanclass, "Classes menu next", nexthumanname);
     }
     else
@@ -146,20 +146,20 @@ ClassMenuMain(client)
         // Use current class name and format item text.
         Format(humanselect, sizeof(humanselect), "%t\n    %s", "Classes menu select human", humanclass);
     }
-    
+
     // Add item to list.
     AddMenuItem(menu, "", humanselect, human_itemdraw);
-    
-    
+
+
     // List admin class options, if they exist.
     // ----------------------------------------
-    
+
     // Only display admin class options for admins, and if admin classes exist.
     if (ZRIsClientAdmin(client) && ClassCountTeam(ZR_CLASS_TEAM_ADMINS))
     {
         // Get current class name.
         ClassGetName(ClassSelected[client][ZR_CLASS_TEAM_ADMINS], adminclass, sizeof(adminclass), ZR_CLASS_CACHE_MODIFIED);
-        
+
         // Check if next index is set.
         if (ClassValidateIndex(nextadmin))
         {
@@ -172,10 +172,10 @@ ClassMenuMain(client)
             // Use current class name and format item text.
             Format(adminselect, sizeof(adminselect), "%t\n    %s", "Classes menu select admin", adminclass);
         }
-        
+
         // Add item to list.
         AddMenuItem(menu, "", adminselect, admin_itemdraw);
-        
+
         // Set admin mode status string.
         if (ClassPlayerInAdminMode[client])
         {
@@ -185,18 +185,18 @@ ClassMenuMain(client)
         {
             Format(adminmode, sizeof(adminmode), "%t", "Off");
         }
-        
+
         // Spacer. ITEMDRAW_SPACER not used because it use a slot.
         AddMenuItem(menu, "", " ", ITEMDRAW_RAWLINE);
-        
+
         // Show admin mode toggle option.
         Format(toggleadminmode, sizeof(toggleadminmode), "%t\n    %s", "Classes menu admin mode toggle", adminmode);
         AddMenuItem(menu, "", toggleadminmode, admin_itemdraw);
     }
-    
+
     Format(title, sizeof(title), "%t\n", "Classes menu title");
     SetMenuTitle(menu, title);
-    
+
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -263,14 +263,14 @@ ClassMenuSelect(client, teamid)
     new Handle:menu = CreateMenu(ClassMenuSelectHandle);
     new arraycount;
     new classindex;
-    
+
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:classname[MENU_LINE_REG_LENGTH];
     decl String:description[MENU_LINE_BIG_LENGTH];
     decl String:menuitem[MENU_LINE_HUGE_LENGTH];
-    
+
     SetGlobalTransTarget(client);
-    
+
     // Set correct menu title depending on team ID.
     switch (teamid)
     {
@@ -288,32 +288,32 @@ ClassMenuSelect(client, teamid)
         }
     }
     SetMenuTitle(menu, title);
-    
+
     // Create buffer array.
     new Handle:classarray = CreateArray();
-    
+
     // Set up filtering
     // ----------------
     new filter[ClassFilter];
-    
+
     // Hide mother zombie classes.
     filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
-    
+
     // Hide admin-only classes if not admin.
     filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
-    
+
     // Specify client for checking class group permissions.
     filter[ClassFilter_Client] = client;
-    
+
     // Get classes
     // -----------
-    
+
     // Copy all class indexes into the array, with the specified filter settings.
     if (ClassAddToArray(classarray, teamid, filter))
     {
         // Get number of classes.
         arraycount = GetArraySize(classarray);
-        
+
         // Loop through each class.
         for (new i = 0; i < arraycount; i++)
         {
@@ -321,16 +321,16 @@ ClassMenuSelect(client, teamid)
             classindex = GetArrayCell(classarray, i);
             ClassGetName(classindex, classname, sizeof(classname), ZR_CLASS_CACHE_MODIFIED);
             ClassGetDescription(classindex, description, sizeof(description), ZR_CLASS_CACHE_MODIFIED);
-            
+
             // Add menu item. Using extra spaces for indention on the second line.
             Format(menuitem, sizeof(menuitem), "%s\n    %s", classname, description);
             AddMenuItem(menu, classname, menuitem);
         }
     }
-    
+
     // Destroy array.
     CloseHandle(classarray);
-    
+
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -343,17 +343,17 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
     decl String:className[MENU_LINE_REG_LENGTH];
     new classIndex;
     new bool:autoclose = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]);
-    
+
     switch (action)
     {
         case MenuAction_Select:
         {
             // Get class name from the information string.
             GetMenuItem(menu, slot, className, sizeof(className));
-            
+
             // Solve class index from the name.
             classIndex = ClassGetIndex(className);
-            
+
             // Select (and eventually apply) class.
             ClassSelectClientClass(client, classIndex);
         }
@@ -363,19 +363,19 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
             {
                 ClassMenuMain(client);
             }
-            
+
             // Stop so menu doesn't reopen.
             return;
         }
         case MenuAction_End:
         {
             CloseHandle(menu);
-            
+
             // Stop so menu doesn't reopen.
             return;
         }
     }
-    
+
     // Redisplay the main class menu if autoclose is disabled.
     if (!autoclose)
     {
@@ -397,36 +397,36 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
  * @return          True if displayed, false otherwise.
  */
 bool:ClassTeamSelect(client)
-{    
+{
     // Validate permissions.
     if (!ZRIsClientPrivileged(client, OperationType_Configuration))
     {
         return false;
     }
-    
+
     // Create menu.
     new Handle:menu = CreateMenu(ClassTeamSelectHandle);
-    
+
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:zombies[MENU_LINE_SMALL_LENGTH];
     decl String:humans[MENU_LINE_SMALL_LENGTH];
-    
+
     // Set translation language.
     SetGlobalTransTarget(client);
-    
+
     // Translate phrases.
     Format(title, sizeof(title), "%t", "Classes Menu Team Select Title");
     Format(zombies, sizeof(zombies), "%t", "Classes Menu Zombies");
     Format(humans, sizeof(humans), "%t", "Classes Menu Humans");
-    
+
     SetMenuTitle(menu, title);
-    
+
     AddMenuItem(menu, "zombies", zombies);
     AddMenuItem(menu, "humans", humans);
-    
+
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
-    
+
     return true;
 }
 
@@ -450,7 +450,7 @@ public ClassTeamSelectHandle(Handle:menu, MenuAction:action, client, slot)
                     ClassAdminTeamSelected[client] = ZR_CLASS_TEAM_HUMANS;
                 }
             }
-            
+
             // Display multiplier menu.
             ClassMultiplierSelectMenu(client);
         }
@@ -484,10 +484,10 @@ ClassMultiplierSelectMenu(client)
 {
     // Create menu.
     new Handle:menu = CreateMenu(ClassMultiplierSelectHandle);
-    
+
     new teamid = ClassAdminTeamSelected[client];
     new bool:zombiesselected = bool:(teamid == ZR_CLASS_TEAM_ZOMBIES);
-    
+
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:napalmtime[MENU_LINE_REG_LENGTH];
     decl String:health[MENU_LINE_REG_LENGTH];
@@ -498,7 +498,7 @@ ClassMultiplierSelectMenu(client)
     decl String:knockback[MENU_LINE_REG_LENGTH];
     decl String:jumpheight[MENU_LINE_REG_LENGTH];
     decl String:jumpdistance[MENU_LINE_REG_LENGTH];
-    
+
     new Float:currentnapalmtime;
     new Float:currenthealth;
     new Float:currentregeninterval;
@@ -508,7 +508,7 @@ ClassMultiplierSelectMenu(client)
     new Float:currentknockback;
     new Float:currentjumpheight;
     new Float:currentjumpdistance;
-    
+
     // Get current multipliers.
     currentnapalmtime = Float:ClassMultiplierCache[teamid][ClassM_NapalmTime];
     currenthealth = Float:ClassMultiplierCache[teamid][ClassM_Health];
@@ -519,9 +519,9 @@ ClassMultiplierSelectMenu(client)
     currentknockback = Float:ClassMultiplierCache[teamid][ClassM_Knockback];
     currentjumpheight = Float:ClassMultiplierCache[teamid][ClassM_JumpHeight];
     currentjumpdistance = Float:ClassMultiplierCache[teamid][ClassM_JumpDistance];
-    
+
     SetGlobalTransTarget(client);
-    
+
     // Translate phrases.
     Format(title, sizeof(title), "%t\n", "Classes Menu Multiplier Select Title");
     Format(health, sizeof(health), "%t\n    %.2f", "Classes Attrib Health", currenthealth);
@@ -530,7 +530,7 @@ ClassMultiplierSelectMenu(client)
     Format(speed, sizeof(speed), "%t\n    %.2f", "Classes Attrib Speed", currentspeed);
     Format(jumpheight, sizeof(jumpheight), "%t\n    %.2f", "Classes Attrib Jump Height", currentjumpheight);
     Format(jumpdistance, sizeof(jumpdistance), "%t\n    %.2f", "Classes Attrib Jump Distance", currentjumpdistance);
-    
+
     // Only translate zombie phrases if zombie team is selected.
     if (zombiesselected)
     {
@@ -538,9 +538,9 @@ ClassMultiplierSelectMenu(client)
         Format(infectgain, sizeof(infectgain), "%t\n    %.2f", "Classes Attrib Infect Gain", currentinfectgain);
         Format(knockback, sizeof(knockback), "%t\n    %.2f", "Classes Attrib Knockback", currentknockback);
     }
-    
+
     SetMenuTitle(menu, title);
-    
+
     // Add items. Don't add zombie attributes if human team is selected.
     if (zombiesselected) AddMenuItem(menu, "napalmtime", napalmtime);
     AddMenuItem(menu, "health", health);
@@ -551,7 +551,7 @@ ClassMultiplierSelectMenu(client)
     if (zombiesselected) AddMenuItem(menu, "knockback", knockback);
     AddMenuItem(menu, "jumpheight", jumpheight);
     AddMenuItem(menu, "jumpdistance", jumpdistance);
-    
+
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -563,17 +563,17 @@ public ClassMultiplierSelectHandle(Handle:menu, MenuAction:action, client, slot)
 {
     decl String:attributename[48];
     new ClassMultipliers:attribute;
-    
+
     switch (action)
     {
         case MenuAction_Select:
         {
             // Get attribute name.
             GetMenuItem(menu, slot, attributename, sizeof(attributename));
-            
+
             // Initialize in case of errors.
             attribute = ClassM_Knockback;
-            
+
             // Convert type.
             if (StrEqual(attributename, "napalmtime", false))
             {
@@ -611,7 +611,7 @@ public ClassMultiplierSelectHandle(Handle:menu, MenuAction:action, client, slot)
             {
                 attribute = ClassM_JumpDistance;
             }
-            
+
             // Display multiplier menu for the selected attribute.
             ClassMultiplierMenu(client, attribute);
         }
@@ -643,20 +643,20 @@ ClassMultiplierMenu(client, ClassMultipliers:attribute)
 {
     // Cache selected attribute.
     ClassAdminAttributeSelected[client] = attribute;
-    
+
     new Handle:menu = CreateMenu(ClassMultiplierHandle);
-    
+
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:attributename[MENU_LINE_REG_LENGTH];
     decl String:linebuffer[MENU_LINE_REG_LENGTH];
-    
+
     // Get attribute string.
     ClassMultiplierToString(client, attribute, attributename, sizeof(attributename));
-    
+
     SetGlobalTransTarget(client);
     Format(title, sizeof(title), "%t %s\n%t %.2f\n", "Classes Menu Adjust Value", attributename, "Current Value", Float:ClassMultiplierCache[ClassAdminTeamSelected[client]][attribute]);
     SetMenuTitle(menu, title);
-    
+
     SetGlobalTransTarget(client);
     Format(linebuffer, sizeof(linebuffer), "%t", "Increase by", "0.5");
     AddMenuItem(menu, "increasehalf", linebuffer);
@@ -666,7 +666,7 @@ ClassMultiplierMenu(client, ClassMultipliers:attribute)
     AddMenuItem(menu, "decreasedeci", linebuffer);
     Format(linebuffer, sizeof(linebuffer), "%t", "Decrease by", "0.5");
     AddMenuItem(menu, "decreasehalf", linebuffer);
-    
+
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -674,7 +674,7 @@ ClassMultiplierMenu(client, ClassMultipliers:attribute)
 public ClassMultiplierHandle(Handle:menu, MenuAction:action, client, slot)
 {
     new Float:value;
-    
+
     switch (action)
     {
         case MenuAction_Select:
@@ -698,10 +698,10 @@ public ClassMultiplierHandle(Handle:menu, MenuAction:action, client, slot)
                     value = -0.5;
                 }
             }
-            
+
             // Update multiplier.
             ClassAddToMultiplier(ClassAdminTeamSelected[client], ClassAdminAttributeSelected[client], value);
-            
+
             // Re-display menu.
             ClassMultiplierMenu(client, ClassAdminAttributeSelected[client]);
         }

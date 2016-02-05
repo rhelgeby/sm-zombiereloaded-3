@@ -39,9 +39,9 @@ VolOnPlayerEnter(client, volumeIndex)
         // Volumetric features disabled.
         return;
     }
-    
+
     LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N entered volume %d.", client, volumeIndex);
-    
+
     // Forward event to features.
     new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
     switch (voltype)
@@ -67,9 +67,9 @@ VolOnPlayerLeave(client, volumeIndex)
         // Volumetric features disabled.
         return;
     }
-    
+
     LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N left volume %d.", client, volumeIndex);
-    
+
     // Forward event to features.
     new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
     switch (voltype)
@@ -98,7 +98,7 @@ VolOnPlayerSpawn(client)
         // Volumetric features disabled.
         return;
     }
-    
+
     // Cache player location.
     VolUpdatePlayerLocation(client);
 }
@@ -118,13 +118,13 @@ VolOnPlayerDeath(client)
         {
             continue;
         }
-        
+
         // Check if volume is disabled.
         if (!Volumes[volindex][Vol_Enabled])
         {
             continue;
         }
-        
+
         // Check if player is inside the volume.
         if (VolPlayerInVolume[client][volindex])
         {
@@ -144,7 +144,7 @@ VolOnPlayerDisconnect(client)
 {
     // Disable trigger delay counters.
     VolResetCountDown(client);
-    
+
     // Trigger death event to clean up.
     VolOnPlayerDeath(client);
 }
@@ -160,10 +160,10 @@ VolOnRoundStart()
         // Volumetric features disabled.
         return;
     }
-    
+
     // Start main timer.
     VolStartUpdateTimer();
-    
+
     // Start volumes.
     VolEnableVolumes();
 }
@@ -175,7 +175,7 @@ VolOnRoundEnd()
 {
     // Stop main timer.
     VolStopUpdateTimer();
-    
+
     // Stop volumes.
     VolDisableVolumes();
 }
@@ -201,9 +201,9 @@ VolOnDisabled(volumeIndex)
         // Volumetric features disabled.
         return;
     }
-    
+
     new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
-    
+
     // Forward stop event to features.
     switch (voltype)
     {
@@ -230,9 +230,9 @@ VolOnEnabled(volumeIndex)
         // Volumetric features disabled.
         return;
     }
-    
+
     new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
-    
+
     // Forward enable event to features.
     switch (voltype)
     {

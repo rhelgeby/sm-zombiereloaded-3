@@ -27,7 +27,7 @@
 
 /**
  * Client is jumping.
- * 
+ *
  * @param client    The client index.
  */
 JumpBoostOnClientJumpPost(client)
@@ -35,18 +35,18 @@ JumpBoostOnClientJumpPost(client)
     // Get class jump multipliers.
     new Float:distancemultiplier = ClassGetJumpDistance(client);
     new Float:heightmultiplier = ClassGetJumpHeight(client);
-    
+
     // If both are set to 1.0, then stop here to save some work.
     if (distancemultiplier == 1.0 && heightmultiplier == 1.0)
     {
         return;
     }
-    
+
     new Float:vecVelocity[3];
-    
+
     // Get client's current velocity.
     ToolsClientVelocity(client, vecVelocity, false);
-    
+
     // Only apply horizontal multiplier if it's not a bhop.
     if (!JumpBoostIsBHop(vecVelocity))
     {
@@ -54,10 +54,10 @@ JumpBoostOnClientJumpPost(client)
         vecVelocity[0] *= distancemultiplier;
         vecVelocity[1] *= distancemultiplier;
     }
-    
+
     // Apply height multiplier to jump vector.
     vecVelocity[2] *= heightmultiplier;
-    
+
     // Set new velocity.
     ToolsClientVelocity(client, vecVelocity, true, false);
 }
@@ -65,7 +65,7 @@ JumpBoostOnClientJumpPost(client)
 /**
  * This function detects excessive bunnyhopping.
  * Note: This ONLY catches bunnyhopping that is worse than CS:S already allows.
- * 
+ *
  * @param vecVelocity   The velocity of the client jumping.
  * @return              True if the client is bunnyhopping, false if not.
  */
@@ -77,10 +77,10 @@ stock bool:JumpBoostIsBHop(const Float:vecVelocity[])
     {
         return false;
     }
-    
+
     // Calculate the magnitude of jump on the xy plane.
     new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
-    
+
     // Return true if the magnitude exceeds the max.
     new Float:bunnyhopmax = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_MAX]);
     return (magnitude > bunnyhopmax);

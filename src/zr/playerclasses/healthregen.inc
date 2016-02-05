@@ -4,7 +4,7 @@
  *  Zombie:Reloaded
  *
  *  File:          healthregen.inc
- *  Type:          Core 
+ *  Type:          Core
  *  Description:   Functions for managing health regeneration on a client.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -66,7 +66,7 @@ ClassHealthRegenStart(client, Float:interval)
 {
     // Stop timer if it already exist.
     ClassHealthRegenStop(client);
-    
+
     // Create new timer.
     tHealthRegen[client] = CreateTimer(interval, ClassHealthRegenTimer, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
@@ -97,16 +97,16 @@ public Action:ClassHealthRegenTimer(Handle:timer, any:client)
         tHealthRegen[client] = INVALID_HANDLE;
         return Plugin_Stop;
     }
-    
-    new health = GetClientHealth(client);    
+
+    new health = GetClientHealth(client);
     health += ClientHealthRegenAmount[client];
-    
+
     // Check if the health points is below the limit.
     if (health < ClientHealthRegenMax[client])
     {
         // Increase health.
         SetEntityHealth(client, health);
     }
-    
+
     return Plugin_Continue;
 }

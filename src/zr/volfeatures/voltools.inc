@@ -40,7 +40,7 @@ bool:IsPointInLocation(Float:point[3], Float:min[3], Float:max[3])
     new Float:posX = point[0];
     new Float:posY = point[1];
     new Float:posZ = point[2];
-    
+
     // Check if within x boundaries.
     if ((posX >= min[0]) && (posX <= max[0]))
     {
@@ -55,7 +55,7 @@ bool:IsPointInLocation(Float:point[3], Float:min[3], Float:max[3])
             }
         }
     }
-    
+
     // The point is outside the location boundaries.
     return false;
 }
@@ -121,7 +121,7 @@ VolGetFreeVolume()
             return volumeIndex;
         }
     }
-    
+
     // No free volumes found.
     return -1;
 }
@@ -145,7 +145,7 @@ VolGetFreeDataIndex(VolumeFeatureTypes:volumeType)
             return VolClassEditGetFreeIndex();
         }
     }
-    
+
     // No match.
     return -1;
 }
@@ -161,10 +161,10 @@ VolGetFreeDataIndex(VolumeFeatureTypes:volumeType)
 bool:VolTeamFilterMatch(client, volumeIndex)
 {
     new VolumeTeamFilters:filter;
-    
+
     // Chache filter value.
     filter = Volumes[volumeIndex][Vol_TeamFilter];
-    
+
     switch (filter)
     {
         case VolTeam_All:
@@ -183,7 +183,7 @@ bool:VolTeamFilterMatch(client, volumeIndex)
             return InfectIsClientInfected(client);
         }
     }
-    
+
     // Invalid filter value.
     return false;
 }
@@ -213,10 +213,10 @@ VolGetPlayerStates(client, bool:buffer[], maxlen)
 {
     new volumeBuffer[VolumeAttributes];
     new volCount;
-    
+
     new Float:volMinBuffer[3];
     new Float:volMaxBuffer[3];
-    
+
     // Loop through all available volumes.
     for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX && volumeIndex < maxlen; volumeIndex++)
     {
@@ -224,17 +224,17 @@ VolGetPlayerStates(client, bool:buffer[], maxlen)
         {
             // Chache volume to avoid re-indexing.
             volumeBuffer = Volumes[volumeIndex];
-            
+
             // Get min positions.
             volMinBuffer[0] = volumeBuffer[Vol_xMin];
             volMinBuffer[1] = volumeBuffer[Vol_yMin];
             volMinBuffer[2] = volumeBuffer[Vol_zMin];
-            
+
             // Get max positions.
             volMaxBuffer[0] = volumeBuffer[Vol_xMax];
             volMaxBuffer[1] = volumeBuffer[Vol_yMax];
             volMaxBuffer[2] = volumeBuffer[Vol_zMax];
-            
+
             // Check the cached player location.
             if (IsPointInLocation(VolPlayerLoc[client], volMinBuffer, volMaxBuffer))
             {
@@ -249,7 +249,7 @@ VolGetPlayerStates(client, bool:buffer[], maxlen)
             }
         }
     }
-    
+
     return volCount;
 }
 
@@ -266,7 +266,7 @@ VolumeFeatureTypes:VolGetTypeFromString(const String:volType[])
     {
         return VolFeature_Invalid;
     }
-    
+
     // Match types.
     if (StrEqual(volType, "anticamp", false))
     {
@@ -276,7 +276,7 @@ VolumeFeatureTypes:VolGetTypeFromString(const String:volType[])
     {
         return VolFeature_ClassEdit;
     }
-    
+
     // No match.
     return VolFeature_Invalid;
 }
@@ -308,6 +308,6 @@ VolTypeToString(VolumeFeatureTypes:volType, String:buffer[], maxlen, bool:shortN
             return shortName ? strcopy(buffer, maxlen, "classedit") : strcopy(buffer, maxlen, "Class Editor");
         }
     }
-    
+
     return 0;
 }

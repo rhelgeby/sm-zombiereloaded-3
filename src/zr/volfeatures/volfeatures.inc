@@ -38,25 +38,25 @@ enum VolumeAttributes
     /* General */
     bool:Vol_Enabled,                   /** Volume state. */
     bool:Vol_InUse,                     /** Marks if the volume is used. */
-    
+
     /* Location */
     Float:Vol_xMin,                     /** Minimum x position. */
     Float:Vol_xMax,                     /** Maximum x position. */
-    
+
     Float:Vol_yMin,                     /** Minimum y position. */
     Float:Vol_yMax,                     /** Maximum y position. */
-    
+
     Float:Vol_zMin,                     /** Minimum z position. */
     Float:Vol_zMax,                     /** Maximum z position. */
-    
+
     /* Style */
     VolumeEffects:Vol_Effect,           /** Visual effect to apply on the volume. */
     Vol_EffectColor[3],                 /** Render color of the effect. RGB colors. */
-    
+
     /* Data */
     VolumeFeatureTypes:Vol_Type,        /** The volumetric feature type. */
     Vol_DataIndex,                      /** Index in remote feature array. */
-    
+
     /* Behaviour */
     VolumeTeamFilters:Vol_TeamFilter,   /** Team filtering. Trigger by certain teams, or all. */
     Float:Vol_TriggerDelay,             /** Trigger delay. How many seconds players have to stay to trigger volume events. */
@@ -169,11 +169,11 @@ VolInit()
 {
     // Clear all volumes.
     VolClearAll();
-    
+
     // Initialize sub features.
     VolAnticampInit();
     VolClassEditInit();
-} 
+}
 
 /**
  * Initialize volumetric feature settings.
@@ -192,7 +192,7 @@ VolDisable()
     VolEnabled = false;
     VolStopUpdateTimer();
     VolDisableVolumes();
-    
+
     LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Disabled", "Volfeatures disabled.");
 }
 
@@ -204,7 +204,7 @@ VolEnable()
     VolEnabled = true;
     VolStartUpdateTimer();
     VolEnableVolumes();
-    
+
     LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Enabled", "Volfeatures enabled.");
 }
 
@@ -220,7 +220,7 @@ VolDisableVolumes()
         {
             // Mark as disabled.
             Volumes[volindex][Vol_Enabled] = false;
-            
+
             // Trigger player left volume event if inside a volume.
             for (new client = 1; client <= MaxClients; client++)
             {
@@ -229,7 +229,7 @@ VolDisableVolumes()
                 {
                     continue;
                 }
-                
+
                 // Check if player is inside the volume.
                 if (VolPlayerInVolume[client][volindex])
                 {
@@ -238,7 +238,7 @@ VolDisableVolumes()
                     VolOnPlayerLeave(client, volindex);
                 }
             }
-            
+
             // Trigger disabled event.
             VolOnDisabled(volindex);
         }
@@ -274,22 +274,22 @@ bool:VolStartUpdateTimer()
         // Volumetric features disabled.
         return false;
     }
-    
+
     // Stop timer if it exist.
     VolStopUpdateTimer();
-    
+
     // Get update interval.
     new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_VOL_UPDATE_INTERVAL]);
-    
+
     // Validate interval.
     if (interval > 0.0)
     {
         // Create a new timer.
         hVolUpdateTimer = CreateTimer(interval, Event_VolUpdateTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-        
+
         // Also start the trigger delay timer.
         VolStartTriggerTimer();
-        
+
         // Volumetric features started.
         return true;
     }
@@ -312,10 +312,10 @@ VolStopUpdateTimer()
         KillTimer(hVolUpdateTimer);
         hVolUpdateTimer = INVALID_HANDLE;
     }
-    
+
     // Also stop trigger delay timer.
     VolStopTriggerTimer();
-    
+
     // Reset all trigger delay counters.
     VolResetCountDown();
 }
@@ -329,16 +329,16 @@ bool:VolStartTriggerTimer()
 {
     // Make sure existing timer is killed.
     VolStopTriggerTimer();
-    
+
     // Get trigger interval and cache it.
     VolTriggerInterval = GetConVarFloat(g_hCvarsList[CVAR_VOL_TRIGGER_INTERVAL]);
-    
+
     // Validate interval.
     if (VolTriggerInterval > 0.0)
     {
         // Start the timer.
         hVolTriggerTimer = CreateTimer(VolTriggerInterval, Event_VolTriggerTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-        
+
         // Trigger timer started.
         return true;
     }
@@ -418,7 +418,7 @@ VolUpdatePlayerLocation(client = -1)
             {
                 continue;
             }
-            
+
             // Save location in array.
             GetClientAbsOrigin(client, VolPlayerLoc[client]);
         }
@@ -433,12 +433,12 @@ VolUpdatePlayerChanges()
 {
     new bool:volumeStates[ZR_VOLUMES_MAX];
     new bool:volumeNewStates[ZR_VOLUMES_MAX];
-    
+
     new bool:newState;
     new bool:oldState;
-    
+
     new Float:trigger_delay;
-    
+
     // Loop through all players.
     for (new client = 1; client <= MaxClients; client++)
     {
@@ -448,16 +448,16 @@ VolUpdatePlayerChanges()
             // Skip client.
             continue;
         }
-        
+
         // Get the current volume states based on player location cache.
         VolGetPlayerStates(client, volumeStates, sizeof(volumeStates));
-        
+
         // Update player location cache.
         GetClientAbsOrigin(client, VolPlayerLoc[client]);
-        
+
         // Get new volume states.
         VolGetPlayerStates(client, volumeNewStates, sizeof(volumeNewStates));
-        
+
         // Loop through each volume and compare states.
         for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX; volumeIndex++)
         {
@@ -467,30 +467,30 @@ VolUpdatePlayerChanges()
                 // Skip volume.
                 continue;
             }
-            
+
             // Check team filtering on the volume.
             if (!VolTeamFilterMatch(client, volumeIndex))
             {
                 // Team filter mismatch.
                 continue;
             }
-            
+
             newState = volumeNewStates[volumeIndex];
             oldState = volumeStates[volumeIndex];
-            
+
             // Check for no change.
             if (newState == oldState)
             {
                 // No change. Skip to next volume.
                 continue;
             }
-            
+
             // Check if client entered the volume.
             if (newState && !oldState)
             {
                 // Get trigger delay value.
                 trigger_delay = Volumes[volumeIndex][Vol_TriggerDelay];
-                
+
                 // Check if the volume has a trigger delay.
                 if (trigger_delay > 0.0)
                 {
@@ -501,18 +501,18 @@ VolUpdatePlayerChanges()
                 {
                     // Update cache.
                     VolPlayerInVolume[client][volumeIndex] = true;
-                    
+
                     // No trigger delay, trigger event instantly.
                     VolOnPlayerEnter(client, volumeIndex);
                 }
             }
-            
+
             // Check if client left the volume.
             else if (!newState && oldState)
             {
                 // Make sure count down value is reset.
                 VolPlayerCountDown[client][volumeIndex] = -1.0;
-                
+
                 // Only trigger left volume event if player already is in the
                 // volume, so volumes with trigger delay won't get a left event
                 // before the enter event.
@@ -520,7 +520,7 @@ VolUpdatePlayerChanges()
                 {
                     // Update cache.
                     VolPlayerInVolume[client][volumeIndex] = false;
-                    
+
                     // Trigger event.
                     VolOnPlayerLeave(client, volumeIndex);
                 }
@@ -543,7 +543,7 @@ public Action:Event_VolUpdateTimer(Handle:timer)
 public Action:Event_VolTriggerTimer(Handle:timer)
 {
     new Float:countDown;
-    
+
     // Loop through all players.
     for (new client = 1; client <= MaxClients; client++)
     {
@@ -556,29 +556,29 @@ public Action:Event_VolTriggerTimer(Handle:timer)
                 // Not in use or enabled, skip volume.
                 continue;
             }
-            
+
             // Get count down value.
             countDown = VolPlayerCountDown[client][volumeIndex];
-            
+
             // Check if volume trigger delay is enabled.
             if (countDown > 0.0)
             {
                 // Substract by trigger interval.
                 countDown -= VolTriggerInterval;
-                
+
                 // Check if time is up.
                 if (countDown <= 0.0)
                 {
                     // Update cache.
                     VolPlayerInVolume[client][volumeIndex] = true;
-                    
+
                     // Trigger volume enter event.
                     VolOnPlayerEnter(client, volumeIndex);
-                    
+
                     // Reset count down value.
                     VolPlayerCountDown[client][volumeIndex] = -1.0;
                 }
-                
+
                 // Update count down value and continue.
                 VolPlayerCountDown[client][volumeIndex] = countDown;
             }
@@ -592,7 +592,7 @@ public Action:Event_VolTriggerTimer(Handle:timer)
 public VolEnabledChanged(Handle:cvar, const String:oldvalue[], const String:newvalue[])
 {
     new bool:isEnabled = bool:StringToInt(newvalue);
-    
+
     if (isEnabled)
     {
         // Volumetric features is enabled.

@@ -4,7 +4,7 @@
  *  Zombie:Reloaded
  *
  *  File:          zombiereloaded.inc
- *  Type:          Core 
+ *  Type:          Core
  *  Description:   General plugin functions and defines.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -77,7 +77,7 @@ UpdateGameFolder()
 {
     new String:gameFolder[PLATFORM_MAX_PATH];
     GetGameFolderName(gameFolder, sizeof(gameFolder));
-    
+
     if (StrEqual(gameFolder, "cstrike", false))
     {
         g_Game = Game_CSS;
@@ -90,14 +90,14 @@ UpdateGameFolder()
         PrintToServer("Game detected: csgo");
         return;
     }
-    
+
     LogError("Warning: Zombie:Reloaded doesn't support this game: %s", gameFolder);
     g_Game = Game_Unknown;
 }
 
 /**
  * Function to convert numbers to defined units.
- * 
+ *
  * @param number        The number to convert.
  * @param conversion    The conversion factor to multiply by. (See defines above)
  * @return              The converted number.
@@ -109,19 +109,19 @@ Float:ZRConvertUnitsFloat(Float:number, Float:conversion)
 
 /**
  * Create an array populated with eligible clients to be zombie.
- * 
+ *
  * @param arrayEligibleClients  The handle of the array, don't forget to call CloseHandle
  *                              on it when finished!
  * @param team                  Client is only eligible if on a team.
  * @param alive                 Client is only eligible if alive.
  * @param human                 Client is only eligible if human.
  * @param immunity              True to ignore clients immune from mother infect, false to count them.
- */  
+ */
 stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false)
 {
     // Create array.
     arrayEligibleClients = CreateArray();
-    
+
     // Populate list with eligible clients.
     // x = client index.
     for (new x = 1; x <= MaxClients; x++)
@@ -131,35 +131,35 @@ stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false
         {
             continue;
         }
-        
+
         // If client isn't on a team, then stop.
         if (team && !ZRIsClientOnTeam(x))
         {
             continue;
         }
-        
+
         // If client is dead, then stop.
         if (alive && !IsPlayerAlive(x))
         {
             continue;
         }
-        
+
         // If client is already zombie (via admin), then stop.
         if (human && !InfectIsClientHuman(x))
         {
             continue;
         }
-        
+
         // Add eligible client to array.
         PushArrayCell(arrayEligibleClients, x);
     }
-    
+
     return GetArraySize(arrayEligibleClients);
 }
 
 /**
  * Checks if a timer is currently running.
- * 
+ *
  * @param timer     The timer handle.
  */
 stock bool:ZRIsTimerRunning(Handle:timer)
@@ -171,11 +171,11 @@ stock bool:ZRIsTimerRunning(Handle:timer)
 /**
  * Wrapper functions for KilLTimer.
  * Ends a timer if running, and resets its timer handle variable.
- * 
+ *
  * @param timer     The timer handle.
  * @param kill      True to kill the timer and reset the variable, false to only reset the variable.
  *                  Using false is useful when calling from the timer callback, because the timer is already killed.
- * 
+ *
  * @return          True if the handle wasn't INVALID_HANDLE, false if the handle wasn't valid.
  */
 stock bool:ZREndTimer(&Handle:timer, bool:kill = true)
@@ -188,26 +188,26 @@ stock bool:ZREndTimer(&Handle:timer, bool:kill = true)
         {
             KillTimer(timer);
         }
-        
+
         // Reset variable.
         timer = INVALID_HANDLE;
-        
+
         return true;
     }
-    
+
     // Reset variable.
     timer = INVALID_HANDLE;
-    
+
     return false;
 }
 
 /**
  * Check if a client index is a valid player.
- * 
+ *
  * @param client    The client index.
  * @param console   True to include console (index 0), false if not.
- * @return          True if client is valid, false otherwise. 
- */    
+ * @return          True if client is valid, false otherwise.
+ */
 stock bool:ZRIsClientValid(client, bool:console = false)
 {
     // If index is greater than max number of clients, then return false.
@@ -215,18 +215,18 @@ stock bool:ZRIsClientValid(client, bool:console = false)
     {
         return false;
     }
-    
+
     // If console is true, return if client is >= 0, if not, then return client > 0.
     return console ? (client >= 0) : (client > 0);
 }
 
 /**
  * Check if a given index is console.
- * 
+ *
  * @param client    The client index.
  * @param console   True to include console (index 0), false if not.
- * @return          True if client is valid, false otherwise. 
- */    
+ * @return          True if client is valid, false otherwise.
+ */
 stock bool:ZRIsConsole(index)
 {
     // Return true if index is equal to console's index.
@@ -235,7 +235,7 @@ stock bool:ZRIsConsole(index)
 
 /**
  * Count clients on each team.
- * 
+ *
  * @param zombies   This is set to the number of clients that are zombies.
  * @param humans    This is set to the number of clients that are humans.
  * @param alive     If true it will only count live players, false will count alive and dead.
@@ -248,7 +248,7 @@ stock bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = t
     {
         return false;
     }
-    
+
     // x = client index.
     for (new x = 1; x <= MaxClients; x++)
     {
@@ -257,19 +257,19 @@ stock bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = t
         {
             continue;
         }
-        
+
         // If client isn't on a team, then stop.
         if (!ZRIsClientOnTeam(x))
         {
             continue;
         }
-        
+
         // If player must be alive, and player is dead, then stop.
         if (alive && !IsPlayerAlive(x))
         {
             continue;
         }
-        
+
         // If player is a zombie, then increment zombie variable.
         if (InfectIsClientInfected(x))
         {
@@ -281,17 +281,17 @@ stock bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = t
             humancount++;
         }
     }
-    
+
     return true;
 }
 
 /**
  * Check if a client index is on a team.
- * 
+ *
  * @param client    The client index.
- * @param team      Team to check if player is on, -1 to check both. 
- * @return          True if client is on a team, false otherwise. 
- */    
+ * @param team      Team to check if player is on, -1 to check both.
+ * @return          True if client is on a team, false otherwise.
+ */
 stock bool:ZRIsClientOnTeam(client, team = -1)
 {
     // If index is invalid, then stop.
@@ -299,21 +299,21 @@ stock bool:ZRIsClientOnTeam(client, team = -1)
     {
         return false;
     }
-    
+
     // Get client team.
     new clientteam = GetClientTeam(client);
-    
+
     if (team == -1)
     {
         return (clientteam == CS_TEAM_T || clientteam == CS_TEAM_CT);
     }
-    
+
     return (clientteam == team);
 }
 
 /**
  * Check if there are clients on a team.
- * 
+ *
  * @param team      (Optional) Team to check if there are clients on.
  */
 stock bool:ZRTeamHasClients(team = -1)
@@ -324,7 +324,7 @@ stock bool:ZRTeamHasClients(team = -1)
         // Return true if both teams have at least 1 client.
         return (GetTeamClientCount(CS_TEAM_T) && GetTeamClientCount(CS_TEAM_CT));
     }
-    
+
     // Return true if given team has at least 1 client.
     return bool:GetTeamClientCount(team);
 }
@@ -343,19 +343,19 @@ stock bool:ZRIsClientAdmin(client, AdminFlag:flag = Admin_Generic)
     {
         return false;
     }
-    
+
     // If client doesn't have the specified flag, then stop.
     if (!GetAdminFlag(GetUserAdmin(client), flag))
     {
         return false;
     }
-    
+
     // Client is an admin.
     return true;
 }
 
 /**
- * Replies to a client with a given message describing a targetting 
+ * Replies to a client with a given message describing a targetting
  * failure reason. (formatted for ZR)
  *
  * Note: The translation phrases are found in common.phrases.txt.
@@ -420,7 +420,7 @@ stock ZRPrintToConsoleLong(client, const String:text[], splitsize = 1022)
     {
         return;
     }
-    
+
     decl String:partbuffer[splitsize];
     new pos;
     new cellswritten = 1;           // Initialize for the loop.
@@ -435,7 +435,7 @@ stock ZRPrintToConsoleLong(client, const String:text[], splitsize = 1022)
 
 /**
  * Converts a boolean value into a string.
- * 
+ *
  * @param value     The value to convert to string.
  * @param output    The converted string.
  * @param maxlen    The maximum length of the string.
@@ -456,12 +456,12 @@ ZRBoolToString(bool:value, String:output[], maxlen)
 
 /**
  * (from SMLIB 0.10.2)
- * 
+ *
  * Returns a random, uniform Integer number in the specified (inclusive) range.
  * This is safe to use multiple times in a function.
  * The seed is set automatically for each plugin.
  * Rewritten by MatthiasVance, thanks.
- * 
+ *
  * @param min			Min value used as lower border
  * @param max			Max value used as upper border
  * @return				Random Integer number between min and max
@@ -470,7 +470,7 @@ ZRBoolToString(bool:value, String:output[], maxlen)
 stock Math_GetRandomInt(min, max)
 {
 	new random = GetURandomInt();
-	
+
 	if (random == 0) {
 		random++;
 	}
@@ -481,7 +481,7 @@ stock Math_GetRandomInt(min, max)
 /**
  * (from SMLIB)
  * Gets the parent entity of an entity.
- * 
+ *
  * @param entity		Entity Index.
  * @return				Entity Index of the parent.
  */
@@ -500,7 +500,7 @@ stock Entity_GetParent(entity)
 stock bool:Entity_HasChildren(entity)
 {
     new maxEntities = GetMaxEntities();
-    
+
     // Loop through all entity indexes, after players.
     for (new loopEntity = MAXPLAYERS + 1; loopEntity < maxEntities; loopEntity++)
     {
@@ -508,13 +508,13 @@ stock bool:Entity_HasChildren(entity)
         {
             continue;
         }
-        
+
         new parentEntity = Entity_GetParent(loopEntity);
         if (parentEntity == entity)
         {
             return true;
         }
     }
-    
+
     return false;
 }

@@ -46,30 +46,30 @@ VAmbienceLoad()
 {
     // Apply all visual effects now.
     VAmbienceApplyAll();
-    
+
     // If sky is disabled, then stop.
     new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
     if (!sky)
     {
         return;
     }
-    
+
     decl String:downloadpath[PLATFORM_MAX_PATH];
     decl String:skypath[PLATFORM_MAX_PATH];
-    
+
     // Get sky path.
     GetConVarString(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], skypath, sizeof(skypath));
-    
+
     // Prepend materials/skybox to the path.
     Format(downloadpath, sizeof(downloadpath), "materials/skybox/%s", skypath);
-    
+
     // Add skybox file to downloads table.
     AddFileToDownloadsTable(downloadpath);
 }
 
 /**
  * Hook zr_veffects_* cvar changes.
- * 
+ *
  * @param unhook    If true, cvars will be unhooked, false to hook cvars.
  */
 VAmbienceCvarsHook(bool:unhook = false)
@@ -80,14 +80,14 @@ VAmbienceCvarsHook(bool:unhook = false)
         // Unhook lightstyle cvars.
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE], VAmbienceCvarsHookLightStyle);
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE], VAmbienceCvarsHookLightStyle);
-        
+
         // Unhook sky cvars.
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY], VAmbienceCvarsHookSky);
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], VAmbienceCvarsHookSky);
-        
+
         // Unhook sun cvars.
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE], VAmbienceCvarsHookSunDisable);
-        
+
         // Unhook fog cvars.
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG], VAmbienceCvarsHookFog);
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE], VAmbienceCvarsHookFog);
@@ -97,22 +97,22 @@ VAmbienceCvarsHook(bool:unhook = false)
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST], VAmbienceCvarsHookFog);
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST], VAmbienceCvarsHookFog);
         UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ], VAmbienceCvarsHookFog);
-        
+
         // Stop after unhooking cvars.
         return;
     }
-    
+
     // Hook lightstyle cvars.
     HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE], VAmbienceCvarsHookLightStyle);
     HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE], VAmbienceCvarsHookLightStyle);
-    
+
     // Hook sky cvars.
     HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY], VAmbienceCvarsHookSky);
     HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], VAmbienceCvarsHookSky);
-    
+
     // Hook sun cvars.
     HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE], VAmbienceCvarsHookSunDisable);
-    
+
     // Hook fog cvars.
     HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG], VAmbienceCvarsHookFog);
     HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE], VAmbienceCvarsHookFog);
@@ -127,7 +127,7 @@ VAmbienceCvarsHook(bool:unhook = false)
 /**
  * Cvar hook callback (zr_veffects_lightstyle, zr_veffects_lightstyle_value)
  * Updated server to cvar values.
- * 
+ *
  * @param convar    The cvar handle.
  * @param oldvalue  The value before change.
  * @param newvalue  The new value.
@@ -136,7 +136,7 @@ public VAmbienceCvarsHookLightStyle(Handle:cvar, const String:oldvalue[], const 
 {
     // If lightstyle is disabled, then disable.
     new bool:lightstyle = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]);
-    
+
     // Apply light style.
     VAmbienceApplyLightStyle(!lightstyle);
 }
@@ -144,7 +144,7 @@ public VAmbienceCvarsHookLightStyle(Handle:cvar, const String:oldvalue[], const 
 /**
  * Cvar hook callback (zr_veffects_sky, zr_veffects_sky_path)
  * Updated server to cvar values.
- * 
+ *
  * @param convar    The cvar handle.
  * @param oldvalue  The value before change.
  * @param newvalue  The new value.
@@ -153,7 +153,7 @@ public VAmbienceCvarsHookSky(Handle:cvar, const String:oldvalue[], const String:
 {
     // If sky is disabled, then disable.
     new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
-    
+
     // Apply new sky.
     VAmbienceApplySky(!sky);
 }
@@ -161,7 +161,7 @@ public VAmbienceCvarsHookSky(Handle:cvar, const String:oldvalue[], const String:
 /**
  * Cvar hook callback (zr_veffects_sun_disable)
  * Updated server to cvar values.
- * 
+ *
  * @param convar    The cvar handle.
  * @param oldvalue  The value before change.
  * @param newvalue  The new value.
@@ -170,7 +170,7 @@ public VAmbienceCvarsHookSunDisable(Handle:cvar, const String:oldvalue[], const 
 {
     // If fog is disabled, then disable.
     new bool:sun = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]);
-    
+
     // Apply fog.
     VAmbienceApplySunDisable(!sun);
 }
@@ -178,7 +178,7 @@ public VAmbienceCvarsHookSunDisable(Handle:cvar, const String:oldvalue[], const 
 /**
  * Cvar hook callback (zr_veffects_fog_*)
  * Updated server to cvar values.
- * 
+ *
  * @param convar    The cvar handle.
  * @param oldvalue  The value before change.
  * @param newvalue  The new value.
@@ -187,7 +187,7 @@ public VAmbienceCvarsHookFog(Handle:cvar, const String:oldvalue[], const String:
 {
     // If fog is disabled, then disable.
     new bool:fogoverride = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE]);
-    
+
     // Apply fog.
     VAmbienceApplyFog(fogoverride);
 }
@@ -199,19 +199,19 @@ VAmbienceApplyAll()
 {
     // If lightstyle is disabled, then disable.
     new bool:lightstyle = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]);
-    
+
     // Apply light style.
     VAmbienceApplyLightStyle(!lightstyle);
-    
+
     // If sky is disabled, then disable.
     new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
-    
+
     // Apply new sky.
     VAmbienceApplySky(!sky);
-    
+
     // If fog is disabled, then disable.
     new bool:fogoverride = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE]);
-    
+
     // Apply fog.
     VAmbienceApplyFog(fogoverride);
 }
@@ -223,14 +223,14 @@ VAmbienceApplyLightStyle(bool:disable = false)
     {
         // Set light style.
         SetLightStyle(0, "n");
-        
+
         return;
     }
-    
+
     // Get light value.
     decl String:lightstylevalue[4];
     GetConVarString(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE], lightstylevalue, sizeof(lightstylevalue));
-    
+
     // Set light style.
     SetLightStyle(0, lightstylevalue);
 }
@@ -243,13 +243,13 @@ VAmbienceApplySky(bool:disable = false)
     {
         return;
     }
-    
+
     // Store map's default sky before applying new one.
     if (!g_VAmbienceDefaultSky[0])
     {
         GetConVarString(hSkyname, g_VAmbienceDefaultSky, sizeof(g_VAmbienceDefaultSky));
     }
-    
+
     // If default, then set to default sky.
     if (disable)
     {
@@ -258,14 +258,14 @@ VAmbienceApplySky(bool:disable = false)
             // Set default sky on all clients.
             SetConVarString(hSkyname, g_VAmbienceDefaultSky, true);
         }
-        
+
         return;
     }
-    
+
     // Get sky path.
     decl String:skypath[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], skypath, sizeof(skypath));
-    
+
     // Set new sky on all clients.
     SetConVarString(hSkyname, skypath, true);
 }
@@ -274,22 +274,22 @@ VAmbienceApplySunDisable(bool:disable = false)
 {
     // Find sun entity.
     new sun = FindEntityByClassname(-1, "env_sun");
-    
+
     // If sun is invalid, then stop.
     if (sun == -1)
     {
         return;
     }
-    
+
     // If default, then re-enable sun rendering.
     if (disable)
     {
         // Turn on sun rendering.
         AcceptEntityInput(sun, "TurnOn");
-        
+
         return;
     }
-    
+
     // Turn off sun rendering.
     AcceptEntityInput(sun, "TurnOff");
 }
@@ -298,15 +298,15 @@ VAmbienceApplyFog(bool:override = false)
 {
     // If fog is disabled, then stop.
     new bool:fog = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG]);
-    
+
     if (!fog)
     {
         return;
     }
-    
+
     // Find current fog index
     new fogindex = FindEntityByClassname(-1, "env_fog_controller");
-    
+
     // If override is enabled, then continue.
     if (override)
     {
@@ -318,7 +318,7 @@ VAmbienceApplyFog(bool:override = false)
             fogindex = -1;
         }
     }
-    
+
     // If there is no fog on the map, create new fog.
     if (fogindex == -1)
     {
@@ -326,29 +326,29 @@ VAmbienceApplyFog(bool:override = false)
         fogindex = CreateEntityByName("env_fog_controller");
         DispatchSpawn(fogindex);
     }
-    
+
     decl String:fogcolor[16];
-    
+
     // Set primary fog color.
     GetConVarString(g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR], fogcolor, sizeof(fogcolor));
     VAmbienceSetFogColor(fogindex, fogcolor, true);
-    
+
     // Set secondary fog color.
     GetConVarString(g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR], fogcolor, sizeof(fogcolor));
     VAmbienceSetFogColor(fogindex, fogcolor, false);
-    
+
     // Set fog's density.
     new Float:fogdensity = GetConVarFloat(g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY]);
     VAmbienceSetFogDensity(fogindex, fogdensity);
-    
+
     // Set fog's start distance.
     new fogstart = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST]);
     VAmbienceSetFogStartDist(fogindex, fogstart);
-    
+
     // Set fog's end distance.
     new fogend = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST]);
     VAmbienceSetFogEndDist(fogindex, fogend);
-    
+
     // Set fog's far z distance.
     new fogfarz = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ]);
     VAmbienceSetFogFarZ(fogindex, fogfarz);
@@ -356,9 +356,9 @@ VAmbienceApplyFog(bool:override = false)
 
 /**
  * Set fog's primary or secondary color.
- * 
+ *
  * @param fogindex  Edict index of the fog to modify.
- * @param color     The rgb color of the fog. 
+ * @param color     The rgb color of the fog.
  * @param primary   (Optional) True to set primary, false otherwise.
  */
 VAmbienceSetFogColor(fogindex, const String:color[], bool:primary = true)
@@ -381,9 +381,9 @@ VAmbienceSetFogColor(fogindex, const String:color[], bool:primary = true)
 
 /**
  * Set fog's density.
- * 
+ *
  * @param fogindex  Edict index of the fog to modify.
- * @param density   The density of the fog. 
+ * @param density   The density of the fog.
  */
 VAmbienceSetFogDensity(fogindex, Float:density)
 {
@@ -393,9 +393,9 @@ VAmbienceSetFogDensity(fogindex, Float:density)
 
 /**
  * Set fog's start distance.
- * 
+ *
  * @param fogindex      Edict index of the fog to modify.
- * @param startdist     The start distance of the fog. 
+ * @param startdist     The start distance of the fog.
  */
 VAmbienceSetFogStartDist(fogindex, startdist)
 {
@@ -406,9 +406,9 @@ VAmbienceSetFogStartDist(fogindex, startdist)
 
 /**
  * Set fog's end distance.
- * 
+ *
  * @param fogindex      Edict index of the fog to modify.
- * @param enddist       The end distance of the fog. 
+ * @param enddist       The end distance of the fog.
  */
 VAmbienceSetFogEndDist(fogindex, enddist)
 {
@@ -419,9 +419,9 @@ VAmbienceSetFogEndDist(fogindex, enddist)
 
 /**
  * Set fog's far z distance.
- * 
+ *
  * @param fogindex      Edict index of the fog to modify.
- * @param farz          The far z distance of the fog. 
+ * @param farz          The far z distance of the fog.
  */
 VAmbienceSetFogFarZ(fogindex, farz)
 {

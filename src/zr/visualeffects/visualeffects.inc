@@ -66,7 +66,7 @@ VEffectsOnOffsetsFound()
 
 /**
  * Client has been killed.
- * 
+ *
  * @param client    The client index.
  */
 VEffectsOnClientDeath(client)
@@ -77,7 +77,7 @@ VEffectsOnClientDeath(client)
 
 /**
  * Create an energy splash effect.
- * 
+ *
  * @param client        The client index.
  * @param origin        The origin of the effect.
  * @param direction     The direction of the effect.
@@ -90,7 +90,7 @@ VEffectsCreateEnergySplash(const Float:origin[3], const Float:direction[3], bool
 
 /**
  * Create an explosion effect with strict flags.
- * 
+ *
  * @param origin    The (x, y, z) coordinate of the explosion.
  * @param flags     The flags to set on the explosion.
  */
@@ -98,40 +98,40 @@ VEffectsCreateExplosion(const Float:origin[3], flags)
 {
     // Create an explosion entity.
     new explosion = CreateEntityByName("env_explosion");
-    
+
     // If explosion entity isn't valid, then stop.
     if (explosion == -1)
     {
         return;
     }
-    
+
     // Get and modify flags on explosion.
     new spawnflags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
     spawnflags = spawnflags | EXP_NODAMAGE | EXP_NODECAL | flags;
-    
+
     // Set modified flags on entity.
     SetEntProp(explosion, Prop_Data, "m_spawnflags", spawnflags);
-    
+
     // Spawn the entity into the world.
     DispatchSpawn(explosion);
-    
+
     // Set the origin of the explosion.
     DispatchKeyValueVector(explosion, "origin", origin);
-    
+
     // Set fireball material.
     PrecacheModel("materials/sprites/xfireball3.vmt");
     DispatchKeyValue(explosion, "fireballsprite", "materials/sprites/xfireball3.vmt");
-    
+
     // Tell the entity to explode.
     AcceptEntityInput(explosion, "Explode");
-    
+
     // Remove entity from world.
     AcceptEntityInput(explosion, "Kill");
 }
 
 /**
  * Shake a client's screen with specific parameters.
- * 
+ *
  * @param client        The client index.
  * @param amplitude     The amplitude (intensity) of the shaking.
  * @param frequency     The frequency (speed) of the shaking.
@@ -140,13 +140,13 @@ VEffectsCreateExplosion(const Float:origin[3], flags)
 VEffectsShakeClientScreen(client, Float:amplitude, Float:frequency, Float:duration)
 {
     new Handle:hShake = StartMessageOne("Shake", client);
-    
+
     // Validate.
     if (hShake == INVALID_HANDLE)
     {
         return;
     }
-    
+
     // Future code using protocol buffers (not tested). Enabling this will bump
     // SourceMod version requirement to a snapshot, we don't want to do that
     // until that branch is declared stable.
@@ -164,13 +164,13 @@ VEffectsShakeClientScreen(client, Float:amplitude, Float:frequency, Float:durati
         BfWriteFloat(hShake, frequency);
         BfWriteFloat(hShake, duration);
     }*/
-    
+
     // Write shake information to message handle.
     BfWriteByte(hShake, 0);
     BfWriteFloat(hShake, amplitude);
     BfWriteFloat(hShake, frequency);
     BfWriteFloat(hShake, duration);
-    
+
     // End usermsg and send to client.
     EndMessage();
 }

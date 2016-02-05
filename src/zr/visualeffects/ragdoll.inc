@@ -58,7 +58,7 @@ RagdollOnOffsetsFound()
 
 /**
  * Client has been killed.
- * 
+ *
  * @param client    The client index.
  */
 RagdollOnClientDeath(client)
@@ -69,79 +69,79 @@ RagdollOnClientDeath(client)
     {
         return;
     }
-    
+
     new ragdoll = RagdollGetClientRagdoll(client);
-    
+
     // If the ragdoll is invalid, then stop.
     if (ragdoll == -1)
     {
         return;
     }
-    
+
     // Get the delay.
     new Float:dissolvedelay = GetConVarFloat(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DELAY]);
-    
+
     // If the delay is 0 or less, then remove right now.
     if (dissolvedelay <= 0)
     {
         RagdollTimer(INVALID_HANDLE, ragdoll);
         return;
     }
-    
+
     // Create a timer to remove/dissolve ragdoll.
     CreateTimer(dissolvedelay, RagdollTimer, ragdoll, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 /**
  * Removed a ragdoll from the game following plugin settings.
- * 
+ *
  * @param ragdoll   The ragdoll index.
  */
 RagdollRemove(ragdoll)
 {
     // Get the dissolve type.
     new dissolve = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]);
-    
+
     if (dissolve == VEFFECTS_RAGDOLL_DISSOLVE_EFFECTLESS)
     {
         // Remove entity from world.
         AcceptEntityInput(ragdoll, "Kill");
         return;
     }
-    
+
     // If random, set value to any between "energy" effect and "core" effect.
     if (dissolve == VEFFECTS_RAGDOLL_DISSOLVE_RANDOM)
     {
         dissolve = GetRandomInt(VEFFECTS_RAGDOLL_DISSOLVE_ENERGY, VEFFECTS_RAGDOLL_DISSOLVE_CORE);
     }
-    
+
     // Prep the ragdoll for dissolving.
     decl String:targetname[64];
     Format(targetname, sizeof(targetname), "zr_dissolve_%d", ragdoll);
     DispatchKeyValue(ragdoll, "targetname", targetname);
-    
+
     // Prep the dissolve entity.
     new dissolver = CreateEntityByName("env_entity_dissolver");
-    
+
     // Set the target to the ragdoll.
     DispatchKeyValue(dissolver, "target", targetname);
-    
+
     // Set the dissolve type.
     decl String:dissolvetype[16];
     Format(dissolvetype, sizeof(dissolvetype), "%d", dissolve);
     DispatchKeyValue(dissolver, "dissolvetype", dissolvetype);
-    
+
     // Tell the entity to dissolve the ragdoll.
     AcceptEntityInput(dissolver, "Dissolve");
-    
+
     // Remove the dissolver.
     AcceptEntityInput(dissolver, "Kill");
 }
 
 /**
  * Timer callback.  Removed a client's ragdoll.
- * 
- * @param timer     The timer handle. 
+ *
+ * @param timer     The timer handle.
  * @param ragdoll   The ragdoll index.
  */
 public Action:RagdollTimer(Handle:timer, any:ragdoll)
@@ -152,13 +152,13 @@ public Action:RagdollTimer(Handle:timer, any:ragdoll)
     {
         return;
     }
-    
+
     // If the ragdoll is already gone, then stop.
     if (!IsValidEdict(ragdoll))
     {
         return;
     }
-    
+
     // Make sure this edict is still a ragdoll and not become a new valid entity.
     decl String:classname[64];
     GetEdictClassname(ragdoll, classname, sizeof(classname));
@@ -166,7 +166,7 @@ public Action:RagdollTimer(Handle:timer, any:ragdoll)
     {
         return;
     }
-    
+
     // Remove the ragdoll.
     RagdollRemove(ragdoll);
 }

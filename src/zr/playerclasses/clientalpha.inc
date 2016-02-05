@@ -33,7 +33,7 @@ ClassAlphaUpdate(client)
     new current_health = GetClientHealth(client);
     new max_health     = ClassGetHealth(client);
     new max_damage     = ClassGetAlphaDamage(client);
-    
+
     // Calculate if enough damage is done to change alpha.
     if ((max_health - current_health) > max_damage)
     {

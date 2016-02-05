@@ -32,7 +32,7 @@
 
 /**
  * Client is spawning into the game.
- * 
+ *
  * @param client    The client index.
  */
 RoundStartOnClientSpawn(client)
@@ -42,7 +42,7 @@ RoundStartOnClientSpawn(client)
     {
         return;
     }
-    
+
     // Print to client, how to access ZMenu.
     TranslationPrintToChat(client, "General zmenu reminder", SAYHOOKS_CHAT_PUBLIC_DEFAULT, SAYHOOKS_KEYWORD_ZMENU);
 }
@@ -54,7 +54,7 @@ RoundStartOnRoundStart()
 {
     // Print round objective to all clients.
     TranslationPrintToChatAll(true, false, "General round objective");
-    
+
     // Kill all objective entities.
     RoundStartKillObjectives();
 }
@@ -65,10 +65,10 @@ RoundStartOnRoundStart()
 stock RoundStartKillObjectives()
 {
     decl String:classname[64];
-    
+
     // Get max entity count.
     new maxentities = GetMaxEntities();
-    
+
     // x = entity index.
     for (new x = 0; x <= maxentities; x++)
     {
@@ -77,10 +77,10 @@ stock RoundStartKillObjectives()
         {
             continue;
         }
-        
+
         // Get valid edict's classname.
         GetEdictClassname(x, classname, sizeof(classname));
-        
+
         // Check if it matches any objective entities, then stop if it doesn't.
         if(StrContains(ROUNDSTART_OBJECTIVE_ENTITIES, classname) > -1)
         {

@@ -36,56 +36,56 @@ ZCookiesOnCommandsCreate()
 
 /**
  * Show ZCookies menu to client.
- * 
+ *
  * @param client    The client index.
  */
 ZCookiesMenuMain(client)
 {
     // Create menu handle.
     new Handle:zcookies_menu_main = CreateMenu(ZCookiesMenuMainHandle);
-    
+
     // Make client global translations target.
     SetGlobalTransTarget(client);
-    
+
     decl String:autorebuyenabled[MENU_LINE_SMALL_LENGTH];
     decl String:zhpenabled[MENU_LINE_SMALL_LENGTH];
     decl String:overlayenabled[MENU_LINE_SMALL_LENGTH];
-    
+
     // Get the current toggle state of the cookies.
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie), autorebuyenabled, sizeof(autorebuyenabled), false, client);
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZHPEnabledCookie), zhpenabled, sizeof(zhpenabled), false, client);
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie), overlayenabled, sizeof(overlayenabled), false, client);
-    
+
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:autorebuy[MENU_LINE_REG_LENGTH];
     decl String:zhp[MENU_LINE_REG_LENGTH];
     decl String:overlay[MENU_LINE_REG_LENGTH];
     decl String:zmarket[MENU_LINE_REG_LENGTH];
-    
+
     // Translate each line into client's language.
     Format(title, sizeof(title), "%t\n ", "ZCookies Menu main title");
     Format(autorebuy, sizeof(autorebuy), "%t", "ZCookies menu main auto-rebuy", autorebuyenabled);
     Format(zhp, sizeof(zhp), "%t", "ZCookies menu main zhp", zhpenabled);
     Format(overlay, sizeof(overlay), "%t", "ZCookies menu main overlay", overlayenabled);
     Format(zmarket, sizeof(zmarket), "%t", "ZCookies zmarket loadout");
-    
+
     // Get conditional values for each option.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);                               // For auto-rebuy.
     new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);   // For auto-rebuy.
     new bool:zhpcvar = GetConVarBool(g_hCvarsList[CVAR_ZHP]);                                   // For ZHP.
     new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);          // For class overlay.
     new bool:zmarketenabled = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET]);                // For ZMarket loadout.
-    
+
     // Add items to menu.
     SetMenuTitle(zcookies_menu_main, title);
     AddMenuItem(zcookies_menu_main, "autorebuy", autorebuy, MenuGetItemDraw(weapons && zmarketrebuyauto));
     AddMenuItem(zcookies_menu_main, "zhp", zhp, MenuGetItemDraw(zhpcvar));
     AddMenuItem(zcookies_menu_main, "overlay", overlay, MenuGetItemDraw(overlaytoggle));
     AddMenuItem(zcookies_menu_main, "zmarket", zmarket, MenuGetItemDraw(zmarketenabled));
-    
+
     // Create a "Back" button to the main menu.
     SetMenuExitBackButton(zcookies_menu_main, true);
-    
+
     // Display menu to client.
     DisplayMenu(zcookies_menu_main, client, MENU_TIME_FOREVER);
 }
@@ -93,7 +93,7 @@ ZCookiesMenuMain(client)
 /**
  * Menu callback (main)
  * Toggles client cookies.
- * 
+ *
  * @param menu      The menu handle.
  * @param action    Action client is doing in menu.
  * @param client    The client index.
@@ -105,7 +105,7 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
     if (action == MenuAction_Select)
     {
         new bool:resend = true;
-        
+
         switch(slot)
         {
             // Toggled auto-rebuy
@@ -136,12 +136,12 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             {
                 // Show a client their current loadout.
                 ZMarketMenuLoadout(client);
-                
+
                 // Don't resend ZCookies.
                 resend = false;
             }
         }
-        
+
         if (resend)
         {
             // Re-send menu.
@@ -168,7 +168,7 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
 /**
  * Command callback (zcookies)
  * Toggle all ZR cookies here.
- * 
+ *
  * @param client    The client index.
  * @param argc      Argument count.
  */
@@ -180,10 +180,10 @@ public Action:ZCookiesCommand(client, argc)
         TranslationPrintToServer("Must be player");
         return Plugin_Handled;
     }
-    
+
     // Send ZCookies menu.
     ZCookiesMenuMain(client);
-    
+
     // This stops the "Unknown command" message in client's console.
     return Plugin_Handled;
 }

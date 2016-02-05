@@ -27,18 +27,18 @@
 
 /**
  * Application Programming Interface (API)
- * 
+ *
  * To allow other plugins or extensions to interact directly with Zombie:Reloaded we need to implement
  * an API.  SourceMod allows us to do this by creating global "natives" or "forwards."
- * 
+ *
  * Natives are basically functions that can be called from any plugin that includes its definition.
  * Forwards are functions that are called on a given event. (Such as OnClientPutInServer)
  * ZR's API files are located in sourcemod/scripting/include/zr/category.zr.inc.  We chose to create multiple
  * files simply for organization.  Including zr.inc will automatically include the rest of the files as well.
- * 
+ *
  * To better understand how natives and forwards are created, go here:
  * http://wiki.alliedmods.net/Creating_Natives_(SourceMod_Scripting)
- * http://wiki.alliedmods.net/Function_Calling_API_(SourceMod_Scripting) 
+ * http://wiki.alliedmods.net/Function_Calling_API_(SourceMod_Scripting)
  */
 
 #include "zr/api/infect.api"
@@ -58,10 +58,10 @@ APIInit()
 
 /**
  * Validates a client index and when it fails, an error is thrown.
- * 
+ *
  * @param client    The client index to validate.
  * @param alive     Set to true to validate that the client is alive, false to ignore.
- * 
+ *
  * @error           Throws an error when the client isn't valid.
  */
 stock APIValidateClientIndex(client, EligibleCondition:alive = Condition_Either)
@@ -72,14 +72,14 @@ stock APIValidateClientIndex(client, EligibleCondition:alive = Condition_Either)
         ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index. (%d)", client);
         return;
     }
-    
+
     // Verify that the client is connected.
     if (!IsClientConnected(client))
     {
         ThrowNativeError(SP_ERROR_NATIVE, "Client %d is not connected.", client);
         return;
     }
-    
+
     // Check if the player must be dead or alive.
     new bool:bAlive = bool:alive;
     if (alive != Condition_Either)

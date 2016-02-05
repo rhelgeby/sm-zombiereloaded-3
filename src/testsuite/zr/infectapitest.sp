@@ -44,13 +44,13 @@ new Handle:cvarBlockHuman;
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
-    
+
     RegConsoleCmd("zrtest_iszombie", IsZombieCommand, "Returns whether a player is a zombie or not. Usage: zrtest_iszombie <target>");
     RegConsoleCmd("zrtest_ishuman", IsHumanCommand, "Returns whether a player is a human or not. Usage: zrtest_ishuman <target>");
-    
+
     RegConsoleCmd("zrtest_infect", InfectClientCommand, "Infects a player. Usage: zrtest_infect <target>");
     RegConsoleCmd("zrtest_human", HumanClientCommand, "Turns a player back into a human. Usage: zrtest_human <target>");
-    
+
     cvarBlockInfect = CreateConVar("zrtest_block_infect", "0", "Block infection.");
     cvarBlockHuman = CreateConVar("zrtest_block_human", "0", "Block turning players back into humans.");
 }
@@ -59,7 +59,7 @@ public Action:IsZombieCommand(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
@@ -72,7 +72,7 @@ public Action:IsZombieCommand(client, argc)
     }
 
     ReplyToCommand(client, "Client %d is a zombie: %d", client, ZR_IsClientZombie(target));
-    
+
     return Plugin_Handled;
 }
 
@@ -80,7 +80,7 @@ public Action:IsHumanCommand(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
@@ -93,7 +93,7 @@ public Action:IsHumanCommand(client, argc)
     }
 
     ReplyToCommand(client, "Client %d is a human: %d", client, ZR_IsClientHuman(target));
-    
+
     return Plugin_Handled;
 }
 
@@ -101,13 +101,13 @@ public Action:InfectClientCommand(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
     }
-    
+
     if (target < 0)
     {
         ReplyToCommand(client, "Infects a player. Usage: zrtest_infect <target>");
@@ -115,7 +115,7 @@ public Action:InfectClientCommand(client, argc)
     }
 
     ZR_InfectClient(target);
-    
+
     return Plugin_Handled;
 }
 
@@ -123,13 +123,13 @@ public Action:HumanClientCommand(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
     }
-    
+
     if (target < 0)
     {
         ReplyToCommand(client, "Turns a player back into a human. Usage: zrtest_human <target>");
@@ -137,7 +137,7 @@ public Action:HumanClientCommand(client, argc)
     }
 
     ZR_HumanClient(target);
-    
+
     return Plugin_Handled;
 }
 
@@ -148,7 +148,7 @@ public Action:ZR_OnClientInfect(&client, &attacker, &bool:motherInfect, &bool:re
         PrintToChatAll("Infection blocked on client %d.", client);
         return Plugin_Handled;
     }
-    
+
     PrintToChatAll("Client %d is about to be infected. Attacker: %d, Mother zombie: %d, Respawn override: %d, Respawn: %d.", client, attacker, motherInfect, respawnOverride, respawn);
     return Plugin_Continue;
 }
@@ -165,7 +165,7 @@ public Action:ZR_OnClientHuman(&client, &bool:respawn, &bool:protect)
         PrintToChatAll("Turning human blocked on client %d.", client);
         return Plugin_Handled;
     }
-    
+
     PrintToChatAll("Client %d is about to become a human. Respawn: %d, Spawn protect: %d", client, respawn, protect);
     return Plugin_Continue;
 }

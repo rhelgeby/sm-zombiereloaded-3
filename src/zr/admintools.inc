@@ -4,7 +4,7 @@
  *  Zombie:Reloaded
  *
  *  File:          admintools.inc
- *  Type:          Core 
+ *  Type:          Core
  *  Description:   Functions for checking extended admin privileges.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -61,13 +61,13 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
         // Console always has full access no matter what.
         return true;
     }
-    
+
     // Validate client index.
     if (!ZRIsClientValid(client))
     {
         return false;
     }
-    
+
     // Check if group authentication is used.
     new bool:groupauth = GetConVarBool(g_hCvarsList[CVAR_PERMISSIONS_USE_GROUPS]);
     if (groupauth)
@@ -77,13 +77,13 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
          *   GROUP BASED AUTHENTICATION   *
          *                                *
          **********************************/
-         
+
         // Check if client is full admin.
         if (ZRIsClientInGroup(client, ZR_GROUP_ADMINS))
         {
             return true;
         }
-        
+
         // Check operation type.
         switch (operationType)
         {
@@ -96,7 +96,7 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
                 return ZRIsClientInGroup(client, ZR_GROUP_CONFIGURATORS);
             }
         }
-        
+
         // Invalid operation type.
         return false;
     }
@@ -107,9 +107,9 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
          *   FLAG BASED AUTHENTICATION   *
          *                               *
          *********************************/
-        
+
         new AdminFlag:flag;
-        
+
         // Check operation type.
         switch (operationType)
         {
@@ -127,7 +127,7 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
                 return false;
             }
         }
-        
+
         return GetAdminFlag(GetUserAdmin(client), flag);
     }
 }
@@ -142,17 +142,17 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
 stock bool:ZRIsClientInGroup(client, const String:groupName[])
 {
     new AdminId:id = GetUserAdmin(client);
-    
+
     // Validate id.
     if (id == INVALID_ADMIN_ID)
     {
         return false;
     }
-    
+
     // Get number of groups.
     new groupnum = GetAdminGroupCount(id);
     decl String:groupname[64];
-    
+
     // Validate number of groups.
     if (groupnum > 0)
     {
@@ -161,7 +161,7 @@ stock bool:ZRIsClientInGroup(client, const String:groupName[])
         {
             // Get group name.
             GetAdminGroup(id, group, groupname, sizeof(groupname));
-            
+
             // Compare names.
             if (StrEqual(groupName, groupname, false))
             {
@@ -169,7 +169,7 @@ stock bool:ZRIsClientInGroup(client, const String:groupName[])
             }
         }
     }
-    
+
     // No groups or no match.
     return false;
 }

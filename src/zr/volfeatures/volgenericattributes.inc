@@ -4,7 +4,7 @@
  *  Zombie:Reloaded
  *
  *  File:           volgenericattributes.inc
- *  Type:           Module 
+ *  Type:           Module
  *  Description:    Functions for getting or setting general volume attributes.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -36,13 +36,13 @@
 stock bool:VolSetTeamString(volumeIndex, const String:team[])
 {
     new VolumeTeamFilters:teamfilter;
-    
+
     // Check if string value is empty.
     if (strlen(team) == 0)
     {
         return false;
     }
-    
+
     // Convert value.
     if (StrEqual(team, "all", false))
     {
@@ -56,11 +56,11 @@ stock bool:VolSetTeamString(volumeIndex, const String:team[])
     {
         teamfilter = VolTeam_Zombies;
     }
-    
+
     // Apply value.
     Volumes[volumeIndex][Vol_TeamFilter] = teamfilter;
     return true;
-    
+
 }
 
 /**
@@ -101,7 +101,7 @@ stock VolTeamToString(VolumeTeamFilters:team, String:buffer[], maxlen, bool:shor
             return shortName ? strcopy(buffer, maxlen, "zombies") : strcopy(buffer, maxlen, "Zombies");
         }
     }
-    
+
     return 0;
 }
 
@@ -110,22 +110,22 @@ stock VolTeamToString(VolumeTeamFilters:team, String:buffer[], maxlen, bool:shor
  *
  * @param volumeIndex   The volume index to apply to.
  * @param delay         The delay to apply. A floating point number formatted
- *                      as a string. 
+ *                      as a string.
  * @return              True if successfully set, false otherwise.
  */
 stock bool:VolSetDelayString(volumeIndex, const String:delay[])
 {
     new Float:triggerdelay;
-    
+
     // Check if string value is empty.
     if (strlen(delay) == 0)
     {
         return false;
     }
-    
+
     // Convert value.
     triggerdelay = StringToFloat(delay);
-    
+
     // Apply value.
     Volumes[volumeIndex][Vol_TriggerDelay] = triggerdelay;
     return true;
@@ -157,7 +157,7 @@ stock bool:VolSetEffectString(volumeIndex, const String:effect[])
     {
         return false;
     }
-    
+
     // Check effect string values and apply them to the volume.
     if (StrEqual(effect, "none", false))
     {
@@ -174,7 +174,7 @@ stock bool:VolSetEffectString(volumeIndex, const String:effect[])
         Volumes[volumeIndex][Vol_Effect] = VolEffect_Smoke;
         return true;
     }
-    
+
     // The string value didn't match any valid effects.
     return false;
 }
@@ -217,7 +217,7 @@ stock VolEffectToString(VolumeEffects:effect, String:buffer[], maxlen, bool:shor
             return shortName ? strcopy(buffer, maxlen, "smoke") : strcopy(buffer, maxlen, "Smoke");
         }
     }
-    
+
     return 0;
 }
 
@@ -233,21 +233,21 @@ stock bool:VolSetEffectColorString(volumeIndex, const String:effect_color[])
 {
     new String:colors[3][3];
     new red, green, blue;
-    
+
     // Check if string value is empty.
     if (strlen(effect_color) == 0)
     {
         return false;
     }
-    
+
     // Split values into a string array.
     ExplodeString(effect_color, ",", colors, 3, 3);
-    
+
     // Convert values.
     red = StringToInt(colors[0]);
     green = StringToInt(colors[1]);
     blue = StringToInt(colors[2]);
-    
+
     // Apply values.
     Volumes[volumeIndex][Vol_EffectColor][0] = red;
     Volumes[volumeIndex][Vol_EffectColor][1] = green;
@@ -285,9 +285,9 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
     {
         return false;
     }
-    
+
     new bool:val = bool:StringToInt(enabled);
-    
+
     // Check yes or no values first.
     if (StrEqual(enabled, "yes", false))
     {
@@ -297,7 +297,7 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
     {
         val = false;
     }
-    
+
     // Check if the new value is different from the current.
     if (Volumes[volumeIndex][Vol_Enabled] != val)
     {
@@ -311,7 +311,7 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
             VolOnDisabled(volumeIndex);
         }
     }
-    
+
     // Apply converted value.
     Volumes[volumeIndex][Vol_Enabled] = val;
     return true;

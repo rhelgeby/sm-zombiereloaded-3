@@ -4,7 +4,7 @@
  *  Zombie:Reloaded
  *
  *  File:          napalm.inc
- *  Type:          Module 
+ *  Type:          Module
  *  Description:   Grenades burn zombies when damaged by them.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -27,7 +27,7 @@
 
 /**
  * The fuse length of an hegrenade.
- */ 
+ */
 #define GRENADE_FUSE_TIME 3.0
 
 /**
@@ -62,7 +62,7 @@ NapalmOnOffsetsFound()
 /**
  * Hook: OnTakeDamage
  * Forwarded from the damage module to check if we should extinguish any flames.
- * 
+ *
  * @param client        The client index.
  * @param damagetype    The type of damage inflicted.
  * @return              Return ZRTools_Handled to stop the damage to client.
@@ -76,16 +76,16 @@ NapalmOnTakeDamage(client, damagetype)
     {
         // Only take action if it isn't disabled, or the option is valid.
         new douse = GetConVarInt(g_hCvarsList[CVAR_NAPALM_DOUSE]);
-        
+
         if (douse > NAPALM_WLEVEL_DRY && douse <= NAPALM_WLEVEL_FULL)
         {
             // If the client water-level is equal or higher than the given, then we want to extinguish the flame.
             if (NapalmGetClientWaterLevel(client) >= douse)
             {
                 // Put the fire out.
-                
+
                 //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
-                
+
                 // This works.
                 new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
                 if (IsValidEntity(fire))
@@ -103,22 +103,22 @@ NapalmOnTakeDamage(client, damagetype)
                         LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Napalm, "Napalm Douse", "Found unexpected entity in prop \"m_flLifetime\": \"%s\"", classname);
                     }
                 }
-                
+
                 return _:ACTION_CONTINUE;
             }
         }
     }
-    
+
     // Let the damage module continue as usual.
     return -1;
 }
 
 /**
  *  Client has been hurt.
- * 
+ *
  * @param client    The client index.
  * @param attacker  The attacker index.
- * @param weapon    The weapon name. 
+ * @param weapon    The weapon name.
  */
 NapalmOnClientHurt(client, attacker, const String:weapon[])
 {
@@ -127,37 +127,37 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
     {
         return;
     }
-    
+
     // If player isn't a zombie, then stop.
     if (!InfectIsClientInfected(client))
     {
         return;
     }
-    
+
     // If napalm time is invalid or 0, then stop.
     new Float:napalm_time = ClassGetNapalmTime(client);
     if (napalm_time <= 0.0)
     {
         return;
     }
-    
+
     // If the attacker can't throw napalm grenades, then stop.
     if (!ClassGetHasNapalm(attacker))
     {
         return;
     }
-    
+
     // If weapon is a grenade, then ignite player.
     if (StrEqual(weapon, "hegrenade", false))
     {
         new bool:reset = GetConVarBool(g_hCvarsList[CVAR_NAPALM_TIME_RESET]);
         new flags = GetEntityFlags(client);
-        
+
         if (reset || !(flags & FL_ONFIRE))
         {
             // This stops the fire before re-ignition.
             ExtinguishEntity(client);
-            
+
             // Ignite client.
             IgniteEntity(client, napalm_time);
         }
@@ -166,7 +166,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
 
 /**
  * Client has been killed.
- * 
+ *
  * @param client    The client index.
  */
 NapalmOnClientDeath(client)
@@ -189,35 +189,35 @@ NapalmOnWeaponFire(client, const String:weapon[])
     {
         return;
     }
-    
+
     // If human class can't throw napalm grenades, then stop.
     if (!ClassGetHasNapalm(client))
     {
         return;
     }
-    
+
     // If weapon isn't a grenade, then stop.
     if (!StrEqual(weapon, "hegrenade", false))
     {
         return;
     }
-    
+
     // Wait .1 seconds.
     CreateTimer(0.1, NapalmIgniteGrenade);
 }
 
 /**
  * Timer callback, ignite's all hegrenade projectiles.
- * 
+ *
  * @param timer     The timer handle.
- */   
+ */
 public Action:NapalmIgniteGrenade(Handle:timer)
 {
     decl String:classname[64];
-    
+
     // Get max entities.
     new maxentities = GetMaxEntities();
-    
+
     // x = entity index.
     for (new x = 0; x <= maxentities; x++)
     {
@@ -226,7 +226,7 @@ public Action:NapalmIgniteGrenade(Handle:timer)
         {
             continue;
         }
-        
+
         GetEdictClassname(x, classname, sizeof(classname));
         if(StrEqual(classname, "hegrenade_projectile"))
         {
@@ -237,9 +237,9 @@ public Action:NapalmIgniteGrenade(Handle:timer)
 
 /**
  * Checks the current water-level on a client.
- * 
+ *
  * @param client    The client index.
- * @return          A NAPALM_WLEVEL_ define. 
+ * @return          A NAPALM_WLEVEL_ define.
  */
 stock NapalmGetClientWaterLevel(client)
 {

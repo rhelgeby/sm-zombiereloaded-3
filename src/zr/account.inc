@@ -50,7 +50,7 @@ AccountOnOffsetsFound()
 
 /**
  * Client is spawning into the game.
- * 
+ *
  * @param client    The client index.
  */
 AccountOnClientSpawn(client)
@@ -61,10 +61,10 @@ AccountOnClientSpawn(client)
     {
         return;
     }
-    
+
     // Get cash value.
     new cash = GetConVarInt(g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]);
-    
+
     // Set client's account.
     AccountSetClientCash(client, cash);
 }
@@ -81,26 +81,26 @@ AccountOnClientHurt(client, attacker, dmg_health)
     {
         return;
     }
-    
+
     // If cashdmg cvar is disabled, then stop.
     new bool:accountcashdmg = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHDMG]);
     if (!accountcashdmg)
     {
         return;
     }
-    
+
     // If attacker is hurting themself, then stop.
     if (client == attacker)
     {
         return;
     }
-    
+
     // If attacker isn't a human, then stop.
     if (!InfectIsClientHuman(attacker))
     {
         return;
     }
-    
+
     // Get current cash, add the damage done to it, then set new value.
     new cash = AccountGetClientCash(attacker);
     AccountSetClientCash(attacker, cash + dmg_health);
@@ -108,7 +108,7 @@ AccountOnClientHurt(client, attacker, dmg_health)
 
 /**
  * Get's a client's account value (cash)
- * 
+ *
  * @param client    The client index.
  * @return          The client's current account value.
  */
@@ -120,7 +120,7 @@ stock AccountGetClientCash(client)
 
 /**
  * Set's a client's account value (cash)
- * 
+ *
  * @param client    The client index.
  * @param value    The value to set to.
  */
@@ -131,7 +131,7 @@ stock AccountSetClientCash(client, value)
     {
         value = 0;
     }
-    
+
     // Set client's cash.
     SetEntData(client, g_iToolsAccount, value, 4);
 }

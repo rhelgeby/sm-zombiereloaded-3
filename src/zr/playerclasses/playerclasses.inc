@@ -4,7 +4,7 @@
  *  Zombie:Reloaded
  *
  *  File:          playerclasses.inc
- *  Type:          Core 
+ *  Type:          Core
  *  Description:   Provides functions for managing classes.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -32,11 +32,11 @@
       below) they turn into zombies.
     - Fully imune to all damage. Can't take or give damage. Sould only be used
       on admin mode classes.
-    
+
     TODO: Make class attributes for for changing model render mode and colors.
-    
+
     TODO: Make class attributes for fancy effects, like a glow (if possible).
-    
+
     TODO: Make immunity settings suitable for both teams, or certain zombie-
           only/human-only settings.
 */
@@ -249,38 +249,38 @@ enum ClassAttributes
     Class_Flags,
     String:Class_Group[64],
     String:Class_SM_Flags[64],
-    
+
     String:Class_Name[64],
     String:Class_Description[256],
-    
+
     /* Model */
     String:Class_ModelPath[PLATFORM_MAX_PATH],
     Class_ModelSkinIndex,
     Class_AlphaInitial,
     Class_AlphaDamaged,
     Class_AlphaDamage,
-    
+
     /* Hud */
     String:Class_OverlayPath[PLATFORM_MAX_PATH],
     bool:Class_Nvgs,
     Class_Fov,
-    
+
     /* Effects */
     bool:Class_HasNapalm,
     Float:Class_NapalmTime,
-    
+
     /* Player behaviour */
     ImmunityMode:Class_ImmunityMode,
     Class_ImmunityAmount,
     Class_ImmunityCooldown,
     bool:Class_NoFallDamage,
-    
+
     Class_Health,
     Float:Class_HealthRegenInterval,
     Class_HealthRegenAmount,
     Class_HealthInfectGain,
     Class_KillBonus,
-    
+
     Float:Class_Speed,
     Float:Class_KnockBack,
     Float:Class_JumpHeight,
@@ -304,27 +304,27 @@ enum ClassEditableAttributes
     ClassEdit_AlphaInitial,
     ClassEdit_AlphaDamaged,
     ClassEdit_AlphaDamage,
-    
+
     /* Hud */
     String:ClassEdit_OverlayPath[PLATFORM_MAX_PATH],
     ClassEdit_Nvgs,
     ClassEdit_Fov,
-    
+
     /* Effects */
     ClassEdit_HasNapalm,
     Float:ClassEdit_NapalmTime,
-    
+
     /* Player behavior */
     ImmunityMode:ClassEdit_ImmunityMode,
     ClassEdit_ImmunityAmount,
     ClassEdit_ImmunityCooldown,
-    
+
     ClassEdit_NoFallDamage,
     Float:ClassEdit_RegenInterval,
     ClassEdit_RegenAmount,
     ClassEdit_InfectGain,
     ClassEdit_KillBonus,
-    
+
     Float:ClassEdit_Speed,
     Float:ClassEdit_KnockBack,
     Float:ClassEdit_JumpHeight,
@@ -525,41 +525,41 @@ ClassLoad()
 {
     // Register config file.
     ConfigRegisterConfig(File_Classes, Structure_Keyvalue, CONFIG_FILE_ALIAS_CLASSES);
-    
+
     new Handle:kvClassData;
-    
+
     // Make sure kvClassData is ready to use.
     kvClassData = CreateKeyValues(CONFIG_FILE_ALIAS_CLASSES);
-    
+
     // Get weapons config path.
     decl String:pathclasses[PLATFORM_MAX_PATH];
     new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_CLASSES, pathclasses);
-    
+
     // If file doesn't exist, then log and stop.
     if (!exists)
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Missing playerclasses config file \"%s\"", pathclasses);
-        
+
         // Remove key/value cache.
         CloseHandle(kvClassData);
         kvClassData = INVALID_HANDLE;
-        
+
         return;
     }
-    
+
     // Log what class file that is loaded.
     LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Loading classes from file \"%s\".", pathclasses);
-    
+
     // Put file data into memory.
     FileToKeyValues(kvClassData, pathclasses);
-    
+
     // Try to find the first class.
     KvRewind(kvClassData);
     if (!KvGotoFirstSubKey(kvClassData))
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Can't find any classes in \"%s\"", pathclasses);
     }
-    
+
     new String:name[64];
     new String:group[64];
     new String:sm_flags[64];
@@ -567,11 +567,11 @@ ClassLoad()
     new String:model_path[PLATFORM_MAX_PATH];
     new String:immunity_mode[32];
     new String:overlay_path[PLATFORM_MAX_PATH];
-    
+
     ClassCount = 0;
     new failedcount;
     new ClassErrorFlags;
-    
+
     // Loop through all classes and store attributes in the ClassData array.
     do
     {
@@ -579,70 +579,70 @@ ClassLoad()
         {
             // Maximum classes reached. Write a warning and exit the loop.
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Maximum classes reached (%d). Skipping other classes.", ZR_CLASS_MAX + 1);
-            
+
             break;
         }
-        
+
         /* General */
         ClassData[ClassCount][Class_Enabled] = ConfigKvGetStringBool(kvClassData, "enabled", ZR_CLASS_DEFAULT_ENABLED);
         ClassData[ClassCount][Class_Team] = KvGetNum(kvClassData, "team", ZR_CLASS_DEFAULT_TEAM);
         ClassData[ClassCount][Class_TeamDefault] = ConfigKvGetStringBool(kvClassData, "team_default", ZR_CLASS_DEFAULT_TEAM_DEFAULT);
         ClassData[ClassCount][Class_Flags] = KvGetNum(kvClassData, "flags", ZR_CLASS_DEFAULT_FLAGS);
-        
+
         KvGetString(kvClassData, "group", group, sizeof(group), ZR_CLASS_DEFAULT_GROUP);
         strcopy(ClassData[ClassCount][Class_Group], 64, group);
-        
+
         KvGetString(kvClassData, "sm_flags", sm_flags, sizeof(sm_flags), ZR_CLASS_DEFAULT_SM_FLAGS);
         strcopy(ClassData[ClassCount][Class_SM_Flags], 64, sm_flags);
-        
+
         KvGetString(kvClassData, "name", name, sizeof(name), ZR_CLASS_DEFAULT_NAME);
         strcopy(ClassData[ClassCount][Class_Name], 64, name);
-        
+
         KvGetString(kvClassData, "description", description, sizeof(description), ZR_CLASS_DEFAULT_DESCRIPTION);
         strcopy(ClassData[ClassCount][Class_Description], 256, description);
-        
-        
+
+
         /* Model */
         KvGetString(kvClassData, "model_path", model_path, sizeof(model_path), ZR_CLASS_DEFAULT_MODEL_PATH);
         strcopy(ClassData[ClassCount][Class_ModelPath], PLATFORM_MAX_PATH, model_path);
-        
+
         ClassData[ClassCount][Class_ModelSkinIndex] = KvGetNum(kvClassData, "model_skin_index", ZR_CLASS_DEFAULT_MODEL_SKIN_INDEX);
         ClassData[ClassCount][Class_AlphaInitial] = KvGetNum(kvClassData, "alpha_initial", ZR_CLASS_DEFAULT_ALPHA_INITIAL);
         ClassData[ClassCount][Class_AlphaDamaged] = KvGetNum(kvClassData, "alpha_damaged", ZR_CLASS_DEFAULT_ALPHA_DAMAGED);
         ClassData[ClassCount][Class_AlphaDamage] = KvGetNum(kvClassData, "alpha_damage", ZR_CLASS_DEFAULT_ALPHA_DAMAGE);
-        
-        
+
+
         /* Hud */
         KvGetString(kvClassData, "overlay_path", overlay_path, sizeof(overlay_path), ZR_CLASS_DEFAULT_OVERLAY_PATH);
         strcopy(ClassData[ClassCount][Class_OverlayPath], PLATFORM_MAX_PATH, overlay_path);
-        
+
         ClassData[ClassCount][Class_Nvgs] = ConfigKvGetStringBool(kvClassData, "nvgs", ZR_CLASS_DEFAULT_NVGS);
         ClassData[ClassCount][Class_Fov] = KvGetNum(kvClassData, "fov", ZR_CLASS_DEFAULT_FOV);
-        
-        
+
+
         /* Effects */
         ClassData[ClassCount][Class_HasNapalm] = ConfigKvGetStringBool(kvClassData, "has_napalm", ZR_CLASS_DEFAULT_HAS_NAPALM);
         ClassData[ClassCount][Class_NapalmTime] = KvGetFloat(kvClassData, "napalm_time", ZR_CLASS_DEFAULT_NAPALM_TIME);
-        
-        
+
+
         /* Player behaviour */
         KvGetString(kvClassData, "immunity_mode", immunity_mode, sizeof(immunity_mode), ZR_CLASS_DEFAULT_IMMUNITY_MODE);
         ClassData[ClassCount][Class_ImmunityMode] = ImmunityStringToMode(immunity_mode);
         ClassData[ClassCount][Class_ImmunityAmount] = KvGetNum(kvClassData, "immunity_amount", ZR_CLASS_DEFAULT_IMMUNITY_AMOUNT);
         ClassData[ClassCount][Class_ImmunityCooldown] = KvGetNum(kvClassData, "immunity_cooldown", ZR_CLASS_DEFAULT_IMMUNITY_COOLDOWN);
         ClassData[ClassCount][Class_NoFallDamage] = ConfigKvGetStringBool(kvClassData, "no_fall_damage", ZR_CLASS_DEFAULT_NO_FALL_DAMAGE);
-        
+
         ClassData[ClassCount][Class_Health] = KvGetNum(kvClassData, "health", ZR_CLASS_DEFAULT_HEALTH);
         ClassData[ClassCount][Class_HealthRegenInterval] = KvGetFloat(kvClassData, "health_regen_interval", ZR_CLASS_DEFAULT_HEALTH_REGEN_INTERVAL);
         ClassData[ClassCount][Class_HealthRegenAmount] = KvGetNum(kvClassData, "health_regen_amount", ZR_CLASS_DEFAULT_HEALTH_REGEN_AMOUNT);
         ClassData[ClassCount][Class_HealthInfectGain] = KvGetNum(kvClassData, "health_infect_gain", ZR_CLASS_DEFAULT_HEALTH_INFECT_GAIN);
         ClassData[ClassCount][Class_KillBonus] = KvGetNum(kvClassData, "kill_bonus", ZR_CLASS_DEFAULT_KILL_BONUS);
-        
+
         ClassData[ClassCount][Class_Speed] = KvGetFloat(kvClassData, "speed", ZR_CLASS_DEFAULT_SPEED);
         ClassData[ClassCount][Class_KnockBack] = KvGetFloat(kvClassData, "knockback", ZR_CLASS_DEFAULT_KNOCKBACK);
         ClassData[ClassCount][Class_JumpHeight] = KvGetFloat(kvClassData, "jump_height", ZR_CLASS_DEFAULT_JUMP_HEIGHT);
         ClassData[ClassCount][Class_JumpDistance] = KvGetFloat(kvClassData, "jump_distance", ZR_CLASS_DEFAULT_JUMP_DISTANCE);
-        
+
         // Validate class attributes if class is enabled.
         if (ClassData[ClassCount][Class_Enabled])
         {
@@ -653,44 +653,44 @@ ClassLoad()
                 // and log an error message.
                 ClassData[ClassCount][Class_Enabled] = false;
                 LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Invalid class at index %d, disabled class. Class error flags: %d.", ClassCount, ClassErrorFlags);
-                
+
                 failedcount++;
             }
         }
-        
+
         // Update the counter.
         ClassCount++;
     } while (KvGotoNextKey(kvClassData));
-    
+
     // Validate team requirements.
     if (!ClassValidateTeamRequirements())
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "The class configuration doesn't match the team requirements.");
     }
-    
+
     // Validate team default requirements.
     if (!ClassValidateTeamDefaults())
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Couldn't find a default class for one or more teams. At least one class per team must be marked as default.");
     }
-    
+
     // Cache class data.
     ClassReloadDataCache();
-    
+
     // Reset selected class indexes for next spawn.
     ClassResetNextIndexes();
-    
+
     // Mark classes as valid.
     ClassValidated = true;
-    
+
     // Log summary.
     LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Total: %d | Successful: %d | Unsuccessful: %d", ClassCount, ClassCount - failedcount, failedcount);
-    
+
     // Set config data.
     ConfigSetConfigLoaded(File_Classes, true);
     ConfigSetConfigReloadFunc(File_Classes, GetFunctionByName(GetMyHandle(), "ClassOnConfigReload"));
     ConfigSetConfigPath(File_Classes, pathclasses);
-    
+
     // Remove key/value cache.
     CloseHandle(kvClassData);
     kvClassData = INVALID_HANDLE;
@@ -698,7 +698,7 @@ ClassLoad()
 
 /**
  * Called when configs are being reloaded.
- * 
+ *
  * @param config    The config being reloaded. (only if 'all' is false)
  */
 public ClassOnConfigReload(ConfigFile:config)
@@ -707,7 +707,7 @@ public ClassOnConfigReload(ConfigFile:config)
     ClassLoad();
 }
 
-/** 
+/**
  * Gets the speed method.
  *
  * @return  Speed method, or ClassSpeed_Invalid on error.
@@ -716,9 +716,9 @@ ClassSpeedMethods:ClassGetSpeedMethod()
 {
     decl String:speedMethod[16];
     speedMethod[0] = 0;
-    
+
     GetConVarString(g_hCvarsList[CVAR_CLASSES_SPEED_METHOD], speedMethod, sizeof(speedMethod));
-    
+
     if (StrEqual(speedMethod, "lmv", false))
     {
         return ClassSpeed_LMV;
@@ -727,7 +727,7 @@ ClassSpeedMethods:ClassGetSpeedMethod()
     {
         return ClassSpeed_Prop;
     }
-    
+
     return ClassSpeed_Invalid;
 }
 
@@ -743,7 +743,7 @@ bool:ClassReloadDataCache()
     {
         return false;
     }
-    
+
     // Loop through all classes.
     for (new classindex = 0; classindex < ClassCount; classindex++)
     {
@@ -756,23 +756,23 @@ bool:ClassReloadDataCache()
         strcopy(ClassDataCache[classindex][Class_SM_Flags], 64, ClassData[classindex][Class_SM_Flags]);
         strcopy(ClassDataCache[classindex][Class_Name], 64, ClassData[classindex][Class_Name]);
         strcopy(ClassDataCache[classindex][Class_Description], 256, ClassData[classindex][Class_Description]);
-        
+
         /* Model */
         strcopy(ClassDataCache[classindex][Class_ModelPath], PLATFORM_MAX_PATH, ClassData[classindex][Class_ModelPath]);
         ClassDataCache[classindex][Class_ModelSkinIndex] = ClassData[classindex][Class_ModelSkinIndex];
         ClassDataCache[classindex][Class_AlphaInitial] = ClassData[classindex][Class_AlphaInitial];
         ClassDataCache[classindex][Class_AlphaDamaged] = ClassData[classindex][Class_AlphaDamaged];
         ClassDataCache[classindex][Class_AlphaDamage] = ClassData[classindex][Class_AlphaDamage];
-        
+
         /* Hud */
         strcopy(ClassDataCache[classindex][Class_OverlayPath], PLATFORM_MAX_PATH, ClassData[classindex][Class_OverlayPath]);
         ClassDataCache[classindex][Class_Nvgs] = ClassData[classindex][Class_Nvgs];
         ClassDataCache[classindex][Class_Fov] = ClassData[classindex][Class_Fov];
-        
+
         /* Effects */
         ClassDataCache[classindex][Class_HasNapalm] = ClassData[classindex][Class_HasNapalm];
         ClassDataCache[classindex][Class_NapalmTime] = ClassData[classindex][Class_NapalmTime];
-        
+
         /* Player behavior */
         ClassDataCache[classindex][Class_ImmunityMode] = ClassData[classindex][Class_ImmunityMode];
         ClassDataCache[classindex][Class_ImmunityAmount] = ClassData[classindex][Class_ImmunityAmount];
@@ -788,7 +788,7 @@ bool:ClassReloadDataCache()
         ClassDataCache[classindex][Class_JumpHeight] = ClassData[classindex][Class_JumpHeight];
         ClassDataCache[classindex][Class_JumpDistance] = ClassData[classindex][Class_JumpDistance];
     }
-    
+
     return true;
 }
 
@@ -810,7 +810,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
     {
         return false;
     }
-    
+
     switch (cachetype)
     {
         case ZR_CLASS_CACHE_ORIGINAL:
@@ -824,23 +824,23 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             strcopy(ClassPlayerCache[client][Class_SM_Flags], 64, ClassData[classindex][Class_SM_Flags]);
             strcopy(ClassPlayerCache[client][Class_Name], 64, ClassData[classindex][Class_Name]);
             strcopy(ClassPlayerCache[client][Class_Description], 256, ClassData[classindex][Class_Description]);
-            
+
             /* Model */
             strcopy(ClassPlayerCache[client][Class_ModelPath], PLATFORM_MAX_PATH, ClassData[classindex][Class_ModelPath]);
             ClassPlayerCache[client][Class_ModelSkinIndex] = ClassData[classindex][Class_ModelSkinIndex];
             ClassPlayerCache[client][Class_AlphaInitial] = ClassData[classindex][Class_AlphaInitial];
             ClassPlayerCache[client][Class_AlphaDamaged] = ClassData[classindex][Class_AlphaDamaged];
             ClassPlayerCache[client][Class_AlphaDamage] = ClassData[classindex][Class_AlphaDamage];
-            
+
             /* Hud */
             strcopy(ClassPlayerCache[client][Class_OverlayPath], PLATFORM_MAX_PATH, ClassData[classindex][Class_OverlayPath]);
             ClassPlayerCache[client][Class_Nvgs] = ClassData[classindex][Class_Nvgs];
             ClassPlayerCache[client][Class_Fov] = ClassData[classindex][Class_Fov];
-            
+
             /* Effects */
             ClassPlayerCache[client][Class_HasNapalm] = ClassData[classindex][Class_HasNapalm];
             ClassPlayerCache[client][Class_NapalmTime] = ClassData[classindex][Class_NapalmTime];
-            
+
             /* Player behavior */
             ClassPlayerCache[client][Class_ImmunityMode] = ClassData[classindex][Class_ImmunityMode];
             ClassPlayerCache[client][Class_ImmunityAmount] = ClassData[classindex][Class_ImmunityAmount];
@@ -867,23 +867,23 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             strcopy(ClassPlayerCache[client][Class_SM_Flags], 64, ClassDataCache[classindex][Class_SM_Flags]);
             strcopy(ClassPlayerCache[client][Class_Name], 64, ClassDataCache[classindex][Class_Name]);
             strcopy(ClassPlayerCache[client][Class_Description], 256, ClassDataCache[classindex][Class_Description]);
-            
+
             /* Model */
             strcopy(ClassPlayerCache[client][Class_ModelPath], PLATFORM_MAX_PATH, ClassDataCache[classindex][Class_ModelPath]);
             ClassPlayerCache[client][Class_ModelSkinIndex] = ClassDataCache[classindex][Class_ModelSkinIndex];
             ClassPlayerCache[client][Class_AlphaInitial] = ClassDataCache[classindex][Class_AlphaInitial];
             ClassPlayerCache[client][Class_AlphaDamaged] = ClassDataCache[classindex][Class_AlphaDamaged];
             ClassPlayerCache[client][Class_AlphaDamage] = ClassDataCache[classindex][Class_AlphaDamage];
-            
+
             /* Hud */
             strcopy(ClassPlayerCache[client][Class_OverlayPath], PLATFORM_MAX_PATH, ClassDataCache[classindex][Class_OverlayPath]);
             ClassPlayerCache[client][Class_Nvgs] = ClassDataCache[classindex][Class_Nvgs];
             ClassPlayerCache[client][Class_Fov] = ClassDataCache[classindex][Class_Fov];
-            
+
             /* Effects */
             ClassPlayerCache[client][Class_HasNapalm] = ClassDataCache[classindex][Class_HasNapalm];
             ClassPlayerCache[client][Class_NapalmTime] = ClassDataCache[classindex][Class_NapalmTime];
-            
+
             /* Player behavior */
             ClassPlayerCache[client][Class_ImmunityMode] = ClassDataCache[classindex][Class_ImmunityMode];
             ClassPlayerCache[client][Class_ImmunityAmount] = ClassDataCache[classindex][Class_ImmunityAmount];
@@ -905,7 +905,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -918,21 +918,21 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
 bool:ClassReloadPlayer(client)
 {
     new activeclass;
-    
+
     // Get active class index.
     activeclass = ClassGetActiveIndex(client);
-    
+
     // Validate index.
     if (activeclass < 0)
     {
         return false;
     }
-    
+
     // Refresh cache and re-apply attributes.
     ClassOnClientDeath(client);         // Dummy event to clean up and turn off stuff.
     ClassReloadPlayerCache(client, activeclass);
     ClassApplyAttributes(client);
-    
+
     return true;
 }
 
@@ -964,7 +964,7 @@ ClassResetMultiplierCache()
 ClassResetNextIndexes(client = -1)
 {
     new teamid;
-    
+
     if (client > 0)
     {
         for (teamid = 0; teamid < ZR_CLASS_TEAMCOUNT; teamid++)
@@ -997,7 +997,7 @@ ClassRestoreNextIndexes(client, excludeTeam = -1)
     new zombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
     new human = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
     new admin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
-    
+
     // Check if the zombie team should be excluded.
     if (excludeTeam != ZR_CLASS_TEAM_ZOMBIES)
     {
@@ -1007,11 +1007,11 @@ ClassRestoreNextIndexes(client, excludeTeam = -1)
             // Mark next zombie class as selected.
             ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombie;
         }
-        
+
         // Reset index.
         ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES] = -1;
     }
-    
+
     // Check if the human team should be excluded.
     if (excludeTeam != ZR_CLASS_TEAM_HUMANS)
     {
@@ -1021,11 +1021,11 @@ ClassRestoreNextIndexes(client, excludeTeam = -1)
             // Mark next zombie class as selected.
             ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = human;
         }
-        
+
         // Reset index.
         ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS] = -1;
     }
-    
+
     // Check if the human team should be excluded.
     if (excludeTeam != ZR_CLASS_TEAM_ADMINS)
     {
@@ -1035,7 +1035,7 @@ ClassRestoreNextIndexes(client, excludeTeam = -1)
             // Mark next zombie class as selected.
             ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = admin;
         }
-        
+
         // Reset index.
         ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS] = -1;
     }
@@ -1052,37 +1052,37 @@ ClassClientSetDefaultIndexes(client = -1)
     new bool:clientvalid = ZRIsClientValid(client);
     new filter[ClassFilter];
     new bool:saveclasses = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]);
-    
+
     new zombieindex;
     new humanindex;
     new adminindex;
-    
+
     new bool:haszombie;
     new bool:hashuman;
     new bool:hasadmin;
-    
-    
+
+
     /*
      *  SETUP CLASS FILTER
      */
-    
+
     // Do not require any class flags to be set.
     filter[ClassFilter_RequireFlags] = 0;
-    
+
     // Set filter to hide mother zombie classes.
     filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
-    
+
     // Set filter to also hide admin-only classes if not admin.
     filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
-    
+
     // Specify client so it can check group permissions.
     filter[ClassFilter_Client] = client;
-    
-    
+
+
     /*
      *  GET CLASS INDEXES
      */
-    
+
     // Check if a client is specified.
     if (clientvalid)
     {
@@ -1101,11 +1101,11 @@ ClassClientSetDefaultIndexes(client = -1)
             humanindex = 0;
             adminindex = 0;
         }
-        
+
         // Note: When class indexes are set on cookies, they're incremented by
         //       one so zero means no class set and will result in a invalid
         //       class index when restored.
-        
+
         // Check if class indexes are set and that the client pass the filter.
         // Also check that the saved class' team id match with the loaded class.
         // If not, fall back to default class indexes. Otherwise substract
@@ -1121,7 +1121,7 @@ ClassClientSetDefaultIndexes(client = -1)
             zombieindex--;
             haszombie = true;
         }
-        
+
         if (humanindex <= 0 ||
             !ClassTeamCompare(humanindex - 1, ZR_CLASS_TEAM_HUMANS) ||
             !ClassFilterMatch(humanindex - 1, filter))
@@ -1133,7 +1133,7 @@ ClassClientSetDefaultIndexes(client = -1)
             humanindex--;
             hashuman = true;
         }
-        
+
         if (adminindex <= 0 ||
             !ClassTeamCompare(adminindex - 1, ZR_CLASS_TEAM_ADMINS) ||
             !ClassFilterMatch(adminindex - 1, filter))
@@ -1150,14 +1150,14 @@ ClassClientSetDefaultIndexes(client = -1)
     {
         // Set filter to exclude classes that require groups.
         filter[ClassFilter_Client] = -1;
-        
+
         // Get default class indexes.
         zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES, filter);
         humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS, filter);
         adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS, filter);
     }
-    
-    
+
+
     /*
      *  VALIDATE INDEXES
      */
@@ -1166,21 +1166,21 @@ ClassClientSetDefaultIndexes(client = -1)
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
         LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get the specified zombie class, falling back to default class in class config. Check spelling in \"zr_classes_default_zombie\".");
-        
+
         // Use default class.
         zombieindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ZOMBIES, filter);
     }
-    
+
     if (!ClassValidateIndex(humanindex))
     {
         // Invalid class index. Fall back to default class in class config and
         // log a warning.
         LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Set Default Indexes", "Warning: Failed to get the specified human class, falling back to default class in class config. Check spelling in \"zr_classes_default_human\".");
-        
+
         // Use default class.
         humanindex = ClassGetDefaultClass(ZR_CLASS_TEAM_HUMANS, filter);
     }
-    
+
     if (!ClassValidateIndex(adminindex))
     {
         // Invalid class index. Fall back to default class in class config if
@@ -1188,12 +1188,12 @@ ClassClientSetDefaultIndexes(client = -1)
         // no admin classes at all.
         adminindex = ClassGetDefaultClass(ZR_CLASS_TEAM_ADMINS, filter);
     }
-    
-    
+
+
     /*
      *  MARK INDEXES AS SELECTED, UPDATE CACHE AND COOKIES
      */
-    
+
     // Check if a client is specified.
     if (clientvalid)
     {
@@ -1201,10 +1201,10 @@ ClassClientSetDefaultIndexes(client = -1)
         ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
         ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
         ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
-        
+
         // Copy human class data to player cache.
         ClassReloadPlayerCache(client, humanindex);
-        
+
         // Save indexes in cookies if enabled, and not already saved.
         if (saveclasses)
         {
@@ -1231,7 +1231,7 @@ ClassClientSetDefaultIndexes(client = -1)
             ClassSelected[clientindex][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_HUMANS] = humanindex;
             ClassSelected[clientindex][ZR_CLASS_TEAM_ADMINS] = adminindex;
-            
+
             // Copy human class data to player cache.
             ClassReloadPlayerCache(client, humanindex);
         }
@@ -1261,7 +1261,7 @@ ClassSelectResult:ClassSelectClientClass(client, classIndex, bool:applyIfPossibl
     new bool:iszombie = InfectIsClientInfected(client);
     new teamid = ClassGetTeamID(classIndex, ZR_CLASS_CACHE_MODIFIED);
     new ClassSelectResult:selectResult = ClassSelected_NoChange;
-    
+
     // Allow instant class change if enabled and both class and player is human.
     if (applyIfPossible &&
         ClassAllowInstantChange[client] &&
@@ -1269,11 +1269,11 @@ ClassSelectResult:ClassSelectClientClass(client, classIndex, bool:applyIfPossibl
     {
         // Update selected class index.
         ClassSelected[client][teamid] = classIndex;
-        
+
         // Update cache and apply attributes.
         ClassReloadPlayerCache(client, classIndex);
         ClassApplyAttributes(client);
-        
+
         selectResult = ClassSelected_Instant;
     }
     else
@@ -1307,14 +1307,14 @@ ClassSelectResult:ClassSelectClientClass(client, classIndex, bool:applyIfPossibl
             selectResult = ClassSelected_NextSpawn;
         }
     }
-    
+
     // Save selected class index in cookie if enabled.
     // Note: Saved indexes are increased by one.
     if (saveIfEnabled && GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]))
     {
         CookiesSetInt(client, g_hClassCookieClassSelected[teamid], classIndex + 1);
     }
-    
+
     return selectResult;
 }
 
@@ -1337,123 +1337,123 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
     new cellcount;
     decl String:attribute[320];
     decl String:format_buffer[256];
-    
+
     if (maxlen == 0)
     {
         return 0;
     }
-    
+
     Format(format_buffer, sizeof(format_buffer), "Class data at index %d:\n", index);
     cellcount += StrCat(buffer, maxlen, format_buffer);
     cellcount += StrCat(buffer, maxlen, "-------------------------------------------------------------------------------\n");
-    
+
     Format(attribute, sizeof(attribute), "enabled:               \"%d\"\n", ClassIsEnabled(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "team:                  \"%d\"\n", ClassGetTeamID(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "team_default:          \"%d\"\n", ClassGetTeamDefault(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "flags:                 \"%d\"\n", ClassGetFlags(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     ClassGetGroup(index, format_buffer, sizeof(format_buffer), cachetype);
     Format(attribute, sizeof(attribute), "group:                 \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     ClassGetSM_Flags(index, format_buffer, sizeof(format_buffer), cachetype);
     Format(attribute, sizeof(attribute), "sm_flags:               \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     ClassGetName(index, format_buffer, sizeof(format_buffer), cachetype);
     Format(attribute, sizeof(attribute), "name:                  \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     ClassGetDescription(index, format_buffer, sizeof(format_buffer), cachetype);
     Format(attribute, sizeof(attribute), "description:           \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     ClassGetModelPath(index, format_buffer, sizeof(format_buffer), cachetype);
     Format(attribute, sizeof(attribute), "model_path:            \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "model_skin_index:      \"%d\"\n", ClassGetModelSkinIndex(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "alpha_initial:         \"%d\"\n", ClassGetAlphaInitial(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "alpha_damaged:         \"%d\"\n", ClassGetAlphaDamaged(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "alpha_damage:          \"%d\"\n", ClassGetAlphaDamage(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     ClassGetOverlayPath(index, format_buffer, sizeof(format_buffer), cachetype);
     Format(attribute, sizeof(attribute), "overlay_path:          \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "nvgs:                  \"%d\"\n", ClassGetNvgs(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "fov:                   \"%d\"\n", ClassGetFOV(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "has_napalm:            \"%d\"\n", ClassGetHasNapalm(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "napalm_time:           \"%f\"\n", ClassGetNapalmTime(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     ImmunityModeToString(ClassGetImmunityMode(index, cachetype), format_buffer, sizeof(format_buffer));
     Format(attribute, sizeof(attribute), "immunity_mode:         \"%s\"\n", format_buffer);
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "immunity_amount:       \"%d\"\n", ClassGetImmunityAmount(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "immunity_cooldown:     \"%d\"\n", ClassGetImmunityCooldown(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "no_fall_damage:        \"%d\"\n", ClassGetNoFallDamage(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "health:                \"%d\"\n", ClassGetHealth(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "health_regen_interval: \"%f\"\n", ClassGetHealthRegenInterval(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "health_regen_amount:   \"%d\"\n", ClassGetHealthRegenAmount(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "health_infect_gain:    \"%d\"\n", ClassGetHealthInfectGain(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "kill_bonus:            \"%d\"\n", ClassGetKillBonus(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "speed:                 \"%f\"\n", ClassGetSpeed(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "knockback:             \"%f\"\n", ClassGetKnockback(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "jump_height:           \"%f\"\n", ClassGetJumpHeight(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     Format(attribute, sizeof(attribute), "jump_distance:         \"%f\"\n", ClassGetJumpDistance(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);
-    
+
     return cellcount;
 }
 
 /**
  * Converts a multiplier attribute to a human readable string.
  *
- * @param client        The client index to translate correct language. 
+ * @param client        The client index to translate correct language.
  * @param attribute     Attribute to convert.
  * @param buffer        Destination string buffer.
  * @param maxlen        Size of buffer.
@@ -1462,7 +1462,7 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
 ClassMultiplierToString(client, ClassMultipliers:attribute, String:buffer[], maxlen)
 {
     decl String:phrase[48];
-    
+
     SetGlobalTransTarget(client);
     switch (attribute)
     {
@@ -1512,6 +1512,6 @@ ClassMultiplierToString(client, ClassMultipliers:attribute, String:buffer[], max
             return strcopy(buffer, maxlen, phrase);
         }
     }
-    
+
     return 0;
 }

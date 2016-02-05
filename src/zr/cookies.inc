@@ -27,7 +27,7 @@
 
 /**
  * Cookies module init function.
- */ 
+ */
 CookiesInit()
 {
     // Forward "OnCookiesCreate" event to modules.
@@ -38,7 +38,7 @@ CookiesInit()
 
 /**
  * Accepts a bools for setting client cookies.
- * 
+ *
  * @param client        The client index.
  * @param cookie        The handle to the cookie.
  * @param cookievalue   The bool value to set cookie as.
@@ -48,14 +48,14 @@ CookiesSetClientCookieBool(client, Handle:cookie, bool:cookievalue)
     // Convert bool to string.
     decl String:strCookievalue[8];
     ZRBoolToString(cookievalue, strCookievalue, sizeof(strCookievalue));
-    
+
     // Set the converted string to the cookie.
     SetClientCookie(client, cookie, strCookievalue);
 }
 
 /**
  * Returns a cookie value as a bool.
- * 
+ *
  * @param client    The client index.
  * @param cookie    The handle to the cookie.
  */
@@ -64,7 +64,7 @@ bool:CookiesGetClientCookieBool(client, Handle:cookie)
     // Get cookie string.
     decl String:cookievalue[8];
     GetClientCookie(client, cookie, cookievalue, sizeof(cookievalue));
-    
+
     // Return string casted into an int, then to bool.
     return bool:StringToInt(cookievalue);
 }
@@ -81,7 +81,7 @@ CookiesSetInt(client, Handle:cookie, value)
     // Convert value to string.
     decl String:strValue[16];
     IntToString(value, strValue, sizeof(strValue));
-    
+
     // Set string value.
     SetClientCookie(client, cookie, strValue);
 }
@@ -97,6 +97,6 @@ CookiesGetInt(client, Handle:cookie)
     decl String:strValue[16];
     strValue[0] = 0;
     GetClientCookie(client, cookie, strValue, sizeof(strValue));
-    
+
     return StringToInt(strValue);
 }

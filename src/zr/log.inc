@@ -36,7 +36,7 @@ LogInit()
     {
         CloseHandle(hLogModuleFilter);
     }
-    
+
     // Initialize module filter array.
     hLogModuleFilter = CreateArray(32);
 }
@@ -132,7 +132,7 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
             return shortName ? strcopy(buffer, maxlen, "ztele") : strcopy(buffer, maxlen, "ZTele");
         }
     }
-    
+
     // Module mismatch.
     return 0;
 }
@@ -222,7 +222,7 @@ LogModules:LogGetModule(const String:moduleName[])
     {
         return LogModule_ZTele;
     }
-    
+
     // No match.
     return LogModule_Invalid;
 }
@@ -250,7 +250,7 @@ bool:LogCheckFlag(eventType)
  * Check if the specified module is enabled in the log module filter cache.
  *
  * @param module        Module to check.
- * @return              True if enabled, false otherwise. 
+ * @return              True if enabled, false otherwise.
  */
 bool:LogCheckModuleFilter(LogModules:module)
 {
@@ -290,19 +290,19 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
         {
             return;
         }
-        
+
         // Check if console is ignored.
         if (isConsole && GetConVarBool(g_hCvarsList[CVAR_LOG_IGNORE_CONSOLE]))
         {
             return;
         }
-        
+
         // Check event type (log flag).
         if (!LogCheckFlag(eventType))
         {
             return;
         }
-        
+
         // Check if module filtering is enabled.
         if (GetConVarBool(g_hCvarsList[CVAR_LOG_MODULE_FILTER]))
         {
@@ -313,18 +313,18 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
             }
         }
     }
-    
+
     // Format extra parameters into the log buffer.
     decl String:logbuffer[LOG_MAX_LENGTH_FILE];
     VFormat(logbuffer, sizeof(logbuffer), text, 7);
-    
+
     // Get human readable module name.
     new String:modulename[64];
     LogGetModuleNameString(modulename, sizeof(modulename), module);
-    
-    // Format 
+
+    // Format
     Format(logbuffer, sizeof(logbuffer), "[%s] [%s] %s", modulename, description, logbuffer);
-    
+
     // Format other parameters onto the log text.
     switch (logType)
     {
@@ -344,16 +344,16 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
             SetFailState(logbuffer);
         }
     }
-    
+
     // Note: The phrase "Literal text" is a blank phrase to pass any string we want into it.
-    
+
     // Check if printing log events to admins is enabled.
     if (GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_ADMINS]))
     {
         // Print text to admins.
         TranslationPrintToChatAll(false, true, "Literal text", logbuffer);
     }
-    
+
     // Check if printing log events to public chat is enabled.
     if (GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_CHAT]))
     {
@@ -372,16 +372,16 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
 bool:LogModuleFilterAdd(LogModules:module)
 {
     decl String:modulename[64];
-    
+
     // Check if empty.
     if (strlen(modulename) == 0)
     {
         return false;
     }
-    
+
     // Convert module name.
     LogGetModuleNameString(modulename, sizeof(modulename), module, true);
-    
+
     // Check if the module isn't already is listed.
     if (FindStringInArray(hLogModuleFilter, modulename) < 0)
     {
@@ -389,7 +389,7 @@ bool:LogModuleFilterAdd(LogModules:module)
         PushArrayString(hLogModuleFilter, modulename);
         return true;
     }
-    
+
     return false;
 }
 
@@ -404,19 +404,19 @@ bool:LogModuleFilterRemove(LogModules:module)
 {
     decl String:modulename[64];
     new moduleindex;
-    
+
     // Check if empty.
     if (strlen(modulename) == 0)
     {
         return false;
     }
-    
+
     // Convert module name.
     LogGetModuleNameString(modulename, sizeof(modulename), module, true);
-    
+
     // Get the module index.
     moduleindex = FindStringInArray(hLogModuleFilter, modulename);
-    
+
     // Check if successful.
     if (moduleindex >= 0)
     {
@@ -424,7 +424,7 @@ bool:LogModuleFilterRemove(LogModules:module)
         RemoveFromArray(hLogModuleFilter, moduleindex);
         return true;
     }
-    
+
     return false;
 }
 
@@ -437,24 +437,24 @@ LogModuleFilterCacheUpdate()
     new LogModules:moduletype;
     new modulecount;
     new filtersize;
-    
+
     // Clear all entries in module cache.
     modulecount = sizeof(LogModuleFilterCache);
     for (new module = 1; module < modulecount; module++)
     {
         LogModuleFilterCache[LogModules:module] = false;
     }
-    
+
     // Loop through the module array.
     filtersize = GetArraySize(hLogModuleFilter);
     for (new index = 0; index < filtersize; index++)
     {
         // Get the module name.
         GetArrayString(hLogModuleFilter, index, modulename, sizeof(modulename));
-        
+
         // Convert to type.
         moduletype = LogGetModule(modulename);
-        
+
         // Validate type.
         if (moduletype != LogModule_Invalid)
         {
@@ -486,62 +486,62 @@ public Action:Command_LogList(client, argc)
     decl String:linebuffer[96];
     decl String:modulename[64];
     decl String:modulenameshort[64];
-    
+
     new modulecount;
-    
+
     // Strings to store translated phrases. Because formatting width settings
     // doesn't work with "%t", but "%s".
     decl String:phrasegenericflag[32];
     decl String:phrasevalue[32];
     decl String:phrasemodule[32];
     decl String:phraseshortname[32];
-    
+
     // Quick initialize string buffer.
     buffer[0] = 0;
-    
+
     // Set language.
     SetGlobalTransTarget(client);
-    
+
     // Get phrases.
     Format(phrasegenericflag, sizeof(phrasegenericflag), "%t", "Log Generic Flag");
     Format(phrasevalue, sizeof(phrasevalue), "%t", "Log Value");
     Format(phrasemodule, sizeof(phrasemodule), "%t", "Log Module");
     Format(phraseshortname, sizeof(phraseshortname), "%t", "Log Module Short Name");
-    
+
     // Log flags:
     Format(linebuffer, sizeof(linebuffer), "%-19s %-7s %t\n", phrasegenericflag, phrasevalue, "Log Status");
     StrCat(buffer, sizeof(buffer), linebuffer);
     StrCat(buffer, sizeof(buffer), "--------------------------------------------------------------------------------\n");
-    
+
     Format(linebuffer, sizeof(linebuffer), "LOG_CORE_EVENTS     1       %t\n", LogCheckFlag(LOG_CORE_EVENTS) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
-    
+
     Format(linebuffer, sizeof(linebuffer), "LOG_GAME_EVENTS     2       %t\n", LogCheckFlag(LOG_GAME_EVENTS) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
-    
+
     Format(linebuffer, sizeof(linebuffer), "LOG_PLAYER_COMMANDS 4       %t\n", LogCheckFlag(LOG_PLAYER_COMMANDS) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
-    
+
     Format(linebuffer, sizeof(linebuffer), "LOG_DEBUG           8       %t\n", LogCheckFlag(LOG_DEBUG) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
-    
+
     Format(linebuffer, sizeof(linebuffer), "LOG_DEBUG_DETAIL    16      %t\n", LogCheckFlag(LOG_DEBUG_DETAIL) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
-    
+
     ReplyToCommand(client, buffer);
     buffer[0] = 0;
-    
+
     // Module filtering status:
     Format(linebuffer, sizeof(linebuffer), "%t %t\n\n", "Log Module Filtering", GetConVarBool(g_hCvarsList[CVAR_LOG_MODULE_FILTER]) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
-    
+
     Format(linebuffer, sizeof(linebuffer), "%-23s %-19s %t\n", phrasemodule, phraseshortname, "Log Status");
     StrCat(buffer, sizeof(buffer), linebuffer);
     StrCat(buffer, sizeof(buffer), "--------------------------------------------------------------------------------");
-    
+
     ReplyToCommand(client, buffer);
     buffer[0] = 0;
-    
+
     // Module status:
     modulecount = sizeof(LogModuleFilterCache);
     for (new module = 1; module < modulecount; module++)
@@ -551,7 +551,7 @@ public Action:Command_LogList(client, argc)
         Format(linebuffer, sizeof(linebuffer), "%-23s %-19s %t", modulename, modulenameshort, LogModuleFilterCache[LogModules:module] ? "On" : "Off");
         ReplyToCommand(client, linebuffer);
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -566,16 +566,16 @@ public Action:Command_LogAddModule(client, argc)
     decl String:buffer[256];
     decl String:argument[32];
     buffer[0] = 0;
-    
+
     // Check if privileged.
     if (!ZRIsClientPrivileged(client, OperationType_Configuration))
     {
         TranslationReplyToCommand(client, "No access to command");
         return Plugin_Handled;
     }
-    
+
     new LogModules:logmodule;
-    
+
     // Check if no arguments.
     if (argc < 1)
     {
@@ -584,32 +584,32 @@ public Action:Command_LogAddModule(client, argc)
         StrCat(buffer, sizeof(buffer), "See zr_log_list to list available module names (short names).");
         ReplyToCommand(client, buffer);
     }
-    
+
     // Loop through each argument.
     for (new arg = 1; arg <= argc; arg++)
     {
         // Get argument string.
         GetCmdArg(arg, argument, sizeof(argument));
-        
+
         // Convert to module type.
         logmodule = LogGetModule(argument);
-        
+
         // Check if invalid.
         if (logmodule == LogModule_Invalid)
         {
             ReplyToCommand(client, "Invalid module name: \"%s\"", argument);
-            
+
             // Skip to next argument.
             continue;
         }
-        
+
         LogModuleFilterAdd(logmodule);
         ReplyToCommand(client, "Added \"%s\" to module filter.", argument);
     }
-    
+
     // Update cache.
     LogModuleFilterCacheUpdate();
-    
+
     return Plugin_Handled;
 }
 
@@ -624,16 +624,16 @@ public Action:Command_LogRemoveModule(client, argc)
     decl String:buffer[256];
     decl String:argument[32];
     buffer[0] = 0;
-    
+
     // Check if privileged.
     if (!ZRIsClientPrivileged(client, OperationType_Configuration))
     {
         TranslationReplyToCommand(client, "No access to command");
         return Plugin_Handled;
     }
-    
+
     new LogModules:logmodule;
-    
+
     // Check if no arguments.
     if (argc < 1)
     {
@@ -642,31 +642,31 @@ public Action:Command_LogRemoveModule(client, argc)
         StrCat(buffer, sizeof(buffer), "See zr_log_list to list available module names (short names).");
         ReplyToCommand(client, buffer);
     }
-    
+
     // Loop through each argument.
     for (new arg = 1; arg <= argc; arg++)
     {
         // Get argument string.
         GetCmdArg(arg, argument, sizeof(argument));
-        
+
         // Convert to module type.
         logmodule = LogGetModule(argument);
-        
+
         // Check if invalid.
         if (logmodule == LogModule_Invalid)
         {
             ReplyToCommand(client, "Invalid module name: \"%s\"", argument);
-            
+
             // Skip to next argument.
             continue;
         }
-        
+
         LogModuleFilterRemove(logmodule);
         ReplyToCommand(client, "Removed \"%s\" from module filter.", argument);
     }
-    
+
     // Update cache.
     LogModuleFilterCacheUpdate();
-    
+
     return Plugin_Handled;
 }

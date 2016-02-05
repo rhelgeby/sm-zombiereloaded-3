@@ -66,7 +66,7 @@ new g_iStartTouchHookID[MAXPLAYERS + 1] = {-1, ...};
 
 /**
  * List of components that make up the model's rectangular boundaries.
- * 
+ *
  * F = Front
  * B = Back
  * L = Left
@@ -95,7 +95,7 @@ AntiStickOnCommandsCreate()
 
 /**
  * Client is joining the server.
- * 
+ *
  * @param client    The client index.
  */
 AntiStickClientInit(client)
@@ -103,7 +103,7 @@ AntiStickClientInit(client)
     // Hook "StartTouch" and "EndTouch" on client.
     #if defined USE_SDKHOOKS
         SDKHook(client, SDKHook_StartTouch, AntiStickStartTouch);
-        
+
         // Set dummy value so it think it's hooked.
         g_iStartTouchHookID[client] = 1;
     #else
@@ -113,7 +113,7 @@ AntiStickClientInit(client)
 
 /**
  * Unhook StartTouch and EndTouch function on a client.
- * 
+ *
  * @param client    The client index.
  */
 AntiStickOnClientDisconnect(client)
@@ -126,14 +126,14 @@ AntiStickOnClientDisconnect(client)
         #else
             ZRTools_UnhookStartTouch(g_iStartTouchHookID[client]);
         #endif
-        
+
         g_iStartTouchHookID[client] = -1;
     }
 }
 
 /**
  * Callback function for StartTouch.
- * 
+ *
  * @param client        The client index.
  * @param entity        The entity index of the entity being touched.
  */
@@ -149,41 +149,41 @@ public ZRTools_Action:AntiStickStartTouch(client, entity)
     {
         return;
     }
-    
+
     // If client isn't in-game, then stop.
     if (!IsClientInGame(client))
     {
         return;
     }
-    
+
     // If client is touching themselves, then leave them alone :P
     if (client == entity)
     {
         return;
     }
-    
+
     // If touched entity isn't a valid client, then stop.
     if (!ZRIsClientValid(entity))
     {
         return;
     }
-    
+
     // If the clients aren't colliding, then stop.
     if (!AntiStickIsModelBoxColliding(client, entity))
     {
         return;
     }
-        
+
     // From this point we know that client and entity is more or less within eachother.
     LogEvent(false, LogType_Normal, LOG_DEBUG, LogModule_AntiStick, "Collision", "Player \"%N\" and \"%N\" are intersecting. Removing collisions.", client, entity);
-    
+
     // Get current collision groups of client and entity.
     new clientcollisiongroup = AntiStickGetCollisionGroup(client);
-    
+
     // Note: If zombies get stuck on infection or stuck in a teleport, they'll
     //       get the COLLISION_GROUP_PUSHAWAY collision group, so check this
     //       one too.
-    
+
     // If the client is in any other collision group than "off", than we must set them to off, to unstick.
     if (clientcollisiongroup != ANTISTICK_COLLISIONS_OFF)
     {
@@ -195,7 +195,7 @@ public ZRTools_Action:AntiStickStartTouch(client, entity)
 
 /**
  * Callback for solidify timer.
- * 
+ *
  * @param client        The client index.
  */
 public Action:AntiStickSolidifyTimer(Handle:timer, any:client)
@@ -205,19 +205,19 @@ public Action:AntiStickSolidifyTimer(Handle:timer, any:client)
     {
         return Plugin_Stop;
     }
-    
+
     // If the client is dead, then stop.
     if (!IsPlayerAlive(client))
     {
         return Plugin_Stop;
     }
-    
+
     // If the client's collisions are already on, then stop.
     if (AntiStickGetCollisionGroup(client) == ANTISTICK_COLLISIONS_ON)
     {
         return Plugin_Stop;
     }
-    
+
     // Loop through all clients and check if client is stuck in them.
     for (new x = 1; x <= MaxClients; x++)
     {
@@ -226,38 +226,38 @@ public Action:AntiStickSolidifyTimer(Handle:timer, any:client)
         {
             continue;
         }
-        
+
         // If the client is dead, then skip it.
         if (!IsPlayerAlive(x))
         {
             continue;
         }
-        
+
         // Don't compare the same clients.
         if (client == x)
         {
             continue;
         }
-        
+
         // If the client is colliding with a client, then allow timer to continue.
         if (AntiStickIsModelBoxColliding(client, x))
         {
             return Plugin_Continue;
         }
     }
-    
+
     // Change collisions back to normal.
     AntiStickSetCollisionGroup(client, ANTISTICK_COLLISIONS_ON);
-    
+
     // Debug message. May be useful when calibrating antistick.
     LogEvent(false, LogType_Normal, LOG_DEBUG, LogModule_AntiStick, "Collision", "Player \"%N\" is no longer intersecting anyone. Applying normal collisions.", client);
-    
+
     return Plugin_Stop;
 }
 
 /**
  * Build the model box by finding all vertices.
- * 
+ *
  * @param client        The client index.
  * @param boundaries    Array with 'AntiStickBoxBounds' for indexes to return bounds into.
  * @param width         The width of the model box.
@@ -269,38 +269,38 @@ stock AntiStickBuildModelBox(client, Float:boundaries[AntiStickBoxBound][3], Flo
     new Float:cornerang[3];
     new Float:sideloc[3];
     new Float:finalloc[4][3];
-    
+
     // Get needed vector info.
     GetClientAbsOrigin(client, clientloc);
-    
+
     // Set the pitch to 0.
     twistang[1] = 90.0;
     cornerang[1] = 0.0;
-    
+
     for (new x = 0; x < 4; x++)
     {
         // Jump to point on player's left side.
         AntiStickJumpToPoint(clientloc, twistang, width / 2, sideloc);
-        
+
         // From this point, jump to the corner, which would be half the width from the middle of a side.
         AntiStickJumpToPoint(sideloc, cornerang, width / 2, finalloc[x]);
-        
+
         // Twist 90 degrees to find next side/corner.
         twistang[1] += 90.0;
         cornerang[1] += 90.0;
-        
+
         // Fix angles.
         if (twistang[1] > 180.0)
         {
             twistang[1] -= 360.0;
         }
-        
+
         if (cornerang[1] > 180.0)
         {
             cornerang[1] -= 360.0;
         }
     }
-    
+
     // Copy all horizontal model box data to array.
     boundaries[BoxBound_FUR][0] = finalloc[3][0];
     boundaries[BoxBound_FUR][1] = finalloc[3][1];
@@ -318,11 +318,11 @@ stock AntiStickBuildModelBox(client, Float:boundaries[AntiStickBoxBound][3], Flo
     boundaries[BoxBound_BDR][1] = finalloc[2][1];
     boundaries[BoxBound_BDL][0] = finalloc[1][0];
     boundaries[BoxBound_BDL][1] = finalloc[1][1];
-    
+
     // Set Z bounds.
     new Float:eyeloc[3];
     GetClientEyePosition(client, eyeloc);
-    
+
     boundaries[BoxBound_FUR][2] = eyeloc[2];
     boundaries[BoxBound_FUL][2] = eyeloc[2];
     boundaries[BoxBound_FDR][2] = clientloc[2] + 15.0;
@@ -335,7 +335,7 @@ stock AntiStickBuildModelBox(client, Float:boundaries[AntiStickBoxBound][3], Flo
 
 /**
  * Jumps from a point to another based off angle and distance.
- * 
+ *
  * @param vec       Point to jump from.
  * @param ang       Angle to base jump off of.
  * @param distance  Distance to jump
@@ -344,23 +344,23 @@ stock AntiStickBuildModelBox(client, Float:boundaries[AntiStickBoxBound][3], Flo
 stock AntiStickJumpToPoint(const Float:vec[3], const Float:ang[3], Float:distance, Float:result[3])
 {
     new Float:viewvec[3];
-    
+
     // Turn client angle, into a vector.
     GetAngleVectors(ang, viewvec, NULL_VECTOR, NULL_VECTOR);
-    
+
     // Normalize vector.
     NormalizeVector(viewvec, viewvec);
-    
+
     // Scale to the given distance.
     ScaleVector(viewvec, distance);
-    
+
     // Add the vectors together.
     AddVectors(vec, viewvec, result);
 }
 
 /**
  * Get the max/min value of a 3D box on any axis.
- * 
+ *
  * @param axis          The axis to check.
  * @param boundaries    The boundaries to check.
  * @param min           Return the min value instead.
@@ -369,7 +369,7 @@ stock Float:AntiStickGetBoxMaxBoundary(axis, Float:boundaries[AntiStickBoxBound]
 {
     // Create 'outlier' with initial value of first boundary.
     new Float:outlier = boundaries[0][axis];
-    
+
     // x = Boundary index. (Start at 1 because we initialized 'outlier' with the 0 index's value)
     new size = sizeof(boundaries);
     for (new x = 1; x < size; x++)
@@ -383,7 +383,7 @@ stock Float:AntiStickGetBoxMaxBoundary(axis, Float:boundaries[AntiStickBoxBound]
             outlier = boundaries[x][axis];
         }
     }
-    
+
     // Return value.
     return outlier;
 }
@@ -399,44 +399,44 @@ stock bool:AntiStickIsModelBoxColliding(client1, client2)
 {
     new Float:client1modelbox[AntiStickBoxBound][3];
     new Float:client2modelbox[AntiStickBoxBound][3];
-    
+
     // Build model boxes for each client.
     AntiStickBuildModelBox(client1, client1modelbox, ANTISTICK_DEFAULT_HULL_WIDTH);
     AntiStickBuildModelBox(client2, client2modelbox, ANTISTICK_DEFAULT_HULL_WIDTH);
-    
+
     // Compare x values.
     new Float:max1x = AntiStickGetBoxMaxBoundary(0, client1modelbox);
     new Float:max2x = AntiStickGetBoxMaxBoundary(0, client2modelbox);
     new Float:min1x = AntiStickGetBoxMaxBoundary(0, client1modelbox, true);
     new Float:min2x = AntiStickGetBoxMaxBoundary(0, client2modelbox, true);
-    
+
     if (max1x < min2x || min1x > max2x)
     {
         return false;
     }
-    
+
     // Compare y values.
     new Float:max1y = AntiStickGetBoxMaxBoundary(1, client1modelbox);
     new Float:max2y = AntiStickGetBoxMaxBoundary(1, client2modelbox);
     new Float:min1y = AntiStickGetBoxMaxBoundary(1, client1modelbox, true);
     new Float:min2y = AntiStickGetBoxMaxBoundary(1, client2modelbox, true);
-    
+
     if (max1y < min2y || min1y > max2y)
     {
         return false;
     }
-    
+
     // Compare z values.
     new Float:max1z = AntiStickGetBoxMaxBoundary(2, client1modelbox);
     new Float:max2z = AntiStickGetBoxMaxBoundary(2, client2modelbox);
     new Float:min1z = AntiStickGetBoxMaxBoundary(2, client1modelbox, true);
     new Float:min2z = AntiStickGetBoxMaxBoundary(2, client2modelbox, true);
-    
+
     if (max1z < min2z || min1z > max2z)
     {
         return false;
     }
-    
+
     // They are intersecting.
     return true;
 }
@@ -552,7 +552,7 @@ AntiStickCollisionGroupToString(collisiongroup, String:buffer[], maxlen)
             return strcopy(buffer, maxlen, "COLLISION_GROUP_NPC_ACTOR");
         }
     }
-    
+
     // No match. Write a blank string.
     return strcopy(buffer, maxlen, "");
 }
@@ -560,7 +560,7 @@ AntiStickCollisionGroupToString(collisiongroup, String:buffer[], maxlen)
 /**
  * Command callback (zr_antistick_dump_group)
  * Dumps collision group data.
- * 
+ *
  * @param client    The client index.
  * @param argc      Argument count.
  */
@@ -570,14 +570,14 @@ public Action:AntiStickDumpGroupCommand(client, argc)
     new target;
     decl String:groupname[64];
     decl String:arg[96];
-    
+
     // Write header.
     ReplyToCommand(client, "Player:                             Collision group:\n--------------------------------------------------------------------------------");
-    
+
     if (argc < 1)
     {
         // Dump collision groups on all players.
-        
+
         // Loop through all alive players.
         for (target = 1; target <= MaxClients; target++)
         {
@@ -586,11 +586,11 @@ public Action:AntiStickDumpGroupCommand(client, argc)
             {
                 continue;
             }
-            
+
             // Get collision group name.
             collisiongroup = AntiStickGetCollisionGroup(target);
             AntiStickCollisionGroupToString(collisiongroup, groupname, sizeof(groupname));
-            
+
             // List player name and collision group.
             ReplyToCommand(client, "%-35N %s", target, groupname);
         }
@@ -600,18 +600,18 @@ public Action:AntiStickDumpGroupCommand(client, argc)
         // Get the target.
         GetCmdArg(1, arg, sizeof(arg));
         target = FindTarget(client, arg);
-        
+
         // Validate target.
         if (ZRIsClientValid(target))
         {
             // Get collision group name.
             collisiongroup = AntiStickGetCollisionGroup(target);
             AntiStickCollisionGroupToString(collisiongroup, groupname, sizeof(groupname));
-            
+
             // List player name and collision group.
             ReplyToCommand(client, "%-35N %s", target, groupname);
         }
     }
-    
+
     return Plugin_Handled;
 }

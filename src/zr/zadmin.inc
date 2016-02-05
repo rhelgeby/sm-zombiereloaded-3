@@ -37,7 +37,7 @@ ZAdminOnCommandsCreate()
 /**
  * Command callback (zadmin)
  * Opens ZR admin menu.
- * 
+ *
  * @param client    The client index.
  * @param argc      Argument count.
  */
@@ -49,17 +49,17 @@ public Action:ZAdminCommand(client, argc)
         TranslationPrintToServer("Must be player");
         return Plugin_Handled;
     }
-    
+
     // Send admin menu.
     ZAdminMenu(client);
-    
+
     // This stops the "Unknown command" message in client's console.
     return Plugin_Handled;
 }
 
 /**
  * Main admin menu.
- * 
+ *
  * @param client    The client index.
  */
 bool:ZAdminMenu(client)
@@ -70,16 +70,16 @@ bool:ZAdminMenu(client)
         TranslationPrintToChat(client, "Must be admin");
         return false;
     }
-    
+
     // Boolean that tell if client is allowed to do configuration.
     new bool:configallowed = ZRIsClientPrivileged(client, OperationType_Configuration);
-    
+
     // Create menu handle.
     new Handle:menu_zadmin = CreateMenu(ZAdminMenuHandle);
-    
+
     // Set translation target as the client.
     SetGlobalTransTarget(client);
-    
+
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:classmultipliers[MENU_LINE_REG_LENGTH];
     decl String:weapons[MENU_LINE_REG_LENGTH];
@@ -87,7 +87,7 @@ bool:ZAdminMenu(client)
     decl String:infect[MENU_LINE_REG_LENGTH];
     decl String:zspawn[MENU_LINE_REG_LENGTH];
     decl String:ztele[MENU_LINE_REG_LENGTH];
-    
+
     Format(title, sizeof(title), "%t\n ", "ZAdmin main title");
     Format(classmultipliers, sizeof(classmultipliers), "%t", "ZAdmin main class multipliers");
     Format(weapons, sizeof(weapons), "%t", "ZAdmin main weapons");
@@ -95,12 +95,12 @@ bool:ZAdminMenu(client)
     Format(infect, sizeof(infect), "%t", "ZAdmin main zombie");
     Format(zspawn, sizeof(zspawn), "%t", "ZAdmin main force zspawn");
     Format(ztele, sizeof(ztele), "%t", "ZAdmin main force ztele");
-    
+
     // Get conditions for options.
     new configdraw = MenuGetItemDraw(configallowed);
     new moderatordraw = MenuGetItemDraw(ZRIsClientPrivileged(client, OperationType_Generic));
     new hitgroupdraw = MenuGetItemDraw(GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]) && configallowed);
-    
+
     // Add items to menu.
     SetMenuTitle(menu_zadmin, title);
     AddMenuItem(menu_zadmin, "classmultipliers", classmultipliers, configdraw);
@@ -109,20 +109,20 @@ bool:ZAdminMenu(client)
     AddMenuItem(menu_zadmin, "infect", infect, moderatordraw);
     AddMenuItem(menu_zadmin, "zspawn", zspawn, moderatordraw);
     AddMenuItem(menu_zadmin, "ztele", ztele, moderatordraw);
-    
+
     // Set "Back" button.
     SetMenuExitBackButton(menu_zadmin, true);
-    
+
     // Send menu to client.
     DisplayMenu(menu_zadmin, client, MENU_TIME_FOREVER);
-    
+
     return true;
 }
 
 /**
  * Menu callback (zadmin)
  * Handles options selected in the admin menu.
- * 
+ *
  * @param menu      The menu handle.
  * @param action    Action client is doing in menu.
  * @param client    The client index.
@@ -134,7 +134,7 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
     {
         // Create variable to possible resend menu later.
         new bool:resend = true;
-        
+
         switch(slot)
         {
             // Class multipliers.
@@ -157,7 +157,7 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
             {
                 // We're not resending this menu.
                 resend = false;
-                
+
                 // Send list of clients to infect.
                 InfectMenuClients(client);
             }
@@ -166,7 +166,7 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
             {
                 // We're not resending this menu.
                 resend = false;
-                
+
                 // Send list of clients to infect.
                 MenuClientList(client, ZSpawnForceHandle, true, false, true, "ZSpawn clients title");
             }
@@ -175,19 +175,19 @@ public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
             {
                 // We're not resending this menu.
                 resend = false;
-                
+
                 // Send list of clients to infect.
                 MenuClientList(client, ZTele_ForceHandle, true, true, false, "ZTele clients title");
             }
         }
-        
+
         // Re-send menu if selection failed.
         if (resend)
         {
             ZAdminMenu(client);
         }
     }
-    
+
     if (action == MenuAction_Cancel)
     {
         if (slot == MenuCancel_ExitBack)

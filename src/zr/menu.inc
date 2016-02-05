@@ -50,7 +50,7 @@ MenuOnCommandsCreate()
 /**
  * Command callback (zmenu)
  * Opens ZR's main menu.
- * 
+ *
  * @param client    The client index.
  * @param argc      Argument count.
  */
@@ -62,26 +62,26 @@ public Action:ZMenuCommand(client, argc)
         TranslationPrintToServer("Must be player");
         return Plugin_Handled;
     }
-    
+
     // Send main menu.
     ZMenuMain(client);
-    
+
     // This stops the "Unknown command" message in client's console.
     return Plugin_Handled;
 }
 
 /**
  * Show main menu to client.
- * 
+ *
  * @param client    The client index.
  */
 ZMenuMain(client)
 {
     // Create menu handle.
     new Handle:menu_main = CreateMenu(ZMenuMainHandle);
-    
+
     SetGlobalTransTarget(client);
-    
+
     // Initialize menu lines.
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:zadmin[MENU_LINE_HUGE_LENGTH];
@@ -91,7 +91,7 @@ ZMenuMain(client)
     decl String:ztele[MENU_LINE_HUGE_LENGTH];
     decl String:zhp[MENU_LINE_HUGE_LENGTH];
     decl String:zmarket[MENU_LINE_HUGE_LENGTH];
-    
+
     // Translate each line into client's language.
     Format(title, sizeof(title), "%t\n ", "Menu main title", SAYHOOKS_CHAT_PUBLIC_DEFAULT, SAYHOOKS_CHAT_SILENT_DEFAULT);
     Format(zadmin, sizeof(zadmin), "%t", "Menu main zadmin");
@@ -101,25 +101,25 @@ ZMenuMain(client)
     Format(ztele, sizeof(ztele), "%t", "Menu main ztele");
     Format(zhp, sizeof(zhp), "%t", "Menu main zhp");
     Format(zmarket, sizeof(zmarket), "%t", "Menu main zmarket");
-    
+
     // Add items to menu.
-    
+
     SetMenuTitle(menu_main, title);
-    
+
     // Disable option if client isn't an admin.
     new bool:admin = ZRIsClientAdmin(client);
     AddMenuItem(menu_main, "zadmin", zadmin, MenuGetItemDraw(admin));
-    
+
     // Decide whether the client can use zclass.
     new zclassdraw = ClassAllowSelection(client) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-    
+
     AddMenuItem(menu_main, "zclass", zclass, zclassdraw);
     AddMenuItem(menu_main, "zcookies", zcookies);
     AddMenuItem(menu_main, "zspawn", zspawn);
     AddMenuItem(menu_main, "ztele", ztele);
     AddMenuItem(menu_main, "zhp", zhp);
     AddMenuItem(menu_main, "zmarket", zmarket);
-    
+
     // Display menu to client.
     DisplayMenu(menu_main, client, MENU_TIME_FOREVER);
 }
@@ -127,7 +127,7 @@ ZMenuMain(client)
 /**
  * Menu callback (main)
  * Redirects client to selected option's handle code.
- * 
+ *
  * @param menu      The menu handle.
  * @param action    Action client is doing in menu.
  * @param client    The client index.
@@ -140,7 +140,7 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
     {
         // Create variable to possible resend menu later.
         new bool:resend = true;
-        
+
         switch(slot)
         {
             // Selected ZAdmin.
@@ -154,7 +154,7 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             {
                 // Send ZClass menu
                 ClassMenuMain(client);
-                
+
                 // Don't resend this menu.
                 resend = false;
             }
@@ -163,7 +163,7 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             {
                 // Send ZCookies menu
                 ZCookiesMenuMain(client);
-                
+
                 // Don't resend this menu.
                 resend = false;
             }
@@ -192,7 +192,7 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
                 resend = !ZMarketMenuMain(client);
             }
         }
-        
+
         // Resend is still true, then resend menu.
         if (resend)
         {
@@ -208,34 +208,34 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
 
 /**
  * Shows a list of all clients to a client, different handlers can be used for this, as well as title.
- * 
+ *
  * @param client    The client index.
  * @param handler   The menu handler.
  * @param team      If true, only clients on a team will be displayed.
  * @param alive     If true, only clients that are alive will be displayed.
- * @param dead      If true, only clients that are dead will be displayed.     
- * @param any       Title is a translations phrase.  
+ * @param dead      If true, only clients that are dead will be displayed.
+ * @param any       Title is a translations phrase.
  */
 stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive = false, bool:dead = false, any:...)
 {
     // Create menu handle.
     new Handle:menu_clients = CreateMenu(handler);
-    
+
     // Set client as translation target.
     SetGlobalTransTarget(client);
-    
+
     // Translate phrase.
     decl String:translation[MENU_LINE_TITLE_LENGTH];
     VFormat(translation, sizeof(translation), "%t", 6);
-    
+
     // Set menu title to the translated phrase.
     SetMenuTitle(menu_clients, translation);
-    
+
     decl String:clientoption[MENU_LINE_REG_LENGTH];
     decl String:clientuserid[8];
-    
+
     new count = 0;
-    
+
     // x = Client index.
     for (new x = 1; x <= MaxClients; x++)
     {
@@ -244,61 +244,61 @@ stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive 
         {
             continue;
         }
-        
+
         // If client isn't on a team, then stop.
         if (team && !ZRIsClientOnTeam(x))
         {
             continue;
         }
-        
+
         // If client is dead, then stop.
         if (alive && !IsPlayerAlive(x))
         {
             continue;
         }
-        
+
         // If client is alive, then stop.
         if (dead && IsPlayerAlive(x))
         {
             continue;
         }
-        
+
         // Get client info.
         GetClientName(x, clientoption, sizeof(clientoption));
         IntToString(GetClientUserId(x), clientuserid, sizeof(clientuserid));
-        
+
         // Add option to menu.
         AddMenuItem(menu_clients, clientuserid, clientoption);
-        
+
         // Increment count.
         count++;
     }
-    
+
     // If there are no clients, add an "(Empty)" line.
     if (count == 0)
     {
         // Set translation language again, because SetMenuTitle above reset
         // this for some reason.
         SetGlobalTransTarget(client);
-        
+
         decl String:empty[64];
         Format(empty, sizeof(empty), "%t", "Menu empty");
-        
+
         AddMenuItem(menu_clients, "empty", empty, ITEMDRAW_DISABLED);
     }
-    
+
     // Create a "Back" button to the main admin menu.
     SetMenuExitBackButton(menu_clients, true);
-    
+
     // Send menu.
     DisplayMenu(menu_clients, client, MENU_TIME_FOREVER);
 }
 
 /**
  * Gets the client index of the selected client in the menu.
- * 
+ *
  * @param menu  The menu handle.
- * @param slot  The menu slot that was selected. 
+ * @param slot  The menu slot that was selected.
  * @return      The client index, 0 if the selected client is no longer in the server.
  */
 stock MenuGetClientIndex(Handle:menu, slot)
@@ -306,14 +306,14 @@ stock MenuGetClientIndex(Handle:menu, slot)
     // Get menu slot's information.
     decl String:clientuserid[8];
     GetMenuItem(menu, slot, clientuserid, sizeof(clientuserid));
-    
+
     // Return the targetted client through their userid which was set into the menu slot's info param.
     return GetClientOfUserId(StringToInt(clientuserid));
 }
 
 /**
  * Return itemdraw flag for SM menus.
- * 
+ *
  * @param condition     If this is true, item will be drawn normally.
  */
 stock MenuGetItemDraw(bool:condition)

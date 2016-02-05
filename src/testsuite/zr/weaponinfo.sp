@@ -44,19 +44,19 @@ new m_hMyWeapons;
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
-    
+
     m_hActiveWeapon = FindSendPropInfo("CBasePlayer", "m_hActiveWeapon");
     if (m_hActiveWeapon == -1)
     {
         LogError("Can't find CBasePlayer::m_hActiveWeapon");
     }
-    
+
     m_hMyWeapons = FindSendPropOffs("CBasePlayer", "m_hMyWeapons");
     if (m_hMyWeapons == -1)
     {
         LogError("Can't find CBasePlayer::m_hMyWeapons");
     }
-    
+
     RegConsoleCmd("zrtest_weaponslots", Command_ListWeaponSlots, "Lists weapon slots. Usage: zrtest_weaponslots [target]");
     RegConsoleCmd("zrtest_weaponlist", Command_ListWeapons, "Lists all weapons. Usage: zrtest_weaponlist [target]");
     RegConsoleCmd("zrtest_knife", Command_Knife, "Gives a knife. Usage: zrtest_knife [target]");
@@ -67,19 +67,19 @@ public Action:Command_ListWeaponSlots(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
     }
-    
+
     if (target <= 0)
     {
         ReplyToCommand(client, "Lists weapon slots. Usage: zrtest_weaponlist [target]");
         return Plugin_Handled;
     }
-    
+
     if (argc >= 1)
     {
         ListWeaponSlots(target, client);
@@ -88,7 +88,7 @@ public Action:Command_ListWeaponSlots(client, argc)
     {
         ListWeaponSlots(client, client);
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -96,19 +96,19 @@ public Action:Command_ListWeapons(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
     }
-    
+
     if (target <= 0)
     {
         ReplyToCommand(client, "Lists all weapon. Usage: zrtest_weaponlist [target]");
         return Plugin_Handled;
     }
-    
+
     if (argc >= 1)
     {
         ListWeapons(target, client);
@@ -117,7 +117,7 @@ public Action:Command_ListWeapons(client, argc)
     {
         ListWeapons(client, client);
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -125,19 +125,19 @@ public Action:Command_Knife(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
     }
-    
+
     if (target <= 0)
     {
         ReplyToCommand(client, "Gives a knife. Usage: zrtest_knife [target]");
         return Plugin_Handled;
     }
-    
+
     if (argc >= 1)
     {
         GiveKnife(target);
@@ -146,7 +146,7 @@ public Action:Command_Knife(client, argc)
     {
         GiveKnife(client);
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -154,19 +154,19 @@ public Action:Command_RemoveWeapons(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
     }
-    
+
     if (target <= 0)
     {
         ReplyToCommand(client, "Removes all weapons. Usage: zrtest_removeweapons [target]");
         return Plugin_Handled;
     }
-    
+
     if (argc >= 1)
     {
         RemoveAllClientWeapons(target, client);
@@ -175,7 +175,7 @@ public Action:Command_RemoveWeapons(client, argc)
     {
         RemoveAllClientWeapons(client, client);
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -189,21 +189,21 @@ public Action:Command_RemoveWeapons(client, argc)
 ListWeaponSlots(client, observer, count = 10)
 {
     ReplyToCommand(observer, "Slot:\tEntity:\tClassname:");
-    
+
     // Loop through slots.
     for (new slot = 0; slot < count; slot++)
     {
         new weapon = GetPlayerWeaponSlot(client, slot);
-            
+
         if (weapon < 0)
         {
             ReplyToCommand(observer, "%d\t(empty/invalid)", slot);
             continue;
         }
-        
+
         new String:classname[64];
         GetEntityClassname(weapon, classname, sizeof(classname));
-        
+
         ReplyToCommand(observer, "%d\t%d\t%s", slot, weapon, classname);
     }
 }
@@ -217,28 +217,28 @@ ListWeaponSlots(client, observer, count = 10)
 ListWeapons(client, observer)
 {
     ReplyToCommand(observer, "Offset:\tEntity:\tClassname:");
-    
+
     // Loop through entries in m_hMyWeapons.
     for(new offset = 0; offset < 128; offset += 4)     // +4 to skip to next entry in array.
     {
         new weapon = GetEntDataEnt2(client, m_hMyWeapons + offset);
-        
+
         if (weapon < 0)
         {
             ReplyToCommand(observer, "%d\t(empty/invalid)", offset);
             continue;
         }
-        
+
         new String:classname[64];
         GetEntityClassname(weapon, classname, sizeof(classname));
-        
+
         ReplyToCommand(observer, "%d\t%d\t%s", offset, weapon, classname);
     }
 }
 
 /**
  * Remove all weapons.
- * 
+ *
  * @param client        Source client.
  * @param observer      Client that will receive output.
  * @param count         Optional. Number of slots to list.
@@ -249,16 +249,16 @@ RemoveAllClientWeapons(client, observer, count = 5)
     for (new slot = 0; slot < count; slot++)
     {
         new weapon = GetPlayerWeaponSlot(client, slot);
-        
+
         // Remove all weapons in this slot.
         while (weapon > 0)
         {
             // Remove weapon entity.
             RemovePlayerItem(client, weapon);
             AcceptEntityInput(weapon, "Kill");
-            
+
             ReplyToCommand(observer, "Removed weapon in slot %d.", slot);
-            
+
             // Get next weapon in this slot, if any.
             weapon = GetPlayerWeaponSlot(client, slot);
         }

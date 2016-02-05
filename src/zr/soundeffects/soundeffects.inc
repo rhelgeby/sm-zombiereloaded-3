@@ -4,7 +4,7 @@
  *  Zombie:Reloaded
  *
  *  File:          soundeffects.inc
- *  Type:          Core 
+ *  Type:          Core
  *  Description:   Basic sound-management API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -50,7 +50,7 @@ SEffectsLoad()
 
 /**
  * Map is starting.
- */ 
+ */
 SEffectsOnMapStart()
 {
     // Forward event to sub-modules.
@@ -59,7 +59,7 @@ SEffectsOnMapStart()
 
 /**
  * Client is joining the server.
- * 
+ *
  * @param client    The client index.
  */
 SEffectsClientInit(client)
@@ -92,7 +92,7 @@ SEffectsOnRoundEnd()
 
 /**
  * Client is spawning into the game.
- * 
+ *
  * @param client    The client index.
  */
 SEffectsOnClientSpawn(client)
@@ -104,7 +104,7 @@ SEffectsOnClientSpawn(client)
 
 /**
  * Client is spawning into the game. *Post
- * 
+ *
  * @param client    The client index.
  */
 SEffectsOnClientSpawnPost(client)
@@ -115,7 +115,7 @@ SEffectsOnClientSpawnPost(client)
 
 /**
  * Client has been killed.
- * 
+ *
  * @param client    The client index.
  */
 SEffectsOnClientDeath(client)
@@ -126,7 +126,7 @@ SEffectsOnClientDeath(client)
 
 /**
  * Client has been hurt.
- * 
+ *
  * @param client    The client index.
  */
 SEffectsOnClientHurt(client)
@@ -137,7 +137,7 @@ SEffectsOnClientHurt(client)
 
 /**
  * Client has been infected.
- * 
+ *
  * @param client    The client index.
  */
 SEffectsOnClientInfected(client)
@@ -149,7 +149,7 @@ SEffectsOnClientInfected(client)
 
 /**
  * Client has been turned back human.
- * 
+ *
  * @param client    The client index.
  */
 SEffectsOnClientHuman(client)
@@ -160,7 +160,7 @@ SEffectsOnClientHuman(client)
 
 /**
  * Emits an ambient sound
- * 
+ *
  * @param sound         The path to the sound file (relative to sounds/)
  * @param soundvolume   The volume of the sound (0.0 - 1.0)
  * @param client        (Optional) Client index to play sound to.
@@ -169,12 +169,12 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
 {
     // Precache sound before playing.
     PrecacheSound(sound);
-    
+
     if (ZRIsClientValid(client))
     {
         // Emit ambient sound.
         EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
-        
+
         // Flag client that sound is playing.
         bAmbientSoundsIsPlaying[client] = true;
     }
@@ -187,7 +187,7 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
             {
                 continue;
             }
-            
+
             // Emit ambient sound.
             EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
         }
@@ -196,8 +196,8 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
 
 /**
  * Stop an ambient sound
- *  
- * @param sound     The path to the sound file (relative to sounds/) 
+ *
+ * @param sound     The path to the sound file (relative to sounds/)
  */
 SEffectsStopAmbientSound(const String:sound[])
 {
@@ -209,7 +209,7 @@ SEffectsStopAmbientSound(const String:sound[])
         {
             continue;
         }
-        
+
         // Stop ambient sound.
         StopSound(x, SOUND_AMBIENT_CHANNEL, sound);
     }
@@ -217,13 +217,13 @@ SEffectsStopAmbientSound(const String:sound[])
 
 /**
  * Replay an ambient sound
- * 
+ *
  * @param sound     The path to the sound file (relative to sounds/)
- */ 
+ */
 
 /**
  * Emits a sound from a client.
- * 
+ *
  * @param client    The client index.
  * @param sound     The sound file relative to the sound/ directory.
  * @param level     The attenuation of the sound.
@@ -232,7 +232,7 @@ SEffectsEmitSoundFromClient(client, const String:sound[], level = SNDLEVEL_NORMA
 {
     // Precache sound before playing.
     PrecacheSound(sound);
-    
+
     // Emit sound from client.
     EmitSoundToAll(sound, client, _, level);
 }

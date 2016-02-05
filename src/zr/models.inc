@@ -46,52 +46,52 @@ new ModelCount;
 ModelsLoad()
 {
     new Handle:kvModels = INVALID_HANDLE;
-    
+
     // Register config file.
     ConfigRegisterConfig(File_Models, Structure_List, CONFIG_FILE_ALIAS_MODELS);
-    
+
     // Get models file path.
     decl String:modelPath[PLATFORM_MAX_PATH];
     new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_MODELS, modelPath);
-    
+
     // If file doesn't exist, then log and stop.
     if (!exists)
     {
         // Log failure and stop plugin.
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Missing model list: \"%s\"", modelPath);
     }
-    
+
     // Set the path to the config file.
     ConfigSetConfigPath(File_Models, modelPath);
-    
+
     // Prepare key/value structure.
     kvModels = CreateKeyValues(CONFIG_FILE_ALIAS_MODELS);
-    
+
     // Log what models file that is loaded.
     LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Loading models from file \"%s\".", modelPath);
-    
+
     // Load model data file.
     FileToKeyValues(kvModels, modelPath);
-    
+
     // Try to find the first model.
     KvRewind(kvModels);
     if (!KvGotoFirstSubKey(kvModels))
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Can't find any models in \"%s\"", modelPath);
     }
-    
+
     decl String:buffer[256];
     decl String:name[64];
     decl String:path[PLATFORM_MAX_PATH];
     decl String:team[64];
     decl String:access[64];
     decl String:group[64];
-    
+
     ModelCount = 0;
     new failedCount;
     new publicCount;
     new downloadCount;
-    
+
     // Loop through all models and store attributes in ModelData array.
     do
     {
@@ -99,28 +99,28 @@ ModelsLoad()
         {
             // Maximum number of models reached. Log a warning and exit the loop.
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Warning: Maximum number of models reached (%d). Skipping other models.", MODELS_MAX + 1);
-            
+
             break;
         }
-        
+
         KvGetString(kvModels, "name", name, sizeof(name));
         strcopy(ModelData[ModelCount][Model_Name], 64, name);
-        
+
         KvGetString(kvModels, "path", path, sizeof(path));
         strcopy(ModelData[ModelCount][Model_Path], 64, path);
-        
+
         KvGetString(kvModels, "team", team, sizeof(team));
         ModelData[ModelCount][Model_Team] = ModelsStringToTeam(team);
-        
+
         KvGetString(kvModels, "access", access, sizeof(access));
         ModelData[ModelCount][Model_Access] = ModelsStringToAccess(access);
-        
+
         KvGetString(kvModels, "group", group, sizeof(group));
         strcopy(ModelData[ModelCount][Model_Group], 64, group);
-        
-        
+
+
         // Validate model attributes.
-        
+
         // Build path and check if model file exist.
         strcopy(buffer, sizeof(buffer), path);
         StrCat(buffer, sizeof(buffer), name);
@@ -131,7 +131,7 @@ ModelsLoad()
             failedCount++;
             continue;
         }
-        
+
         // Validate team.
         if (ModelData[ModelCount][Model_Team] == ModelTeam_Invalid)
         {
@@ -139,7 +139,7 @@ ModelsLoad()
             failedCount++;
             continue;
         }
-        
+
         // Validate access.
         if (ModelData[ModelCount][Model_Access] == ModelAccess_Invalid)
         {
@@ -155,7 +155,7 @@ ModelsLoad()
                 publicCount++;
             }
         }
-        
+
         // Validate group.
         if (ModelData[ModelCount][Model_Access] == ModelAccess_Group &&
             FindAdmGroup(group) == INVALID_GROUP_ID)
@@ -164,24 +164,24 @@ ModelsLoad()
             failedCount++;
             continue;
         }
-        
+
         // Open directory with model files.
         new Handle:dir = OpenDirectory(path);
-        
+
         // Check if failed.
         if (dir == INVALID_HANDLE)
         {
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Error opening directory: %s", dir);
             continue;
         }
-        
+
         // Reset file counter for the current model.
         downloadCount = 0;
-        
+
         new FileType:type;
         decl String:file[64];
         decl String:fileShort[64];
-        
+
         // Search for model files with the specified name and add them to
         // downloads table.
         while (ReadDirEntry(dir, file, sizeof(file), type))
@@ -191,28 +191,28 @@ ModelsLoad()
             {
                 continue;
             }
-            
+
             // Find break point index in the string to get model name.
             // Add one to make space for null terminator.
             new breakpoint = FindCharInString(file, '.') + 1;
             strcopy(fileShort, breakpoint, file);
-            
+
             // If this file doesn't match model name, then skip it.
             if (!StrEqual(name, fileShort, false))
             {
                 continue;
             }
-            
+
             // Format a full path string.
             strcopy(buffer, sizeof(buffer), path);
             Format(buffer, sizeof(buffer), "%s%s", buffer, file);
-            
+
             AddFileToDownloadsTable(buffer);
             downloadCount++;
         }
-        
+
         CloseHandle(dir);
-        
+
         // Check if no model files were found.
         if (!downloadCount)
         {
@@ -223,21 +223,21 @@ ModelsLoad()
             ModelCount++;
         }
     } while (KvGotoNextKey(kvModels));
-    
+
     CloseHandle(kvModels);
-    
+
     // Check if there are no public models.
     if (!publicCount)
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Missing public model in \"%s\". There must be at least one public model.", modelPath);
     }
-    
+
     // Precache models.
     ModelsPrecache();
-    
+
     // Log model validation info.
     LogEvent(false, LogType_Normal, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Successful: %d | Unsuccessful: %d", ModelCount, failedCount);
-    
+
     // Set config data.
     ConfigSetConfigLoaded(File_Models, true);
     ConfigSetConfigReloadFunc(File_Models, GetFunctionByName(GetMyHandle(), "ModelsOnConfigReload"));
@@ -274,7 +274,7 @@ ModelsPrecache()
  *                              permissions in "group" or "admins" access mode.
  *                              Use negative index to disable permission check
  *                              (default).
- * @param teamFilter            Optional. Team filtering settings. Use 
+ * @param teamFilter            Optional. Team filtering settings. Use
  *                              ModelTeam_Invalid to disable filter. Default is
  *                              ModelTeam_Zombies.
  * @param accessRequireFlags    Optional. One or more required access flags.
@@ -285,7 +285,7 @@ ModelsGetRandomModel(client = -1, ModelTeam:teamFilter = ModelTeam_Zombies, acce
 {
     decl modelIndexes[MODELS_MAX];
     new listCount;
-    
+
     // Loop through all models.
     for (new index = 0; index < ModelCount; index++)
     {
@@ -295,18 +295,18 @@ ModelsGetRandomModel(client = -1, ModelTeam:teamFilter = ModelTeam_Zombies, acce
         {
             continue;
         }
-        
+
         // Cache current model access flag.
         new ModelAccess:access = ModelsGetAccess(index);
         new accessFlag = ModelsGetAccessFlag(access);
-        
+
         // Check access filtering. Skip if no match.
         if (accessRequireFlags > 0 &&
             !(accessRequireFlags & accessFlag))
         {
             continue;
         }
-        
+
         // Do client group authentication if client is specified.
         if (client > 0)
         {
@@ -315,7 +315,7 @@ ModelsGetRandomModel(client = -1, ModelTeam:teamFilter = ModelTeam_Zombies, acce
             {
                 decl String:group[64];
                 ModelsGetGroup(index, group, sizeof(group));
-                
+
                 if (!ZRIsClientInGroup(client, group))
                 {
                     // Client not authorized to use this model.
@@ -334,12 +334,12 @@ ModelsGetRandomModel(client = -1, ModelTeam:teamFilter = ModelTeam_Zombies, acce
                 }
             }
         }
-        
+
         // Model passed filter tests. Add to list.
         modelIndexes[listCount] = index;
         listCount++;
     }
-    
+
     // Check if any models passed the filter.
     if (listCount)
     {
@@ -363,7 +363,7 @@ ModelsGetRandomModel(client = -1, ModelTeam:teamFilter = ModelTeam_Zombies, acce
 bool:ModelsIsValidIndex(index, bool:rangeOnly = false)
 {
     new bool:rangeValid = (index >= 0 && index < MODELS_MAX);
-    
+
     if (rangeOnly)
     {
         // Only check if the index is valid.
@@ -391,7 +391,7 @@ ModelsGetName(index, String:buffer[], maxlen)
     {
         return -1;
     }
-    
+
     return strcopy(buffer, maxlen, ModelData[index][Model_Name]);
 }
 
@@ -410,7 +410,7 @@ ModelsGetPath(index, String:buffer[], maxlen)
     {
         return -1;
     }
-    
+
     return strcopy(buffer, maxlen, ModelData[index][Model_Path]);
 }
 
@@ -427,7 +427,7 @@ ModelTeam:ModelsGetTeam(index)
     {
         return ModelTeam_Invalid;
     }
-    
+
     return ModelData[index][Model_Team];
 }
 
@@ -445,7 +445,7 @@ ModelAccess:ModelsGetAccess(index)
     {
         return ModelAccess_Invalid;
     }
-    
+
     return ModelData[index][Model_Access];
 }
 
@@ -480,7 +480,7 @@ ModelsGetAccessFlag(ModelAccess:access)
             return MODEL_ACCESS_GROUP;
         }
     }
-    
+
     // Invalid access flag.
     return 0;
 }
@@ -500,7 +500,7 @@ ModelsGetGroup(index, String:buffer[], maxlen)
     {
         return -1;
     }
-    
+
     return strcopy(buffer, maxlen, ModelData[index][Model_Group]);
 }
 
@@ -516,12 +516,12 @@ ModelsGetFullPath(index, String:buffer[], maxlen)
 {
     decl String:path[PLATFORM_MAX_PATH];
     decl String:name[64];
-    
+
     ModelsGetPath(index, path, sizeof(path));
     ModelsGetName(index, name, sizeof(name));
-    
+
     buffer[0] = 0;
-    
+
     StrCat(buffer, maxlen, path);
     StrCat(buffer, maxlen, name);
     StrCat(buffer, maxlen, ".mdl");
@@ -543,7 +543,7 @@ ModelTeam:ModelsStringToTeam(const String:team[])
     {
         return ModelTeam_Humans;
     }
-    
+
     return ModelTeam_Invalid;
 }
 
@@ -566,7 +566,7 @@ ModelTeam:ModelsTeamIdToTeam(teamid)
             return ModelTeam_Humans;
         }
     }
-    
+
     return ModelTeam_Invalid;
 }
 
@@ -598,6 +598,6 @@ ModelAccess:ModelsStringToAccess(const String:access[])
     {
         return ModelAccess_Group;
     }
-    
+
     return ModelAccess_Invalid;
 }

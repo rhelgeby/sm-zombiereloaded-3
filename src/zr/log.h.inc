@@ -59,7 +59,7 @@ enum LogTypes
 /**
  * List of modules that write log events. Add new modules if needed (in
  * alphabetical order).
- * 
+ *
  * Update following when adding modules:
  * - Admin log flag menu
  * - LogGetModuleNameString
@@ -68,7 +68,7 @@ enum LogTypes
 enum LogModules
 {
     bool:LogModule_Invalid = 0,         /** Used as return value when an error occoured.*/
-    
+
     bool:LogModule_Account,
     bool:LogModule_AntiStick,
     bool:LogModule_Config,

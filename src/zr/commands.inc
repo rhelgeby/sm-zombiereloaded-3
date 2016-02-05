@@ -47,13 +47,13 @@ CommandsInit()
     VolOnCommandsCreate();
     ZombieSoundsOnCommandsCreate();
     ImmunityOnCommandsCreate();
-    
+
     #if defined ADD_VERSION_INFO
         VersionOnCommandsCreate();
     #endif
-    
+
     DebugOnCommandsCreate();
-    
+
     // Forward event to modules. (hook commands)
     ClassOnCommandsHook();
 }

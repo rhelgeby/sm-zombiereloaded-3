@@ -36,13 +36,13 @@ new bool:g_bVoice;
 VoiceOnRoundStart()
 {
     new bool:voice = GetConVarBool(g_hCvarsList[CVAR_VOICE]);
-    
+
     // If the cvar has changed, then reset the voice permissions.
     if (g_bVoice != voice)
     {
         VoiceReset();
     }
-    
+
     // Update g_bVoice with new value.
     g_bVoice = voice;
 }
@@ -57,14 +57,14 @@ VoiceOnRoundEnd()
     {
         return;
     }
-    
+
     // Allow everyone to listen/speak with each other.
     VoiceAllTalk();
 }
 
 /**
  * Client is spawning into the game.
- * 
+ *
  * @param client    The client index.
  */
 VoiceOnClientSpawn(client)
@@ -75,7 +75,7 @@ VoiceOnClientSpawn(client)
 
 /**
  * Client has been infected.
- * 
+ *
  * @param client    The client index.
  */
 VoiceOnClientInfected(client)
@@ -86,7 +86,7 @@ VoiceOnClientInfected(client)
 
 /**
  * Client has been turned back human.
- * 
+ *
  * @param client    The client index.
  */
 VoiceOnClientHuman(client)
@@ -110,9 +110,9 @@ stock bool:VoiceSetClientListening(iReceiver, iSender, bool:bListen)
     {
         return false;
     }
-    
+
     new ListenOverride:override = bListen ? Listen_Yes : Listen_No;
-    
+
     return SetListenOverride(iReceiver, iSender, override);
 }
 
@@ -130,7 +130,7 @@ stock VoiceAllTalk()
         {
             continue;
         }
-        
+
         for (new y = 1; y <= MaxClients; y++)
         {
             // If sender isn't in-game, then stop.
@@ -138,13 +138,13 @@ stock VoiceAllTalk()
             {
                 continue;
             }
-            
+
             // No need to alter listening/speaking flags between one client.
             if (x == y)
             {
                 continue;
             }
-            
+
             // Receiver (x) can now hear the sender (y), only if sender isn't muted.
             VoiceSetClientListening(x, y, true);
         }
@@ -153,7 +153,7 @@ stock VoiceAllTalk()
 
 /**
  * Set which team the client is allowed to listen/speak with.
- * 
+ *
  * @param client    The client index.
  * @param zombie    True to permit verbal communication to zombies only, false for humans only.
  */
@@ -167,16 +167,16 @@ stock VoiceSetClientTeam(client, bool:zombie)
         {
             continue;
         }
-        
+
         // No need to alter listening/speaking flags between one client.
         if (client == x)
         {
             continue;
         }
-        
+
         // Client can only listen/speak if the sender is on their team.
         new bool:canlisten = (zombie == InfectIsClientInfected(x));
-        
+
         // (Dis)allow clients to listen/speak with each other, don't touch if the sender is muted.
         VoiceSetClientListening(client, x, canlisten);
         VoiceSetClientListening(x, client, canlisten);
@@ -185,7 +185,7 @@ stock VoiceSetClientTeam(client, bool:zombie)
 
 /**
  * Update a client's listening/speaking status.
- * 
+ *
  * @param client    The client index.
  */
 stock VoiceUpdateClient(client)
@@ -195,14 +195,14 @@ stock VoiceUpdateClient(client)
     {
         return;
     }
-    
+
     // Set the client's listening/speaking status to their current team.
     VoiceSetClientTeam(client, InfectIsClientInfected(client));
 }
 
 /**
  * This function returns if the client is muted.
- * 
+ *
  * @param client    The client index.
  * @return          True if the client is muted, false if not.
  */
@@ -219,10 +219,10 @@ stock VoiceReset()
 {
     // Is alltalk enabled?
     new bool:alltalk = GetConVarBool(FindConVar("sv_alltalk"));
-    
+
     // Determine new voice flags based off of alltalk.
     new voiceflags = alltalk ? VOICE_SPEAKALL | VOICE_LISTENALL : VOICE_TEAM | VOICE_LISTENTEAM;
-    
+
     // x = Client index.
     for (new x = 1; x <= MaxClients; x++)
     {
@@ -231,7 +231,7 @@ stock VoiceReset()
         {
             continue;
         }
-        
+
         // Apply new voice flags.
         SetClientListeningFlags(x, voiceflags);
     }

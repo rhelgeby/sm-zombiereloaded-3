@@ -32,7 +32,7 @@
 
 /**
  * Creates a steamid cache.
- * 
+ *
  * @return  Handle to SteamID cache.
  */
 stock Handle:SteamidCacheCreate()
@@ -43,7 +43,7 @@ stock Handle:SteamidCacheCreate()
 
 /**
  * Add client serial number to the SteamID cache.
- * 
+ *
  * @param steamidcache  The SteamID cache to add client to.
  * @param client        The client index.
  * @return              True if the client was added successfully, false if the client already exists.
@@ -55,21 +55,21 @@ stock bool:SteamidCacheAddClient(Handle:steamidcache, client)
     {
         return false;
     }
-    
+
     // Get client's SteamID.
     new String:steamid[STEAMIDCACHE_MAX_LENGTH];
     GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid), true);
-    
+
     // Push SteamID into the SteamID cache.
     PushArrayString(steamidcache, steamid);
-    
+
     // Client added successfully.
     return true;
 }
 
 /**
  * Check if a client is in the SteamID cache.
- * 
+ *
  * @param steamidcache  The SteamID cache to check in.
  * @param client        The client index.
  * @return              True if the client exists, false otherwise.
@@ -79,14 +79,14 @@ stock bool:SteamidCacheClientExists(Handle:steamidcache, client)
     // Get client's SteamID.
     decl String:steamid[STEAMIDCACHE_MAX_LENGTH];
     GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid), true);
-    
+
     // Return true if client was found, false otherwise.
     return (FindStringInArray(steamidcache, steamid) != -1);
 }
 
 /**
  * Reset SteamID cache.
- * 
+ *
  * @param steamidcache  The SteamID cache to reset.
  */
 stock SteamidCacheReset(Handle:steamidcache)

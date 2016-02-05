@@ -41,7 +41,7 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
-    
+
     RegConsoleCmd("zrtest_is_valid_class_index", IsValidClassCommand, "Returns whether the specified class index is valid or not. Usage: zrtest_is_valid_class_index <class index>");
     RegConsoleCmd("zrtest_get_active_class", GetActiveClassCommand, "Gets the current class the specified player is using. Usage: zrtest_get_active_class <target>");
     RegConsoleCmd("zrtest_select_class", SelectClassCommand, "Selects a class for a player. Usage: zrtest_select_class <target> <class index>");
@@ -53,7 +53,7 @@ public Action:IsValidClassCommand(client, argc)
 {
     new classIndex = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
@@ -66,7 +66,7 @@ public Action:IsValidClassCommand(client, argc)
     }
 
     ReplyToCommand(client, "Class %d is valid: %d", classIndex, ZR_IsValidClassIndex(classIndex));
-    
+
     return Plugin_Handled;
 }
 
@@ -74,7 +74,7 @@ public Action:GetActiveClassCommand(client, argc)
 {
     new target = -1;
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
@@ -87,7 +87,7 @@ public Action:GetActiveClassCommand(client, argc)
     }
 
     ReplyToCommand(client, "Active class of client %d: %d", target, ZR_GetActiveClass(target));
-    
+
     return Plugin_Handled;
 }
 
@@ -97,22 +97,22 @@ public Action:SelectClassCommand(client, argc)
     new classIndex = -1;
     new bool:applyIfPossible = true;
     new bool:saveIfEnabled = true;
-    
+
     new String:valueString[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         target = FindTarget(client, valueString);
-        
+
         GetCmdArg(2, valueString, sizeof(valueString));
         classIndex = StringToInt(valueString);
-        
+
         if (argc >= 4)
         {
             GetCmdArg(3, valueString, sizeof(valueString));
             applyIfPossible = bool:StringToInt(valueString);
-            
+
             GetCmdArg(4, valueString, sizeof(valueString));
             saveIfEnabled = bool:StringToInt(valueString);
         }
@@ -124,14 +124,14 @@ public Action:SelectClassCommand(client, argc)
     }
 
     ReplyToCommand(client, "Selected class %d for client %d. Result: %d", classIndex, target, ZR_SelectClientClass(target, classIndex, applyIfPossible, saveIfEnabled));
-    
+
     return Plugin_Handled;
 }
 
 public Action:GetClassCommand(client, argc)
 {
     new String:className[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, className, sizeof(className));
@@ -143,7 +143,7 @@ public Action:GetClassCommand(client, argc)
     }
 
     ReplyToCommand(client, "Class index of \"%s\": %d", className, ZR_GetClassByName(className));
-    
+
     return Plugin_Handled;
 }
 
@@ -152,12 +152,12 @@ public Action:GetNameCommand(client, argc)
     new classIndex = -1;
     new String:valueString[64];
     new String:displayName[64];
-    
+
     if (argc >= 1)
     {
         GetCmdArg(1, valueString, sizeof(valueString));
         classIndex = StringToInt(valueString);
-        
+
         if (!ZR_IsValidClassIndex(classIndex))
         {
             ReplyToCommand(client, "Invalid class index: %d", classIndex);
@@ -169,9 +169,9 @@ public Action:GetNameCommand(client, argc)
         ReplyToCommand(client, "Gets class display name. Usage: zrtest_get_class_display_name <class index>");
         return Plugin_Handled;
     }
-    
+
     ZR_GetClassDisplayName(classIndex, displayName, sizeof(displayName));
     ReplyToCommand(client, "Display name of class %d: \"%s\"", classIndex, displayName);
-    
+
     return Plugin_Handled;
 }
