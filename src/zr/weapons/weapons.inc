@@ -60,6 +60,7 @@ enum WeaponsData
     WEAPONS_DATA_KNOCKBACK,
     WEAPONS_DATA_ZMARKETPRICE,
     WEAPONS_DATA_ZMARKETPURCHASEMAX,
+    WEAPONS_DATA_ZMARKETCOMMAND,
     WEAPONS_DATA_RESTRICTED,
 }
 
@@ -214,6 +215,7 @@ WeaponsLoad()
 
     // Forward event to sub-modules
     RestrictLoad();
+    ZMarketLoad();
 }
 
 /**
@@ -253,6 +255,7 @@ WeaponsCacheData()
         decl String:weaponentity[CONFIG_MAX_LENGTH];
         decl String:weapontype[CONFIG_MAX_LENGTH];
         decl String:ammotype[CONFIG_MAX_LENGTH];
+        decl String:zmarketcommand[CONFIG_MAX_LENGTH];
 
         // General
         KvGetString(kvWeapons, "weaponentity", weaponentity, sizeof(weaponentity));
@@ -273,6 +276,7 @@ WeaponsCacheData()
         // ZMarket (module)
         new zmarketprice = KvGetNum(kvWeapons, "zmarketprice", -1);
         new zmarketpurchasemax = KvGetNum(kvWeapons, "zmarketpurchasemax", 0);
+        KvGetString(kvWeapons, "zmarketcommand", zmarketcommand, sizeof(zmarketcommand), "");
 
         new Handle:arrayWeapon = GetArrayCell(arrayWeapons, x);
 
@@ -286,10 +290,11 @@ WeaponsCacheData()
         PushArrayCell(arrayWeapon, ammoprice);              // Index: 7
         PushArrayCell(arrayWeapon, knockback);              // Index: 8
         PushArrayCell(arrayWeapon, zmarketprice);           // Index: 9
-        PushArrayCell(arrayWeapon, zmarketpurchasemax);    // Index: 10
+        PushArrayCell(arrayWeapon, zmarketpurchasemax);     // Index: 10
+        PushArrayString(arrayWeapon, zmarketcommand);         // Index: 11
 
         // Initialize other stored weapon info here.
-        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 11
+        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 12
     }
 
     // We're done with this file now, so we can close it.
@@ -689,6 +694,22 @@ stock WeaponsGetZMarketPurchaseMax(index)
 
     // Return the ZMarket price of the weapon.
     return GetArrayCell(arrayWeapon, _:WEAPONS_DATA_ZMARKETPURCHASEMAX);
+}
+
+/**
+ * Gets the name of the command to purchase this weapon through zmarket.
+ * @param index     The weapon index.
+ * @param command   The string to return zmarketcommand in.
+ * @param maxlen    The max length of the string.
+ * @return          The max purchases of the weapon.
+ */
+stock WeaponsGetZMarketCommand(index, String:command[], maxlen)
+{
+    // Get array handle of weapon at given index.
+    new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
+
+    // Return the ZMarket price of the weapon.
+    GetArrayString(arrayWeapon, _:WEAPONS_DATA_ZMARKETCOMMAND, command, maxlen);
 }
 
 /**

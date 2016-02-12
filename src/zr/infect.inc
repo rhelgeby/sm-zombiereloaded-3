@@ -275,6 +275,9 @@ InfectOnClientSpawn(client)
         CS_SwitchTeam(client, CS_TEAM_CT);
         CS_RespawnPlayer(client);
     }
+
+    // Unglitch kevlar. (Reset hitbox to HITBOX_GENERIC)
+    SetEntData(client, 4444, 0, 4);
 }
 
 /**
@@ -782,6 +785,10 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
         }
     }
 
+    // Remove kevlar and helmet
+    SetEntProp(client, Prop_Send, "m_ArmorValue", 0, 1);
+    SetEntProp(client, Prop_Send, "m_bHasHelmet", 0);
+
     // Print message to client.
     TranslationPrintToChat(client, "Infect infected");
 
@@ -852,6 +859,9 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     {
         SpawnProtectStart(client);
     }
+
+    // Unglitch kevlar. (Reset hitbox to HITBOX_GENERIC)
+    SetEntData(client, 4444, 0, 4);
 
     // Forward event to modules.
     SEffectsOnClientHuman(client);

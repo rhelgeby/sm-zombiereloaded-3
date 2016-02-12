@@ -75,7 +75,12 @@
 	{
 		"ru"		"Данная функция доступна только, когда вы человек."
 	}
-	
+
+	"Must be in buyzone"
+	{
+		"ru"		"This feature requires that you are in a buyzone." // TODO: Translate
+	}
+
 	"Increase by"
 	{
 		"ru"		"Увеличить на {1}"
@@ -573,14 +578,9 @@
 		"ru"		"Вы можете нести только {1} гранаты данного типа."
 	}
 
-	"Weapons zmarket auto-rebuy toggle on"
+	"Weapons zmarket not enough money"
 	{
-		"ru"		"Авто-покупка была включена, ваша амуниция будет автоматически закупаться при каждом респавне."
-	}
-
-	"Weapons zmarket auto-rebuy toggle off"
-	{
-		"ru"		"Авто-покупка была отключена."
+		"ru"		"You have insufficient funds." // TODO: Translate
 	}
 
 	"Weapons zmarket updated loadout"
@@ -664,19 +664,14 @@
 		"ru"		"Сохранить текущее оружие"
 	}
 
-	"Weapons menu zmarket main view loadout"
+	"Weapons menu zmarket main edit loadout"
 	{
-		"ru"		"Просмотр текущй амуниции"
+		"ru"		"Edit Saved Setup" // TODO: Translate
 	}
 
 	"Weapons menu zmarket main rebuy"
 	{
 		"ru"		"Снова купить мою амуницию"
-	}
-
-	"Weapons menu zmarket main auto-rebuy"
-	{
-		"ru"		"Авто-покупка: {1}"
 	}
 
 	"Weapons menu zmarket main weapons list"
@@ -687,6 +682,7 @@
 	"Weapons menu zmarket loadout title"
 	{
 		"ru"		"ZMarket\nМоя текущая амуниция:\nВыберите слот для очистки.\nПримечаие: Авто-покупка использует данный список."
+		//"ru"		"ZMarket\nMy Current Setup:\nSelect weapon slot to modify.\nNote: Rebuy refers to these weapons.\nYou will spawn with these weapons." // TODO: Translate
 	}
 
 	"Weapons menu zmarket loadout primary"
@@ -699,29 +695,15 @@
 		"ru"		"Пистолет: {1}"
 	}
 
-	"Weapons menu zmarket loadout melee"
+	"Weapons menu zmarket loadout default"
 	{
-		"ru"		"Ближний бой: {1}"
+		"#format"	"{1:s}"
+		"ru"		"Default ({1})" // TODO: Translate
 	}
 
-	"Weapons menu zmarket loadout projectile"
+	"Weapons menu zmarket loadout weapons title"
 	{
-		"ru"		"Снаряды: {1}"
-	}
-
-	"Weapons menu zmarket loadout explosive"
-	{
-		"ru"		"Взрывчатка: {1}"
-	}
-
-	"Weapons menu zmarket loadout nvgs"
-	{
-		"ru"		"Ночное видение: {1}"
-	}
-
-	"Weapons menu zmarket loadout empty"
-	{
-		"ru"		"(Пусто)"
+		"ru"		"ZMarket\nSelect Weapon Loadout:" // TODO: Translate
 	}
 
 	"Weapons menu zmarket types title"

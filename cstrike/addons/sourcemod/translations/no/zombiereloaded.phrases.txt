@@ -74,7 +74,12 @@
 	{
 		"no"		"Du må være menneske for å kunne bruke denne funksjonen."
 	}
-	
+
+	"Must be in buyzone"
+	{
+		"no"		"This feature requires that you are in a buyzone." // TODO: Translate
+	}
+
 	"Increase by"
 	{
 		"no"		"Økning med {1}"
@@ -572,14 +577,9 @@
 		"no"		"Du kan bare holde {1} granat(er) av denne typen."
 	}
 
-	"Weapons zmarket auto-rebuy toggle on"
+	"Weapons zmarket not enough money"
 	{
-		"no"		"Autokjøp er aktivert, dine valg vil automatisk bli kjøpt hver runde eller hver gjenoppliving."
-	}
-
-	"Weapons zmarket auto-rebuy toggle off"
-	{
-		"no"		"Autokjøp er deaktivert."
+		"no"		"You have insufficient funds." // TODO: Translate
 	}
 
 	"Weapons zmarket updated loadout"
@@ -663,19 +663,14 @@
 		"no"		"Lagre gjeldende våpenvalg"
 	}
 
-	"Weapons menu zmarket main view loadout"
+	"Weapons menu zmarket main edit loadout"
 	{
-		"no"		"Vis våpenvalg"
+		"no"		"Edit Saved Setup" // TODO: Translate
 	}
 
 	"Weapons menu zmarket main rebuy"
 	{
 		"no"		"Kjøp lagret våpenvalg"
-	}
-
-	"Weapons menu zmarket main auto-rebuy"
-	{
-		"no"		"Autokjøp: {1}"
 	}
 
 	"Weapons menu zmarket main weapons list"
@@ -686,6 +681,7 @@
 	"Weapons menu zmarket loadout title"
 	{
 		"no"		"ZMarket\nGjeldende våpenvalg:\nFjern våpen ved å velge det."
+		//"no"		"ZMarket\nMy Current Setup:\nSelect weapon slot to modify.\nNote: Rebuy refers to these weapons.\nYou will spawn with these weapons." // TODO: Translate
 	}
 
 	"Weapons menu zmarket loadout primary"
@@ -698,29 +694,15 @@
 		"no"		"sekundærvåpen: {1}"
 	}
 
-	"Weapons menu zmarket loadout melee"
+	"Weapons menu zmarket loadout default"
 	{
-		"no"		"Nærkamp: {1}"
+ 		"#format"	"{1:s}"
+		"no"		"Default ({1})" // TODO: Translate
 	}
 
-	"Weapons menu zmarket loadout projectile"
+	"Weapons menu zmarket loadout weapons title"
 	{
-		"no"		"Prosjektiler: {1}"
-	}
-
-	"Weapons menu zmarket loadout explosive"
-	{
-		"no"		"Granater: {1}"
-	}
-
-	"Weapons menu zmarket loadout nvgs"
-	{
-		"no"		"Nattsyn: {1}"
-	}
-
-	"Weapons menu zmarket loadout empty"
-	{
-		"no"		"(Ingen)"
+		"no"		"ZMarket\nSelect Weapon Loadout:" // TODO: Translate
 	}
 
 	"Weapons menu zmarket types title"

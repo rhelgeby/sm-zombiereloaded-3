@@ -47,38 +47,31 @@ ZCookiesMenuMain(client)
     // Make client global translations target.
     SetGlobalTransTarget(client);
 
-    decl String:autorebuyenabled[MENU_LINE_SMALL_LENGTH];
     decl String:zhpenabled[MENU_LINE_SMALL_LENGTH];
     decl String:overlayenabled[MENU_LINE_SMALL_LENGTH];
 
     // Get the current toggle state of the cookies.
-    ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZMarketAutoRebuyCookie), autorebuyenabled, sizeof(autorebuyenabled), false, client);
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZHPEnabledCookie), zhpenabled, sizeof(zhpenabled), false, client);
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie), overlayenabled, sizeof(overlayenabled), false, client);
 
     decl String:title[MENU_LINE_TITLE_LENGTH];
-    decl String:autorebuy[MENU_LINE_REG_LENGTH];
     decl String:zhp[MENU_LINE_REG_LENGTH];
     decl String:overlay[MENU_LINE_REG_LENGTH];
     decl String:zmarket[MENU_LINE_REG_LENGTH];
 
     // Translate each line into client's language.
     Format(title, sizeof(title), "%t\n ", "ZCookies Menu main title");
-    Format(autorebuy, sizeof(autorebuy), "%t", "ZCookies menu main auto-rebuy", autorebuyenabled);
     Format(zhp, sizeof(zhp), "%t", "ZCookies menu main zhp", zhpenabled);
     Format(overlay, sizeof(overlay), "%t", "ZCookies menu main overlay", overlayenabled);
     Format(zmarket, sizeof(zmarket), "%t", "ZCookies zmarket loadout");
 
     // Get conditional values for each option.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);                               // For auto-rebuy.
-    new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);   // For auto-rebuy.
     new bool:zhpcvar = GetConVarBool(g_hCvarsList[CVAR_ZHP]);                                   // For ZHP.
     new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);          // For class overlay.
     new bool:zmarketenabled = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET]);                // For ZMarket loadout.
 
     // Add items to menu.
     SetMenuTitle(zcookies_menu_main, title);
-    AddMenuItem(zcookies_menu_main, "autorebuy", autorebuy, MenuGetItemDraw(weapons && zmarketrebuyauto));
     AddMenuItem(zcookies_menu_main, "zhp", zhp, MenuGetItemDraw(zhpcvar));
     AddMenuItem(zcookies_menu_main, "overlay", overlay, MenuGetItemDraw(overlaytoggle));
     AddMenuItem(zcookies_menu_main, "zmarket", zmarket, MenuGetItemDraw(zmarketenabled));
@@ -108,19 +101,13 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
 
         switch(slot)
         {
-            // Toggled auto-rebuy
-            case 0:
-            {
-                // Toggle the auto-rebuy cookie.
-                ZMarketToggleAutoRebuy(client);
-            }
             // Toggled ZHP.
-            case 1:
+            case 0:
             {
                 ZHPToggle(client);
             }
             // Toggled class overlay.
-            case 2:
+            case 1:
             {
                 // If overlay toggle is disabled, then stop.
                 new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
@@ -132,7 +119,7 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
                 }
             }
             // Opened ZMarket loadout.
-            case 3:
+            case 2:
             {
                 // Show a client their current loadout.
                 ZMarketMenuLoadout(client);

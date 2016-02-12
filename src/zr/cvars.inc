@@ -79,6 +79,8 @@ enum CvarsList
     Handle:CVAR_WEAPONS_ZMARKET_BUYZONE,
     Handle:CVAR_WEAPONS_ZMARKET_REBUY,
     Handle:CVAR_WEAPONS_ZMARKET_REBUY_AUTO,
+    Handle:CVAR_WEAPONS_ZMARKET_REBUY_PRIMARY,
+    Handle:CVAR_WEAPONS_ZMARKET_REBUY_SECONDARY,
     Handle:CVAR_HITGROUPS,
     Handle:CVAR_DAMAGE_HITGROUPS,
     Handle:CVAR_DAMAGE_BLOCK_FF,
@@ -299,7 +301,9 @@ CvarsCreate()
     g_hCvarsList[CVAR_WEAPONS_ZMARKET]                  =    CreateConVar("zr_weapons_zmarket",             "1",            "Allow player to buy from a list of weapons in the weapons config.");
     g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]          =    CreateConVar("zr_weapons_zmarket_buyzone",     "1",            "Requires player to be inside a buyzone to use ZMarket. [Dependency: zr_weapons_zmarket]");
     g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY]            =    CreateConVar("zr_weapons_zmarket_rebuy",       "1",            "Allow players to rebuy their previous weapons. [Dependency: zr_weapons_zmarket]");
-    g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]       =    CreateConVar("zr_weapons_zmarket_rebuy_auto",  "1",            "Allow players to automatically rebuy their previous weapons. [Dependency: zr_weapons_zmarket&zr_weapons_zmarket_rebuy]");
+    g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]       =    CreateConVar("zr_weapons_zmarket_rebuy_auto",  "1",            "Automatically equip default or loadout weapons. [Dependency: zr_weapons_zmarket&zr_weapons_zmarket_rebuy]");
+    g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_PRIMARY]    =    CreateConVar("zr_weapons_zmarket_rebuy_primary","P90",         "Default primary weapon. [Dependency: zr_weapons_zmarket&zr_weapons_zmarket_rebuy]");
+    g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_SECONDARY]  =    CreateConVar("zr_weapons_zmarket_rebuy_secondary","Elite",     "Default secondary weapon. [Dependency: zr_weapons_zmarket&zr_weapons_zmarket_rebuy]");
 
 
     // ===========================
