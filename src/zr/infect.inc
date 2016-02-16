@@ -801,6 +801,7 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     ZHPOnClientInfected(client);
     APIOnClientInfected(client, attacker, motherinfect, respawnoverride, respawn);
     ImmunityOnClientInfected(client);
+    ZSpawnOnClientInfected(client);
 }
 
 /**
@@ -867,6 +868,7 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     SEffectsOnClientHuman(client);
     APIOnClientHumanPost(client, respawn, protect);
     ImmunityOnClientHuman(client);
+    ZSpawnOnClientHuman(client);
 }
 
 /**

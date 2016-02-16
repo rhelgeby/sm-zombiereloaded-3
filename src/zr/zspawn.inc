@@ -35,6 +35,8 @@ new Handle:tZSpawn = INVALID_HANDLE;
  */
 new Handle:g_hZSpawnSteamIDCache = INVALID_HANDLE;
 
+new bool:g_bZSpawnClientInfected[MAXPLAYERS + 1] = {false, ...};
+
 /**
  * Create commands specific to ZSpawn.
  */
@@ -63,6 +65,9 @@ ZSpawnOnMapStart()
 
     // Reset the SteamID cache.
     SteamidCacheReset(g_hZSpawnSteamIDCache);
+
+    for(new client = 1; client <= MAXPLAYERS; client++)
+        g_bZSpawnClientInfected[client] = false;
 }
 
 /**
@@ -86,6 +91,8 @@ ZSpawnOnClientDisconnect(client)
 
     // Add client to the SteamID cache.
     SteamidCacheAddClient(g_hZSpawnSteamIDCache, client);
+
+    g_bZSpawnClientInfected[client] = false;
 }
 
 /**
@@ -100,12 +107,35 @@ ZSpawnOnClientDeath(client)
 }
 
 /**
+ * Client has been infected.
+ *
+ * @param client    The client index.
+ */
+ZSpawnOnClientInfected(client)
+{
+    g_bZSpawnClientInfected[client] = true;
+}
+
+/**
+ * Client was turned back into a human.
+ *
+ * @param client    The client index.
+ */
+ZSpawnOnClientHuman(client)
+{
+    g_bZSpawnClientInfected[client] = false;
+}
+
+/**
  * The round is starting.
  */
 ZSpawnOnRoundStart()
 {
     // Reset the SteamID cache.
     SteamidCacheReset(g_hZSpawnSteamIDCache);
+
+    for(new client = 1; client <= MAXPLAYERS; client++)
+        g_bZSpawnClientInfected[client] = false;
 
     // If zspawn timer is running, then kill it.
     if (tZSpawn != INVALID_HANDLE)
@@ -246,7 +276,11 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
                     }
                     case 0:
                     {
-                        teamzombie = false;
+                        // Client has been infected this round, respawning as a zombie
+                        if(g_bZSpawnClientInfected[client])
+                            teamzombie = true;
+                        else
+                            teamzombie = false;
                     }
                     case 1:
                     {
