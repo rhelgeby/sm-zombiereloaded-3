@@ -207,6 +207,7 @@ ZSpawnOnRoundEnd()
  */
 bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
 {
+
     // If zspawn is disabled, then stop.
     new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
     if (!force && !zspawn)
@@ -248,6 +249,7 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
         return false;
     }
 
+    // Client has been infected this round, respawning as a zombie
     new bool:teamzombie;
 
     if (!force)
@@ -276,11 +278,7 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
                     }
                     case 0:
                     {
-                        // Client has been infected this round, respawning as a zombie
-                        if(g_bZSpawnClientInfected[client])
-                            teamzombie = true;
-                        else
-                            teamzombie = false;
+                        teamzombie = false;
                     }
                     case 1:
                     {
@@ -289,6 +287,10 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
                 }
             }
         }
+
+        // Client has been infected this round, respawning as a zombie
+        if(g_bZSpawnClientInfected[client])
+            teamzombie = true;
     }
     else
     {

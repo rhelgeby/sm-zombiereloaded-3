@@ -581,6 +581,9 @@ public Action:InfectMotherZombie(Handle:timer)
         {
             g_InfectMotherStatus[client] = MotherStatus_None;
         }
+
+        // Announce start of new cycle
+        TranslationPrintToChatAll(true, false, "Mother zombie infect cycle reset");
     }
 
     // Remove MotherStatus_Last flag from all players.
@@ -644,52 +647,6 @@ InfectMoveAllToCT()
         CS_SwitchTeam(client, CS_TEAM_CT);
     }
 }
-
-/**
- * Removes immune clients from a client list. If a client is removed, their
- * immunity is also removed.
- *
- * @param clientList        List of clients.
- * @param keepLastPlayer    Don't remove if there's only one player left.
- *
- * @return                  Number of clients remaining.
-
-InfectRemoveImmuneClients(Handle:clientList, bool:keepLastPlayer = true)
-{
-    new len = GetArraySize(clientList);
-
-    // Loop though client list.
-    for (new i = 0; i < len; i++)
-    {
-        // Stop pruning if there is only one player left.
-        if (keepLastPlayer && len <= 1)
-        {
-            break;
-        }
-
-        // Get client.
-        new client = GetArrayCell(clientList, i);
-
-        // Check if client is immune from mother zombie infection.
-        if (bInfectImmune[client][INFECT_TYPE_MOTHER])
-        {
-            // Take away immunity.
-            bInfectImmune[client][INFECT_TYPE_MOTHER] = false;
-
-            // Remove client from array.
-            RemoveFromArray(clientList, i);
-
-            // Update list size.
-            len--;
-
-            // Backtrack one index, because we deleted it out from under the loop.
-            i--;
-        }
-    }
-
-    return len;
-}
-*/
 
 /**
  * Timer callback, displays countdown to clients.

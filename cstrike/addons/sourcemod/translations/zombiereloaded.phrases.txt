@@ -398,6 +398,11 @@
 		"en"		"The last zombie has left the game, and has passed the infection on to you."
 	}
 
+	"Mother zombie infect cycle reset"
+	{
+		"en"			"The mother zombie infection cycle has been reset."
+	}
+
 	// Center Text
 
 	"Infect countdown"

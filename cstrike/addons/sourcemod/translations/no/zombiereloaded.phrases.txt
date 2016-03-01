@@ -381,6 +381,11 @@
 		"no"		"Den siste zombien har forlatt spillet. Du er blitt valgt som erstatning."
 	}
 
+	"Mother zombie infect cycle reset"
+	{
+		"no"		"The mother zombie infection cycle has been reset." // TODO: Translate
+	}
+
 	// Center Text
 
 	"Infect countdown"

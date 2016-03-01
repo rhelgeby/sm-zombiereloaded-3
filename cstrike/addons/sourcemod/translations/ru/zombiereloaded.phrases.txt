@@ -382,6 +382,11 @@
 		"ru"		"Последний зомби покинул игру, поэтому вам досталась его инфекция."
 	}
 
+	"Mother zombie infect cycle reset"
+	{
+		"ru"		"The mother zombie infection cycle has been reset." // TODO: Translate
+	}
+
 	// Center Text
 
 	"Infect countdown"

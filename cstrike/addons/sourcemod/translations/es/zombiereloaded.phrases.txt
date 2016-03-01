@@ -382,6 +382,11 @@
 		"es"		"El ultimo zombi a dejado el juego, y te ha pasado la infeccion a ti. (luego se lo agradeces xD)"
 	}
 
+	"Mother zombie infect cycle reset"
+	{
+		"es"		"The mother zombie infection cycle has been reset." // TODO: Translate
+	}
+
 	// Center Text
 
 	"Infect countdown"
