@@ -436,10 +436,22 @@
 		"en"		"Player @green{1} @defaulthas been successfully infected."
 	}
 
+	"Infect command infect successful public"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"@lgreen{1}@default has infected @green{2}@default."
+	}
+
 	"Infect command infect mother successful"
 	{
 		"#format"	"{1:s}"
 		"en"		"Player @green{1} @defaulthas been successfully infected as the mother zombie."
+	}
+
+	"Infect command infect mother successful public"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"@lgreen{1}@default has infected @green{2}@default as the mother zombie."
 	}
 
 	"Infect command infect unsuccessful"
@@ -452,6 +464,12 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Player @green{1} @defaulthas been successfully brought back as a human."
+	}
+
+	"Infect command human successful public"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"@lgreen{1}@default has brought back @green{2}@default as a human."
 	}
 
 	"Infect command human unsuccessful"
@@ -1013,6 +1031,12 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Player {1} was successfully spawned."
+	}
+
+	"ZSpawn command force successful public"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"		"@lgreen{1}@default has spawned @green{2}@default as a @lgreen{3}@default."
 	}
 
 	"ZSpawn command force unsuccessful"

@@ -194,8 +194,12 @@ stock ToolsSetClientAlpha(client, alpha)
     // Turn rendermode on, on the client.
     SetEntityRenderMode(client, RENDER_TRANSALPHA);
 
+    // Get current client colors.
+    new color[4];
+    ToolsGetEntityColor(client, color);
+
     // Set alpha value on the client.
-    SetEntityRenderColor(client, _, _, _, alpha);
+    SetEntityRenderColor(client, color[0], color[1], color[2], alpha);
 
     // Forward event to modules.
     WeaponAlphaOnClientAlphaChanged(client, alpha);
@@ -229,4 +233,35 @@ stock ToolsGetEntityAlpha(entity)
 	new offset = GetEntSendPropOffs(entity, prop);
 
 	return GetEntData(entity, offset + 3, 1);
+}
+
+/**
+ * Gets an entity's color and alpha.
+ *
+ * @param client    The client index.
+ * @param color     4 dimensional array where [r,g,b,a] values are stored
+ */
+stock ToolsGetEntityColor(entity, color[4])
+{
+    static bool:gotconfig = false;
+    static String:prop[32];
+
+    if (!gotconfig)
+    {
+        new Handle:gc = LoadGameConfigFile("core.games");
+        new bool:exists = GameConfGetKeyValue(gc, "m_clrRender", prop, sizeof(prop));
+        CloseHandle(gc);
+
+        if (!exists)
+        {
+            strcopy(prop, sizeof(prop), "m_clrRender");
+        }
+
+        gotconfig = true;
+    }
+
+    new offset = GetEntSendPropOffs(entity, prop);
+
+    for (new i = 0; i < 4; i++)
+        color[i] = GetEntData(entity, offset + i, 1);
 }

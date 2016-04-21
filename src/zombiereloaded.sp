@@ -33,6 +33,9 @@
 #include <sdktools>
 #include <clientprefs>
 #include <cstrike>
+#define INCLUDED_BY_ZOMBIERELOADED
+#include <zombiereloaded>
+#undef INCLUDED_BY_ZOMBIERELOADED
 
 #if defined USE_SDKHOOKS
     #include <sdkhooks>
@@ -144,6 +147,9 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
     // Load API.
     APIInit();
+
+    // Register library
+    RegPluginLibrary("zombiereloaded");
 
     // Let plugin load.
     return APLRes_Success;

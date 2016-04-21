@@ -418,9 +418,19 @@
 		"es"		"El jugador @green{1} @defaultha sido infectado con exito."
 	}
 
+	"Infect command infect successful public"
+	{
+		"es"		"@lgreen{1}@default has infected @green{2}@default." // TODO: Translate
+	}
+
 	"Infect command infect mother successful"
 	{
 		"es"		"El jugador @green{1} @defaultha sido infectado con exito como el zombi madre."
+	}
+
+	"Infect command infect mother successful public"
+	{
+		"es"		"@lgreen{1}@default has infected @green{2}@default as the mother zombie." // TODO: Translate
 	}
 
 	"Infect command infect unsuccessful"
@@ -431,6 +441,11 @@
 	"Infect command human successful"
 	{
 		"es"		"El jugador @green{1} @defaultha vuelto a ser humano con exito."
+	}
+
+	"Infect command human successful public"
+	{
+		"es"		"@lgreen{1}@default has brought back @green{2}@default as a human." // TODO: Translate
 	}
 
 	"Infect command human unsuccessful"
@@ -955,6 +970,11 @@
 	"ZSpawn command force successful"
 	{
 		"es"		"El jugador {1} ha sido resucitado correctamente."
+	}
+
+	"ZSpawn command force successful public"
+	{
+		"es"		"@lgreen{1}@default has spawned @green{2}@default as a @lgreen{3}@default." // TODO: Translate
 	}
 
 	"ZSpawn command force unsuccessful"

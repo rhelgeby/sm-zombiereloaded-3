@@ -412,11 +412,17 @@ public Action:ZSpawnForceCommand(client, argc)
         return Plugin_Handled;
     }
 
-    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH];
+    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH], String:adminname[MAX_NAME_LENGTH];
     new targets[MAXPLAYERS], bool:tn_is_ml, result;
 
     // Get targetname.
     GetCmdArg(1, target, sizeof(target));
+
+    // Get admin's name for later use.
+    if(client > 0)
+        GetClientName(client, adminname, sizeof(adminname));
+    else
+        strcopy(adminname, sizeof(adminname), "Console");
 
     // Find a target.
     result = ProcessTargetString(target, client, targets, sizeof(targets), COMMAND_FILTER_DEAD, targetname, sizeof(targetname), tn_is_ml);
@@ -441,7 +447,12 @@ public Action:ZSpawnForceCommand(client, argc)
     {
         // Give client the item.
         new bool:success = ZSpawnClient(targets[x], true, zombie);
-        LogAction(client, targets[x], "\"%L\" forced a ZSpawn on \"%L\"%s", client, targets[x], zombie ? " and made them zombie" : "");
+
+        if(success)
+        {
+            LogAction(client, targets[x], "\"%L\" forced a ZSpawn on \"%L\"%s", client, targets[x], zombie ? " and made them zombie" : "");
+            TranslationPrintToChatAll(false, false, "ZSpawn command force successful public", adminname, targetname, zombie ? "zombie" : "human");
+        }
 
         // Tell admin the outcome of the command if only 1 client was targetted.
         if (result == 1)

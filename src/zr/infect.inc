@@ -284,8 +284,7 @@ InfectOnClientSpawn(client)
         CS_RespawnPlayer(client);
     }
 
-    // Unglitch kevlar. (Reset hitbox to HITBOX_GENERIC)
-    SetEntData(client, 4444, 0, 4);
+    InfectUnglitchKevlar(client);
 }
 
 /**
@@ -875,8 +874,7 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
         SpawnProtectStart(client);
     }
 
-    // Unglitch kevlar. (Reset hitbox to HITBOX_GENERIC)
-    SetEntData(client, 4444, 0, 4);
+    InfectUnglitchKevlar(client);
 
     // Forward event to modules.
     SEffectsOnClientHuman(client);
@@ -1185,6 +1183,13 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
     }
 
     decl String:targetname[MAX_NAME_LENGTH];
+    decl String:adminname[MAX_NAME_LENGTH];
+
+    // Get admin's name for later use.
+    if(client > 0)
+        GetClientName(client, adminname, sizeof(adminname));
+    else
+        strcopy(adminname, sizeof(adminname), "Console");
 
     // x = Client index.
     for (new x = 0; x < count; x++)
@@ -1211,6 +1216,7 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
             // Turn client into a mother zombie.
             InfectHumanToZombie(targets[x], _, true, respawnoverride, respawn);
             LogAction(client, targets[x], "\"%L\" turned \"%L\" into a mother zombie", client, targets[x]);
+            TranslationPrintToChatAll(false, false, "Infect command infect mother successful public", adminname, targetname);
 
             // If there was only 1 player targetted, then let admin know the outcome of the command.
             if (count == 1)
@@ -1224,6 +1230,7 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
         // Turn client into a zombie.
         InfectHumanToZombie(targets[x], _, false, respawnoverride, respawn);
         LogAction(client, targets[x], "\"%L\" turned \"%L\" into a zombie", client, targets[x]);
+        TranslationPrintToChatAll(false, false, "Infect command infect successful public", adminname, targetname);
 
         // If there was only 1 player targetted, then let admin know the outcome of the command.
         if (count == 1)
@@ -1245,6 +1252,13 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
 stock InfectManualHuman(client, targets[], count, bool:respawn = false, bool:protect = false)
 {
     decl String:targetname[MAX_NAME_LENGTH];
+    decl String:adminname[MAX_NAME_LENGTH];
+
+    // Get admin's name for later use.
+    if(client > 0)
+        GetClientName(client, adminname, sizeof(adminname));
+    else
+        strcopy(adminname, sizeof(adminname), "Console");
 
     // x = Client index.
     for (new x = 0; x < count; x++)
@@ -1258,6 +1272,7 @@ stock InfectManualHuman(client, targets[], count, bool:respawn = false, bool:pro
             // Turn client into a zombie.
             InfectZombieToHuman(targets[x], respawn, protect);
             LogAction(client, targets[x], "\"%L\" turned \"%L\" into a human", client, targets[x]);
+            TranslationPrintToChatAll(false, false, "Infect command human successful public", adminname, targetname);
 
             // If there was only 1 player targetted, then let admin know the outcome of the command.
             if (count == 1)
@@ -1485,4 +1500,15 @@ InfectMode:InfectGetModeOrFail()
     }
 
     return mode;
+}
+
+InfectUnglitchKevlar(client)
+{
+    // Unglitch kevlar. (Reset hitbox to HITBOX_GENERIC)
+    // Example: You get hit in the head by a bullet as a zombie
+    // the round ends, you spawn as a human.
+    // You get damaged by a trigger, the game still thinks you
+    // are getting damaged in the head hitgroup, >mfw source engine.
+    // Thanks to leaked 2007 Source Engine Code.
+    SetEntData(client, 4444, 0, 4);
 }

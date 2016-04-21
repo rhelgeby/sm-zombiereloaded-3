@@ -418,9 +418,19 @@
 		"ru"		"Игрок @green{1}@default был успешно инфицирован."
 	}
 
+	"Infect command infect successful public"
+	{
+		"ru"		"@lgreen{1}@default has infected @green{2}@default." // TODO: Translate
+	}
+
 	"Infect command infect mother successful"
 	{
 		"ru"		"Игрок @green{1}@default был успешно инфицирован и стал первым зомби."
+	}
+
+	"Infect command infect mother successful public"
+	{
+		"ru"		"@lgreen{1}@default has infected @green{2}@default as the mother zombie." // TODO: Translate
 	}
 
 	"Infect command infect unsuccessful"
@@ -431,6 +441,11 @@
 	"Infect command human successful"
 	{
 		"ru"		"Игрок @green{1}@default был успешно превращен обратно в человека."
+	}
+
+	"Infect command human successful public"
+	{
+		"ru"		"@lgreen{1}@default has brought back @green{2}@default as a human." // TODO: Translate
 	}
 
 	"Infect command human unsuccessful"
@@ -955,6 +970,11 @@
 	"ZSpawn command force successful"
 	{
 		"ru"		"Игрок {1} был успешно воскрешен."
+	}
+
+	"ZSpawn command force successful public"
+	{
+		"ru"		"@lgreen{1}@default has spawned @green{2}@default as a @lgreen{3}@default." // TODO: Translate
 	}
 
 	"ZSpawn command force unsuccessful"

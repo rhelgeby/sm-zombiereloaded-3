@@ -38,12 +38,14 @@
 /**
  * Results when selecting a class for a player.
  */
+#if !defined INCLUDED_BY_ZOMBIERELOADED
 enum ClassSelectResult
 {
     ClassSelected_NoChange,     /** No class change was necessary (class already selected). */
     ClassSelected_Instant,      /** Class was instantly changed. */
     ClassSelected_NextSpawn     /** Class will be used next spawn. */
 }
+#endif
 
 /**
  * Returns whether a class index is valid or not.
