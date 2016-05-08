@@ -109,6 +109,7 @@ enum CvarsList
     Handle:CVAR_INFECT_MZOMBIE_MAX,
     Handle:CVAR_INFECT_MZOMBIE_COUNTDOWN,
     Handle:CVAR_INFECT_MZOMBIE_RESPAWN,
+    Handle:CVAR_INFECT_MAX_DISTANCE,
     Handle:CVAR_INFECT_EXPLOSION,
     Handle:CVAR_INFECT_FIREBALL,
     Handle:CVAR_INFECT_SMOKE,
@@ -327,6 +328,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]             =    CreateConVar("zr_infect_spawntime_max",        "50.0",                             "Maximum time from the start of the round until picking the mother zombie(s).");
     g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block",    "1",                                "Prevent a player from being chosen as mother zombie two rounds in a row.");
     g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]              =    CreateConVar("zr_infect_weapons_drop",         "1",                                "Force player to drop all weapons on infect, disabling this will strip weapons instead.");
+    g_hCvarsList[CVAR_INFECT_MAX_DISTANCE]              =    CreateConVar("zr_infect_max_distance",         "80.0",                             "The maximum allowed distance between a client and an attacker for a successful infection. [0.0 = Disabled]");
 
     // Effects
     g_hCvarsList[CVAR_INFECT_EXPLOSION]                 =    CreateConVar("zr_infect_explosion",            "1",                                "Disabling this will disable the fireball, smoke cloud, and sparks in a more efficient way.");

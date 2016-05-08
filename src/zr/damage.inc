@@ -340,6 +340,25 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
             return immunityAction;
         }
 
+        // Check if distance between clients is too high. (Anti lagcompensation / longknife)
+        new Float:maxDistance = GetConVarFloat(g_hCvarsList[CVAR_INFECT_MAX_DISTANCE]);
+        if (maxDistance != 0.0)
+        {
+            new Float:clientPosition[3];
+            new Float:attackerPosition[3];
+
+            GetClientAbsOrigin(client, clientPosition);
+            GetClientAbsOrigin(attacker, attackerPosition);
+
+            new Float:distance = GetVectorDistance(clientPosition, attackerPosition);
+
+            // Block infection if distance is higher than allowed.
+            if (distance > maxDistance)
+            {
+                return Plugin_Handled;
+            }
+        }
+
         // Client is about to be infected, re-add HP so they aren't killed by
         // knife. But only do this when immunity mode is disabled.
         if (ClassGetImmunityMode(client) == Immunity_None)
