@@ -1,0 +1,14 @@
+"Games"
+{
+	"cstrike"
+	{
+		"Signatures"
+		{
+			"CBaseEntity_SetAbsVelocity"
+			{
+				"library"	"server"
+				"linux"		"@_ZN11CBaseEntity14SetAbsVelocityERK6Vector"
+			}
+		}
+	}
+}

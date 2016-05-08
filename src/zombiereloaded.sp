@@ -121,6 +121,8 @@
 
 #include "zr/api/api"
 
+new bool:g_bLate = false;
+
 /**
  * Record plugin info.
  */
@@ -150,6 +152,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
     // Register library
     RegPluginLibrary("zombiereloaded");
+
+    g_bLate = late;
 
     // Let plugin load.
     return APLRes_Success;
@@ -257,6 +261,30 @@ public OnConfigsExecuted()
     // Forward event to modules. (OnModulesLoaded)
     ConfigOnModulesLoaded();
     ClassOnModulesLoaded();
+
+    if(g_bLate)
+    {
+        for(new client = 1; client <= MaxClients; client++)
+        {
+            if(!IsClientConnected(client))
+                continue;
+
+            OnClientConnected(client);
+
+            if(IsClientInGame(client))
+            {
+                OnClientPutInServer(client);
+
+                if(IsClientAuthorized(client))
+                    OnClientPostAdminCheck(client);
+            }
+
+            if(AreClientCookiesCached(client))
+                OnClientCookiesCached(client);
+        }
+
+        g_bLate = false;
+    }
 }
 
 /**

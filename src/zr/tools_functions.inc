@@ -64,7 +64,10 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
     }
 
     // Apply velocity on client.
-    TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVelocity);
+    if(g_hToolsSetAbsVelocity == INVALID_HANDLE) // Fallback to old one
+        TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVelocity);
+    else // Fixes trigger OnStartTouch/OnEndTouch bug
+        SDKCall(g_hToolsSetAbsVelocity, client, vecVelocity);
 }
 
 /**

@@ -33,6 +33,7 @@ new g_iToolsLMV;
 new g_iToolsHasNightVision;
 new g_iToolsNightVisionOn;
 new g_iToolsFOV;
+new Handle:g_hToolsSetAbsVelocity = INVALID_HANDLE;
 
 /**
  * @endsection
@@ -89,6 +90,24 @@ ToolsFindOffsets()
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_iFOV\" was not found.");
     }
+
+    // void CBaseEntity::SetAbsVelocity( const Vector &vecAbsVelocity )
+    Handle hGameConf = LoadGameConfigFile("zombiereloaded");
+    if (hGameConf != INVALID_HANDLE)
+    {
+        StartPrepSDKCall(SDKCall_Player);
+        if (PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "CBaseEntity_SetAbsVelocity"))
+        {
+            PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+            g_hToolsSetAbsVelocity = EndPrepSDKCall();
+        }
+        else
+            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "SDKCall \"CBaseEntity::SetAbsVelocity\" was not found.");
+
+        CloseHandle(hGameConf);
+    }
+    else
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Couldn't load zombiereloaded game config!");
 
     // Forward event to modules.
     WeaponsOnOffsetsFound();
