@@ -583,8 +583,8 @@ stock bool:RestrictIsTypeUniform(bool:restricted, index)
  * Hook callback, called when a player is trying to pick up a weapon.
  * @param client    The client index.
  * @param weapon    The weapon index.
- * @return          Return ZRTools_Handled to stop weapon pickup.
- *                  ZRTools_Continue to allow weapon pickup.
+ * @return          Return Plugin_Handled to stop weapon pickup.
+ *                  Plugin_Continue to allow weapon pickup.
  */
 public Action:RestrictCanUse(client, weapon)
 {

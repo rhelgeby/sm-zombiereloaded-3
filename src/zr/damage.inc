@@ -121,8 +121,8 @@ DamageOnClientInfected(client, bool:motherinfect)
  * @param damage        The amount of damage inflicted.
  * @param hitbox        The hitbox index.
  * @param hitgroup      The hitgroup index.
- * @return              Return ZRTools_Handled to stop bullet from hitting client.
- *                      ZRTools_Continue to allow bullet to hit client.
+ * @return              Return Plugin_Handled to stop bullet from hitting client.
+ *                      Plugin_Continue to allow bullet to hit client.
  */
 public Action:DamageTraceAttack(client, &attacker, &inflictor, &Float:damage, &damagetype, &ammotype, hitbox, hitgroup)
 {
@@ -213,8 +213,8 @@ public Action:DamageTraceAttack(client, &attacker, &inflictor, &Float:damage, &d
  * @param damage        The amount of damage inflicted.
  * @param damagetype    The type of damage inflicted.
  * @param ammotype      The ammo type of the attacker's weapon.
- * @return              Return ZRTools_Handled to stop the damage to client.
- *                      ZRTools_Continue to allow damage to client.
+ * @return              Return Plugin_Handled to stop the damage to client.
+ *                      Plugin_Continue to allow damage to client.
  */
 public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damagetype)
 {

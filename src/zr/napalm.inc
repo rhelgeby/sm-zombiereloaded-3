@@ -65,8 +65,8 @@ NapalmOnOffsetsFound()
  *
  * @param client        The client index.
  * @param damagetype    The type of damage inflicted.
- * @return              Return ZRTools_Handled to stop the damage to client.
- *                      ZRTools_Continue to allow damage to client.
+ * @return              Return Plugin_Handled to stop the damage to client.
+ *                      Plugin_Continue to allow damage to client.
  *                      Return -1 to not return anything and let the damage module continue as usual.
  */
 NapalmOnTakeDamage(client, damagetype)
