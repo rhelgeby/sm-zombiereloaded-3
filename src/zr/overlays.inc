@@ -154,6 +154,7 @@ OverlaysOnRoundStart()
     new Float:overlaysupdate = GetConVarFloat(g_hCvarsList[CVAR_OVERLAYS_UPDATE_TIME]);
     if (overlaysupdate <= 0.0)
     {
+        tOverlays = INVALID_HANDLE;
         return;
     }
 
