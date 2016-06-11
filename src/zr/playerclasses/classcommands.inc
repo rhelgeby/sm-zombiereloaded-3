@@ -334,6 +334,8 @@ public Action:ClassModifyCommand(client, argc)
     if (attributeflag < 0)
     {
         ReplyToCommand(client, "Invalid class attribute specified.");
+        CloseHandle(classlist);
+
         return Plugin_Handled;
     }
 
@@ -370,6 +372,8 @@ public Action:ClassModifyCommand(client, argc)
         if (!listresult)
         {
             ReplyToCommand(client, "Failed to get classes in the specified team: \"%s\".", classname);
+            CloseHandle(classlist);
+
             return Plugin_Handled;
         }
 
@@ -432,6 +436,8 @@ public Action:ClassModifyCommand(client, argc)
         if (!ClassValidateIndex(classindex))
         {
             ReplyToCommand(client, "Invalid class name specified.");
+            CloseHandle(classlist);
+
             return Plugin_Handled;
         }
 
@@ -477,6 +483,8 @@ public Action:ClassModifyCommand(client, argc)
             }
         }
     }
+
+    CloseHandle(classlist);
 
     return Plugin_Handled;
 }
