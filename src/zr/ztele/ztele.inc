@@ -29,6 +29,8 @@
 
 #include "zr/ztele/cvars"
 
+#define MAX_PLAYER_SPAWNS 128
+
 /**
  * Array to store client's spawn location.
  */
@@ -54,6 +56,9 @@ Handle tZTele[MAXPLAYERS + 1];
  */
 int g_iZTeleTimeLeft[MAXPLAYERS + 1];
 
+float g_vecZTeleSpawnPoints[MAX_PLAYER_SPAWNS][3];
+int g_iZTeleSpawnPointsCount = 0;
+
 /**
  * Create commands specific to ZTele.
  */
@@ -64,6 +69,36 @@ void ZTele_OnCommandsCreate()
 
     // Register admin command to force ZTele.
     RegConsoleCmd("zr_ztele_force", ZTele_ForceCommand, "Force ZTele on a client. Usage: zr_ztele_force <client>");
+}
+
+void ZTeleOnRoundStart()
+{
+    char classname[64];
+    int maxentities = GetMaxEntities();
+
+    g_iZTeleSpawnPointsCount = 0;
+
+    for (int i = MaxClients; i <= maxentities; i++)
+    {
+        if (!IsValidEdict(i))
+        {
+            continue;
+        }
+
+        if (g_iZTeleSpawnPointsCount >= MAX_PLAYER_SPAWNS)
+        {
+            break;
+        }
+
+        GetEdictClassname(i, classname, sizeof(classname));
+
+        if (StrEqual(classname, "info_player_terrorist", true) || StrEqual(classname, "info_player_counterterrorist", true))
+        {
+            GetEntPropVector(i, Prop_Send, "m_vecOrigin", g_vecZTeleSpawnPoints[g_iZTeleSpawnPointsCount]);
+
+            g_iZTeleSpawnPointsCount++;
+        }
+    }
 }
 
 /**
@@ -215,7 +250,26 @@ bool ZTeleClient(int client, bool force = false)
 void ZTele_TeleportClient(int client)
 {
     // Teleport client.
-    TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
+    CreateTimer(0.0, Timer_PerformZtele, client);
+}
+
+public Action Timer_PerformZtele(Handle timer, any data)
+{
+    int client = view_as<int>(data);
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+
+    if (ZTele_IsRandomPositionEnabled())
+    {
+        int select = Math_GetRandomInt(0, g_iZTeleSpawnPointsCount - 1);
+        TeleportEntity(client, g_vecZTeleSpawnPoints[select], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
+    }
+    else
+    {
+        TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
+    }
 }
 
 /**
