@@ -250,17 +250,6 @@ bool ZTeleClient(int client, bool force = false)
 void ZTele_TeleportClient(int client)
 {
     // Teleport client.
-    CreateTimer(0.0, Timer_PerformZtele, client);
-}
-
-public Action Timer_PerformZtele(Handle timer, any data)
-{
-    int client = view_as<int>(data);
-    if (!IsClientInGame(client))
-    {
-        return;
-    }
-
     if (ZTele_IsRandomPositionEnabled())
     {
         int select = Math_GetRandomInt(0, g_iZTeleSpawnPointsCount - 1);
