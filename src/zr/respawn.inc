@@ -93,12 +93,12 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
     if (tRespawn[client] != INVALID_HANDLE)
     {
         KillTimer(tRespawn[client]);
+        tRespawn[client] = INVALID_HANDLE;
     }
 
     // If player was infected, then stop.
     if (StrEqual(weapon, "zombie_claws_of_death", false))
     {
-        tRespawn[client] = INVALID_HANDLE;
         return;
     }
 
@@ -106,7 +106,6 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
     new bool:respawn = GetConVarBool(g_hCvarsList[CVAR_RESPAWN]);
     if (!respawn)
     {
-        tRespawn[client] = INVALID_HANDLE;
         return;
     }
 

@@ -148,13 +148,13 @@ OverlaysOnRoundStart()
     if (tOverlays != INVALID_HANDLE)
     {
         KillTimer(tOverlays);
+        tOverlays = INVALID_HANDLE;
     }
 
     // If antistick is disabled, then stop.
     new Float:overlaysupdate = GetConVarFloat(g_hCvarsList[CVAR_OVERLAYS_UPDATE_TIME]);
     if (overlaysupdate <= 0.0)
     {
-        tOverlays = INVALID_HANDLE;
         return;
     }
 

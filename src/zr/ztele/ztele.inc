@@ -250,7 +250,7 @@ bool ZTeleClient(int client, bool force = false)
 void ZTele_TeleportClient(int client)
 {
     // Teleport client.
-    if (ZTele_IsRandomPositionEnabled())
+    if (ZTele_IsRandomSpawnEnabled())
     {
         int select = Math_GetRandomInt(0, g_iZTeleSpawnPointsCount - 1);
         TeleportEntity(client, g_vecZTeleSpawnPoints[select], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));

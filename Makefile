@@ -27,7 +27,7 @@ vpath %.smx $(BUILDDIR)
 SOURCEFILES=$(SOURCEDIR)/*.sp
 OBJECTS=$(patsubst %.sp, %.smx, $(notdir $(wildcard $(SOURCEFILES))))
 
-all: prepare $(OBJECTS)
+all: prepare_builddir $(OBJECTS)
 
 prepare: prepare_newlines prepare_builddir
 
