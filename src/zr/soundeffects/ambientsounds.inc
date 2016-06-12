@@ -79,7 +79,7 @@ bool:AmbientSoundsValidateConfig()
     Format(sound, sizeof(sound), "sound/%s", sound);
 
     // If file doesn't exist, then log error and stop.
-    if (!FileExists(sound, true))
+    if (!FileExists(sound, false))
     {
         // Log invalid sound file error.
         LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_SEffects, "Config Validation", "Invalid sound file specified in \"zr_ambientsounds_file\": %s", sound);
