@@ -39,7 +39,6 @@ prepare_newlines:
 	@find $(ZRINCLUDES) -name \*.inc -exec $(DOS2UNIX) "{}" \;
 
 prepare_builddir:
-	@echo "Creating build directory"
 	@mkdir -p $(BUILDDIR)
 
 %.smx: %.sp
