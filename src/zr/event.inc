@@ -89,6 +89,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     SEffectsOnRoundStart();
     ZSpawnOnRoundStart();
     VolOnRoundStart();
+    ZTeleOnRoundStart();
 
     // Fire post round_start event.
     //CreateTimer(0.0, EventRoundStartPost);
