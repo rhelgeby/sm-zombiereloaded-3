@@ -78,7 +78,7 @@
 
 	"Must be in buyzone"
 	{
-		"ru"		"This feature requires that you are in a buyzone." // TODO: Translate
+		"ru"		"Данная функция доступна только, когда вы находитесь в зоне закупки."
 	}
 
 	"Increase by"
@@ -420,7 +420,7 @@
 
 	"Infect command infect successful public"
 	{
-		"ru"		"@lgreen{1}@default has infected @green{2}@default." // TODO: Translate
+		"ru"		"@lgreen{1}@default сделал @green{2}@default зомби."
 	}
 
 	"Infect command infect mother successful"
@@ -430,7 +430,7 @@
 
 	"Infect command infect mother successful public"
 	{
-		"ru"		"@lgreen{1}@default has infected @green{2}@default as the mother zombie." // TODO: Translate
+		"ru"		"@lgreen{1}@default сделал @green{2}@default первым зомби."
 	}
 
 	"Infect command infect unsuccessful"
@@ -445,7 +445,7 @@
 
 	"Infect command human successful public"
 	{
-		"ru"		"@lgreen{1}@default has brought back @green{2}@default as a human." // TODO: Translate
+		"ru"		"@lgreen{1}@default сделал @green{2}@default человеком."
 	}
 
 	"Infect command human unsuccessful"
@@ -600,7 +600,7 @@
 
 	"Weapons zmarket not enough money"
 	{
-		"ru"		"You have insufficient funds." // TODO: Translate
+		"ru"		"У вас недостаточно денег для покупки данного оружия."
 	}
 
 	"Weapons zmarket updated loadout"
@@ -686,7 +686,7 @@
 
 	"Weapons menu zmarket main edit loadout"
 	{
-		"ru"		"Edit Saved Setup" // TODO: Translate
+		"ru"		"Текущая амуниция"
 	}
 
 	"Weapons menu zmarket main rebuy"
@@ -701,8 +701,7 @@
 
 	"Weapons menu zmarket loadout title"
 	{
-		"ru"		"ZMarket\nМоя текущая амуниция:\nВыберите слот для очистки.\nПримечаие: Авто-покупка использует данный список."
-		//"ru"		"ZMarket\nMy Current Setup:\nSelect weapon slot to modify.\nNote: Rebuy refers to these weapons.\nYou will spawn with these weapons." // TODO: Translate
+		"ru"		"ZMarket\nМоя текущая амуниция:\nВыберите слот для изменения.\nПримечание: Авто-покупка использует данный список."
 	}
 
 	"Weapons menu zmarket loadout primary"
@@ -717,13 +716,12 @@
 
 	"Weapons menu zmarket loadout default"
 	{
-		"#format"	"{1:s}"
-		"ru"		"Default ({1})" // TODO: Translate
+		"ru"		"{1} (текущее)"
 	}
 
 	"Weapons menu zmarket loadout weapons title"
 	{
-		"ru"		"ZMarket\nSelect Weapon Loadout:" // TODO: Translate
+		"ru"		"ZMarket\nВыберите оружие:"
 	}
 
 	"Weapons menu zmarket types title"
@@ -974,7 +972,7 @@
 
 	"ZSpawn command force successful public"
 	{
-		"ru"		"@lgreen{1}@default has spawned @green{2}@default as a @lgreen{3}@default." // TODO: Translate
+		"ru"		"@lgreen{1}@default возродил @green{2}@default как @lgreen{3}@default."
 	}
 
 	"ZSpawn command force unsuccessful"
