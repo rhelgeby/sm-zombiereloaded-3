@@ -65,14 +65,15 @@ NapalmOnOffsetsFound()
  *
  * @param client        The client index.
  * @param damagetype    The type of damage inflicted.
- * @return              Return ZRTools_Handled to stop the damage to client.
- *                      ZRTools_Continue to allow damage to client.
+ * @return              Return Plugin_Handled to stop the damage to client.
+ *                      Plugin_Continue to allow damage to client.
  *                      Return -1 to not return anything and let the damage module continue as usual.
  */
 NapalmOnTakeDamage(client, damagetype)
 {
     // Client was damaged by fire.
-    if (damagetype & DMG_CSS_BURN)
+    // TODO: Is damage type different in CS:S and CS:GO (it was checking only DMG_DIRECT for some reason). Checking both.
+    if (damagetype & DMG_BURN || damagetype & DMG_DIRECT)
     {
         // Only take action if it isn't disabled, or the option is valid.
         new douse = GetConVarInt(g_hCvarsList[CVAR_NAPALM_DOUSE]);
@@ -104,7 +105,7 @@ NapalmOnTakeDamage(client, damagetype)
                     }
                 }
 
-                return _:ACTION_CONTINUE;
+                return _:Plugin_Continue;
             }
         }
     }

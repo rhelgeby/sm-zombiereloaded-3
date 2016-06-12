@@ -25,20 +25,6 @@
  * ============================================================================
  */
 
-#if defined USE_SDKHOOKS
-    /**
-     * @section Counter Strike: Source specific damage flags.
-     */
-    #define DMG_CSS_FALL        (DMG_FALL)      // Client was damaged by falling.
-    #define DMG_CSS_BLAST       (DMG_BLAST)     // Client was damaged by explosion.
-    #define DMG_CSS_BURN        (DMG_DIRECT)    // Client was damaged by fire.
-    #define DMG_CSS_BULLET      (DMG_NEVERGIB)  // Client was shot or knifed.
-    #define DMG_CSS_HEADSHOT    (1 << 30)       // Client was shot in the head.
-    /**
-     * @endsection
-     */
-#endif
-
 /**
  * @section Suicide intercept defines.
  */
@@ -47,16 +33,6 @@
 /**
  * @endsection
  */
-
-/**
- * Array to store TraceAttack HookIDs.
- */
-new g_iDamageTraceAttackHookID[MAXPLAYERS + 1] = {-1, ...};
-
-/**
- * Array to store OnTakeDamage HookIDs.
- */
-new g_iDamageOnTakeDamageHookID[MAXPLAYERS + 1] = {-1, ...};
 
 /**
  * Array to keep track of normal/mother zombies.
@@ -108,17 +84,8 @@ DamageLoad()
 DamageClientInit(client)
 {
     // Hook damage callbacks.
-    #if defined USE_SDKHOOKS
-        SDKHook(client, SDKHook_TraceAttack, DamageTraceAttack);
-        SDKHook(client, SDKHook_OnTakeDamage, DamageOnTakeDamage);
-
-        // Set dummy values so it think it's hooked.
-        g_iDamageTraceAttackHookID[client] = 1;
-        g_iDamageOnTakeDamageHookID[client] = 1;
-    #else
-        g_iDamageTraceAttackHookID[client] = ZRTools_HookTraceAttack(client, DamageTraceAttack);
-        g_iDamageOnTakeDamageHookID[client] = ZRTools_HookOnTakeDamage(client, DamageOnTakeDamage);
-    #endif
+    SDKHook(client, SDKHook_TraceAttack, DamageTraceAttack);
+    SDKHook(client, SDKHook_OnTakeDamage, DamageOnTakeDamage);
 }
 
 /**
@@ -128,29 +95,8 @@ DamageClientInit(client)
  */
 DamageOnClientDisconnect(client)
 {
-    // Unhook damage callbacks, and reset variables.
-
-    if (g_iDamageTraceAttackHookID[client] != -1)
-    {
-        #if defined USE_SDKHOOKS
-            SDKUnhook(client, SDKHook_TraceAttack, DamageTraceAttack);
-        #else
-            ZRTools_UnhookTraceAttack(g_iDamageTraceAttackHookID[client]);
-        #endif
-
-        g_iDamageTraceAttackHookID[client] = -1;
-    }
-
-    if (g_iDamageOnTakeDamageHookID[client] != -1)
-    {
-        #if defined USE_SDKHOOKS
-            SDKUnhook(client, SDKHook_OnTakeDamage, DamageOnTakeDamage);
-        #else
-            ZRTools_UnhookOnTakeDamage(g_iDamageOnTakeDamageHookID[client]);
-        #endif
-
-        g_iDamageOnTakeDamageHookID[client] = -1;
-    }
+    SDKUnhook(client, SDKHook_TraceAttack, DamageTraceAttack);
+    SDKUnhook(client, SDKHook_OnTakeDamage, DamageOnTakeDamage);
 }
 
 /**
@@ -175,25 +121,21 @@ DamageOnClientInfected(client, bool:motherinfect)
  * @param damage        The amount of damage inflicted.
  * @param hitbox        The hitbox index.
  * @param hitgroup      The hitgroup index.
- * @return              Return ZRTools_Handled to stop bullet from hitting client.
- *                      ZRTools_Continue to allow bullet to hit client.
+ * @return              Return Plugin_Handled to stop bullet from hitting client.
+ *                      Plugin_Continue to allow bullet to hit client.
  */
-#if defined USE_SDKHOOKS
 public Action:DamageTraceAttack(client, &attacker, &inflictor, &Float:damage, &damagetype, &ammotype, hitbox, hitgroup)
-#else
-public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damage, hitbox, hitgroup)
-#endif
 {
     // If attacker isn't valid, then stop.
     if (!ZRIsClientValid(attacker))
     {
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     // If client is attacking himself, then stop.
     if(attacker == client)
     {
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     // Get zombie flag for each client.
@@ -207,11 +149,11 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
         new bool:damageblockff = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]);
         if (!damageblockff)
         {
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
 
         // Stop bullet from hurting client.
-        return ACTION_HANDLED;
+        return Plugin_Handled;
     }
 
     // Here we know that attacker and client are different teams.
@@ -220,14 +162,14 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     if (ImmunityOnClientTraceAttack(client, attacker, damage, hitgroup, damagetype))
     {
         // Block damage.
-        return ACTION_HANDLED;
+        return Plugin_Handled;
     }
 
     // If client is a human, then allow damage.
     if (InfectIsClientHuman(client))
     {
         // Allow damage.
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     // If damage hitgroups cvar is disabled, then allow damage.
@@ -237,7 +179,7 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     if (!damagehitgroups)
     {
         // Allow damage.
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     // If damage is disabled for this hitgroup, then stop.
@@ -247,18 +189,18 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
     if (index == -1)
     {
         // Allow damage.
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     new bool:candamage = HitgroupsCanDamage(index);
     if (!candamage)
     {
         // Stop bullet from hurting client.
-        return ACTION_HANDLED;
+        return Plugin_Handled;
     }
 
     // Allow damage.
-    return ACTION_CONTINUE;
+    return Plugin_Continue;
 }
 
 /**
@@ -271,14 +213,10 @@ public ZRTools_Action:DamageTraceAttack(client, inflictor, attacker, Float:damag
  * @param damage        The amount of damage inflicted.
  * @param damagetype    The type of damage inflicted.
  * @param ammotype      The ammo type of the attacker's weapon.
- * @return              Return ZRTools_Handled to stop the damage to client.
- *                      ZRTools_Continue to allow damage to client.
+ * @return              Return Plugin_Handled to stop the damage to client.
+ *                      Plugin_Continue to allow damage to client.
  */
-#if defined USE_SDKHOOKS
 public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damagetype)
-#else
-public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:damage, damagetype, ammotype)
-#endif
 {
     // Get classname of the inflictor.
     decl String:classname[64];
@@ -287,31 +225,27 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
     // If entity is a trigger, then allow damage. (Map is damaging client)
     if (StrContains(classname, "trigger") > -1)
     {
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
-    new action;
+    new Action:action;
 
     // Forward this hook to another module an return (or not) what it wants.
-    action = NapalmOnTakeDamage(client, damagetype);
+    action = Action:NapalmOnTakeDamage(client, damagetype);
 
     // If the napalm module wants to return here, then return the int casted into the action type.
-    if (action > -1)
+    if (action > Action:-1)
     {
-        #if defined USE_SDKHOOKS
-            return Action:action;
-        #else
-            return ZRTools_Action:action;
-        #endif
+        return action;
     }
 
     // Client was shot or knifed.
-    if (damagetype & DMG_CSS_BULLET)
+    if (damagetype & DMG_BULLET || damagetype & DMG_NEVERGIB)
     {
         // If attacker isn't valid, then allow damage.
         if (!ZRIsClientValid(attacker))
         {
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
 
         // Get zombie flag for each client.
@@ -321,7 +255,7 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
         // If client and attacker are on the same team, then let CS:S handle the rest.
         if (clientzombie == attackerzombie)
         {
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
 
         // We know that clientzombie is the opposite of attacker zombie.
@@ -329,7 +263,7 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
         // If the client is a zombie, then allow damage.
         if (clientzombie)
         {
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
 
         // Check if immunity module blocked or modified the damage.
@@ -367,50 +301,50 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
             SetEntityHealth(client, health + RoundToNearest(damage));
 
             // Allow damage.
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
     }
     // Client was damaged by explosion.
-    else if (damagetype & DMG_CSS_BLAST)
+    else if (damagetype & DMG_BLAST)
     {
         // If blast damage is blocked, then stop.
         new bool:damageblockblast = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]);
         if (!damageblockblast)
         {
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
 
         // If attacker isn't valid, then allow damage.
         if (!ZRIsClientValid(attacker))
         {
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
 
         // If client is a zombie, then allow damage.
         if (InfectIsClientInfected(client))
         {
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
 
         // Stop damage.
-        return ACTION_HANDLED;
+        return Plugin_Handled;
     }
     // Client was damaged by falling.
-    else if (damagetype & DMG_CSS_FALL)
+    else if (damagetype & DMG_FALL)
     {
         // If class has "nofalldamage" disabled, then allow damage.
         new bool:blockfalldamage = ClassGetNoFallDamage(client);
         if (!blockfalldamage)
         {
-            return ACTION_CONTINUE;
+            return Plugin_Continue;
         }
 
         // Stop damage.
-        return ACTION_HANDLED;
+        return Plugin_Handled;
     }
 
     // Allow damage.
-    return ACTION_CONTINUE;
+    return Plugin_Continue;
 }
 
 /**

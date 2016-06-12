@@ -39,11 +39,6 @@ enum RestrictData
 }
 
 /**
- * Array that stores the "HookID" to be later unhooked on player disconnect.
- */
-new g_iCanUseHookID[MAXPLAYERS + 1] = {-1, ...};
-
-/**
  * Array to block any client from picking up weapons.
  */
 new bool:g_bRestrictBlockWeapon[MAXPLAYERS + 1];
@@ -137,17 +132,7 @@ RestrictOnCommandsCreate()
  */
 RestrictClientInit(client)
 {
-    // Hook "Weapon_CanUse" on client.
-    #if defined USE_SDKHOOKS
-        SDKHook(client, SDKHook_WeaponCanUse, RestrictCanUse);
-
-        // Set dummy value so it think it's hooked.
-        g_iCanUseHookID[client] = 1;
-    #else
-        g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
-    #endif
-
-    // Reset block weapons flag.
+    SDKHook(client, SDKHook_WeaponCanUse, RestrictCanUse);
     g_bRestrictBlockWeapon[client] = false;
 }
 
@@ -158,17 +143,7 @@ RestrictClientInit(client)
  */
 RestrictOnClientDisconnect(client)
 {
-    // Unhook "Weapon_CanUse" callback, and reset variable.
-    if (g_iCanUseHookID[client] != -1)
-    {
-        #if defined USE_SDKHOOKS
-            SDKUnhook(client, SDKHook_WeaponCanUse, RestrictCanUse);
-        #else
-            ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
-        #endif
-
-        g_iCanUseHookID[client] = -1;
-    }
+    SDKUnhook(client, SDKHook_WeaponCanUse, RestrictCanUse);
 }
 
 /**
@@ -179,17 +154,15 @@ RestrictOnClientDisconnect(client)
 RestrictOnClientSpawn(client)
 {
     // Re-hook "canuse" on client.
-    #if defined USE_SDKHOOKS
-        SDKUnhook(client, SDKHook_WeaponCanUse, RestrictCanUse);     // <--- What happens if it's not already hooked???
-        SDKHook(client, SDKHook_WeaponCanUse, RestrictCanUse);
-        g_iCanUseHookID[client] = 1;
-    #else
-        ZRTools_UnhookWeapon_CanUse(g_iCanUseHookID[client]);
-        g_iCanUseHookID[client] = ZRTools_HookWeapon_CanUse(client, RestrictCanUse);
-    #endif
+    SDKUnhook(client, SDKHook_WeaponCanUse, RestrictCanUse);
+    SDKHook(client, SDKHook_WeaponCanUse, RestrictCanUse);
 
     // H4x.  Unfortunately I can't disable this flag early enough for CS:S to give start USP/Glock.
     // So I have to give BOOTLEG weapons.  (Sorry Valve)
+
+    // CS:GO TODO: Move this into separate functions for CS:S and CS:GO. And
+    //             call the correct function.
+
     if (g_bRestrictBlockWeapon[client])
     {
         // Reset block weapons flag.
@@ -610,48 +583,47 @@ stock bool:RestrictIsTypeUniform(bool:restricted, index)
  * Hook callback, called when a player is trying to pick up a weapon.
  * @param client    The client index.
  * @param weapon    The weapon index.
- * @return          Return ZRTools_Handled to stop weapon pickup.
- *                  ZRTools_Continue to allow weapon pickup.
+ * @return          Return Plugin_Handled to stop weapon pickup.
+ *                  Plugin_Continue to allow weapon pickup.
  */
-#if defined USE_SDKHOOKS
 public Action:RestrictCanUse(client, weapon)
-#else
-public ZRTools_Action:RestrictCanUse(client, weapon)
-#endif
 {
+    // WARNING: This function is called _frequently_. Every game tick per
+    //          player, I think. Make sure any code here is optimized.
+
     new String:weaponentity[WEAPONS_MAX_LENGTH];
     GetEdictClassname(weapon, weaponentity, sizeof(weaponentity));
 
     // If weapon is a knife, then allow pickup.
     if (StrEqual(weaponentity, "weapon_knife"))
     {
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     // If the player is a zombie, then prevent pickup.
     if (InfectIsClientInfected(client))
     {
-        return ACTION_HANDLED;
+        return Plugin_Handled;
     }
 
     // If client is flagged for not picking up weapons, then stop.
     if (g_bRestrictBlockWeapon[client])
     {
-        return ACTION_HANDLED;
+        return Plugin_Handled;
     }
 
     // If weapons module is disabled, then stop.
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (!weapons)
     {
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     // If restrict module is disabled, then stop.
     new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
     if (!restrict)
     {
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     // If the weapon is restricted, then prevent pickup.
@@ -662,20 +634,20 @@ public ZRTools_Action:RestrictCanUse(client, weapon)
     if (weaponindex == -1)
     {
         // Allow pickup.
-        return ACTION_CONTINUE;
+        return Plugin_Continue;
     }
 
     // If weapon is restricted, then stop.
     if (RestrictIsWeaponRestricted(weaponindex))
     {
-        return ACTION_HANDLED;
+        return Plugin_Handled;
     }
 
     // Forward event to weapons module.
     WeaponsOnItemPickup(client, weapon);
 
     // Allow pickup.
-    return ACTION_CONTINUE;
+    return Plugin_Continue;
 }
 
 /**
