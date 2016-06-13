@@ -716,7 +716,7 @@
 
 	"Weapons menu zmarket loadout default"
 	{
-		"ru"		"{1} (текущее)"
+		"ru"		"{1} (по умолчанию)"
 	}
 
 	"Weapons menu zmarket loadout weapons title"
