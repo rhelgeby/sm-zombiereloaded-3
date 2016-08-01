@@ -61,6 +61,14 @@ new bool:g_TeamManagerLoaded = false;
 /**
  * @endsection
  */
+ 
+ /**
+ * @section Other defines.
+ */
+ #define MAX_EVENT_LENGTH 32
+/**
+ * @endsection
+ */
 
 /**
  * @section Global variables to store infect timer handles.
@@ -994,9 +1002,11 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
         new Handle:event = CreateEvent("player_death");
         if (event != INVALID_HANDLE)
         {
+            char eventWeapon[MAX_EVENT_LENGTH];
+            GetConVarString(g_hCvarsList[CVAR_INFECT_EVENT_WEAPON], eventWeapon, MAX_EVENT_LENGTH);
             SetEventInt(event, "userid", GetClientUserId(client));
             SetEventInt(event, "attacker", GetClientUserId(attacker));
-            SetEventString(event, "weapon", "zombie_claws_of_death");
+            SetEventString(event, "weapon", eventWeapon);
             FireEvent(event, false);
         }
 

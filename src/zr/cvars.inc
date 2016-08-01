@@ -128,6 +128,7 @@ enum struct CvarsList
     Handle CVAR_INFECT_SHAKE_AMP;
     Handle CVAR_INFECT_SHAKE_FREQUENCY;
     Handle CVAR_INFECT_SHAKE_DURATION;
+    Handle CVAR_INFECT_EVENT_WEAPON;
     Handle CVAR_ACCOUNT_CASHFILL;
     Handle CVAR_ACCOUNT_CASHFILL_VALUE;
     Handle CVAR_ACCOUNT_CASHDMG;
@@ -359,7 +360,7 @@ CvarsCreate()
     g_hCvarsList.CVAR_INFECT_SHAKE_AMP                 =    CreateConVar("zr_infect_shake_amp",            "15.0",                             "Amplitude of shaking effect. [Dependency: zr_infect_shake]");
     g_hCvarsList.CVAR_INFECT_SHAKE_FREQUENCY           =    CreateConVar("zr_infect_shake_frequency",      "1.0",                              "Frequency of shaking effect. [Dependency: zr_infect_shake]");
     g_hCvarsList.CVAR_INFECT_SHAKE_DURATION            =    CreateConVar("zr_infect_shake_duration",       "5.0",                              "Duration of shaking effect. [Dependency: zr_infect_shake]");
-
+    g_hCvarsList.CVAR_INFECT_EVENT_WEAPON              =    CreateConVar("zr_infect_event_weapon",         "zombie_claws_of_death",            "Weapon icon used when the death event is sent for a player that gets infected.");
 
     // ===========================
     // Damage (core)
