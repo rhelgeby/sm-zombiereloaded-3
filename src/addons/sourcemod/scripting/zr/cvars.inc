@@ -537,6 +537,7 @@ void CvarsCreate()
     g_hCvarsList.CVAR_KNOCKBACK_MAXVEL                 =    CreateConVar("zr_knockback_maxvel", "0", "Set maximum velocity zombies can get from knockback ['0' = Off].");
 
     ZTele_OnCvarsCreate();
+    SoundEffects_OnCvarsCreate();
 
     // Auto-generate config file if it doesn't exist, then execute.
     AutoExecConfig(true, "zombiereloaded", "sourcemod/zombiereloaded");
