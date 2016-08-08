@@ -591,7 +591,7 @@ public Action:RestrictCanUse(client, weapon)
     // WARNING: This function is called _frequently_. Every game tick per
     //          player, I think. Make sure any code here is optimized.
 
-    new String:weaponentity[WEAPONS_MAX_LENGTH];
+    decl String:weaponentity[WEAPONS_MAX_LENGTH];
     GetEdictClassname(weapon, weaponentity, sizeof(weaponentity));
 
     // If weapon is a knife, then allow pickup.
@@ -644,7 +644,7 @@ public Action:RestrictCanUse(client, weapon)
     }
 
     // Forward event to weapons module.
-    WeaponsOnItemPickup(client, weapon);
+    //WeaponsOnItemPickup(client, weapon);
 
     // Allow pickup.
     return Plugin_Continue;

@@ -373,3 +373,14 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
     Class_OnPlayerRunCmd(client, vel);
     return Plugin_Continue;
 }
+
+/**
+ * When an entity is created
+ *
+ * @param       entity      Entity index
+ * @param       classname   Class name
+ */
+public OnEntityCreated(entity, const String:classname[])
+{
+    NapalmOnEntityCreated(entity, classname);
+}

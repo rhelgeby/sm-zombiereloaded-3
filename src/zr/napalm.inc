@@ -84,26 +84,7 @@ NapalmOnTakeDamage(client, damagetype)
             if (NapalmGetClientWaterLevel(client) >= douse)
             {
                 // Put the fire out.
-
-                //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
-
-                // This works.
-                new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
-                if (IsValidEntity(fire))
-                {
-                    // Make sure the entity is a flame, so we can extinguish it.
-                    decl String:classname[64];
-                    GetEdictClassname(fire, classname, sizeof(classname));
-                    if (StrEqual(classname, "entityflame", false))
-                    {
-                        SetEntPropFloat(fire, Prop_Data, "m_flLifetime", 0.0);
-                    }
-                    // Log what entity was in that property, for future reference.
-                    else
-                    {
-                        LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Napalm, "Napalm Douse", "Found unexpected entity in prop \"m_flLifetime\": \"%s\"", classname);
-                    }
-                }
+                NapalmExtinguishEntity(client);
 
                 return _:Plugin_Continue;
             }
@@ -156,11 +137,8 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
 
         if (reset || !(flags & FL_ONFIRE))
         {
-            // This stops the fire before re-ignition.
-            ExtinguishEntity(client);
-
-            // Ignite client.
-            IgniteEntity(client, napalm_time);
+            // Ignite the client or extend the current flames life.
+            NapalmIgniteEntity(client, napalm_time);
         }
     }
 }
@@ -173,20 +151,46 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
 NapalmOnClientDeath(client)
 {
     // Extinguish any flames to stop burning sounds.
-    ExtinguishEntity(client);
+    NapalmExtinguishEntity(client);
 }
 
 /**
- *  Weapon has been fired.
+ * When an entity is created.
  *
- * @param client       The client index.
- * @param weapon       The weapon name.
+ * @param entity      Entity index
+ * @param classname   Class name
  */
-NapalmOnWeaponFire(client, const String:weapon[])
+NapalmOnEntityCreated(entity, const String:classname[])
 {
+    // Not a grenade.
+    if (strcmp(classname, "hegrenade_projectile", false))
+    {
+        return;
+    }
+
     // If grenade fire is disabled, then stop.
     new bool:napalmignite = GetConVarBool(g_hCvarsList[CVAR_NAPALM_IGNITE]);
     if (!napalmignite)
+    {
+        return;
+    }
+
+    // Hook entity spawn.
+    SDKHook(entity, SDKHook_SpawnPost, NapalmOnGrenadeSpawnPost);
+}
+
+/**
+ * Called after a grenade entity has been spawned.
+ *
+ * @param entity      Entity index
+ */
+public NapalmOnGrenadeSpawnPost(entity)
+{
+    // Get client who threw this grenade.
+    new client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+
+    // Invalid client.
+    if (client > MaxClients || client <= 0)
     {
         return;
     }
@@ -197,43 +201,8 @@ NapalmOnWeaponFire(client, const String:weapon[])
         return;
     }
 
-    // If weapon isn't a grenade, then stop.
-    if (!StrEqual(weapon, "hegrenade", false))
-    {
-        return;
-    }
-
-    // Wait .1 seconds.
-    CreateTimer(0.1, NapalmIgniteGrenade);
-}
-
-/**
- * Timer callback, ignite's all hegrenade projectiles.
- *
- * @param timer     The timer handle.
- */
-public Action:NapalmIgniteGrenade(Handle:timer)
-{
-    decl String:classname[64];
-
-    // Get max entities.
-    new maxentities = GetMaxEntities();
-
-    // x = entity index.
-    for (new x = 0; x <= maxentities; x++)
-    {
-        // If entity is invalid, then stop.
-        if(!IsValidEntity(x) || !IsValidEdict(x))
-        {
-            continue;
-        }
-
-        GetEdictClassname(x, classname, sizeof(classname));
-        if(StrEqual(classname, "hegrenade_projectile"))
-        {
-            IgniteEntity(x, GRENADE_FUSE_TIME);
-        }
-    }
+    // Ignite the grenade.
+    IgniteEntity(entity, GRENADE_FUSE_TIME);
 }
 
 /**
@@ -246,4 +215,57 @@ stock NapalmGetClientWaterLevel(client)
 {
     // Return client's water-level.
     return GetEntData(client, g_iToolsWaterLevel);
+}
+
+/**
+ * Actually extinguishes an entity.
+ *
+ * @param client    The client index.
+ */
+stock NapalmExtinguishEntity(client)
+{
+    //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
+
+    // This works.
+    new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+    if (IsValidEntity(fire))
+    {
+        // Make sure the entity is a flame, so we can extinguish it.
+        decl String:classname[64];
+        GetEdictClassname(fire, classname, sizeof(classname));
+        if (StrEqual(classname, "entityflame", false))
+        {
+            SetEntPropFloat(fire, Prop_Data, "m_flLifetime", 0.0);
+        }
+        // Log what entity was in that property, for future reference.
+        else
+        {
+            LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Napalm, "Napalm Douse", "Found unexpected entity in prop \"m_hEffectEntity\": \"%s\"", classname);
+        }
+    }
+}
+
+/**
+ * Ignites an entity or changes the current flames lifetime.
+ *
+ * @param client    The client index.
+ * @param time      Number of seconds to set on fire.
+ */
+stock NapalmIgniteEntity(client, Float:time)
+{
+    new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+    if (IsValidEntity(fire))
+    {
+        // Make sure the entity is a flame.
+        decl String:classname[64];
+        GetEdictClassname(fire, classname, sizeof(classname));
+        if (StrEqual(classname, "entityflame", false))
+        {
+            SetEntPropFloat(fire, Prop_Data, "m_flLifetime", GetGameTime() + time);
+            return;
+        }
+    }
+
+    // No flame entity found, ignite client.
+    IgniteEntity(client, time);
 }

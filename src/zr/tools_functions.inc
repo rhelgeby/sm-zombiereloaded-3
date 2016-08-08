@@ -35,14 +35,20 @@
  */
 stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:stack = true)
 {
-    // If retrieve if true, then get client's velocity.
+    static bool:gotoffset = false;
+    static offset = -1;
+
+    if(!gotoffset)
+    {
+        offset = FindDataMapInfo(client, "m_vecAbsVelocity");
+        if(offset != -1)
+            gotoffset = true;
+    }
+
+    // If retrieve is true, then get client's velocity.
     if (!apply)
     {
-        // x = vector component.
-        for (new x = 0; x < 3; x++)
-        {
-            vecVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
-        }
+        ToolsGetClientVelocity(client, vecVelocity);
 
         // Stop here.
         return;
@@ -54,20 +60,16 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
         // Get client's velocity.
         new Float:vecClientVelocity[3];
 
-        // x = vector component.
-        for (new x = 0; x < 3; x++)
-        {
-            vecClientVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
-        }
+        ToolsGetClientVelocity(client, vecClientVelocity);
 
         AddVectors(vecClientVelocity, vecVelocity, vecVelocity);
     }
 
     // Apply velocity on client.
-    if(g_hToolsSetAbsVelocity == INVALID_HANDLE) // Fallback to old one
+    if(gotoffset) // Fixes trigger OnStartTouch/OnEndTouch bug
+        SetEntDataVector(client, offset, vecVelocity);
+    else // Fallback to old one
         TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVelocity);
-    else // Fixes trigger OnStartTouch/OnEndTouch bug
-        SDKCall(g_hToolsSetAbsVelocity, client, vecVelocity);
 }
 
 /**
@@ -78,11 +80,7 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
  */
 stock ToolsGetClientVelocity(client, Float:vecVelocity[3])
 {
-    // x = vector component.
-    for (new x = 0; x < 3; x++)
-    {
-        vecVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
-    }
+    GetEntDataVector(client, g_iToolsVelocity, vecVelocity);
 }
 
 /**
@@ -203,9 +201,6 @@ stock ToolsSetClientAlpha(client, alpha)
 
     // Set alpha value on the client.
     SetEntityRenderColor(client, color[0], color[1], color[2], alpha);
-
-    // Forward event to modules.
-    WeaponAlphaOnClientAlphaChanged(client, alpha);
 }
 
 /**

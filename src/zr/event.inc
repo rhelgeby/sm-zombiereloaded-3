@@ -53,7 +53,6 @@ EventHook(bool:unhook = false)
         UnhookEvent("player_hurt", EventPlayerHurt);
         UnhookEvent("player_death", EventPlayerDeath);
         UnhookEvent("player_jump", EventPlayerJump);
-        UnhookEvent("weapon_fire", EventWeaponFire);
 
         // Stop after unhooking events.
         return;
@@ -68,7 +67,6 @@ EventHook(bool:unhook = false)
     HookEvent("player_hurt", EventPlayerHurt);
     HookEvent("player_death", EventPlayerDeath);
     HookEvent("player_jump", EventPlayerJump);
-    HookEvent("weapon_fire", EventWeaponFire);
 }
 
 /**
@@ -90,23 +88,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     ZSpawnOnRoundStart();
     VolOnRoundStart();
     ZTeleOnRoundStart();
-
-    // Fire post round_start event.
-    //CreateTimer(0.0, EventRoundStartPost);
 }
-
-/**
- * Event callback (round_start)
- * The round is starting. *Post
- *
- * @param event     The event handle.
- * @param name      Name of the event.
- * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
- */
-//public Action:EventRoundStartPost(Handle:timer)
-//{
-    // Forward event to modules.
-//}
 
 /**
  * Event callback (round_freeze_end)
@@ -334,23 +316,4 @@ public Action:EventPlayerJumpPost(Handle:timer, any:client)
 
     // Forward event to modules.
     JumpBoostOnClientJumpPost(client);
-}
-
-/**
- * Event callback (weapon_fire)
- * Weapon has been fired.
- *
- * @param event     The event handle.
- * @param name      Name of the event.
- * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
- */
-public Action:EventWeaponFire(Handle:event, const String:name[], bool:dontBroadcast)
-{
-    // Get all required event info.
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    decl String:weapon[32];
-    GetEventString(event, "weapon", weapon, sizeof(weapon));
-
-    // Forward event to modules.
-    NapalmOnWeaponFire(index, weapon);
 }

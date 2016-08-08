@@ -33,7 +33,6 @@ new g_iToolsLMV;
 new g_iToolsHasNightVision;
 new g_iToolsNightVisionOn;
 new g_iToolsFOV;
-new Handle:g_hToolsSetAbsVelocity = INVALID_HANDLE;
 
 /**
  * @endsection
@@ -95,14 +94,7 @@ ToolsFindOffsets()
     Handle hGameConf = LoadGameConfigFile("zombiereloaded");
     if (hGameConf != INVALID_HANDLE)
     {
-        StartPrepSDKCall(SDKCall_Player);
-        if (PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "CBaseEntity_SetAbsVelocity"))
-        {
-            PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
-            g_hToolsSetAbsVelocity = EndPrepSDKCall();
-        }
-        else
-            LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "SDKCall \"CBaseEntity::SetAbsVelocity\" was not found.");
+        // Reserved
 
         CloseHandle(hGameConf);
     }

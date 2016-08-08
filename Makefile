@@ -27,9 +27,9 @@ vpath %.smx $(BUILDDIR)
 SOURCEFILES=$(SOURCEDIR)/*.sp
 OBJECTS=$(patsubst %.sp, %.smx, $(notdir $(wildcard $(SOURCEFILES))))
 
-all: prepare_builddir $(OBJECTS)
+all: prepare $(OBJECTS)
 
-prepare: prepare_newlines prepare_builddir
+prepare: clean prepare_builddir
 
 prepare_newlines:
 	@echo "Removing windows newlines"
@@ -46,5 +46,4 @@ prepare_builddir:
 	$(SPCOMP) -i$(SOURCEDIR) -i$(SMINCLUDES) -i$(ZRINCLUDES) -o$(BUILDDIR)/$@ $<
 
 clean:
-	@echo "Removing build directory"
 	@rm -fr $(BUILDDIR)

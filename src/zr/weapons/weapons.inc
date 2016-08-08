@@ -94,7 +94,6 @@ new Handle:arrayWeapons = INVALID_HANDLE;
 
 #include "zr/weapons/restrict"
 #include "zr/weapons/weaponammo"
-#include "zr/weapons/weaponalpha"
 #include "zr/weapons/zmarket"
 #include "zr/weapons/menu_weapons"
 
@@ -319,7 +318,6 @@ WeaponsClientInit(client)
 {
     // Forward event to sub-modules.
     RestrictClientInit(client);
-    WeaponAlphaClientInit(client);
     ZMarketClientInit(client);
 }
 
@@ -343,7 +341,6 @@ WeaponsOnClientDisconnect(client)
 {
     // Forward event to sub-modules.
     RestrictOnClientDisconnect(client);
-    WeaponAlphaOnClientDisconnect(client);
     ZMarketOnClientDisconnect(client);
 }
 
@@ -379,56 +376,6 @@ WeaponsOnRoundEnd()
 {
     // Forward event to sub-modules.
     RestrictOnRoundEnd();
-}
-
-/**
- * Called when a client picks up an item.
- *
- * @param client    The client index.
- * @param weapon    The weapon index.
- */
-WeaponsOnItemPickup(client, weapon)
-{
-    // Forward event to sub-modules.
-
-    // Fire post OnItemPickup event.
-
-    // Fill datapack with event information.
-    new Handle:eventinfo = CreateDataPack();
-    WritePackCell(eventinfo, client);
-    WritePackCell(eventinfo, weapon);
-
-    // Create post delay timer.
-    CreateTimer(0.0, WeaponsOnItemPickupPost, eventinfo, TIMER_DATA_HNDL_CLOSE);
-}
-
-/**
- * Called when a client picks up an item. *Post
- *
- * @param client    The client index.
- * @param weapon    The weapon index.
- */
-public Action:WeaponsOnItemPickupPost(Handle:timer, Handle:eventinfo)
-{
-    // Get event info.
-    ResetPack(eventinfo);
-    new client = ReadPackCell(eventinfo);
-    new weapon = ReadPackCell(eventinfo);
-
-    // If client isn't in the game anymore, then stop.
-    if (!IsClientInGame(client))
-    {
-        return;
-    }
-
-    // If the weapon entity isn't valid anymore, then stop.
-    if (!IsValidEdict(weapon))
-    {
-        return;
-    }
-
-    // Forward event to sub-modules.
-    WeaponAlphaOnItemPickupPost(client, weapon);
 }
 
 /**

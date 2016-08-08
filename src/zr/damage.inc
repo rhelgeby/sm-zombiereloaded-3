@@ -222,6 +222,11 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
     decl String:classname[64];
     GetEdictClassname(inflictor, classname, sizeof(classname));
 
+    // Get the attacker weapon name.
+    new String:weaponname[64];
+    if(attacker >= 1 && attacker < MAXPLAYERS)
+        GetClientWeapon(attacker, weaponname, sizeof(weaponname));
+
     // If entity is a trigger, then allow damage. (Map is damaging client)
     if (StrContains(classname, "trigger") > -1)
     {
@@ -264,6 +269,12 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
         if (clientzombie)
         {
             return Plugin_Continue;
+        }
+
+        if (!clientzombie && attackerzombie && !StrEqual(weaponname, "weapon_knife"))
+        {
+            damage = 1.0;
+            return Plugin_Changed;
         }
 
         // Check if immunity module blocked or modified the damage.
