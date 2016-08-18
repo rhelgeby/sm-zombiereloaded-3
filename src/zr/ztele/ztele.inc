@@ -85,18 +85,18 @@ void ZTeleOnRoundStart()
             continue;
         }
 
-        if (g_iZTeleSpawnPointsCount >= MAX_PLAYER_SPAWNS)
-        {
-            break;
-        }
-
-        GetEdictClassname(i, classname, sizeof(classname));
+        GetEntityClassname(i, classname, sizeof(classname));
 
         if (StrEqual(classname, "info_player_terrorist", true) || StrEqual(classname, "info_player_counterterrorist", true))
         {
             GetEntPropVector(i, Prop_Send, "m_vecOrigin", g_vecZTeleSpawnPoints[g_iZTeleSpawnPointsCount]);
 
             g_iZTeleSpawnPointsCount++;
+
+            if (g_iZTeleSpawnPointsCount >= MAX_PLAYER_SPAWNS)
+            {
+                break;
+            }
         }
     }
 }
@@ -250,7 +250,7 @@ bool ZTeleClient(int client, bool force = false)
 void ZTele_TeleportClient(int client)
 {
     // Teleport client.
-    if (ZTele_IsRandomSpawnEnabled())
+    if (ZTele_IsRandomSpawnEnabled() && g_iZTeleSpawnPointsCount)
     {
         int select = Math_GetRandomInt(0, g_iZTeleSpawnPointsCount - 1);
         TeleportEntity(client, g_vecZTeleSpawnPoints[select], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
