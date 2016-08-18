@@ -295,6 +295,10 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
             GetClientAbsOrigin(client, clientPosition);
             GetClientAbsOrigin(attacker, attackerPosition);
 
+            // ignore z axis
+            clientPosition[2] = 0.0;
+            attackerPosition[2] = 0.0;
+
             new Float:distance = GetVectorDistance(clientPosition, attackerPosition);
 
             // Block infection if distance is higher than allowed.
