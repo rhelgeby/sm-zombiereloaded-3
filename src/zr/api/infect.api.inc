@@ -178,6 +178,22 @@ APIOnClientInfected(client, attacker, bool:motherinfect, bool:respawnoverride, b
 
     // Finish the call.
     Call_Finish();
+
+    // Forward event to map.
+    if(!motherinfect)
+    {
+        int entity = INVALID_ENT_REFERENCE;
+        while((entity = FindEntityByClassname(entity, "trigger_brush")) != INVALID_ENT_REFERENCE)
+        {
+            static char sTargetname[64];
+            GetEntPropString(entity, Prop_Data, "m_iName", sTargetname, sizeof(sTargetname));
+
+            if(StrEqual(sTargetname, "game_playerdie"))
+                AcceptEntityInput(entity, "Use", client, client);
+            else if(StrEqual(sTargetname, "game_playerkill"))
+                AcceptEntityInput(entity, "Use", attacker, attacker);
+        }
+    }
 }
 
 /**
