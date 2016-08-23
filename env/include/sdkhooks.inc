@@ -121,6 +121,7 @@ enum SDKHookType
 	SDKHook_BlockedPost,
 	SDKHook_OnTakeDamageAlive,
 	SDKHook_OnTakeDamageAlivePost,
+	SDKHook_CanBeAutobalanced,
 };
 
 /*
@@ -128,6 +129,8 @@ enum SDKHookType
 
 	SDKHook_Blocked,
 	SDKHook_BlockedPost,
+	
+	SDKHook_CanBeAutobalanced,
 	
 	SDKHook_EndTouch,
 	SDKHook_EndTouchPost,
@@ -291,6 +294,9 @@ typeset SDKHookCB
 	
 	// Reload post
 	function void (int weapon, bool bSuccessful);
+	
+	// CanBeAutobalanced
+	function bool (int client, bool origRet);
 };
 
 
@@ -299,17 +305,15 @@ typeset SDKHookCB
  *
  * @param		entity		Entity index
  * @param		classname	Class name
- * @noreturn
  */
-forward OnEntityCreated(entity, const String:classname[]);
+forward void OnEntityCreated(int entity, const char[] classname);
 
 /**
  * @brief When an entity is destroyed
  *
  * @param		entity		Entity index
- * @noreturn
  */
-forward OnEntityDestroyed(entity);
+forward void OnEntityDestroyed(int entity);
 
 /**
  * @brief When the game description is retrieved
@@ -317,18 +321,18 @@ forward OnEntityDestroyed(entity);
  * @note  Not supported on ep2v.
  *
  * @param		gameDesc		Game description
- * @noreturn
+ * @return		Plugin_Changed if gameDesc has been edited, else no change.
  */
-forward Action:OnGetGameDescription(String:gameDesc[64]);
+forward Action OnGetGameDescription(char gameDesc[64]);
 
 /**
  * @brief When the level is initialized
  *
  * @param		mapName			Name of the map
  * @param		mapEntities	Entities of the map
- * @noreturn
+ * @return		Plugin_Changed if mapEntities has been edited, else no change.
  */
-forward Action:OnLevelInit(const String:mapName[], String:mapEntities[2097152]);
+forward Action OnLevelInit(const char[] mapName, char mapEntities[2097152]);
 
 /**
  * @brief Hooks an entity
@@ -336,9 +340,8 @@ forward Action:OnLevelInit(const String:mapName[], String:mapEntities[2097152]);
  * @param		entity		Entity index
  * @param		type			Type of function to hook
  * @param		callback	Function to call when hook is called
- * @noreturn
  */
-native SDKHook(entity, SDKHookType:type, SDKHookCB:callback);
+native void SDKHook(int entity, SDKHookType type, SDKHookCB callback);
 
 /**
  * @brief Hooks an entity
@@ -348,7 +351,7 @@ native SDKHook(entity, SDKHookType:type, SDKHookCB:callback);
  * @param		callback	Function to call when hook is called
  * @return		bool		Hook Successful
  */
-native bool:SDKHookEx(entity, SDKHookType:type, SDKHookCB:callback);
+native bool SDKHookEx(int entity, SDKHookType type, SDKHookCB callback);
 
 /**
  * @brief Unhooks an entity
@@ -356,9 +359,8 @@ native bool:SDKHookEx(entity, SDKHookType:type, SDKHookCB:callback);
  * @param    entity   Entity index
  * @param    type     Type of function to unhook
  * @param    callback Callback function to unhook
- * @noreturn
  */
-native SDKUnhook(entity, SDKHookType:type, SDKHookCB:callback);
+native void SDKUnhook(int entity, SDKHookType type, SDKHookCB callback);
 
 /**
  * @brief Applies damage to an entity
@@ -373,9 +375,10 @@ native SDKUnhook(entity, SDKHookType:type, SDKHookCB:callback);
  * @param    weapon         Weapon index (orangebox and later) or -1 for unspecified
  * @param    damageForce    Velocity of damage force
  * @param    damagePosition Origin of damage
- * @noreturn
  */
-native SDKHooks_TakeDamage(entity, inflictor, attacker, Float:damage, damageType=DMG_GENERIC, weapon=-1, const Float:damageForce[3]=NULL_VECTOR, const Float:damagePosition[3]=NULL_VECTOR);
+native void SDKHooks_TakeDamage(int entity, int inflictor, int attacker,
+		float damage, int damageType=DMG_GENERIC, int weapon=-1,
+		const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR);
 
 /**
  * @brief				Forces a client to drop the specified weapon
@@ -384,15 +387,15 @@ native SDKHooks_TakeDamage(entity, inflictor, attacker, Float:damage, damageType
  * @param weapon		Weapon entity index.
  * @param vecTarget		Location to toss weapon to, or NULL_VECTOR for default.
  * @param vecVelocity	Velocity at which to toss weapon, or NULL_VECTOR for default.
- * @noreturn
  * @error				Invalid client or weapon entity, weapon not owned by client.
  */
-native SDKHooks_DropWeapon(client, weapon, const Float:vecTarget[3]=NULL_VECTOR, const Float:vecVelocity[3]=NULL_VECTOR);
+native void SDKHooks_DropWeapon(int client, int weapon, const float vecTarget[3]=NULL_VECTOR,
+		const float vecVelocity[3]=NULL_VECTOR);
 
 /**
  * Do not edit below this line!
  */
-public Extension:__ext_sdkhooks = 
+public Extension __ext_sdkhooks = 
 {
 	name = "SDKHooks",
 	file = "sdkhooks.ext",

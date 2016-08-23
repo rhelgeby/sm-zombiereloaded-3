@@ -75,14 +75,33 @@
  *						if one valid client is found.  Otherwise, a COMMAND_TARGET reason 
  *						for failure is returned.
  */
-native ProcessTargetString(const String:pattern[],
-						   admin, 
-						   targets[],
-						   max_targets,
-						   filter_flags,
-						   String:target_name[],
-						   tn_maxlength,
-						   &bool:tn_is_ml);
+native int ProcessTargetString(const char[] pattern,
+						   int admin, 
+						   int[] targets,
+						   int max_targets,
+						   int filter_flags,
+						   char[] target_name,
+						   int tn_maxlength,
+						   bool &tn_is_ml);
+
+
+/**
+ * Retrieves arguments that were passed to the last ProcessTargetString call.
+ *
+ * @param pattern		Buffer to store the pattern.
+ * @param p_maxlen		Maximum length of the pattern buffer.
+ * @param admin			OUTPUT: Admin performing the action, or 0 if the server.
+ * @param filter_flags	OUTPUT: Filter flags.
+ * @noreturn
+ */
+native void GetLastProcessTargetString(char[] pattern,
+								  int p_maxlen,
+								  int &admin,
+								  int &filter_flags);
+
+#undef REQUIRE_PLUGIN
+#include <DynamicTargeting>
+#define REQUIRE_PLUGIN
 
 /**
  * Replies to a client with a given message describing a targetting 
@@ -92,9 +111,8 @@ native ProcessTargetString(const String:pattern[],
  *
  * @param client		Client index, or 0 for server.
  * @param reason		COMMAND_TARGET reason.
- * @noreturn
  */
-stock ReplyToTargetError(client, reason)
+stock void ReplyToTargetError(int client, int reason, bool dynamic=true)
 {
 	switch (reason)
 	{
@@ -129,6 +147,34 @@ stock ReplyToTargetError(client, reason)
 		case COMMAND_TARGET_AMBIGUOUS:
 		{
 			ReplyToCommand(client, "[SM] %t", "More than one client matched");
+
+			if(dynamic &&
+				GetFeatureStatus(FeatureType_Native, "GetLastProcessTargetString") == FeatureStatus_Available &&
+				LibraryExists("DynamicTargeting"))
+			{
+				if(GetFeatureStatus(FeatureType_Native, "IsCommandCallback") == FeatureStatus_Available &&
+					!IsCommandCallback())
+				{
+					return;
+				}
+
+				char sCommand[128];
+				GetCmdArg(0, sCommand, sizeof(sCommand));
+
+				char sArgString[256];
+				GetCmdArgString(sArgString, sizeof(sArgString));
+
+				char pattern[MAX_TARGET_LENGTH];
+				int admin;
+				int filter_flags;
+
+				GetLastProcessTargetString(pattern, sizeof(pattern), admin, filter_flags);
+
+				if(!admin || !IsClientInGame(admin) || IsFakeClient(admin))
+					return;
+
+				AmbiguousMenu(admin, sCommand, sArgString, pattern, filter_flags);
+			}
 		}
 	}
 }
@@ -138,9 +184,10 @@ stock ReplyToTargetError(client, reason)
  *
  * @param pattern       Pattern name.
  * @param clients       Array to fill with unique, valid client indexes.
+ * @param client        Client that triggered this filter.
  * @return              True if pattern was recognized, false otherwise.
  */
-typedef MultiTargetFilter = function bool (const char[] pattern, Handle clients);
+typedef MultiTargetFilter = function bool (const char[] pattern, Handle clients, int client);
 
 /**
  * Adds a multi-target filter function for ProcessTargetString().
@@ -149,17 +196,14 @@ typedef MultiTargetFilter = function bool (const char[] pattern, Handle clients)
  * @param filter        Filter function.
  * @param phrase        Descriptive phrase to display on successful match.
  * @param phraseIsML    True if phrase is multi-lingual, false otherwise.
- * @noreturn
  */
-native AddMultiTargetFilter(const String:pattern[], MultiTargetFilter:filter,
-                            const String:phrase[], bool:phraseIsML);
+native void AddMultiTargetFilter(const char[] pattern, MultiTargetFilter filter,
+                                 const char[] phrase, bool phraseIsML);
 
 /**
  * Removes a multi-target filter function from ProcessTargetString().
  *
  * @param pattern       Pattern to match (case sensitive).
  * @param filter        Filter function.
- * @noreturn
  */
-native RemoveMultiTargetFilter(const String:pattern[], MultiTargetFilter:filter);
-
+native void RemoveMultiTargetFilter(const char[] pattern, MultiTargetFilter filter);

@@ -63,17 +63,15 @@
  * the Handle or add categories.
  * 
  * @param topmenu		Handle to the admin menu's TopMenu.
- * @noreturn
  */
-forward OnAdminMenuCreated(Handle topmenu);
+forward void OnAdminMenuCreated(Handle topmenu);
 
 /**
  * Called when the admin menu is ready to have items added.
  * 
  * @param topmenu		Handle to the admin menu's TopMenu.
- * @noreturn
  */
-forward OnAdminMenuReady(Handle topmenu);
+forward void OnAdminMenuReady(Handle topmenu);
 
 /**
  * Retrieves the Handle to the admin top menu.
@@ -95,10 +93,10 @@ native TopMenu GetAdminTopMenu();
  * @param alive_only 	True to only select alive players.
  * @return				Number of clients added.
  */
-native AddTargetsToMenu(Handle:menu, 
-						source_client, 
-						bool:in_game_only=true, 
-						bool:alive_only=false);
+native int AddTargetsToMenu(Handle menu, 
+						int source_client, 
+						bool in_game_only=true, 
+						bool alive_only=false);
 
 /**
  * Adds targets to an admin menu.
@@ -111,7 +109,7 @@ native AddTargetsToMenu(Handle:menu,
  * @param flags			COMMAND_FILTER flags from commandfilters.inc.
  * @return				Number of clients added.
  */
-native AddTargetsToMenu2(Handle:menu, source_client, flags);
+native int AddTargetsToMenu2(Handle menu, int source_client, int flags);
 
 /**
  * Re-displays the admin menu to a client after selecting an item.
@@ -121,7 +119,7 @@ native AddTargetsToMenu2(Handle:menu, source_client, flags);
  * @param client		Client index.
  * @return				True on success, false on failure.
  */
-stock bool:RedisplayAdminMenu(Handle:topmenu, client)
+stock bool RedisplayAdminMenu(Handle topmenu, int client)
 {
 	if (topmenu == INVALID_HANDLE)
 	{
@@ -133,7 +131,7 @@ stock bool:RedisplayAdminMenu(Handle:topmenu, client)
 
 /* DO NOT EDIT BELOW THIS LINE */
 
-public SharedPlugin:__pl_adminmenu = 
+public SharedPlugin __pl_adminmenu = 
 {
 	name = "adminmenu",
 	file = "adminmenu.smx",
@@ -145,7 +143,7 @@ public SharedPlugin:__pl_adminmenu =
 };
 
 #if !defined REQUIRE_PLUGIN
-public __pl_adminmenu_SetNTVOptional()
+public void __pl_adminmenu_SetNTVOptional()
 {
 	MarkNativeAsOptional("GetAdminTopMenu");
 	MarkNativeAsOptional("AddTargetsToMenu");
