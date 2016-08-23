@@ -74,13 +74,15 @@ void ZTele_OnCommandsCreate()
 void ZTeleOnRoundStart()
 {
     char classname[64];
-    int maxentities = GetMaxEntities();
+    // GetMaxEntities() returns the max EDICT count. Multiply by 2 to get max ENTITY count.
+    // Some maps spawn their spawpoints as logic entities, as does sm-ext-CSSFixes.
+    int maxentities = GetMaxEntities() * 2;
 
     g_iZTeleSpawnPointsCount = 0;
 
     for (int i = MaxClients; i <= maxentities; i++)
     {
-        if (!IsValidEdict(i))
+        if (!IsValidEntity(i))
         {
             continue;
         }
