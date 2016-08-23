@@ -74,27 +74,17 @@ void ZTele_OnCommandsCreate()
 void ZTeleOnRoundStart()
 {
     char classname[64];
-    // GetMaxEntities() returns the max EDICT count. Multiply by 2 to get max ENTITY count.
-    // Some maps spawn their spawpoints as logic entities, as does sm-ext-CSSFixes.
-    int maxentities = GetMaxEntities() * 2;
-
     g_iZTeleSpawnPointsCount = 0;
 
-    for (int i = MaxClients; i <= maxentities; i++)
+    int entity = INVALID_ENT_REFERENCE;
+    while((entity = FindEntityByClassname(entity, "info_player_*")) != INVALID_ENT_REFERENCE)
     {
-        if (!IsValidEntity(i))
-        {
-            continue;
-        }
-
-        GetEntityClassname(i, classname, sizeof(classname));
-
+        GetEntityClassname(entity, classname, sizeof(classname));
         if (StrEqual(classname, "info_player_terrorist", true) || StrEqual(classname, "info_player_counterterrorist", true))
         {
-            GetEntPropVector(i, Prop_Send, "m_vecOrigin", g_vecZTeleSpawnPoints[g_iZTeleSpawnPointsCount]);
+            GetEntPropVector(entity, Prop_Send, "m_vecOrigin", g_vecZTeleSpawnPoints[g_iZTeleSpawnPointsCount]);
 
             g_iZTeleSpawnPointsCount++;
-
             if (g_iZTeleSpawnPointsCount >= MAX_PLAYER_SPAWNS)
             {
                 break;
