@@ -437,7 +437,7 @@ InfectOnRoundEnd()
     ZREndTimer(tInfectCountdown);
 
     // x = client index.
-    for (new x = 1; x <=  MaxClients; x++)
+    for (new x = 1; x <= MaxClients; x++)
     {
         // Disable zombie flag on client.
         bZombie[x] = false;

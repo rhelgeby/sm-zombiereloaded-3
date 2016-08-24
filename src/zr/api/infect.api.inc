@@ -188,9 +188,9 @@ APIOnClientInfected(client, attacker, bool:motherinfect, bool:respawnoverride, b
             static char sTargetname[64];
             GetEntPropString(entity, Prop_Data, "m_iName", sTargetname, sizeof(sTargetname));
 
-            if(StrEqual(sTargetname, "game_playerdie"))
+            if(client > 0 && StrEqual(sTargetname, "game_playerdie"))
                 AcceptEntityInput(entity, "Use", client, client);
-            else if(StrEqual(sTargetname, "game_playerkill"))
+            else if(attacker > 0 && StrEqual(sTargetname, "game_playerkill"))
                 AcceptEntityInput(entity, "Use", attacker, attacker);
         }
     }
