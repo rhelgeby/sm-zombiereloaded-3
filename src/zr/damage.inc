@@ -224,7 +224,7 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
 
     // Get the attacker weapon name.
     new String:weaponname[64];
-    if(attacker >= 1 && attacker < MAXPLAYERS)
+    if(attacker >= 1 && attacker <= MAXPLAYERS)
         GetClientWeapon(attacker, weaponname, sizeof(weaponname));
 
     // If entity is a trigger, then allow damage. (Map is damaging client)
@@ -233,10 +233,8 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
         return Plugin_Continue;
     }
 
-    new Action:action;
-
     // Forward this hook to another module an return (or not) what it wants.
-    action = Action:NapalmOnTakeDamage(client, damagetype);
+    new Action:action = Action:NapalmOnTakeDamage(client, damagetype);
 
     // If the napalm module wants to return here, then return the int casted into the action type.
     if (action > Action:-1)
