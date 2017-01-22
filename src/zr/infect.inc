@@ -48,8 +48,8 @@
 /**
  * @section Global variables to store infect timer handles.
  */
-new Handle:tInfect = INVALID_HANDLE;
-new Handle:tInfectCountdown = INVALID_HANDLE;
+new Handle:g_tInfect = INVALID_HANDLE;
+new Handle:g_tInfectCountdown = INVALID_HANDLE;
 /**
  * @endsection
  */
@@ -57,32 +57,27 @@ new Handle:tInfectCountdown = INVALID_HANDLE;
 /**
  * Infection countdown data pack.
  */
-new Handle:hInfectCountdownData = INVALID_HANDLE;
+new Handle:g_hInfectCountdownData = INVALID_HANDLE;
 
 /**
  * Array for flagging client as zombie.
  */
-new bool:bZombie[MAXPLAYERS + 1];
+new bool:g_bZombie[MAXPLAYERS + 1];
 
 /**
  * Array for flagging client to be protected.
  */
-new bool:bInfectImmune[MAXPLAYERS + 1];
+new bool:g_bInfectImmune[MAXPLAYERS + 1];
 
 /**
- * Available mother zombie infection status.
+ * Array for storing client mother zombie last flag.
  */
-enum InfectMotherStatus
-{
-    MotherStatus_None = 0,
-    MotherStatus_Chosen = 1,
-    MotherStatus_Last = 2
-}
+new bool:g_bInfectMotherLast[MAXPLAYERS + 1];
 
 /**
- * Array for storing client mother zombie protection status.
+ * SteamID cache for storing client mother zombie protection status.
  */
-new InfectMotherStatus:g_InfectMotherStatus[MAXPLAYERS + 1];
+new Handle:g_hInfectMotherCycle = INVALID_HANDLE;
 
 /**
  * Available mother zombie infection modes.
@@ -102,9 +97,12 @@ InfectOnMapEnd()
 {
     // Reset timers. Infect timers are invalidated on a map change if they are
     // still running.
-    ZREndTimer(tInfect);
-    ZREndTimer(tInfectCountdown);
+    ZREndTimer(g_tInfect);
+    ZREndTimer(g_tInfectCountdown);
     InfectStopCountdown();
+
+    // Clear mother zombie round-robin cycle storage.
+    SteamidCacheReset(g_hInfectMotherCycle);
 }
 
 /**
@@ -127,6 +125,9 @@ InfectLoad()
 
     // Add sound file to downloads table.
     AddFileToDownloadsTable(sound);
+
+    // Create mother zombie round-robin cycle storage.
+    g_hInfectMotherCycle = SteamidCacheCreate();
 }
 
 /**
@@ -146,10 +147,10 @@ InfectOnCommandsCreate()
 InfectClientInit(client)
 {
     // Reset infect immunity flag.
-    bInfectImmune[client] = false;
+    g_bInfectImmune[client] = false;
 
-    // Reset mother zombie protection.
-    g_InfectMotherStatus[client] = MotherStatus_None;
+    // Reset mother zombie last flag.
+    g_bInfectMotherLast[client] = false;
 }
 
 /**
@@ -264,7 +265,7 @@ InfectOnClientTeam(client, team)
     }
 
     // Disable zombie flag on client.
-    bZombie[client] = false;
+    g_bZombie[client] = false;
 }
 
 /**
@@ -275,7 +276,7 @@ InfectOnClientTeam(client, team)
 InfectOnClientSpawn(client)
 {
     // Disable zombie flag on client.
-    bZombie[client] = false;
+    g_bZombie[client] = false;
 
     // Check if client is spawning on the terrorist team.
     if (ZRIsClientOnTeam(client, CS_TEAM_T) && InfectHasZombieSpawned())
@@ -347,7 +348,7 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
     }
 
     // If client has infect immunity, then stop.
-    if (bInfectImmune[client])
+    if (g_bInfectImmune[client])
     {
         return;
     }
@@ -375,8 +376,8 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
 InfectOnRoundStart()
 {
     // Stop infect timers if running.
-    ZREndTimer(tInfect);
-    ZREndTimer(tInfectCountdown);
+    ZREndTimer(g_tInfect);
+    ZREndTimer(g_tInfectCountdown);
 
     // Tell plugin there are no zombies.
     g_bZombieSpawned = false;
@@ -388,8 +389,8 @@ InfectOnRoundStart()
 InfectOnRoundFreezeEnd()
 {
     // Stop infect timers if running.
-    ZREndTimer(tInfect);
-    ZREndTimer(tInfectCountdown);
+    ZREndTimer(g_tInfect);
+    ZREndTimer(g_tInfectCountdown);
 
     // If the zombie has spawned already (had to be through admin) then stop.
     if (InfectHasZombieSpawned())
@@ -404,10 +405,7 @@ InfectOnRoundFreezeEnd()
     // Pick random time between min and max.
     new Float:randomtime = GetRandomFloat(infectspawntimemin, infectspawntimemax);
 
-    // Round to the nearest whole number (and convert back to a float) so the countdown is synched with it.
-    float(RoundToNearest(randomtime));
-
-    tInfect = CreateTimer(randomtime, InfectMotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
+    g_tInfect = CreateTimer(randomtime, InfectMotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
 
     // Check cvar and start a countdown timer if enabled.
     new bool:countdown = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]);
@@ -417,13 +415,13 @@ InfectOnRoundFreezeEnd()
         InfectStopCountdown();
 
         // Store the time until infection, and initialize the counter.
-        hInfectCountdownData = CreateDataPack();
-        WritePackFloat(hInfectCountdownData, randomtime);
-        WritePackFloat(hInfectCountdownData, 0.0);
-        tInfectCountdown = CreateTimer(1.0, InfectCountdown, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+        g_hInfectCountdownData = CreateDataPack();
+        WritePackFloat(g_hInfectCountdownData, randomtime);
+        WritePackFloat(g_hInfectCountdownData, 0.0);
+        g_tInfectCountdown = CreateTimer(1.0, InfectCountdown, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 
         // Display initial tick.
-        InfectCountdown(tInfectCountdown);
+        InfectCountdown(g_tInfectCountdown);
     }
 }
 
@@ -433,14 +431,14 @@ InfectOnRoundFreezeEnd()
 InfectOnRoundEnd()
 {
     // Stop infect timers if running.
-    ZREndTimer(tInfect);
-    ZREndTimer(tInfectCountdown);
+    ZREndTimer(g_tInfect);
+    ZREndTimer(g_tInfectCountdown);
 
     // x = client index.
     for (new x = 1; x <= MaxClients; x++)
     {
         // Disable zombie flag on client.
-        bZombie[x] = false;
+        g_bZombie[x] = false;
     }
 }
 
@@ -452,7 +450,7 @@ InfectOnRoundEnd()
 public Action:InfectMotherZombie(Handle:timer)
 {
     // Reset timer handle.
-    tInfect = INVALID_HANDLE;
+    g_tInfect = INVALID_HANDLE;
 
     // Create eligible player list.
     new Handle:arrayEligibleClients = INVALID_HANDLE;
@@ -546,7 +544,7 @@ public Action:InfectMotherZombie(Handle:timer)
         new client = GetArrayCell(arrayEligibleClients, n);
 
         // If client hasn't been chosen this cycle, put into aCandidates array.
-        if (g_InfectMotherStatus[client] == MotherStatus_None)
+        if (!SteamidCacheClientExists(g_hInfectMotherCycle, client))
         {
             PushArrayCell(aCandidates, client);
             candidates++;
@@ -563,7 +561,7 @@ public Action:InfectMotherZombie(Handle:timer)
 
             // If client hasn't been chosen last round, put into aCandidates array,
             // but only until we have enough candidates.
-            if (!(g_InfectMotherStatus[client] & MotherStatus_Last))
+            if (!g_bInfectMotherLast[client])
             {
                 PushArrayCell(aCandidates, client);
                 candidates++;
@@ -575,20 +573,17 @@ public Action:InfectMotherZombie(Handle:timer)
         }
 
         // Restart the cycle.
-        // Reset all players MotherStatus.
-        for (int client = 0; client <= MAXPLAYERS; client++)
-        {
-            g_InfectMotherStatus[client] = MotherStatus_None;
-        }
+        // Clear mother zombie round-robin cycle storage.
+        SteamidCacheReset(g_hInfectMotherCycle);
 
         // Announce start of new cycle
         TranslationPrintToChatAll(true, false, "Mother zombie infect cycle reset");
     }
 
-    // Remove MotherStatus_Last flag from all players.
+    // Remove mother zombie last flag from all players.
     for (int client = 0; client <= MAXPLAYERS; client++)
     {
-        g_InfectMotherStatus[client] &= ~MotherStatus_Last;
+        g_bInfectMotherLast[client] = false;
     }
 
     // Infect players.
@@ -662,9 +657,9 @@ public Action:InfectCountdown(Handle:timer)
     }
 
     // Read the info from the datapack.
-    ResetPack(hInfectCountdownData);
-    new Float:length = ReadPackFloat(hInfectCountdownData);
-    new Float:counter = ReadPackFloat(hInfectCountdownData);
+    ResetPack(g_hInfectCountdownData);
+    new Float:length = ReadPackFloat(g_hInfectCountdownData);
+    new Float:counter = ReadPackFloat(g_hInfectCountdownData);
 
     // Check if the countdown has finished.
     if (counter >= length)
@@ -679,9 +674,9 @@ public Action:InfectCountdown(Handle:timer)
     counter++;
 
     // Write the new counter value to the datapack.
-    ResetPack(hInfectCountdownData);
-    WritePackFloat(hInfectCountdownData, length);
-    WritePackFloat(hInfectCountdownData, counter);
+    ResetPack(g_hInfectCountdownData);
+    WritePackFloat(g_hInfectCountdownData, length);
+    WritePackFloat(g_hInfectCountdownData, counter);
 
     return Plugin_Continue;
 }
@@ -692,13 +687,13 @@ public Action:InfectCountdown(Handle:timer)
 InfectStopCountdown()
 {
     // Kill the timer.
-    ZREndTimer(tInfectCountdown);
+    ZREndTimer(g_tInfectCountdown);
 
     // Destroy data pack.
-    if (hInfectCountdownData != INVALID_HANDLE)
+    if (g_hInfectCountdownData != INVALID_HANDLE)
     {
-        CloseHandle(hInfectCountdownData);
-        hInfectCountdownData = INVALID_HANDLE;
+        CloseHandle(g_hInfectCountdownData);
+        g_hInfectCountdownData = INVALID_HANDLE;
     }
 }
 
@@ -724,7 +719,7 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     }
 
     // Mark player as zombie.
-    bZombie[client] = true;
+    g_bZombie[client] = true;
 
     // Check if consecutive infection protection is enabled.
     new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]);
@@ -733,13 +728,14 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
         // If this is a mother infect, update the mother zombie protection status
         if (motherinfect)
         {
-            g_InfectMotherStatus[client] = MotherStatus_Chosen | MotherStatus_Last;
+            g_bInfectMotherLast[client] = true;
+            SteamidCacheAddClient(g_hInfectMotherCycle, client);
         }
     }
     else
     {
         // Consecutive infection protection is disabled. No immunity.
-        g_InfectMotherStatus[client] = MotherStatus_None;
+        g_bInfectMotherLast[client] = false;
     }
 
     // Apply effects.
@@ -837,7 +833,7 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     }
 
     // Mark player as human.
-    bZombie[client] = false;
+    g_bZombie[client] = false;
 
     // Switch the player to counter-terrorists.
     CS_SwitchTeam(client, CS_TEAM_CT);
@@ -1115,7 +1111,7 @@ bool:InfectIsClientInfected(client)
     }
 
     // Return client's zombie flag.
-    return bZombie[client];
+    return g_bZombie[client];
 }
 
 /**
@@ -1133,7 +1129,7 @@ bool:InfectIsClientHuman(client)
     }
 
     // Return opposite of client's zombie flag.
-    return !bZombie[client];
+    return !g_bZombie[client];
 }
 
 /**
@@ -1153,10 +1149,10 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
     if (!zombiespawned)
     {
         // Stop mother infect timer.
-        if (tInfect != INVALID_HANDLE)
+        if (g_tInfect != INVALID_HANDLE)
         {
-            KillTimer(tInfect);
-            tInfect = INVALID_HANDLE;
+            KillTimer(g_tInfect);
+            g_tInfect = INVALID_HANDLE;
         }
 
         // Move all clients to CT

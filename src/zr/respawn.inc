@@ -73,6 +73,10 @@ RespawnOnClientSpawn(client)
 
     // Reset timer handle.
     tRespawn[client] = INVALID_HANDLE;
+
+    // Reset player velocity
+    float fResetVelocity[3] = {0.0, 0.0, 0.0};
+    ToolsClientVelocity(client, fResetVelocity, true, false);
 }
 
 /**
@@ -183,10 +187,6 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
 
     // Spawn player.
     CS_RespawnPlayer(client);
-
-    // Reset player velocity
-    float fResetVelocity[3] = {0.0, 0.0, 0.0};
-    TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fResetVelocity);
 
     // Check if first zombie has spawned.
     if (InfectHasZombieSpawned())

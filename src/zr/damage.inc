@@ -69,7 +69,7 @@ DamageLoad()
         TrimString(arrayCmds[x]);
 
         // Prepare intercept for this command.
-        RegConsoleCmd(arrayCmds[x], DamageSuicideIntercept);
+        AddCommandListener(DamageSuicideIntercept, arrayCmds[x]);
     }
 
     // Important: If ZR can be unloaded some day, make sure to remove the listeners and set this to false.
@@ -367,7 +367,7 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
  * @param client    The client index.
  * @param argc      The number of arguments in command string.
  */
-public Action:DamageSuicideIntercept(client, argc)
+public Action:DamageSuicideIntercept(int client, const char[] command, int argc)
 {
     // Get suicide interception settings.
     new bool:suicideAfterInfect = GetConVarBool(g_hCvarsList[CVAR_SUICIDE_AFTER_INFECT]);

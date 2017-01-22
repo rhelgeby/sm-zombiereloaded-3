@@ -35,16 +35,6 @@
  */
 stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:stack = true)
 {
-    static bool:gotoffset = false;
-    static offset = -1;
-
-    if(!gotoffset)
-    {
-        offset = FindDataMapInfo(client, "m_vecAbsVelocity");
-        if(offset != -1)
-            gotoffset = true;
-    }
-
     // If retrieve is true, then get client's velocity.
     if (!apply)
     {
@@ -66,10 +56,7 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
     }
 
     // Apply velocity on client.
-    if(gotoffset) // Fixes trigger OnStartTouch/OnEndTouch bug
-        SetEntDataVector(client, offset, vecVelocity);
-    else // Fallback to old one
-        TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVelocity);
+    SetEntDataVector(client, g_iToolsVelocity, vecVelocity);
 }
 
 /**

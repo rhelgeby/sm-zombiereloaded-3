@@ -107,6 +107,7 @@
 #include "zr/api/api"
 
 new bool:g_bLate = false;
+new bool:g_bServerStarted = false;
 
 /**
  * Record plugin info.
@@ -155,7 +156,6 @@ public OnPluginStart()
     LogInit();          // Doesn't depend on CVARs.
     TranslationInit();
     CvarsInit();
-    ToolsInit();
     CookiesInit();
     CommandsInit();
     WeaponsInit();
@@ -194,6 +194,11 @@ public OnLibraryRemoved(const String:name[])
  */
 public OnMapStart()
 {
+    if(!g_bServerStarted)
+    {
+        ToolsInit();
+        g_bServerStarted = true;
+    }
     // Forward event to modules.
     ClassOnMapStart();
     OverlaysOnMapStart();
@@ -383,4 +388,12 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 public OnEntityCreated(entity, const String:classname[])
 {
     NapalmOnEntityCreated(entity, classname);
+}
+
+/**
+ * Called before every server frame.  Note that you should avoid
+ * doing expensive computations or declaring large local arrays.
+ */
+public void OnGameFrame()
+{
 }

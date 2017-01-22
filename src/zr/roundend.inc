@@ -67,7 +67,7 @@ enum RoundEndOutcome
 /**
  * Global variable to store round win timer handle.
  */
-new Handle:tRoundEnd = INVALID_HANDLE;
+new Handle:g_tRoundEnd = INVALID_HANDLE;
 
 /**
  * Map is starting.
@@ -75,7 +75,7 @@ new Handle:tRoundEnd = INVALID_HANDLE;
 RoundEndOnMapStart()
 {
     // Reset timer handle.
-    tRoundEnd = INVALID_HANDLE;
+    g_tRoundEnd = INVALID_HANDLE;
 }
 
 /**
@@ -113,13 +113,13 @@ RoundEndOnRoundStart()
     RoundEndOverlayStop();
 
     // If round end timer is running, then kill it.
-    if (tRoundEnd != INVALID_HANDLE)
+    if (g_tRoundEnd != INVALID_HANDLE)
     {
         // Kill timer.
-        KillTimer(tRoundEnd);
+        KillTimer(g_tRoundEnd);
 
         // Reset timer handle.
-        tRoundEnd = INVALID_HANDLE;
+        g_tRoundEnd = INVALID_HANDLE;
     }
 }
 
@@ -144,7 +144,7 @@ RoundEndOnRoundFreezeEnd()
     }
 
     // Start timer.
-    tRoundEnd = CreateTimer(roundtime, RoundEndTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+    g_tRoundEnd = CreateTimer(roundtime, RoundEndTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 /**
@@ -155,13 +155,13 @@ RoundEndOnRoundFreezeEnd()
 RoundEndOnRoundEnd(reason)
 {
     // If round end timer is running, then kill it.
-    if (tRoundEnd != INVALID_HANDLE)
+    if (g_tRoundEnd != INVALID_HANDLE)
     {
         // Kill timer.
-        KillTimer(tRoundEnd);
+        KillTimer(g_tRoundEnd);
 
         // Reset timer handle.
-        tRoundEnd = INVALID_HANDLE;
+        g_tRoundEnd = INVALID_HANDLE;
     }
 
     // Tell plugin no zombies have been spawned.
@@ -193,10 +193,52 @@ RoundEndOnRoundEnd(reason)
     // Display the overlay to all clients.
     RoundEndOverlayStart(outcome);
 
+    RoundEndDisplayStats();
+
     // Balance teams if enabled.
     if (GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_BALANCE_TEAMS]))
     {
         RoundEndBalanceTeams();
+    }
+}
+
+RoundEndDisplayStats()
+{
+    for(int player = 1; player <= MaxClients; player++)
+    {
+        if(!IsClientInGame(player))
+            continue;
+
+        static char sPlayerID[8];
+        static char sPlayerName[MAX_NAME_LENGTH + 2];
+        static char sPlayerAuth[24];
+        static char sPlayerTeam[8];
+        static char sPlayerState[8];
+
+        FormatEx(sPlayerID, sizeof(sPlayerID), "%d", GetClientUserId(player));
+        FormatEx(sPlayerName, sizeof(sPlayerName), "\"%N\"", player);
+
+        if(!GetClientAuthId(player, AuthId_Steam2, sPlayerAuth, sizeof(sPlayerAuth)))
+            FormatEx(sPlayerAuth, sizeof(sPlayerAuth), "STEAM_ID_PENDING");
+
+        if(IsPlayerAlive(player))
+            FormatEx(sPlayerState, sizeof(sPlayerState), "alive");
+        else
+            FormatEx(sPlayerState, sizeof(sPlayerState), "dead");
+
+        if(InfectIsClientInfected(player))
+            FormatEx(sPlayerTeam, sizeof(sPlayerTeam), "zombie");
+        else
+            FormatEx(sPlayerTeam, sizeof(sPlayerTeam), "human");
+
+        for(int client = 1; client <= MaxClients; client++)
+        {
+            if(!IsClientInGame(client))
+                continue;
+
+            PrintToConsole(client, "# %8s %40s %24s %5s %6s",
+                sPlayerID, sPlayerName, sPlayerAuth, sPlayerState, sPlayerTeam);
+        }
     }
 }
 
@@ -239,7 +281,7 @@ RoundEndOutcome:RoundEndReasonToOutcome(reason)
 public Action:RoundEndTimer(Handle:timer)
 {
     // Set the global timer handle variable to INVALID_HANDLE.
-    tRoundEnd = INVALID_HANDLE;
+    g_tRoundEnd = INVALID_HANDLE;
 
     // If there aren't clients on both teams, then stop.
     if (!ZRTeamHasClients())

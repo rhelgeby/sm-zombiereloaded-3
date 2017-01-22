@@ -55,11 +55,11 @@ ToolsInit()
  */
 ToolsFindOffsets()
 {
-    // If offset "m_vecVelocity[0]" can't be found, then stop the plugin.
-    g_iToolsVelocity = FindSendPropInfo("CBasePlayer", "m_vecVelocity[0]");
+    // If offset "m_vecAbsVelocity" can't be found, then stop the plugin.
+    g_iToolsVelocity = FindDataMapInfo(0, "m_vecAbsVelocity");
     if (g_iToolsVelocity == -1)
     {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_vecVelocity[0]\" was not found.");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBaseEntity::m_vecAbsVelocity\" was not found.");
     }
 
     // If offset "m_flLaggedMovementValue" can't be found, then stop the plugin.
@@ -90,7 +90,6 @@ ToolsFindOffsets()
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_iFOV\" was not found.");
     }
 
-    // void CBaseEntity::SetAbsVelocity( const Vector &vecAbsVelocity )
     Handle hGameConf = LoadGameConfigFile("zombiereloaded");
     if (hGameConf != INVALID_HANDLE)
     {

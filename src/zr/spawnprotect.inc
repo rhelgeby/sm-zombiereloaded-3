@@ -28,7 +28,7 @@
 /**
  * Array for storing spawn protect timer handles per client.
  */
-new Handle:tSpawnProtect[MAXPLAYERS + 1];
+new Handle:g_tSpawnProtect[MAXPLAYERS + 1];
 
 /**
  * Array for storing time left for spawn protection per client.
@@ -43,7 +43,7 @@ new pSpawnProtectTime[MAXPLAYERS + 1];
 SpawnProtectClientInit(client)
 {
     // Reset timer handle.
-    tSpawnProtect[client] = INVALID_HANDLE;
+    g_tSpawnProtect[client] = INVALID_HANDLE;
 }
 
 /**
@@ -60,13 +60,13 @@ SpawnProtectOnClientSpawnPost(client)
     }
 
     // If timer is currently running, kill it.
-    if (tSpawnProtect[client] != INVALID_HANDLE)
+    if (g_tSpawnProtect[client] != INVALID_HANDLE)
     {
-        KillTimer(tSpawnProtect[client]);
+        KillTimer(g_tSpawnProtect[client]);
     }
 
     // Reset timer handle.
-    tSpawnProtect[client] = INVALID_HANDLE;
+    g_tSpawnProtect[client] = INVALID_HANDLE;
 
     // If protect cvar is disabled, then stop.
     new bool:protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
@@ -76,7 +76,7 @@ SpawnProtectOnClientSpawnPost(client)
     }
 
     // Disable spawn protection on client.
-    bInfectImmune[client] = false;
+    g_bInfectImmune[client] = false;
 
     // Start spawn protection.
     SpawnProtectStart(client);
@@ -90,13 +90,13 @@ SpawnProtectOnClientSpawnPost(client)
 SpawnProtectOnClientDeath(client)
 {
     // If timer is running, kill it.
-    if (tSpawnProtect[client] != INVALID_HANDLE)
+    if (g_tSpawnProtect[client] != INVALID_HANDLE)
     {
-        KillTimer(tSpawnProtect[client]);
+        KillTimer(g_tSpawnProtect[client]);
     }
 
     // Reset timer handle.
-    tSpawnProtect[client] = INVALID_HANDLE;
+    g_tSpawnProtect[client] = INVALID_HANDLE;
 }
 
 /**
@@ -158,7 +158,7 @@ SpawnProtectStart(client)
     }
 
     // Set spawn protect flag on client.
-    bInfectImmune[client] = true;
+    g_bInfectImmune[client] = true;
 
     // Set spawn protect attributes.
     ClassApplySpeedEx(client, speed);
@@ -175,7 +175,7 @@ SpawnProtectStart(client)
     TranslationPrintHintText(client, "Spawn Protect", pSpawnProtectTime[client]);
 
     // Start repeating timer.
-    tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+    g_tSpawnProtect[client] = CreateTimer(1.0, SpawnProtectTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
 /**
@@ -190,7 +190,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
     if (!IsClientInGame(client))
     {
         // Reset timer handle.
-        tSpawnProtect[client] = INVALID_HANDLE;
+        g_tSpawnProtect[client] = INVALID_HANDLE;
         return Plugin_Stop;
     }
 
@@ -198,7 +198,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
     if (!InfectIsClientHuman(client))
     {
         // Reset timer handle.
-        tSpawnProtect[client] = INVALID_HANDLE;
+        g_tSpawnProtect[client] = INVALID_HANDLE;
         return Plugin_Stop;
     }
 
@@ -212,7 +212,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
     if (pSpawnProtectTime[client] <= 0)
     {
         // Remove protect flag.
-        bInfectImmune[client] = false;
+        g_bInfectImmune[client] = false;
 
         // Tell client spawn protection is over.
         TranslationPrintHintText(client, "Spawn protection end");
@@ -222,7 +222,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
         ClassApplySpeedEx(client, ClassGetSpeed(client));
 
         // Clear timer handle.
-        tSpawnProtect[client] = INVALID_HANDLE;
+        g_tSpawnProtect[client] = INVALID_HANDLE;
 
         // Stop timer.
         return Plugin_Stop;
