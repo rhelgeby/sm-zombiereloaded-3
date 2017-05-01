@@ -219,7 +219,7 @@
 	"Classes random assignment"
 	{
 		"#format"	"{1:s}"
-		"en"		"You have randomly been assigned to the @green\"{1}\" @defaultclass."
+		"en"		"You have randomly been assigned to the @green\"{1}\"@default class."
 	}
 
 	// Center Text/HUD
@@ -433,7 +433,7 @@
 	"Infect command infect successful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player @green{1} @defaulthas been successfully infected."
+		"en"		"Successfully infected @green{1}@default."
 	}
 
 	"Infect command infect successful public"
@@ -445,7 +445,7 @@
 	"Infect command infect mother successful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player @green{1} @defaulthas been successfully infected as the mother zombie."
+		"en"		"Successfully infected @green{1}@default as the mother zombie."
 	}
 
 	"Infect command infect mother successful public"
@@ -457,25 +457,25 @@
 	"Infect command infect unsuccessful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player @green{1} @defaultis already a zombie."
+		"en"		"Could not infect @green{1}@default."
 	}
 
 	"Infect command human successful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player @green{1} @defaulthas been successfully brought back as a human."
+		"en"		"Successfully brought back @green{1}@default to life."
 	}
 
 	"Infect command human successful public"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"@lgreen{1}@default has brought back @green{2}@default as a human."
+		"en"		"@lgreen{1}@default has brought back @green{2}@default to life."
 	}
 
 	"Infect command human unsuccessful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player @green{1} @defaultis already a human."
+		"en"		"Could not bring back @green{1}@default to life."
 	}
 
 	// ===========================
@@ -550,67 +550,67 @@
 	"Restrict weapon"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaulthas been restricted."
+		"en"		"Weapon @green\"{1}\"@default has been restricted."
 	}
 
 	"Unrestrict weapon"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaulthas been unrestricted."
+		"en"		"Weapon @green\"{1}\"@default has been unrestricted."
 	}
 
 	"Restrict weapon stopped"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaultis already restricted."
+		"en"		"Weapon @green\"{1}\"@default is already restricted."
 	}
 
 	"Unrestrict weapon stopped"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @default has no restrictions set."
+		"en"		"Weapon @green\"{1}\"@default has no restrictions set."
 	}
 
 	"Restrict weapon type"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapons of type @green\"{1}\" @defaulthave been restricted."
+		"en"		"Weapons of type @green\"{1}\"@default have been restricted."
 	}
 
 	"Unrestrict weapon type"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapons of type @green\"{1}\" @defaulthave been unrestricted."
+		"en"		"Weapons of type @green\"{1}\"@default have been unrestricted."
 	}
 
 	"Restrict weapon type stopped"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapons of type @green\"{1}\" @defaultare all already restricted."
+		"en"		"Weapons of type @green\"{1}\"@default are all already restricted."
 	}
 
 	"Unrestrict weapon type stopped"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapons of type @green\"{1}\" @defaulthave no restrictions set."
+		"en"		"Weapons of type @green\"{1}\"@default have no restrictions set."
 	}
 
 	"Restrict weapon untoggleable"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaultmay not have its restrictions toggled."
+		"en"		"Weapon @green\"{1}\"@default may not have its restrictions toggled."
 	}
 
 	"Weapon invalid"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green\"{1}\" @defaultis an invalid weapon (type) name."
+		"en"		"Weapon @green\"{1}\"@default is an invalid weapon (type) name."
 	}
 
 	"Weapon is restricted"
 	{
 		"#format"	"{1:s}"
-		"en"		"Weapon @green{1} @defaultis restricted."
+		"en"		"Weapon @green{1}@default is restricted."
 	}
 
 	// ZMarket
@@ -623,13 +623,13 @@
 	"Weapons zmarket purchase"
 	{
 		"#format"	"{1:s}"
-		"en"		"You have purchased weapon @green{1}. @defaultSelect item again to buy ammo if you are low."
+		"en"		"You have purchased weapon @green{1}.@default Select item again to buy ammo if you are low."
 	}
 
 	"Weapons zmarket purchase max"
 	{
 		"#format"	"{1:s},{2:d}"
-		"en"		"Weapon @green{1} @defaulthas a purchase limit of @green{2}@default.  Wait until you respawn to try again."
+		"en"		"Weapon @green{1}@default has a purchase limit of @green{2}@default.  Wait until you respawn to try again."
 	}
 
 	"Weapons zmarket grenade max"
@@ -1030,19 +1030,19 @@
 	"ZSpawn command force successful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player {1} was successfully spawned."
+		"en"		"Successfully spawned @lgreen{1}@default."
 	}
 
 	"ZSpawn command force successful public"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
-		"en"		"@lgreen{1}@default has spawned @green{2}@default as a @lgreen{3}@default."
+		"en"		"@lgreen{1}@default has spawned @green{2}@default as @lgreen{3}@default."
 	}
 
 	"ZSpawn command force unsuccessful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player {1} couldn't be spawned."
+		"en"		"Could not zspawn @lgreen{1}@default."
 	}
 
 	// ===========================
@@ -1110,13 +1110,13 @@
 	"ZTele command force successful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player {1} was successfully teleported."
+		"en"		"Successfully teleported @lgreen{1}@default."
 	}
 
 	"ZTele command force unsuccessful"
 	{
 		"#format"	"{1:s}"
-		"en"		"Player {1} couldn't be teleported."
+		"en"		"Could not teleport @lgreen{1}@default."
 	}
 
 	// ===========================

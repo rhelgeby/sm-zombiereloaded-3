@@ -1202,8 +1202,11 @@ ClassClientSetDefaultIndexes(client = -1)
         ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = humanindex;
         ClassSelected[client][ZR_CLASS_TEAM_ADMINS] = adminindex;
 
-        // Copy human class data to player cache.
-        ClassReloadPlayerCache(client, humanindex);
+        // Copy class data to player cache.
+        if (InfectIsClientInfected(client))
+            ClassReloadPlayerCache(client, zombieindex);
+        else
+            ClassReloadPlayerCache(client, humanindex);
 
         // Save indexes in cookies if enabled, and not already saved.
         if (saveclasses)

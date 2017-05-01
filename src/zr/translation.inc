@@ -180,6 +180,67 @@ stock TranslationPrintToChatAll(bool:server, bool:admin, any:...)
 }
 
 /**
+ * Format the string to the plugin's style.
+ *
+ * @param server    True to also print text to server console, false just to clients.
+ * @param admin     True to only print text to admins, false to print to everyone.
+ * @param ...       Translation formatting parameters.
+ */
+stock TranslationPrintToChatAllExcept(bool:server, bool:admin, client, any:...)
+{
+    decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+
+    if (server)
+    {
+        // Set translation target
+        SetGlobalTransTarget(LANG_SERVER);
+
+        // Translate phrase.
+        VFormat(translation, sizeof(translation), "%t", 4);
+
+        // Format string to create plugin style.
+        TranslationPluginFormatString(translation, sizeof(translation), false);
+
+        // Print phrase to server.
+        PrintToServer(translation);
+    }
+
+    // x = client index.
+    for (new x = 1; x <= MaxClients; x++)
+    {
+        // Ignore this client
+        if (x == client)
+        {
+            continue;
+        }
+
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+
+        // If client isn't an admin, and we're only printing to admins, then stop.
+        if (admin && !ZRIsClientAdmin(x))
+        {
+            continue;
+        }
+
+        // Set translation target to client.
+        SetGlobalTransTarget(x);
+
+        // Translate phrase.
+        VFormat(translation, sizeof(translation), "%t", 4);
+
+        // Format string to create plugin style.
+        TranslationPluginFormatString(translation, sizeof(translation));
+
+        // Print translated phrase to client.
+        PrintToChat(x, translation);
+    }
+}
+
+/**
  * Print console text to client. (with style)
  *
  * @param client    The client index.

@@ -168,6 +168,7 @@ public OnPluginStart()
 public OnAllPluginsLoaded()
 {
     // Forward event to modules.
+    RoundEndOnAllPluginsLoaded();
     WeaponsOnAllPluginsLoaded();
     ConfigOnAllPluginsLoaded();
 }
@@ -252,8 +253,12 @@ public OnConfigsExecuted()
     ConfigOnModulesLoaded();
     ClassOnModulesLoaded();
 
+    // Fake roundstart
+    EventRoundStart(INVALID_HANDLE, "", false);
+
     if(g_bLate)
     {
+        new bool:bZombieSpawned = false;
         for(new client = 1; client <= MaxClients; client++)
         {
             if(!IsClientConnected(client))
@@ -265,12 +270,24 @@ public OnConfigsExecuted()
             {
                 OnClientPutInServer(client);
 
+                if(AreClientCookiesCached(client))
+                    OnClientCookiesCached(client);
+
                 if(IsClientAuthorized(client))
                     OnClientPostAdminCheck(client);
-            }
 
-            if(AreClientCookiesCached(client))
-                OnClientCookiesCached(client);
+                if(IsPlayerAlive(client) && GetClientTeam(client) == CS_TEAM_T)
+                {
+                    InfectHumanToZombie(client);
+                    bZombieSpawned = true;
+                }
+            }
+        }
+
+        if(bZombieSpawned)
+        {
+            // Zombies have been infected.
+            g_bZombieSpawned = true;
         }
 
         g_bLate = false;

@@ -464,9 +464,6 @@ public Action:InfectMotherZombie(Handle:timer)
         return;
     }
 
-    // Prune list of immune clients.
-    //eligibleclients = InfectRemoveImmuneClients(arrayEligibleClients);
-
     // Move all clients to CT.
     InfectMoveAllToCT();
 
@@ -1187,6 +1184,8 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
     else
         strcopy(adminname, sizeof(adminname), "Console");
 
+    new bool:success = false;
+
     // x = Client index.
     for (new x = 0; x < count; x++)
     {
@@ -1196,13 +1195,6 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
         // Check if client is a human before turning into zombie.
         if (!InfectIsClientHuman(targets[x]))
         {
-            // If there was only 1 player targetted, then let admin know the command was unsuccessful.
-            if (count == 1)
-            {
-                // Tell admin command was unsuccessful.
-                TranslationReplyToCommand(client, "Infect command infect unsuccessful", targetname);
-            }
-
             continue;
         }
 
@@ -1211,28 +1203,41 @@ stock InfectManualInfect(client, targets[], count, bool:respawnoverride = false,
         {
             // Turn client into a mother zombie.
             InfectHumanToZombie(targets[x], _, true, respawnoverride, respawn);
-            LogAction(client, targets[x], "\"%L\" turned \"%L\" into a mother zombie", client, targets[x]);
-            TranslationPrintToChatAll(false, false, "Infect command infect mother successful public", adminname, targetname);
 
-            // If there was only 1 player targetted, then let admin know the outcome of the command.
-            if (count == 1)
-            {
-                TranslationReplyToCommand(client, "Infect command infect mother successful", targetname);
-            }
+            // Log action to game events.
+            LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Infect, "Manual Infect", "\"%L\" turned \"%L\" into a mother zombie", client, targets[x]);
 
+            success = true;
             continue;
         }
 
         // Turn client into a zombie.
         InfectHumanToZombie(targets[x], _, false, respawnoverride, respawn);
-        LogAction(client, targets[x], "\"%L\" turned \"%L\" into a zombie", client, targets[x]);
-        TranslationPrintToChatAll(false, false, "Infect command infect successful public", adminname, targetname);
 
-        // If there was only 1 player targetted, then let admin know the outcome of the command.
-        if (count == 1)
+        // Log action to game events.
+        LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Infect, "Manual Infect", "\"%L\" turned \"%L\" into a zombie", client, targets[x]);
+
+        success = true;
+    }
+
+    // Tell admin the outcome of the command.
+    if(success)
+    {
+        if (!zombiespawned)
+        {
+            TranslationReplyToCommand(client, "Infect command infect mother successful", targetname);
+            TranslationPrintToChatAllExcept(false, false, client, "Infect command infect mother successful public", adminname, targetname);
+        }
+        else
         {
             TranslationReplyToCommand(client, "Infect command infect successful", targetname);
+            TranslationPrintToChatAllExcept(false, false, client, "Infect command infect successful public", adminname, targetname);
         }
+    }
+    else
+    {
+        // Tell admin command was unsuccessful.
+        TranslationReplyToCommand(client, "Infect command infect unsuccessful", targetname);
     }
 }
 
@@ -1256,6 +1261,8 @@ stock InfectManualHuman(client, targets[], count, bool:respawn = false, bool:pro
     else
         strcopy(adminname, sizeof(adminname), "Console");
 
+    new bool:success = false;
+
     // x = Client index.
     for (new x = 0; x < count; x++)
     {
@@ -1267,25 +1274,23 @@ stock InfectManualHuman(client, targets[], count, bool:respawn = false, bool:pro
         {
             // Turn client into a zombie.
             InfectZombieToHuman(targets[x], respawn, protect);
-            LogAction(client, targets[x], "\"%L\" turned \"%L\" into a human", client, targets[x]);
-            TranslationPrintToChatAll(false, false, "Infect command human successful public", adminname, targetname);
 
-            // If there was only 1 player targetted, then let admin know the outcome of the command.
-            if (count == 1)
-            {
-                // Tell admin command was successful.
-                TranslationReplyToCommand(client, "Infect command human successful", targetname);
-            }
+            // Log action to game events.
+            LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Infect, "Manual Human", "\"%L\" turned \"%L\" into a human", client, targets[x]);
+
+            success = true;
         }
-        else
-        {
-            // If there was only 1 player targetted, then let admin know the command was unsuccessful.
-            if (count == 1)
-            {
-                // Tell admin command was unsuccessful.
-                TranslationReplyToCommand(client, "Infect command human unsuccessful", targetname);
-            }
-        }
+    }
+
+    // Tell admin the outcome of the command.
+    if (success)
+    {
+        TranslationReplyToCommand(client, "Infect command human successful", targetname);
+        TranslationPrintToChatAllExcept(false, false, client, "Infect command human successful public", adminname, targetname);
+    }
+    else
+    {
+        TranslationReplyToCommand(client, "Infect command human unsuccessful", targetname);
     }
 }
 

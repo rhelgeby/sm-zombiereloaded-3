@@ -329,8 +329,14 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
         }
 
         // Get the target's name for future use.
-        decl String:targetname[MAX_NAME_LENGTH];
+        decl String:targetname[MAX_NAME_LENGTH], String:adminname[MAX_NAME_LENGTH];
         GetClientName(target, targetname, sizeof(targetname));
+
+        // Get admin's name for future use.
+        if(client > 0)
+            GetClientName(client, adminname, sizeof(adminname));
+        else
+            strcopy(adminname, sizeof(adminname), "Console");
 
         // Force ZSpawn on the target.
         new bool:success = ZSpawnClient(target, true);
@@ -338,8 +344,11 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
         // Tell admin the outcome of the action.
         if (success)
         {
-            LogAction(client, target, "\"%L\" forced a ZSpawn on \"%L\"", client, target);
+            // Log action to game events.
+            LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "\"%L\" force zspawned \"%L\" as human", client, target);
+
             TranslationReplyToCommand(client, "ZSpawn command force successful", targetname);
+            TranslationPrintToChatAllExcept(false, false, client, "ZSpawn command force successful public", adminname, targetname, "human");
         }
         else
         {
@@ -441,35 +450,31 @@ public Action:ZSpawnForceCommand(client, argc)
     // Copy value of second (optional) parameter to 'zombie'.
     // It will be false if the parameter wasn't specified.
     new bool:zombie = bool:StringToInt(strZombie);
+    new bool:success = false;
 
     // x = Client index.
     for (new x = 0; x < result; x++)
     {
-        // Give client the item.
-        new bool:success = ZSpawnClient(targets[x], true, zombie);
-
-        if(success)
+        // Spawn client
+        if (ZSpawnClient(targets[x], true, zombie))
         {
-            LogAction(client, targets[x], "\"%L\" forced a ZSpawn on \"%L\"%s", client, targets[x], zombie ? " and made them zombie" : "");
-            TranslationPrintToChatAll(false, false, "ZSpawn command force successful public", adminname, targetname, zombie ? "zombie" : "human");
-        }
+            // Log action to game events.
+            LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "\"%L\" force zspawned \"%L\" as %s", client, targets[x], zombie ? "zombie" : "human");
 
-        // Tell admin the outcome of the command if only 1 client was targetted.
-        if (result == 1)
-        {
-            if (success)
-            {
-                TranslationReplyToCommand(client, "ZSpawn command force successful", targetname);
-            }
-            else
-            {
-                TranslationReplyToCommand(client, "ZSpawn command force unsuccessful", targetname);
-            }
+            success = true;
         }
     }
 
-    // Log action to game events.
-    //LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "Admin \"%L\" forced player(s) to spawn. (zr_zspawn_force)", client);
+    // Tell admin the outcome of the command.
+    if (success)
+    {
+        TranslationReplyToCommand(client, "ZSpawn command force successful", targetname);
+        TranslationPrintToChatAllExcept(false, false, client, "ZSpawn command force successful public", adminname, targetname, zombie ? "zombie" : "human");
+    }
+    else
+    {
+        TranslationReplyToCommand(client, "ZSpawn command force unsuccessful", targetname);
+    }
 
     return Plugin_Handled;
 }

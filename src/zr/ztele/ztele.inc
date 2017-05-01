@@ -34,7 +34,7 @@
 /**
  * Array to store client's spawn location.
  */
-float g_vecZTeleSpawn[MAXPLAYERS + 1][3];
+float g_vecZTeleSpawn[MAXPLAYERS + 1][2][3];
 
 /**
  * Array to store client's current location.
@@ -56,7 +56,7 @@ Handle tZTele[MAXPLAYERS + 1];
  */
 int g_iZTeleTimeLeft[MAXPLAYERS + 1];
 
-float g_vecZTeleSpawnPoints[MAX_PLAYER_SPAWNS][3];
+float g_vecZTeleSpawnPoints[MAX_PLAYER_SPAWNS][2][3];
 int g_iZTeleSpawnPointsCount = 0;
 
 /**
@@ -82,7 +82,8 @@ void ZTeleOnRoundStart()
         GetEntityClassname(entity, classname, sizeof(classname));
         if (StrEqual(classname, "info_player_terrorist", true) || StrEqual(classname, "info_player_counterterrorist", true))
         {
-            GetEntPropVector(entity, Prop_Send, "m_vecOrigin", g_vecZTeleSpawnPoints[g_iZTeleSpawnPointsCount]);
+            GetEntPropVector(entity, Prop_Send, "m_vecOrigin", g_vecZTeleSpawnPoints[g_iZTeleSpawnPointsCount][0]);
+            GetEntPropVector(entity, Prop_Send, "m_angRotation", g_vecZTeleSpawnPoints[g_iZTeleSpawnPointsCount][1]);
 
             g_iZTeleSpawnPointsCount++;
             if (g_iZTeleSpawnPointsCount >= MAX_PLAYER_SPAWNS)
@@ -114,7 +115,8 @@ void ZTele_OnClientSpawn(int client)
     g_iZTeleCount[client] = 0;
 
     // Get spawn location.
-    GetClientAbsOrigin(client, g_vecZTeleSpawn[client]);
+    GetClientAbsOrigin(client, g_vecZTeleSpawn[client][0]);
+    GetClientAbsAngles(client, g_vecZTeleSpawn[client][1]);
 
     ZTele_StopTimer(client);
 }
@@ -245,11 +247,11 @@ void ZTele_TeleportClient(int client)
     if (ZTele_IsRandomSpawnEnabled() && g_iZTeleSpawnPointsCount)
     {
         int select = Math_GetRandomInt(0, g_iZTeleSpawnPointsCount - 1);
-        TeleportEntity(client, g_vecZTeleSpawnPoints[select], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
+        TeleportEntity(client, g_vecZTeleSpawnPoints[select][0], g_vecZTeleSpawnPoints[select][1], NULL_VECTOR);
     }
     else
     {
-        TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
+        TeleportEntity(client, g_vecZTeleSpawn[client][0], g_vecZTeleSpawn[client][1], NULL_VECTOR);
     }
 }
 
@@ -445,7 +447,7 @@ public Action ZTele_Timer(Handle timer, int client)
     if (g_iZTeleTimeLeft[client] <= 0)
     {
         // Teleport client.
-        TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, NULL_VECTOR);
+        TeleportEntity(client, g_vecZTeleSpawn[client][0], g_vecZTeleSpawn[client][1], NULL_VECTOR);
 
         // Increment teleport count.
         g_iZTeleCount[client]++;

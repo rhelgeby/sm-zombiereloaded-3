@@ -25,6 +25,22 @@
  * ============================================================================
  */
 
+/* Decide whether topmenus should be required */
+#if !defined REQUIRE_PLUGIN
+ #if defined REQUIRE_EXTENSIONS
+  #define TEMP_REQUIRE_EXTENSIONS
+  #undef REQUIRE_EXTENSIONS
+ #endif
+#endif
+
+#tryinclude "sourcetvmanager.inc"
+
+/* Restore old REQUIRE_EXTENSIONS value if necessary */
+#if defined TEMP_REQUIRE_EXTENSIONS
+ #define REQUIRE_EXTENSIONS
+ #undef TEMP_REQUIRE_EXTENSIONS
+#endif
+
 /**
  * @section All round end reasons.
  */
@@ -68,6 +84,19 @@ enum RoundEndOutcome
  * Global variable to store round win timer handle.
  */
 new Handle:g_tRoundEnd = INVALID_HANDLE;
+
+new bool:g_SourceTVManagerLoaded = false;
+
+/**
+ * All plugins have finished loading.
+ */
+RoundEndOnAllPluginsLoaded()
+{
+    #if defined _stvmngr_included
+    g_SourceTVManagerLoaded = LibraryExists("sourcetvmanager");
+    LogMessage("SourceTV Manager: %s", (g_SourceTVManagerLoaded ? "loaded" : "not loaded"));
+    #endif
+}
 
 /**
  * Map is starting.
@@ -239,6 +268,14 @@ RoundEndDisplayStats()
             PrintToConsole(client, "# %8s %40s %24s %5s %6s",
                 sPlayerID, sPlayerName, sPlayerAuth, sPlayerState, sPlayerTeam);
         }
+
+        #if defined _stvmngr_included
+        if(g_SourceTVManagerLoaded)
+        {
+            SourceTV_PrintToDemoConsole("# %8s %40s %24s %5s %6s",
+                sPlayerID, sPlayerName, sPlayerAuth, sPlayerState, sPlayerTeam);
+        }
+        #endif
     }
 }
 
