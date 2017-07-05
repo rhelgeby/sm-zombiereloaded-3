@@ -286,7 +286,8 @@ bool:ClassApplyNightVision(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER
     }
 
     ToolsSetClientNightVision(client, nvgs);
-    ToolsSetClientNightVision(client, nvgs, false);
+    if (!nvgs)
+        ToolsSetClientNightVision(client, nvgs, false);
 
     return true;
 }

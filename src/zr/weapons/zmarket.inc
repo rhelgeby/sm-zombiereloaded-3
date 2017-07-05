@@ -1018,12 +1018,14 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     // Check if client is buying the weapon or ammo for it.
     if (!hasweapon || slot == Slot_Projectile || slot == Slot_NVGs)
     {
+        int oldclip = -1;
         // If the item is a projectile or NVGs, then skip.
         if (slot != Slot_Projectile && slot != Slot_NVGs)
         {
             // If there is already a weapon in the slot, then force client to drop it.
             if (weapons[slot] > -1)
             {
+                oldclip = GetEntProp(weapons[slot], Prop_Send, "m_iClip1");
                 if(rebuy)
                 {
                     // Kill weapon right away to decrease amount of entities on roundstart.
@@ -1037,6 +1039,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
             }
         }
 
+        int entity = INVALID_ENT_REFERENCE;
         if (StrEqual(weaponentity, "item_kevlar"))
         {
             SetEntProp(client, Prop_Send, "m_ArmorValue", 100);
@@ -1045,7 +1048,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         else
         {
             // Give client the weapon.
-           GivePlayerItem(client, weaponentity);
+           entity = GivePlayerItem(client, weaponentity);
         }
 
         if (!rebuy)
@@ -1055,6 +1058,19 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
 
             // If client isn't rebuying the weapon, then tell them the weapon has been purchased.
             TranslationPrintToChat(client, "Weapons zmarket purchase", weapondisplay);
+
+            if (IsValidEntity(entity) && !WeaponsIsClientInBuyZone(client))
+            {
+                int newclip = 0;
+                if (oldclip != -1)
+                {
+                    newclip = GetEntProp(entity, Prop_Send, "m_iClip1");
+                    if(newclip > oldclip)
+                        newclip = oldclip;
+                }
+
+                SetEntProp(entity, Prop_Send, "m_iClip1", newclip);
+            }
         }
     }
     else if (!rebuy)

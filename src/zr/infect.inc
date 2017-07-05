@@ -769,6 +769,10 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     // Remove all weapons but knife.
     WeaponsRemoveAllClientWeapons(client, weaponsdrop);
 
+    // Zombie won't be able to use their knife for this amount of time
+    new Float:knifecooldown = GetConVarFloat(g_hCvarsList[CVAR_INFECT_KNIFE_COOLDOWN]);
+    SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + knifecooldown);
+
     // Switch the player to terrorists.
     // TODO: A solution to stop confusing bots? Respawn and teleport?
     CS_SwitchTeam(client, CS_TEAM_T);

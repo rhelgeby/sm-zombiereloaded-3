@@ -35,7 +35,7 @@
 #include <zr/respawn.zr>
 #include <zr/class.zr>
 
-public SharedPlugin:__pl_zombiereloaded =
+public SharedPlugin __pl_zombiereloaded =
 {
     name = "zombiereloaded",
     file = "zombiereloaded.smx",
@@ -47,7 +47,7 @@ public SharedPlugin:__pl_zombiereloaded =
 };
 
 #if !defined REQUIRE_PLUGIN
-public __pl_zombiereloaded_SetNTVOptional()
+public void __pl_zombiereloaded_SetNTVOptional()
 {
     MarkNativeAsOptional("ZR_IsValidClassIndex");
     MarkNativeAsOptional("ZR_GetActiveClass");
