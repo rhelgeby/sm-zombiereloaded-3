@@ -1059,7 +1059,8 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
             // If client isn't rebuying the weapon, then tell them the weapon has been purchased.
             TranslationPrintToChat(client, "Weapons zmarket purchase", weapondisplay);
 
-            if (IsValidEntity(entity) && !WeaponsIsClientInBuyZone(client))
+            new bool:zmarketnorefill = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_NOREFILL]);
+            if (IsValidEntity(entity) && !WeaponsIsClientInBuyZone(client) && zmarketnorefill)
             {
                 int newclip = 0;
                 if (oldclip != -1)
