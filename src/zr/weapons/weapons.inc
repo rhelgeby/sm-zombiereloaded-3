@@ -36,10 +36,12 @@
 #define WEAPONS_SLOTS_MAX 5
 
 /**
- * @section CS:S start weapons.
+ * @section start weapons.
  */
-#define WEAPONS_SPAWN_T_WEAPON "weapon_glock"
-#define WEAPONS_SPAWN_CT_WEAPON "weapon_usp"
+#define WEAPONS_SPAWN_CSS_T_WEAPON "weapon_glock"
+#define WEAPONS_SPAWN_CSS_CT_WEAPON "weapon_usp"
+#define WEAPONS_SPAWN_CSGO_T_WEAPON "weapon_glock"
+#define WEAPONS_SPAWN_CSGO_CT_WEAPON "weapon_usp_silencer"
 /**
  * @endsection
  */

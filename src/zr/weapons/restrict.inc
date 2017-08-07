@@ -170,11 +170,17 @@ RestrictOnClientSpawn(client)
 
         if (ZRIsClientOnTeam(client, CS_TEAM_T))
         {
-            GivePlayerItem(client, WEAPONS_SPAWN_T_WEAPON);
+            if (g_Game == Game_CSGO)
+                GivePlayerItem(client, WEAPONS_SPAWN_CSGO_T_WEAPON);
+            else
+                GivePlayerItem(client, WEAPONS_SPAWN_CSS_T_WEAPON);
         }
         else if (ZRIsClientOnTeam(client, CS_TEAM_CT))
         {
-            GivePlayerItem(client, WEAPONS_SPAWN_CT_WEAPON);
+            if (g_Game == Game_CSGO)
+                GivePlayerItem(client, WEAPONS_SPAWN_CSGO_CT_WEAPON);
+            else
+                GivePlayerItem(client, WEAPONS_SPAWN_CSS_CT_WEAPON);
         }
     }
 }

@@ -1298,14 +1298,21 @@ ZMarketRebuy(client, bool:autorebuy = false)
             }
         }
 
-        ZMarketEquip(client, rebuyweapons[x], autorebuy);
+        if (!RestrictIsWeaponRestricted(WeaponsNameToIndex(rebuyweapons[x])))
+            ZMarketEquip(client, rebuyweapons[x], autorebuy);
     }
 
     if(autorebuy)
     {
         // Always equip kevlar and hegrenade
-        ZMarketEquip(client, "Kevlar Vest", autorebuy);
-        ZMarketEquip(client, "HEGrenade", autorebuy);
+        if (!RestrictIsWeaponRestricted(WeaponsNameToIndex("Kevlar Vest")))
+            ZMarketEquip(client, "Kevlar Vest", autorebuy);
+
+        if (!RestrictIsWeaponRestricted(WeaponsNameToIndex("HEGrenade")))
+            ZMarketEquip(client, "HEGrenade", autorebuy);
+
+        if (!RestrictIsWeaponRestricted(WeaponsNameToIndex("Smokegrenade")))
+            ZMarketEquip(client, "Smokegrenade", autorebuy);
     }
 }
 
