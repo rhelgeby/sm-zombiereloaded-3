@@ -121,3 +121,13 @@ forward Action ZR_OnClientHuman(int &client, bool &respawn, bool &protect);
  * @param protect           Whether the client has spawn protection.
  */
 forward void ZR_OnClientHumanPost(int client, bool respawn, bool protect);
+
+/**
+ * Called in ZRCreateEligibleClientList to determine if a client is eligible to become infected.
+ *
+ * @param client            The client index.
+ *
+ * @return                  Plugin_Handled is not eligible. Anything else
+ *                          (like Plugin_Continue) is eligible.
+ */
+forward Action ZR_OnClientMotherZombieEligible(int client);

@@ -32,6 +32,7 @@ new Handle:g_hAPIFwdOnClientInfect = INVALID_HANDLE;
 new Handle:g_hAPIFwdOnClientInfected = INVALID_HANDLE;
 new Handle:g_hAPIFwdOnClientHuman = INVALID_HANDLE;
 new Handle:g_hAPIFwdOnClientHumanPost = INVALID_HANDLE;
+new Handle:g_hAPIFwdOnClientMotherZombieEligible = INVALID_HANDLE;
 /**
  * @endsection
  */
@@ -54,6 +55,7 @@ APIInfectInit()
     g_hAPIFwdOnClientInfected = CreateGlobalForward("ZR_OnClientInfected", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
     g_hAPIFwdOnClientHuman = CreateGlobalForward("ZR_OnClientHuman", ET_Hook, Param_CellByRef, Param_CellByRef, Param_CellByRef);
     g_hAPIFwdOnClientHumanPost = CreateGlobalForward("ZR_OnClientHumanPost", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
+    g_hAPIFwdOnClientMotherZombieEligible = CreateGlobalForward("ZR_OnClientMotherZombieEligible", ET_Hook, Param_Cell);
 }
 
 /**
@@ -242,4 +244,23 @@ APIOnClientHumanPost(client, bool:respawn, bool:protect)
 
     // Finish the call.
     Call_Finish();
+}
+
+/**
+ * Called in ZRCreateEligibleClientList to determine if a client is eligible to become infected.
+ *
+ * @param client            The client to check.
+ */
+Action:APIOnClientMotherZombieEligible(client)
+{
+    // Start forward call.
+    Call_StartForward(g_hAPIFwdOnClientMotherZombieEligible);
+
+    // Push the parameters.
+    Call_PushCell(client);
+
+    // Get what they returned.
+    new Action:result;
+    Call_Finish(result);
+    return result;
 }

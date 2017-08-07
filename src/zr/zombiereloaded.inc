@@ -150,6 +150,12 @@ stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false
             continue;
         }
 
+        // Ask plugin API what they think about our client
+        if (APIOnClientMotherZombieEligible(x) == Plugin_Handled)
+        {
+            continue;
+        }
+
         // Add eligible client to array.
         PushArrayCell(arrayEligibleClients, x);
     }
