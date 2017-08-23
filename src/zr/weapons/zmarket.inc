@@ -1313,6 +1313,15 @@ ZMarketRebuy(client, bool:autorebuy = false)
 
         if (!RestrictIsWeaponRestricted(WeaponsNameToIndex("Smokegrenade")))
             ZMarketEquip(client, "Smokegrenade", autorebuy);
+
+        if (g_Game == Game_CSGO)
+        {
+            if (!RestrictIsWeaponRestricted(WeaponsNameToIndex("Healthshot")))
+                ZMarketEquip(client, "Healthshot", autorebuy);
+
+            if (!RestrictIsWeaponRestricted(WeaponsNameToIndex("TAGrenade")))
+                ZMarketEquip(client, "TAGrenade", autorebuy);
+        }
     }
 }
 
