@@ -29,7 +29,7 @@
  * @section Defines for min/max moaning sound file index.
  */
 #define SOUND_MOAN_PATH "npc/zombie/zombie_voice_idle%d.wav" // %d is sound file index
-#define SOUND_MOAN_CSGO "music/zr/zombie_voice_idle%d.wav"
+#define SOUND_MOAN_CSGO "music/zr/zombie_voice_idle%d.mp3"
 #define SOUND_MOAN_MIN 1
 #define SOUND_MOAN_MAX 14
 /**
@@ -40,7 +40,7 @@
  * @section Defines for min/max groan sound file index.
  */
 #define SOUND_GROAN_PATH "npc/zombie/zombie_pain%d.wav" // %d is sound file index
-#define SOUND_GROAN_CSGO "music/zr/zombie_pain%d.wav"
+#define SOUND_GROAN_CSGO "music/zr/zombie_pain%d.mp3"
 #define SOUND_GROAN_MIN 1
 #define SOUND_GROAN_MAX 6
 /**
@@ -51,7 +51,7 @@
  * @section Defines for min/max death sound file index.
  */
 #define SOUND_DEATH_PATH "npc/zombie/zombie_die%d.wav" // %d is sound file index
-#define SOUND_DEATH_CSGO "music/zr/zombie_die%d.wav"
+#define SOUND_DEATH_CSGO "music/zr/zombie_die%d.mp3"
 #define SOUND_DEATH_MIN 1
 #define SOUND_DEATH_MAX 3
 /**
