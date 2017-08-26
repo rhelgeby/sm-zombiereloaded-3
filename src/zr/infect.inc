@@ -110,6 +110,9 @@ InfectOnMapEnd()
  */
 InfectLoad()
 {
+    // Create mother zombie round-robin cycle storage.
+    g_hInfectMotherCycle = SteamidCacheCreate();
+
     // Get infection sound.
     decl String:sound[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
@@ -125,9 +128,6 @@ InfectLoad()
 
     // Add sound file to downloads table.
     AddFileToDownloadsTable(sound);
-
-    // Create mother zombie round-robin cycle storage.
-    g_hInfectMotherCycle = SteamidCacheCreate();
 }
 
 /**
