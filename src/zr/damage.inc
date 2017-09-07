@@ -269,7 +269,7 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
             return Plugin_Continue;
         }
 
-        if (!clientzombie && attackerzombie && !StrEqual(weaponname, "weapon_knife"))
+        if (!clientzombie && attackerzombie && !(StrEqual(weaponname, "weapon_bayonet") || strncmp(weaponname, "weapon_knife", 12) == 0))
         {
             damage = 1.0;
             return Plugin_Changed;
