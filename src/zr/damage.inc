@@ -342,6 +342,30 @@ public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &
         // Stop damage.
         return Plugin_Handled;
     }
+    // Client was damaged by fire.
+    else if (damagetype & DMG_BURN)
+    {
+        // If its not an inferno, then allow damage.
+        if (strncmp(classname, "inferno", 7) != 0)
+        {
+            return Plugin_Continue;
+        }
+
+        // If attacker isn't valid, then allow damage.
+        if (!ZRIsClientValid(attacker))
+        {
+            return Plugin_Continue;
+        }
+
+        // If client is a zombie, then allow damage.
+        if (InfectIsClientInfected(client))
+        {
+            return Plugin_Continue;
+        }
+
+        // Stop damage.
+        return Plugin_Handled;
+    }
     // Client was damaged by falling.
     else if (damagetype & DMG_FALL)
     {
