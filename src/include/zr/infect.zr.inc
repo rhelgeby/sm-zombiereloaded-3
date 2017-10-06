@@ -30,7 +30,7 @@
  *
  * @param client            The client index.
  *
- * @return			        True if zombie, false if not.
+ * @return                  True if zombie, false if not.
  * @error                   Invalid client index, not connected or not alive.
  */
 native bool ZR_IsClientZombie(int client);
@@ -40,7 +40,7 @@ native bool ZR_IsClientZombie(int client);
  *
  * @param client            The client index.
  *
- * @return			        True if human, false if not.
+ * @return                  True if human, false if not.
  * @error                   Invalid client index, not connected or not alive.
  */
 native bool ZR_IsClientHuman(int client);
@@ -56,9 +56,10 @@ native bool ZR_IsClientHuman(int client);
  * @param respawnOverride   (Optional) Set to true to override respawn cvar.
  * @param respawn           (Optional) Value to override with.
  *
+ * @return                  True if the client was infected, false if not.
  * @error                   Invalid client index, not connected or not alive.
  */
-native int ZR_InfectClient(int client, int attacker = -1, bool motherInfect = false, bool respawnOverride = false, bool respawn = false);
+native bool ZR_InfectClient(int client, int attacker = -1, bool motherInfect = false, bool respawnOverride = false, bool respawn = false);
 
 /**
  * Turns a zombie back into a human.
@@ -70,9 +71,10 @@ native int ZR_InfectClient(int client, int attacker = -1, bool motherInfect = fa
  * @param respawn           Teleport client back to spawn.
  * @param protect           Start spawn protection on client.
  *
+ * @return                  True if the client was uninfected, false if not.
  * @error                   Invalid client index, not connected or not alive.
  */
-native int ZR_HumanClient(int client, bool respawn = false, bool protect = false);
+native bool ZR_HumanClient(int client, bool respawn = false, bool protect = false);
 
 /**
  * Called when a player is about to become a zombie.

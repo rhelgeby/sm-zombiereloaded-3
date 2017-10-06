@@ -105,7 +105,7 @@ public APIInfectClient(Handle:plugin, numParams)
     // Validate the client index.
     APIValidateClientIndex(client, Condition_True);
 
-    InfectHumanToZombie(client, attacker, motherInfect, respawnOverride, respawn);
+    return InfectHumanToZombie(client, attacker, motherInfect, respawnOverride, respawn);
 }
 
 /**
@@ -123,7 +123,7 @@ public APIHumanClient(Handle:plugin, numParams)
     // Validate the client index.
     APIValidateClientIndex(client, Condition_True);
 
-    InfectZombieToHuman(client, respawn, protect);
+    return InfectZombieToHuman(client, respawn, protect);
 }
 
 /**
