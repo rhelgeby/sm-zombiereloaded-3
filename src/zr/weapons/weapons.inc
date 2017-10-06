@@ -41,7 +41,7 @@
 #define WEAPONS_SPAWN_CSS_T_WEAPON "weapon_glock"
 #define WEAPONS_SPAWN_CSS_CT_WEAPON "weapon_usp"
 #define WEAPONS_SPAWN_CSGO_T_WEAPON "weapon_glock"
-#define WEAPONS_SPAWN_CSGO_CT_WEAPON "weapon_usp_silencer"
+#define WEAPONS_SPAWN_CSGO_CT_WEAPON "weapon_hkp2000"
 /**
  * @endsection
  */
