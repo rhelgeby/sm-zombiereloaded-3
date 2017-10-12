@@ -542,18 +542,22 @@ public Action:InfectMotherZombie(Handle:timer)
         // Get the client stored in the array index.
         new client = GetArrayCell(arrayEligibleClients, n);
 
-        // If client hasn't been chosen this cycle, put into aCandidatesMain array.
-        if (!SteamidCacheClientExists(g_hInfectMotherCycle, client))
+        // If client hasn't been chosen last round.
+        if (!g_bInfectMotherLast[client])
         {
-            PushArrayCell(aCandidatesMain, client);
-            candidatesMain++;
-        }
+            // If client hasn't been chosen this cycle, put into aCandidatesMain array.
+            if (!SteamidCacheClientExists(g_hInfectMotherCycle, client))
+            {
+                PushArrayCell(aCandidatesMain, client);
+                candidatesMain++;
+            }
 
-        // If client hasn't been chosen last round, put into aCandidatesAlt array.
-        else if (!g_bInfectMotherLast[client])
-        {
-            PushArrayCell(aCandidatesAlt, client);
-            candidatesAlt++;
+            // Else put into aCandidatesAlt array.
+            else
+            {
+                PushArrayCell(aCandidatesAlt, client);
+                candidatesAlt++;
+            }
         }
     }
 
@@ -586,6 +590,7 @@ public Action:InfectMotherZombie(Handle:timer)
             RemoveFromArray(aCandidatesMain, i);
             candidatesMain--;
         }
+
         // Infect one of the alternate candidates.
         else if (candidatesAlt)
         {
@@ -606,6 +611,7 @@ public Action:InfectMotherZombie(Handle:timer)
             // Enable the cycle reset.
             resetcycle = true;
         }
+
         // We have no candidates at all, abort!
         else
         {
