@@ -276,7 +276,7 @@ WeaponsCacheData()
 
         // ZMarket (module)
         new zmarketprice = KvGetNum(kvWeapons, "zmarketprice", -1);
-        new zmarketpurchasemax = KvGetNum(kvWeapons, "zmarketpurchasemax", 0);
+        new zmarketpurchasemax = KvGetNum(kvWeapons, "zmarketpurchasemax", -1);
         KvGetString(kvWeapons, "zmarketcommand", zmarketcommand, sizeof(zmarketcommand), "");
 
         new Handle:arrayWeapon = GetArrayCell(arrayWeapons, x);

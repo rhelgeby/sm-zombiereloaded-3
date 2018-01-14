@@ -811,7 +811,7 @@ ZMarketMenuTypeWeapons(client)
         }
 
         // If max purchases is disabled for the weapon, then set as known integer to be later replaced.
-        if (purchasemax <= 0)
+        if (purchasemax < 0)
         {
             purchasesleft = -1;
         }
@@ -962,7 +962,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     new purchasemax = WeaponsGetZMarketPurchaseMax(weaponindex);
     new purchasecount = ZMarketGetPurchaseCount(client, weapon);
     new purchasesleft = purchasemax - purchasecount;
-    if (purchasemax > 0 && purchasesleft <= 0)
+    if (!rebuy && purchasemax >= 0 && purchasesleft <= 0)
     {
         TranslationPrintToChat(client, "Weapons zmarket purchase max", weapondisplay, purchasemax);
         return false;
