@@ -116,7 +116,7 @@
 /**
  * The max length of any config string value.
  */
-#define CONFIG_MAX_LENGTH 32
+#define CONFIG_MAX_LENGTH 64
 
 /**
  * @section Config file reference aliases.
