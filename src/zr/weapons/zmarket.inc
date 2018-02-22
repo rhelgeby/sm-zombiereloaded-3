@@ -113,7 +113,28 @@ ZMarketLoad()
         if(zmarketcommand[0])
         {
             WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
-            RegConsoleCmd(zmarketcommand, ZMarketBuyCommand, weaponname);
+
+            if (FindCharInString(zmarketcommand, ',') != -1)
+            {
+                int idx;
+                int lastidx;
+                while ((idx = FindCharInString(zmarketcommand[lastidx], ',')) != -1)
+                {
+                    char out[16];
+                    char fmt[8];
+                    Format(fmt, sizeof(fmt), "%%.%ds", idx);
+                    Format(out, sizeof(out), fmt, zmarketcommand[lastidx]);
+                    RegConsoleCmd(out, ZMarketBuyCommand, weaponname);
+                    lastidx += ++idx;
+
+                    if (FindCharInString(zmarketcommand[lastidx], ',') == -1 && zmarketcommand[lastidx+1] != '\0')
+                        RegConsoleCmd(zmarketcommand[lastidx], ZMarketBuyCommand, weaponname);
+                }
+            }
+            else
+            {
+                RegConsoleCmd(zmarketcommand, ZMarketBuyCommand, weaponname);
+            }
         }
     }
 
@@ -132,11 +153,41 @@ public Action:ZMarketBuyCommand(client, argc)
     for (new weaponindex = 0; weaponindex < size; weaponindex++)
     {
         WeaponsGetZMarketCommand(weaponindex, zmarketcommand, sizeof(zmarketcommand));
-        if(StrEqual(command, zmarketcommand))
+
+        if (FindCharInString(zmarketcommand, ',') != -1)
         {
-            WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
-            ZMarketEquip(client, weaponname);
-            return Plugin_Handled;
+            int idx;
+            int lastidx;
+            while ((idx = FindCharInString(zmarketcommand[lastidx], ',')) != -1)
+            {
+                if (!strncmp(command, zmarketcommand[lastidx], idx))
+                {
+                    WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
+                    ZMarketEquip(client, weaponname);
+                    return Plugin_Handled;
+                }
+
+                lastidx += ++idx;
+
+                if (FindCharInString(zmarketcommand[lastidx], ',') == -1 && zmarketcommand[lastidx+1] != '\0')
+                {
+                    if (!strncmp(command, zmarketcommand[lastidx], idx))
+                    {
+                        WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
+                        ZMarketEquip(client, weaponname);
+                        return Plugin_Handled;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if(StrEqual(command, zmarketcommand))
+            {
+                WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
+                ZMarketEquip(client, weaponname);
+                return Plugin_Handled;
+            }
         }
     }
 
