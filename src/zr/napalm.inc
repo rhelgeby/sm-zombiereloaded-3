@@ -137,7 +137,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[], dmg_health)
 
         if (reset || !(flags & FL_ONFIRE))
         {
-            new Float:timescale = GetConVarFloat(g_hCvarsList[CVAR_NAPALM_TIME_SCALE])
+            new Float:timescale = GetConVarFloat(g_hCvarsList[CVAR_NAPALM_TIME_SCALE]);
             if (timescale > 0.0)
             {
                 // Figure out our scale value.
