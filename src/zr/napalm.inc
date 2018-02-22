@@ -102,7 +102,7 @@ NapalmOnTakeDamage(client, damagetype)
  * @param attacker  The attacker index.
  * @param weapon    The weapon name.
  */
-NapalmOnClientHurt(client, attacker, const String:weapon[])
+NapalmOnClientHurt(client, attacker, const String:weapon[], dmg_health)
 {
     // If there's no attacker, then stop.
     if (!attacker)
@@ -137,6 +137,24 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
 
         if (reset || !(flags & FL_ONFIRE))
         {
+            new Float:timescale = GetConVarFloat(g_hCvarsList[CVAR_NAPALM_TIME_SCALE])
+            if (timescale > 0.0)
+            {
+                // Figure out our scale value.
+                timescale = dmg_health / timescale;
+
+                // Make sure we dont go over 100%.
+                if (timescale > 1.0)
+                    timescale = 1.0;
+
+                // Make sure we dont go below 0%.
+                if (timescale < 0.0)
+                    timescale = 0.0;
+
+                // Scale our class time, accordingly.
+                napalm_time = napalm_time * timescale;
+            }
+
             // Ignite the client or extend the current flames life.
             NapalmIgniteEntity(client, napalm_time);
         }

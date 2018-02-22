@@ -229,7 +229,7 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
     AccountOnClientHurt(index, attacker, dmg_health);
     SEffectsOnClientHurt(index);
     KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
-    NapalmOnClientHurt(index, attacker, weapon);
+    NapalmOnClientHurt(index, attacker, weapon, dmg_health);
     ZHPOnClientHurt(index);
 }
 
