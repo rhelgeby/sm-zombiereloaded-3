@@ -547,7 +547,7 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
     }
 
     // If weapon isn't a knife, then stop.
-    if (!StrEqual(weapon, "knife"))
+    if (!StrEqual(weapon, "knife") && !StrEqual(weapon, "bayonet"))
     {
         return;
     }

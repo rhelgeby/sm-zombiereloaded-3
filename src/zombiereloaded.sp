@@ -39,7 +39,7 @@
 
 #include <sdkhooks>
 
-#define VERSION "3.1"
+#define VERSION "3.3"
 
 // Comment this line to exclude version info command. Enable this if you have
 // the repository and HG installed (Mercurial or TortoiseHG).
@@ -215,6 +215,12 @@ public OnMapStart()
     SEffectsOnMapStart();
     ZSpawnOnMapStart();
     VolInit();
+    // Fixed crashes on CS:GO
+    ModelsLoad();
+    DownloadsLoad();
+    InfectLoad();
+    VEffectsLoad();
+    SEffectsLoad();
 }
 
 /**
@@ -245,14 +251,9 @@ public OnAutoConfigsBuffered()
 public OnConfigsExecuted()
 {
     // Forward event to modules. (OnConfigsExecuted)
-    ModelsLoad();
-    DownloadsLoad();
     WeaponsLoad();
     HitgroupsLoad();
-    InfectLoad();
     DamageLoad();
-    VEffectsLoad();
-    SEffectsLoad();
     ClassOnConfigsExecuted();
     ClassLoad();
     VolLoad();
