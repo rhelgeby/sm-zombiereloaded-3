@@ -62,7 +62,7 @@ bool:ClassApplyAttributes(client, bool:improved = false)
     ClassApplyNightVision(client, classindex);
     ClassApplyFOV(client, classindex);
     ClassApplyHealth(client, classindex, improved);
-    ClassApplyHealthRegen(client, classindex);
+    ClassApplyHealthRegen(client, classindex, improved);
     ClassApplySpeed(client, classindex);
 
     return true;
@@ -371,7 +371,7 @@ bool:ClassApplyHealth(client, classindex, bool:boost = false, cachetype = ZR_CLA
  *                      ZR_CLASS_CACHE_PLAYER (default) - Player cache.
  * @return  True if applied, false otherwise.
  */
-bool:ClassApplyHealthRegen(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
+bool:ClassApplyHealthRegen(client, classindex, bool:boost = false, cachetype = ZR_CLASS_CACHE_PLAYER)
 {
     new Float:interval;
     new amount;
@@ -389,6 +389,11 @@ bool:ClassApplyHealthRegen(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER
         interval = ClassGetHealthRegenInterval(classindex, cachetype);
         amount = ClassGetHealthRegenAmount(classindex, cachetype);
         max = ClassGetHealth(classindex, cachetype);
+    }
+
+    if (boost)
+    {
+        max *= 2;
     }
 
     if (interval > 0)
