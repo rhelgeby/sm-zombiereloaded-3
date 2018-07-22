@@ -381,6 +381,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN]           =    CreateConVar("zr_roundend_overlays_human",     "overlays/zr/humans_win",       "Overlay, relative to \"materials\" folder, to display when humans win the round. [Dependency: zr_roundend_overlay]");
     g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE]          =    CreateConVar("zr_roundend_overlays_zombie",    "overlays/zr/zombies_win",      "Overlay, relative to \"materials\" folder, to display when zombies win the round. [Dependency: zr_roundend_overlay]");
     g_hCvarsList[CVAR_ROUNDEND_BALANCE_TEAMS]           =    CreateConVar("zr_roundend_balance_teams",      "1",                            "Balances the team every time the round ends. Disable this if you use something else to balance teams.");
+	g_hCvarsList[CVAR_ROUNDEND_ZOMBIES_WIN]             =    CreateConVar("zr_roundend_zombies_win",        "1",                            "Should zombies win if roundtime runs out.");
 
 
     // ===========================
