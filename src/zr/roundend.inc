@@ -328,9 +328,9 @@ public Action:RoundEndTimer(Handle:timer)
 
     new bool:zombies_win = GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_ZOMBIES_WIN]);
     if (zombies_win)
-		RoundEndTerminateRound(ROUNDEND_DELAY, ZombiesWin);
-	else
-		RoundEndTerminateRound(ROUNDEND_DELAY, HumansWin);
+        RoundEndTerminateRound(ROUNDEND_DELAY, ZombiesWin);
+    else
+        RoundEndTerminateRound(ROUNDEND_DELAY, HumansWin);
 }
 
 /**
