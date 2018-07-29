@@ -875,7 +875,7 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     ZTele_OnClientInfected(client);
 
     // Remove all knifes.
-    WeaponsClearClientWeaponSlot(client, Slot_Melee);
+    WeaponsClearClientWeaponSlot(client, Slot_Melee, false);
 
     // Give human a new knife. (If you leave the old one there will be glitches with the knife positioning)
     GivePlayerItem(client, "weapon_knife");
