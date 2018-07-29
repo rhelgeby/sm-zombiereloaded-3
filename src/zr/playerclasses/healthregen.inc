@@ -101,8 +101,14 @@ public Action:ClassHealthRegenTimer(Handle:timer, any:client)
     new health = GetClientHealth(client);
     health += ClientHealthRegenAmount[client];
 
+    // Clamp the health points to the maximum.
+    if (health > ClientHealthRegenMax[client])
+    {
+        health = ClientHealthRegenMax[client];
+    }
+
     // Check if the health points is below the limit.
-    if (health < ClientHealthRegenMax[client])
+    if (health <= ClientHealthRegenMax[client])
     {
         // Increase health.
         SetEntityHealth(client, health);
