@@ -784,10 +784,6 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
         InfectUpdateScore(attacker, client);
     }
 
-    // Get a list of all client's weapon indexes.
-    new weapons[WeaponsSlot];
-    WeaponsGetClientWeapons(client, weapons);
-
     // Check if weapons drop is enabled.
     new bool:weaponsdrop = GetConVarBool(g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]);
 
@@ -878,14 +874,11 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
     RoundEndOnClientInfected();
     ZTele_OnClientInfected(client);
 
+    // Remove all knifes.
+    WeaponsClearClientWeaponSlot(client, Slot_Melee);
+
     // Give human a new knife. (If you leave the old one there will be glitches with the knife positioning)
-    new knife = GetPlayerWeaponSlot(client, _:Slot_Melee);
-    if (knife != -1)
-    {
-        RemovePlayerItem(client, knife);
-        AcceptEntityInput(knife, "Kill");
-        GivePlayerItem(client, "weapon_knife");
-    }
+    GivePlayerItem(client, "weapon_knife");
 
     // Check if we should respawn the client.
     if (respawn)

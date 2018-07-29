@@ -779,26 +779,26 @@ stock WeaponsForceClientDrop(client, weapon)
  * @param client    The client index.
  * @param weaponsdrop   True to force drop on all weapons, false to strip.
  */
-stock WeaponsRemoveClientGrenades(client, bool:weaponsdrop)
+stock WeaponsClearClientWeaponSlot(client, WeaponsSlot:slot, bool:weaponsdrop)
 {
-    // This while-structure is a stupid sloppy annoying workaround to stop the "unintended assignment" warning.  I hate those.
-    // While GetPlayerWeaponSlot returns a valid projectile, remove it and then test again.
-    new grenade = GetPlayerWeaponSlot(client, _:Slot_Projectile);
-    while (grenade != -1)
+    // This while-structure is a stupid sloppy annoying workaround to stop the "unintended assignment" warning. I hate those.
+    // While GetPlayerWeaponSlot returns a valid weapon, remove it and then test again.
+    new weapon = GetPlayerWeaponSlot(client, _:slot);
+    while (weapon != -1)
     {
-        // Check if we drop or strip the grenade.
+        // Check if we drop or strip the weapon.
         if (weaponsdrop)
         {
-            WeaponsForceClientDrop(client, grenade);
+            WeaponsForceClientDrop(client, weapon);
         }
         else
         {
-            RemovePlayerItem(client, grenade);
-            AcceptEntityInput(grenade, "Kill");
+            RemovePlayerItem(client, weapon);
+            AcceptEntityInput(weapon, "Kill");
         }
 
-        // Find next grenade.
-        grenade = GetPlayerWeaponSlot(client, _:Slot_Projectile);
+        // Find next weapon.
+        weapon = GetPlayerWeaponSlot(client, _:slot);
     }
 }
 
@@ -872,8 +872,11 @@ stock WeaponsRemoveAllClientWeapons(client, bool:weaponsdrop)
         }
     }
 
+    // Remove left-over knifes.
+    WeaponsClearClientWeaponSlot(client, Slot_Melee, false);
+
     // Remove left-over projectiles.
-    WeaponsRemoveClientGrenades(client, weaponsdrop);
+    WeaponsClearClientWeaponSlot(client, Slot_Projectile, weaponsdrop);
 
     // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
     GivePlayerItem(client, "weapon_knife");
