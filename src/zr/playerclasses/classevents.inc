@@ -75,11 +75,11 @@ ClassOnModulesLoaded()
  */
 ClassOnMapStart()
 {
-	// Clear multipliers.
-	ClassResetMultiplierCache();
+    // Clear multipliers.
+    ClassResetMultiplierCache();
 
-	// Prepare hp regeneration module.
-	ClassHealthRegenInit();
+    // Prepare hp regeneration module.
+    ClassHealthRegenInit();
 }
 
 /**
@@ -133,7 +133,7 @@ ClassClientInit(client)
  * This callback is gauranteed to occur on all clients, and always
  * after each OnClientPutInServer() call.
  *
- * @param client		Client index.
+ * @param client        Client index.
  * @noreturn
  */
 ClassOnClientPostAdminCheck(client)
@@ -156,7 +156,7 @@ ClassOnClientPostAdminCheck(client)
 /**
  * Called once a client's saved cookies have been loaded from the database.
  *
- * @param client		Client index.
+ * @param client        Client index.
  */
 ClassOnCookiesCached(client)
 {

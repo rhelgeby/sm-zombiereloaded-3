@@ -486,8 +486,8 @@ public ClassPreThinkPost(client)
 /**
  * Called when a clients movement buttons are being processed
  *
- * @param client	Index of the client.
- * @param vel		Players desired velocity.
+ * @param client    Index of the client.
+ * @param vel       Players desired velocity.
  */
 Class_OnPlayerRunCmd(client, Float:vel[3])
 {

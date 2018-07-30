@@ -201,7 +201,7 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:client)
     WeaponsOnClientSpawnPost(client);
     SEffectsOnClientSpawnPost(client);
     ClassOnClientSpawnPost(client);
-    SpawnProtectOnClientSpawnPost(client);	// Must be executed after class attributes are applied.
+    SpawnProtectOnClientSpawnPost(client);  // Must be executed after class attributes are applied.
 }
 
 /**

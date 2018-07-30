@@ -99,9 +99,9 @@ VoiceOnClientHuman(client)
  * Set the receiver ability to listen to the sender.
  * Note:  This function is from sdktools_voice, it fails if iSender is muted.
  *
- * @param iReceiver		The listener index.
- * @param iSender		The sender index.
- * @return			    True if successful otherwise false.
+ * @param iReceiver     The listener index.
+ * @param iSender       The sender index.
+ * @return              True if successful otherwise false.
  */
 stock bool:VoiceSetClientListening(iReceiver, iSender, bool:bListen)
 {

@@ -75,7 +75,7 @@ ZHPClientInit(client)
 /**
  * Called once a client's saved cookies have been loaded from the database.
  *
- * @param client		Client index.
+ * @param client        Client index.
  */
 ZHPOnCookiesCached(client)
 {

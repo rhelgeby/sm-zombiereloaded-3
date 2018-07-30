@@ -227,7 +227,7 @@ public OnMapEnd()
  */
 public OnAutoConfigsBuffered()
 {
-	// Load map configurations.
+    // Load map configurations.
     ConfigLoad();
 }
 
@@ -328,7 +328,7 @@ public OnClientPutInServer(client)
 /**
  * Called once a client's saved cookies have been loaded from the database.
  *
- * @param client		Client index.
+ * @param client        Client index.
  */
 public OnClientCookiesCached(client)
 {
@@ -351,7 +351,7 @@ public OnClientCookiesCached(client)
  * This callback is gauranteed to occur on all clients, and always
  * after each OnClientPutInServer() call.
  *
- * @param client		Client index.
+ * @param client        Client index.
  * @noreturn
  */
 public OnClientPostAdminCheck(client)
@@ -382,13 +382,13 @@ public OnClientDisconnect(client)
 /**
  * Called when a clients movement buttons are being processed
  *
- * @param client	Index of the client.
- * @param buttons	Copyback buffer containing the current commands (as bitflags - see entity_prop_stocks.inc).
- * @param impulse	Copyback buffer containing the current impulse command.
- * @param vel		Players desired velocity.
- * @param angles	Players desired view angles.
- * @param weapon	Entity index of the new weapon if player switches weapon, 0 otherwise.
- * @return 			Plugin_Handled to block the commands from being processed, Plugin_Continue otherwise.
+ * @param client    Index of the client.
+ * @param buttons   Copyback buffer containing the current commands (as bitflags - see entity_prop_stocks.inc).
+ * @param impulse   Copyback buffer containing the current impulse command.
+ * @param vel       Players desired velocity.
+ * @param angles    Players desired view angles.
+ * @param weapon    Entity index of the new weapon if player switches weapon, 0 otherwise.
+ * @return          Plugin_Handled to block the commands from being processed, Plugin_Continue otherwise.
  */
 public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
 {

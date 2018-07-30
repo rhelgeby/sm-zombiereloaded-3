@@ -185,8 +185,8 @@ VolOnRoundEnd()
  */
 VolOnMapEnd()
 {
-	// Make sure timers and volumes are stopped. Foreward event.
-	VolOnRoundEnd();
+    // Make sure timers and volumes are stopped. Foreward event.
+    VolOnRoundEnd();
 }
 
 /**

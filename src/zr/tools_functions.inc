@@ -193,31 +193,31 @@ stock ToolsSetClientAlpha(client, alpha)
 /**
  * Sets an entity's color. (This is the "get" version of SetEntityRenderColor)
  *
- * @param client	The client index.
+ * @param client    The client index.
  * @return          The alpha value of the client. (0-255)
  */
 stock ToolsGetEntityAlpha(entity)
 {
-	static bool:gotconfig = false;
-	static String:prop[32];
+    static bool:gotconfig = false;
+    static String:prop[32];
 
-	if (!gotconfig)
-	{
-		new Handle:gc = LoadGameConfigFile("core.games");
-		new bool:exists = GameConfGetKeyValue(gc, "m_clrRender", prop, sizeof(prop));
-		CloseHandle(gc);
+    if (!gotconfig)
+    {
+        new Handle:gc = LoadGameConfigFile("core.games");
+        new bool:exists = GameConfGetKeyValue(gc, "m_clrRender", prop, sizeof(prop));
+        CloseHandle(gc);
 
-		if (!exists)
-		{
-			strcopy(prop, sizeof(prop), "m_clrRender");
-		}
+        if (!exists)
+        {
+            strcopy(prop, sizeof(prop), "m_clrRender");
+        }
 
-		gotconfig = true;
-	}
+        gotconfig = true;
+    }
 
-	new offset = GetEntSendPropOffs(entity, prop);
+    new offset = GetEntSendPropOffs(entity, prop);
 
-	return GetEntData(entity, offset + 3, 1);
+    return GetEntData(entity, offset + 3, 1);
 }
 
 /**
