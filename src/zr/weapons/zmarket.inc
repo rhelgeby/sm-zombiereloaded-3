@@ -787,6 +787,7 @@ ZMarketMenuTypeWeapons(client)
     decl String:typeweapon[WEAPONS_MAX_LENGTH];
     decl String:typeweapondisplay[MENU_LINE_REG_LENGTH];
     decl String:typeweaponentity[WEAPONS_MAX_LENGTH];
+    decl String:displayname[MENU_LINE_REG_LENGTH];
     decl String:display[MENU_LINE_BIG_LENGTH];
 
     // Get an array populated with all weapons of the given type.
@@ -806,6 +807,13 @@ ZMarketMenuTypeWeapons(client)
 
         // Get entity name of weapon.
         WeaponsGetEntity(weaponindex, typeweaponentity, sizeof(typeweaponentity));
+
+        // Get display name of weapon.
+        WeaponsGetZMarketName(weaponindex, displayname, sizeof(displayname));
+
+        // Use display name if set, use name otherwise.
+        if (!strlen(displayname))
+            strcopy(displayname, sizeof(displayname), typeweapon);
 
         // Check if client is buying the weapon or ammo for it, and get the price of the item.
         new bool:hasweapon = WeaponsClientHasWeapon(client, typeweaponentity);
@@ -827,7 +835,7 @@ ZMarketMenuTypeWeapons(client)
             itemprice = WeaponsGetAmmoPrice(weaponindex);
 
             // Tell client they are buying ammo.
-            Format(typeweapondisplay, sizeof(typeweapondisplay), "%s %t", typeweapon, "Weapons menu zmarket types weapon ammo");
+            Format(typeweapondisplay, sizeof(typeweapondisplay), "%s %t", displayname, "Weapons menu zmarket types weapon ammo");
         }
 
         // If the itemprice is invalid, then set to known integer to be later replaced.
@@ -842,10 +850,10 @@ ZMarketMenuTypeWeapons(client)
         new bool:restricted = RestrictIsWeaponRestricted(weaponindex);
 
         // If weapon is restricted then format "[]" around it.
-        strcopy(typeweapondisplay, sizeof(typeweapondisplay), typeweapon);
+        strcopy(typeweapondisplay, sizeof(typeweapondisplay), displayname);
         if (restricted)
         {
-            Format(typeweapondisplay, sizeof(typeweapondisplay), "[%s]", typeweapon);
+            Format(typeweapondisplay, sizeof(typeweapondisplay), "[%s]", displayname);
         }
 
         // DO PURCHASE MAX STUFF HERE.

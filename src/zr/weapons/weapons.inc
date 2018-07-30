@@ -60,6 +60,7 @@ enum WeaponsData
     WEAPONS_DATA_AMMOTYPE,
     WEAPONS_DATA_AMMOPRICE,
     WEAPONS_DATA_KNOCKBACK,
+    WEAPONS_DATA_ZMARKETNAME,
     WEAPONS_DATA_ZMARKETPRICE,
     WEAPONS_DATA_ZMARKETPURCHASEMAX,
     WEAPONS_DATA_ZMARKETCOMMAND,
@@ -256,6 +257,7 @@ WeaponsCacheData()
         decl String:weaponentity[CONFIG_MAX_LENGTH];
         decl String:weapontype[CONFIG_MAX_LENGTH];
         decl String:ammotype[CONFIG_MAX_LENGTH];
+        decl String:zmarketname[CONFIG_MAX_LENGTH];
         decl String:zmarketcommand[CONFIG_MAX_LENGTH];
 
         // General
@@ -268,13 +270,14 @@ WeaponsCacheData()
         new bool:toggleable = ConfigKvGetStringBool(kvWeapons, "toggleable", "yes");
 
         // Weapon Ammo (core)
-    	KvGetString(kvWeapons, "ammotype", ammotype, sizeof(ammotype));
-    	new ammoprice = KvGetNum(kvWeapons, "ammoprice", -1);
+        KvGetString(kvWeapons, "ammotype", ammotype, sizeof(ammotype));
+        new ammoprice = KvGetNum(kvWeapons, "ammoprice", -1);
 
         // Knockback (module)
         new Float:knockback = KvGetFloat(kvWeapons, "knockback", 1.0);
 
         // ZMarket (module)
+        KvGetString(kvWeapons, "zmarketname", zmarketname, sizeof(zmarketname), "");
         new zmarketprice = KvGetNum(kvWeapons, "zmarketprice", -1);
         new zmarketpurchasemax = KvGetNum(kvWeapons, "zmarketpurchasemax", -1);
         KvGetString(kvWeapons, "zmarketcommand", zmarketcommand, sizeof(zmarketcommand), "");
@@ -290,12 +293,13 @@ WeaponsCacheData()
         PushArrayString(arrayWeapon, ammotype);             // Index: 6
         PushArrayCell(arrayWeapon, ammoprice);              // Index: 7
         PushArrayCell(arrayWeapon, knockback);              // Index: 8
-        PushArrayCell(arrayWeapon, zmarketprice);           // Index: 9
-        PushArrayCell(arrayWeapon, zmarketpurchasemax);     // Index: 10
-        PushArrayString(arrayWeapon, zmarketcommand);         // Index: 11
+        PushArrayString(arrayWeapon, zmarketname);          // Index: 9
+        PushArrayCell(arrayWeapon, zmarketprice);           // Index: 10
+        PushArrayCell(arrayWeapon, zmarketpurchasemax);     // Index: 11
+        PushArrayString(arrayWeapon, zmarketcommand);       // Index: 12
 
         // Initialize other stored weapon info here.
-        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 12
+        PushArrayCell(arrayWeapon, restrictdefault);        // Index: 13
     }
 
     // We're done with this file now, so we can close it.
@@ -326,7 +330,7 @@ WeaponsClientInit(client)
 /**
  * Called once a client's saved cookies have been loaded from the database.
  *
- * @param client		Client index.
+ * @param client    The client index.
  */
 WeaponsOnCookiesCached(client)
 {
@@ -615,6 +619,21 @@ stock Float:WeaponsGetKnockback(index)
 
     // Return knockback multiplier of the weapon.
     return Float:GetArrayCell(arrayWeapon, _:WEAPONS_DATA_KNOCKBACK);
+}
+
+/**
+ * Gets the ZMarket name for the weapon.
+ * @param index     The weapon index.
+ * @param weapon    The string to return name in.
+ * @param maxlen    The max length of the string.
+ */
+stock WeaponsGetZMarketName(index, String:weapon[], maxlen)
+{
+    // Get array handle of weapon at given index.
+    new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
+
+    // Get the ZMarket name of the weapon.
+    GetArrayString(arrayWeapon, _:WEAPONS_DATA_ZMARKETNAME, weapon, maxlen);
 }
 
 /**
