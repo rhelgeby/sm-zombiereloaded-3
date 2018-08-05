@@ -152,7 +152,15 @@ ZHPOnClientInfected(client)
     }
     
     // Start repeating timer to update display.
-    tZHP[client] = CreateTimer(5.0, ZHPTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+    // Fix display timer in CS:GO panorama UI
+    if (g_Game == Game_CSGO)
+    {
+        tZHP[client] = CreateTimer(3.0, ZHPTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+    }
+    else
+    {
+        tZHP[client] = CreateTimer(5.0, ZHPTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+    }
 }
 
 /**
