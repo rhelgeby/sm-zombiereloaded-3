@@ -188,6 +188,13 @@ bool:ClassApplyModel(client, classindex, cachetype = ZR_CLASS_CACHE_PLAYER)
         }
     }
 
+    // Check if the model is precached.
+    if (!IsModelPrecached(modelpath))
+    {
+        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Warning: Model not precached, not applying model. \"%s\"", modelpath);
+        return true;
+    }
+
     SetEntityModel(client, modelpath);
     SetEntProp(client, Prop_Send, "m_nSkin", skinIndex);
 
