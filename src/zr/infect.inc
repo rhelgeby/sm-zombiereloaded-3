@@ -275,14 +275,35 @@ InfectOnClientTeam(client, team)
  */
 InfectOnClientSpawn(client)
 {
-    // Disable zombie flag on client.
-    g_bZombie[client] = false;
-
-    // Check if client is spawning on the terrorist team.
-    if (ZRIsClientOnTeam(client, CS_TEAM_T) && InfectHasZombieSpawned())
+    // If the zombie has spawned.
+    if (InfectHasZombieSpawned())
     {
-        CS_SwitchTeam(client, CS_TEAM_CT);
-        CS_RespawnPlayer(client);
+        // Check if late spawn protection is enabled.
+        new bool:latespawn = GetConVarBool(g_hCvarsList[CVAR_INFECT_LATE_SPAWN]);
+        if (latespawn)
+        {
+            // Enable zombie flag on client.
+            g_bZombie[client] = true;
+
+            // Swap the client to terrorists.
+            if (ZRIsClientOnTeam(client, CS_TEAM_CT))
+            {
+                CS_SwitchTeam(client, CS_TEAM_T);
+                CS_RespawnPlayer(client);
+            }
+        }
+        else
+        {
+            // Disable zombie flag on client.
+            g_bZombie[client] = false;
+
+            // Swap the client to counter-terrorists.
+            if (ZRIsClientOnTeam(client, CS_TEAM_T))
+            {
+                CS_SwitchTeam(client, CS_TEAM_CT);
+                CS_RespawnPlayer(client);
+            }
+        }
     }
 
     InfectUnglitchKevlar(client);
