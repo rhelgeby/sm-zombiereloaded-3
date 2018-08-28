@@ -30,7 +30,7 @@
  */
 enum RespawnCondition
 {
-    Repsawn_Default = -1,       /** Let ZR decide according to its settings. */
+    Respawn_Default = -1,       /** Let ZR decide according to its settings. */
     Respawn_Human = 0,          /** Respawn as a human. */
     Respawn_Zombie,             /** Respawn as a zombie. */
     Respawn_ZombieIfSuicide     /** Respawn as a zombie if killed by world damage. */

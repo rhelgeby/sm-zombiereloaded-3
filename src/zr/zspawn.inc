@@ -207,7 +207,6 @@ ZSpawnOnRoundEnd()
  */
 bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
 {
-
     // If zspawn is disabled, then stop.
     new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
     if (!force && !zspawn)
