@@ -107,7 +107,6 @@ enum CvarsList
     Handle:CVAR_INFECT_WEAPONS_DROP,
     Handle:CVAR_INFECT_KNIFE_COOLDOWN,
     Handle:CVAR_INFECT_MAX_DISTANCE,
-    Handle:CVAR_INFECT_LATE_SPAWN,
     Handle:CVAR_INFECT_MZOMBIE_MODE,
     Handle:CVAR_INFECT_MZOMBIE_RATIO,
     Handle:CVAR_INFECT_MZOMBIE_MIN,
@@ -336,7 +335,6 @@ CvarsCreate()
     g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]              =    CreateConVar("zr_infect_weapons_drop",         "1",                                "Force player to drop all weapons on infect, disabling this will strip weapons instead.");
     g_hCvarsList[CVAR_INFECT_KNIFE_COOLDOWN]            =    CreateConVar("zr_infect_knife_cooldown",       "1.0",                              "Time in seconds during which knife can not be used after becoming a zombie.");
     g_hCvarsList[CVAR_INFECT_MAX_DISTANCE]              =    CreateConVar("zr_infect_max_distance",         "80.0",                             "The maximum allowed distance between a client and an attacker for a successful infection. [0.0 = Disabled]");
-    g_hCvarsList[CVAR_INFECT_LATE_SPAWN]                =    CreateConVar("zr_infect_late_spawn",           "0",                                "Should people spawning after mother infection also be infected, or should nothing happen. [0.0 = Disabled]");
 
     // Effects
     g_hCvarsList[CVAR_INFECT_EXPLOSION]                 =    CreateConVar("zr_infect_explosion",            "1",                                "Disabling this will disable the fireball, smoke cloud, and sparks in a more efficient way.");
