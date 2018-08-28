@@ -26,6 +26,16 @@
  */
 
 /**
+ * Conditions for respawning players.
+ */
+enum ZSpawnCondition
+{
+    ZSpawn_Block = -1,          /** Let ZR decide according to its settings. */
+    ZSpawn_Human = 0,           /** Respawn as a human. */
+    ZSpawn_Zombie               /** Respawn as a zombie. */
+}
+
+/**
  * Global variable to store infect timer handle.
  */
 new Handle:tZSpawn = INVALID_HANDLE;
@@ -104,6 +114,48 @@ ZSpawnOnClientDeath(client)
 {
     // Add client to the SteamID cache.
     SteamidCacheAddClient(g_hZSpawnSteamIDCache, client);
+}
+
+/**
+ * Client is spawning into the game.
+ *
+ * @param client    The client index.
+ */
+ZSpawnOnClientSpawn(client)
+{
+    if (InfectHasZombieSpawned())
+    {
+        // Get our zspawn condition.
+        new ZSpawnCondition:condition = GetZSpawnCondition();
+
+        switch(condition)
+        {
+            case ZSpawn_Human:
+            {
+                // Disable zombie flag on client.
+                g_bZombie[client] = false;
+
+                // Check if client is spawning on the terrorists team.
+                if (ZRIsClientOnTeam(client, CS_TEAM_T))
+                {
+                    CS_SwitchTeam(client, CS_TEAM_CT);
+                    CS_RespawnPlayer(client);
+                }
+            }
+            case ZSpawn_Zombie:
+            {
+                // Enable zombie flag on client.
+                g_bZombie[client] = true;
+
+                // Check if client is spawning on the counter-terrorists team.
+                if (ZRIsClientOnTeam(client, CS_TEAM_CT))
+                {
+                    CS_SwitchTeam(client, CS_TEAM_T);
+                    CS_RespawnPlayer(client);
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -253,48 +305,38 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
 
     if (!force)
     {
-        // Check if zspawn override is enabled, and if so get overidden value.
-        new bool:teamoverride = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]);
-        teamzombie = teamoverride ? GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]) : GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+        // Get our zspawn condition.
+        new ZSpawnCondition:condition = GetZSpawnCondition();
 
-        // Block is the time limit is up.
-        new bool:zspawntimelimit = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]);
-        if (zspawntimelimit)
+        switch(condition)
         {
-            if (tZSpawn == INVALID_HANDLE)
+            case ZSpawn_Block:
             {
-                new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
-                switch(zspawntimelimitzombie)
-                {
-                    case -1:
-                    {
-                        // Get timelimit
-                        new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
+                // Get timelimit.
+                new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
 
-                        // Tell client the timelimit for this command has expired.
-                        TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
-                        return false;
-                    }
-                    case 0:
-                    {
-                        teamzombie = false;
-                    }
-                    case 1:
-                    {
-                        teamzombie = true;
-                    }
-                }
+                // Tell client the timelimit for this command has expired.
+                TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
+                return false;
+            }
+            case ZSpawn_Human:
+            {
+                teamzombie = false;
+            }
+            case ZSpawn_Zombie:
+            {
+                teamzombie = true;
             }
         }
 
-        // Client has been infected this round, respawning as a zombie
+        // Client has been infected this round, respawning as a zombie.
         if(g_bZSpawnClientInfected[client])
             teamzombie = true;
     }
     else
     {
         // Use the override team in the function if were forcing the spawn.
-         teamzombie = zombie;
+        teamzombie = zombie;
     }
 
     // Tell respawn module to respawn client.
@@ -487,4 +529,51 @@ public Action:ZSpawnTimer(Handle:timer)
 {
     // Reset timer handle.
     tZSpawn = INVALID_HANDLE;
+}
+
+/**
+ * Get ZSpawn condition.
+ */
+ZSpawnCondition:GetZSpawnCondition()
+{
+    new ZSpawnCondition:condition;
+
+    // Check if zspawn override is enabled, and if so use overriden value.
+    if (GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]))
+    {
+        // Convert boolean to zspawn condition.
+        condition = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]) ? ZSpawn_Zombie : ZSpawn_Human;
+    }
+    else
+    {
+        // Convert boolean to zspawn condition.
+        condition = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]) ? ZSpawn_Zombie : ZSpawn_Human;
+    }
+
+    // Check if zspawn timelimit is enabled.
+    if (GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]))
+    {
+        // Check if zspawn timelimit is expired.
+        if (!ZRIsTimerRunning(tZSpawn))
+        {
+            new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
+            switch(zspawntimelimitzombie)
+            {
+                case -1:
+                {
+                    condition = ZSpawn_Block;
+                }
+                case 0:
+                {
+                    condition = ZSpawn_Human;
+                }
+                case 1:
+                {
+                    condition = ZSpawn_Zombie;
+                }
+            }
+        }
+    }
+
+    return condition;
 }
