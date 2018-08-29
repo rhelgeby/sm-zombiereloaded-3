@@ -26,13 +26,13 @@
  */
 
 /**
- * Conditions for respawning players.
+ * Conditions for zspawning players.
  */
 enum ZSpawnCondition
 {
-    ZSpawn_Block = -1,          /** Let ZR decide according to its settings. */
-    ZSpawn_Human = 0,           /** Respawn as a human. */
-    ZSpawn_Zombie               /** Respawn as a zombie. */
+    ZSpawn_Block = -1,          /** Block ZSpawn. */
+    ZSpawn_Human = 0,           /** ZSpawn as a human. */
+    ZSpawn_Zombie               /** ZSpawn as a zombie. */
 }
 
 /**
@@ -130,7 +130,7 @@ ZSpawnOnClientSpawn(client)
 
         switch(condition)
         {
-            case ZSpawn_Human:
+            case ZSpawn_Human, ZSpawn_Block:
             {
                 // Disable zombie flag on client.
                 g_bZombie[client] = false;
