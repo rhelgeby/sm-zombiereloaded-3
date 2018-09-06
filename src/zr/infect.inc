@@ -278,6 +278,13 @@ InfectOnClientSpawn(client)
     // Disable zombie flag on client.
     g_bZombie[client] = false;
 
+    // Check if client is spawning on the terrorists team.
+    if (ZRIsClientOnTeam(client, CS_TEAM_T) && InfectHasZombieSpawned())
+    {
+        CS_SwitchTeam(client, CS_TEAM_CT);
+        CS_RespawnPlayer(client);
+    }
+
     InfectUnglitchKevlar(client);
 
     // Forward event to modules.

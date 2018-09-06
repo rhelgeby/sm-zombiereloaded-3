@@ -130,29 +130,10 @@ ZSpawnOnClientSpawn(client)
 
         switch(condition)
         {
-            case ZSpawn_Human, ZSpawn_Block:
-            {
-                // Disable zombie flag on client.
-                g_bZombie[client] = false;
-
-                // Check if client is spawning on the terrorists team.
-                if (ZRIsClientOnTeam(client, CS_TEAM_T))
-                {
-                    CS_SwitchTeam(client, CS_TEAM_CT);
-                    CS_RespawnPlayer(client);
-                }
-            }
             case ZSpawn_Zombie:
             {
-                // Enable zombie flag on client.
-                g_bZombie[client] = true;
-
-                // Check if client is spawning on the counter-terrorists team.
-                if (ZRIsClientOnTeam(client, CS_TEAM_CT))
-                {
-                    CS_SwitchTeam(client, CS_TEAM_T);
-                    CS_RespawnPlayer(client);
-                }
+                // Our client should be infected.
+                InfectHumanToZombie(client);
             }
         }
     }
@@ -559,15 +540,15 @@ ZSpawnCondition:GetZSpawnCondition()
             new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
             switch(zspawntimelimitzombie)
             {
-                case -1:
+                case ZSpawn_Block:
                 {
                     condition = ZSpawn_Block;
                 }
-                case 0:
+                case ZSpawn_Human:
                 {
                     condition = ZSpawn_Human;
                 }
-                case 1:
+                case ZSpawn_Zombie:
                 {
                     condition = ZSpawn_Zombie;
                 }
