@@ -123,7 +123,8 @@ ZSpawnOnClientDeath(client)
  */
 ZSpawnOnClientSpawn(client)
 {
-    if (InfectHasZombieSpawned())
+    // Check if client is spawning on a team.
+    if (ZRIsClientOnTeam(client) && InfectHasZombieSpawned())
     {
         // Get our zspawn condition.
         new ZSpawnCondition:condition = GetZSpawnCondition();
@@ -132,7 +133,7 @@ ZSpawnOnClientSpawn(client)
         {
             case ZSpawn_Zombie:
             {
-                // Our client should be infected.
+                // Infect client.
                 InfectHumanToZombie(client);
             }
         }
