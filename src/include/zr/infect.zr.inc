@@ -77,6 +77,14 @@ native bool ZR_InfectClient(int client, int attacker = -1, bool motherInfect = f
 native bool ZR_HumanClient(int client, bool respawn = false, bool protect = false);
 
 /**
+ * Called on infection timer to determine if timer should show.
+ *
+ * @return                  Plugin_Continue to allow timer. Anything else
+ *                          (Like Plugin_Handled) to block timer.
+ */
+forward Action ZR_OnInfectCountdown();
+
+/**
  * Called when a player is about to become a zombie.
  * Here you can modify any variable or block the infection entirely.
  *
