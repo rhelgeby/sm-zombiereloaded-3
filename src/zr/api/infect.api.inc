@@ -28,6 +28,7 @@
 /**
  * @section Global forward handles.
  */
+new Handle:g_hAPIFwdOnInfectCountdown = INVALID_HANDLE;
 new Handle:g_hAPIFwdOnClientInfect = INVALID_HANDLE;
 new Handle:g_hAPIFwdOnClientInfected = INVALID_HANDLE;
 new Handle:g_hAPIFwdOnClientHuman = INVALID_HANDLE;
@@ -51,6 +52,7 @@ APIInfectInit()
     CreateNative("ZR_HumanClient", APIHumanClient);
 
     // Forwards
+    g_hAPIFwdOnInfectCountdown = CreateGlobalForward("ZR_OnInfectCountdown", ET_Hook);
     g_hAPIFwdOnClientInfect = CreateGlobalForward("ZR_OnClientInfect", ET_Hook, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef);
     g_hAPIFwdOnClientInfected = CreateGlobalForward("ZR_OnClientInfected", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell);
     g_hAPIFwdOnClientHuman = CreateGlobalForward("ZR_OnClientHuman", ET_Hook, Param_CellByRef, Param_CellByRef, Param_CellByRef);
@@ -124,6 +126,20 @@ public APIHumanClient(Handle:plugin, numParams)
     APIValidateClientIndex(client, Condition_True);
 
     return InfectZombieToHuman(client, respawn, protect);
+}
+
+/**
+ * Called on infection timer to determine if timer should show.
+ */
+Action:APIOnInfectCountdown()
+{
+    // Start forward call.
+    Call_StartForward(g_hAPIFwdOnInfectCountdown);
+
+    // Get what they returned.
+    new Action:result;
+    Call_Finish(result);
+    return result;
 }
 
 /**

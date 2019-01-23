@@ -694,8 +694,12 @@ public Action:InfectCountdown(Handle:timer)
         return Plugin_Stop;
     }
 
-    // Print the countdown text to the clients.
-    TranslationPrintCenterTextAll(false, "Infect countdown", RoundToNearest(length - counter));
+    // Ask plugin API if timer should be shown.
+    if (APIOnInfectCountdown() == Plugin_Continue)
+    {
+        // Print the countdown text to the clients.
+        TranslationPrintCenterTextAll(false, "Infect countdown", RoundToNearest(length - counter));
+    }
 
     counter++;
 
