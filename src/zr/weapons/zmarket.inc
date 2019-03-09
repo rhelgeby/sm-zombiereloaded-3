@@ -610,7 +610,7 @@ ZMarketMenuLoadoutWeapons(client, WeaponsSlot:slot)
         if(wslot != slot)
             continue;
 
-        WeaponsGetName(weaponindex, weaponname, sizeof(weaponname), true);
+        WeaponsGetName(weaponindex, weaponname, sizeof(weaponname), (g_Game == Game_CSGO));
 
         // Get restricted status on the weapon.
         new bool:restricted = RestrictIsWeaponRestricted(weaponindex);
@@ -802,7 +802,7 @@ ZMarketMenuTypeWeapons(client)
         new weaponindex = GetArrayCell(arrayTypeWeapons, x);
 
         // Get name of weapon.
-        WeaponsGetName(weaponindex, typeweapon, sizeof(typeweapon), true);
+        WeaponsGetName(weaponindex, typeweapon, sizeof(typeweapon), (g_Game == Game_CSGO));
 
         // Get entity name of weapon.
         WeaponsGetEntity(weaponindex, typeweaponentity, sizeof(typeweaponentity));

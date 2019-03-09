@@ -471,7 +471,7 @@ stock WeaponsEntityToDisplay(const String:entityname[], String:display[], displa
         }
 
         // The entity names match, so return display.
-        WeaponsGetName(x, display, displaymaxlen, true);
+        WeaponsGetName(x, display, displaymaxlen, (g_Game == Game_CSGO));
 
         // Return the weapon index.
         return x;
