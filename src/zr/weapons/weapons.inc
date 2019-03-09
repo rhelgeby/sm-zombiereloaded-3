@@ -897,6 +897,24 @@ stock WeaponsRemoveAllClientWeapons(client, bool:weaponsdrop)
     // Remove left-over projectiles.
     WeaponsClearClientWeaponSlot(client, Slot_Projectile, weaponsdrop);
 
+    // Clear all higher slots in csgo. Damn game keeps adding sloots.
+    if (g_Game == Game_CSGO)
+    {
+        for (new slot = 6; slot < 20; slot++)
+        {
+            new weapon = GetPlayerWeaponSlot(client, slot);
+            while (weapon != -1)
+            {
+                // Strip the weapon.
+                RemovePlayerItem(client, weapon);
+                AcceptEntityInput(weapon, "Kill");
+
+                // Find next weapon.
+                weapon = GetPlayerWeaponSlot(client, slot);
+            }
+        }
+    }
+
     // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
     GivePlayerItem(client, "weapon_knife");
 }
