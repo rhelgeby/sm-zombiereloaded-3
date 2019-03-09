@@ -239,7 +239,7 @@ WeaponsMenuTypeWeapons(client)
         new weaponindex = GetArrayCell(arrayTypeWeapons, x);
 
         // Get name of weapon.
-        WeaponsGetName(weaponindex, typeweapon, sizeof(typeweapon));
+        WeaponsGetName(weaponindex, typeweapon, sizeof(typeweapon), true);
         strcopy(display, sizeof(display), typeweapon);
 
         if (RestrictIsWeaponRestricted(weaponindex))

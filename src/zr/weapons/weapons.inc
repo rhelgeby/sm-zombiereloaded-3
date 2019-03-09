@@ -471,7 +471,7 @@ stock WeaponsEntityToDisplay(const String:entityname[], String:display[], displa
         }
 
         // The entity names match, so return display.
-        WeaponsGetName(x, display, displaymaxlen);
+        WeaponsGetName(x, display, displaymaxlen, true);
 
         // Return the weapon index.
         return x;
@@ -497,13 +497,26 @@ stock bool:WeaponsIsWeaponValid(const String:weapon[])
  * @param weapon    The string to return name in.
  * @param maxlen    The max length of the string.
  */
-stock WeaponsGetName(index, String:weapon[], maxlen)
+stock WeaponsGetName(index, String:weapon[], maxlen, bool zmarket = false)
 {
     // Get array handle of weapon at given index.
     new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
 
+    new String:weaponName[WEAPONS_MAX_LENGTH];
+    new String:marketName[WEAPONS_MAX_LENGTH];
+
     // Get weapon name.
-    GetArrayString(arrayWeapon, _:WEAPONS_DATA_NAME, weapon, maxlen);
+    GetArrayString(arrayWeapon, _:WEAPONS_DATA_NAME, weaponName, maxlen);
+
+    // Get weapon zmarket name.
+    if (zmarket)
+        GetArrayString(arrayWeapon, _:WEAPONS_DATA_ZMARKETNAME, marketName, maxlen);
+
+    // Are we in zmarket, and is our name valid?
+    if (zmarket && strlen(marketName))
+        strcopy(weapon, maxlen, marketName);
+    else
+        strcopy(weapon, maxlen, weaponName);
 }
 
 /**
