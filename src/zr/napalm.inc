@@ -130,7 +130,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[], dmg_health)
     }
 
     // If weapon is a grenade, then ignite player.
-    if (StrEqual(weapon, "hegrenade", false))
+    if (StrEqual(weapon, "hegrenade", false) || StrEqual(weapon, "inferno", false))
     {
         new bool:reset = GetConVarBool(g_hCvarsList[CVAR_NAPALM_TIME_RESET]);
         new flags = GetEntityFlags(client);
