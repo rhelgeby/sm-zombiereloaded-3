@@ -116,11 +116,11 @@ ZSpawnOnClientDeath(client)
     SteamidCacheAddClient(g_hZSpawnSteamIDCache, client);
 }
 /**
- * Client is joining a team/class.
+ * Client joined a class.
  *
  * @param client    The client index.
  */
-ZSpawnOnClientTeam(client)
+ZSpawnOnClientClassPost(client)
 {
     // Is auto zspawn enabled and is the client death?
     new bool:autozspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_AUTO]);
@@ -136,7 +136,6 @@ ZSpawnOnClientTeam(client)
                 // Respawn client.
                 CS_RespawnPlayer(client);
             }
-
         }
     }
 }

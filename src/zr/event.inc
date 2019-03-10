@@ -154,11 +154,9 @@ public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadc
     InfectOnClientTeam(index, team);
     ImmunityOnClientTeam(index);
 
-    // Bots dont call `joinclass`. So call here.
+    // Fire post joinclass command. (Bots dont joinclass, so we fire it from here instead.)
     if (IsFakeClient(index))
-    {
-        ZSpawnOnClientTeam(index);
-    }
+        CreateTimer(0.1, CommandPlayerClassPost, index);
 
     return Plugin_Handled;
 }
@@ -340,9 +338,25 @@ public Action:EventPlayerJumpPost(Handle:timer, any:client)
  */
 public Action:CommandPlayerClass(int client, const char[] command, int argc)
 {
-    if (IsFakeClient(client))
-        return;
+    // Fire post joinclass command.
+    CreateTimer(0.1, CommandPlayerClassPost, client);
+}
 
-    // Forward event to modules.
-    ZSpawnOnClientTeam(client);
+/**
+ * Command callback (joinclass)
+ * Client is joining a class. *Post
+ *
+ * @param client    The client.
+ * @param command   The command performed.
+ * @param argc      The amount of arguments.
+ */
+public Action:CommandPlayerClassPost(Handle:timer, any:client)
+{
+    // If client isn't in-game, then stop.
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+
+    ZSpawnOnClientClassPost(client);
 }
