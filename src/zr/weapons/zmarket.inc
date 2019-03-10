@@ -999,7 +999,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
 
     // Get the display name for the weapon.
     decl String:weapondisplay[WEAPONS_MAX_LENGTH];
-    WeaponsGetName(weaponindex, weapondisplay, sizeof(weapondisplay));
+    WeaponsGetName(weaponindex, weapondisplay, sizeof(weapondisplay), (g_Game == Game_CSGO));
 
     // Check to make sure the weapon isn't restricted.
     new bool:restricted = RestrictIsWeaponRestricted(weaponindex);
