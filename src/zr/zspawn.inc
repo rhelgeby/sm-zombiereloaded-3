@@ -115,6 +115,31 @@ ZSpawnOnClientDeath(client)
     // Add client to the SteamID cache.
     SteamidCacheAddClient(g_hZSpawnSteamIDCache, client);
 }
+/**
+ * Client is joining a team/class.
+ *
+ * @param client    The client index.
+ */
+ZSpawnOnClientTeam(client)
+{
+    // Is auto zspawn enabled and is the client death?
+    new bool:autozspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_AUTO]);
+    if (autozspawn && !IsPlayerAlive(client))
+    {
+        // Get our zspawn condition.
+        new ZSpawnCondition:condition = GetZSpawnCondition();
+
+        switch(condition)
+        {
+            case ZSpawn_Human, ZSpawn_Zombie:
+            {
+                // Respawn client.
+                CS_RespawnPlayer(client);
+            }
+
+        }
+    }
+}
 
 /**
  * Client is spawning into the game.

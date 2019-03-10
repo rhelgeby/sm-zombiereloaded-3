@@ -174,6 +174,7 @@ enum CvarsList
     Handle:CVAR_VOL_UPDATE_INTERVAL,
     Handle:CVAR_VOL_TRIGGER_INTERVAL,
     Handle:CVAR_ZSPAWN,
+    Handle:CVAR_ZSPAWN_AUTO,
     Handle:CVAR_ZSPAWN_TEAM_OVERRIDE,
     Handle:CVAR_ZSPAWN_TEAM_ZOMBIE,
     Handle:CVAR_ZSPAWN_BLOCK_REJOIN,
@@ -498,6 +499,7 @@ CvarsCreate()
     // ZSpawn (module)
     // ===========================
     g_hCvarsList[CVAR_ZSPAWN]                           =    CreateConVar("zr_zspawn",                      "1",        "Allow players to spawn into the game late.");
+    g_hCvarsList[CVAR_ZSPAWN_AUTO]                      =    CreateConVar("zr_zspawn_auto",                 "1",        "Should zspawn spawn joining players?");
 
     g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]             =    CreateConVar("zr_zspawn_team_override",        "1",        "Override spawn team when spawning by means of ZSpawn.");
     g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]               =    CreateConVar("zr_zspawn_team_zombie",          "0",        "Spawn player on zombie team when spawning by means of ZSpawn. [Dependency: zr_zspawn_team_override | Override: zr_respawn_team_zombie]");

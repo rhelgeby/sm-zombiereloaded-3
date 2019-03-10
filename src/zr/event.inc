@@ -54,6 +54,9 @@ EventHook(bool:unhook = false)
         UnhookEvent("player_death", EventPlayerDeath);
         UnhookEvent("player_jump", EventPlayerJump);
 
+        // Unhook all listeners.
+        RemoveCommandListener(CommandPlayerClass, "joinclass");
+
         // Stop after unhooking events.
         return;
     }
@@ -67,6 +70,9 @@ EventHook(bool:unhook = false)
     HookEvent("player_hurt", EventPlayerHurt);
     HookEvent("player_death", EventPlayerDeath);
     HookEvent("player_jump", EventPlayerJump);
+
+    // Hook all listeners used by plugin.
+    AddCommandListener(CommandPlayerClass, "joinclass");
 }
 
 /**
@@ -147,6 +153,12 @@ public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadc
     // Forward event to modules.
     InfectOnClientTeam(index, team);
     ImmunityOnClientTeam(index);
+
+    // Bots dont call `joinclass`. So call here.
+    if (IsFakeClient(index))
+    {
+        ZSpawnOnClientTeam(index);
+    }
 
     return Plugin_Handled;
 }
@@ -316,4 +328,21 @@ public Action:EventPlayerJumpPost(Handle:timer, any:client)
 
     // Forward event to modules.
     JumpBoostOnClientJumpPost(client);
+}
+
+/**
+ * Command callback (joinclass)
+ * Client is joining a class.
+ *
+ * @param client    The client.
+ * @param command   The command performed.
+ * @param argc      The amount of arguments.
+ */
+public Action:CommandPlayerClass(int client, const char[] command, int argc)
+{
+    if (IsFakeClient(client))
+        return;
+
+    // Forward event to modules.
+    ZSpawnOnClientTeam(client);
 }
