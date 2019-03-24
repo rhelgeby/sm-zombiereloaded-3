@@ -155,7 +155,7 @@ public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadc
     ImmunityOnClientTeam(index);
 
     // Fire post joinclass command. (Bots dont joinclass, so we fire it from here instead.)
-    if (IsFakeClient(index))
+    if (IsFakeClient(index) && !IsClientSourceTV(index))
         CreateTimer(0.1, CommandPlayerClassPost, index);
 
     return Plugin_Handled;
