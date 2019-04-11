@@ -198,7 +198,7 @@
 
 		"zmarketname"		"CZ75-Auto"
 		"zmarketprice"		"500"
-		"zmarketcommand"	"sm_usp"
+		"zmarketcommand"	"sm_cz75"
 	}
 
 	"Tec-9"
