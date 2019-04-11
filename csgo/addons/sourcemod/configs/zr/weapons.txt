@@ -25,7 +25,7 @@
 // Notes:
 // * Omitting and option will disable the feature for the weapon.
 
-"weapons" // Counter-Strike: Source weapons
+"weapons" // Counter-Strike: Global Offensive weapons
 {
 	"Glock18"
 	{
@@ -71,7 +71,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_357sig"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -100,7 +100,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_357sig_small"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -147,7 +147,7 @@
 	{
 		// General
 
-		"weaponentity"		"weapon_hkp2000"
+		"weaponentity"		"weapon_p250"
 		"weapontype"		"All, Pistol"
 		"weaponslot"		"1"
 
@@ -158,7 +158,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_357sig_p250"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -187,7 +187,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_357sig_min"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -245,7 +245,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_57mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -274,7 +274,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_50AE"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -303,7 +303,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_50AE"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -332,7 +332,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_buckshot"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -350,7 +350,7 @@
 	{
 		// General
 
-		"weaponentity"		""
+		"weaponentity"		"weapon_xm1014"
 		"weapontype"		"All, Shotgun"
 		"weaponslot"		"0"
 
@@ -361,7 +361,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_buckshot"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -390,7 +390,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_buckshot"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -419,7 +419,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_buckshot"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -448,7 +448,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_45acp"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -564,7 +564,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_45acp"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -593,7 +593,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_57mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -651,7 +651,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_556mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -680,7 +680,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_556mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -709,7 +709,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_762mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -738,7 +738,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_556mm_small"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -767,7 +767,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_556mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -796,7 +796,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_762mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -825,7 +825,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_762mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -854,7 +854,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_556mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -883,7 +883,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_338mag"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -912,7 +912,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_762mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -941,7 +941,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_762mm"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -970,7 +970,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_556mm_box"
 		"ammoprice"		"100"
 
 		// Knockback (module)
@@ -999,7 +999,7 @@
 
 		// Weapon Ammo (core)
 
-		"ammotype"		"ammo_9mm"
+		"ammotype"		"ammo_556mm_box"
 		"ammoprice"		"100"
 
 		// Knockback (module)
