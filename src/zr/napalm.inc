@@ -287,6 +287,7 @@ stock NapalmIgniteEntity(client, Float:time)
         if (StrEqual(classname, "entityflame", false))
         {
             SetEntPropFloat(fire, Prop_Data, "m_flLifetime", GetGameTime() + time);
+            APIOnClientIgnited(client, time);
             return;
         }
     }
