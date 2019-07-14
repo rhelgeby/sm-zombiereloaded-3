@@ -271,6 +271,13 @@ stock NapalmExtinguishEntity(client)
  */
 stock NapalmIgniteEntity(client, Float:time)
 {
+    new Action:result = APIOnClientIgnite(client, time);
+    // Check if infection should be blocked.
+    if (result == Plugin_Handled)
+    {
+        return;
+    }
+
     new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
     if (IsValidEntity(fire))
     {
@@ -286,4 +293,5 @@ stock NapalmIgniteEntity(client, Float:time)
 
     // No flame entity found, ignite client.
     IgniteEntity(client, time);
+    APIOnClientIgnited(client, time);
 }
