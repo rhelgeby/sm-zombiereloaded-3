@@ -122,9 +122,22 @@ ZSpawnOnClientDeath(client)
  */
 ZSpawnOnClientClassPost(client)
 {
-    // Is auto zspawn enabled and is the client death?
+    // If zspawn is disabled, then stop.
+    new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
+    if (!zspawn)
+    {
+        return;
+    }
+
+    // If auto zspawn is disabled, then stop.
     new bool:autozspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_AUTO]);
-    if (autozspawn && !IsPlayerAlive(client) && !IsClientSourceTV(client))
+    if (!autozspawn)
+    {
+        return;
+    }
+
+    // Is the client death and not source-tv?
+    if (!IsPlayerAlive(client) && !IsClientSourceTV(client))
     {
         // Get our zspawn condition.
         new ZSpawnCondition:condition = GetZSpawnCondition();
