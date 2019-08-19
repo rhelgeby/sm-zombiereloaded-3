@@ -33,7 +33,7 @@
  #endif
 #endif
 
-//#tryinclude "sourcetvmanager.inc"
+#tryinclude "sourcetvmanager.inc"
 
 /* Restore old REQUIRE_EXTENSIONS value if necessary */
 #if defined TEMP_REQUIRE_EXTENSIONS
