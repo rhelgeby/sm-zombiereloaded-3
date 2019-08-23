@@ -88,6 +88,7 @@ enum WeaponsSlot
     Slot_Projectile     = 3,    /** Projectile (grenades, flashbangs, etc) weapon slot. */
     Slot_Explosive      = 4,    /** Explosive (c4) weapon slot. */
     Slot_NVGs           = 5,    /** NVGs (fake) equipment slot. */
+    Slot_DangerZone     = 11,   /** Dangerzone equipment slot. (CSGO only) */
 }
 
 /**
@@ -910,22 +911,14 @@ stock WeaponsRemoveAllClientWeapons(client, bool:weaponsdrop)
     // Remove left-over projectiles.
     WeaponsClearClientWeaponSlot(client, Slot_Projectile, weaponsdrop);
 
-    // Clear all higher slots in csgo. Damn game keeps adding sloots.
+    // Remove left-over explosives.
+    WeaponsClearClientWeaponSlot(client, Slot_Explosive, weaponsdrop);
+
+    // These only exist on CSGO.
     if (g_Game == Game_CSGO)
     {
-        for (new slot = 6; slot < 20; slot++)
-        {
-            new weapon = GetPlayerWeaponSlot(client, slot);
-            while (weapon != -1)
-            {
-                // Strip the weapon.
-                RemovePlayerItem(client, weapon);
-                AcceptEntityInput(weapon, "Kill");
-
-                // Find next weapon.
-                weapon = GetPlayerWeaponSlot(client, slot);
-            }
-        }
+        // Remove left-over dangerzone items.
+        WeaponsClearClientWeaponSlot(client, Slot_DangerZone, false);
     }
 
     // Give zombie a new knife. (If you leave the old one there will be glitches with the knife positioning)
