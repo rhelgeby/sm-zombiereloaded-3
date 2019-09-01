@@ -232,7 +232,7 @@ RoundEndDisplayStats()
 {
     for(int player = 1; player <= MaxClients; player++)
     {
-        if(!IsClientInGame(player))
+        if(!IsClientInGame(player) || (IsFakeClient(player) && !IsClientSourceTV(player)))
             continue;
 
         static char sPlayerID[8];
