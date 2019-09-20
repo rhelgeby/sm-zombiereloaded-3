@@ -122,6 +122,12 @@ ZSpawnOnClientDeath(client)
  */
 ZSpawnOnClientClassPost(client)
 {
+    // If client isn't on a team, then stop.
+    if (!ZRIsClientOnTeam(client))
+    {
+        return;
+    }
+
     // If zspawn is disabled, then stop.
     new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
     if (!zspawn)
