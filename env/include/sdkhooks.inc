@@ -408,10 +408,11 @@ native void SDKUnhook(int entity, SDKHookType type, SDKHookCB callback);
  * @param weapon         Weapon index (orangebox and later) or -1 for unspecified
  * @param damageForce    Velocity of damage force
  * @param damagePosition Origin of damage
+ * @param damageCustom   User custom
  */
 native void SDKHooks_TakeDamage(int entity, int inflictor, int attacker,
 		float damage, int damageType=DMG_GENERIC, int weapon=-1,
-		const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR);
+		const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, int damageCustom=0);
 
 /**
  * Forces a client to drop the specified weapon

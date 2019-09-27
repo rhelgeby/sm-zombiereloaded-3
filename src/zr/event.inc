@@ -287,6 +287,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     VolOnPlayerDeath(index);
     RoundEndOnClientDeath();
     ImmunityOnClientDeath(index);
+    KnockbackOnClientDeath(index);
 }
 
 /**

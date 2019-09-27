@@ -35,6 +35,7 @@
 #include <zr/respawn.zr>
 #include <zr/class.zr>
 #include <zr/napalm.zr>
+#include <zr/knockback.zr>
 
 public SharedPlugin __pl_zombiereloaded =
 {
@@ -64,5 +65,8 @@ public void __pl_zombiereloaded_SetNTVOptional()
     MarkNativeAsOptional("ZR_RespawnClient");
     MarkNativeAsOptional("ZR_SetKilledByWorld");
     MarkNativeAsOptional("ZR_GetKilledByWorld");
+
+    MarkNativeAsOptional("ZR_SetClientKnockbackMaxVelocity");
+    MarkNativeAsOptional("ZR_SetClientKnockbackScale");
 }
 #endif

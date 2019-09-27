@@ -417,4 +417,5 @@ public OnEntitySpawned(entity, const String:classname[])
  */
 public void OnGameFrame()
 {
+    KnockbackOnGameFrame();
 }

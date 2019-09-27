@@ -225,7 +225,7 @@ bool ImmunityOnClientTraceAttack(int client, int &attacker, int &inflictor, floa
             }
 
             // Since damage is blocked, trigger knock back hurt event manually.
-            DamageOnTakeDamageAlivePost(client, attacker, inflictor, damage, damagetype, -1, NULL_VECTOR, NULL_VECTOR, 0);
+            KnockbackOnTakeDamageAlivePost(client, attacker, inflictor, damage, damagetype, -1, NULL_VECTOR, NULL_VECTOR, 0);
 
             // Block damage from attacker.
             return true;
