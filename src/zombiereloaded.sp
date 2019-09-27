@@ -397,14 +397,14 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 }
 
 /**
- * When an entity is created
+ * When an entity is spawned
  *
  * @param       entity      Entity index
  * @param       classname   Class name
  */
-public OnEntityCreated(entity, const String:classname[])
+public OnEntitySpawned(entity, const String:classname[])
 {
-    NapalmOnEntityCreated(entity, classname);
+    NapalmOnEntitySpawned(entity, classname);
 }
 
 /**

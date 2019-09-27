@@ -178,7 +178,7 @@ NapalmOnClientDeath(client)
  * @param entity      Entity index
  * @param classname   Class name
  */
-NapalmOnEntityCreated(entity, const String:classname[])
+NapalmOnEntitySpawned(entity, const String:classname[])
 {
     // Not a grenade.
     if (strcmp(classname, "hegrenade_projectile", false))
@@ -193,17 +193,6 @@ NapalmOnEntityCreated(entity, const String:classname[])
         return;
     }
 
-    // Hook entity spawn.
-    SDKHook(entity, SDKHook_SpawnPost, NapalmOnGrenadeSpawnPost);
-}
-
-/**
- * Called after a grenade entity has been spawned.
- *
- * @param entity      Entity index
- */
-public NapalmOnGrenadeSpawnPost(entity)
-{
     // Get client who threw this grenade.
     new client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 
