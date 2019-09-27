@@ -17,7 +17,7 @@ if not exist "%BUILDDIR%" (
 
 :: Compile.
 echo Starting compiler:
-%SPCOMP% -i%SOURCEDIR% -i%SOURCEDIR%/include -i%SMINCLUDES% -o%BUILDDIR%/zombiereloaded.smx %SOURCEDIR%\zombiereloaded.sp
+%SPCOMP% -w241 -i%SOURCEDIR% -i%SOURCEDIR%/include -i%SMINCLUDES% -o%BUILDDIR%/zombiereloaded.smx %SOURCEDIR%\zombiereloaded.sp
 
 echo Compiling done. This script is looped, close if you're done.
 pause

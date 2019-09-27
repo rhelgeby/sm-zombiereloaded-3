@@ -43,7 +43,7 @@ prepare_builddir:
 
 %.smx: %.sp
 	$(VERSIONDUMP)
-	$(SPCOMP) -i$(SOURCEDIR) -i$(SMINCLUDES) -i$(ZRINCLUDES) -o$(BUILDDIR)/$@ $<
+	$(SPCOMP) -w241 -i$(SOURCEDIR) -i$(SMINCLUDES) -i$(ZRINCLUDES) -o$(BUILDDIR)/$@ $<
 
 clean:
 	@rm -fr $(BUILDDIR)
