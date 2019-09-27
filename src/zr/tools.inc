@@ -33,6 +33,8 @@ new g_iToolsLMV;
 new g_iToolsHasNightVision;
 new g_iToolsNightVisionOn;
 new g_iToolsFOV;
+new g_iActiveWeapon;
+new g_iToolsLastHitGroup;
 
 /**
  * @endsection
@@ -89,6 +91,18 @@ ToolsFindOffsets()
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_iFOV\" was not found.");
     }
+
+    g_iActiveWeapon = FindSendPropInfo("CBaseCombatCharacter", "m_hActiveWeapon");
+    if (g_iActiveWeapon == -1)
+    {
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBaseCombatCharacter::m_hActiveWeapon\" was not found.");
+    }
+
+    // CCSPlayer::m_LastHitGroup
+    // CCSPlayer::OnTakeDamage_Alive(CTakeDamageInfo const&)+122     mov     ecx, [ebp+this]
+    // CCSPlayer::OnTakeDamage_Alive(CTakeDamageInfo const&)+125     mov     edx, [ecx+4444]
+    // CCSPlayer::OnTakeDamage_Alive(CTakeDamageInfo const&)+12B     mov     dword ptr [esp+4], offset aHitgroup ; "hitgroup"
+    g_iToolsLastHitGroup = 4444;
 
     Handle hGameConf = LoadGameConfigFile("zombiereloaded");
     if (hGameConf != INVALID_HANDLE)

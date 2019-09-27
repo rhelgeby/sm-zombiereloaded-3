@@ -116,15 +116,15 @@ DamageOnClientInfected(client, bool:motherinfect)
  * Called right before the bullet enters a client.
  *
  * @param client        The client index.
- * @param inflictor     The entity index of the inflictor.
  * @param attacker      The client index of the attacker.
+ * @param inflictor     The entity index of the inflictor.
  * @param damage        The amount of damage inflicted.
  * @param hitbox        The hitbox index.
  * @param hitgroup      The hitgroup index.
  * @return              Return Plugin_Handled to stop bullet from hitting client.
  *                      Plugin_Continue to allow bullet to hit client.
  */
-public Action:DamageTraceAttack(client, &attacker, &inflictor, &Float:damage, &damagetype, &ammotype, hitbox, hitgroup)
+public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype, int hitbox, int hitgroup)
 {
     // If attacker isn't valid, then stop.
     if (!ZRIsClientValid(attacker))
@@ -159,7 +159,7 @@ public Action:DamageTraceAttack(client, &attacker, &inflictor, &Float:damage, &d
     // Here we know that attacker and client are different teams.
 
     // Check if immunity module requires damage to be blocked.
-    if (ImmunityOnClientTraceAttack(client, attacker, damage, hitgroup, damagetype))
+    if (ImmunityOnClientTraceAttack(client, attacker, inflictor, damage, damagetype, ammotype))
     {
         // Block damage.
         return Plugin_Handled;

@@ -285,7 +285,8 @@ InfectOnClientSpawn(client)
         CS_RespawnPlayer(client);
     }
 
-    InfectUnglitchKevlar(client);
+    // Unglitch kevlar, set last hitgroup to HITGROUP_GENERIC
+    ToolsSetClientLastHitGroup(client, HITGROUP_GENERIC);
 
     // Forward event to modules.
     ZSpawnOnClientSpawn(client);
@@ -899,7 +900,8 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
         SpawnProtectStart(client);
     }
 
-    InfectUnglitchKevlar(client);
+    // Unglitch kevlar, set last hitgroup to HITGROUP_GENERIC
+    ToolsSetClientLastHitGroup(client, HITGROUP_GENERIC);
 
     // Forward event to modules.
     SEffectsOnClientHuman(client);
@@ -1535,15 +1537,4 @@ InfectMode:InfectGetModeOrFail()
     }
 
     return mode;
-}
-
-InfectUnglitchKevlar(client)
-{
-    // Unglitch kevlar. (Reset hitbox to HITBOX_GENERIC)
-    // Example: You get hit in the head by a bullet as a zombie
-    // the round ends, you spawn as a human.
-    // You get damaged by a trigger, the game still thinks you
-    // are getting damaged in the head hitgroup, >mfw source engine.
-    // Thanks to leaked 2007 Source Engine Code.
-    SetEntData(client, 4444, 0, 4);
 }

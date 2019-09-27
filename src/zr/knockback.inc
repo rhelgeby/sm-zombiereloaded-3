@@ -31,15 +31,37 @@
 #define CSGO_KNOCKBACK_BOOST        251.0
 #define CSGO_KNOCKBACK_BOOST_MAX    350.0
 
-/** Client has been hurt.
+/**
+ * Client is joining the server.
  *
- * @param client        The client index. (zombie)
- * @param attacker      The attacker index. (human)
- * @param weapon        The weapon used.
- * @param hitgroup      Hitgroup attacker has damaged.
- * @param dmg_health    Damage done.
+ * @param client    The client index.
  */
-KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
+KnockbackClientInit(client)
+{
+    SDKHook(client, SDKHook_OnTakeDamageAlivePost, KnockbackOnTakeDamageAlivePost);
+}
+
+/**
+ * Client is leaving the server.
+ *
+ * @param client    The client index.
+ */
+KnockbackOnClientDisconnect(client)
+{
+    SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, KnockbackOnTakeDamageAlivePost);
+}
+
+/**
+ * Hook: KnockbackOnTakeDamageAlivePost
+ * Called after client has been hurt.
+ *
+ * @param client        The client index.
+ * @param inflictor     The entity index of the inflictor.
+ * @param attacker      The client index of the attacker.
+ * @param damage        The amount of damage inflicted.
+ */
+public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon,
+        const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
     // If attacker is invalid, then stop.
     if (!ZRIsClientValid(attacker))
@@ -48,7 +70,7 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
     }
 
     // Client is a human, then stop.
-    if (InfectIsClientHuman(client))
+    if (InfectIsClientHuman(victim))
     {
         return;
     }
@@ -60,21 +82,35 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
     }
 
     // Block knock back if an immunity mode is handling this.
-    if (ImmunityOnClientKnockBack(client))
+    if (ImmunityOnClientKnockBack(victim))
     {
         return;
     }
 
     // Get zombie knockback value.
-    new Float:knockback = ClassGetKnockback(client);
+    new Float:knockback = ClassGetKnockback(victim);
 
     new Float:clientloc[3];
     new Float:attackerloc[3];
 
-    GetClientAbsOrigin(client, clientloc);
+    GetClientAbsOrigin(victim, clientloc);
+
+    char weaponname[64];
+    int active_weapon = -42;
+    if (inflictor == attacker)
+    {
+        active_weapon = ToolsGetClientActiveWeapon(attacker);
+        if (active_weapon > 0)
+            GetEdictClassname(active_weapon, weaponname, sizeof(weaponname));
+    }
+    else
+        GetEdictClassname(inflictor, weaponname, sizeof(weaponname));
+
+    ReplaceString(weaponname, sizeof(weaponname), "weapon_", "");
+    ReplaceString(weaponname, sizeof(weaponname), "_projectile", "");
 
     // Check if a grenade was thrown.
-    if (StrEqual(weapon, "hegrenade"))
+    if (StrEqual(weaponname, "hegrenade"))
     {
         // Get the location of the grenade.
         if (KnockbackFindExplodingGrenade(attackerloc) == -1)
@@ -100,13 +136,17 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
     new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
     if (weapons)
     {
-        new weaponindex = WeaponsNameToIndex(weapon);
+        new weaponindex = WeaponsNameToIndex(weaponname);
         if (weaponindex != -1)
         {
             // Apply weapon knockback multiplier.
             knockback *= WeaponsGetKnockback(weaponindex);
         }
     }
+
+    int hitgroup = HITGROUP_GENERIC;
+    if (!(damagetype & DMG_BLAST))
+        hitgroup = ToolsGetClientLastHitGroup(victim);
 
     new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
     if (hitgroups)
@@ -120,10 +160,10 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
     }
 
     // Apply damage knockback multiplier.
-    knockback *= float(dmg_health);
+    knockback *= damage;
 
     // Apply knockback.
-    KnockbackSetVelocity(client, attackerloc, clientloc, knockback);
+    KnockbackSetVelocity(victim, attackerloc, clientloc, knockback);
 }
 
 /**

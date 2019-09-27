@@ -156,12 +156,12 @@ bool:ImmunityOnClientInfect(client, attacker)
  *
  * @param client    Client index.
  * @param attacker  Attacker client, if any.
+ * @param inflictor The entity index of the inflictor.
  * @param damage    Damage received by client.
- * @param hitgroup  Hitgroup receiving damage.
  *
  * @return          True if damage should be blocked, false otherwise.
  */
-bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damageType)
+bool ImmunityOnClientTraceAttack(int client, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype)
 {
     // Check if there is no attacker (world damage).
     if (!ZRIsClientValid(attacker))
@@ -212,7 +212,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             // Get attacker weapon.
             decl String:weapon[32];
             weapon[0] = 0;
-            if (damageType == DMG_BLAST)
+            if (damagetype == DMG_BLAST)
             {
                 // Most likely a HE grenade. GetClientWeapon can't be used if
                 // the attacker throw grenades. The attacker may switch weapon
@@ -225,7 +225,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
             }
 
             // Since damage is blocked, trigger knock back hurt event manually.
-            KnockbackOnClientHurt(client, attacker, weapon, hitgroup, RoundToNearest(damage));
+            DamageOnTakeDamageAlivePost(client, attacker, inflictor, damage, damagetype, -1, NULL_VECTOR, NULL_VECTOR, 0);
 
             // Block damage from attacker.
             return true;

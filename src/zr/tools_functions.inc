@@ -250,3 +250,42 @@ stock ToolsGetEntityColor(entity, color[4])
     for (new i = 0; i < 4; i++)
         color[i] = GetEntData(entity, offset + i, 1);
 }
+
+/**
+ * Get client's m_hActiveWeapon.
+ *
+ * @param client    The client index.
+ */
+stock int ToolsGetClientActiveWeapon(int client)
+{
+    return GetEntDataEnt2(client, g_iActiveWeapon);
+}
+
+/**
+ * Get client's m_LastHitGroup.
+ *
+ * @param client    The client index.
+ */
+stock int ToolsGetClientLastHitGroup(int client)
+{
+/* WRONG OFFSET
+    if (g_iToolsLastHitGroup == -1)
+        g_iToolsLastHitGroup = FindDataMapInfo(client, "m_LastHitGroup");
+*/
+    return GetEntData(client, g_iToolsLastHitGroup, 4);
+}
+
+/**
+ * Set client's m_LastHitGroup.
+ *
+ * @param client    The client index.
+ * @param hitgroup  The hitgroup.
+ */
+stock void ToolsSetClientLastHitGroup(int client, int hitgroup)
+{
+/* WRONG OFFSET
+    if (g_iToolsLastHitGroup == -1)
+        g_iToolsLastHitGroup = FindDataMapInfo(client, "m_LastHitGroup");
+*/
+    SetEntData(client, g_iToolsLastHitGroup, hitgroup, 4);
+}

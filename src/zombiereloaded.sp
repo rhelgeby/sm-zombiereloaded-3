@@ -26,6 +26,8 @@
  */
 
 #pragma semicolon 1
+#pragma newdecls optional
+
 #include <sourcemod>
 #include <sdktools>
 #include <clientprefs>
@@ -316,6 +318,7 @@ public OnClientPutInServer(client)
     WeaponsClientInit(client);
     InfectClientInit(client);
     DamageClientInit(client);
+    KnockbackClientInit(client);
     SEffectsClientInit(client);
     AntiStickClientInit(client);
     SpawnProtectClientInit(client);
@@ -372,6 +375,7 @@ public OnClientDisconnect(client)
     WeaponsOnClientDisconnect(client);
     InfectOnClientDisconnect(client);
     DamageOnClientDisconnect(client);
+    KnockbackOnClientDisconnect(client);
     AntiStickOnClientDisconnect(client);
     ZSpawnOnClientDisconnect(client);
     VolOnPlayerDisconnect(client);
