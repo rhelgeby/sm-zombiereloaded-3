@@ -302,9 +302,6 @@ RoundEndOutcome:RoundEndReasonToOutcome(reason)
             return Draw;
         }
     }
-
-    // Return draw to satisfy compiler. (code will never reach this point.)
-    return Draw;
 }
 
 /**
