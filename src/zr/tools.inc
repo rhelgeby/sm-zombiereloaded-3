@@ -92,27 +92,27 @@ ToolsFindOffsets()
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_iFOV\" was not found.");
     }
 
+    // If offset "m_hActiveWeapon" can't be found, then stop the plugin.
     g_iActiveWeapon = FindSendPropInfo("CBaseCombatCharacter", "m_hActiveWeapon");
     if (g_iActiveWeapon == -1)
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBaseCombatCharacter::m_hActiveWeapon\" was not found.");
     }
 
-    // CCSPlayer::m_LastHitGroup
-    // CCSPlayer::OnTakeDamage_Alive(CTakeDamageInfo const&)+122     mov     ecx, [ebp+this]
-    // CCSPlayer::OnTakeDamage_Alive(CTakeDamageInfo const&)+125     mov     edx, [ecx+4444]
-    // CCSPlayer::OnTakeDamage_Alive(CTakeDamageInfo const&)+12B     mov     dword ptr [esp+4], offset aHitgroup ; "hitgroup"
-    g_iToolsLastHitGroup = 4444;
-
     Handle hGameConf = LoadGameConfigFile("zombiereloaded");
     if (hGameConf != INVALID_HANDLE)
     {
-        // Reserved
+        // If offset "m_LastHitGroup" can't be found, then stop the plugin.
+        g_iToolsLastHitGroup = GameConfGetOffset(hGameConf, "m_LastHitGroup");
+        if (g_iToolsLastHitGroup == -1)
+        {
+            LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Gamedata Offset \"CCSPlayer::m_LastHitGroup\" was not found.");
+        }
 
         CloseHandle(hGameConf);
     }
     else
-        LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Couldn't load zombiereloaded game config!");
+        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Couldn't load zombiereloaded game config!");
 
     // Forward event to modules.
     WeaponsOnOffsetsFound();

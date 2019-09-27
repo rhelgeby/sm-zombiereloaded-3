@@ -268,10 +268,6 @@ stock int ToolsGetClientActiveWeapon(int client)
  */
 stock int ToolsGetClientLastHitGroup(int client)
 {
-/* WRONG OFFSET
-    if (g_iToolsLastHitGroup == -1)
-        g_iToolsLastHitGroup = FindDataMapInfo(client, "m_LastHitGroup");
-*/
     return GetEntData(client, g_iToolsLastHitGroup, 4);
 }
 
@@ -283,9 +279,5 @@ stock int ToolsGetClientLastHitGroup(int client)
  */
 stock void ToolsSetClientLastHitGroup(int client, int hitgroup)
 {
-/* WRONG OFFSET
-    if (g_iToolsLastHitGroup == -1)
-        g_iToolsLastHitGroup = FindDataMapInfo(client, "m_LastHitGroup");
-*/
     SetEntData(client, g_iToolsLastHitGroup, hitgroup, 4);
 }
