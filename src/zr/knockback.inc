@@ -81,7 +81,8 @@ void KnockbackOnClientDeath(int client)
 
 void KnockbackSetClientMaxVelocity(int client, float fVelocity)
 {
-    g_fKnockbackVelLimit[client] = fVelocity;
+    if(g_fKnockbackVelLimit[client] >= 0.0)
+        g_fKnockbackVelLimit[client] = fVelocity;
 }
 
 void KnockbackSetClientScale(int client, float fScale)
@@ -172,8 +173,6 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
     ReplaceString(weaponname, sizeof(weaponname), "weapon_", "");
     ReplaceString(weaponname, sizeof(weaponname), "_projectile", "");
 
-    bool knife = StrEqual(weaponname, "knife");
-
     // Check if a grenade was thrown.
     if (StrEqual(weaponname, "hegrenade"))
     {
@@ -209,11 +208,15 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
         }
     }
 
+    bool custom = view_as<bool>(damagecustom & ZR_KNOCKBACK_CUSTOM);
+    bool scale = custom && view_as<bool>(damagecustom & ZR_KNOCKBACK_SCALE);
+    bool limitvel = custom && view_as<bool>(damagecustom & ZR_KNOCKBACK_LIMITVEL);
+
     int hitgroup = HITGROUP_GENERIC;
-    if (!(damagetype & DMG_BLAST) && !damagecustom)
+    if (!(damagetype & DMG_BLAST) && !custom)
         hitgroup = ToolsGetClientLastHitGroup(victim);
 
-    if (damagecustom)
+    if (custom)
         ToolsSetClientLastHitGroup(victim, HITGROUP_GENERIC);
 
     new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
@@ -231,11 +234,12 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
     knockback *= damage;
 
     // Custom knockback scale.
-    if (!knife)
+    if (scale)
         knockback *= g_fKnockbackScale[victim];
 
     // Apply knockback.
-    KnockbackSetVelocity(victim, attackerloc, clientloc, knockback, damagecustom && !knife);
+    if (knockback)
+        KnockbackSetVelocity(victim, attackerloc, clientloc, knockback, limitvel);
 }
 
 /**
@@ -246,7 +250,7 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
  * @param endpoint      The ending coordinate to push towards.
  * @param magnitude     Magnitude of the push.
  */
-KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3], Float:magnitude, int custom)
+KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3], Float:magnitude, int limitvel)
 {
     // Create vector from the given starting and ending points.
     new Float:vector[3];
@@ -258,7 +262,7 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
     // Apply the magnitude by scaling the vector (multiplying each of its components).
     ScaleVector(vector, magnitude);
 
-    if (custom && g_fKnockbackVelLimit[client])
+    if (limitvel && g_fKnockbackVelLimit[client])
     {
         AddVectors(g_fKnockbackVectors[client], vector, g_fKnockbackVectors[client]);
         g_bKnockbackFrame[client] = true;

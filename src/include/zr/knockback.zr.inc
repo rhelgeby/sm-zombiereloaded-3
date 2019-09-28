@@ -25,6 +25,10 @@
  * ============================================================================
  */
 
+#define ZR_KNOCKBACK_CUSTOM (1<<31)
+#define ZR_KNOCKBACK_SCALE (1<<1)
+#define ZR_KNOCKBACK_LIMITVEL (1<<2)
+
 /**
  * Set a maximum knockback velocity.
  *
