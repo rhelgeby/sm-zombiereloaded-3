@@ -33,23 +33,9 @@ APIKnockbackInit()
     // Class module natives/forwards (knockback.zr.inc)
 
     // Natives
-    CreateNative("ZR_SetClientKnockbackMaxVelocity", APISetClientKnockbackMaxVelocity);
     CreateNative("ZR_SetClientKnockbackScale", APISetClientKnockbackScale);
-}
-
-/**
- * Native call function (ZR_SetClientKnockbackMaxVelocity)
- *
- * int ZR_SetClientKnockbackMaxVelocity(int client, float fVelocity);
- */
-public int APISetClientKnockbackMaxVelocity(Handle plugin, int numParams)
-{
-    int client = GetNativeCell(1);
-    float fVelocity = view_as<float>(GetNativeCell(2));
-
-    APIValidateClientIndex(client);
-
-    KnockbackSetClientMaxVelocity(client, fVelocity);
+    CreateNative("ZR_SetClientKnockbackMaxForce", APISetClientKnockbackMaxForce);
+    CreateNative("ZR_SetClientKnockbackMaxVelocity", APISetClientKnockbackMaxVelocity);
 }
 
 /**
@@ -65,4 +51,34 @@ public int APISetClientKnockbackScale(Handle plugin, int numParams)
     APIValidateClientIndex(client);
 
     KnockbackSetClientScale(client, fScale);
+}
+
+/**
+ * Native call function (ZR_SetClientKnockbackMaxForce)
+ *
+ * int ZR_SetClientKnockbackMaxForce(int client, float fForce);
+ */
+public int APISetClientKnockbackMaxForce(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    float fForce = view_as<float>(GetNativeCell(2));
+
+    APIValidateClientIndex(client);
+
+    KnockbackSetClientMaxForce(client, fForce);
+}
+
+/**
+ * Native call function (ZR_SetClientKnockbackMaxVelocity)
+ *
+ * int ZR_SetClientKnockbackMaxVelocity(int client, float fVelocity);
+ */
+public int APISetClientKnockbackMaxVelocity(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    float fVelocity = view_as<float>(GetNativeCell(2));
+
+    APIValidateClientIndex(client);
+
+    KnockbackSetClientMaxVelocity(client, fVelocity);
 }

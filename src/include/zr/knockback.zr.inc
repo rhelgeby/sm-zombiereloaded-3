@@ -27,15 +27,8 @@
 
 #define ZR_KNOCKBACK_CUSTOM (1<<31)
 #define ZR_KNOCKBACK_SCALE (1<<1)
-#define ZR_KNOCKBACK_LIMITVEL (1<<2)
-
-/**
- * Set a maximum knockback velocity.
- *
- * @param client            The client.
- * @param fVelocity         Maximum knockback velocity / force.
- */
-native void ZR_SetClientKnockbackMaxVelocity(int client, float fVelocity);
+#define ZR_KNOCKBACK_LIMITFORCE (1<<2)
+#define ZR_KNOCKBACK_LIMITVEL (1<<3)
 
 /**
  * Set a custom knockback scale.
@@ -44,3 +37,19 @@ native void ZR_SetClientKnockbackMaxVelocity(int client, float fVelocity);
  * @param fScale            Custom knockback scale.
  */
 native void ZR_SetClientKnockbackScale(int client, float fScale);
+
+/**
+ * Set a maximum knockback force per tick.
+ *
+ * @param client            The client.
+ * @param fForce         	Maximum knockback force per tick.
+ */
+native void ZR_SetClientKnockbackMaxForce(int client, float fForce);
+
+/**
+ * Set a maximum knockback velocity.
+ *
+ * @param client            The client.
+ * @param fVelocity         Maximum knockback velocity.
+ */
+native void ZR_SetClientKnockbackMaxVelocity(int client, float fVelocity);

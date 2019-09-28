@@ -25,10 +25,12 @@
  * ============================================================================
  */
 
-bool g_bKnockbackFrame[MAXPLAYERS + 1];
-float g_fKnockbackVelLimit[MAXPLAYERS + 1];
-float g_fKnockbackVectors[MAXPLAYERS + 1][3];
 float g_fKnockbackScale[MAXPLAYERS + 1];
+float g_fKnockbackForceLimit[MAXPLAYERS + 1];
+bool g_bKnockbackFrame[MAXPLAYERS + 1];
+bool g_bKnockbackFrameLimitVel[MAXPLAYERS + 1];
+float g_fKnockbackVectors[MAXPLAYERS + 1][3];
+float g_fKnockbackVelLimit[MAXPLAYERS + 1] = {-1.0, ...};
 
 /**
  * Minimum upwards boost that is required to push zombies off the ground.
@@ -43,14 +45,16 @@ float g_fKnockbackScale[MAXPLAYERS + 1];
  */
 void KnockbackClientInit(int client)
 {
+    g_fKnockbackScale[client] = 1.0;
+
+    g_fKnockbackForceLimit[client] = 0.0;
     g_bKnockbackFrame[client] = false;
-    g_fKnockbackVelLimit[client] = 0.0;
+    g_bKnockbackFrameLimitVel[client] = false;
     g_fKnockbackVectors[client][0] = 0.0;
     g_fKnockbackVectors[client][1] = 0.0;
     g_fKnockbackVectors[client][2] = 0.0;
-    g_fKnockbackScale[client] = 1.0;
 
-    SDKHook(client, SDKHook_OnTakeDamageAlivePost, KnockbackOnTakeDamageAlivePost);
+    g_fKnockbackVelLimit[client] = -1.0;
 }
 
 /**
@@ -60,10 +64,7 @@ void KnockbackClientInit(int client)
  */
 void KnockbackOnClientDisconnect(int client)
 {
-    g_bKnockbackFrame[client] = false;
-    g_fKnockbackVelLimit[client] = 0.0;
-
-    SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, KnockbackOnTakeDamageAlivePost);
+    KnockbackClientInit(client);
 }
 
 /**
@@ -71,23 +72,23 @@ void KnockbackOnClientDisconnect(int client)
  */
 void KnockbackOnClientDeath(int client)
 {
-    g_bKnockbackFrame[client] = false;
-    g_fKnockbackVelLimit[client] = 0.0;
-    g_fKnockbackVectors[client][0] = 0.0;
-    g_fKnockbackVectors[client][1] = 0.0;
-    g_fKnockbackVectors[client][2] = 0.0;
-    g_fKnockbackScale[client] = 1.0;
-}
-
-void KnockbackSetClientMaxVelocity(int client, float fVelocity)
-{
-    if(g_fKnockbackVelLimit[client] >= 0.0)
-        g_fKnockbackVelLimit[client] = fVelocity;
+    KnockbackClientInit(client);
 }
 
 void KnockbackSetClientScale(int client, float fScale)
 {
     g_fKnockbackScale[client] = fScale;
+}
+
+void KnockbackSetClientMaxForce(int client, float fForce)
+{
+    if(g_fKnockbackForceLimit[client] >= 0.0)
+        g_fKnockbackForceLimit[client] = fForce;
+}
+
+void KnockbackSetClientMaxVelocity(int client, float fVelocity)
+{
+    g_fKnockbackForceLimit[client] = fVelocity;
 }
 
 /**
@@ -98,17 +99,22 @@ void KnockbackOnGameFrame()
 {
     for(int client = 1; client <= MaxClients; client++)
     {
-        if (g_bKnockbackFrame[client] && g_fKnockbackVelLimit[client] > 0.0)
+        if (g_bKnockbackFrame[client] && g_fKnockbackForceLimit[client] > 0.0)
         {
+            // Get the knockback force
             float magnitude = GetVectorLength(g_fKnockbackVectors[client]);
-            if(magnitude > g_fKnockbackVelLimit[client])
+
+            // ... and limit it if it's too high.
+            if(magnitude > g_fKnockbackForceLimit[client])
             {
-                ScaleVector(g_fKnockbackVectors[client], g_fKnockbackVelLimit[client] / magnitude);
+                ScaleVector(g_fKnockbackVectors[client], g_fKnockbackForceLimit[client] / magnitude);
             }
 
-            KnockbackApplyVector(client, g_fKnockbackVectors[client]);
+            // Apply the knockback.
+            KnockbackApplyVector(client, g_fKnockbackVectors[client], g_bKnockbackFrameLimitVel[client]);
 
             g_bKnockbackFrame[client] = false;
+            g_bKnockbackFrameLimitVel[client] = false;
             g_fKnockbackVectors[client][0] = 0.0;
             g_fKnockbackVectors[client][1] = 0.0;
             g_fKnockbackVectors[client][2] = 0.0;
@@ -117,23 +123,18 @@ void KnockbackOnGameFrame()
 }
 
 /**
- * Hook: KnockbackOnTakeDamageAlivePost
+ * Hook: KnockbackOnClientHurt
  * Called after client has been hurt.
  *
- * @param client        The client index.
- * @param inflictor     The entity index of the inflictor.
+ * @param victim        The client index.
  * @param attacker      The client index of the attacker.
+ * @param inflictor     The entity index of the inflictor.
+ * @param weaponname    The weapon used.
+ * @param hitgroup      Hitgroup attacker has damaged.
  * @param damage        The amount of damage inflicted.
  */
-public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon,
-        const float damageForce[3], const float damagePosition[3], int damagecustom)
+public void KnockbackOnClientHurt(int victim, int attacker, int inflictor, const char[] weaponname, int hitgroup, float damage, int damagetype, int weapon, int damagecustom)
 {
-    // If attacker is invalid, then stop.
-    if (!ZRIsClientValid(attacker))
-    {
-        return;
-    }
-
     // Client is a human, then stop.
     if (InfectIsClientHuman(victim))
     {
@@ -159,19 +160,6 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
     new Float:attackerloc[3];
 
     GetClientAbsOrigin(victim, clientloc);
-
-    char weaponname[64];
-    if (inflictor == attacker)
-    {
-        int activeweapon = WeaponsGetActiveWeaponIndex(attacker);
-        if (activeweapon > 0)
-            GetEdictClassname(activeweapon, weaponname, sizeof(weaponname));
-    }
-    else
-        GetEdictClassname(inflictor, weaponname, sizeof(weaponname));
-
-    ReplaceString(weaponname, sizeof(weaponname), "weapon_", "");
-    ReplaceString(weaponname, sizeof(weaponname), "_projectile", "");
 
     // Check if a grenade was thrown.
     if (StrEqual(weaponname, "hegrenade"))
@@ -210,11 +198,8 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
 
     bool custom = view_as<bool>(damagecustom & ZR_KNOCKBACK_CUSTOM);
     bool scale = custom && view_as<bool>(damagecustom & ZR_KNOCKBACK_SCALE);
+    bool limitforce = custom && view_as<bool>(damagecustom & ZR_KNOCKBACK_LIMITFORCE);
     bool limitvel = custom && view_as<bool>(damagecustom & ZR_KNOCKBACK_LIMITVEL);
-
-    int hitgroup = HITGROUP_GENERIC;
-    if (!(damagetype & DMG_BLAST) && !custom)
-        hitgroup = ToolsGetClientLastHitGroup(victim);
 
     if (custom)
         ToolsSetClientLastHitGroup(victim, HITGROUP_GENERIC);
@@ -239,7 +224,7 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
 
     // Apply knockback.
     if (knockback)
-        KnockbackSetVelocity(victim, attackerloc, clientloc, knockback, limitvel);
+        KnockbackSetVelocity(victim, attackerloc, clientloc, knockback, limitforce, limitvel);
 }
 
 /**
@@ -250,7 +235,7 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
  * @param endpoint      The ending coordinate to push towards.
  * @param magnitude     Magnitude of the push.
  */
-KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3], Float:magnitude, int limitvel)
+KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3], Float:magnitude, bool limitforce, bool limitvel)
 {
     // Create vector from the given starting and ending points.
     new Float:vector[3];
@@ -262,17 +247,18 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
     // Apply the magnitude by scaling the vector (multiplying each of its components).
     ScaleVector(vector, magnitude);
 
-    if (limitvel && g_fKnockbackVelLimit[client])
+    if (limitforce && g_fKnockbackForceLimit[client])
     {
         AddVectors(g_fKnockbackVectors[client], vector, g_fKnockbackVectors[client]);
         g_bKnockbackFrame[client] = true;
+        g_bKnockbackFrameLimitVel[client] |= limitvel;
         return;
     }
 
-    KnockbackApplyVector(client, vector);
+    KnockbackApplyVector(client, vector, limitvel);
 }
 
-void KnockbackApplyVector(int client, float vector[3])
+void KnockbackApplyVector(int client, float vector[3], bool limitvel)
 {
     // CS: GO workaround. Apply knock back boost if enabled.
     if (g_Game == Game_CSGO && GetConVarBool(g_hCvarsList[CVAR_CLASSES_CSGO_KNOCKBACK_BOOST]))
@@ -294,8 +280,36 @@ void KnockbackApplyVector(int client, float vector[3])
         }
     }
 
-    // ADD the given vector to the client's current velocity.
-    ToolsClientVelocity(client, vector);
+    // Get their current velocity.
+    float velocity[3];
+    ToolsGetClientVelocity(client, velocity);
+
+    // Calculate their speed.
+    float magnitude_pre = GetVectorLength(velocity);
+
+    // Add the knockback to their velocity.
+    AddVectors(vector, velocity, velocity);
+
+    // Should we limit their knockback velocity?
+    if (limitvel && g_fKnockbackVelLimit[client] >= 0.0)
+    {
+        // Calculate their new speed.
+        float magnitude_post = GetVectorLength(velocity);
+
+        // Did we actually push them back or just slow them down?
+        if (magnitude_post > magnitude_pre)
+        {
+            // Would their knockback velocity be higher than wanted?
+            if(magnitude_post > g_fKnockbackVelLimit[client])
+            {
+                // ... then scale it down.
+                ScaleVector(velocity, g_fKnockbackVelLimit[client] / magnitude_post);
+            }
+        }
+    }
+
+    // Set the new client's velocity.
+    ToolsSetClientVelocity(client, velocity);
 }
 
 /**

@@ -71,6 +71,17 @@ stock ToolsGetClientVelocity(client, Float:vecVelocity[3])
 }
 
 /**
+ * Gets client's velocity.
+ *
+ * @param client        The client index.
+ * @param vecVelocity   Array to store vector in.
+ */
+stock ToolsSetClientVelocity(client, const Float:vecVelocity[3])
+{
+    SetEntDataVector(client, g_iToolsVelocity, vecVelocity);
+}
+
+/**
  * Set a client's lagged movement value.
  * @param client    The client index.
  * @param value     LMV value. (300.0 = default, 600.0 = double)

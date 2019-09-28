@@ -86,6 +86,7 @@ DamageClientInit(client)
     // Hook damage callbacks.
     SDKHook(client, SDKHook_TraceAttack, DamageTraceAttack);
     SDKHook(client, SDKHook_OnTakeDamage, DamageOnTakeDamage);
+    SDKHook(client, SDKHook_OnTakeDamageAlivePost, DamageOnTakeDamageAlivePost);
 }
 
 /**
@@ -97,6 +98,7 @@ DamageOnClientDisconnect(client)
 {
     SDKUnhook(client, SDKHook_TraceAttack, DamageTraceAttack);
     SDKUnhook(client, SDKHook_OnTakeDamage, DamageOnTakeDamage);
+    SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, DamageOnTakeDamageAlivePost);
 }
 
 /**
@@ -159,7 +161,7 @@ public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float
     // Here we know that attacker and client are different teams.
 
     // Check if immunity module requires damage to be blocked.
-    if (ImmunityOnClientTraceAttack(client, attacker, inflictor, damage, damagetype, ammotype))
+    if (ImmunityOnClientTraceAttack(client, attacker, inflictor, damage, damagetype, ammotype, hitgroup))
     {
         // Block damage.
         return Plugin_Handled;
@@ -216,8 +218,13 @@ public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float
  * @return              Return Plugin_Handled to stop the damage to client.
  *                      Plugin_Continue to allow damage to client.
  */
-public Action:DamageOnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damagetype)
+public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon,
+        float damageForce[3], float damagePosition[3], int damagecustom)
 {
+    bool custom = view_as<bool>(damagecustom & ZR_KNOCKBACK_CUSTOM);
+    if (custom)
+        return Plugin_Continue;
+
     // Get classname of the inflictor.
     decl String:classname[64];
     GetEdictClassname(inflictor, classname, sizeof(classname));
@@ -436,4 +443,49 @@ public Action:DamageSuicideIntercept(int client, const char[] command, int argc)
 
     // Block command.
     return Plugin_Handled;
+}
+
+public void DamageOnTakeDamageAlivePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon,
+        const float damageForce[3], const float damagePosition[3], int damagecustom)
+{
+    // If attacker is invalid, then stop.
+    if (!ZRIsClientValid(attacker))
+    {
+        return;
+    }
+
+    bool custom = view_as<bool>(damagecustom & ZR_KNOCKBACK_CUSTOM);
+
+    char weaponname[64];
+    if (inflictor == attacker)
+    {
+        weapon = WeaponsGetActiveWeaponIndex(attacker);
+        if (weapon > 0)
+            GetEdictClassname(weapon, weaponname, sizeof(weaponname));
+    }
+    else
+        GetEdictClassname(inflictor, weaponname, sizeof(weaponname));
+
+    ReplaceString(weaponname, sizeof(weaponname), "weapon_", "");
+    ReplaceString(weaponname, sizeof(weaponname), "_projectile", "");
+
+    int hitgroup = HITGROUP_GENERIC;
+    if (!(damagetype & DMG_BLAST) && !custom)
+        hitgroup = ToolsGetClientLastHitGroup(victim);
+
+    KnockbackOnClientHurt(victim, attacker, inflictor, weaponname, hitgroup, damage, damagetype, weapon, damagecustom);
+
+    // If attacker is a human and is getting damaged through DamageProxy, then stop.
+    // We don't want to get infected if we're being knifed inside of a human item.
+    if (custom && InfectIsClientHuman(victim))
+    {
+        return;
+    }
+
+    ClassAlphaUpdate(victim);
+    InfectOnClientHurt(victim, attacker, weaponname);
+    AccountOnClientHurt(victim, attacker, RoundToFloor(damage));
+    SEffectsOnClientHurt(victim);
+    NapalmOnClientHurt(victim, attacker, weaponname, RoundToFloor(damage));
+    ZHPOnClientHurt(victim);
 }

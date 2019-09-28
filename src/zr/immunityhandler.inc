@@ -161,7 +161,7 @@ bool:ImmunityOnClientInfect(client, attacker)
  *
  * @return          True if damage should be blocked, false otherwise.
  */
-bool ImmunityOnClientTraceAttack(int client, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype)
+bool ImmunityOnClientTraceAttack(int client, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype, int hitgroup)
 {
     // Check if there is no attacker (world damage).
     if (!ZRIsClientValid(attacker))
@@ -225,7 +225,7 @@ bool ImmunityOnClientTraceAttack(int client, int &attacker, int &inflictor, floa
             }
 
             // Since damage is blocked, trigger knock back hurt event manually.
-            KnockbackOnTakeDamageAlivePost(client, attacker, inflictor, damage, damagetype, -1, NULL_VECTOR, NULL_VECTOR, 0);
+            KnockbackOnClientHurt(client, attacker, inflictor, weapon, hitgroup, damage, damagetype, -1, 0);
 
             // Block damage from attacker.
             return true;

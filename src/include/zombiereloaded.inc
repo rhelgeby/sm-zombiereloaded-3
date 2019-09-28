@@ -66,7 +66,8 @@ public void __pl_zombiereloaded_SetNTVOptional()
     MarkNativeAsOptional("ZR_SetKilledByWorld");
     MarkNativeAsOptional("ZR_GetKilledByWorld");
 
-    MarkNativeAsOptional("ZR_SetClientKnockbackMaxVelocity");
     MarkNativeAsOptional("ZR_SetClientKnockbackScale");
+    MarkNativeAsOptional("ZR_SetClientKnockbackMaxForce");
+    MarkNativeAsOptional("ZR_SetClientKnockbackMaxVelocity");
 }
 #endif

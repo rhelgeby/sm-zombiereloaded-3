@@ -50,7 +50,6 @@ EventHook(bool:unhook = false)
         UnhookEvent("round_end", EventRoundEnd);
         UnhookEvent("player_team", EventPlayerTeam, EventHookMode_Pre);
         UnhookEvent("player_spawn", EventPlayerSpawn);
-        UnhookEvent("player_hurt", EventPlayerHurt);
         UnhookEvent("player_death", EventPlayerDeath);
         UnhookEvent("player_jump", EventPlayerJump);
 
@@ -67,7 +66,6 @@ EventHook(bool:unhook = false)
     HookEvent("round_end", EventRoundEnd);
     HookEvent("player_team", EventPlayerTeam, EventHookMode_Pre);
     HookEvent("player_spawn", EventPlayerSpawn);
-    HookEvent("player_hurt", EventPlayerHurt);
     HookEvent("player_death", EventPlayerDeath);
     HookEvent("player_jump", EventPlayerJump);
 
@@ -212,33 +210,6 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:client)
     SEffectsOnClientSpawnPost(client);
     ClassOnClientSpawnPost(client);
     SpawnProtectOnClientSpawnPost(client);  // Must be executed after class attributes are applied.
-}
-
-/**
- * Event callback (player_hurt)
- * Client is being hurt.
- *
- * @param event     The event handle.
- * @param name      Name of the event.
- * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
- */
-public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
-{
-    // Get all required event info.
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-    new dmg_health = GetEventInt(event, "dmg_health");
-
-    decl String:weapon[WEAPONS_MAX_LENGTH];
-    GetEventString(event, "weapon", weapon, sizeof(weapon));
-
-    // Forward event to modules.
-    ClassAlphaUpdate(index);
-    InfectOnClientHurt(index, attacker, weapon);
-    AccountOnClientHurt(index, attacker, dmg_health);
-    SEffectsOnClientHurt(index);
-    NapalmOnClientHurt(index, attacker, weapon, dmg_health);
-    ZHPOnClientHurt(index);
 }
 
 /**
