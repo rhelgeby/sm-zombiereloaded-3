@@ -33,7 +33,6 @@ new g_iToolsLMV;
 new g_iToolsHasNightVision;
 new g_iToolsNightVisionOn;
 new g_iToolsFOV;
-new g_iActiveWeapon;
 new g_iToolsLastHitGroup;
 
 /**
@@ -90,13 +89,6 @@ ToolsFindOffsets()
     if (g_iToolsFOV == -1)
     {
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBasePlayer::m_iFOV\" was not found.");
-    }
-
-    // If offset "m_hActiveWeapon" can't be found, then stop the plugin.
-    g_iActiveWeapon = FindSendPropInfo("CBaseCombatCharacter", "m_hActiveWeapon");
-    if (g_iActiveWeapon == -1)
-    {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Tools, "Offsets", "Offset \"CBaseCombatCharacter::m_hActiveWeapon\" was not found.");
     }
 
     Handle hGameConf = LoadGameConfigFile("zombiereloaded");

@@ -160,12 +160,11 @@ public void KnockbackOnTakeDamageAlivePost(int victim, int attacker, int inflict
     GetClientAbsOrigin(victim, clientloc);
 
     char weaponname[64];
-    int active_weapon = -42;
     if (inflictor == attacker)
     {
-        active_weapon = ToolsGetClientActiveWeapon(attacker);
-        if (active_weapon > 0)
-            GetEdictClassname(active_weapon, weaponname, sizeof(weaponname));
+        int activeweapon = WeaponsGetActiveWeaponIndex(attacker);
+        if (activeweapon > 0)
+            GetEdictClassname(activeweapon, weaponname, sizeof(weaponname));
     }
     else
         GetEdictClassname(inflictor, weaponname, sizeof(weaponname));

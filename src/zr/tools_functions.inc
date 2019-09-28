@@ -252,16 +252,6 @@ stock ToolsGetEntityColor(entity, color[4])
 }
 
 /**
- * Get client's m_hActiveWeapon.
- *
- * @param client    The client index.
- */
-stock int ToolsGetClientActiveWeapon(int client)
-{
-    return GetEntDataEnt2(client, g_iActiveWeapon);
-}
-
-/**
  * Get client's m_LastHitGroup.
  *
  * @param client    The client index.

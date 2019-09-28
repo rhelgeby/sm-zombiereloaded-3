@@ -77,6 +77,11 @@ enum WeaponsData
 new g_iToolsActiveWeapon;
 
 /**
+ * Variable to store buyzone offset value.
+ */
+new g_iToolsInBuyZone;
+
+/**
  * Weapon slots.
  */
 enum WeaponsSlot
@@ -749,35 +754,35 @@ stock WeaponsGetClientWeapons(client, weapons[WeaponsSlot])
 }
 
 /**
- * Returns weapon index of the client's deployed weapon.
+ * Returns weapon index of the client's active weapon.
  *
  * @param client    The client index.
- * @return          The weapon index of the deployed weapon.
- *                  -1 if no weapon is deployed.
+ * @return          The weapon index of the active weapon.
+ *                  -1 if no weapon is active.
  */
-stock WeaponsGetDeployedWeaponIndex(client)
+stock WeaponsGetActiveWeaponIndex(client)
 {
     // Return the client's active weapon.
-    return GetEntDataEnt2(client, offsActiveWeapon);
+    return GetEntDataEnt2(client, g_iToolsActiveWeapon);
 }
 
 /**
- * Returns slot of client's deployed weapon.
+ * Returns slot of client's active weapon.
  *
  * @param client    The client index.
- * @return          The slot number of deployed weapon.
+ * @return          The slot number of active weapon.
  */
-stock WeaponsSlot:WeaponsGetDeployedWeaponSlot(client)
+stock WeaponsSlot:WeaponsGetActiveWeaponSlot(client)
 {
     // Get all client's weapon indexes.
     new weapons[WeaponsSlot];
     WeaponsGetClientWeapons(client, weapons);
 
-    // Get client's deployed weapon.
-    new deployedweapon = WeaponsGetDeployedWeaponIndex(client);
+    // Get client's active weapon.
+    new activeweapon = WeaponsGetActiveWeaponIndex(client);
 
-    // If client has no deployed weapon, then stop.
-    if (deployedweapon == -1)
+    // If client has no active weapon, then stop.
+    if (activeweapon == -1)
     {
         return Type_Invalid;
     }
@@ -785,7 +790,7 @@ stock WeaponsSlot:WeaponsGetDeployedWeaponSlot(client)
     // x = weapon slot.
     for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
     {
-        if (weapons[x] == deployedweapon)
+        if (weapons[x] == activeweapon)
         {
             return WeaponsSlot:x;
         }

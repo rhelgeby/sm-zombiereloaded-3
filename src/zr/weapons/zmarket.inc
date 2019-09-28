@@ -40,11 +40,6 @@
 #define ZMARKET_REBUY_WEAPONS_SLOTS_MAX 1
 
 /**
- * Variable to store buyzone offset value.
- */
-new g_iToolsInBuyZone;
-
-/**
  * Array to store the client's current weapon type within menu.
  */
 new g_iZMarketCurType[MAXPLAYERS + 1];
