@@ -117,6 +117,21 @@ WeaponAmmoOnOffsetsFound()
 }
 
 /**
+ * Get clip/reserve ammo on a weapon.
+ *
+ * @param weapon    The weapon index.
+ * @param clip      True gets clip ammo, false gets reserve.
+ */
+stock WeaponAmmoGetAmmo(weapon, bool:clip)
+{
+    // Set variable to offset we are changing.
+    new ammooffset = clip ? g_iToolsClip1 : g_iToolsClip2;
+
+    // Return ammo offset value.
+    return GetEntData(weapon, ammooffset);
+}
+
+/**
  * Set clip/reserve ammo on a weapon.
  *
  * @param weapon    The weapon index.
@@ -143,18 +158,14 @@ stock WeaponAmmoSetAmmo(weapon, bool:clip, value, bool:add = false)
 }
 
 /**
- * Get clip/reserve ammo on a weapon.
+ * Get the count of any grenade-type a client has.
  *
- * @param weapon    The weapon index.
- * @param clip      True gets clip ammo, false gets reserve.
+ * @param client    The client index.
+ * @param slot      The type of
  */
-stock WeaponAmmoGetAmmo(weapon, bool:clip)
+stock WeaponAmmoGetGrenadeCount(client, WeaponAmmoGrenadeType:type)
 {
-    // Set variable to offset we are changing.
-    new ammooffset = clip ? g_iToolsClip1 : g_iToolsClip2;
-
-    // Return ammo offset value.
-    return GetEntData(weapon, ammooffset);
+    return GetEntData(client, g_iToolsAmmo + (_:type * 4));
 }
 
 /**
@@ -177,17 +188,6 @@ stock WeaponAmmoSetGrenadeCount(client, WeaponAmmoGrenadeType:type, value, bool:
     }
 
     SetEntData(client, g_iToolsAmmo + (_:type * 4), ammovalue + value, _, true);
-}
-
-/**
- * Get the count of any grenade-type a client has.
- *
- * @param client    The client index.
- * @param slot      The type of
- */
-stock WeaponAmmoGetGrenadeCount(client, WeaponAmmoGrenadeType:type)
-{
-    return GetEntData(client, g_iToolsAmmo + (_:type * 4));
 }
 
 /**

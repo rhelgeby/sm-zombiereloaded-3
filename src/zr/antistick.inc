@@ -415,17 +415,6 @@ stock bool:AntiStickIsModelBoxColliding(client1, client2)
 }
 
 /**
- * Sets the collision group on a client.
- *
- * @param client            The client index.
- * @param collisiongroup    Collision group flag.
- */
-AntiStickSetCollisionGroup(client, collisiongroup)
-{
-    SetEntProp(client, Prop_Data, "m_CollisionGroup", collisiongroup);
-}
-
-/**
  * Gets the collision group on a client.
  *
  * @param client    The client index.
@@ -434,6 +423,17 @@ AntiStickSetCollisionGroup(client, collisiongroup)
 AntiStickGetCollisionGroup(client)
 {
     return GetEntProp(client, Prop_Data, "m_CollisionGroup");
+}
+
+/**
+ * Sets the collision group on a client.
+ *
+ * @param client            The client index.
+ * @param collisiongroup    Collision group flag.
+ */
+AntiStickSetCollisionGroup(client, collisiongroup)
+{
+    SetEntProp(client, Prop_Data, "m_CollisionGroup", collisiongroup);
 }
 
 /**

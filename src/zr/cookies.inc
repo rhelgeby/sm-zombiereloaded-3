@@ -37,6 +37,22 @@ CookiesInit()
 }
 
 /**
+ * Returns a cookie value as a bool.
+ *
+ * @param client    The client index.
+ * @param cookie    The handle to the cookie.
+ */
+bool:CookiesGetClientCookieBool(client, Handle:cookie)
+{
+    // Get cookie string.
+    decl String:cookievalue[8];
+    GetClientCookie(client, cookie, cookievalue, sizeof(cookievalue));
+
+    // Return string casted into an int, then to bool.
+    return bool:StringToInt(cookievalue);
+}
+
+/**
  * Accepts a bools for setting client cookies.
  *
  * @param client        The client index.
@@ -54,19 +70,18 @@ CookiesSetClientCookieBool(client, Handle:cookie, bool:cookievalue)
 }
 
 /**
- * Returns a cookie value as a bool.
+ * Gets a integer value from a cookie.
  *
  * @param client    The client index.
  * @param cookie    The handle to the cookie.
  */
-bool:CookiesGetClientCookieBool(client, Handle:cookie)
+CookiesGetInt(client, Handle:cookie)
 {
-    // Get cookie string.
-    decl String:cookievalue[8];
-    GetClientCookie(client, cookie, cookievalue, sizeof(cookievalue));
+    decl String:strValue[16];
+    strValue[0] = 0;
+    GetClientCookie(client, cookie, strValue, sizeof(strValue));
 
-    // Return string casted into an int, then to bool.
-    return bool:StringToInt(cookievalue);
+    return StringToInt(strValue);
 }
 
 /**
@@ -84,19 +99,4 @@ CookiesSetInt(client, Handle:cookie, value)
 
     // Set string value.
     SetClientCookie(client, cookie, strValue);
-}
-
-/**
- * Gets a integer value from a cookie.
- *
- * @param client    The client index.
- * @param cookie    The handle to the cookie.
- */
-CookiesGetInt(client, Handle:cookie)
-{
-    decl String:strValue[16];
-    strValue[0] = 0;
-    GetClientCookie(client, cookie, strValue, sizeof(strValue));
-
-    return StringToInt(strValue);
 }

@@ -71,10 +71,10 @@ stock ToolsGetClientVelocity(client, Float:vecVelocity[3])
 }
 
 /**
- * Gets client's velocity.
+ * Sets client's velocity.
  *
  * @param client        The client index.
- * @param vecVelocity   Array to store vector in.
+ * @param vecVelocity   Velocity to set on client.
  */
 stock ToolsSetClientVelocity(client, const Float:vecVelocity[3])
 {

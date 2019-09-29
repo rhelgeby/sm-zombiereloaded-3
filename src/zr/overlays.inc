@@ -229,6 +229,18 @@ OverlaysChannel:OverlaysClientFindChannel(client)
 }
 
 /**
+ * Get current value of a channel state of a client.
+ *
+ * @param client    The client index.
+ * @param channel   The channel to get state of.
+ */
+bool:OverlaysClientGetChannelState(client, OverlaysChannel:channel)
+{
+    // Return current value.
+    return g_bOverlayChannel[client][channel];
+}
+
+/**
  * Toggle or set new value to a channel state of a client.
  *
  * @param client    The client index.
@@ -256,18 +268,6 @@ bool:OverlaysClientSetChannelState(client, OverlaysChannel:channel, bool:update 
     }
 
     // Return new value.
-    return g_bOverlayChannel[client][channel];
-}
-
-/**
- * Get current value of a channel state of a client.
- *
- * @param client    The client index.
- * @param channel   The channel to get state of.
- */
-bool:OverlaysClientGetChannelState(client, OverlaysChannel:channel)
-{
-    // Return current value.
     return g_bOverlayChannel[client][channel];
 }
 
