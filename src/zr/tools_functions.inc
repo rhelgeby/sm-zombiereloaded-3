@@ -182,26 +182,6 @@ stock ToolsClientScore(client, bool:score = true, bool:apply = true, value = 0)
 }
 
 /**
- * Set a client's alpha value.
- *
- * @param client    The client index.
- * @param alpha     The alpha value to set client's alpha to. (0-255)
- * @param weapons   Apply alpha to all client's weapons.
- */
-stock ToolsSetClientAlpha(client, alpha)
-{
-    // Turn rendermode on, on the client.
-    SetEntityRenderMode(client, RENDER_TRANSALPHA);
-
-    // Get current client colors.
-    new color[4];
-    ToolsGetEntityColor(client, color);
-
-    // Set alpha value on the client.
-    SetEntityRenderColor(client, color[0], color[1], color[2], alpha);
-}
-
-/**
  * Sets an entity's color. (This is the "get" version of SetEntityRenderColor)
  *
  * @param client    The client index.
@@ -229,6 +209,26 @@ stock ToolsGetEntityAlpha(entity)
     new offset = GetEntSendPropOffs(entity, prop);
 
     return GetEntData(entity, offset + 3, 1);
+}
+
+/**
+ * Set a client's alpha value.
+ *
+ * @param client    The client index.
+ * @param alpha     The alpha value to set client's alpha to. (0-255)
+ * @param weapons   Apply alpha to all client's weapons.
+ */
+stock ToolsSetClientAlpha(client, alpha)
+{
+    // Turn rendermode on, on the client.
+    SetEntityRenderMode(client, RENDER_TRANSALPHA);
+
+    // Get current client colors.
+    new color[4];
+    ToolsGetEntityColor(client, color);
+
+    // Set alpha value on the client.
+    SetEntityRenderColor(client, color[0], color[1], color[2], alpha);
 }
 
 /**
