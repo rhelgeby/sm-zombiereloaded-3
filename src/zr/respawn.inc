@@ -164,7 +164,7 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
     }
 
     // Get respawn condition.
-    new RespawnCondition:condition = RespawnToContition(zombie, zombieIfSuicide);
+    new RespawnCondition:condition = RespawnToCondition(zombie, zombieIfSuicide);
 
     // Trigger API forward.
     new Action:result = APIOnClientRespawn(client, condition);
@@ -255,7 +255,7 @@ public Action:RespawnTimer(Handle:timer, any:client)
 /**
  * Converts separate conditions into a single condition value.
  */
-RespawnCondition:RespawnToContition(bool:zombie, bool:zombieIfSuicide)
+RespawnCondition:RespawnToCondition(bool:zombie, bool:zombieIfSuicide)
 {
     if (zombie)
     {

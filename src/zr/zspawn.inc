@@ -142,18 +142,18 @@ ZSpawnOnClientClassPost(client)
         return;
     }
 
-    // Is the client death and not source-tv?
+    // Is the client dead and not source-tv?
     if (!IsPlayerAlive(client) && !IsClientSourceTV(client))
     {
         // Get our zspawn condition.
-        new ZSpawnCondition:condition = GetZSpawnCondition();
+        new ZSpawnCondition:condition = GetZSpawnCondition(client);
 
         switch(condition)
         {
             case ZSpawn_Human, ZSpawn_Zombie:
             {
-                // Respawn client.
-                CS_RespawnPlayer(client);
+                // ZSpawn client.
+                ZSpawnClient(client, false, false, false);
             }
         }
     }
@@ -170,7 +170,7 @@ ZSpawnOnClientSpawn(client)
     if (ZRIsClientOnTeam(client) && InfectHasZombieSpawned())
     {
         // Get our zspawn condition.
-        new ZSpawnCondition:condition = GetZSpawnCondition();
+        new ZSpawnCondition:condition = GetZSpawnCondition(client);
 
         switch(condition)
         {
@@ -282,20 +282,24 @@ ZSpawnOnRoundEnd()
  * @param zombie    (Optional) If you are forcing spawn, you must override the team here.
  * @return          True if successful, false otherwise.
  */
-bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
+bool:ZSpawnClient(client, bool:force = false, bool:zombie = false, bool error = true)
 {
     // If zspawn is disabled, then stop.
     new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
     if (!force && !zspawn)
     {
-        TranslationPrintToChat(client, "Feature is disabled");
+        if (error)
+        {
+            TranslationPrintToChat(client, "Feature is disabled");
+        }
+
         return false;
     }
 
     // If client isn't on a team, then stop.
     if (!ZRIsClientOnTeam(client))
     {
-        if (!force)
+        if (!force && error)
         {
             // Tell client the command may only be used when on a team.
             TranslationPrintToChat(client, "Must be on team");
@@ -307,7 +311,7 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
     // If client is alive, then stop.
     if (IsPlayerAlive(client))
     {
-        if (!force)
+        if (!force && error)
         {
             // Tell client the command may only be used when dead.
             TranslationPrintToChat(client, "Must be dead");
@@ -320,8 +324,12 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
     new blockrejoin = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_BLOCK_REJOIN]);
     if (!force && SteamidCacheClientExists(g_hZSpawnSteamIDCache, client) && blockrejoin)
     {
-        // Tell client the command may only be used when joining late.
-        TranslationPrintToChat(client, "ZSpawn double spawn");
+        if (error)
+        {
+            // Tell client the command may only be used when joining late.
+            TranslationPrintToChat(client, "ZSpawn double spawn");
+        }
+
         return false;
     }
 
@@ -331,7 +339,7 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
     if (!force)
     {
         // Get our zspawn condition.
-        new ZSpawnCondition:condition = GetZSpawnCondition();
+        new ZSpawnCondition:condition = GetZSpawnCondition(client);
 
         switch(condition)
         {
@@ -340,8 +348,12 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
                 // Get timelimit.
                 new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
 
-                // Tell client the timelimit for this command has expired.
-                TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
+                if (error)
+                {
+                    // Tell client the timelimit for this command has expired.
+                    TranslationPrintToChat(client, "ZSpawn timelimit", RoundToNearest(zspawntime));
+                }
+
                 return false;
             }
             case ZSpawn_Human:
@@ -353,10 +365,6 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false)
                 teamzombie = true;
             }
         }
-
-        // Client has been infected this round, respawning as a zombie.
-        if(g_bZSpawnClientInfected[client])
-            teamzombie = true;
     }
     else
     {
@@ -559,7 +567,7 @@ public Action:ZSpawnTimer(Handle:timer)
 /**
  * Get ZSpawn condition.
  */
-ZSpawnCondition:GetZSpawnCondition()
+ZSpawnCondition:GetZSpawnCondition(int client)
 {
     new ZSpawnCondition:condition;
 
@@ -599,6 +607,10 @@ ZSpawnCondition:GetZSpawnCondition()
             }
         }
     }
+
+    // Client has been infected this round, respawning as a zombie.
+    if(condition == ZSpawn_Human && g_bZSpawnClientInfected[client])
+        condition = ZSpawn_Zombie;
 
     return condition;
 }
