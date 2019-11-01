@@ -243,15 +243,16 @@ bool ZTeleClient(int client, bool force = false)
 // TODO: This function is called externally, move to interface.
 void ZTele_TeleportClient(int client)
 {
+    float resetSpeed[3] = {0.0, 0.0, 0.0};
     // Teleport client.
     if (ZTele_IsRandomSpawnEnabled() && g_iZTeleSpawnPointsCount)
     {
         int select = Math_GetRandomInt(0, g_iZTeleSpawnPointsCount - 1);
-        TeleportEntity(client, g_vecZTeleSpawnPoints[select][0], g_vecZTeleSpawnPoints[select][1], NULL_VECTOR);
+        TeleportEntity(client, g_vecZTeleSpawnPoints[select][0], g_vecZTeleSpawnPoints[select][1], resetSpeed);
     }
     else
     {
-        TeleportEntity(client, g_vecZTeleSpawn[client][0], g_vecZTeleSpawn[client][1], NULL_VECTOR);
+        TeleportEntity(client, g_vecZTeleSpawn[client][0], g_vecZTeleSpawn[client][1], resetSpeed);
     }
 }
 
