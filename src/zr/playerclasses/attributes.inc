@@ -34,6 +34,41 @@
  */
 
 /**
+ * Gets the class identifier (config class section name).
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param buffer    The destination string buffer.
+ * @param maxlen    The length of the destination string buffer.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
+ *                  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
+ *                  is used, index will be used as a client index.
+ * @return          Number of cells written. -1 on error.
+ */
+stock ClassGetIdentifier(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
+{
+    switch (cachetype)
+    {
+        case ZR_CLASS_CACHE_ORIGINAL:
+        {
+            return strcopy(buffer, maxlen, ClassData[index][Class_Identifier]);
+        }
+        case ZR_CLASS_CACHE_MODIFIED:
+        {
+            return strcopy(buffer, maxlen, ClassDataCache[index][Class_Identifier]);
+        }
+        case ZR_CLASS_CACHE_PLAYER:
+        {
+            return strcopy(buffer, maxlen, ClassPlayerCache[index][Class_Identifier]);
+        }
+    }
+
+    return -1;
+}
+
+/**
  * Checks if the specified class is enabled.
  *
  * @param index     Index of the class in a class cache or a client index,
@@ -1401,7 +1436,8 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
         }
 
         // String.
-        case ZR_CLASS_GROUP,
+        case ZR_CLASS_IDENTIFIER,
+              ZR_CLASS_GROUP,
               ZR_CLASS_NAME,
               ZR_CLASS_DESCRIPTION,
               ZR_CLASS_MODEL_PATH,

@@ -265,6 +265,7 @@ ClassMenuSelect(client, teamid)
     new classindex;
 
     decl String:title[MENU_LINE_TITLE_LENGTH];
+    decl String:classident[64];
     decl String:classname[MENU_LINE_REG_LENGTH];
     decl String:description[MENU_LINE_BIG_LENGTH];
     decl String:menuitem[MENU_LINE_HUGE_LENGTH];
@@ -319,12 +320,13 @@ ClassMenuSelect(client, teamid)
         {
             // Get index, name and description.
             classindex = GetArrayCell(classarray, i);
+            ClassGetIdentifier(classindex, classident, sizeof(classident));
             ClassGetName(classindex, classname, sizeof(classname), ZR_CLASS_CACHE_MODIFIED);
             ClassGetDescription(classindex, description, sizeof(description), ZR_CLASS_CACHE_MODIFIED);
 
             // Add menu item. Using extra spaces for indention on the second line.
             Format(menuitem, sizeof(menuitem), "%s\n    %s", classname, description);
-            AddMenuItem(menu, classname, menuitem);
+            AddMenuItem(menu, classident, menuitem);
         }
     }
 
@@ -340,7 +342,7 @@ ClassMenuSelect(client, teamid)
  */
 public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
 {
-    decl String:className[MENU_LINE_REG_LENGTH];
+    decl String:classIdent[MENU_LINE_REG_LENGTH];
     new classIndex;
     new bool:autoclose = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]);
 
@@ -349,10 +351,10 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
         case MenuAction_Select:
         {
             // Get class name from the information string.
-            GetMenuItem(menu, slot, className, sizeof(className));
+            GetMenuItem(menu, slot, classIdent, sizeof(classIdent));
 
             // Solve class index from the name.
-            classIndex = ClassGetIndex(className);
+            classIndex = ClassGetIndexByIdentifier(classIdent);
 
             // Select (and eventually apply) class.
             ClassSelectClientClass(client, classIndex);

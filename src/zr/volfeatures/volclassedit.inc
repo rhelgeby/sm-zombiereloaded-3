@@ -476,7 +476,7 @@ VolClassEditApply(client, dataIndex)
         case ClassEditMode_Name:
         {
             // Cache volume attributes.
-            new classindex = ClassGetIndex(VolClassEditData[dataIndex][VolClassEdit_ClassName]);
+            new classindex = ClassGetIndexByName(VolClassEditData[dataIndex][VolClassEdit_ClassName]);
 
             // Save player's selected class.
             VolClassEditSelectedClass[client] = ClassGetActiveIndex(client);

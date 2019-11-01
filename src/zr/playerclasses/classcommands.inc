@@ -33,7 +33,7 @@ ClassOnCommandsCreate()
     // Create base class commands.
     RegConsoleCmd("zr_class_dump", ClassDumpCommand, "Dumps class data at a specified index in the specified cache. Usage: zr_class_dump <cachetype> <index|targetname>");
     RegConsoleCmd("zr_class_dump_multipliers", ClassDumpMultipliersCommand, "Dumps class attribute multipliers for the specified team. Usage: zr_class_dump_multipliers <\"zombies\"|\"humans\">");
-    RegConsoleCmd("zr_class_modify", ClassModifyCommand, "Modify class data on one or more classes. Usage: zr_class_modify <classname|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
+    RegConsoleCmd("zr_class_modify", ClassModifyCommand, "Modify class data on one or more classes. Usage: zr_class_modify <identifier|\"zombies\"|\"humans\"|\"admins\"> <attribute> <value> [is_multiplier]");
     RegConsoleCmd("zr_class_set_multiplier", ClassSetMultiplierCommand, "Sets the multiplier on a class attribute. Usage: zr_class_set_multiplier <\"zombies\"|\"humans\"> <attribute> <value>");
     RegConsoleCmd("zr_class_reload", ClassReloadCommand, "Refreshes the player cache and reloads class attributes on one or more players. Usage: zr_class_reload <target>");
 }
@@ -297,7 +297,7 @@ public Action:ClassModifyCommand(client, argc)
         return Plugin_Handled;
     }
 
-    decl String:classname[64];
+    decl String:identifier[64];
     decl String:attributename[128];
     decl String:value[256];
     decl String:ismultiplier[4];
@@ -313,7 +313,7 @@ public Action:ClassModifyCommand(client, argc)
     classlist = CreateArray();
 
     // Get command arguments.
-    GetCmdArg(1, classname, sizeof(classname));
+    GetCmdArg(1, identifier, sizeof(identifier));
     GetCmdArg(2, attributename, sizeof(attributename));
     GetCmdArg(3, value, sizeof(value));
 
@@ -342,36 +342,36 @@ public Action:ClassModifyCommand(client, argc)
     // Get attribute data type.
     attributetype = ClassGetAttributeType(attributeflag);
 
-    // Check if classname is a group. Add classes to the class list
+    // Check if identifier is a group. Add classes to the class list
     // and use the specified team filter.
-    if (StrEqual(classname, "all", false))
+    if (StrEqual(identifier, "all", false))
     {
         listresult = ClassAddToArray(classlist);
         isgroup = true;
     }
-    else if (StrEqual(classname, "humans", false))
+    else if (StrEqual(identifier, "humans", false))
     {
         listresult = ClassAddToArray(classlist, ZR_CLASS_TEAM_HUMANS);
         isgroup = true;
     }
-    else if (StrEqual(classname, "zombies", false))
+    else if (StrEqual(identifier, "zombies", false))
     {
         listresult = ClassAddToArray(classlist, ZR_CLASS_TEAM_ZOMBIES);
         isgroup = true;
     }
-    else if (StrEqual(classname, "admins", false))
+    else if (StrEqual(identifier, "admins", false))
     {
         listresult = ClassAddToArray(classlist, ZR_CLASS_TEAM_ADMINS);
         isgroup = true;
     }
 
-    // Check if classname is a group.
+    // Check if identifier is a group.
     if (isgroup)
     {
         // Check if the list is valid.
         if (!listresult)
         {
-            ReplyToCommand(client, "Failed to get classes in the specified team: \"%s\".", classname);
+            ReplyToCommand(client, "Failed to get classes in the specified team: \"%s\".", identifier);
             CloseHandle(classlist);
 
             return Plugin_Handled;
@@ -430,7 +430,7 @@ public Action:ClassModifyCommand(client, argc)
     else
     {
         // It's a single class.
-        classindex = ClassGetIndex(classname);
+        classindex = ClassGetIndexByIdentifier(identifier);
 
         // Validate classindex.
         if (!ClassValidateIndex(classindex))

@@ -66,7 +66,7 @@ ClassOnCookiesCreate()
 ClassOnModulesLoaded()
 {
     // Set default classes on all player slots.
-    ClassClientSetDefaultIndexes();
+    ClassClientSetDefaultIdentifiers();
 }
 
 /**
@@ -149,7 +149,7 @@ ClassOnClientPostAdminCheck(client)
     if (ClassValidated)
     {
         // Set default class indexes on the player.
-        ClassClientSetDefaultIndexes(client);
+        ClassClientSetDefaultIdentifiers(client);
     }
 }
 
@@ -175,7 +175,7 @@ ClassOnCookiesCached(client)
     if (ClassValidated)
     {
         // Set default class indexes on the player.
-        ClassClientSetDefaultIndexes(client);
+        ClassClientSetDefaultIdentifiers(client);
     }
 }
 
@@ -447,7 +447,7 @@ ClassOnClientInfected(client, bool:motherzombie = false)
         else
         {
             // Assume it's a class name. Get index for the specified class name.
-            motherindex = ClassGetIndex(motherzombiesetting);
+            motherindex = ClassGetIndexByIdentifier(motherzombiesetting);
 
             // Validate index.
             if (ClassValidateIndex(motherindex))

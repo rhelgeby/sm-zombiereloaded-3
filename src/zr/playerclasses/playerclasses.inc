@@ -137,6 +137,7 @@
 /**
  * @section Attribute limit values. Used when validating.
  */
+#define ZR_CLASS_IDENTIFIER_MIN             1
 #define ZR_CLASS_TEAM_MIN                   0
 #define ZR_CLASS_TEAM_MAX                   2
 #define ZR_CLASS_FLAGS_MIN                  0
@@ -186,37 +187,38 @@
 /**
  * @section Class attribute flags.
  */
-#define ZR_CLASS_ENABLED                (1<<0)
-#define ZR_CLASS_TEAM                   (1<<1)
-#define ZR_CLASS_TEAM_DEFAULT           (1<<2)
-#define ZR_CLASS_FLAGS                  (1<<3)
-#define ZR_CLASS_GROUP                  (1<<4)
-#define ZR_CLASS_SM_FLAGS               (1<<5)
-#define ZR_CLASS_NAME                   (1<<6)
-#define ZR_CLASS_DESCRIPTION            (1<<7)
-#define ZR_CLASS_MODEL_PATH             (1<<8)
-#define ZR_CLASS_MODEL_SKIN_INDEX       (1<<9)
-#define ZR_CLASS_ALPHA_INITIAL          (1<<10)
-#define ZR_CLASS_ALPHA_DAMAGED          (1<<11)
-#define ZR_CLASS_ALPHA_DAMAGE           (1<<12)
-#define ZR_CLASS_OVERLAY_PATH           (1<<13)
-#define ZR_CLASS_NVGS                   (1<<14)
-#define ZR_CLASS_FOV                    (1<<15)
-#define ZR_CLASS_HAS_NAPALM             (1<<16)
-#define ZR_CLASS_NAPALM_TIME            (1<<17)
-#define ZR_CLASS_IMMUNITY_MODE          (1<<18)
-#define ZR_CLASS_IMMUNITY_AMOUNT        (1<<19)
-#define ZR_CLASS_IMMUNITY_COOLDOWN      (1<<20)
-#define ZR_CLASS_NO_FALL_DAMAGE         (1<<21)
-#define ZR_CLASS_HEALTH                 (1<<22)
-#define ZR_CLASS_HEALTH_REGEN_INTERVAL  (1<<23)
-#define ZR_CLASS_HEALTH_REGEN_AMOUNT    (1<<24)
-#define ZR_CLASS_HEALTH_INFECT_GAIN     (1<<25)
-#define ZR_CLASS_KILL_BONUS             (1<<26)
-#define ZR_CLASS_SPEED                  (1<<27)
-#define ZR_CLASS_KNOCKBACK              (1<<28)
-#define ZR_CLASS_JUMP_HEIGHT            (1<<29)
-#define ZR_CLASS_JUMP_DISTANCE          (1<<30)
+#define ZR_CLASS_IDENTIFIER             (1<<0)
+#define ZR_CLASS_ENABLED                (1<<1)
+#define ZR_CLASS_TEAM                   (1<<2)
+#define ZR_CLASS_TEAM_DEFAULT           (1<<3)
+#define ZR_CLASS_FLAGS                  (1<<4)
+#define ZR_CLASS_GROUP                  (1<<5)
+#define ZR_CLASS_SM_FLAGS               (1<<6)
+#define ZR_CLASS_NAME                   (1<<7)
+#define ZR_CLASS_DESCRIPTION            (1<<8)
+#define ZR_CLASS_MODEL_PATH             (1<<9)
+#define ZR_CLASS_MODEL_SKIN_INDEX       (1<<10)
+#define ZR_CLASS_ALPHA_INITIAL          (1<<11)
+#define ZR_CLASS_ALPHA_DAMAGED          (1<<12)
+#define ZR_CLASS_ALPHA_DAMAGE           (1<<13)
+#define ZR_CLASS_OVERLAY_PATH           (1<<14)
+#define ZR_CLASS_NVGS                   (1<<15)
+#define ZR_CLASS_FOV                    (1<<16)
+#define ZR_CLASS_HAS_NAPALM             (1<<17)
+#define ZR_CLASS_NAPALM_TIME            (1<<18)
+#define ZR_CLASS_IMMUNITY_MODE          (1<<19)
+#define ZR_CLASS_IMMUNITY_AMOUNT        (1<<20)
+#define ZR_CLASS_IMMUNITY_COOLDOWN      (1<<21)
+#define ZR_CLASS_NO_FALL_DAMAGE         (1<<22)
+#define ZR_CLASS_HEALTH                 (1<<23)
+#define ZR_CLASS_HEALTH_REGEN_INTERVAL  (1<<24)
+#define ZR_CLASS_HEALTH_REGEN_AMOUNT    (1<<25)
+#define ZR_CLASS_HEALTH_INFECT_GAIN     (1<<26)
+#define ZR_CLASS_KILL_BONUS             (1<<27)
+#define ZR_CLASS_SPEED                  (1<<28)
+#define ZR_CLASS_KNOCKBACK              (1<<29)
+#define ZR_CLASS_JUMP_HEIGHT            (1<<30)
+#define ZR_CLASS_JUMP_DISTANCE          (1<<31)
 /**
  * @endsection
  */
@@ -243,6 +245,7 @@
 enum ClassAttributes
 {
     /* General */
+    String:Class_Identifier[64],
     bool:Class_Enabled,
     Class_Team,
     bool:Class_TeamDefault,
@@ -560,6 +563,7 @@ ClassLoad()
         LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Can't find any classes in \"%s\"", pathclasses);
     }
 
+    new String:section_name[64];
     new String:name[64];
     new String:group[64];
     new String:sm_flags[64];
@@ -582,6 +586,10 @@ ClassLoad()
 
             break;
         }
+
+        /* Class identifier = section name */
+        KvGetSectionName(kvClassData, section_name, sizeof(section_name));
+        strcopy(ClassData[ClassCount][Class_Identifier], 64, section_name);
 
         /* General */
         ClassData[ClassCount][Class_Enabled] = ConfigKvGetStringBool(kvClassData, "enabled", ZR_CLASS_DEFAULT_ENABLED);
@@ -748,6 +756,7 @@ bool:ClassReloadDataCache()
     for (new classindex = 0; classindex < ClassCount; classindex++)
     {
         /* General */
+        strcopy(ClassDataCache[classindex][Class_Identifier], 64, ClassData[classindex][Class_Identifier]);
         ClassDataCache[classindex][Class_Enabled] = ClassData[classindex][Class_Enabled];
         ClassDataCache[classindex][Class_Team] = ClassData[classindex][Class_Team];
         ClassDataCache[classindex][Class_TeamDefault] = ClassData[classindex][Class_TeamDefault];
@@ -816,6 +825,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
         case ZR_CLASS_CACHE_ORIGINAL:
         {
             /* General */
+            strcopy(ClassPlayerCache[client][Class_Identifier], 64, ClassData[classindex][Class_Identifier]);
             ClassPlayerCache[client][Class_Enabled] = ClassData[classindex][Class_Enabled];
             ClassPlayerCache[client][Class_Team] = ClassData[classindex][Class_Team];
             ClassPlayerCache[client][Class_TeamDefault] = ClassData[classindex][Class_TeamDefault];
@@ -859,6 +869,7 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
         case ZR_CLASS_CACHE_MODIFIED:
         {
             /* General */
+            strcopy(ClassPlayerCache[client][Class_Identifier], 64, ClassDataCache[classindex][Class_Identifier]);
             ClassPlayerCache[client][Class_Enabled] = ClassDataCache[classindex][Class_Enabled];
             ClassPlayerCache[client][Class_Team] = ClassDataCache[classindex][Class_Team];
             ClassPlayerCache[client][Class_TeamDefault] = ClassDataCache[classindex][Class_TeamDefault];
@@ -1042,20 +1053,25 @@ ClassRestoreNextIndexes(client, excludeTeam = -1)
 }
 
 /**
- * Sets default class indexes for each team on all players, or a single player
+ * Sets default class identifiers for each team on all players, or a single player
  * if specified.
  *
  * @param client    Optional. The client index. If specified, cookies are used.
  */
-ClassClientSetDefaultIndexes(client = -1)
+ClassClientSetDefaultIdentifiers(client = -1)
 {
     new bool:clientvalid = ZRIsClientValid(client);
     new filter[ClassFilter];
+    new filter_valid[ClassFilter];
     new bool:saveclasses = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]);
 
-    new zombieindex;
-    new humanindex;
-    new adminindex;
+    char zombie_ident[64];
+    char human_ident[64];
+    char admin_ident[64];
+
+    new zombieindex = -1;
+    new humanindex = -1;
+    new adminindex = -1;
 
     new bool:haszombie;
     new bool:hashuman;
@@ -1066,17 +1082,26 @@ ClassClientSetDefaultIndexes(client = -1)
      *  SETUP CLASS FILTER
      */
 
+    // Do not require class to be enabled.
+    // Disabled classes should not be deleted from the client cookies.
+    // We'll manually check if the class is disabled later.
+    filter_valid[ClassFilter_IgnoreEnabled] = true;
+
     // Do not require any class flags to be set.
     filter[ClassFilter_RequireFlags] = 0;
+    filter_valid[ClassFilter_RequireFlags] = 0;
 
     // Set filter to hide mother zombie classes.
     filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+    filter_valid[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
 
     // Set filter to also hide admin-only classes if not admin.
     filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+    filter_valid[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
 
     // Specify client so it can check group permissions.
     filter[ClassFilter_Client] = client;
+    filter_valid[ClassFilter_Client] = client;
 
 
     /*
@@ -1089,61 +1114,61 @@ ClassClientSetDefaultIndexes(client = -1)
         // Get cookie indexes if enabled.
         if (saveclasses)
         {
-            zombieindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES]);
-            humanindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS]);
-            adminindex = CookiesGetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS]);
-        }
-        else
-        {
-            // Do not use indexes in cookies. Set invalid values so it will
-            // fall back to default class.
-            zombieindex = 0;
-            humanindex = 0;
-            adminindex = 0;
+            GetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES], zombie_ident, sizeof(zombie_ident));
+            GetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS], human_ident, sizeof(human_ident));
+            GetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS], admin_ident, sizeof(admin_ident));
+
+            zombieindex = ClassGetIndexByIdentifier(zombie_ident);
+            humanindex = ClassGetIndexByIdentifier(human_ident);
+            adminindex = ClassGetIndexByIdentifier(admin_ident);
         }
 
-        // Note: When class indexes are set on cookies, they're incremented by
-        //       one so zero means no class set and will result in a invalid
-        //       class index when restored.
-
-        // Check if class indexes are set and that the client pass the filter.
+        // Check if class identifiers are set and that the client pass the filter.
         // Also check that the saved class' team id match with the loaded class.
-        // If not, fall back to default class indexes. Otherwise substract
-        // index by one.
-        if (zombieindex <= 0 ||
-            !ClassTeamCompare(zombieindex - 1, ZR_CLASS_TEAM_ZOMBIES) ||
-            !ClassFilterMatch(zombieindex - 1, filter))
+        // If not, fall back to default class indexes.
+        if (zombieindex < 0 ||
+            !ClassTeamCompare(zombieindex, ZR_CLASS_TEAM_ZOMBIES) ||
+            !ClassFilterMatch(zombieindex, filter_valid))
         {
             zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES, filter);
         }
         else
         {
-            zombieindex--;
             haszombie = true;
+            if (!ClassIsEnabled(zombieindex))
+            {
+                zombieindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ZOMBIES, filter);
+            }
         }
 
-        if (humanindex <= 0 ||
-            !ClassTeamCompare(humanindex - 1, ZR_CLASS_TEAM_HUMANS) ||
-            !ClassFilterMatch(humanindex - 1, filter))
+        if (humanindex < 0 ||
+            !ClassTeamCompare(humanindex, ZR_CLASS_TEAM_HUMANS) ||
+            !ClassFilterMatch(humanindex, filter_valid))
         {
             humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS, filter);
         }
         else
         {
-            humanindex--;
             hashuman = true;
+            if (!ClassIsEnabled(humanindex))
+            {
+                humanindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_HUMANS, filter);
+            }
         }
 
-        if (adminindex <= 0 ||
-            !ClassTeamCompare(adminindex - 1, ZR_CLASS_TEAM_ADMINS) ||
-            !ClassFilterMatch(adminindex - 1, filter))
+        if (adminindex < 0 ||
+            !ClassTeamCompare(adminindex, ZR_CLASS_TEAM_ADMINS) ||
+            !ClassFilterMatch(adminindex, filter_valid))
         {
             adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS, filter);
         }
         else
         {
-            adminindex--;
             hasadmin = true;
+            if (!ClassIsEnabled(adminindex))
+            {
+                adminindex = ClassGetDefaultSpawnClass(ZR_CLASS_TEAM_ADMINS, filter);
+            }
         }
     }
     else
@@ -1211,17 +1236,20 @@ ClassClientSetDefaultIndexes(client = -1)
         // Save indexes in cookies if enabled, and not already saved.
         if (saveclasses)
         {
-            if (!haszombie)
+            if (!haszombie && zombieindex != -1)
             {
-                CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES], zombieindex + 1);
+                ClassGetIdentifier(zombieindex, zombie_ident, sizeof(zombie_ident));
+                SetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES], zombie_ident);
             }
-            if (!hashuman)
+            if (!hashuman && humanindex != -1)
             {
-                CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS], humanindex + 1);
+                ClassGetIdentifier(humanindex, human_ident, sizeof(human_ident));
+                SetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS], human_ident);
             }
-            if (!hasadmin)
+            if (!hasadmin && adminindex != -1)
             {
-                CookiesSetInt(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS], adminindex + 1);
+                ClassGetIdentifier(adminindex, admin_ident, sizeof(admin_ident));
+                SetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS], admin_ident);
             }
         }
     }
@@ -1349,6 +1377,10 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
     Format(format_buffer, sizeof(format_buffer), "Class data at index %d:\n", index);
     cellcount += StrCat(buffer, maxlen, format_buffer);
     cellcount += StrCat(buffer, maxlen, "-------------------------------------------------------------------------------\n");
+
+    ClassGetIdentifier(index, format_buffer, sizeof(format_buffer), cachetype);
+    Format(attribute, sizeof(attribute), "identifier:            \"%s\"\n", format_buffer);
+    cellcount += StrCat(buffer, maxlen, attribute);
 
     Format(attribute, sizeof(attribute), "enabled:               \"%d\"\n", ClassIsEnabled(index, cachetype));
     cellcount += StrCat(buffer, maxlen, attribute);

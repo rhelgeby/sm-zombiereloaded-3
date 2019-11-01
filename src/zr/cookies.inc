@@ -42,7 +42,7 @@ CookiesInit()
  * @param client    The client index.
  * @param cookie    The handle to the cookie.
  */
-bool:CookiesGetClientCookieBool(client, Handle:cookie)
+stock bool:CookiesGetClientCookieBool(client, Handle:cookie)
 {
     // Get cookie string.
     decl String:cookievalue[8];
@@ -59,7 +59,7 @@ bool:CookiesGetClientCookieBool(client, Handle:cookie)
  * @param cookie        The handle to the cookie.
  * @param cookievalue   The bool value to set cookie as.
  */
-CookiesSetClientCookieBool(client, Handle:cookie, bool:cookievalue)
+stock CookiesSetClientCookieBool(client, Handle:cookie, bool:cookievalue)
 {
     // Convert bool to string.
     decl String:strCookievalue[8];
@@ -75,7 +75,7 @@ CookiesSetClientCookieBool(client, Handle:cookie, bool:cookievalue)
  * @param client    The client index.
  * @param cookie    The handle to the cookie.
  */
-CookiesGetInt(client, Handle:cookie)
+stock CookiesGetInt(client, Handle:cookie)
 {
     decl String:strValue[16];
     strValue[0] = 0;
@@ -91,7 +91,7 @@ CookiesGetInt(client, Handle:cookie)
  * @param cookie    The handle to the cookie.
  * @param value     The value to set.
  */
-CookiesSetInt(client, Handle:cookie, value)
+stock CookiesSetInt(client, Handle:cookie, value)
 {
     // Convert value to string.
     decl String:strValue[16];

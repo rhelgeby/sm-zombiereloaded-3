@@ -117,6 +117,19 @@ native ClassSelectResult ZR_SelectClientClass(int client, int classIndex, bool a
 native int ZR_GetClassByName(const char[] className, int cacheType = ZR_CLASS_CACHE_MODIFIED);
 
 /**
+ * Gets the class index of the class with the specified identifier.
+ *
+ * Note: This search is linear and probably won't perform well in large loops.
+ *
+ * @param classIdent    Class identifier to search for.
+ * @param cacheType     Optional. Specifies which class cache to read from,
+ *                      except player cache.
+ *
+ * @return              Class index, or -1 if none found.
+ */
+native int ZR_GetClassByIdentifier(const char[] classIdent, int cacheType = ZR_CLASS_CACHE_MODIFIED);
+
+/**
  * Gets the class name displayed in the class menu.
  *
  * @param index         Index of the class in a class cache or a client index,
