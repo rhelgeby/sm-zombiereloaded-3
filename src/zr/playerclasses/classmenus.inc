@@ -320,7 +320,7 @@ ClassMenuSelect(client, teamid)
         {
             // Get index, name and description.
             classindex = GetArrayCell(classarray, i);
-            ClassGetIdentifier(classindex, classident, sizeof(classident));
+            ClassGetIdentifier(classindex, classident, sizeof(classident), ZR_CLASS_CACHE_MODIFIED);
             ClassGetName(classindex, classname, sizeof(classname), ZR_CLASS_CACHE_MODIFIED);
             ClassGetDescription(classindex, description, sizeof(description), ZR_CLASS_CACHE_MODIFIED);
 
