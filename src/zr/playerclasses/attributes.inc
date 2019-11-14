@@ -1429,8 +1429,7 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
               ZR_CLASS_HEALTH_REGEN_INTERVAL,
               ZR_CLASS_SPEED,
               ZR_CLASS_KNOCKBACK,
-              ZR_CLASS_JUMP_HEIGHT,
-              ZR_CLASS_JUMP_DISTANCE:
+              ZR_CLASS_JUMP_HEIGHT:
         {
             return ClassDataType_Float;
         }
@@ -1445,6 +1444,15 @@ stock ClassDataTypes:ClassGetAttributeType(attributeflag)
               ZR_CLASS_IMMUNITY_MODE:
         {
             return ClassDataType_String;
+        }
+
+        default:
+        {
+            // sourcepawn bug fix
+            if (attributeflag == ZR_CLASS_JUMP_DISTANCE)
+            {
+                return ClassDataType_Float;
+            }
         }
     }
 

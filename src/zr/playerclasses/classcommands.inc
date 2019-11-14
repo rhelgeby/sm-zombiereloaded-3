@@ -873,14 +873,18 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
             ClassDataCache[classindex][Class_JumpHeight] = value;
             return true;
         }
-        case ZR_CLASS_JUMP_DISTANCE:
+        default:
         {
-            if (ismultiplier)
+            // sourcepawn bug fix
+            if (attributeflag == ZR_CLASS_JUMP_DISTANCE)
             {
-                value = ClassData[classindex][Class_JumpDistance] * value;
+                if (ismultiplier)
+                {
+                    value = ClassData[classindex][Class_JumpDistance] * value;
+                }
+                ClassDataCache[classindex][Class_JumpDistance] = value;
+                return true;
             }
-            ClassDataCache[classindex][Class_JumpDistance] = value;
-            return true;
         }
     }
 
