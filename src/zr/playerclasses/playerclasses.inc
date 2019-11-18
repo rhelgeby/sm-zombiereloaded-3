@@ -1238,17 +1238,17 @@ ClassClientSetDefaultIdentifiers(client = -1)
         {
             if (!haszombie && zombieindex != -1)
             {
-                ClassGetIdentifier(zombieindex, zombie_ident, sizeof(zombie_ident));
+                ClassGetIdentifier(zombieindex, zombie_ident, sizeof(zombie_ident), ZR_CLASS_CACHE_MODIFIED);
                 SetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ZOMBIES], zombie_ident);
             }
             if (!hashuman && humanindex != -1)
             {
-                ClassGetIdentifier(humanindex, human_ident, sizeof(human_ident));
+                ClassGetIdentifier(humanindex, human_ident, sizeof(human_ident), ZR_CLASS_CACHE_MODIFIED);
                 SetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_HUMANS], human_ident);
             }
             if (!hasadmin && adminindex != -1)
             {
-                ClassGetIdentifier(adminindex, admin_ident, sizeof(admin_ident));
+                ClassGetIdentifier(adminindex, admin_ident, sizeof(admin_ident), ZR_CLASS_CACHE_MODIFIED);
                 SetClientCookie(client, g_hClassCookieClassSelected[ZR_CLASS_TEAM_ADMINS], admin_ident);
             }
         }
@@ -1343,7 +1343,9 @@ ClassSelectResult:ClassSelectClientClass(client, classIndex, bool:applyIfPossibl
     // Note: Saved indexes are increased by one.
     if (saveIfEnabled && GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]))
     {
-        CookiesSetInt(client, g_hClassCookieClassSelected[teamid], classIndex + 1);
+        char classIdent[64];
+        ClassGetIdentifier(classIndex, classIdent, sizeof(classIdent), ZR_CLASS_CACHE_MODIFIED);
+        SetClientCookie(client, g_hClassCookieClassSelected[teamid], classIdent);
     }
 
     return selectResult;
