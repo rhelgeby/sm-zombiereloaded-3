@@ -183,6 +183,7 @@ enum CvarsList
     Handle:CVAR_ZSPAWN_TIMELIMIT_ZOMBIE,
     Handle:CVAR_ZHP,
     Handle:CVAR_ZHP_DEFAULT,
+    Handle:CVAR_KNOCKBACK_MAXVEL,
 }
 
 /**
@@ -515,6 +516,12 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_ZHP]                              =    CreateConVar("zr_zhp",             "1",    "Allow player to toggle real HP display as a zombie.");
     g_hCvarsList[CVAR_ZHP_DEFAULT]                      =    CreateConVar("zr_zhp_default",     "1",    "Default ZHP toggle state set on connecting player. [Dependency: zr_zhp]");
+
+
+    // ===========================
+    // Knockback (module)
+    // ===========================
+    g_hCvarsList[CVAR_KNOCKBACK_MAXVEL]                 =    CreateConVar("zr_knockback_maxvel", "0", "Set maximum velocity zombies can get from knockback ['0' = Off].");
 
     ZTele_OnCvarsCreate();
 

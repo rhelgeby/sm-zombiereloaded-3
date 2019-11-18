@@ -291,8 +291,12 @@ void KnockbackApplyVector(int client, float vector[3], bool limitvel)
     AddVectors(vector, velocity, velocity);
 
     // Should we limit their knockback velocity?
-    if (limitvel && g_fKnockbackVelLimit[client] >= 0.0)
+    float maxvel = GetConVarFloat(g_hCvarsList[CVAR_KNOCKBACK_MAXVEL]);
+    if (limitvel && g_fKnockbackVelLimit[client] >= 0.0 || maxvel > 0.0)
     {
+        if(g_fKnockbackVelLimit[client] >= 0.0 && g_fKnockbackVelLimit[client] < maxvel)
+            maxvel = g_fKnockbackVelLimit[client];
+
         // Calculate their new speed.
         float magnitude_post = GetVectorLength(velocity);
 
@@ -300,10 +304,10 @@ void KnockbackApplyVector(int client, float vector[3], bool limitvel)
         if (magnitude_post > magnitude_pre)
         {
             // Would their knockback velocity be higher than wanted?
-            if(magnitude_post > g_fKnockbackVelLimit[client])
+            if(magnitude_post > maxvel)
             {
                 // ... then scale it down.
-                ScaleVector(velocity, g_fKnockbackVelLimit[client] / magnitude_post);
+                ScaleVector(velocity, maxvel / magnitude_post);
             }
         }
     }
