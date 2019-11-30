@@ -325,7 +325,7 @@ ClassMenuSelect(client, teamid)
             ClassGetDescription(classindex, description, sizeof(description), ZR_CLASS_CACHE_MODIFIED);
 
             // Add menu item. Using extra spaces for indention on the second line.
-            Format(menuitem, sizeof(menuitem), "%s\n    %s", classname, classident, description);
+            Format(menuitem, sizeof(menuitem), "%s\n    %s", classname, description);
             AddMenuItem(menu, classident, menuitem);
         }
     }
