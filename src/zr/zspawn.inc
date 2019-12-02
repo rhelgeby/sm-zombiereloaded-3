@@ -599,6 +599,9 @@ ZSpawnCondition:GetZSpawnCondition(int client)
                 case ZSpawn_Human:
                 {
                     condition = ZSpawn_Human;
+                    // Client has been infected this round, respawning as a zombie.
+                    if(condition == ZSpawn_Human && g_bZSpawnClientInfected[client])
+                        condition = ZSpawn_Zombie;
                 }
                 case ZSpawn_Zombie:
                 {
@@ -607,10 +610,6 @@ ZSpawnCondition:GetZSpawnCondition(int client)
             }
         }
     }
-
-    // Client has been infected this round, respawning as a zombie.
-    if(condition == ZSpawn_Human && g_bZSpawnClientInfected[client])
-        condition = ZSpawn_Zombie;
 
     return condition;
 }
