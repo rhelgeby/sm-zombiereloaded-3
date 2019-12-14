@@ -388,7 +388,7 @@ public Action:ClassModifyCommand(client, argc)
             {
                 case ClassDataType_Boolean:
                 {
-                    if (!ClassModifyBoolean(classindex, attributeflag, bool:StringToInt(value)))
+                    if (!ClassModifyBoolean(classindex, attributeflag, ConfigSettingToBool(value)))
                     {
                         ReplyToCommand(client, "Failed to set \"%s\" to \"%s\" in class \"%d\".", attributename, value, classindex);
                     }
