@@ -819,9 +819,19 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     // Check override.
     else
     {
+        new bool:teleport = GetConVarBool(g_hCvarsList[CVAR_INFECT_TELEPORT]);
         if (respawnoverride && respawn)
         {
             ZTele_TeleportClient(client);
+        }
+        // Teleport to attacker when infected
+        else if(teleport && ZRIsClientValid(attacker))
+        {
+            // Get client's position.
+            new Float:clientloc[3];
+            GetClientAbsOrigin(attacker, clientloc);
+
+            TeleportEntity(client, clientloc, NULL_VECTOR, NULL_VECTOR);
         }
     }
 
