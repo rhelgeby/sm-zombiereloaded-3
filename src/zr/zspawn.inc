@@ -586,10 +586,10 @@ ZSpawnCondition:GetZSpawnCondition(int client)
     // Check if zspawn timelimit is enabled.
     if (GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]))
     {
+        new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
         // Check if zspawn timelimit is expired.
         if (!ZRIsTimerRunning(tZSpawn))
         {
-            new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
             switch(zspawntimelimitzombie)
             {
                 case ZSpawn_Block:
@@ -600,7 +600,7 @@ ZSpawnCondition:GetZSpawnCondition(int client)
                 {
                     condition = ZSpawn_Human;
                     // Client has been infected this round, respawning as a zombie.
-                    if(condition == ZSpawn_Human && g_bZSpawnClientInfected[client])
+                    if(g_bZSpawnClientInfected[client])
                         condition = ZSpawn_Zombie;
                 }
                 case ZSpawn_Zombie:
@@ -608,6 +608,12 @@ ZSpawnCondition:GetZSpawnCondition(int client)
                     condition = ZSpawn_Zombie;
                 }
             }
+        }
+        else
+        {
+            // Client has been infected this round, respawning as a zombie.
+            if(condition == ZSpawn_Human && g_bZSpawnClientInfected[client])
+                condition = ZSpawn_Zombie;
         }
     }
 
