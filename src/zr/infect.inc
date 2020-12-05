@@ -594,45 +594,41 @@ public Action:InfectMotherZombie(Handle:timer)
             RemoveFromArray(aCandidatesMain, i);
             candidatesMain--;
         }
-
-        // Infect one of the alternate candidates.
-        else if (candidatesAlt)
-        {
-            // Get a random array index.
-            new i = Math_GetRandomInt(0, candidatesAlt - 1);
-
-            // Get the client stored in the random array index.
-            new client = GetArrayCell(aCandidatesAlt, i);
-
-            // Infect player.
-            if (InfectHumanToZombie(client, _, true))
-                infected++;
-
-            // Remove player from eligible client list.
-            RemoveFromArray(aCandidatesAlt, i);
-            candidatesAlt--;
-
-            // Enable the cycle reset.
-            resetcycle = true;
-        }
-
-        // We have no candidates at all, abort!
         else
         {
-            // Enable the cycle reset.
-            resetcycle = true;
-            break;
+            // No main candidates, reset the mother zombie cycle now before infecting anyone else.
+            if (!resetcycle)
+            {
+                resetcycle = true;
+                // Clear mother zombie round-robin cycle storage.
+                SteamidCacheReset(g_hInfectMotherCycle);
+
+                // Announce start of new cycle
+                TranslationPrintToChatAll(true, false, "Mother zombie infect cycle reset");
+            }
+
+            // Infect one of the alternate candidates.
+            if (candidatesAlt)
+            {
+                // Get a random array index.
+                new i = Math_GetRandomInt(0, candidatesAlt - 1);
+
+                // Get the client stored in the random array index.
+                new client = GetArrayCell(aCandidatesAlt, i);
+
+                // Infect player.
+                if (InfectHumanToZombie(client, _, true))
+                    infected++;
+
+                // Remove player from eligible client list.
+                RemoveFromArray(aCandidatesAlt, i);
+                candidatesAlt--;
+            }
+            else // We have no candidates at all, abort!
+            {
+                break;
+            }
         }
-    }
-
-    if (resetcycle)
-    {
-        // Restart the cycle.
-        // Clear mother zombie round-robin cycle storage.
-        SteamidCacheReset(g_hInfectMotherCycle);
-
-        // Announce start of new cycle
-        TranslationPrintToChatAll(true, false, "Mother zombie infect cycle reset");
     }
 
     // Mother zombies have been infected.
