@@ -64,6 +64,32 @@ stock bool:SteamidCacheAddClient(Handle:steamidcache, client)
 }
 
 /**
+ * Remove client serial number from the SteamID cache.
+ *
+ * @param steamidcache  The SteamID cache to remove the client from.
+ * @param client        The client index.
+ * @return              True if the client was removed successfully, false if the client doesn't exist.
+ */
+stock bool:SteamidCacheRemoveClient(Handle:steamidcache, client)
+{
+    // Get client's SteamID.
+    new steamid = GetSteamAccountID(client);
+    if (!steamid)
+        return false;
+
+    // Find the client in the cache.
+    int idx = FindValueInArray(steamidcache, steamid);
+    if (idx == -1)
+        return false;
+
+    // Remove index from the SteamID cache.
+    RemoveFromArray(steamidcache, idx);
+
+    // Client removed successfully.
+    return true;
+}
+
+/**
  * Check if a client is in the SteamID cache.
  *
  * @param steamidcache  The SteamID cache to check in.

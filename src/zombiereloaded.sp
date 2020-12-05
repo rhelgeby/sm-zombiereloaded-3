@@ -326,6 +326,7 @@ public OnClientPutInServer(client)
     ZTele_OnClientPutInServer(client);
     ZHPClientInit(client);
     ImmunityClientInit(client);
+    ZSpawnOnClientPutInServer(client);
 }
 
 /**

@@ -44,6 +44,7 @@ new Handle:tZSpawn = INVALID_HANDLE;
  * Global variable to store SteamID cache handle.
  */
 new Handle:g_hZSpawnSteamIDCache = INVALID_HANDLE;
+new Handle:g_hZspawnInfectedSteamIDCache = INVALID_HANDLE;
 
 new bool:g_bZSpawnClientInfected[MAXPLAYERS + 1] = {false, ...};
 
@@ -72,12 +73,27 @@ ZSpawnOnMapStart()
     {
         g_hZSpawnSteamIDCache = SteamidCacheCreate();
     }
+    if (g_hZspawnInfectedSteamIDCache == INVALID_HANDLE)
+    {
+        g_hZspawnInfectedSteamIDCache = SteamidCacheCreate();
+    }
 
     // Reset the SteamID cache.
     SteamidCacheReset(g_hZSpawnSteamIDCache);
+    SteamidCacheReset(g_hZspawnInfectedSteamIDCache);
 
     for(new client = 1; client <= MAXPLAYERS; client++)
         g_bZSpawnClientInfected[client] = false;
+}
+
+/**
+ * Client is joining the server.
+ *
+ * @param client    The client index.
+ */
+ZSpawnOnClientPutInServer(client)
+{
+    g_bZSpawnClientInfected[client] = SteamidCacheRemoveClient(g_hZspawnInfectedSteamIDCache, client);
 }
 
 /**
@@ -101,6 +117,10 @@ ZSpawnOnClientDisconnect(client)
 
     // Add client to the SteamID cache.
     SteamidCacheAddClient(g_hZSpawnSteamIDCache, client);
+
+    // If this client was infected, remember until the next round or until they rejoin.
+    if(g_bZSpawnClientInfected[client])
+        SteamidCacheAddClient(g_hZspawnInfectedSteamIDCache, client);
 
     g_bZSpawnClientInfected[client] = false;
 }
@@ -210,6 +230,7 @@ ZSpawnOnRoundStart()
 {
     // Reset the SteamID cache.
     SteamidCacheReset(g_hZSpawnSteamIDCache);
+    SteamidCacheReset(g_hZspawnInfectedSteamIDCache);
 
     for(new client = 1; client <= MAXPLAYERS; client++)
         g_bZSpawnClientInfected[client] = false;
