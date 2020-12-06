@@ -104,6 +104,7 @@ enum CvarsList
     Handle:CVAR_INFECT_SPAWNTIME_MIN,
     Handle:CVAR_INFECT_SPAWNTIME_MAX,
     Handle:CVAR_INFECT_CONSECUTIVE_BLOCK,
+    Handle:CVAR_INFECT_ROUND_ROBIN,
     Handle:CVAR_INFECT_WEAPONS_DROP,
     Handle:CVAR_INFECT_KNIFE_COOLDOWN,
     Handle:CVAR_INFECT_MAX_DISTANCE,
@@ -335,6 +336,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]             =    CreateConVar("zr_infect_spawntime_min",        "30.0",                             "Minimum time from the start of the round until picking the mother zombie(s).");
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]             =    CreateConVar("zr_infect_spawntime_max",        "50.0",                             "Maximum time from the start of the round until picking the mother zombie(s).");
     g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]         =    CreateConVar("zr_infect_consecutive_block",    "1",                                "Prevent a player from being chosen as mother zombie two rounds in a row.");
+    g_hCvarsList[CVAR_INFECT_ROUND_ROBIN]               =    CreateConVar("zr_infect_round_robin",          "1",                                "Use randomized round-robin (with SteamID cache) for mother zombie infection.");
     g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]              =    CreateConVar("zr_infect_weapons_drop",         "1",                                "Force player to drop all weapons on infect, disabling this will strip weapons instead.");
     g_hCvarsList[CVAR_INFECT_KNIFE_COOLDOWN]            =    CreateConVar("zr_infect_knife_cooldown",       "1.0",                              "Time in seconds during which knife can not be used after becoming a zombie.");
     g_hCvarsList[CVAR_INFECT_MAX_DISTANCE]              =    CreateConVar("zr_infect_max_distance",         "80.0",                             "The maximum allowed distance between a client and an attacker for a successful infection. [0.0 = Disabled]");

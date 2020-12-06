@@ -537,6 +537,7 @@ public Action:InfectMotherZombie(Handle:timer)
         }
     }
 
+    new bool:infectroundrobin = GetConVarBool(g_hCvarsList[CVAR_INFECT_ROUND_ROBIN]);
     new candidatesMain = 0;
     new candidatesAlt = 0;
     new Handle:aCandidatesMain = CreateArray();
@@ -550,7 +551,7 @@ public Action:InfectMotherZombie(Handle:timer)
         if (!g_bInfectMotherLast[client])
         {
             // If client hasn't been chosen this cycle, put into aCandidatesMain array.
-            if (!SteamidCacheClientExists(g_hInfectMotherCycle, client))
+            if (!infectroundrobin || !SteamidCacheClientExists(g_hInfectMotherCycle, client))
             {
                 PushArrayCell(aCandidatesMain, client);
                 candidatesMain++;
@@ -597,7 +598,7 @@ public Action:InfectMotherZombie(Handle:timer)
         else
         {
             // No main candidates, reset the mother zombie cycle now before infecting anyone else.
-            if (!resetcycle)
+            if (infectroundrobin && !resetcycle)
             {
                 resetcycle = true;
                 // Clear mother zombie round-robin cycle storage.
@@ -750,19 +751,14 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
 
     // Check if consecutive infection protection is enabled.
     new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]);
-    if (infectconsecutiveblock)
+    new bool:infectroundrobin = GetConVarBool(g_hCvarsList[CVAR_INFECT_ROUND_ROBIN]);
+
+    // If this is a mother infect, update the mother zombie protection status
+    if (motherinfect)
     {
-        // If this is a mother infect, update the mother zombie protection status
-        if (motherinfect)
-        {
-            g_bInfectMotherLast[client] = true;
+        g_bInfectMotherLast[client] = infectconsecutiveblock;
+        if(infectroundrobin)
             SteamidCacheAddClient(g_hInfectMotherCycle, client);
-        }
-    }
-    else
-    {
-        // Consecutive infection protection is disabled. No immunity.
-        g_bInfectMotherLast[client] = false;
     }
 
     // Apply effects.
