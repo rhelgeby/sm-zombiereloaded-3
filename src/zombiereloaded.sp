@@ -173,6 +173,7 @@ public OnAllPluginsLoaded()
     RoundEndOnAllPluginsLoaded();
     WeaponsOnAllPluginsLoaded();
     ConfigOnAllPluginsLoaded();
+    InfectOnAllPluginsLoaded();
 }
 
 /**
@@ -182,6 +183,8 @@ public OnLibraryAdded(const String:name[])
 {
     // Forward event to modules.
     ConfigOnLibraryAdded(name);
+    RoundEndOnLibraryAdded(name);
+    InfectOnLibraryAdded(name);
 }
 
 /**
@@ -190,6 +193,8 @@ public OnLibraryAdded(const String:name[])
 public OnLibraryRemoved(const String:name[])
 {
     ConfigOnLibraryRemoved(name);
+    RoundEndOnLibraryRemoved(name);
+    InfectOnLibraryRemoved(name);
 }
 
 /**

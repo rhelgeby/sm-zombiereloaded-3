@@ -115,13 +115,11 @@ Float:ZRConvertUnitsFloat(Float:number, Float:conversion)
  * @param team                  Client is only eligible if on a team.
  * @param alive                 Client is only eligible if alive.
  * @param human                 Client is only eligible if human.
- * @param immunity              True to ignore clients immune from mother infect, false to count them.
+ * @param plugin                True to ignore clients immune from mother infect, false to count them.
  */
-stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false)
+stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false, bool:plugin = false)
 {
-    // Create array.
-    arrayEligibleClients = CreateArray();
-
+    new count = 0;
     // Populate list with eligible clients.
     // x = client index.
     for (new x = 1; x <= MaxClients; x++)
@@ -151,16 +149,19 @@ stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false
         }
 
         // Ask plugin API what they think about our client
-        if (APIOnClientMotherZombieEligible(x) == Plugin_Handled)
+        if (plugin && APIOnClientMotherZombieEligible(x) == Plugin_Handled)
         {
             continue;
         }
 
         // Add eligible client to array.
-        PushArrayCell(arrayEligibleClients, x);
+        if (arrayEligibleClients != INVALID_HANDLE)
+            PushArrayCell(arrayEligibleClients, x);
+
+        count++;
     }
 
-    return GetArraySize(arrayEligibleClients);
+    return count;
 }
 
 /**

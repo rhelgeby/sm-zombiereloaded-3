@@ -96,6 +96,30 @@ RoundEndOnAllPluginsLoaded()
 }
 
 /**
+ * A library was added.
+ */
+RoundEndOnLibraryAdded(const String:name[])
+{
+    if (StrEqual(name, "sourcetvmanager"))
+    {
+        // sourcetvmanager loaded.
+        g_SourceTVManagerLoaded = true;
+    }
+}
+
+/**
+ * A library was removed.
+ */
+RoundEndOnLibraryRemoved(const String:name[])
+{
+    if (StrEqual(name, "sourcetvmanager"))
+    {
+        // sourcetvmanager unloaded.
+        g_SourceTVManagerLoaded = false;
+    }
+}
+
+/**
  * Map is starting.
  */
 RoundEndOnMapStart()
@@ -419,7 +443,7 @@ RoundEndTerminateRound(Float:delay, RoundEndOutcome:outcome = Restart)
 RoundEndBalanceTeams()
 {
     // Create eligible player list.
-    new Handle:arrayEligibleClients = INVALID_HANDLE;
+    new Handle:arrayEligibleClients = CreateArray();
     new eligibleclients = ZRCreateEligibleClientList(arrayEligibleClients, true);
 
     // If there are no eligible client's then stop.

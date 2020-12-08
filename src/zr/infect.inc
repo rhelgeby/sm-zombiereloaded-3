@@ -25,6 +25,23 @@
  * ============================================================================
  */
 
+#if defined REQUIRE_PLUGIN
+ #define TEMP_REQUIRE_PLUGIN
+ #undef REQUIRE_PLUGIN
+#endif
+
+#tryinclude "AFKManager.inc"
+#tryinclude "TeamManager.inc"
+
+/* Restore old REQUIRE_PLUGIN value if necessary */
+#if defined TEMP_REQUIRE_PLUGIN
+ #define REQUIRE_PLUGIN
+ #undef TEMP_REQUIRE_PLUGIN
+#endif
+
+new bool:g_AFKManagerLoaded = false;
+new bool:g_TeamManagerLoaded = false;
+
 /**
  * @section Explosion flags.
  */
@@ -78,6 +95,7 @@ new bool:g_bInfectMotherLast[MAXPLAYERS + 1];
  * SteamID cache for storing client mother zombie protection status.
  */
 new Handle:g_hInfectMotherCycle = INVALID_HANDLE;
+new Handle:g_hInfectMotherCycleRTD = INVALID_HANDLE;
 
 /**
  * Available mother zombie infection modes.
@@ -88,6 +106,56 @@ enum InfectMode
     InfectMode_Dynamic,         /** Every n-th player is infected. */
     InfectMode_Absolute,        /** Keep n humans (negative n) or infect n zombies. */
     InfectMode_Range            /** An absolute number of zombies infected (min to max). */
+}
+
+/**
+ * All plugins have finished loading.
+ */
+InfectOnAllPluginsLoaded()
+{
+    #if defined _AFKManager_Included
+    g_AFKManagerLoaded = LibraryExists("AFKManager");
+    LogMessage("AFKManager: %s", (g_AFKManagerLoaded ? "loaded" : "not loaded"));
+    #endif
+
+    #if defined _TeamManager_include
+    g_TeamManagerLoaded = LibraryExists("TeamManager");
+    LogMessage("TeamManager: %s", (g_TeamManagerLoaded ? "loaded" : "not loaded"));
+    #endif
+}
+
+/**
+ * A library was added.
+ */
+InfectOnLibraryAdded(const String:name[])
+{
+    if (StrEqual(name, "AFKManager"))
+    {
+        // AFKManager loaded.
+        g_AFKManagerLoaded = true;
+    }
+    else if (StrEqual(name, "TeamManager"))
+    {
+        // TeamManager loaded.
+        g_TeamManagerLoaded = true;
+    }
+}
+
+/**
+ * A library was removed.
+ */
+InfectOnLibraryRemoved(const String:name[])
+{
+    if (StrEqual(name, "AFKManager"))
+    {
+        // AFKManager unloaded.
+        g_AFKManagerLoaded = false;
+    }
+    else if (StrEqual(name, "TeamManager"))
+    {
+        // TeamManager unloaded.
+        g_TeamManagerLoaded = false;
+    }
 }
 
 /**
@@ -103,6 +171,7 @@ InfectOnMapEnd()
 
     // Clear mother zombie round-robin cycle storage.
     SteamidCacheReset(g_hInfectMotherCycle);
+    SteamidCacheReset(g_hInfectMotherCycleRTD);
 }
 
 /**
@@ -112,6 +181,7 @@ InfectLoad()
 {
     // Create mother zombie round-robin cycle storage.
     g_hInfectMotherCycle = SteamidCacheCreate();
+    g_hInfectMotherCycleRTD = SteamidCacheCreate();
 
     // Get infection sound.
     decl String:sound[PLATFORM_MAX_PATH];
@@ -151,6 +221,42 @@ InfectClientInit(client)
 
     // Reset mother zombie last flag.
     g_bInfectMotherLast[client] = false;
+
+    new bool:infectroundrobinrtd = GetConVarBool(g_hCvarsList[CVAR_INFECT_ROUND_ROBIN_RTD]);
+    if (infectroundrobinrtd && !SteamidCacheClientExists(g_hInfectMotherCycleRTD, client))
+    {
+        SteamidCacheAddClient(g_hInfectMotherCycleRTD, client);
+
+        int players = 0;
+        int playersInList = 0;
+        for(int x = 1; x <= MaxClients; x++)
+        {
+            if(!IsClientInGame(x))
+                continue;
+
+            #if defined _AFKManager_Included
+            if(g_AFKManagerLoaded)
+            {
+                if(GetClientIdleTime(x) > 3 * 60)
+                    continue;
+            }
+            #endif
+
+            players++;
+
+            if(SteamidCacheClientExists(g_hInfectMotherCycle, x))
+                playersInList++;
+        }
+
+        if(players && playersInList)
+        {
+            float mzombiechance = float(playersInList) / float(players);
+            float dice = GetRandomFloat();
+
+            if (dice < mzombiechance)
+                SteamidCacheAddClient(g_hInfectMotherCycle, client);
+        }
+    }
 }
 
 /**
@@ -221,7 +327,7 @@ InfectOnClientDisconnect(client)
     }
 
     // Create eligible player list.
-    new Handle:arrayEligibleClients = INVALID_HANDLE;
+    new Handle:arrayEligibleClients = CreateArray();
 
     // Create eligible client list, with no mother infect immunities
     new eligibleclients = ZRCreateEligibleClientList(arrayEligibleClients, true, true, true);
@@ -402,6 +508,14 @@ InfectOnRoundFreezeEnd()
         return;
     }
 
+    // Warmup
+    #if defined _TeamManager_include
+    if(g_TeamManagerLoaded && TeamManager_InWarmup())
+    {
+        return;
+    }
+    #endif
+
     // Get min and max times.
     new Float:infectspawntimemin = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]);
     new Float:infectspawntimemax = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]);
@@ -456,9 +570,17 @@ public Action:InfectMotherZombie(Handle:timer)
     // Reset timer handle.
     g_tInfect = INVALID_HANDLE;
 
+    // Warmup
+    #if defined _TeamManager_include
+    if(g_TeamManagerLoaded && TeamManager_InWarmup())
+    {
+        return;
+    }
+    #endif
+
     // Create eligible player list.
-    new Handle:arrayEligibleClients = INVALID_HANDLE;
-    new eligibleclients = ZRCreateEligibleClientList(arrayEligibleClients, true, true, true);
+    new Handle:arrayEligibleClients = CreateArray();
+    new eligibleclients = ZRCreateEligibleClientList(arrayEligibleClients, true, true, true, true);
 
     // If there are no eligible client's then stop.
     if (!eligibleclients)
@@ -603,6 +725,7 @@ public Action:InfectMotherZombie(Handle:timer)
                 resetcycle = true;
                 // Clear mother zombie round-robin cycle storage.
                 SteamidCacheReset(g_hInfectMotherCycle);
+                SteamidCacheReset(g_hInfectMotherCycleRTD);
 
                 // Announce start of new cycle
                 TranslationPrintToChatAll(true, false, "Mother zombie infect cycle reset");
@@ -758,7 +881,9 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     {
         g_bInfectMotherLast[client] = infectconsecutiveblock;
         if(infectroundrobin)
+        {
             SteamidCacheAddClient(g_hInfectMotherCycle, client);
+        }
     }
 
     // Apply effects.
