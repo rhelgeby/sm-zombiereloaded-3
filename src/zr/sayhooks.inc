@@ -51,6 +51,7 @@
 #define SAYHOOKS_KEYWORD_ZHP        "zhp"
 #define SAYHOOKS_KEYWORD_ZMARKET    "zmarket"
 #define SAYHOOKS_KEYWORD_ZSHIELD    "zshield"
+#define SAYHOOKS_KEYWORD_CDS        "cds"
 /**
  * @endsection
  */

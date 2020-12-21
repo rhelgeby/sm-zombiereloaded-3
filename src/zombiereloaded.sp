@@ -351,6 +351,7 @@ public OnClientCookiesCached(client)
     ClassOnCookiesCached(client);
     WeaponsOnCookiesCached(client);
     ZHPOnCookiesCached(client);
+    InfectOnCookiesCached(client);
 }
 
 /**

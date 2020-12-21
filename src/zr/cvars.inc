@@ -115,6 +115,7 @@ enum CvarsList
     Handle:CVAR_INFECT_MZOMBIE_MIN,
     Handle:CVAR_INFECT_MZOMBIE_MAX,
     Handle:CVAR_INFECT_MZOMBIE_COUNTDOWN,
+    Handle:CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND,
     Handle:CVAR_INFECT_MZOMBIE_RESPAWN,
     Handle:CVAR_INFECT_EXPLOSION,
     Handle:CVAR_INFECT_FIREBALL,
@@ -333,6 +334,7 @@ CvarsCreate()
     g_hCvarsList[CVAR_INFECT_MZOMBIE_MIN]               =    CreateConVar("zr_infect_mzombie_min",          "1",                                "Minimum number of mother zombies. Range mode only, cannot be zero.");
     g_hCvarsList[CVAR_INFECT_MZOMBIE_MAX]               =    CreateConVar("zr_infect_mzombie_max",          "3",                                "Maximum number of mother zombies. Range mode only, cannot be zero.");
     g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]         =    CreateConVar("zr_infect_mzombie_countdown",    "0",                                "Counts down to the first infection of the round.  Countdown is printed in the middle of the client's screen.");
+    g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]   =    CreateConVar("zr_infect_mzombie_countdown_sound","0",                              "Play back countdown sound to clients. [0 = Disabled | 1 = Default Disabled | 2 = Default enabled]");
     g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]           =    CreateConVar("zr_infect_mzombie_respawn",      "0",                                "Teleport mother zombies back to spawn on infect.");
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]             =    CreateConVar("zr_infect_spawntime_min",        "30.0",                             "Minimum time from the start of the round until picking the mother zombie(s).");
     g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]             =    CreateConVar("zr_infect_spawntime_max",        "50.0",                             "Maximum time from the start of the round until picking the mother zombie(s).");

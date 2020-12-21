@@ -478,6 +478,16 @@
 		"en"		"Could not bring back @green{1}@default to life."
 	}
 
+	"CDS enable"
+	{
+		"en"		"Infect countdown sound enabled."
+	}
+
+	"CDS disable"
+	{
+		"en"		"Infect countdown sound disabled."
+	}
+
 	// ===========================
 	// Damage (core)
 	// ===========================
@@ -532,6 +542,11 @@
 	"Menu main zmarket"
 	{
 		"en"		"ZMarket - Customize loadouts here"
+	}
+
+	"Menu main cds"
+	{
+		"en"		"CDS - Toggle infect countdown sound"
 	}
 
 	// ===========================
@@ -993,6 +1008,12 @@
 	"ZCookies zmarket loadout"
 	{
 		"en"		"ZMarket Loadout"
+	}
+
+	"ZCookies menu main cds"
+	{
+		"#format"	"{1:s}"
+		"en"		"Infect Countdown Sound: {1}"
 	}
 
 	// ===========================

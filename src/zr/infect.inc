@@ -77,6 +77,26 @@ new Handle:g_tInfectCountdown = INVALID_HANDLE;
 new Handle:g_hInfectCountdownData = INVALID_HANDLE;
 
 /**
+ * Name of the cookie for toggle state of the infect countdown sound
+ */
+#define CDS_COOKIE_ENABLED "zr_cds"
+
+/**
+ * Number of available/precached infect countdown sounds.
+ */
+new g_iInfectCountdownSounds = 0;
+
+/**
+ * Array for storing infect countdown sound client settings.
+ */
+new g_aInfectCountdownSoundClients[MAXPLAYERS + 1];
+
+/**
+ * Cookie handle for the toggle state of the countdown sound on a client.
+ */
+new Handle:g_hInfectCountdownSoundEnabledCookie = INVALID_HANDLE;
+
+/**
  * Array for flagging client as zombie.
  */
 new bool:g_bZombie[MAXPLAYERS + 1];
@@ -159,6 +179,42 @@ InfectOnLibraryRemoved(const String:name[])
 }
 
 /**
+ * Create infect-related cookies here.
+ */
+InfectOnCookiesCreate()
+{
+    // Create cookie handle if it doesn't exist.
+    if (g_hInfectCountdownSoundEnabledCookie == INVALID_HANDLE)
+    {
+        g_hInfectCountdownSoundEnabledCookie = RegClientCookie(CDS_COOKIE_ENABLED, "Toggle infection countdown sound.", CookieAccess_Protected);
+    }
+}
+
+/**
+ * Called once a client's saved cookies have been loaded from the database.
+ *
+ * @param client        Client index.
+ */
+InfectOnCookiesCached(client)
+{
+    // Get default client setting from cvar.
+    new countdownsound = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);
+
+    // Get cds enabled cookie value.
+    decl String:cdsenabled[8];
+    GetClientCookie(client, g_hInfectCountdownSoundEnabledCookie, cdsenabled, sizeof(cdsenabled));
+
+    // If the cookie is empty, then set the default value.
+    if (!cdsenabled[0])
+    {
+        // Set cookie to default value from cvar.
+        CookiesSetClientCookieBool(client, g_hInfectCountdownSoundEnabledCookie, countdownsound == 2);
+    }
+
+    g_aInfectCountdownSoundClients[client] = CookiesGetClientCookieBool(client, g_hInfectCountdownSoundEnabledCookie);
+}
+
+/**
  * Map is ending.
  */
 InfectOnMapEnd()
@@ -187,17 +243,33 @@ InfectLoad()
     decl String:sound[PLATFORM_MAX_PATH];
     GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
 
-    // If infect sound cvar is empty, then stop.
-    if (!sound[0])
+    // If infect sound cvar is not empty.
+    if (sound[0])
     {
-        return;
+        // Prepend sound/ to the path.
+        Format(sound, sizeof(sound), "sound/%s", sound);
+
+        // Add sound file to downloads table.
+        AddFileToDownloadsTable(sound);
     }
 
-    // Prepend sound/ to the path.
-    Format(sound, sizeof(sound), "sound/%s", sound);
+    // Precache countdown sounds
+    int count = 1;
+    new bool:countdownsound = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);
+    while (countdownsound)
+    {
+        Format(sound, sizeof(sound), "sound/zr/countdown/%i.mp3", count);
+        if (!FileExists(sound))
+            break;
 
-    // Add sound file to downloads table.
-    AddFileToDownloadsTable(sound);
+        AddFileToDownloadsTable(sound);
+        ReplaceString(sound, sizeof(sound), "sound/", "");
+
+        PrecacheSound(sound);
+
+        count++;
+        g_iInfectCountdownSounds = count;
+    }
 }
 
 /**
@@ -207,6 +279,7 @@ InfectOnCommandsCreate()
 {
     RegConsoleCmd("zr_infect", InfectInfectCommand, "Infect a client. Usage: zr_infect <filter> [respawn - 1/0]");
     RegConsoleCmd("zr_human", InfectHumanCommand, "Turn a client into a human. Usage: zr_human <filter> [respawn - 1/0]");
+    RegConsoleCmd(SAYHOOKS_KEYWORD_CDS, CDSCommand, "Toggle infection countdown sound.");
 }
 
 /**
@@ -266,6 +339,8 @@ InfectClientInit(client)
  */
 InfectOnClientDisconnect(client)
 {
+    g_aInfectCountdownSoundClients[client] = false;
+
     // If client is still connecting, then stop.
     if (!IsClientInGame(client))
     {
@@ -796,8 +871,7 @@ InfectMoveAllToCT()
  */
 public Action:InfectCountdown(Handle:timer)
 {
-    new bool:countdown = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]);
-    if (!countdown)
+    if (!GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]))
     {
         InfectStopCountdown();
         return Plugin_Stop;
@@ -820,6 +894,27 @@ public Action:InfectCountdown(Handle:timer)
     {
         // Print the countdown text to the clients.
         TranslationPrintCenterTextAll(false, "Infect countdown", RoundToNearest(length - counter));
+
+        new bool:countdownsound = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);
+        new countdown = RoundToNearest(length - counter);
+        if (countdownsound && g_iInfectCountdownSounds != 0 && countdown > 0 && countdown <= g_iInfectCountdownSounds)
+        {
+            decl String:sound[PLATFORM_MAX_PATH];
+            Format(sound, sizeof(sound), "zr/countdown/%i.mp3", countdown);
+
+            int[] clients = new int[MaxClients];
+            int total = 0;
+            for (int i = 1; i <= MaxClients; i++)
+            {
+                if (IsClientInGame(i) && g_aInfectCountdownSoundClients[i])
+                {
+                    clients[total++] = i;
+                }
+            }
+
+            if (total)
+                EmitSound(clients, total, sound);
+        }
     }
 
     counter++;
@@ -1664,4 +1759,63 @@ InfectMode:InfectGetModeOrFail()
     }
 
     return mode;
+}
+
+/**
+ * Command callback (zhp)
+ * Shows real HP as zombie.
+ *
+ * @param client    The client index.
+ * @param argc      Argument count.
+ */
+public Action:CDSCommand(client, argc)
+{
+    // If client is console, then stop and tell them this feature is for players only.
+    if (ZRIsConsole(client))
+    {
+        TranslationPrintToServer("Must be player");
+        return Plugin_Handled;
+    }
+
+    // Toggle CDS setting.
+    InfectCountdownSoundToggle(client);
+
+    // This stops the "Unknown command" message in client's console.
+    return Plugin_Handled;
+}
+
+/**
+ * Toggle infect countdown sound on a client.
+ *
+ * @param client    The client index.
+ */
+bool:InfectCountdownSoundToggle(client)
+{
+    // If infect countdown sound is disabled, then stop.
+    new bool:countdownsound = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);
+    if (!countdownsound)
+    {
+        // Tell client feature is disabled.
+        TranslationPrintToChat(client, "Feature is disabled");
+
+        // Stop.
+        return false;
+    }
+
+    // Toggle the value.
+    g_aInfectCountdownSoundClients[client] = !g_aInfectCountdownSoundClients[client];
+
+    // Store new value.
+    CookiesSetClientCookieBool(client, g_hInfectCountdownSoundEnabledCookie, !!g_aInfectCountdownSoundClients[client]);
+
+    if (g_aInfectCountdownSoundClients[client])
+    {
+        TranslationPrintToChat(client, "CDS enable");
+    }
+    else
+    {
+        TranslationPrintToChat(client, "CDS disable");
+    }
+
+    return true;
 }
