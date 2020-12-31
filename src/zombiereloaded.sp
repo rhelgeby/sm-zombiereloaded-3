@@ -37,9 +37,13 @@
 #include <zombiereloaded>
 #undef INCLUDED_BY_ZOMBIERELOADED
 
+#undef REQUIRE_EXTENSIONS
+#tryinclude <hitboxchanger>
+#define REQUIRE_EXTENSIONS
+
 #include <sdkhooks>
 
-#define VERSION "3.3"
+#define VERSION "3.5"
 
 // Comment this line to exclude version info command. Enable this if you have
 // the repository and HG installed (Mercurial or TortoiseHG).

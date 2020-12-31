@@ -259,11 +259,18 @@ ModelsPrecache()
 {
     decl String:file[PLATFORM_MAX_PATH];
 
+    // check if we have hitboxchanger extension running
+    bool hitboxchangerLoaded = (GetFeatureStatus(FeatureType_Native, "SetNumHitboxes") == FeatureStatus_Available);
+
     // Loop through all models, build full path and cache them.
     for (new model = 0; model < ModelCount; model++)
     {
         ModelsGetFullPath(model, file, sizeof(file));
-        PrecacheModel(file);
+        int modelIndex = PrecacheModel(file);
+#if defined _HitboxChanger_Included
+        if(hitboxchangerLoaded && (modelIndex != 0) && (ModelData[model][Model_Team] == ModelTeam_Humans))
+            SetNumHitboxes(modelIndex, -1);
+#endif
     }
 }
 
