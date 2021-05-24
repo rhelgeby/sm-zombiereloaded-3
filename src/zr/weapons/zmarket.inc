@@ -941,7 +941,8 @@ public ZMarketMenuTypeWeaponsHandle(Handle:menu_zmarket_typeweapons, MenuAction:
 stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
 {
     // if zombie hasn't spawned yet we're always rebuying:
-    if(!InfectHasZombieSpawned())
+    new bool:zmarketfreespawn = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_FREESPAWN]);
+    if(zmarketfreespawn && !InfectHasZombieSpawned())
         rebuy = true;
 
     // Get weapon index.
