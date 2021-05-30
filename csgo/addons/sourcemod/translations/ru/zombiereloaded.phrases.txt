@@ -384,14 +384,14 @@
 
 	"Mother zombie infect cycle reset"
 	{
-		"ru"		"The mother zombie infection cycle has been reset." // TODO: Translate
+		"ru"		"Цикл заражения материнским зомби был сброшен."
 	}
 
 	// Center Text
 
 	"Infect countdown"
 	{
-		"ru"		"First infection in {1} seconds."
+		"ru"		"До начала заражения {1} секунд."
 	}
 
 	// Menu

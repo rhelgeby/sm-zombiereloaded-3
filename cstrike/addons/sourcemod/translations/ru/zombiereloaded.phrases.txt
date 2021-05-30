@@ -384,7 +384,7 @@
 
 	"Mother zombie infect cycle reset"
 	{
-		"ru"		"The mother zombie infection cycle has been reset." // TODO: Translate
+		"ru"		"Цикл заражения материнским зомби был сброшен." // TODO: Translate
 	}
 
 	// Center Text
