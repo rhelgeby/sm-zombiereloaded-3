@@ -1092,6 +1092,10 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
             SetEntProp(client, Prop_Send, "m_ArmorValue", 100);
             SetEntProp(client, Prop_Send, "m_bHasHelmet", 1);
         }
+        else if (StrEqual(weaponentity, "item_nvgs"))
+        {
+            SetEntProp(client, Prop_Send, "m_bHasNightVision", 1);
+        }
         else
         {
             // Give client the weapon.
