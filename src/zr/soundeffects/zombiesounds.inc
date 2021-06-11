@@ -25,6 +25,8 @@
  * ============================================================================
  */
 
+#include <basecomm>
+
 /**
  * @section Defines for min/max moaning sound file index.
  */
@@ -451,7 +453,8 @@ public Action:ZombieSoundsMoanCommand(client, argc)
     if (IsClientInGame(client) &&
         IsPlayerAlive(client) &&
         InfectIsClientInfected(client) &&
-        ZombieSoundsCommandAllowed(client))
+        ZombieSoundsCommandAllowed(client) &&
+        !BaseComm_IsClientGagged(client))
     {
         ZombieSoundsMoan(client);
         g_SEffectsCommandCount[client]++;
