@@ -3,8 +3,3 @@
 
 *.txt text eol=crlf
 *.cfg text eol=crlf
-
-*.sh text eol=lf
-*.bat text eol=crlf
-
-Makefile text eol=lf
