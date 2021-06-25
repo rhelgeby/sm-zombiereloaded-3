@@ -46,6 +46,7 @@ APIInfectInit()
     // Infect module natives/forwards (infect.zr.inc)
 
     // Natives
+    CreateNative("ZR_IsClientMotherZombie", APIIsClientMotherZombie);
     CreateNative("ZR_IsClientZombie", APIIsClientZombie);
     CreateNative("ZR_IsClientHuman", APIIsClientHuman);
     CreateNative("ZR_InfectClient", APIInfectClient);
@@ -58,6 +59,20 @@ APIInfectInit()
     g_hAPIFwdOnClientHuman = CreateGlobalForward("ZR_OnClientHuman", ET_Hook, Param_CellByRef, Param_CellByRef, Param_CellByRef);
     g_hAPIFwdOnClientHumanPost = CreateGlobalForward("ZR_OnClientHumanPost", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
     g_hAPIFwdOnClientMotherZombieEligible = CreateGlobalForward("ZR_OnClientMotherZombieEligible", ET_Hook, Param_Cell);
+}
+
+/**
+ * Native call function (ZR_IsClientMotherZombie)
+ * Returns true if the client is a mother zombie, false if not.
+ */
+public APIIsClientMotherZombie(Handle:plugin, numParams)
+{
+    new client = GetNativeCell(1);
+
+    // Validate the client index.
+    APIValidateClientIndex(client, Condition_True);
+
+    return InfectIsClientMotherInfected(client);
 }
 
 /**

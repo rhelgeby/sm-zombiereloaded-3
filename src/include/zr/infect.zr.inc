@@ -26,6 +26,16 @@
  */
 
 /**
+ * Returns true if the player is a mother zombie, false if not.
+ *
+ * @param client            The client index.
+ *
+ * @return                  True if mother zombie, false if not.
+ * @error                   Invalid client index, not connected or not alive.
+ */
+native bool ZR_IsClientMotherZombie(int client);
+
+/**
  * Returns true if the player is a zombie, false if not.
  *
  * @param client            The client index.

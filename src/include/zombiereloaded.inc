@@ -59,6 +59,7 @@ public void __pl_zombiereloaded_SetNTVOptional()
     MarkNativeAsOptional("ZR_GetClassDisplayName");
     MarkNativeAsOptional("ZR_GetClassIdentifier");
 
+    MarkNativeAsOptional("ZR_IsClientMotherZombie");
     MarkNativeAsOptional("ZR_IsClientZombie");
     MarkNativeAsOptional("ZR_IsClientHuman");
     MarkNativeAsOptional("ZR_InfectClient");

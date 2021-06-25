@@ -1352,6 +1352,24 @@ bool:InfectHasZombieSpawned()
 }
 
 /**
+ * Returns if a client is mother infected.
+ *
+ * @param client    The client index.
+ * @return          True if the client has been mother infected, false otherwise.
+ */
+bool:InfectIsClientMotherInfected(client)
+{
+    // If client is invalid, then stop.
+    if (!ZRIsClientValid(client))
+    {
+        return false;
+    }
+
+    // Return client's zombie flag.
+    return g_bInfectMotherLast[client];
+}
+
+/**
  * Returns if a client is infected.
  *
  * @param client    The client index.
