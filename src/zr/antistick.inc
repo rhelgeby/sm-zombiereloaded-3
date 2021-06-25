@@ -79,6 +79,7 @@ enum AntiStickBoxBound
     BoxBound_BUL,
     BoxBound_BDR,
     BoxBound_BDL,
+    BoxBound_MAXSIZE
 }
 /**
  * Create commands related to antistick here.
@@ -117,7 +118,7 @@ AntiStickOnClientDisconnect(client)
 public AntiStickStartTouch(client, entity)
 {
     // If antistick is disabled, then stop.
-    new bool:antistick = GetConVarBool(g_hCvarsList[CVAR_ANTISTICK]);
+    new bool:antistick = GetConVarBool(g_hCvarsList.CVAR_ANTISTICK);
     if (!antistick)
     {
         return;
@@ -235,7 +236,7 @@ public Action:AntiStickSolidifyTimer(Handle:timer, any:client)
  * @param boundaries    Array with 'AntiStickBoxBounds' for indexes to return bounds into.
  * @param width         The width of the model box.
  */
-stock AntiStickBuildModelBox(client, Float:boundaries[AntiStickBoxBound][3], Float:width)
+stock AntiStickBuildModelBox(client, Float:boundaries[BoxBound_MAXSIZE][3], Float:width)
 {
     new Float:clientloc[3];
     new Float:twistang[3];
@@ -338,7 +339,7 @@ stock AntiStickJumpToPoint(const Float:vec[3], const Float:ang[3], Float:distanc
  * @param boundaries    The boundaries to check.
  * @param min           Return the min value instead.
  */
-stock Float:AntiStickGetBoxMaxBoundary(axis, Float:boundaries[AntiStickBoxBound][3], bool:min = false)
+stock Float:AntiStickGetBoxMaxBoundary(axis, Float:boundaries[BoxBound_MAXSIZE][3], bool:min = false)
 {
     // Create 'outlier' with initial value of first boundary.
     new Float:outlier = boundaries[0][axis];
@@ -370,8 +371,8 @@ stock Float:AntiStickGetBoxMaxBoundary(axis, Float:boundaries[AntiStickBoxBound]
  */
 stock bool:AntiStickIsModelBoxColliding(client1, client2)
 {
-    new Float:client1modelbox[AntiStickBoxBound][3];
-    new Float:client2modelbox[AntiStickBoxBound][3];
+    new Float:client1modelbox[BoxBound_MAXSIZE][3];
+    new Float:client2modelbox[BoxBound_MAXSIZE][3];
 
     // Build model boxes for each client.
     AntiStickBuildModelBox(client1, client1modelbox, ANTISTICK_DEFAULT_HULL_WIDTH);

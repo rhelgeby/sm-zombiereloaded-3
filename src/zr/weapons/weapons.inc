@@ -94,6 +94,7 @@ enum WeaponsSlot
     Slot_Explosive      = 4,    /** Explosive (c4) weapon slot. */
     Slot_NVGs           = 5,    /** NVGs (fake) equipment slot. */
     Slot_DangerZone     = 11,   /** Dangerzone equipment slot. (CSGO only) */
+    Slot_MAXSIZE
 }
 
 /**
@@ -175,7 +176,7 @@ WeaponsLoad()
     ConfigRegisterConfig(File_Weapons, Structure_Keyvalue, CONFIG_FILE_ALIAS_WEAPONS);
 
     // If module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         return;
@@ -183,7 +184,7 @@ WeaponsLoad()
 
     // Get weapons config path.
     decl String:pathweapons[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_WEAPONS, pathweapons);
+    new bool:exists = ConfigGetCvarFilePath(g_hCvarsList.CVAR_CONFIG_PATH_WEAPONS, pathweapons);
 
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -712,7 +713,7 @@ stock WeaponsGetZMarketCommand(index, String:command[], maxlen)
 stock bool:WeaponsClientHasWeapon(client, const String:weapon[])
 {
     // Get all of client's current weapons.
-    new weapons[WeaponsSlot];
+    new weapons[Slot_MAXSIZE];
     WeaponsGetClientWeapons(client, weapons);
 
     decl String:classname[64];
@@ -744,7 +745,7 @@ stock bool:WeaponsClientHasWeapon(client, const String:weapon[])
  * @param weapons   The weapon index array.
  *                  -1 if no weapon in slot.
  */
-stock WeaponsGetClientWeapons(client, weapons[WeaponsSlot])
+stock void WeaponsGetClientWeapons(int client, int weapons[Slot_MAXSIZE])
 {
     // x = Weapon slot.
     for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
@@ -775,7 +776,7 @@ stock WeaponsGetActiveWeaponIndex(client)
 stock WeaponsSlot:WeaponsGetActiveWeaponSlot(client)
 {
     // Get all client's weapon indexes.
-    new weapons[WeaponsSlot];
+    new weapons[Slot_MAXSIZE];
     WeaponsGetClientWeapons(client, weapons);
 
     // Get client's active weapon.
@@ -875,7 +876,7 @@ stock WeaponsRefreshClientWeapon(client, WeaponsSlot:slot)
 stock WeaponsRemoveAllClientWeapons(client, bool:weaponsdrop)
 {
     // Get a list of all client's weapon indexes.
-    new weapons[WeaponsSlot];
+    new weapons[Slot_MAXSIZE];
     WeaponsGetClientWeapons(client, weapons);
 
     // Loop through array slots and force drop.
@@ -938,7 +939,7 @@ stock WeaponsRemoveAllClientWeapons(client, bool:weaponsdrop)
 stock WeaponsRefreshAllClientWeapons(client)
 {
     // Get a list of all client's weapon indexes.
-    new weapons[WeaponsSlot];
+    new weapons[Slot_MAXSIZE];
     WeaponsGetClientWeapons(client, weapons);
 
     // Loop through array slots and force drop.

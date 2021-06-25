@@ -190,7 +190,7 @@ RestrictOnClientSpawn(client)
  */
 RestrictOnRoundEnd()
 {
-    new bool:restrictzombieequip = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT_ENDEQUIP]);
+    new bool:restrictzombieequip = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT_ENDEQUIP);
     if (!restrictzombieequip)
     {
         return;
@@ -619,14 +619,14 @@ public Action:RestrictCanUse(client, weapon)
     }
 
     // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         return Plugin_Continue;
     }
 
     // If restrict module is disabled, then stop.
-    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    new bool:restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
     if (!restrict)
     {
         return Plugin_Continue;
@@ -677,7 +677,7 @@ public Action:RestrictCommand(client, argc)
     }
 
     // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         // Tell client command is disabled.
@@ -686,7 +686,7 @@ public Action:RestrictCommand(client, argc)
     }
 
     // If restrict module is disabled, then stop.
-    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    new bool:restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
     if (!restrict)
     {
         // Tell client command is disabled.
@@ -738,7 +738,7 @@ public Action:UnrestrictCommand(client, argc)
     }
 
     // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         // Tell client command is disabled.
@@ -747,7 +747,7 @@ public Action:UnrestrictCommand(client, argc)
     }
 
     // If restrict module is disabled, then stop.
-    new bool:restrict = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT]);
+    new bool:restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
     if (!restrict)
     {
         // Tell client command is disabled.

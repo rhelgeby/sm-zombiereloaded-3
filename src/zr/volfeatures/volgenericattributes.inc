@@ -58,7 +58,7 @@ stock bool:VolSetTeamString(volumeIndex, const String:team[])
     }
 
     // Apply value.
-    Volumes[volumeIndex][Vol_TeamFilter] = teamfilter;
+    Volumes[volumeIndex].Vol_TeamFilter = teamfilter;
     return true;
 
 }
@@ -71,7 +71,7 @@ stock bool:VolSetTeamString(volumeIndex, const String:team[])
  */
 stock VolSetTeam(volumeIndex, VolumeTeamFilters:team[])
 {
-    Volumes[volumeIndex][Vol_TeamFilter] = team;
+    Volumes[volumeIndex].Vol_TeamFilter = team;
 }
 
 /**
@@ -127,7 +127,7 @@ stock bool:VolSetDelayString(volumeIndex, const String:delay[])
     triggerdelay = StringToFloat(delay);
 
     // Apply value.
-    Volumes[volumeIndex][Vol_TriggerDelay] = triggerdelay;
+    Volumes[volumeIndex].Vol_TriggerDelay = triggerdelay;
     return true;
 }
 
@@ -139,7 +139,7 @@ stock bool:VolSetDelayString(volumeIndex, const String:delay[])
  */
 stock VolSetDelay(volumeIndex, Float:delay)
 {
-    Volumes[volumeIndex][Vol_TriggerDelay] = delay;
+    Volumes[volumeIndex].Vol_TriggerDelay = delay;
 }
 
 /**
@@ -161,17 +161,17 @@ stock bool:VolSetEffectString(volumeIndex, const String:effect[])
     // Check effect string values and apply them to the volume.
     if (StrEqual(effect, "none", false))
     {
-        Volumes[volumeIndex][Vol_Effect] = VolEffect_None;
+        Volumes[volumeIndex].Vol_Effect = VolEffect_None;
         return true;
     }
     else if (StrEqual(effect, "wireframe", false))
     {
-        Volumes[volumeIndex][Vol_Effect] = VolEffect_Wireframe;
+        Volumes[volumeIndex].Vol_Effect = VolEffect_Wireframe;
         return true;
     }
     else if (StrEqual(effect, "smoke", false))
     {
-        Volumes[volumeIndex][Vol_Effect] = VolEffect_Smoke;
+        Volumes[volumeIndex].Vol_Effect = VolEffect_Smoke;
         return true;
     }
 
@@ -187,7 +187,7 @@ stock bool:VolSetEffectString(volumeIndex, const String:effect[])
  */
 stock VolSetEffect(volumeIndex, VolumeEffects:effect)
 {
-    Volumes[volumeIndex][Vol_Effect] = effect;
+    Volumes[volumeIndex].Vol_Effect = effect;
 }
 
 /**
@@ -249,9 +249,9 @@ stock bool:VolSetEffectColorString(volumeIndex, const String:effect_color[])
     blue = StringToInt(colors[2]);
 
     // Apply values.
-    Volumes[volumeIndex][Vol_EffectColor][0] = red;
-    Volumes[volumeIndex][Vol_EffectColor][1] = green;
-    Volumes[volumeIndex][Vol_EffectColor][2] = blue;
+    Volumes[volumeIndex].Vol_EffectColor[0] = red;
+    Volumes[volumeIndex].Vol_EffectColor[1] = green;
+    Volumes[volumeIndex].Vol_EffectColor[2] = blue;
     return true;
 }
 
@@ -299,7 +299,7 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
     }
 
     // Check if the new value is different from the current.
-    if (Volumes[volumeIndex][Vol_Enabled] != val)
+    if (Volumes[volumeIndex].Vol_Enabled != val)
     {
         // Forward event.
         if (val)
@@ -313,7 +313,7 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
     }
 
     // Apply converted value.
-    Volumes[volumeIndex][Vol_Enabled] = val;
+    Volumes[volumeIndex].Vol_Enabled = val;
     return true;
 }
 
@@ -326,7 +326,7 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
 stock VolSetEnabled(volumeIndex, bool:enabled)
 {
     // Check if the new value is different from the current.
-    if (Volumes[volumeIndex][Vol_Enabled] != enabled)
+    if (Volumes[volumeIndex].Vol_Enabled != enabled)
     {
         // Forward event.
         if (enabled)
@@ -339,5 +339,5 @@ stock VolSetEnabled(volumeIndex, bool:enabled)
         }
     }
 
-    Volumes[volumeIndex][Vol_Enabled] = enabled;
+    Volumes[volumeIndex].Vol_Enabled = enabled;
 }

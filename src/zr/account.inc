@@ -56,14 +56,14 @@ AccountOnOffsetsFound()
 AccountOnClientSpawn(client)
 {
     // If cashfill cvar is disabled, then stop.
-    new bool:accountcashfill = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHFILL]);
+    new bool:accountcashfill = GetConVarBool(g_hCvarsList.CVAR_ACCOUNT_CASHFILL);
     if (!accountcashfill)
     {
         return;
     }
 
     // Get cash value.
-    new cash = GetConVarInt(g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]);
+    new cash = GetConVarInt(g_hCvarsList.CVAR_ACCOUNT_CASHFILL_VALUE);
 
     // Set client's account.
     AccountSetClientCash(client, cash);
@@ -83,7 +83,7 @@ AccountOnClientHurt(client, attacker, dmg_health)
     }
 
     // If cashdmg cvar is disabled, then stop.
-    new bool:accountcashdmg = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHDMG]);
+    new bool:accountcashdmg = GetConVarBool(g_hCvarsList.CVAR_ACCOUNT_CASHDMG);
     if (!accountcashdmg)
     {
         return;

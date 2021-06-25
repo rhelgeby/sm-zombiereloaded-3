@@ -64,16 +64,16 @@ ClassMenuMain(client)
 
     // Setup filtering.
     // ----------------
-    new filter[ClassFilter];
+    ClassFilter filter;
 
     // Hide mother zombie classes.
-    filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+    filter.ClassFilter_DenyFlags = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
 
     // Hide admin-only classes if not admin.
-    filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+    filter.ClassFilter_DenyFlags += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
 
     // Specify client for checking class group permissions.
-    filter[ClassFilter_Client] = client;
+    filter.ClassFilter_Client = client;
 
     // Setup item draw style.
     // ----------------------
@@ -295,16 +295,16 @@ ClassMenuSelect(client, teamid)
 
     // Set up filtering
     // ----------------
-    new filter[ClassFilter];
+    ClassFilter filter;
 
     // Hide mother zombie classes.
-    filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
+    filter.ClassFilter_DenyFlags = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
 
     // Hide admin-only classes if not admin.
-    filter[ClassFilter_DenyFlags] += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
+    filter.ClassFilter_DenyFlags += !ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
 
     // Specify client for checking class group permissions.
-    filter[ClassFilter_Client] = client;
+    filter.ClassFilter_Client = client;
 
     // Get classes
     // -----------
@@ -344,7 +344,7 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
 {
     decl String:classIdent[64];
     new classIndex;
-    new bool:autoclose = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]);
+    new bool:autoclose = GetConVarBool(g_hCvarsList.CVAR_CLASSES_MENU_AUTOCLOSE);
 
     switch (action)
     {

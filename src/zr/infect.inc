@@ -198,7 +198,7 @@ InfectOnCookiesCreate()
 InfectOnCookiesCached(client)
 {
     // Get default client setting from cvar.
-    new countdownsound = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);
+    new countdownsound = GetConVarInt(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND);
 
     // Get cds enabled cookie value.
     decl String:cdsenabled[8];
@@ -241,7 +241,7 @@ InfectLoad()
 
     // Get infection sound.
     decl String:sound[PLATFORM_MAX_PATH];
-    GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
+    GetConVarString(g_hCvarsList.CVAR_INFECT_SOUND, sound, sizeof(sound));
 
     // If infect sound cvar is not empty.
     if (sound[0])
@@ -255,7 +255,7 @@ InfectLoad()
 
     // Precache countdown sounds
     int count = 1;
-    new bool:countdownsound = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);
+    new bool:countdownsound = GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND);
     while (countdownsound)
     {
         Format(sound, sizeof(sound), "sound/zr/countdown/%i.mp3", count);
@@ -295,7 +295,7 @@ InfectClientInit(client)
     // Reset mother zombie last flag.
     g_bInfectMotherLast[client] = false;
 
-    new bool:infectroundrobinrtd = GetConVarBool(g_hCvarsList[CVAR_INFECT_ROUND_ROBIN_RTD]);
+    new bool:infectroundrobinrtd = GetConVarBool(g_hCvarsList.CVAR_INFECT_ROUND_ROBIN_RTD);
     if (infectroundrobinrtd && !SteamidCacheClientExists(g_hInfectMotherCycleRTD, client))
     {
         SteamidCacheAddClient(g_hInfectMotherCycleRTD, client);
@@ -592,8 +592,8 @@ InfectOnRoundFreezeEnd()
     #endif
 
     // Get min and max times.
-    new Float:infectspawntimemin = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MIN]);
-    new Float:infectspawntimemax = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SPAWNTIME_MAX]);
+    new Float:infectspawntimemin = GetConVarFloat(g_hCvarsList.CVAR_INFECT_SPAWNTIME_MIN);
+    new Float:infectspawntimemax = GetConVarFloat(g_hCvarsList.CVAR_INFECT_SPAWNTIME_MAX);
 
     // Pick random time between min and max.
     new Float:randomtime = GetRandomFloat(infectspawntimemin, infectspawntimemax);
@@ -601,7 +601,7 @@ InfectOnRoundFreezeEnd()
     g_tInfect = CreateTimer(randomtime, InfectMotherZombie, _, TIMER_FLAG_NO_MAPCHANGE);
 
     // Check cvar and start a countdown timer if enabled.
-    new bool:countdown = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]);
+    new bool:countdown = GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN);
     if (countdown && randomtime > 1.0)
     {
         // Stop old countdown timer, if it exists.
@@ -669,9 +669,9 @@ public Action:InfectMotherZombie(Handle:timer)
     InfectMoveAllToCT();
 
     new mothercount;
-    new ratio = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]);
-    new min = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_MIN]);
-    new max = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_MAX]);
+    new ratio = GetConVarInt(g_hCvarsList.CVAR_INFECT_MZOMBIE_RATIO);
+    new min = GetConVarInt(g_hCvarsList.CVAR_INFECT_MZOMBIE_MIN);
+    new max = GetConVarInt(g_hCvarsList.CVAR_INFECT_MZOMBIE_MAX);
 
     // Count valid human clients.
     new humancount;
@@ -734,7 +734,7 @@ public Action:InfectMotherZombie(Handle:timer)
         }
     }
 
-    new bool:infectroundrobin = GetConVarBool(g_hCvarsList[CVAR_INFECT_ROUND_ROBIN]);
+    new bool:infectroundrobin = GetConVarBool(g_hCvarsList.CVAR_INFECT_ROUND_ROBIN);
     new candidatesMain = 0;
     new candidatesAlt = 0;
     new Handle:aCandidatesMain = CreateArray();
@@ -871,7 +871,7 @@ InfectMoveAllToCT()
  */
 public Action:InfectCountdown(Handle:timer)
 {
-    if (!GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN]))
+    if (!GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN))
     {
         InfectStopCountdown();
         return Plugin_Stop;
@@ -895,7 +895,7 @@ public Action:InfectCountdown(Handle:timer)
         // Print the countdown text to the clients.
         TranslationPrintCenterTextAll(false, "Infect countdown", RoundToNearest(length - counter));
 
-        new bool:countdownsound = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);
+        new bool:countdownsound = GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND);
         new countdown = RoundToNearest(length - counter);
         if (countdownsound && g_iInfectCountdownSounds != 0 && countdown > 0 && countdown <= g_iInfectCountdownSounds)
         {
@@ -968,8 +968,8 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     g_bZombie[client] = true;
 
     // Check if consecutive infection protection is enabled.
-    new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList[CVAR_INFECT_CONSECUTIVE_BLOCK]);
-    new bool:infectroundrobin = GetConVarBool(g_hCvarsList[CVAR_INFECT_ROUND_ROBIN]);
+    new bool:infectconsecutiveblock = GetConVarBool(g_hCvarsList.CVAR_INFECT_CONSECUTIVE_BLOCK);
+    new bool:infectroundrobin = GetConVarBool(g_hCvarsList.CVAR_INFECT_ROUND_ROBIN);
 
     // If this is a mother infect, update the mother zombie protection status
     if (motherinfect)
@@ -1005,14 +1005,14 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     }
 
     // Check if weapons drop is enabled.
-    new bool:weaponsdrop = GetConVarBool(g_hCvarsList[CVAR_INFECT_WEAPONS_DROP]);
+    new bool:weaponsdrop = GetConVarBool(g_hCvarsList.CVAR_INFECT_WEAPONS_DROP);
 
     // This must be after the event forwarding because it fixes a problem caused by changing models in ClassOnClientInfected.
     // Remove all weapons but knife.
     WeaponsRemoveAllClientWeapons(client, weaponsdrop);
 
     // Zombie won't be able to use their knife for this amount of time
-    new Float:knifecooldown = GetConVarFloat(g_hCvarsList[CVAR_INFECT_KNIFE_COOLDOWN]);
+    new Float:knifecooldown = GetConVarFloat(g_hCvarsList.CVAR_INFECT_KNIFE_COOLDOWN);
     SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + knifecooldown);
 
     // Switch the player to terrorists.
@@ -1022,7 +1022,7 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     // If respawn is enabled, then teleport mother zombie back to spawnpoint.
     if (motherinfect)
     {
-        new bool:zombierespawn = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_RESPAWN]);
+        new bool:zombierespawn = GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_RESPAWN);
         if(zombierespawn)
         {
             ZTele_TeleportClient(client);
@@ -1031,7 +1031,7 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
     // Check override.
     else
     {
-        new bool:teleport = GetConVarBool(g_hCvarsList[CVAR_INFECT_TELEPORT]);
+        new bool:teleport = GetConVarBool(g_hCvarsList.CVAR_INFECT_TELEPORT);
         if (respawnoverride && respawn)
         {
             ZTele_TeleportClient(client);
@@ -1173,28 +1173,28 @@ InfectFireEffects(client)
     GetClientAbsOrigin(client, clientloc);
     clientloc[2] += 30;
 
-    new bool:explosion = GetConVarBool(g_hCvarsList[CVAR_INFECT_EXPLOSION]);
+    new bool:explosion = GetConVarBool(g_hCvarsList.CVAR_INFECT_EXPLOSION);
     if (explosion)
     {
         // Initialize explosion flags variable.
         new flags;
 
         // Set "nofireball" flag if fireball is disabled.
-        new bool:fireball = GetConVarBool(g_hCvarsList[CVAR_INFECT_FIREBALL]);
+        new bool:fireball = GetConVarBool(g_hCvarsList.CVAR_INFECT_FIREBALL);
         if (!fireball)
         {
             flags = flags | EXP_NOFIREBALL;
         }
 
         // Set "nosmoke" flag if smoke is disabled.
-        new bool:smoke = GetConVarBool(g_hCvarsList[CVAR_INFECT_SMOKE]);
+        new bool:smoke = GetConVarBool(g_hCvarsList.CVAR_INFECT_SMOKE);
         if (!smoke)
         {
             flags = flags | EXP_NOSMOKE;
         }
 
         // Set "nosparks" flag if sparks are disabled.
-        new bool:sparks = GetConVarBool(g_hCvarsList[CVAR_INFECT_SPARKS]);
+        new bool:sparks = GetConVarBool(g_hCvarsList.CVAR_INFECT_SPARKS);
         if (!sparks)
         {
             flags = flags | EXP_NOSPARKS;
@@ -1208,7 +1208,7 @@ InfectFireEffects(client)
     ZombieSoundsScream(client);
 
     // If energy splash effect is enabled, then continue.
-    new bool:esplash = GetConVarBool(g_hCvarsList[CVAR_INFECT_ESPLASH]);
+    new bool:esplash = GetConVarBool(g_hCvarsList.CVAR_INFECT_ESPLASH);
     if (esplash)
     {
         // Create energy splash effect.
@@ -1216,13 +1216,13 @@ InfectFireEffects(client)
     }
 
     // If shake effect is enabled, then continue.
-    new bool:shake = GetConVarBool(g_hCvarsList[CVAR_INFECT_SHAKE]);
+    new bool:shake = GetConVarBool(g_hCvarsList.CVAR_INFECT_SHAKE);
     if (shake)
     {
         // Get shake info.
-        new Float:shakeamp = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_AMP]);
-        new Float:shakefrequency = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_FREQUENCY]);
-        new Float:shakeduration = GetConVarFloat(g_hCvarsList[CVAR_INFECT_SHAKE_DURATION]);
+        new Float:shakeamp = GetConVarFloat(g_hCvarsList.CVAR_INFECT_SHAKE_AMP);
+        new Float:shakefrequency = GetConVarFloat(g_hCvarsList.CVAR_INFECT_SHAKE_FREQUENCY);
+        new Float:shakeduration = GetConVarFloat(g_hCvarsList.CVAR_INFECT_SHAKE_DURATION);
 
         // Shake client's screen.
         VEffectsShakeClientScreen(client, shakeamp, shakefrequency, shakeduration);
@@ -1720,12 +1720,12 @@ InfectMode:InfectStringToMode(const String:mode[])
 InfectMode:InfectGetModeOrFail()
 {
     new String:modeName[16];
-    GetConVarString(g_hCvarsList[CVAR_INFECT_MZOMBIE_MODE], modeName, sizeof(modeName));
+    GetConVarString(g_hCvarsList.CVAR_INFECT_MZOMBIE_MODE, modeName, sizeof(modeName));
 
     new InfectMode:mode = InfectStringToMode(modeName);
-    new ratio = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]);
-    new min = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_MIN]);
-    new max = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_MAX]);
+    new ratio = GetConVarInt(g_hCvarsList.CVAR_INFECT_MZOMBIE_RATIO);
+    new min = GetConVarInt(g_hCvarsList.CVAR_INFECT_MZOMBIE_MIN);
+    new max = GetConVarInt(g_hCvarsList.CVAR_INFECT_MZOMBIE_MAX);
 
     // Validate.
     switch (mode)
@@ -1810,7 +1810,7 @@ public Action:CDSCommand(client, argc)
 bool:InfectCountdownSoundToggle(client)
 {
     // If infect countdown sound is disabled, then stop.
-    new bool:countdownsound = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);
+    new bool:countdownsound = GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND);
     if (!countdownsound)
     {
         // Tell client feature is disabled.

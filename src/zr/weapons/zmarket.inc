@@ -338,7 +338,7 @@ ZMarketGetPurchaseCount(client, const String:weapon[])
 bool:ZMarketMenuMain(client)
 {
     // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         // Telle client feature is disabled.
@@ -347,7 +347,7 @@ bool:ZMarketMenuMain(client)
     }
 
     // If ZMarket module is disabled, then stop.
-    new bool:zmarket = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET]);
+    new bool:zmarket = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET);
     if (!zmarket)
     {
         // Telle client feature is disabled.
@@ -362,8 +362,8 @@ bool:ZMarketMenuMain(client)
     SetGlobalTransTarget(client);
 
     // If rebuy is enabled, then add it to the menu.
-    new bool:zmarketrebuy = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY]);
-    new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_AUTO]);
+    new bool:zmarketrebuy = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY);
+    new bool:zmarketrebuyauto = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY_AUTO);
 
     // Add "Get Current Loadout" option.
     decl String:title[MENU_LINE_TITLE_LENGTH];
@@ -482,15 +482,15 @@ bool:ZMarketMenuLoadout(client)
         {
             // Get default weapon for this slot
             decl String:weaponname[WEAPONS_MAX_LENGTH];
-            switch(x)
+            switch(view_as<WeaponsSlot>(x))
             {
                 case Slot_Primary:
                 {
-                    GetConVarString(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_PRIMARY], weaponname, sizeof(weaponname));
+                    GetConVarString(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY_PRIMARY, weaponname, sizeof(weaponname));
                 }
                 case Slot_Secondary:
                 {
-                    GetConVarString(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_SECONDARY], weaponname, sizeof(weaponname));
+                    GetConVarString(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY_SECONDARY, weaponname, sizeof(weaponname));
                 }
             }
 
@@ -583,11 +583,11 @@ ZMarketMenuLoadoutWeapons(client, WeaponsSlot:slot)
     {
         case Slot_Primary:
         {
-            GetConVarString(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_PRIMARY], weaponname, sizeof(weaponname));
+            GetConVarString(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY_PRIMARY, weaponname, sizeof(weaponname));
         }
         case Slot_Secondary:
         {
-            GetConVarString(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_SECONDARY], weaponname, sizeof(weaponname));
+            GetConVarString(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY_SECONDARY, weaponname, sizeof(weaponname));
         }
     }
 
@@ -941,7 +941,7 @@ public ZMarketMenuTypeWeaponsHandle(Handle:menu_zmarket_typeweapons, MenuAction:
 stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
 {
     // if zombie hasn't spawned yet we're always rebuying:
-    new bool:zmarketfreespawn = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_FREESPAWN]);
+    new bool:zmarketfreespawn = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_FREESPAWN);
     if(zmarketfreespawn && !InfectHasZombieSpawned())
         rebuy = true;
 
@@ -972,7 +972,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
         return false;
     }
 
-    new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]);
+    new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_BUYZONE);
     if (!rebuy && zmarketbuyzone && !WeaponsIsClientInBuyZone(client))
     {
         TranslationPrintToChat(client, "Must be in buyzone");
@@ -1059,7 +1059,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
     }
 
     // Get a list of the client's current weapons.
-    new weapons[WeaponsSlot];
+    new weapons[Slot_MAXSIZE];
     WeaponsGetClientWeapons(client, weapons);
 
     // Check if client is buying the weapon or ammo for it.
@@ -1110,7 +1110,7 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
             // If client isn't rebuying the weapon, then tell them the weapon has been purchased.
             TranslationPrintToChat(client, "Weapons zmarket purchase", weapondisplay);
 
-            new bool:zmarketnorefill = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_NOREFILL]);
+            new bool:zmarketnorefill = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_NOREFILL);
             if (IsValidEntity(entity) && !WeaponsIsClientInBuyZone(client) && zmarketnorefill)
             {
                 int newclip = 0;
@@ -1188,7 +1188,7 @@ bool:ZMarketGetCurrentLoadout(client)
     }
 
     // Get all of client's current weapons.
-    new weapons[WeaponsSlot];
+    new weapons[Slot_MAXSIZE];
     WeaponsGetClientWeapons(client, weapons);
 
     decl String:weaponname[WEAPONS_MAX_LENGTH];
@@ -1319,7 +1319,7 @@ ZMarketRebuy(client, bool:autorebuy = false)
         return;
     }
 
-    new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]);
+    new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_BUYZONE);
     if (!autorebuy && zmarketbuyzone && !WeaponsIsClientInBuyZone(client))
     {
         TranslationPrintToChat(client, "Weapons zmarket buyzone");
@@ -1336,15 +1336,15 @@ ZMarketRebuy(client, bool:autorebuy = false)
         // If slot is empty, then use the default value.
         if (!rebuyweapons[x][0])
         {
-            switch(x)
+            switch(view_as<WeaponsSlot>(x))
             {
                 case Slot_Primary:
                 {
-                    GetConVarString(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_PRIMARY], rebuyweapons[x], sizeof(rebuyweapons[]));
+                    GetConVarString(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY_PRIMARY, rebuyweapons[x], sizeof(rebuyweapons[]));
                 }
                 case Slot_Secondary:
                 {
-                    GetConVarString(g_hCvarsList[CVAR_WEAPONS_ZMARKET_REBUY_SECONDARY], rebuyweapons[x], sizeof(rebuyweapons[]));
+                    GetConVarString(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY_SECONDARY, rebuyweapons[x], sizeof(rebuyweapons[]));
                 }
             }
         }

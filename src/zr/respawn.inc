@@ -107,14 +107,14 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
     }
 
     // If respawn is disabled, stop here.
-    new bool:respawn = GetConVarBool(g_hCvarsList[CVAR_RESPAWN]);
+    new bool:respawn = GetConVarBool(g_hCvarsList.CVAR_RESPAWN);
     if (!respawn)
     {
         return;
     }
 
     // Start respawn timer.
-    new Float:delay = GetConVarFloat(g_hCvarsList[CVAR_RESPAWN_DELAY]);
+    new Float:delay = GetConVarFloat(g_hCvarsList.CVAR_RESPAWN_DELAY);
     tRespawn[client] = CreateTimer(delay, RespawnTimer, client, TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -178,7 +178,7 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
     // Restore respawn condition.
     RespawnRestoreCondition(condition, zombie, zombieIfSuicide);
 
-    new bool:ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
+    new bool:ragdollremove = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_RAGDOLL_REMOVE);
     if (!ragdollremove)
     {
         // Detatch ragdoll so it's not removed on respawn.
@@ -243,10 +243,10 @@ public Action:RespawnTimer(Handle:timer, any:client)
     }
 
     // Get whether player should respawn as zombie.
-    new bool:zombie = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]);
+    new bool:zombie = GetConVarBool(g_hCvarsList.CVAR_RESPAWN_TEAM_ZOMBIE);
 
     // Get whether zombies died by suicide should respawn as zombies.
-    new bool:zombieIfSuicide = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE_WORLD]);
+    new bool:zombieIfSuicide = GetConVarBool(g_hCvarsList.CVAR_RESPAWN_TEAM_ZOMBIE_WORLD);
 
     // Spawn player.
     RespawnSpawnClient(client, zombie, zombieIfSuicide);

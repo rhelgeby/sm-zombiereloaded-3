@@ -38,6 +38,7 @@ enum OverlaysChannel
     OVERLAYS_CHANNEL_NONE = -1,      /** Client has no overlay */
     OVERLAYS_CHANNEL_ROUNDEND = 0,  /** Round win overlay */
     OVERLAYS_CHANNEL_CLASSES = 1,   /** Class overlay */
+    OVERLAYS_CHANNEL_MAXSIZE
 }
 
 /**
@@ -53,12 +54,12 @@ new g_iOverlaysDXL[MAXPLAYERS + 1];
 /**
  * Array to track overlay channel state on each client.
  */
-new bool:g_bOverlayChannel[MAXPLAYERS + 1][OverlaysChannel];
+new bool:g_bOverlayChannel[MAXPLAYERS + 1][OVERLAYS_CHANNEL_MAXSIZE];
 
 /**
  * Array to store overlay path for each channel.
  */
-new String:g_strOverlayPath[MAXPLAYERS + 1][OverlaysChannel][PLATFORM_MAX_PATH];
+new String:g_strOverlayPath[MAXPLAYERS + 1][OVERLAYS_CHANNEL_MAXSIZE][PLATFORM_MAX_PATH];
 
 /**
  * Create variable to store global timer handle.
@@ -152,7 +153,7 @@ OverlaysOnRoundStart()
     }
 
     // If antistick is disabled, then stop.
-    new Float:overlaysupdate = GetConVarFloat(g_hCvarsList[CVAR_OVERLAYS_UPDATE_TIME]);
+    new Float:overlaysupdate = GetConVarFloat(g_hCvarsList.CVAR_OVERLAYS_UPDATE_TIME);
     if (overlaysupdate <= 0.0)
     {
         return;
@@ -199,7 +200,7 @@ OverlaysClientUpdateOverlay(client, OverlaysChannel:channel = OVERLAYS_CHANNEL_N
     }
 
     // If client doesn't meet DXLevel requirement, then tell client and stop.
-    new minDxLevel = GetConVarInt(g_hCvarsList[CVAR_OVERLAYS_MIN_DXLEVEL]);
+    new minDxLevel = GetConVarInt(g_hCvarsList.CVAR_OVERLAYS_MIN_DXLEVEL);
     if (g_iOverlaysDXL[client] < minDxLevel)
     {
         TranslationPrintCenterText(client, "Overlays not supported", g_iOverlaysDXL[client], minDxLevel);

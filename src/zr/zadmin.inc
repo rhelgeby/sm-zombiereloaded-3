@@ -99,7 +99,7 @@ bool:ZAdminMenu(client)
     // Get conditions for options.
     new configdraw = MenuGetItemDraw(configallowed);
     new moderatordraw = MenuGetItemDraw(ZRIsClientPrivileged(client, OperationType_Generic));
-    new hitgroupdraw = MenuGetItemDraw(GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]) && configallowed);
+    new hitgroupdraw = MenuGetItemDraw(GetConVarBool(g_hCvarsList.CVAR_HITGROUPS) && configallowed);
 
     // Add items to menu.
     SetMenuTitle(menu_zadmin, title);

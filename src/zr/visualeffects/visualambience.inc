@@ -48,7 +48,7 @@ VAmbienceLoad()
     VAmbienceApplyAll();
 
     // If sky is disabled, then stop.
-    new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
+    new bool:sky = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_SKY);
     if (!sky)
     {
         return;
@@ -58,7 +58,7 @@ VAmbienceLoad()
     decl String:skypath[PLATFORM_MAX_PATH];
 
     // Get sky path.
-    GetConVarString(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], skypath, sizeof(skypath));
+    GetConVarString(g_hCvarsList.CVAR_VEFFECTS_SKY_PATH, skypath, sizeof(skypath));
 
     // Prepend materials/skybox to the path.
     Format(downloadpath, sizeof(downloadpath), "materials/skybox/%s", skypath);
@@ -78,50 +78,50 @@ VAmbienceCvarsHook(bool:unhook = false)
     if (unhook)
     {
         // Unhook lightstyle cvars.
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE], VAmbienceCvarsHookLightStyle);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE], VAmbienceCvarsHookLightStyle);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_LIGHTSTYLE, VAmbienceCvarsHookLightStyle);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_LIGHTSTYLE_VALUE, VAmbienceCvarsHookLightStyle);
 
         // Unhook sky cvars.
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY], VAmbienceCvarsHookSky);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], VAmbienceCvarsHookSky);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_SKY, VAmbienceCvarsHookSky);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_SKY_PATH, VAmbienceCvarsHookSky);
 
         // Unhook sun cvars.
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE], VAmbienceCvarsHookSunDisable);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_SUN_DISABLE, VAmbienceCvarsHookSunDisable);
 
         // Unhook fog cvars.
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG], VAmbienceCvarsHookFog);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE], VAmbienceCvarsHookFog);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR], VAmbienceCvarsHookFog);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR], VAmbienceCvarsHookFog);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY], VAmbienceCvarsHookFog);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST], VAmbienceCvarsHookFog);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST], VAmbienceCvarsHookFog);
-        UnhookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ], VAmbienceCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG, VAmbienceCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_OVERRIDE, VAmbienceCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_PCOLOR, VAmbienceCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_SCOLOR, VAmbienceCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_DENSITY, VAmbienceCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_STARTDIST, VAmbienceCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_ENDDIST, VAmbienceCvarsHookFog);
+        UnhookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_FARZ, VAmbienceCvarsHookFog);
 
         // Stop after unhooking cvars.
         return;
     }
 
     // Hook lightstyle cvars.
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE], VAmbienceCvarsHookLightStyle);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE], VAmbienceCvarsHookLightStyle);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_LIGHTSTYLE, VAmbienceCvarsHookLightStyle);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_LIGHTSTYLE_VALUE, VAmbienceCvarsHookLightStyle);
 
     // Hook sky cvars.
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY], VAmbienceCvarsHookSky);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], VAmbienceCvarsHookSky);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_SKY, VAmbienceCvarsHookSky);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_SKY_PATH, VAmbienceCvarsHookSky);
 
     // Hook sun cvars.
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE], VAmbienceCvarsHookSunDisable);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_SUN_DISABLE, VAmbienceCvarsHookSunDisable);
 
     // Hook fog cvars.
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG], VAmbienceCvarsHookFog);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE], VAmbienceCvarsHookFog);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR], VAmbienceCvarsHookFog);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR], VAmbienceCvarsHookFog);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY], VAmbienceCvarsHookFog);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST], VAmbienceCvarsHookFog);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST], VAmbienceCvarsHookFog);
-    HookConVarChange(g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ], VAmbienceCvarsHookFog);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG, VAmbienceCvarsHookFog);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_OVERRIDE, VAmbienceCvarsHookFog);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_PCOLOR, VAmbienceCvarsHookFog);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_SCOLOR, VAmbienceCvarsHookFog);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_DENSITY, VAmbienceCvarsHookFog);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_STARTDIST, VAmbienceCvarsHookFog);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_ENDDIST, VAmbienceCvarsHookFog);
+    HookConVarChange(g_hCvarsList.CVAR_VEFFECTS_FOG_FARZ, VAmbienceCvarsHookFog);
 }
 
 /**
@@ -135,7 +135,7 @@ VAmbienceCvarsHook(bool:unhook = false)
 public VAmbienceCvarsHookLightStyle(Handle:cvar, const String:oldvalue[], const String:newvalue[])
 {
     // If lightstyle is disabled, then disable.
-    new bool:lightstyle = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]);
+    new bool:lightstyle = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_LIGHTSTYLE);
 
     // Apply light style.
     VAmbienceApplyLightStyle(!lightstyle);
@@ -152,7 +152,7 @@ public VAmbienceCvarsHookLightStyle(Handle:cvar, const String:oldvalue[], const 
 public VAmbienceCvarsHookSky(Handle:cvar, const String:oldvalue[], const String:newvalue[])
 {
     // If sky is disabled, then disable.
-    new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
+    new bool:sky = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_SKY);
 
     // Apply new sky.
     VAmbienceApplySky(!sky);
@@ -169,7 +169,7 @@ public VAmbienceCvarsHookSky(Handle:cvar, const String:oldvalue[], const String:
 public VAmbienceCvarsHookSunDisable(Handle:cvar, const String:oldvalue[], const String:newvalue[])
 {
     // If fog is disabled, then disable.
-    new bool:sun = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SUN_DISABLE]);
+    new bool:sun = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_SUN_DISABLE);
 
     // Apply fog.
     VAmbienceApplySunDisable(!sun);
@@ -186,7 +186,7 @@ public VAmbienceCvarsHookSunDisable(Handle:cvar, const String:oldvalue[], const 
 public VAmbienceCvarsHookFog(Handle:cvar, const String:oldvalue[], const String:newvalue[])
 {
     // If fog is disabled, then disable.
-    new bool:fogoverride = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE]);
+    new bool:fogoverride = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_FOG_OVERRIDE);
 
     // Apply fog.
     VAmbienceApplyFog(fogoverride);
@@ -198,19 +198,19 @@ public VAmbienceCvarsHookFog(Handle:cvar, const String:oldvalue[], const String:
 VAmbienceApplyAll()
 {
     // If lightstyle is disabled, then disable.
-    new bool:lightstyle = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE]);
+    new bool:lightstyle = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_LIGHTSTYLE);
 
     // Apply light style.
     VAmbienceApplyLightStyle(!lightstyle);
 
     // If sky is disabled, then disable.
-    new bool:sky = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_SKY]);
+    new bool:sky = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_SKY);
 
     // Apply new sky.
     VAmbienceApplySky(!sky);
 
     // If fog is disabled, then disable.
-    new bool:fogoverride = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG_OVERRIDE]);
+    new bool:fogoverride = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_FOG_OVERRIDE);
 
     // Apply fog.
     VAmbienceApplyFog(fogoverride);
@@ -229,7 +229,7 @@ VAmbienceApplyLightStyle(bool:disable = false)
 
     // Get light value.
     decl String:lightstylevalue[4];
-    GetConVarString(g_hCvarsList[CVAR_VEFFECTS_LIGHTSTYLE_VALUE], lightstylevalue, sizeof(lightstylevalue));
+    GetConVarString(g_hCvarsList.CVAR_VEFFECTS_LIGHTSTYLE_VALUE, lightstylevalue, sizeof(lightstylevalue));
 
     // Set light style.
     SetLightStyle(0, lightstylevalue);
@@ -264,7 +264,7 @@ VAmbienceApplySky(bool:disable = false)
 
     // Get sky path.
     decl String:skypath[PLATFORM_MAX_PATH];
-    GetConVarString(g_hCvarsList[CVAR_VEFFECTS_SKY_PATH], skypath, sizeof(skypath));
+    GetConVarString(g_hCvarsList.CVAR_VEFFECTS_SKY_PATH, skypath, sizeof(skypath));
 
     // Set new sky on all clients.
     SetConVarString(hSkyname, skypath, true);
@@ -297,7 +297,7 @@ VAmbienceApplySunDisable(bool:disable = false)
 VAmbienceApplyFog(bool:override = false)
 {
     // If fog is disabled, then stop.
-    new bool:fog = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_FOG]);
+    new bool:fog = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_FOG);
 
     if (!fog)
     {
@@ -330,27 +330,27 @@ VAmbienceApplyFog(bool:override = false)
     decl String:fogcolor[16];
 
     // Set primary fog color.
-    GetConVarString(g_hCvarsList[CVAR_VEFFECTS_FOG_PCOLOR], fogcolor, sizeof(fogcolor));
+    GetConVarString(g_hCvarsList.CVAR_VEFFECTS_FOG_PCOLOR, fogcolor, sizeof(fogcolor));
     VAmbienceSetFogColor(fogindex, fogcolor, true);
 
     // Set secondary fog color.
-    GetConVarString(g_hCvarsList[CVAR_VEFFECTS_FOG_SCOLOR], fogcolor, sizeof(fogcolor));
+    GetConVarString(g_hCvarsList.CVAR_VEFFECTS_FOG_SCOLOR, fogcolor, sizeof(fogcolor));
     VAmbienceSetFogColor(fogindex, fogcolor, false);
 
     // Set fog's density.
-    new Float:fogdensity = GetConVarFloat(g_hCvarsList[CVAR_VEFFECTS_FOG_DENSITY]);
+    new Float:fogdensity = GetConVarFloat(g_hCvarsList.CVAR_VEFFECTS_FOG_DENSITY);
     VAmbienceSetFogDensity(fogindex, fogdensity);
 
     // Set fog's start distance.
-    new fogstart = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_FOG_STARTDIST]);
+    new fogstart = GetConVarInt(g_hCvarsList.CVAR_VEFFECTS_FOG_STARTDIST);
     VAmbienceSetFogStartDist(fogindex, fogstart);
 
     // Set fog's end distance.
-    new fogend = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_FOG_ENDDIST]);
+    new fogend = GetConVarInt(g_hCvarsList.CVAR_VEFFECTS_FOG_ENDDIST);
     VAmbienceSetFogEndDist(fogindex, fogend);
 
     // Set fog's far z distance.
-    new fogfarz = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_FOG_FARZ]);
+    new fogfarz = GetConVarInt(g_hCvarsList.CVAR_VEFFECTS_FOG_FARZ);
     VAmbienceSetFogFarZ(fogindex, fogfarz);
 }
 

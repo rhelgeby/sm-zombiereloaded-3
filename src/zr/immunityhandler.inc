@@ -814,7 +814,7 @@ ImmunityMode:ImmunityStringToMode(const String:mode[])
  *
  * @return          Number of cells written.
  */
-ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
+ImmunityModeToString(ImmunityMode mode, char[] buffer, int maxlen)
 {
     if (mode == Immunity_Invalid)
     {

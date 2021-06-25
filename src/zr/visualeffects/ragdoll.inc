@@ -64,7 +64,7 @@ RagdollOnOffsetsFound()
 RagdollOnClientDeath(client)
 {
     // If ragdoll removal is disabled, then stop.
-    new bool:ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
+    new bool:ragdollremove = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_RAGDOLL_REMOVE);
     if (!ragdollremove)
     {
         return;
@@ -79,7 +79,7 @@ RagdollOnClientDeath(client)
     }
 
     // Get the delay.
-    new Float:dissolvedelay = GetConVarFloat(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DELAY]);
+    new Float:dissolvedelay = GetConVarFloat(g_hCvarsList.CVAR_VEFFECTS_RAGDOLL_DELAY);
 
     // If the delay is 0 or less, then remove right now.
     if (dissolvedelay <= 0)
@@ -100,7 +100,7 @@ RagdollOnClientDeath(client)
 RagdollRemove(ragdoll)
 {
     // Get the dissolve type.
-    new dissolve = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]);
+    new dissolve = GetConVarInt(g_hCvarsList.CVAR_VEFFECTS_RAGDOLL_DISSOLVE);
 
     if (dissolve == VEFFECTS_RAGDOLL_DISSOLVE_EFFECTLESS)
     {
@@ -147,7 +147,7 @@ RagdollRemove(ragdoll)
 public Action:RagdollTimer(Handle:timer, any:ragdoll)
 {
     // If ragdoll removal is disabled, then stop.
-    new bool:ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
+    new bool:ragdollremove = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_RAGDOLL_REMOVE);
     if (!ragdollremove)
     {
         return;

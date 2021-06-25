@@ -51,7 +51,7 @@ LogInit()
  *                      names. Default is false
  * @return              Number of cells written.
  */
-LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortName = false)
+LogGetModuleNameString(char[] buffer, int maxlen, LogModules module, bool shortName = false)
 {
     switch (module)
     {
@@ -144,7 +144,7 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
  *                      but not trimmed for white space.
  * @return              The matcing module type or LogModules_Invalid if failed.
  */
-LogModules:LogGetModule(const String:moduleName[])
+LogModules LogGetModule(const String:moduleName[])
 {
     if (StrEqual(moduleName, "account", false))
     {
@@ -236,7 +236,7 @@ LogModules:LogGetModule(const String:moduleName[])
 bool:LogCheckFlag(eventType)
 {
     // Check if eventType is set.
-    if (GetConVarInt(g_hCvarsList[CVAR_LOG_FLAGS]) & eventType)
+    if (GetConVarInt(g_hCvarsList.CVAR_LOG_FLAGS) & eventType)
     {
         return true;
     }
@@ -280,19 +280,19 @@ bool:LogCheckModuleFilter(LogModules:module)
  * @param text          Log message. Can be formatted.
  * @param ...           Formatting parameters.
  */
-LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = LOG_CORE_EVENTS, LogModules:module, const String:description[], const String:text[], any:...)
+LogEvent(bool isConsole = false, LogTypes logType = LogType_Normal, int eventType = LOG_CORE_EVENTS, LogModules module, const char[] description, const char[] text, any ...)
 {
     // Check filter overrides. Always log fatal errors, and check error override setting on error log types.
-    if ((logType != LogType_Fatal && logType != LogType_Error) || (logType == LogType_Error && !GetConVarBool(g_hCvarsList[CVAR_LOG_ERROR_OVERRIDE])))
+    if ((logType != LogType_Fatal && logType != LogType_Error) || (logType == LogType_Error && !GetConVarBool(g_hCvarsList.CVAR_LOG_ERROR_OVERRIDE)))
     {
         // Check if logging is disabled.
-        if (!GetConVarBool(g_hCvarsList[CVAR_LOG]))
+        if (!GetConVarBool(g_hCvarsList.CVAR_LOG))
         {
             return;
         }
 
         // Check if console is ignored.
-        if (isConsole && GetConVarBool(g_hCvarsList[CVAR_LOG_IGNORE_CONSOLE]))
+        if (isConsole && GetConVarBool(g_hCvarsList.CVAR_LOG_IGNORE_CONSOLE))
         {
             return;
         }
@@ -304,7 +304,7 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
         }
 
         // Check if module filtering is enabled.
-        if (GetConVarBool(g_hCvarsList[CVAR_LOG_MODULE_FILTER]))
+        if (GetConVarBool(g_hCvarsList.CVAR_LOG_MODULE_FILTER))
         {
             // Check if the specified module is enabled.
             if (!LogCheckModuleFilter(module))
@@ -348,14 +348,14 @@ LogEvent(bool:isConsole = false, LogTypes:logType = LogType_Normal, eventType = 
     // Note: The phrase "Literal text" is a blank phrase to pass any string we want into it.
 
     // Check if printing log events to admins is enabled.
-    if (GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_ADMINS]))
+    if (GetConVarBool(g_hCvarsList.CVAR_LOG_PRINT_ADMINS))
     {
         // Print text to admins.
         TranslationPrintToChatAll(false, true, "Literal text", logbuffer);
     }
 
     // Check if printing log events to public chat is enabled.
-    if (GetConVarBool(g_hCvarsList[CVAR_LOG_PRINT_CHAT]))
+    if (GetConVarBool(g_hCvarsList.CVAR_LOG_PRINT_CHAT))
     {
         // Print text to public chat.
         TranslationPrintToChatAll(false, false, "Literal text", logbuffer);
@@ -532,7 +532,7 @@ public Action:Command_LogList(client, argc)
     buffer[0] = 0;
 
     // Module filtering status:
-    Format(linebuffer, sizeof(linebuffer), "%t %t\n\n", "Log Module Filtering", GetConVarBool(g_hCvarsList[CVAR_LOG_MODULE_FILTER]) ? "On" : "Off");
+    Format(linebuffer, sizeof(linebuffer), "%t %t\n\n", "Log Module Filtering", GetConVarBool(g_hCvarsList.CVAR_LOG_MODULE_FILTER) ? "On" : "Off");
     StrCat(buffer, sizeof(buffer), linebuffer);
 
     Format(linebuffer, sizeof(linebuffer), "%-23s %-19s %t\n", phrasemodule, phraseshortname, "Log Status");

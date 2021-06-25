@@ -148,7 +148,7 @@ ZombieSoundsOnClientDeath(client)
     }
 
     // If death sound cvar is disabled, then stop.
-    new bool:death = GetConVarBool(g_hCvarsList[CVAR_SEFFECTS_DEATH]);
+    new bool:death = GetConVarBool(g_hCvarsList.CVAR_SEFFECTS_DEATH);
     if (!death)
     {
         return;
@@ -175,7 +175,7 @@ ZombieSoundsOnClientHurt(client)
     }
 
     // Get groan factor, if 0, then stop.
-    new groan = GetConVarInt(g_hCvarsList[CVAR_SEFFECTS_GROAN]);
+    new groan = GetConVarInt(g_hCvarsList.CVAR_SEFFECTS_GROAN);
     if (!groan)
     {
         return;
@@ -200,7 +200,7 @@ ZombieSoundsOnClientHurt(client)
 ZombieSoundsOnClientInfected(client)
 {
     // If interval is set to 0, then stop.
-    new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_SEFFECTS_MOAN]);
+    new Float:interval = GetConVarFloat(g_hCvarsList.CVAR_SEFFECTS_MOAN);
     if (!interval)
     {
         return;
@@ -356,7 +356,7 @@ ZombieSoundsMoan(client)
 ZombieSoundsScream(client)
 {
     decl String:sound[PLATFORM_MAX_PATH];
-    GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
+    GetConVarString(g_hCvarsList.CVAR_INFECT_SOUND, sound, sizeof(sound));
 
     // If cvar contains path, then continue.
     if (sound[0])
@@ -376,7 +376,7 @@ ZombieSoundsCmdTimerCheck(client)
     // Only create timer if it doesn't exist.
     if (g_hSEffectsCommandTimer[client] == INVALID_HANDLE)
     {
-        new Float:timespan = GetConVarFloat(g_hCvarsList[CVAR_SEFFECTS_COMMAND_TIMESPAN]);
+        new Float:timespan = GetConVarFloat(g_hCvarsList.CVAR_SEFFECTS_COMMAND_TIMESPAN);
 
         // Only create timer if time span is enabled.
         if (timespan > 0.0)
@@ -416,7 +416,7 @@ ZombieSoundsResetCmdTimers()
  */
 bool:ZombieSoundsCommandAllowed(client)
 {
-    new limit = GetConVarInt(g_hCvarsList[CVAR_SEFFECTS_COMMAND_LIMIT]);
+    new limit = GetConVarInt(g_hCvarsList.CVAR_SEFFECTS_COMMAND_LIMIT);
 
     if (limit <= 0 ||
         g_SEffectsCommandCount[client] < limit)

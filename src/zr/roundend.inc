@@ -246,7 +246,7 @@ RoundEndOnRoundEnd(reason)
     RoundEndDisplayStats();
 
     // Balance teams if enabled.
-    if (GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_BALANCE_TEAMS]))
+    if (GetConVarBool(g_hCvarsList.CVAR_ROUNDEND_BALANCE_TEAMS))
     {
         RoundEndBalanceTeams();
     }
@@ -320,10 +320,9 @@ RoundEndOutcome:RoundEndReasonToOutcome(reason)
         {
             return ZombiesWin;
         }
-        // Unexpected case.
         default:
         {
-            return Draw;
+            return HumansWin;
         }
     }
 }
@@ -344,7 +343,7 @@ public Action:RoundEndTimer(Handle:timer)
         return;
     }
 
-    new bool:zombies_win = GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_ZOMBIES_WIN]);
+    new bool:zombies_win = GetConVarBool(g_hCvarsList.CVAR_ROUNDEND_ZOMBIES_WIN);
     if (zombies_win)
         RoundEndTerminateRound(ROUNDEND_DELAY, ZombiesWin);
     else
@@ -496,7 +495,7 @@ RoundEndBalanceTeams()
 RoundEndOverlayStart(RoundEndOutcome:outcome)
 {
     // If round end overlays are disabled, then stop.
-    new bool:overlay = GetConVarBool(g_hCvarsList[CVAR_ROUNDEND_OVERLAY]);
+    new bool:overlay = GetConVarBool(g_hCvarsList.CVAR_ROUNDEND_OVERLAY);
     if (!overlay)
     {
         return;
@@ -509,12 +508,12 @@ RoundEndOverlayStart(RoundEndOutcome:outcome)
         // Show "zombies win" overlay.
         case ZombiesWin:
         {
-            GetConVarString(g_hCvarsList[CVAR_ROUNDEND_OVERLAY_ZOMBIE], overlaypath, sizeof(overlaypath));
+            GetConVarString(g_hCvarsList.CVAR_ROUNDEND_OVERLAY_ZOMBIE, overlaypath, sizeof(overlaypath));
         }
         // Show "humans win" overlay.
         case HumansWin:
         {
-            GetConVarString(g_hCvarsList[CVAR_ROUNDEND_OVERLAY_HUMAN], overlaypath, sizeof(overlaypath));
+            GetConVarString(g_hCvarsList.CVAR_ROUNDEND_OVERLAY_HUMAN, overlaypath, sizeof(overlaypath));
         }
         // Show no overlay.
         default:

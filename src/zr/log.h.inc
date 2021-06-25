@@ -67,27 +67,27 @@ enum LogTypes
  */
 enum LogModules
 {
-    bool:LogModule_Invalid = 0,         /** Used as return value when an error occoured.*/
-
-    bool:LogModule_Account,
-    bool:LogModule_AntiStick,
-    bool:LogModule_Config,
-    bool:LogModule_Cvars,
-    bool:LogModule_Damage,
-    bool:LogModule_Downloads,
-    bool:LogModule_Hitgroups,
-    bool:LogModule_Infect,
-    bool:LogModule_Models,
-    bool:LogModule_Napalm,
-    bool:LogModule_Playerclasses,
-    bool:LogModule_VEffects,
-    bool:LogModule_SEffects,
-    bool:LogModule_Tools,
-    bool:LogModule_Volfeatures,
-    bool:LogModule_Weapons,
-    bool:LogModule_Weaponrestrict,
-    bool:LogModule_ZSpawn,
-    bool:LogModule_ZTele,
+    LogModule_Invalid = 0,         /** Used as return value when an error occoured.*/
+    LogModule_Account,
+    LogModule_AntiStick,
+    LogModule_Config,
+    LogModule_Cvars,
+    LogModule_Damage,
+    LogModule_Downloads,
+    LogModule_Hitgroups,
+    LogModule_Infect,
+    LogModule_Models,
+    LogModule_Napalm,
+    LogModule_Playerclasses,
+    LogModule_VEffects,
+    LogModule_SEffects,
+    LogModule_Tools,
+    LogModule_Volfeatures,
+    LogModule_Weapons,
+    LogModule_Weaponrestrict,
+    LogModule_ZSpawn,
+    LogModule_ZTele,
+    LogModule_MAXSIZE
 }
 
 /**
@@ -98,4 +98,4 @@ new Handle:hLogModuleFilter;
 /**
  * Cache of current module filter settings. For fast and easy access.
  */
-new LogModuleFilterCache[LogModules];
+new LogModuleFilterCache[LogModule_MAXSIZE];

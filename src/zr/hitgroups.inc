@@ -82,7 +82,7 @@ HitgroupsLoad()
     ConfigRegisterConfig(File_Hitgroups, Structure_Keyvalue, CONFIG_FILE_ALIAS_HITGROUPS);
 
     // If module is disabled, then stop.
-    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    new bool:hitgroups = GetConVarBool(g_hCvarsList.CVAR_HITGROUPS);
     if (!hitgroups)
     {
         return;
@@ -90,7 +90,7 @@ HitgroupsLoad()
 
     // Get hitgroups config path.
     decl String:pathhitgroups[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
+    new bool:exists = ConfigGetCvarFilePath(g_hCvarsList.CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
 
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -358,7 +358,7 @@ stock Float:HitgroupsGetKnockback(index)
 bool:HitgroupsMenuHitgroups(client)
 {
     // If hitgroups is disabled, then stop.
-    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    new bool:hitgroups = GetConVarBool(g_hCvarsList.CVAR_HITGROUPS);
     if (!hitgroups)
     {
         return false;
@@ -515,7 +515,7 @@ public Action:HitgroupsCommand(client, argc)
     }
 
     // If module is disabled, then stop.
-    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    new bool:hitgroups = GetConVarBool(g_hCvarsList.CVAR_HITGROUPS);
     if (!hitgroups)
     {
         TranslationReplyToCommand(client, "Feature is disabled");
@@ -608,7 +608,7 @@ public Action:HitgroupsEnableAllCommand(client, argc)
     }
 
     // If module is disabled, then stop.
-    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    new bool:hitgroups = GetConVarBool(g_hCvarsList.CVAR_HITGROUPS);
     if (!hitgroups)
     {
         TranslationReplyToCommand(client, "Feature is disabled");
@@ -649,7 +649,7 @@ public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
     }
 
     // If module is disabled, then stop.
-    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    new bool:hitgroups = GetConVarBool(g_hCvarsList.CVAR_HITGROUPS);
     if (!hitgroups)
     {
         TranslationReplyToCommand(client, "Feature is disabled");

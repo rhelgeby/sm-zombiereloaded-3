@@ -40,7 +40,7 @@ DownloadsLoad()
 
     // Get downloads file path.
     decl String:pathdownloads[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_DOWNLOADS, pathdownloads);
+    new bool:exists = ConfigGetCvarFilePath(g_hCvarsList.CVAR_CONFIG_PATH_DOWNLOADS, pathdownloads);
 
     // If file doesn't exist, then log and stop.
     if (!exists)

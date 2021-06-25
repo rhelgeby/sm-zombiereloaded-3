@@ -70,10 +70,10 @@ ZCookiesMenuMain(client)
     Format(cds, sizeof(cds), "%t", "ZCookies menu main cds", cdsenabled);
 
     // Get conditional values for each option.
-    new bool:zhpcvar = GetConVarBool(g_hCvarsList[CVAR_ZHP]);                                   // For ZHP.
-    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);          // For class overlay.
-    new bool:zmarketenabled = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET]);                // For ZMarket loadout.
-    new bool:cdscvar = GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]);        // For infect countdown sound.
+    new bool:zhpcvar = GetConVarBool(g_hCvarsList.CVAR_ZHP);                                   // For ZHP.
+    new bool:overlaytoggle = GetConVarBool(g_hCvarsList.CVAR_CLASSES_OVERLAY_TOGGLE);          // For class overlay.
+    new bool:zmarketenabled = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET);                // For ZMarket loadout.
+    new bool:cdscvar = GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND);        // For infect countdown sound.
 
     // Add items to menu.
     SetMenuTitle(zcookies_menu_main, title);
@@ -81,7 +81,7 @@ ZCookiesMenuMain(client)
     AddMenuItem(zcookies_menu_main, "overlay", overlay, MenuGetItemDraw(overlaytoggle));
     AddMenuItem(zcookies_menu_main, "zmarket", zmarket, MenuGetItemDraw(zmarketenabled));
 
-    if (GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]))
+    if (GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND))
         AddMenuItem(zcookies_menu_main, "cds", cds, MenuGetItemDraw(cdscvar));
 
     // Create a "Back" button to the main menu.
@@ -118,7 +118,7 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
             case 1:
             {
                 // If overlay toggle is disabled, then stop.
-                new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+                new bool:overlaytoggle = GetConVarBool(g_hCvarsList.CVAR_CLASSES_OVERLAY_TOGGLE);
                 if (overlaytoggle)
                 {
                     // Toggle current overlay channel, retrieve new value, and update cookie.

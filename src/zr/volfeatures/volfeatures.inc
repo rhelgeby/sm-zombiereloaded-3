@@ -33,35 +33,35 @@
 /**
  * Represent a rectangular volume.
  */
-enum VolumeAttributes
+enum struct VolumeAttributes
 {
     /* General */
-    bool:Vol_Enabled,                   /** Volume state. */
-    bool:Vol_InUse,                     /** Marks if the volume is used. */
+    bool Vol_Enabled;                   /** Volume state. */
+    bool Vol_InUse;                     /** Marks if the volume is used. */
 
     /* Location */
-    Float:Vol_xMin,                     /** Minimum x position. */
-    Float:Vol_xMax,                     /** Maximum x position. */
+    float Vol_xMin;                     /** Minimum x position. */
+    float Vol_xMax;                     /** Maximum x position. */
 
-    Float:Vol_yMin,                     /** Minimum y position. */
-    Float:Vol_yMax,                     /** Maximum y position. */
+    float Vol_yMin;                     /** Minimum y position. */
+    float Vol_yMax;                     /** Maximum y position. */
 
-    Float:Vol_zMin,                     /** Minimum z position. */
-    Float:Vol_zMax,                     /** Maximum z position. */
+    float Vol_zMin;                     /** Minimum z position. */
+    float Vol_zMax;                     /** Maximum z position. */
 
     /* Style */
-    VolumeEffects:Vol_Effect,           /** Visual effect to apply on the volume. */
-    Vol_EffectColor[3],                 /** Render color of the effect. RGB colors. */
+    VolumeEffects Vol_Effect;           /** Visual effect to apply on the volume. */
+    int Vol_EffectColor[3];                 /** Render color of the effect. RGB colors. */
 
     /* Data */
-    VolumeFeatureTypes:Vol_Type,        /** The volumetric feature type. */
-    Vol_DataIndex,                      /** Index in remote feature array. */
+    VolumeFeatureTypes Vol_Type;        /** The volumetric feature type. */
+    int Vol_DataIndex;                      /** Index in remote feature array. */
 
     /* Behaviour */
-    VolumeTeamFilters:Vol_TeamFilter,   /** Team filtering. Trigger by certain teams, or all. */
-    Float:Vol_TriggerDelay,             /** Trigger delay. How many seconds players have to stay to trigger volume events. */
-    VolumeConflictActions:Vol_ConflictAction,       /** What to do if volumes of same type overlap. */
-    Vol_Priority,                       /** Volume priority. */
+    VolumeTeamFilters Vol_TeamFilter;   /** Team filtering. Trigger by certain teams, or all. */
+    float Vol_TriggerDelay;             /** Trigger delay. How many seconds players have to stay to trigger volume events. */
+    VolumeConflictActions Vol_ConflictAction;       /** What to do if volumes of same type overlap. */
+    int Vol_Priority;                       /** Volume priority. */
 }
 
 /**
@@ -106,7 +106,7 @@ enum VolumeConflictActions
 /**
  * Volumes.
  */
-new Volumes[ZR_VOLUMES_MAX][VolumeAttributes];
+VolumeAttributes Volumes[ZR_VOLUMES_MAX];
 
 /**
  * Total number of volumes.
@@ -181,7 +181,7 @@ VolInit()
 VolLoad()
 {
     // Cache CVAR value.
-    VolEnabled = GetConVarBool(g_hCvarsList[CVAR_VOL]);
+    VolEnabled = GetConVarBool(g_hCvarsList.CVAR_VOL);
 }
 
 /**
@@ -216,10 +216,10 @@ VolDisableVolumes()
     // Trigger disable event on all enabled volumes in use.
     for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
     {
-        if (Volumes[volindex][Vol_InUse] && Volumes[volindex][Vol_Enabled])
+        if (Volumes[volindex].Vol_InUse && Volumes[volindex].Vol_Enabled)
         {
             // Mark as disabled.
-            Volumes[volindex][Vol_Enabled] = false;
+            Volumes[volindex].Vol_Enabled = false;
 
             // Trigger player left volume event if inside a volume.
             for (new client = 1; client <= MaxClients; client++)
@@ -253,9 +253,9 @@ VolEnableVolumes()
     // Trigger enable event on all volumes in use.
     for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
     {
-        if (Volumes[volindex][Vol_InUse] && !Volumes[volindex][Vol_Enabled])
+        if (Volumes[volindex].Vol_InUse && !Volumes[volindex].Vol_Enabled)
         {
-            Volumes[volindex][Vol_Enabled] = true;
+            Volumes[volindex].Vol_Enabled = true;
             VolOnEnabled(volindex);
         }
     }
@@ -279,7 +279,7 @@ bool:VolStartUpdateTimer()
     VolStopUpdateTimer();
 
     // Get update interval.
-    new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_VOL_UPDATE_INTERVAL]);
+    new Float:interval = GetConVarFloat(g_hCvarsList.CVAR_VOL_UPDATE_INTERVAL);
 
     // Validate interval.
     if (interval > 0.0)
@@ -331,7 +331,7 @@ bool:VolStartTriggerTimer()
     VolStopTriggerTimer();
 
     // Get trigger interval and cache it.
-    VolTriggerInterval = GetConVarFloat(g_hCvarsList[CVAR_VOL_TRIGGER_INTERVAL]);
+    VolTriggerInterval = GetConVarFloat(g_hCvarsList.CVAR_VOL_TRIGGER_INTERVAL);
 
     // Validate interval.
     if (VolTriggerInterval > 0.0)
@@ -489,7 +489,7 @@ VolUpdatePlayerChanges()
             if (newState && !oldState)
             {
                 // Get trigger delay value.
-                trigger_delay = Volumes[volumeIndex][Vol_TriggerDelay];
+                trigger_delay = Volumes[volumeIndex].Vol_TriggerDelay;
 
                 // Check if the volume has a trigger delay.
                 if (trigger_delay > 0.0)

@@ -80,7 +80,7 @@ ZHPClientInit(client)
 ZHPOnCookiesCached(client)
 {
     // Get default client setting from cvar.
-    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
+    new bool:zhp = GetConVarBool(g_hCvarsList.CVAR_ZHP_DEFAULT);
 
     // Get ZHP enabled cookie value.
     decl String:zhpenabled[8];
@@ -136,7 +136,7 @@ ZHPOnClientDeath(client)
 ZHPOnClientInfected(client)
 {
     // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+    new bool:zhp = GetConVarBool(g_hCvarsList.CVAR_ZHP);
     if (!zhp)
     {
         return;
@@ -185,7 +185,7 @@ ZHPOnHealthInfectGain(client)
 bool:ZHPToggle(client)
 {
     // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+    new bool:zhp = GetConVarBool(g_hCvarsList.CVAR_ZHP);
     if (!zhp)
     {
         // Tell client feature is disabled.
@@ -226,7 +226,7 @@ bool:ZHPToggle(client)
 ZHPUpdateHUD(client)
 {
     // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+    new bool:zhp = GetConVarBool(g_hCvarsList.CVAR_ZHP);
     if (!zhp)
     {
         return;

@@ -122,7 +122,7 @@ ZMenuMain(client)
     AddMenuItem(menu_main, "zhp", zhp);
     AddMenuItem(menu_main, "zmarket", zmarket);
 
-    if (GetConVarBool(g_hCvarsList[CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND]))
+    if (GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND))
         AddMenuItem(menu_main, "cds", cds);
 
     // Display menu to client.

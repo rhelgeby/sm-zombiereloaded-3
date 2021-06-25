@@ -78,11 +78,11 @@ enum ModelTeam
 /**
  * Model settings structure.
  */
-enum ModelAttributes
+enum struct ModelAttributes
 {
-    String:Model_Name[64],                      /* File name of model (no file extension). */
-    String:Model_Path[PLATFORM_MAX_PATH],       /* Path to model files. */
-    ModelTeam:Model_Team,                       /* What team the model belongs to. */
-    ModelAccess:Model_Access,                   /* Access settings. */
-    String:Model_Group[64]                      /* Group authentication (if used). */
+    char Model_Name[64];                      /* File name of model (no file extension). */
+    char Model_Path[PLATFORM_MAX_PATH];       /* Path to model files. */
+    ModelTeam Model_Team;                       /* What team the model belongs to. */
+    ModelAccess Model_Access;                   /* Access settings. */
+    char Model_Group[64];                      /* Group authentication (if used). */
 }

@@ -149,14 +149,14 @@ ZSpawnOnClientClassPost(client)
     }
 
     // If zspawn is disabled, then stop.
-    new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
+    new bool:zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
     if (!zspawn)
     {
         return;
     }
 
     // If auto zspawn is disabled, then stop.
-    new bool:autozspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_AUTO]);
+    new bool:autozspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_AUTO);
     if (!autozspawn)
     {
         return;
@@ -259,21 +259,21 @@ ZSpawnOnRoundFreezeEnd()
     }
 
     // If zspawn is disabled, then stop.
-    new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
+    new bool:zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
     if (!zspawn)
     {
         return;
     }
 
     // If timelimit is disabled, then stop.
-    new bool:zspawntimelimit = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]);
+    new bool:zspawntimelimit = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT);
     if (!zspawntimelimit)
     {
         return;
     }
 
     // Get timelimit
-    new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
+    new Float:zspawntime = GetConVarFloat(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT_TIME);
 
     // Start timer.
     tZSpawn = CreateTimer(zspawntime, ZSpawnTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -306,7 +306,7 @@ ZSpawnOnRoundEnd()
 bool:ZSpawnClient(client, bool:force = false, bool:zombie = false, bool error = true)
 {
     // If zspawn is disabled, then stop.
-    new bool:zspawn = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN]);
+    new bool:zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
     if (!force && !zspawn)
     {
         if (error)
@@ -342,7 +342,7 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false, bool error = 
     }
 
     // Block if client has already played during this round.
-    new blockrejoin = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_BLOCK_REJOIN]);
+    new blockrejoin = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_BLOCK_REJOIN);
     if (!force && SteamidCacheClientExists(g_hZSpawnSteamIDCache, client) && blockrejoin)
     {
         if (error)
@@ -355,19 +355,19 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false, bool error = 
     }
 
     // Client has been infected this round, respawning as a zombie
-    new bool:teamzombie;
+    bool teamzombie;
 
     if (!force)
     {
         // Get our zspawn condition.
-        new ZSpawnCondition:condition = GetZSpawnCondition(client);
+        ZSpawnCondition condition = GetZSpawnCondition(client);
 
         switch(condition)
         {
             case ZSpawn_Block:
             {
                 // Get timelimit.
-                new Float:zspawntime = GetConVarFloat(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_TIME]);
+                float zspawntime = GetConVarFloat(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT_TIME);
 
                 if (error)
                 {
@@ -593,21 +593,21 @@ ZSpawnCondition:GetZSpawnCondition(int client)
     new ZSpawnCondition:condition;
 
     // Check if zspawn override is enabled, and if so use overriden value.
-    if (GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_OVERRIDE]))
+    if (GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_TEAM_OVERRIDE))
     {
         // Convert boolean to zspawn condition.
-        condition = GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TEAM_ZOMBIE]) ? ZSpawn_Zombie : ZSpawn_Human;
+        condition = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_TEAM_ZOMBIE) ? ZSpawn_Zombie : ZSpawn_Human;
     }
     else
     {
         // Convert boolean to zspawn condition.
-        condition = GetConVarBool(g_hCvarsList[CVAR_RESPAWN_TEAM_ZOMBIE]) ? ZSpawn_Zombie : ZSpawn_Human;
+        condition = GetConVarBool(g_hCvarsList.CVAR_RESPAWN_TEAM_ZOMBIE) ? ZSpawn_Zombie : ZSpawn_Human;
     }
 
     // Check if zspawn timelimit is enabled.
-    if (GetConVarBool(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT]))
+    if (GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT))
     {
-        new zspawntimelimitzombie = GetConVarInt(g_hCvarsList[CVAR_ZSPAWN_TIMELIMIT_ZOMBIE]);
+        ZSpawnCondition zspawntimelimitzombie = view_as<ZSpawnCondition>(GetConVarInt(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT_ZOMBIE));
         // Check if zspawn timelimit is expired.
         if (!ZRIsTimerRunning(tZSpawn))
         {

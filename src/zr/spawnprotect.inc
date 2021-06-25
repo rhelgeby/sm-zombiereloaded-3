@@ -69,7 +69,7 @@ SpawnProtectOnClientSpawnPost(client)
     g_tSpawnProtect[client] = INVALID_HANDLE;
 
     // If protect cvar is disabled, then stop.
-    new bool:protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
+    new bool:protect = GetConVarBool(g_hCvarsList.CVAR_SPAWNPROTECT);
     if (!protect)
     {
         return;
@@ -125,8 +125,8 @@ SpawnProtectStart(client)
     }
 
     // Get spawn protect attribute cvars.
-    new Float:speed = GetConVarFloat(g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]);
-    new alpha = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]);
+    new Float:speed = GetConVarFloat(g_hCvarsList.CVAR_SPAWNPROTECT_SPEED);
+    new alpha = GetConVarInt(g_hCvarsList.CVAR_SPAWNPROTECT_ALPHA);
 
     // Validate attributes
     new Float:min;
@@ -165,7 +165,7 @@ SpawnProtectStart(client)
     ToolsSetClientAlpha(client, alpha);
 
     // Set time left to zr_protect_time's value.
-    new protect_time = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_TIME]);
+    new protect_time = GetConVarInt(g_hCvarsList.CVAR_SPAWNPROTECT_TIME);
     pSpawnProtectTime[client] = protect_time;
 
     // Tell client they are being protected.

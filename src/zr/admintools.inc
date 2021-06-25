@@ -69,7 +69,7 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
     }
 
     // Check if group authentication is used.
-    new bool:groupauth = GetConVarBool(g_hCvarsList[CVAR_PERMISSIONS_USE_GROUPS]);
+    new bool:groupauth = GetConVarBool(g_hCvarsList.CVAR_PERMISSIONS_USE_GROUPS);
     if (groupauth)
     {
         /**********************************

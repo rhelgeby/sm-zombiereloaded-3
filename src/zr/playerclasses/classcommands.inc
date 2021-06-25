@@ -656,22 +656,22 @@ stock bool:ClassModifyBoolean(classindex, attributeflag, bool:value)
     {
         case ZR_CLASS_ENABLED:
         {
-            ClassDataCache[classindex][Class_Enabled] = bool:value;
+            ClassDataCache[classindex].Class_Enabled = bool:value;
             return true;
         }
         case ZR_CLASS_NVGS:
         {
-            ClassDataCache[classindex][Class_Nvgs] = bool:value;
+            ClassDataCache[classindex].Class_Nvgs = bool:value;
             return true;
         }
         case ZR_CLASS_NO_FALL_DAMAGE:
         {
-            ClassDataCache[classindex][Class_NoFallDamage] = bool:value;
+            ClassDataCache[classindex].Class_NoFallDamage = bool:value;
             return true;
         }
         case ZR_CLASS_HAS_NAPALM:
         {
-            ClassDataCache[classindex][Class_HasNapalm] = bool:value;
+            ClassDataCache[classindex].Class_HasNapalm = bool:value;
             return true;
         }
     }
@@ -707,98 +707,98 @@ stock ClassModifyInteger(classindex, attributeflag, value, Float:multiplier = 0.
     {
         case ZR_CLASS_FLAGS:
         {
-            ClassDataCache[classindex][Class_Flags] = value;
+            ClassDataCache[classindex].Class_Flags = value;
             return true;
         }
         case ZR_CLASS_MODEL_SKIN_INDEX:
         {
-            ClassDataCache[classindex][Class_ModelSkinIndex] = value;
+            ClassDataCache[classindex].Class_ModelSkinIndex = value;
             return true;
         }
         case ZR_CLASS_ALPHA_INITIAL:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][Class_AlphaInitial]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex].Class_AlphaInitial) * multiplier);
             }
-            ClassDataCache[classindex][Class_AlphaInitial] = value;
+            ClassDataCache[classindex].Class_AlphaInitial = value;
             return true;
         }
         case ZR_CLASS_ALPHA_DAMAGED:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][Class_AlphaDamaged]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex].Class_AlphaDamaged) * multiplier);
             }
-            ClassDataCache[classindex][Class_AlphaDamaged] = value;
+            ClassDataCache[classindex].Class_AlphaDamaged = value;
             return true;
         }
         case ZR_CLASS_ALPHA_DAMAGE:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][Class_AlphaDamage]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex].Class_AlphaDamage) * multiplier);
             }
-            ClassDataCache[classindex][Class_AlphaDamage] = value;
+            ClassDataCache[classindex].Class_AlphaDamage = value;
             return true;
         }
         case ZR_CLASS_FOV:
         {
-            ClassDataCache[classindex][Class_Fov] = value;
+            ClassDataCache[classindex].Class_Fov = value;
             return true;
         }
         case ZR_CLASS_IMMUNITY_AMOUNT:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][Class_ImmunityAmount] * value;
+                value = ClassData[classindex].Class_ImmunityAmount * value;
             }
-            ClassDataCache[classindex][Class_ImmunityAmount] = value;
+            ClassDataCache[classindex].Class_ImmunityAmount = value;
             return true;
         }
         case ZR_CLASS_IMMUNITY_COOLDOWN:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][Class_ImmunityCooldown] * value;
+                value = ClassData[classindex].Class_ImmunityCooldown * value;
             }
-            ClassDataCache[classindex][Class_ImmunityCooldown] = value;
+            ClassDataCache[classindex].Class_ImmunityCooldown = value;
             return true;
         }
         case ZR_CLASS_HEALTH:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][Class_Health]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex].Class_Health) * multiplier);
             }
-            ClassDataCache[classindex][Class_Health] = value;
+            ClassDataCache[classindex].Class_Health = value;
             return true;
         }
         case ZR_CLASS_HEALTH_REGEN_AMOUNT:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][Class_HealthRegenAmount]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex].Class_HealthRegenAmount) * multiplier);
             }
-            ClassDataCache[classindex][Class_HealthRegenAmount] = value;
+            ClassDataCache[classindex].Class_HealthRegenAmount = value;
             return true;
         }
         case ZR_CLASS_HEALTH_INFECT_GAIN:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][Class_HealthInfectGain]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex].Class_HealthInfectGain) * multiplier);
             }
-            ClassDataCache[classindex][Class_HealthInfectGain] = value;
+            ClassDataCache[classindex].Class_HealthInfectGain = value;
             return true;
         }
         case ZR_CLASS_KILL_BONUS:
         {
             if (ismultiplier)
             {
-                value = RoundToNearest(float(ClassData[classindex][Class_KillBonus]) * multiplier);
+                value = RoundToNearest(float(ClassData[classindex].Class_KillBonus) * multiplier);
             }
-            ClassDataCache[classindex][Class_KillBonus] = value;
+            ClassDataCache[classindex].Class_KillBonus = value;
             return true;
         }
     }
@@ -832,45 +832,45 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][Class_NapalmTime] * value;
+                value = ClassData[classindex].Class_NapalmTime * value;
             }
-            ClassDataCache[classindex][Class_NapalmTime] = value;
+            ClassDataCache[classindex].Class_NapalmTime = value;
             return true;
         }
         case ZR_CLASS_HEALTH_REGEN_INTERVAL:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][Class_HealthRegenInterval] * value;
+                value = ClassData[classindex].Class_HealthRegenInterval * value;
             }
-            ClassDataCache[classindex][Class_HealthRegenInterval] = value;
+            ClassDataCache[classindex].Class_HealthRegenInterval = value;
             return true;
         }
         case ZR_CLASS_SPEED:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][Class_Speed] * value;
+                value = ClassData[classindex].Class_Speed * value;
             }
-            ClassDataCache[classindex][Class_Speed] = value;
+            ClassDataCache[classindex].Class_Speed = value;
             return true;
         }
         case ZR_CLASS_KNOCKBACK:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][Class_KnockBack] * value;
+                value = ClassData[classindex].Class_KnockBack * value;
             }
-            ClassDataCache[classindex][Class_KnockBack] = value;
+            ClassDataCache[classindex].Class_KnockBack = value;
             return true;
         }
         case ZR_CLASS_JUMP_HEIGHT:
         {
             if (ismultiplier)
             {
-                value = ClassData[classindex][Class_JumpHeight] * value;
+                value = ClassData[classindex].Class_JumpHeight * value;
             }
-            ClassDataCache[classindex][Class_JumpHeight] = value;
+            ClassDataCache[classindex].Class_JumpHeight = value;
             return true;
         }
         default:
@@ -880,9 +880,9 @@ stock ClassModifyFloat(classindex, attributeflag, Float:value, bool:ismultiplier
             {
                 if (ismultiplier)
                 {
-                    value = ClassData[classindex][Class_JumpDistance] * value;
+                    value = ClassData[classindex].Class_JumpDistance * value;
                 }
-                ClassDataCache[classindex][Class_JumpDistance] = value;
+                ClassDataCache[classindex].Class_JumpDistance = value;
                 return true;
             }
         }
@@ -912,32 +912,32 @@ stock ClassModifyString(classindex, attributeflag, const String:value[])
     {
         case ZR_CLASS_GROUP:
         {
-            strcopy(ClassDataCache[classindex][Class_Group], 64, value);
+            strcopy(ClassDataCache[classindex].Class_Group, 64, value);
             return true;
         }
         case ZR_CLASS_SM_FLAGS:
         {
-            strcopy(ClassDataCache[classindex][Class_SM_Flags], 64, value);
+            strcopy(ClassDataCache[classindex].Class_SM_Flags, 64, value);
             return true;
         }
         case ZR_CLASS_NAME:
         {
-            strcopy(ClassDataCache[classindex][Class_Name], 64, value);
+            strcopy(ClassDataCache[classindex].Class_Name, 64, value);
             return true;
         }
         case ZR_CLASS_DESCRIPTION:
         {
-            strcopy(ClassDataCache[classindex][Class_Description], 256, value);
+            strcopy(ClassDataCache[classindex].Class_Description, 256, value);
             return true;
         }
         case ZR_CLASS_MODEL_PATH:
         {
-            strcopy(ClassDataCache[classindex][Class_ModelPath], PLATFORM_MAX_PATH, value);
+            strcopy(ClassDataCache[classindex].Class_ModelPath, PLATFORM_MAX_PATH, value);
             return true;
         }
         case ZR_CLASS_OVERLAY_PATH:
         {
-            strcopy(ClassDataCache[classindex][Class_OverlayPath], PLATFORM_MAX_PATH, value);
+            strcopy(ClassDataCache[classindex].Class_OverlayPath, PLATFORM_MAX_PATH, value);
             return true;
         }
         case ZR_CLASS_IMMUNITY_MODE:
@@ -948,7 +948,7 @@ stock ClassModifyString(classindex, attributeflag, const String:value[])
             // Validate.
             if (mode != Immunity_Invalid)
             {
-                ClassDataCache[classindex][Class_ImmunityMode] = mode;
+                ClassDataCache[classindex].Class_ImmunityMode = mode;
                 return true;
             }
             else

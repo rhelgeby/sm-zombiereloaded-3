@@ -32,7 +32,7 @@
 /**
  * Parsed model data.
  */
-new ModelData[MODELS_MAX][ModelAttributes];
+ModelAttributes ModelData[MODELS_MAX];
 
 /**
  * Number of valid models.
@@ -52,7 +52,7 @@ ModelsLoad()
 
     // Get models file path.
     decl String:modelPath[PLATFORM_MAX_PATH];
-    new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_MODELS, modelPath);
+    new bool:exists = ConfigGetCvarFilePath(g_hCvarsList.CVAR_CONFIG_PATH_MODELS, modelPath);
 
     // If file doesn't exist, then log and stop.
     if (!exists)
@@ -104,19 +104,19 @@ ModelsLoad()
         }
 
         KvGetString(kvModels, "name", name, sizeof(name));
-        strcopy(ModelData[ModelCount][Model_Name], 64, name);
+        strcopy(ModelData[ModelCount].Model_Name, 64, name);
 
         KvGetString(kvModels, "path", path, sizeof(path));
-        strcopy(ModelData[ModelCount][Model_Path], 64, path);
+        strcopy(ModelData[ModelCount].Model_Path, 64, path);
 
         KvGetString(kvModels, "team", team, sizeof(team));
-        ModelData[ModelCount][Model_Team] = ModelsStringToTeam(team);
+        ModelData[ModelCount].Model_Team = ModelsStringToTeam(team);
 
         KvGetString(kvModels, "access", access, sizeof(access));
-        ModelData[ModelCount][Model_Access] = ModelsStringToAccess(access);
+        ModelData[ModelCount].Model_Access = ModelsStringToAccess(access);
 
         KvGetString(kvModels, "group", group, sizeof(group));
-        strcopy(ModelData[ModelCount][Model_Group], 64, group);
+        strcopy(ModelData[ModelCount].Model_Group, 64, group);
 
 
         // Validate model attributes.
@@ -133,7 +133,7 @@ ModelsLoad()
         }
 
         // Validate team.
-        if (ModelData[ModelCount][Model_Team] == ModelTeam_Invalid)
+        if (ModelData[ModelCount].Model_Team == ModelTeam_Invalid)
         {
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Warning: Invalid model team setting at index %d: \"%s\".", ModelCount + failedCount, team);
             failedCount++;
@@ -141,7 +141,7 @@ ModelsLoad()
         }
 
         // Validate access.
-        if (ModelData[ModelCount][Model_Access] == ModelAccess_Invalid)
+        if (ModelData[ModelCount].Model_Access == ModelAccess_Invalid)
         {
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Warning: Invalid model access setting at index %d: \"%s\".", ModelCount + failedCount, access);
             failedCount++;
@@ -150,14 +150,14 @@ ModelsLoad()
         else
         {
             // Increment public model counter for the current team.
-            if (ModelData[ModelCount][Model_Access] == ModelAccess_Public)
+            if (ModelData[ModelCount].Model_Access == ModelAccess_Public)
             {
                 publicCount++;
             }
         }
 
         // Validate group.
-        if (ModelData[ModelCount][Model_Access] == ModelAccess_Group &&
+        if (ModelData[ModelCount].Model_Access == ModelAccess_Group &&
             FindAdmGroup(group) == INVALID_GROUP_ID)
         {
             LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Models, "Config Validation", "Warning: Invalid model group setting at index %d. Couldn't find SourceMod group \"%s\".", ModelCount + failedCount, group);
@@ -392,7 +392,7 @@ ModelsGetName(index, String:buffer[], maxlen)
         return -1;
     }
 
-    return strcopy(buffer, maxlen, ModelData[index][Model_Name]);
+    return strcopy(buffer, maxlen, ModelData[index].Model_Name);
 }
 
 /**
@@ -411,7 +411,7 @@ ModelsGetPath(index, String:buffer[], maxlen)
         return -1;
     }
 
-    return strcopy(buffer, maxlen, ModelData[index][Model_Path]);
+    return strcopy(buffer, maxlen, ModelData[index].Model_Path);
 }
 
 /**
@@ -428,7 +428,7 @@ ModelTeam:ModelsGetTeam(index)
         return ModelTeam_Invalid;
     }
 
-    return ModelData[index][Model_Team];
+    return ModelData[index].Model_Team;
 }
 
 /**
@@ -446,7 +446,7 @@ ModelAccess:ModelsGetAccess(index)
         return ModelAccess_Invalid;
     }
 
-    return ModelData[index][Model_Access];
+    return ModelData[index].Model_Access;
 }
 
 /**
@@ -501,7 +501,7 @@ ModelsGetGroup(index, String:buffer[], maxlen)
         return -1;
     }
 
-    return strcopy(buffer, maxlen, ModelData[index][Model_Group]);
+    return strcopy(buffer, maxlen, ModelData[index].Model_Group);
 }
 
 /**

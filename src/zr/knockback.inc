@@ -185,7 +185,7 @@ public void KnockbackOnClientHurt(int victim, int attacker, int inflictor, const
         TR_GetEndPosition(clientloc);
     }
 
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (weapons)
     {
         new weaponindex = WeaponsNameToIndex(weaponname);
@@ -204,7 +204,7 @@ public void KnockbackOnClientHurt(int victim, int attacker, int inflictor, const
     if (custom)
         ToolsSetClientLastHitGroup(victim, HITGROUP_GENERIC);
 
-    new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+    new bool:hitgroups = GetConVarBool(g_hCvarsList.CVAR_HITGROUPS);
     if (hitgroups)
     {
         new hitgroupindex = HitgroupToIndex(hitgroup);
@@ -261,7 +261,7 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
 void KnockbackApplyVector(int client, float vector[3], bool limitvel)
 {
     // CS: GO workaround. Apply knock back boost if enabled.
-    if (g_Game == Game_CSGO && GetConVarBool(g_hCvarsList[CVAR_CLASSES_CSGO_KNOCKBACK_BOOST]))
+    if (g_Game == Game_CSGO && GetConVarBool(g_hCvarsList.CVAR_CLASSES_CSGO_KNOCKBACK_BOOST))
     {
         new flags = GetEntityFlags(client);
         new Float:velocity[3];
@@ -291,7 +291,7 @@ void KnockbackApplyVector(int client, float vector[3], bool limitvel)
     AddVectors(vector, velocity, velocity);
 
     // Should we limit their knockback velocity?
-    float maxvel = GetConVarFloat(g_hCvarsList[CVAR_KNOCKBACK_MAXVEL]);
+    float maxvel = GetConVarFloat(g_hCvarsList.CVAR_KNOCKBACK_MAXVEL);
     if (limitvel && g_fKnockbackVelLimit[client] >= 0.0 || maxvel > 0.0)
     {
         if(g_fKnockbackVelLimit[client] >= 0.0 && g_fKnockbackVelLimit[client] < maxvel)

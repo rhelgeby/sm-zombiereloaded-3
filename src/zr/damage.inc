@@ -53,7 +53,7 @@ DamageLoad()
 
     // Create command callbacks (intercepts) for listed suicide commands.
     decl String:suicidecmds[DAMAGE_SUICIDE_MAX_CMDS * DAMAGE_SUICIDE_MAX_LENGTH];
-    GetConVarString(g_hCvarsList[CVAR_DAMAGE_SUICIDE_CMDS], suicidecmds, sizeof(suicidecmds));
+    GetConVarString(g_hCvarsList.CVAR_DAMAGE_SUICIDE_CMDS, suicidecmds, sizeof(suicidecmds));
 
     // Create array to store cmds
     new String:arrayCmds[DAMAGE_SUICIDE_MAX_CMDS][DAMAGE_SUICIDE_MAX_LENGTH];
@@ -148,7 +148,7 @@ public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float
     if (clientzombie == attackerzombie)
     {
         // If friendly fire is blocked, then allow damage.
-        new bool:damageblockff = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_BLOCK_FF]);
+        new bool:damageblockff = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_BLOCK_FF);
         if (!damageblockff)
         {
             return Plugin_Continue;
@@ -177,7 +177,7 @@ public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float
     // If damage hitgroups cvar is disabled, then allow damage.
     // TODO: There are two cvars: zr_hitgroups and zr_damage_hitgroups. Maybe
     //       just use zr_hitgroups?
-    new bool:damagehitgroups = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_HITGROUPS]);
+    new bool:damagehitgroups = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_HITGROUPS);
     if (!damagehitgroups)
     {
         // Allow damage.
@@ -291,7 +291,7 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
         }
 
         // Check if distance between clients is too high. (Anti lagcompensation / longknife)
-        new Float:maxDistance = GetConVarFloat(g_hCvarsList[CVAR_INFECT_MAX_DISTANCE]);
+        new Float:maxDistance = GetConVarFloat(g_hCvarsList.CVAR_INFECT_MAX_DISTANCE);
         if (maxDistance != 0.0)
         {
             new Float:clientPosition[3];
@@ -328,7 +328,7 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
     else if (damagetype & DMG_BLAST)
     {
         // If blast damage is blocked, then stop.
-        new bool:damageblockblast = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_BLOCK_BLAST]);
+        new bool:damageblockblast = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_BLOCK_BLAST);
         if (!damageblockblast)
         {
             return Plugin_Continue;
@@ -401,10 +401,10 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
 public Action:DamageSuicideIntercept(int client, const char[] command, int argc)
 {
     // Get suicide interception settings.
-    new bool:suicideAfterInfect = GetConVarBool(g_hCvarsList[CVAR_SUICIDE_AFTER_INFECT]);
-    new bool:suicideZombie = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_ZOMBIE]);
-    new bool:suicideZombieMother = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_MZOMBIE]);
-    new bool:suicideHuman = GetConVarBool(g_hCvarsList[CVAR_DAMAGE_SUICIDE_HUMAN]);
+    new bool:suicideAfterInfect = GetConVarBool(g_hCvarsList.CVAR_SUICIDE_AFTER_INFECT);
+    new bool:suicideZombie = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_ZOMBIE);
+    new bool:suicideZombieMother = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_MZOMBIE);
+    new bool:suicideHuman = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_HUMAN);
 
     // Check various criterias that will _allow_ the command. If no criterias
     // match, block it.

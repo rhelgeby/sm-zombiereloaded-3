@@ -70,7 +70,7 @@ bool:IsPointInLocation(Float:point[3], Float:min[3], Float:max[3])
  */
 bool:VolInUse(volumeIndex)
 {
-    return Volumes[volumeIndex][Vol_InUse];
+    return Volumes[volumeIndex].Vol_InUse;
 }
 
 /**
@@ -83,7 +83,7 @@ bool:VolInUse(volumeIndex)
  */
 bool:VolIsEnabled(volumeIndex)
 {
-    return Volumes[volumeIndex][Vol_Enabled];
+    return Volumes[volumeIndex].Vol_Enabled;
 }
 
 /**
@@ -163,7 +163,7 @@ bool:VolTeamFilterMatch(client, volumeIndex)
     new VolumeTeamFilters:filter;
 
     // Chache filter value.
-    filter = Volumes[volumeIndex][Vol_TeamFilter];
+    filter = Volumes[volumeIndex].Vol_TeamFilter;
 
     switch (filter)
     {
@@ -197,7 +197,7 @@ bool:VolTeamFilterMatch(client, volumeIndex)
  */
 bool:VolIsType(volumeIndex, VolumeFeatureTypes:volType)
 {
-    return Volumes[volumeIndex][Vol_Type] == volType;
+    return Volumes[volumeIndex].Vol_Type == volType;
 }
 
 /**
@@ -211,7 +211,7 @@ bool:VolIsType(volumeIndex, VolumeFeatureTypes:volType)
  */
 VolGetPlayerStates(client, bool:buffer[], maxlen)
 {
-    new volumeBuffer[VolumeAttributes];
+    VolumeAttributes volumeBuffer;
     new volCount;
 
     new Float:volMinBuffer[3];
@@ -226,14 +226,14 @@ VolGetPlayerStates(client, bool:buffer[], maxlen)
             volumeBuffer = Volumes[volumeIndex];
 
             // Get min positions.
-            volMinBuffer[0] = volumeBuffer[Vol_xMin];
-            volMinBuffer[1] = volumeBuffer[Vol_yMin];
-            volMinBuffer[2] = volumeBuffer[Vol_zMin];
+            volMinBuffer[0] = volumeBuffer.Vol_xMin;
+            volMinBuffer[1] = volumeBuffer.Vol_yMin;
+            volMinBuffer[2] = volumeBuffer.Vol_zMin;
 
             // Get max positions.
-            volMaxBuffer[0] = volumeBuffer[Vol_xMax];
-            volMaxBuffer[1] = volumeBuffer[Vol_yMax];
-            volMaxBuffer[2] = volumeBuffer[Vol_zMax];
+            volMaxBuffer[0] = volumeBuffer.Vol_xMax;
+            volMaxBuffer[1] = volumeBuffer.Vol_yMax;
+            volMaxBuffer[2] = volumeBuffer.Vol_zMax;
 
             // Check the cached player location.
             if (IsPointInLocation(VolPlayerLoc[client], volMinBuffer, volMaxBuffer))

@@ -38,7 +38,7 @@ new g_iWeaponsCurType[MAXPLAYERS + 1];
 bool:WeaponsMenuMain(client)
 {
     // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         return false;
@@ -59,8 +59,8 @@ bool:WeaponsMenuMain(client)
 
     // Draw items, make unselectable if module is disabled.
     SetMenuTitle(menu_weapons_main, title);
-    AddMenuItem(menu_weapons_main, "restrict", restrict, MenuGetItemDraw(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_RESTRICT])));
-    AddMenuItem(menu_weapons_main, "zmarket", zmarket, MenuGetItemDraw(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET])));
+    AddMenuItem(menu_weapons_main, "restrict", restrict, MenuGetItemDraw(GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT)));
+    AddMenuItem(menu_weapons_main, "zmarket", zmarket, MenuGetItemDraw(GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET)));
 
     // Create a "Back" button to the weapons main menu.
     SetMenuExitBackButton(menu_weapons_main, true);
@@ -363,7 +363,7 @@ WeaponsMenuZMarket(client)
 
     // Get "yes" or "no" settings from respective cvar.
     decl String:buyzonesetting[MENU_LINE_SMALL_LENGTH];
-    ConfigBoolToSetting(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]), buyzonesetting, sizeof(buyzonesetting), true, client);
+    ConfigBoolToSetting(GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_BUYZONE), buyzonesetting, sizeof(buyzonesetting), true, client);
 
     SetGlobalTransTarget(client);
 
@@ -403,8 +403,8 @@ public WeaponsMenuZMarketHandle(Handle:menu_weapons_market, MenuAction:action, c
             case 0:
             {
                 // Toggle cvar.
-                new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]);
-                SetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE], !zmarketbuyzone);
+                new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_BUYZONE);
+                SetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_BUYZONE, !zmarketbuyzone);
             }
         }
 

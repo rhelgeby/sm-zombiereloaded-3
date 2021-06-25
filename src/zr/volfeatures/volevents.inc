@@ -43,7 +43,7 @@ VolOnPlayerEnter(client, volumeIndex)
     LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N entered volume %d.", client, volumeIndex);
 
     // Forward event to features.
-    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+    new VolumeFeatureTypes:voltype = Volumes[volumeIndex].Vol_Type;
     switch (voltype)
     {
         case VolFeature_ClassEdit:
@@ -71,7 +71,7 @@ VolOnPlayerLeave(client, volumeIndex)
     LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N left volume %d.", client, volumeIndex);
 
     // Forward event to features.
-    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+    new VolumeFeatureTypes:voltype = Volumes[volumeIndex].Vol_Type;
     switch (voltype)
     {
         case VolFeature_Anticamp:
@@ -114,13 +114,13 @@ VolOnPlayerDeath(client)
     for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
     {
         // Check if volume is unused.
-        if (!Volumes[volindex][Vol_InUse])
+        if (!Volumes[volindex].Vol_InUse)
         {
             continue;
         }
 
         // Check if volume is disabled.
-        if (!Volumes[volindex][Vol_Enabled])
+        if (!Volumes[volindex].Vol_Enabled)
         {
             continue;
         }
@@ -202,7 +202,7 @@ VolOnDisabled(volumeIndex)
         return;
     }
 
-    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+    new VolumeFeatureTypes:voltype = Volumes[volumeIndex].Vol_Type;
 
     // Forward stop event to features.
     switch (voltype)
@@ -231,7 +231,7 @@ VolOnEnabled(volumeIndex)
         return;
     }
 
-    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+    new VolumeFeatureTypes:voltype = Volumes[volumeIndex].Vol_Type;
 
     // Forward enable event to features.
     switch (voltype)

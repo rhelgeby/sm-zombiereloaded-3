@@ -72,7 +72,7 @@ JumpBoostOnClientJumpPost(client)
 stock bool:JumpBoostIsBHop(const Float:vecVelocity[])
 {
     // If bunnyhop protection is disabled, then stop.
-    new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]);
+    new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList.CVAR_JUMPBOOST_BHOP_PROTECT);
     if (!bunnyhopprotect)
     {
         return false;
@@ -82,6 +82,6 @@ stock bool:JumpBoostIsBHop(const Float:vecVelocity[])
     new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
 
     // Return true if the magnitude exceeds the max.
-    new Float:bunnyhopmax = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_MAX]);
+    new Float:bunnyhopmax = GetConVarFloat(g_hCvarsList.CVAR_JUMPBOOST_BHOP_MAX);
     return (magnitude > bunnyhopmax);
 }
