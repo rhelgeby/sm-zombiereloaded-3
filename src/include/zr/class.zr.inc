@@ -63,7 +63,7 @@ native bool ZR_IsValidClassIndex(int classIndex);
  *
  * @return          The active class index.
  */
-native bool ZR_GetActiveClass(int client);
+native int ZR_GetActiveClass(int client);
 
 /**
  * Gets the current human class index that the player is using.
@@ -72,7 +72,7 @@ native bool ZR_GetActiveClass(int client);
  *
  * @return          The human class index.
  */
-native bool ZR_GetHumanClass(int client);
+native int ZR_GetHumanClass(int client);
 
 /**
  * Gets the current zombie class index that the player is using.
@@ -81,7 +81,7 @@ native bool ZR_GetHumanClass(int client);
  *
  * @return          The zombie class index.
  */
-native bool ZR_GetZombieClass(int client);
+native int ZR_GetZombieClass(int client);
 
 /**
  * Selects a class for a player.
