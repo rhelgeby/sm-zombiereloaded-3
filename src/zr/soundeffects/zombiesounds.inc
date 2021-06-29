@@ -73,17 +73,17 @@ enum ZombieSounds
 /**
  * Array for storing zombie moaning timer handles per client.
  */
-new Handle:tSEffectsMoan[MAXPLAYERS + 1];
+new Handle:tSEffectsMoan[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 
 /**
  * Number of sound commands executed by the player.
  */
-new g_SEffectsCommandCount[MAXPLAYERS + 1];
+new g_SEffectsCommandCount[MAXPLAYERS + 1] = { 0, ... };
 
 /**
  * Timers for resetting sound command counters.
  */
-new Handle:g_hSEffectsCommandTimer[MAXPLAYERS + 1];
+new Handle:g_hSEffectsCommandTimer[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 
 /**
  * Client is joining the server.
