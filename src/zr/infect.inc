@@ -310,7 +310,7 @@ InfectClientInit(client)
             #if defined _AFKManager_Included
             if(g_AFKManagerLoaded)
             {
-                if(GetClientIdleTime(x) > 3 * 60)
+                if(!IsFakeClient(x) && GetClientIdleTime(x) > 3 * 60)
                     continue;
             }
             #endif
