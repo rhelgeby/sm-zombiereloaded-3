@@ -114,6 +114,9 @@ stock bool:SteamidCacheClientExists(Handle:steamidcache, client)
  */
 stock SteamidCacheReset(Handle:steamidcache)
 {
+    if (steamidcache == INVALID_HANDLE)
+        return;
+
     // Clear array.
     ClearArray(steamidcache);
 }
