@@ -41,22 +41,60 @@
 /**
  * @section All round end reasons.
  */
-#define ROUNDEND_TARGET_BOMBED                          0        // Target Successfully Bombed!
-#define ROUNDEND_VIP_ESCAPED                            1        // The VIP has escaped!
-#define ROUNDEND_VIP_ASSASSINATED                       2        // VIP has been assassinated!
-#define ROUNDEND_TERRORISTS_ESCAPED                     3        // The terrorists have escaped!
-#define ROUNDEND_CTS_PREVENTESCAPE                      4        // The CT's have prevented most of the terrorists from escaping!
-#define ROUNDEND_ESCAPING_TERRORISTS_NEUTRALIZED        5        // Escaping terrorists have all been neutralized!
-#define ROUNDEND_BOMB_DEFUSED                           6        // The bomb has been defused!
-#define ROUNDEND_CTS_WIN                                7        // Counter-Terrorists Win!
-#define ROUNDEND_TERRORISTS_WIN                         8        // Terrorists Win!
-#define ROUNDEND_ROUND_DRAW                             9        // Round Draw!
-#define ROUNDEND_ALL_HOSTAGES_RESCUED                   10       // All Hostages have been rescued!
-#define ROUNDEND_TARGET_SAVED                           11       // Target has been saved!
-#define ROUNDEND_HOSTAGES_NOT_RESCUED                   12       // Hostages have not been rescued!
-#define ROUNDEND_TERRORISTS_NOT_ESCAPED                 13       // Terrorists have not escaped!
-#define ROUNDEND_VIP_NOT_ESCAPED                        14       // VIP has not escaped!
-#define ROUNDEND_GAME_COMMENCING                        15       // Game Commencing!
+enum e_RoundEndReason_CSGO
+{
+    /*
+    NOTE/WARNING: these enum values are stored in demo files,
+    they are explicitly numbered for consistency and editing,
+    do not renumber existing elements, always add new elements
+    with different numeric values!
+    */
+    Invalid_Round_End_Reason_CSGO = -1,
+    RoundEndReason_StillInProgress_CSGO,
+    Target_Bombed_CSGO,                      // Target Successfully Bombed!
+    VIP_Escaped_CSGO,						// The VIP has escaped!
+    VIP_Assassinated_CSGO,                   // VIP has been assassinated!
+    Terrorists_Escaped_CSGO,                 // The terrorists have escaped!
+    CTs_PreventEscape_CSGO,                  // The CT's have prevented most of the terrorists from escaping!
+    Escaping_Terrorists_Neutralized_CSGO,    // Escaping terrorists have all been neutralized!
+    Bomb_Defused_CSGO,                       // The bomb has been defused!
+    CTs_Win_CSGO,                            // Counter-Terrorists Win!
+    Terrorists_Win_CSGO,                     // Terrorists Win!
+    Round_Draw_CSGO,                         // Round Draw!
+    All_Hostages_Rescued_CSGO,               // All Hostages have been rescued!
+    Target_Saved_CSGO,                       // Target has been saved!
+    Hostages_Not_Rescued_CSGO,               // Hostages have not been rescued!
+    Terrorists_Not_Escaped_CSGO,             // Terrorists have not escaped!
+    VIP_Not_Escaped_CSGO,                    // VIP has not escaped!
+    Game_Commencing_CSGO,                    // Game Commencing!
+    Terrorists_Surrender_CSGO,
+    CTs_Surrender_CSGO,
+    Terrorists_Planted_CSGO,
+    CTs_ReachedHostage_CSGO,
+    RoundEndReason_Count_CSGO
+};
+
+enum e_RoundEndReason
+{
+    Invalid_Round_End_Reason = -1,
+    Target_Bombed,                      // Target Successfully Bombed!
+    VIP_Escaped,						// The VIP has escaped!
+    VIP_Assassinated,                   // VIP has been assassinated!
+    Terrorists_Escaped,                 // The terrorists have escaped!
+    CTs_PreventEscape,                  // The CT's have prevented most of the terrorists from escaping!
+    Escaping_Terrorists_Neutralized,    // Escaping terrorists have all been neutralized!
+    Bomb_Defused,                       // The bomb has been defused!
+    CTs_Win,                            // Counter-Terrorists Win!
+    Terrorists_Win,                     // Terrorists Win!
+    Round_Draw,                         // Round Draw!
+    All_Hostages_Rescued,               // All Hostages have been rescued!
+    Target_Saved,                       // Target has been saved!
+    Hostages_Not_Rescued,               // Hostages have not been rescued!
+    Terrorists_Not_Escaped,             // Terrorists have not escaped!
+    VIP_Not_Escaped,                    // VIP has not escaped!
+    Game_Commencing,                    // Game Commencing!
+    RoundEndReason_Count
+};
 /**
  * @endsection
  */
@@ -308,23 +346,17 @@ RoundEndDisplayStats()
  */
 RoundEndOutcome:RoundEndReasonToOutcome(reason)
 {
-    switch(reason)
-    {
-        // CTs won the round.
-        case ROUNDEND_CTS_WIN:
-        {
-            return HumansWin;
-        }
-        // Ts won the round.
-        case ROUNDEND_TERRORISTS_WIN:
-        {
-            return ZombiesWin;
-        }
-        default:
-        {
-            return HumansWin;
-        }
-    }
+    // CTs won the round.
+    if ((g_Game != Game_CSGO && view_as<e_RoundEndReason>(reason) == CTs_Win)
+    || (g_Game == Game_CSGO && view_as<e_RoundEndReason_CSGO>(reason) == CTs_Win_CSGO))
+        return HumansWin;
+
+    // Ts won the round.
+    if ((g_Game != Game_CSGO && view_as<e_RoundEndReason>(reason) == Terrorists_Win)
+    || (g_Game == Game_CSGO && view_as<e_RoundEndReason_CSGO>(reason) == Terrorists_Win_CSGO))
+        return ZombiesWin;
+
+    return HumansWin;
 }
 
 /**
