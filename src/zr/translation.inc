@@ -40,16 +40,6 @@
 #define TRANSLATION_PHRASE_PREFIX "[ZR]"
 
 /**
- * @section Text color chars.
- */
-#define TRANSLATION_TEXT_COLOR_DEFAULT "\x01"
-#define TRANSLATION_TEXT_COLOR_LGREEN "\x03"
-#define TRANSLATION_TEXT_COLOR_GREEN "\x04"
-/**
- * @endsection
- */
-
-/**
  * Load translations file here.
  */
 TranslationInit()
@@ -90,10 +80,13 @@ stock TranslationPluginFormatString(String:text[], maxlen, bool:color = true)
         // Format prefix onto the string.
         Format(text, maxlen, "@green%s @default%s", TRANSLATION_PHRASE_PREFIX, text);
 
-        // Replace color tokens with CS:S color chars.
-        ReplaceString(text, maxlen, "@default", TRANSLATION_TEXT_COLOR_DEFAULT);
-        ReplaceString(text, maxlen, "@lgreen", TRANSLATION_TEXT_COLOR_LGREEN);
-        ReplaceString(text, maxlen, "@green", TRANSLATION_TEXT_COLOR_GREEN);
+        // Replace color tokens with game color chars.
+        ReplaceString(text, maxlen, "@default", "{default}");
+        ReplaceString(text, maxlen, "@lgreen", "{lightgreen}");
+        ReplaceString(text, maxlen, "@green", "{green}");
+
+        CFormatColor(text, maxlen, 0);
+        MC_AddWhiteSpace(text, maxlen);
 
         return;
     }
