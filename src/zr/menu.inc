@@ -91,7 +91,7 @@ ZMenuMain(client)
     decl String:ztele[MENU_LINE_HUGE_LENGTH];
     decl String:zhp[MENU_LINE_HUGE_LENGTH];
     decl String:zmarket[MENU_LINE_HUGE_LENGTH];
-    decl String:cds[MENU_LINE_HUGE_LENGTH];
+    decl String:zvolume[MENU_LINE_HUGE_LENGTH];
 
     // Translate each line into client's language.
     Format(title, sizeof(title), "%t\n ", "Menu main title", SAYHOOKS_CHAT_PUBLIC_DEFAULT, SAYHOOKS_CHAT_SILENT_DEFAULT);
@@ -102,7 +102,7 @@ ZMenuMain(client)
     Format(ztele, sizeof(ztele), "%t", "Menu main ztele");
     Format(zhp, sizeof(zhp), "%t", "Menu main zhp");
     Format(zmarket, sizeof(zmarket), "%t", "Menu main zmarket");
-    Format(cds, sizeof(cds), "%t", "Menu main cds");
+    Format(zvolume, sizeof(zvolume), "%t", "Menu main zvolume");
 
     // Add items to menu.
 
@@ -121,9 +121,7 @@ ZMenuMain(client)
     AddMenuItem(menu_main, "ztele", ztele);
     AddMenuItem(menu_main, "zhp", zhp);
     AddMenuItem(menu_main, "zmarket", zmarket);
-
-    if (GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND))
-        AddMenuItem(menu_main, "cds", cds);
+    AddMenuItem(menu_main, "zvolume", zvolume);
 
     // Display menu to client.
     DisplayMenu(menu_main, client, MENU_TIME_FOREVER);
@@ -196,10 +194,14 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
                 // Send ZMarket menu.
                 resend = !ZMarketMenuMain(client);
             }
-            // Select CDS.
+            // Select ZVolume.
             case 7:
             {
-                InfectCountdownSoundToggle(client);
+                // Send ZVolume menu.
+                VolumeControlMenu(client);
+
+                // Don't resend this menu.
+                resend = false;
             }
         }
 

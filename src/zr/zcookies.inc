@@ -49,40 +49,32 @@ ZCookiesMenuMain(client)
 
     decl String:zhpenabled[MENU_LINE_SMALL_LENGTH];
     decl String:overlayenabled[MENU_LINE_SMALL_LENGTH];
-    decl String:cdsenabled[MENU_LINE_SMALL_LENGTH];
 
     // Get the current toggle state of the cookies.
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hZHPEnabledCookie), zhpenabled, sizeof(zhpenabled), false, client);
     ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie), overlayenabled, sizeof(overlayenabled), false, client);
-    ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_hInfectCountdownSoundEnabledCookie), cdsenabled, sizeof(cdsenabled), false, client);
 
     decl String:title[MENU_LINE_TITLE_LENGTH];
     decl String:zhp[MENU_LINE_REG_LENGTH];
     decl String:overlay[MENU_LINE_REG_LENGTH];
     decl String:zmarket[MENU_LINE_REG_LENGTH];
-    decl String:cds[MENU_LINE_REG_LENGTH];
 
     // Translate each line into client's language.
     Format(title, sizeof(title), "%t\n ", "ZCookies Menu main title");
     Format(zhp, sizeof(zhp), "%t", "ZCookies menu main zhp", zhpenabled);
     Format(overlay, sizeof(overlay), "%t", "ZCookies menu main overlay", overlayenabled);
     Format(zmarket, sizeof(zmarket), "%t", "ZCookies zmarket loadout");
-    Format(cds, sizeof(cds), "%t", "ZCookies menu main cds", cdsenabled);
 
     // Get conditional values for each option.
     new bool:zhpcvar = GetConVarBool(g_hCvarsList.CVAR_ZHP);                                   // For ZHP.
     new bool:overlaytoggle = GetConVarBool(g_hCvarsList.CVAR_CLASSES_OVERLAY_TOGGLE);          // For class overlay.
     new bool:zmarketenabled = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET);                // For ZMarket loadout.
-    new bool:cdscvar = GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND);        // For infect countdown sound.
 
     // Add items to menu.
     SetMenuTitle(zcookies_menu_main, title);
     AddMenuItem(zcookies_menu_main, "zhp", zhp, MenuGetItemDraw(zhpcvar));
     AddMenuItem(zcookies_menu_main, "overlay", overlay, MenuGetItemDraw(overlaytoggle));
     AddMenuItem(zcookies_menu_main, "zmarket", zmarket, MenuGetItemDraw(zmarketenabled));
-
-    if (GetConVarBool(g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND))
-        AddMenuItem(zcookies_menu_main, "cds", cds, MenuGetItemDraw(cdscvar));
 
     // Create a "Back" button to the main menu.
     SetMenuExitBackButton(zcookies_menu_main, true);
@@ -134,11 +126,6 @@ public ZCookiesMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
 
                 // Don't resend ZCookies.
                 resend = false;
-            }
-            // Toggled infect countdown sound.
-            case 3:
-            {
-                InfectCountdownSoundToggle(client);
             }
         }
 

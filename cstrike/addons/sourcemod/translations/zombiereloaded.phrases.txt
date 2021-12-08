@@ -478,16 +478,6 @@
 		"en"		"Could not bring back @green{1}@default to life."
 	}
 
-	"CDS enable"
-	{
-		"en"		"Infect countdown sound enabled."
-	}
-
-	"CDS disable"
-	{
-		"en"		"Infect countdown sound disabled."
-	}
-
 	// ===========================
 	// Damage (core)
 	// ===========================
@@ -544,9 +534,9 @@
 		"en"		"ZMarket - Customize loadouts here"
 	}
 
-	"Menu main cds"
+	"Menu main zvolume"
 	{
-		"en"		"CDS - Toggle infect countdown sound"
+		"en"		"ZVolume - Adjust Zombie Volume"
 	}
 
 	// ===========================
@@ -1010,12 +1000,6 @@
 		"en"		"ZMarket Loadout"
 	}
 
-	"ZCookies menu main cds"
-	{
-		"#format"	"{1:s}"
-		"en"		"Infect Countdown Sound: {1}"
-	}
-
 	// ===========================
 	// ZSpawn (module)
 	// ===========================
@@ -1162,6 +1146,100 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"HP: {1}"
+	}
+
+	// ===========================
+	// ZVolume (module)
+	// ===========================
+
+	// General
+	"Volume_Menu_Title"
+	{
+		"en"		"[ZR] Volume Control Menu\nCommand: !zvolume"
+	}
+
+	"Zombie Voice"
+	{
+		"en"		"Zombie Voice"
+	}
+
+	"Ambient"
+	{
+		"en"		"Ambient"
+	}
+
+	"Infect Countdown"
+	{
+		"en"		"Infect Countdown"
+	}
+
+	// Countdown
+	"Countdown_Usage"
+	{
+		"en"		"Usage: zr_countdown_volume <0 - 100>"
+	}
+
+	"Countdown_Title_Menu"
+	{
+		"#format"	"{1:d}"
+		"en"		"[ZR] Countdown Volume (Current: {1:d}%)"
+	}
+
+	"Countdown_CommandUsage"
+	{
+		"en"		"Command: !countdown_volume <1-100>"
+	}
+
+	"Set_Countdown_Volume"
+	{
+		"#format"	"{1:d}"
+		"en"		"Set Countdown Volume to @lgreen{1:d}%."
+	}
+
+	// Zombie Voice
+	"ZombieVoice_Usage"
+	{
+		"en"		"Usage: zr_zombie_volume <0 - 100>"
+	}
+
+	"ZombieVoice_Title_Menu"
+	{
+		"#format"	"{1:d}"
+		"en"		"[ZR] Zombie Voice Volume (Current: {1:d}%)"
+	}
+
+	"ZombieVoice_CommandUsage"
+	{
+		"en"		"Command: !zombie_volume <1-100>"
+	}
+
+	"Set_ZombieVoice_Volume"
+	{
+		"#format"	"{1:d}"
+		"en"		"Set Zombie Voice Volume to @lgreen{1:d}%."
+	}
+
+	// Ambient
+	"Ambient_Usage"
+	{
+		"en"		"Usage: zr_ambient_volume <0 - 100>"
+	}
+
+	"Ambient_Title_Menu"
+	{
+		"#format"	"{1:d}"
+		"en"		"[ZR] Ambient Volume (Current: {1:d}%)"
+	}
+
+	"Ambient_CommandUsage"
+	{
+		"en"		"Command: !ambient_volume <1-100>"
+	}
+
+	"Set_Ambient_Volume"
+	{
+		"#format"	"{1:d}"
+		"en"		"Set Ambient Volume to @lgreen{1:d}%."
 	}
 
 	// ===========================

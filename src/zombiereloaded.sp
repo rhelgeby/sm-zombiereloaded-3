@@ -43,7 +43,7 @@
 
 #include <sdkhooks>
 
-#define VERSION "3.5"
+#define VERSION "3.6"
 
 // Comment this line to exclude version info command. Enable this if you have
 // the repository and HG installed (Mercurial or TortoiseHG).
@@ -73,6 +73,7 @@
 #include "zr/steamidcache"
 #include "zr/sayhooks"
 #include "zr/tools"
+#include "zr/soundeffects/volumecontrol"
 #include "zr/menu"
 #include "zr/cookies"
 #include "zr/paramtools"
@@ -167,6 +168,7 @@ public OnPluginStart()
     CommandsInit();
     WeaponsInit();
     EventInit();
+    VolumeInit();
 }
 
 /**
@@ -357,7 +359,7 @@ public OnClientCookiesCached(client)
     ClassOnCookiesCached(client);
     WeaponsOnCookiesCached(client);
     ZHPOnCookiesCached(client);
-    InfectOnCookiesCached(client);
+    VolumeOnCookiesCached(client);
 }
 
 /**

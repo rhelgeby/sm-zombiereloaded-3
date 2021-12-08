@@ -116,7 +116,7 @@ enum struct CvarsList
     Handle CVAR_INFECT_MZOMBIE_MIN;
     Handle CVAR_INFECT_MZOMBIE_MAX;
     Handle CVAR_INFECT_MZOMBIE_COUNTDOWN;
-    Handle CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND;
+    Handle CVAR_INFECT_MZOMBIE_COUNTDOWN_VOLUME;
     Handle CVAR_INFECT_MZOMBIE_RESPAWN;
     Handle CVAR_INFECT_EXPLOSION;
     Handle CVAR_INFECT_FIREBALL;
@@ -155,6 +155,7 @@ enum struct CvarsList
     Handle CVAR_SEFFECTS_DEATH;
     Handle CVAR_SEFFECTS_COMMAND_LIMIT;
     Handle CVAR_SEFFECTS_COMMAND_TIMESPAN;
+    Handle CVAR_SEFFECTS_VOLUME;
     Handle CVAR_AMBIENTSOUNDS;
     Handle CVAR_AMBIENTSOUNDS_FILE;
     Handle CVAR_AMBIENTSOUNDS_LENGTH;
@@ -332,22 +333,22 @@ CvarsCreate()
     // ===========================
 
     // General
-    g_hCvarsList.CVAR_INFECT_MZOMBIE_MODE               =    CreateConVar("zr_infect_mzombie_mode",         "dynamic",                          "Mother zombie infection mode. ['dynamic' = every n-th zombie (ratio) | 'absolute' = n zombies (ratio) | 'range' = min/max]");
-    g_hCvarsList.CVAR_INFECT_MZOMBIE_RATIO              =    CreateConVar("zr_infect_mzombie_ratio",        "7",                                "Dynamic mode: Infection ratio. Every n-th player is infected. | Absolute mode: Number of zombies to infect (positive ratio), or number of humans to keep (negative ratio).");
-    g_hCvarsList.CVAR_INFECT_MZOMBIE_MIN                =    CreateConVar("zr_infect_mzombie_min",          "1",                                "Minimum number of mother zombies. Range mode only, cannot be zero.");
-    g_hCvarsList.CVAR_INFECT_MZOMBIE_MAX                =    CreateConVar("zr_infect_mzombie_max",          "3",                                "Maximum number of mother zombies. Range mode only, cannot be zero.");
-    g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN          =    CreateConVar("zr_infect_mzombie_countdown",    "0",                                "Counts down to the first infection of the round.  Countdown is printed in the middle of the client's screen.");
-    g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_SOUND    =    CreateConVar("zr_infect_mzombie_countdown_sound","0",                              "Play back countdown sound to clients. [0 = Disabled | 1 = Default Disabled | 2 = Default enabled]");
-    g_hCvarsList.CVAR_INFECT_MZOMBIE_RESPAWN            =    CreateConVar("zr_infect_mzombie_respawn",      "0",                                "Teleport mother zombies back to spawn on infect.");
-    g_hCvarsList.CVAR_INFECT_SPAWNTIME_MIN              =    CreateConVar("zr_infect_spawntime_min",        "30.0",                             "Minimum time from the start of the round until picking the mother zombie(s).");
-    g_hCvarsList.CVAR_INFECT_SPAWNTIME_MAX              =    CreateConVar("zr_infect_spawntime_max",        "50.0",                             "Maximum time from the start of the round until picking the mother zombie(s).");
-    g_hCvarsList.CVAR_INFECT_CONSECUTIVE_BLOCK          =    CreateConVar("zr_infect_consecutive_block",    "1",                                "Prevent a player from being chosen as mother zombie two rounds in a row.");
-    g_hCvarsList.CVAR_INFECT_ROUND_ROBIN                =    CreateConVar("zr_infect_round_robin",          "1",                                "Use randomized round-robin (with SteamID cache) for mother zombie infection.");
-    g_hCvarsList.CVAR_INFECT_ROUND_ROBIN_RTD            =    CreateConVar("zr_infect_round_robin_rtd",      "1",                                "Roll the dice for players new to the random round-robin SteamID cache to make it fair for late joiners.");
-    g_hCvarsList.CVAR_INFECT_WEAPONS_DROP               =    CreateConVar("zr_infect_weapons_drop",         "1",                                "Force player to drop all weapons on infect, disabling this will strip weapons instead.");
-    g_hCvarsList.CVAR_INFECT_KNIFE_COOLDOWN             =    CreateConVar("zr_infect_knife_cooldown",       "1.0",                              "Time in seconds during which knife can not be used after becoming a zombie.");
-    g_hCvarsList.CVAR_INFECT_MAX_DISTANCE               =    CreateConVar("zr_infect_max_distance",         "80.0",                             "The maximum allowed distance between a client and an attacker for a successful infection. [0.0 = Disabled]");
-    g_hCvarsList.CVAR_INFECT_TELEPORT                   =    CreateConVar("zr_infect_teleport",             "0",                                "Teleports on infect to zombie.");
+    g_hCvarsList.CVAR_INFECT_MZOMBIE_MODE               =    CreateConVar("zr_infect_mzombie_mode",                "dynamic",                  "Mother zombie infection mode. ['dynamic' = every n-th zombie (ratio) | 'absolute' = n zombies (ratio) | 'range' = min/max]");
+    g_hCvarsList.CVAR_INFECT_MZOMBIE_RATIO              =    CreateConVar("zr_infect_mzombie_ratio",               "7",                        "Dynamic mode: Infection ratio. Every n-th player is infected. | Absolute mode: Number of zombies to infect (positive ratio), or number of humans to keep (negative ratio).");
+    g_hCvarsList.CVAR_INFECT_MZOMBIE_MIN                =    CreateConVar("zr_infect_mzombie_min",                 "1",                        "Minimum number of mother zombies. Range mode only, cannot be zero.");
+    g_hCvarsList.CVAR_INFECT_MZOMBIE_MAX                =    CreateConVar("zr_infect_mzombie_max",                 "3",                        "Maximum number of mother zombies. Range mode only, cannot be zero.");
+    g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN          =    CreateConVar("zr_infect_mzombie_countdown",           "0",                        "Counts down to the first infection of the round.  Countdown is printed in the middle of the client's screen.");
+    g_hCvarsList.CVAR_INFECT_MZOMBIE_COUNTDOWN_VOLUME   =    CreateConVar("zr_infect_mzombie_countdown_volume",    "0.8",                      "Default volume of the countdown sound. [1.0 = Max volume | 0.0001 = Not audible | Dependency: zr_infect_mzombie_countdown]");
+    g_hCvarsList.CVAR_INFECT_MZOMBIE_RESPAWN            =    CreateConVar("zr_infect_mzombie_respawn",             "0",                        "Teleport mother zombies back to spawn on infect.");
+    g_hCvarsList.CVAR_INFECT_SPAWNTIME_MIN              =    CreateConVar("zr_infect_spawntime_min",               "30.0",                     "Minimum time from the start of the round until picking the mother zombie(s).");
+    g_hCvarsList.CVAR_INFECT_SPAWNTIME_MAX              =    CreateConVar("zr_infect_spawntime_max",               "50.0",                     "Maximum time from the start of the round until picking the mother zombie(s).");
+    g_hCvarsList.CVAR_INFECT_CONSECUTIVE_BLOCK          =    CreateConVar("zr_infect_consecutive_block",           "1",                        "Prevent a player from being chosen as mother zombie two rounds in a row.");
+    g_hCvarsList.CVAR_INFECT_ROUND_ROBIN                =    CreateConVar("zr_infect_round_robin",                 "1",                        "Use randomized round-robin (with SteamID cache) for mother zombie infection.");
+    g_hCvarsList.CVAR_INFECT_ROUND_ROBIN_RTD            =    CreateConVar("zr_infect_round_robin_rtd",             "1",                        "Roll the dice for players new to the random round-robin SteamID cache to make it fair for late joiners.");
+    g_hCvarsList.CVAR_INFECT_WEAPONS_DROP               =    CreateConVar("zr_infect_weapons_drop",                "1",                        "Force player to drop all weapons on infect, disabling this will strip weapons instead.");
+    g_hCvarsList.CVAR_INFECT_KNIFE_COOLDOWN             =    CreateConVar("zr_infect_knife_cooldown",              "1.0",                      "Time in seconds during which knife can not be used after becoming a zombie.");
+    g_hCvarsList.CVAR_INFECT_MAX_DISTANCE               =    CreateConVar("zr_infect_max_distance",                "80.0",                     "The maximum allowed distance between a client and an attacker for a successful infection. [0.0 = Disabled]");
+    g_hCvarsList.CVAR_INFECT_TELEPORT                   =    CreateConVar("zr_infect_teleport",                    "0",                        "Teleports on infect to zombie.");
 
     // Effects
     g_hCvarsList.CVAR_INFECT_EXPLOSION                 =    CreateConVar("zr_infect_explosion",            "1",                                "Disabling this will disable the fireball, smoke cloud, and sparks in a more efficient way.");
@@ -452,12 +453,13 @@ CvarsCreate()
     g_hCvarsList.CVAR_SEFFECTS_DEATH                   =    CreateConVar("zr_seffects_death",              "1",                        "Emit a death sound when a zombie dies.");
     g_hCvarsList.CVAR_SEFFECTS_COMMAND_LIMIT           =    CreateConVar("zr_seffects_command_limit",      "4",                        "Number of sound commands allowed within the time span, or total limit if time span is disabled. ['0' = Disable sound command limit]");
     g_hCvarsList.CVAR_SEFFECTS_COMMAND_TIMESPAN        =    CreateConVar("zr_seffects_command_timespan",   "10",                       "Time span for sound command limiter (in seconds). ['0' = Disable time span check | positive number = Time span]");
+    g_hCvarsList.CVAR_SEFFECTS_VOLUME                  =    CreateConVar("zr_seffects_volume",             "0.8",                      "Default volume of the seffects sounds. [1.0 = Max volume | 0.0001 = Not audible]");
 
     // Ambient Sounds
     g_hCvarsList.CVAR_AMBIENTSOUNDS                    =    CreateConVar("zr_ambientsounds",           "1",                            "Play an ambient sound to all players during gameplay.");
     g_hCvarsList.CVAR_AMBIENTSOUNDS_FILE               =    CreateConVar("zr_ambientsounds_file",      "ambient/zr/zr_ambience.mp3",   "Sound file, relative to \"sound\" folder, to play as ambience.  This file is automatically downloaded to clients. [Dependency: zr_ambientsounds]");
     g_hCvarsList.CVAR_AMBIENTSOUNDS_LENGTH             =    CreateConVar("zr_ambientsounds_length",    "60.0",                         "Length of the ambient sound. [Dependency: zr_ambientsounds]");
-    g_hCvarsList.CVAR_AMBIENTSOUNDS_VOLUME             =    CreateConVar("zr_ambientsounds_volume",    "0.8",                          "Volume of the ambient sound. [1.0 = Max volume | 0.0001 = Not audible | Dependency: zr_ambientsounds]");
+    g_hCvarsList.CVAR_AMBIENTSOUNDS_VOLUME             =    CreateConVar("zr_ambientsounds_volume",    "0.8",                          "Default volume of the ambient sound. [1.0 = Max volume | 0.0001 = Not audible | Dependency: zr_ambientsounds]");
 
 
     // ===========================
