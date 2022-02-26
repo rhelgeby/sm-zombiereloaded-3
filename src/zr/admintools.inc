@@ -115,7 +115,7 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
         {
             case OperationType_Generic:
             {
-                flag = Admin_Generic;
+                flag = Admin_Ban;
             }
             case OperationType_Configuration:
             {

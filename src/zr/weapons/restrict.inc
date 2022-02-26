@@ -670,7 +670,7 @@ public Action:RestrictCanUse(client, weapon)
 public Action:RestrictCommand(client, argc)
 {
     // Check if privileged.
-    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    if (!ZRIsClientPrivileged(client, OperationType_Generic))
     {
         TranslationReplyToCommand(client, "No access to command");
         return Plugin_Handled;
@@ -731,7 +731,7 @@ public Action:RestrictCommand(client, argc)
 public Action:UnrestrictCommand(client, argc)
 {
     // Check if privileged.
-    if (!ZRIsClientPrivileged(client, OperationType_Configuration))
+    if (!ZRIsClientPrivileged(client, OperationType_Generic))
     {
         TranslationReplyToCommand(client, "No access to command");
         return Plugin_Handled;
