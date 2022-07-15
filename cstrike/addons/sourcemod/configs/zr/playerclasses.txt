@@ -21,6 +21,7 @@
 //                                      1 - Admins only
 //                                      2 - Mother zombies only
 // group                    text        Restrict class to member of this SourceMod group. Leave blank for no restriction.
+// sm_flags                 text        Restrict class to client of this SourceMod admin flag. Leave blank for no restriction.
 // name                     text        The class name used in class menu.
 // description              text        The class description used in class menu.
 // model_path               text        Path to model to use. Relative to cstrike folder.
@@ -40,7 +41,7 @@
 //                                      "infect" - Humans are immune to infections until HP go below a threshold. Threshold at zero enable stabbing to death.
 //                                      "damage" - Zombies are immune to damage from humans/grenades, but still vulnerable to knock back.
 //                                      "delay"  - Delay infection for a certain number of seconds.
-//                                      "shield" - Shield against infections (humans) or knock back (zombies) for a certain amount of seconds (similar to TF2's übercharge). Deploy with "zshield" command.
+//                                      "shield" - Shield against infections (humans) or knock back (zombies) for a certain amount of seconds (similar to TF2's ï¿½bercharge). Deploy with "zshield" command.
 // immunity_amount          number      Immunity data value (humans only). Depends on the immunity mode above:
 //                                      "infect" - HP threshold. Infection will be allowed when HP go below this value. Zero will enable stabbing to death.
 //                                      "delay"  - Number of seconds the infection is delayed since first hit by a zombie.
@@ -74,6 +75,7 @@
         "team_default"          "yes"
         "flags"                 "0"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Classic"
         "description"           "Need brains!!! Arrrrggghh!"
@@ -120,6 +122,7 @@
         "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Fast"
         "description"           "-HP | +Speed | +Jump | +Knockback"
@@ -166,6 +169,7 @@
         "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Mutated"
         "description"           "+HP | -Speed | +Jump | +Knockback"
@@ -212,6 +216,7 @@
         "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Heavy"
         "description"           "+HP | -Speed | -Knockback"
@@ -258,6 +263,7 @@
         "team_default"          "no"
         "flags"                 "2"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Mother zombie"
         "description"           "+HP regen | +Speed | +Jump | -Knockback"
@@ -304,6 +310,7 @@
         "team_default"          "no"
         "flags"                 "3"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Admin mother zombie"
         "description"           "+HP regen | +Speed | +Jump | -Knockback"
@@ -356,6 +363,7 @@
         "team_default"          "yes"
         "flags"                 "0"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Normal Human"
         "description"           "Default Counter-Strike settings"
@@ -402,6 +410,7 @@
         "team_default"          "yes"
         "flags"                 "0"
         "group"                 ""      // Write the name of a SourceMod group for vip players ("zr_vip" for instance), then make it in SourceMod.
+        "sm_flags"              ""
         
         "name"                  "VIP Human"
         "description"           "Human class for important players"
@@ -448,6 +457,7 @@
         "team_default"          "no"
         "flags"                 "1"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Admin Human"
         "description"           "Human class for admins"
@@ -494,6 +504,7 @@
         "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Speedy"
         "description"           "+Speed"
@@ -540,6 +551,7 @@
         "team_default"          "no"
         "flags"                 "0"
         "group"                 ""
+        "sm_flags"              ""
         
         "name"                  "Light"
         "description"           "-Speed | +Jump | +Immunity"
