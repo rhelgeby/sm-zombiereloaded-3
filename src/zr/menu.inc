@@ -41,7 +41,7 @@
 /**
  * Create commands specific to ZMenu.
  */
-MenuOnCommandsCreate()
+void MenuOnCommandsCreate()
 {
     // Register ZMenu command.
     RegConsoleCmd(SAYHOOKS_KEYWORD_ZMENU, ZMenuCommand, "Opens ZR's main menu.");
@@ -54,7 +54,7 @@ MenuOnCommandsCreate()
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action:ZMenuCommand(client, argc)
+public Action ZMenuCommand(int client, int argc)
 {
     // If client is console, then stop and tell them this feature is for players only.
     if (ZRIsConsole(client))
@@ -75,23 +75,23 @@ public Action:ZMenuCommand(client, argc)
  *
  * @param client    The client index.
  */
-ZMenuMain(client)
+void ZMenuMain(int client)
 {
     // Create menu handle.
-    new Handle:menu_main = CreateMenu(ZMenuMainHandle);
+    Handle menu_main = CreateMenu(ZMenuMainHandle);
 
     SetGlobalTransTarget(client);
 
     // Initialize menu lines.
-    decl String:title[MENU_LINE_TITLE_LENGTH];
-    decl String:zadmin[MENU_LINE_HUGE_LENGTH];
-    decl String:zclass[MENU_LINE_HUGE_LENGTH];
-    decl String:zcookies[MENU_LINE_HUGE_LENGTH];
-    decl String:zspawn[MENU_LINE_HUGE_LENGTH];
-    decl String:ztele[MENU_LINE_HUGE_LENGTH];
-    decl String:zhp[MENU_LINE_HUGE_LENGTH];
-    decl String:zmarket[MENU_LINE_HUGE_LENGTH];
-    decl String:zvolume[MENU_LINE_HUGE_LENGTH];
+    char title[MENU_LINE_TITLE_LENGTH];
+    char zadmin[MENU_LINE_HUGE_LENGTH];
+    char zclass[MENU_LINE_HUGE_LENGTH];
+    char zcookies[MENU_LINE_HUGE_LENGTH];
+    char zspawn[MENU_LINE_HUGE_LENGTH];
+    char ztele[MENU_LINE_HUGE_LENGTH];
+    char zhp[MENU_LINE_HUGE_LENGTH];
+    char zmarket[MENU_LINE_HUGE_LENGTH];
+    char zvolume[MENU_LINE_HUGE_LENGTH];
 
     // Translate each line into client's language.
     Format(title, sizeof(title), "%t\n ", "Menu main title", SAYHOOKS_CHAT_PUBLIC_DEFAULT, SAYHOOKS_CHAT_SILENT_DEFAULT);
@@ -109,11 +109,11 @@ ZMenuMain(client)
     SetMenuTitle(menu_main, title);
 
     // Disable option if client isn't an admin.
-    new bool:admin = ZRIsClientAdmin(client);
+    bool admin = ZRIsClientAdmin(client);
     AddMenuItem(menu_main, "zadmin", zadmin, MenuGetItemDraw(admin));
 
     // Decide whether the client can use zclass.
-    new zclassdraw = ClassAllowSelection(client) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+    int zclassdraw = ClassAllowSelection(client) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
 
     AddMenuItem(menu_main, "zclass", zclass, zclassdraw);
     AddMenuItem(menu_main, "zcookies", zcookies);
@@ -136,13 +136,13 @@ ZMenuMain(client)
  * @param client    The client index.
  * @param slot      The menu slot selected. (starting from 0)
  */
-public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
+public int ZMenuMainHandle(Handle menu, MenuAction action, int client, int slot)
 {
     // Client selected an option.
     if (action == MenuAction_Select)
     {
         // Create variable to possible resend menu later.
-        new bool:resend = true;
+        bool resend = true;
 
         switch(slot)
         {
@@ -216,6 +216,7 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
     {
         CloseHandle(menu);
     }
+    return -1;
 }
 
 /**
@@ -228,28 +229,28 @@ public ZMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
  * @param dead      If true, only clients that are dead will be displayed.
  * @param any       Title is a translations phrase.
  */
-stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive = false, bool:dead = false, any:...)
+stock void MenuClientList(int client,  MenuHandler handler, bool team = false, bool alive = false, bool dead = false, any ...)
 {
     // Create menu handle.
-    new Handle:menu_clients = CreateMenu(handler);
+    Handle menu_clients = CreateMenu(handler);
 
     // Set client as translation target.
     SetGlobalTransTarget(client);
 
     // Translate phrase.
-    decl String:translation[MENU_LINE_TITLE_LENGTH];
+    char translation[MENU_LINE_TITLE_LENGTH];
     VFormat(translation, sizeof(translation), "%t", 6);
 
     // Set menu title to the translated phrase.
     SetMenuTitle(menu_clients, translation);
 
-    decl String:clientoption[MENU_LINE_REG_LENGTH];
-    decl String:clientuserid[8];
+    char clientoption[MENU_LINE_REG_LENGTH];
+    char clientuserid[8];
 
-    new count = 0;
+    int count = 0;
 
     // x = Client index.
-    for (new x = 1; x <= MaxClients; x++)
+    for (int x = 1; x <= MaxClients; x++)
     {
         // If client isn't in-game, then stop.
         if (!IsClientInGame(x))
@@ -293,7 +294,7 @@ stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive 
         // this for some reason.
         SetGlobalTransTarget(client);
 
-        decl String:empty[64];
+        char empty[64];
         Format(empty, sizeof(empty), "%t", "Menu empty");
 
         AddMenuItem(menu_clients, "empty", empty, ITEMDRAW_DISABLED);
@@ -313,10 +314,10 @@ stock MenuClientList(client, MenuHandler:handler, bool:team = false, bool:alive 
  * @param slot  The menu slot that was selected.
  * @return      The client index, 0 if the selected client is no longer in the server.
  */
-stock MenuGetClientIndex(Handle:menu, slot)
+stock int MenuGetClientIndex(Handle menu, int slot)
 {
     // Get menu slot's information.
-    decl String:clientuserid[8];
+    char clientuserid[8];
     GetMenuItem(menu, slot, clientuserid, sizeof(clientuserid));
 
     // Return the targetted client through their userid which was set into the menu slot's info param.
@@ -328,7 +329,7 @@ stock MenuGetClientIndex(Handle:menu, slot)
  *
  * @param condition     If this is true, item will be drawn normally.
  */
-stock MenuGetItemDraw(bool:condition)
+stock int MenuGetItemDraw(bool condition)
 {
     return condition ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
 }

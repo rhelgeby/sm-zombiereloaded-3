@@ -28,22 +28,22 @@
 /**
  * Global variable that tells if ambient sound cvar data was loaded successfully.
  */
-new bool:g_bAmbientSounds;
+bool g_bAmbientSounds;
 
 /**
  * Global variable to store ambient sounds timer handle.
  */
-new Handle:tAmbientSounds = INVALID_HANDLE;
+Handle tAmbientSounds = INVALID_HANDLE;
 
 /**
  * Array for flagging client to play sound.
  */
-new bool:bAmbientSoundsIsPlaying[MAXPLAYERS + 1];
+bool bAmbientSoundsIsPlaying[MAXPLAYERS + 1];
 
 /**
  * Load ambient sound data.
  */
-AmbientSoundsLoad()
+void AmbientSoundsLoad()
 {
     // Validate cvars.
     g_bAmbientSounds = AmbientSoundsValidateConfig();
@@ -54,7 +54,7 @@ AmbientSoundsLoad()
  *
  * @param client    The client index.
  */
-AmbientSoundsClientInit(client)
+void AmbientSoundsClientInit(int client)
 {
     // Reset flag to play sound on client.
     bAmbientSoundsIsPlaying[client] = false;
@@ -63,10 +63,10 @@ AmbientSoundsClientInit(client)
 /**
  * Validate ambient sounds cvars.
  */
-bool:AmbientSoundsValidateConfig()
+bool AmbientSoundsValidateConfig()
 {
     // If ambience is disabled, then stop.
-    new bool:ambience = GetConVarBool(g_hCvarsList.CVAR_AMBIENTSOUNDS);
+    bool ambience = GetConVarBool(g_hCvarsList.CVAR_AMBIENTSOUNDS);
     if (!ambience)
     {
         g_bAmbientSounds = false;
@@ -74,7 +74,7 @@ bool:AmbientSoundsValidateConfig()
     }
 
     // Get ambient sound file.
-    decl String:sound[SOUND_MAX_PATH];
+    char sound[SOUND_MAX_PATH];
     GetConVarString(g_hCvarsList.CVAR_AMBIENTSOUNDS_FILE, sound, sizeof(sound));
     Format(sound, sizeof(sound), "sound/%s", sound);
 
@@ -87,7 +87,7 @@ bool:AmbientSoundsValidateConfig()
     }
 
     // If volume is invalid, then log error and stop.
-    new Float:ambientvolume = GetConVarFloat(g_hCvarsList.CVAR_AMBIENTSOUNDS_VOLUME);
+    float ambientvolume = GetConVarFloat(g_hCvarsList.CVAR_AMBIENTSOUNDS_VOLUME);
     if (ambientvolume < 0.0)
     {
         // Log invalid ambient sound volume error.
@@ -97,7 +97,7 @@ bool:AmbientSoundsValidateConfig()
     }
 
     // If length is invalid, then log error and stop.
-    new Float:ambientlength = GetConVarFloat(g_hCvarsList.CVAR_AMBIENTSOUNDS_LENGTH);
+    float ambientlength = GetConVarFloat(g_hCvarsList.CVAR_AMBIENTSOUNDS_LENGTH);
     if (ambientlength <= 0.0)
     {
         // Log invalid ambient sound length error.
@@ -116,7 +116,7 @@ bool:AmbientSoundsValidateConfig()
 /**
  * Map is starting.
  */
-AmbientSoundsOnMapStart()
+void AmbientSoundsOnMapStart()
 {
     // Reset timer handle.
     tAmbientSounds = INVALID_HANDLE;
@@ -125,7 +125,7 @@ AmbientSoundsOnMapStart()
 /**
  * The round is starting.
  */
-AmbientSoundsOnRoundStart()
+void AmbientSoundsOnRoundStart()
 {
     // Restart ambient sound for all clients.
     AmbientSoundsRestart();
@@ -134,10 +134,10 @@ AmbientSoundsOnRoundStart()
 /**
  * The round is ending.
  */
-AmbientSoundsOnRoundEnd()
+void AmbientSoundsOnRoundEnd()
 {
     // x = client index
-    for (new x = 1; x <= MaxClients; x++)
+    for (int x = 1; x <= MaxClients; x++)
     {
         bAmbientSoundsIsPlaying[x] = false;
     }
@@ -148,7 +148,7 @@ AmbientSoundsOnRoundEnd()
  *
  * @param client    The client index.
  */
-AmbientSoundsOnClientSpawnPost(client)
+void AmbientSoundsOnClientSpawnPost(int client)
 {
     // If ambience is disabled, then stop.
     if (!g_bAmbientSounds)
@@ -163,7 +163,7 @@ AmbientSoundsOnClientSpawnPost(client)
     }
 
     // Get ambient sound file.
-    decl String:sound[SOUND_MAX_PATH];
+    char sound[SOUND_MAX_PATH];
     GetConVarString(g_hCvarsList.CVAR_AMBIENTSOUNDS_FILE, sound, sizeof(sound));
 
     // Emit ambient sound.
@@ -176,7 +176,7 @@ AmbientSoundsOnClientSpawnPost(client)
 /**
  * Restart ambient sound for all clients.
  */
-AmbientSoundsRestart()
+void AmbientSoundsRestart()
 {
     // If timer is running, kill it.
     if (tAmbientSounds != INVALID_HANDLE)
@@ -192,7 +192,7 @@ AmbientSoundsRestart()
     }
 
     // Get ambient sound length.
-    new Float:ambientlength = GetConVarFloat(g_hCvarsList.CVAR_AMBIENTSOUNDS_LENGTH);
+    float ambientlength = GetConVarFloat(g_hCvarsList.CVAR_AMBIENTSOUNDS_LENGTH);
 
     // Start ambient sounds timer.
     tAmbientSounds = CreateTimer(ambientlength, AmbientSoundsTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -203,16 +203,16 @@ AmbientSoundsRestart()
  *
  * @param timer     The timer handle.
 */
-public Action:AmbientSoundsTimer(Handle:timer)
+public Action AmbientSoundsTimer(Handle timer)
 {
     // If ambience is disabled, then stop.
     if (!g_bAmbientSounds)
     {
-        return;
+        return Plugin_Continue;
     }
 
     // Get ambient sound file.
-    decl String:sound[SOUND_MAX_PATH];
+    char sound[SOUND_MAX_PATH];
     GetConVarString(g_hCvarsList.CVAR_AMBIENTSOUNDS_FILE, sound, sizeof(sound));
 
     // Stop sound before playing again.
@@ -222,8 +222,9 @@ public Action:AmbientSoundsTimer(Handle:timer)
     SEffectsEmitAmbientSound(sound);
 
     // Get ambient sound length.
-    new Float:ambientlength = GetConVarFloat(g_hCvarsList.CVAR_AMBIENTSOUNDS_LENGTH);
+    float ambientlength = GetConVarFloat(g_hCvarsList.CVAR_AMBIENTSOUNDS_LENGTH);
 
     // Start new timer with sound length as delay.
     tAmbientSounds = CreateTimer(ambientlength, AmbientSoundsTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+    return Plugin_Continue;
 }

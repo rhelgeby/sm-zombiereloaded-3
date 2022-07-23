@@ -11,7 +11,7 @@
  *                  Supports quoted strings and escaped characters like "\n"
  *                  and "\t".
  *
- *                  Examle raw string:
+ *                  Examle raw string ->
  *                  "type=interval -disabled msg="Title:\n\"Example\"."
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -99,7 +99,7 @@ enum struct ParamParseResult
  *                      occoured.
  * @return              Number of keys parsed.
  */
-stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString, int &err = 0, int &errPos = -1)
+stock int ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString, int rawlen, int &err = 0, int &errPos = -1)
 {
     /*
      *  VALIDATION OF INPUT AND BUFFERS
@@ -129,23 +129,20 @@ stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString
      *  PARSE LOOP
      */
 
-    // Get raw string length.
-    new rawlen = sizeof(paramString);
-
     // Initialize. Expect the start to be a key or a flag.
-    new ParamModes:mode = ParamMode_TypeCheck;
+    ParamModes mode = ParamMode_TypeCheck;
 
     // Counter for number of parameters parsed.
-    new paramcount;
+    int paramcount;
 
     // Buffers for temp values.
-    new startpos;
-    new endpos;
-    new bool:quoteon;
-    decl String:value[PARAM_VALUE_MAXLEN];
+    int startpos;
+    int endpos;
+    bool quoteon;
+    char value[PARAM_VALUE_MAXLEN];
 
     // Loop through all characters in the string. Exclude null terminator.
-    for (new strpos = 0; strpos < rawlen - 1; strpos++)
+    for (int strpos = 0; strpos < rawlen - 1; strpos++)
     {
         // Check if there's space left in the destination buffer.
         if (paramcount > maxlen)
@@ -167,7 +164,7 @@ stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString
             case ParamMode_TypeCheck:
             {
                 // Find start position of first non white space character.
-                startpos = ParamFindStartPos(paramString, strpos);
+                startpos = ParamFindStartPos(paramString, rawlen, strpos);
 
                 // Check if it's a flag type.
                 if (paramString[startpos] == '-')
@@ -191,7 +188,7 @@ stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString
             case ParamMode_Flag:
             {
                 // Find stop position (last non white space character).
-                endpos = ParamFindEndPos(paramString, strpos);
+                endpos = ParamFindEndPos(paramString, rawlen, strpos);
 
                 // Extract key name.
                 StrExtract(value, sizeof(value), paramString, strpos, endpos);
@@ -211,7 +208,7 @@ stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString
             case ParamMode_Key:
             {
                 // Find stop position.
-                endpos = ParamFindEndPos(paramString, strpos);
+                endpos = ParamFindEndPos(paramString, rawlen, strpos);
 
                 // Extract key name.
                 StrExtract(value, sizeof(value), paramString, strpos, endpos);
@@ -231,7 +228,7 @@ stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString
             case ParamMode_Equal:
             {
                 // Find start position of first non white space character.
-                startpos = ParamFindStartPos(paramString, strpos);
+                startpos = ParamFindStartPos(paramString, rawlen, strpos);
 
                 // Validate position.
                 if (startpos >= 0)
@@ -264,7 +261,7 @@ stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString
             case ParamMode_Value:
             {
                 // Find start position of first non white space character.
-                startpos = ParamFindStartPos(paramString, strpos);
+                startpos = ParamFindStartPos(paramString, rawlen, strpos);
 
                 // Validate start position.
                 if (startpos >= 0)
@@ -322,7 +319,7 @@ stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString
                     StrExtract(value, sizeof(value), paramString, startpos, endpos);
 
                     // Unescape string (converting "\n" to newline, etc.).
-                    StrUnescape(value);
+                    StrUnescape(value, sizeof(value));
 
                     // Copy value string to destination buffer.
                     strcopy(buffer[paramcount].Param_Value, PARAM_VALUE_MAXLEN, value);
@@ -361,10 +358,10 @@ stock ParamParseString(ParamParseResult[] buffer, int maxlen, char[] paramString
  *                          not (default).
  * @return                  Index of the key if found, -1 otherwise.
  */
-stock ParamFindKey(const ParamParseResult[] params, int maxlen, const char[] key, bool caseSensitive = false)
+stock int ParamFindKey(const ParamParseResult[] params, int maxlen, const char[] key, bool caseSensitive = false)
 {
     // Loop through all parameters.
-    for (new index = 0; index < maxlen; index++)
+    for (int index = 0; index < maxlen; index++)
     {
         // Check parameter type.
         if (params[index].Param_IsFlag)
@@ -394,10 +391,10 @@ stock ParamFindKey(const ParamParseResult[] params, int maxlen, const char[] key
  *                          not (default).
  * @return                  True flag is found, false otherwise.
  */
-stock bool:ParamHasFlag(const ParamParseResult[] params, int maxlen, const char[] flag, bool caseSensitive = false)
+stock bool ParamHasFlag(const ParamParseResult[] params, int maxlen, const char[] flag, bool caseSensitive = false)
 {
     // Loop through all parameters.
-    for (new index = 0; index < maxlen; index++)
+    for (int index = 0; index < maxlen; index++)
     {
         // Check parameter type.
         if (!params[index].Param_IsFlag)
@@ -433,10 +430,8 @@ stock bool:ParamHasFlag(const ParamParseResult[] params, int maxlen, const char[
  * @return              Position of the last non white space character, or -1
  *                      if failed.
  */
-stock ParamFindEndPos(const String:paramString[], startPos = 0)
+stock int ParamFindEndPos(const char[] paramString, int rawlen, int startPos = 0)
 {
-    new rawlen = sizeof(paramString);
-
     // Validate string length.
     if (rawlen == 0)
     {
@@ -444,7 +439,7 @@ stock ParamFindEndPos(const String:paramString[], startPos = 0)
     }
 
     // Loop through all characters from the specified start position.
-    for (new strpos = startPos; strpos < rawlen; strpos++)
+    for (int strpos = startPos; strpos < rawlen; strpos++)
     {
         // Check if white space or if current position is the last
         // character before the null terminator.
@@ -466,10 +461,8 @@ stock ParamFindEndPos(const String:paramString[], startPos = 0)
  * @param startPos      Optional. Position to start searching from.
  * @return              Position of first character or -1 if failed.
  */
-stock ParamFindStartPos(const String:paramString[], startPos = 0)
+stock int ParamFindStartPos(const char[] paramString, int rawlen, int startPos = 0)
 {
-    new rawlen = sizeof(paramString);
-
     // Validate string length.
     if (rawlen == 0)
     {
@@ -477,7 +470,7 @@ stock ParamFindStartPos(const String:paramString[], startPos = 0)
     }
 
     // Loop through all characters from the specified start position.
-    for (new strpos = startPos; strpos < rawlen; strpos++)
+    for (int strpos = startPos; strpos < rawlen; strpos++)
     {
         // Check if not white space.
         if (!IsCharSpace(paramString[strpos]))
@@ -500,9 +493,9 @@ stock ParamFindStartPos(const String:paramString[], startPos = 0)
  * @param endpos    End position of string to extract.
  * @return          Number of cells written.
  */
-stock StrExtract(String:buffer[], maxlen, const String:source[], startpos, endpos)
+stock int StrExtract(char[] buffer, int maxlen, const char[] source, int startpos, int endpos)
 {
-    new len;
+    int len;
 
     // Calculate string length. Also add space for null terminator.
     len = endpos - startpos + 1;
@@ -522,10 +515,8 @@ stock StrExtract(String:buffer[], maxlen, const String:source[], startpos, endpo
  *
  * @param str   String to unescape.
  */
-stock StrUnescape(String:str[])
+stock void StrUnescape(char[] str, int len)
 {
-    new len = sizeof(str);
-
     ReplaceString(str, len, "\\n", "\n");
     ReplaceString(str, len, "\\r", "\r");
     ReplaceString(str, len, "\\t", "\t");

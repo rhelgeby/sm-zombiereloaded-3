@@ -37,13 +37,15 @@
 #include <zombiereloaded>
 #undef INCLUDED_BY_ZOMBIERELOADED
 
+#pragma newdecls required
+
 #undef REQUIRE_EXTENSIONS
 #tryinclude <hitboxchanger>
 #define REQUIRE_EXTENSIONS
 
 #include <sdkhooks>
 
-#define VERSION "3.6"
+#define VERSION "3.7"
 
 // Comment this line to exclude version info command. Enable this if you have
 // the repository and HG installed (Mercurial or TortoiseHG).
@@ -114,13 +116,13 @@
 
 #include "zr/api/api"
 
-new bool:g_bLate = false;
-new bool:g_bServerStarted = false;
+bool g_bLate = false;
+bool g_bServerStarted = false;
 
 /**
  * Record plugin info.
  */
-public Plugin:myinfo =
+public Plugin myinfo =
 {
     name = "Zombie:Reloaded",
     author = "Greyscale | Richard Helgeby",
@@ -139,7 +141,7 @@ public Plugin:myinfo =
  *
  * @return          APLRes_Success for load success, APLRes_Failure or APLRes_SilentFailure otherwise.
  */
-public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
+public APLRes AskPluginLoad2(Handle myself, bool late, char []error, int err_max)
 {
     // Load API.
     APIInit();
@@ -156,7 +158,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 /**
  * Plugin is loading.
  */
-public OnPluginStart()
+public void OnPluginStart()
 {
     UpdateGameFolder();
 
@@ -174,7 +176,7 @@ public OnPluginStart()
 /**
  * All plugins have finished loading.
  */
-public OnAllPluginsLoaded()
+public void OnAllPluginsLoaded()
 {
     // Forward event to modules.
     RoundEndOnAllPluginsLoaded();
@@ -186,7 +188,7 @@ public OnAllPluginsLoaded()
 /**
  * A library was added.
  */
-public OnLibraryAdded(const String:name[])
+public void OnLibraryAdded(const char[] name)
 {
     // Forward event to modules.
     ConfigOnLibraryAdded(name);
@@ -197,7 +199,7 @@ public OnLibraryAdded(const String:name[])
 /**
  * A library was removed.
  */
-public OnLibraryRemoved(const String:name[])
+public void OnLibraryRemoved(const char[] name)
 {
     ConfigOnLibraryRemoved(name);
     RoundEndOnLibraryRemoved(name);
@@ -207,7 +209,7 @@ public OnLibraryRemoved(const String:name[])
 /**
  * The map is starting.
  */
-public OnMapStart()
+public void OnMapStart()
 {
     if(!g_bServerStarted)
     {
@@ -232,7 +234,7 @@ public OnMapStart()
 /**
  * The map is ending.
  */
-public OnMapEnd()
+public void OnMapEnd()
 {
     // Forward event to modules.
     InfectOnMapEnd();
@@ -245,7 +247,7 @@ public OnMapEnd()
 /**
  * Main configs were just executed.
  */
-public OnAutoConfigsBuffered()
+public void OnAutoConfigsBuffered()
 {
     // Load map configurations.
     ConfigLoad();
@@ -254,7 +256,7 @@ public OnAutoConfigsBuffered()
 /**
  * Configs just finished getting executed.
  */
-public OnConfigsExecuted()
+public void OnConfigsExecuted()
 {
     // Forward event to modules. (OnConfigsExecuted)
     WeaponsLoad();
@@ -273,8 +275,8 @@ public OnConfigsExecuted()
 
     if(g_bLate)
     {
-        new bool:bZombieSpawned = false;
-        for(new client = 1; client <= MaxClients; client++)
+        bool bZombieSpawned = false;
+        for(int client = 1; client <= MaxClients; client++)
         {
             if(!IsClientConnected(client))
                 continue;
@@ -312,7 +314,7 @@ public OnConfigsExecuted()
 /**
  * Client has just connected to the server.
  */
-public OnClientConnected(client)
+public void OnClientConnected(int client)
 {
     // Forward event to modules.
     ClassOnClientConnected(client);
@@ -323,7 +325,7 @@ public OnClientConnected(client)
  *
  * @param client    The client index.
  */
-public OnClientPutInServer(client)
+public void OnClientPutInServer(int client)
 {
     // Forward event to modules.
     ClassClientInit(client);
@@ -347,7 +349,7 @@ public OnClientPutInServer(client)
  *
  * @param client        Client index.
  */
-public OnClientCookiesCached(client)
+public void OnClientCookiesCached(int client)
 {
     // Check if client disconnected before cookies were done caching.
     if (!IsClientConnected(client))
@@ -372,7 +374,7 @@ public OnClientCookiesCached(client)
  * @param client        Client index.
  * @noreturn
  */
-public OnClientPostAdminCheck(client)
+public void OnClientPostAdminCheck(int client)
 {
     // Forward authorized event to modules that depend on client admin info.
     ClassOnClientPostAdminCheck(client);
@@ -383,7 +385,7 @@ public OnClientPostAdminCheck(client)
  *
  * @param client    The client index.
  */
-public OnClientDisconnect(client)
+public void OnClientDisconnect(int client)
 {
     // Forward event to modules.
     ClassOnClientDisconnect(client);
@@ -409,7 +411,7 @@ public OnClientDisconnect(client)
  * @param weapon    Entity index of the new weapon if player switches weapon, 0 otherwise.
  * @return          Plugin_Handled to block the commands from being processed, Plugin_Continue otherwise.
  */
-public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
+public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
     Class_OnPlayerRunCmd(client, vel);
     return Plugin_Continue;
@@ -421,7 +423,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
  * @param       entity      Entity index
  * @param       classname   Class name
  */
-public OnEntitySpawned(entity, const String:classname[])
+public void OnEntitySpawned(int entity, const char[] classname)
 {
     NapalmOnEntitySpawned(entity, classname);
 }

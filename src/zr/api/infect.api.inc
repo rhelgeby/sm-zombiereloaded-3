@@ -28,12 +28,12 @@
 /**
  * @section Global forward handles.
  */
-new Handle:g_hAPIFwdOnInfectCountdown = INVALID_HANDLE;
-new Handle:g_hAPIFwdOnClientInfect = INVALID_HANDLE;
-new Handle:g_hAPIFwdOnClientInfected = INVALID_HANDLE;
-new Handle:g_hAPIFwdOnClientHuman = INVALID_HANDLE;
-new Handle:g_hAPIFwdOnClientHumanPost = INVALID_HANDLE;
-new Handle:g_hAPIFwdOnClientMotherZombieEligible = INVALID_HANDLE;
+Handle g_hAPIFwdOnInfectCountdown = INVALID_HANDLE;
+Handle g_hAPIFwdOnClientInfect = INVALID_HANDLE;
+Handle g_hAPIFwdOnClientInfected = INVALID_HANDLE;
+Handle g_hAPIFwdOnClientHuman = INVALID_HANDLE;
+Handle g_hAPIFwdOnClientHumanPost = INVALID_HANDLE;
+Handle g_hAPIFwdOnClientMotherZombieEligible = INVALID_HANDLE;
 /**
  * @endsection
  */
@@ -41,7 +41,7 @@ new Handle:g_hAPIFwdOnClientMotherZombieEligible = INVALID_HANDLE;
 /**
  * Initializes all natives and forwards related to infection.
  */
-APIInfectInit()
+void APIInfectInit()
 {
     // Infect module natives/forwards (infect.zr.inc)
 
@@ -79,80 +79,82 @@ public APIIsClientMotherZombie(Handle:plugin, numParams)
  * Native call function (ZR_IsClientInfected)
  * Returns true if the client is a zombie, false if not.
  */
-public APIIsClientZombie(Handle:plugin, numParams)
+public int APIIsClientZombie(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
-
-    // Validate the client index.
-    APIValidateClientIndex(client, Condition_True);
-
-    return InfectIsClientInfected(client);
+	int client = GetNativeCell(1);
+	
+	// Validate the client index.
+	APIValidateClientIndex(client, Condition_True);
+	
+	return InfectIsClientInfected(client);
 }
 
 /**
  * Native call function (ZR_IsClientHuman)
  * Returns true if the client is a human, false if not.
  *
- * bool:InfectIsClientHuman(client)
+ * bool InfectIsClientHuman(int client)
  */
-public APIIsClientHuman(Handle:plugin, numParams)
+public int APIIsClientHuman(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
-
-    // Validate the client index.
-    APIValidateClientIndex(client, Condition_True);
-
-    return InfectIsClientHuman(client);
+	int client = GetNativeCell(1);
+	
+	// Validate the client index.
+	APIValidateClientIndex(client, Condition_True);
+	
+	return InfectIsClientHuman(client);
 }
 
 /**
  * Native call function (ZR_InfectClient)
  * Infects a client.
  *
- * native ZR_InfectClient(client, attacker = -1, bool:motherInfect = false, bool:respawnOverride = false, bool:respawn = false);
+ * native bool ZR_InfectClient(int client, int attacker = -1, bool motherInfect = false, bool respawnOverride = false, bool respawn = false);
  */
-public APIInfectClient(Handle:plugin, numParams)
+public int APIInfectClient(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
-    new attacker = GetNativeCell(2);
-    new bool:motherInfect = bool:GetNativeCell(3);
-    new bool:respawnOverride = bool:GetNativeCell(4);
-    new bool:respawn = bool:GetNativeCell(5);
+    int client = GetNativeCell(1);
+    int attacker = GetNativeCell(2);
+    bool motherInfect = view_as<bool>(GetNativeCell(3));
+    bool respawnOverride = view_as<bool>(GetNativeCell(4));
+    bool respawn = view_as<bool>(GetNativeCell(5));
 
     // Validate the client index.
     APIValidateClientIndex(client, Condition_True);
 
-    return InfectHumanToZombie(client, attacker, motherInfect, respawnOverride, respawn);
+    InfectHumanToZombie(client, attacker, motherInfect, respawnOverride, respawn);
+    return -1;
 }
 
 /**
  * Native call function (ZR_HumanClient)
  * Turns a zombie back into a human.
  *
- * native ZR_HumanClient(client, bool:respawn = false, bool:protect = false);
+ * native bool ZR_HumanClient(int client, bool respawn = false, bool protect = false);
  */
-public APIHumanClient(Handle:plugin, numParams)
+public int APIHumanClient(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
-    new bool:respawn = bool:GetNativeCell(2);
-    new bool:protect = bool:GetNativeCell(2);
+    int client = GetNativeCell(1);
+    bool respawn = view_as<bool>(GetNativeCell(2));
+    bool protect = view_as<bool>(GetNativeCell(2));
 
     // Validate the client index.
     APIValidateClientIndex(client, Condition_True);
 
-    return InfectZombieToHuman(client, respawn, protect);
+    InfectZombieToHuman(client, respawn, protect);
+    return -1;
 }
 
 /**
  * Called on infection timer to determine if timer should show.
  */
-Action:APIOnInfectCountdown()
+Action APIOnInfectCountdown()
 {
     // Start forward call.
     Call_StartForward(g_hAPIFwdOnInfectCountdown);
 
     // Get what they returned.
-    new Action:result;
+    Action result;
     Call_Finish(result);
     return result;
 }
@@ -166,24 +168,24 @@ Action:APIOnInfectCountdown()
  * @param respawnoverride   Set to true to override respawn cvar.
  * @param respawn           Value to override with.
  *
- * InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respawnoverride = false, bool:respawn = false)
+ * bool InfectHumanToZombie(int client, int attacker = -1, bool motherinfect = false, bool respawnoverride = false, bool respawn = false)
  */
-Action:APIOnClientInfect(&client, &attacker, &bool:motherinfect, &bool:respawnoverride, &bool:respawn)
+Action APIOnClientInfect(int &client, int &attacker, bool &motherinfect, bool &respawnoverride, bool &respawn)
 {
-    // Start forward call.
-    Call_StartForward(g_hAPIFwdOnClientInfect);
-
-    // Push the parameters.
-    Call_PushCellRef(client);
-    Call_PushCellRef(attacker);
-    Call_PushCellRef(motherinfect);
-    Call_PushCellRef(respawnoverride);
-    Call_PushCellRef(respawn);
-
-    // Get what they returned.
-    new Action:result;
-    Call_Finish(result);
-    return result;
+	// Start forward call.
+	Call_StartForward(g_hAPIFwdOnClientInfect);
+	
+	// Push the parameters.
+	Call_PushCellRef(client);
+	Call_PushCellRef(attacker);
+	Call_PushCellRef(motherinfect);
+	Call_PushCellRef(respawnoverride);
+	Call_PushCellRef(respawn);
+	
+	// Get what they returned.
+	Action result;
+	Call_Finish(result);
+	return result;
 }
 
 /**
@@ -195,9 +197,9 @@ Action:APIOnClientInfect(&client, &attacker, &bool:motherinfect, &bool:respawnov
  * @param respawnoverride   Set to true to override respawn cvar.
  * @param respawn           Value to override with.
  *
- * InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respawnoverride = false, bool:respawn = false)
+ * bool InfectHumanToZombie(int client, int attacker = -1, bool motherinfect = false, bool respawnoverride = false, bool respawn = false)
  */
-APIOnClientInfected(client, attacker, bool:motherinfect, bool:respawnoverride, bool:respawn)
+void APIOnClientInfected(int client, int attacker, bool motherinfect, bool respawnoverride, bool respawn)
 {
     // Start forward call.
     Call_StartForward(g_hAPIFwdOnClientInfected);
@@ -236,22 +238,22 @@ APIOnClientInfected(client, attacker, bool:motherinfect, bool:respawnoverride, b
  * @param respawn           True if the client was respawned, false if not.
  * @param protect           True if the client spawn protected, false if not.
  *
- * InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
+ * bool InfectZombieToHuman(int client, bool respawn = false, bool protect = false)
  */
-Action:APIOnClientHuman(&client, &bool:respawn, &bool:protect)
+Action APIOnClientHuman(int &client, bool &respawn, bool &protect)
 {
-    // Start forward call.
-    Call_StartForward(g_hAPIFwdOnClientHuman);
-
-    // Push the parameters.
-    Call_PushCellRef(client);
-    Call_PushCellRef(respawn);
-    Call_PushCellRef(protect);
-
-    // Get what they returned.
-    new Action:result;
-    Call_Finish(result);
-    return result;
+	// Start forward call.
+	Call_StartForward(g_hAPIFwdOnClientHuman);
+	
+	// Push the parameters.
+	Call_PushCellRef(client);
+	Call_PushCellRef(respawn);
+	Call_PushCellRef(protect);
+	
+	// Get what they returned.
+	Action result;
+	Call_Finish(result);
+	return result;
 }
 
 /**
@@ -261,9 +263,9 @@ Action:APIOnClientHuman(&client, &bool:respawn, &bool:protect)
  * @param respawn           True if the client was respawned, false if not.
  * @param protect           True if the client spawn protected, false if not.
  *
- * InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
+ * bool InfectZombieToHuman(int client, bool respawn = false, bool protect = false)
  */
-APIOnClientHumanPost(client, bool:respawn, bool:protect)
+void APIOnClientHumanPost(int client, bool respawn, bool protect)
 {
     // Start forward call.
     Call_StartForward(g_hAPIFwdOnClientHumanPost);

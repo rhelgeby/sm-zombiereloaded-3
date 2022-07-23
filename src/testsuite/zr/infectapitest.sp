@@ -29,7 +29,7 @@
 #include <sourcemod>
 #include <zombiereloaded>
 
-public Plugin:myinfo =
+public Plugin myinfo =
 {
     name = "Zombie:Reloaded Infection API Test",
     author = "Greyscale | Richard Helgeby",
@@ -38,10 +38,10 @@ public Plugin:myinfo =
     url = "http://code.google.com/p/zombiereloaded/"
 };
 
-new Handle:cvarBlockInfect;
-new Handle:cvarBlockHuman;
+Handle cvarBlockInfect;
+Handle cvarBlockHuman;
 
-public OnPluginStart()
+public void OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
@@ -55,10 +55,10 @@ public OnPluginStart()
     cvarBlockHuman = CreateConVar("zrtest_block_human", "0", "Block turning players back into humans.");
 }
 
-public Action:IsZombieCommand(client, argc)
+public Action IsZombieCommand(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -76,10 +76,10 @@ public Action:IsZombieCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:IsHumanCommand(client, argc)
+public Action IsHumanCommand(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -97,10 +97,10 @@ public Action:IsHumanCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:InfectClientCommand(client, argc)
+public Action InfectClientCommand(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -119,10 +119,10 @@ public Action:InfectClientCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:HumanClientCommand(client, argc)
+public Action HumanClientCommand(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -141,7 +141,7 @@ public Action:HumanClientCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:ZR_OnClientInfect(&client, &attacker, &bool:motherInfect, &bool:respawnOverride, &bool:respawn)
+public Action ZR_OnClientInfect(int &client, int &attacker, bool &motherInfect, bool &respawnOverride, bool &respawn)
 {
     if (GetConVarBool(cvarBlockInfect))
     {
@@ -153,12 +153,12 @@ public Action:ZR_OnClientInfect(&client, &attacker, &bool:motherInfect, &bool:re
     return Plugin_Continue;
 }
 
-public ZR_OnClientInfected(client, attacker, bool:motherInfect, bool:respawnOverride, bool:respawn)
+public void ZR_OnClientInfected(int client, int attacker, bool motherInfect, bool respawnOverride, bool respawn)
 {
     PrintToChatAll("Client %d was infected. Attacker: %d, Mother zombie: %d, Respawn override: %d, Respawn: %d.", client, attacker, motherInfect, respawnOverride, respawn);
 }
 
-public Action:ZR_OnClientHuman(&client, &bool:respawn, &bool:protect)
+public Action ZR_OnClientHuman(int &client, bool &respawn, bool &protect)
 {
     if (GetConVarBool(cvarBlockHuman))
     {
@@ -170,7 +170,7 @@ public Action:ZR_OnClientHuman(&client, &bool:respawn, &bool:protect)
     return Plugin_Continue;
 }
 
-public ZR_OnClientHumanPost(client, bool:respawn, bool:protect)
+public void ZR_OnClientHumanPost(int client, bool respawn, bool protect)
 {
     PrintToChatAll("Client %d turned a human. Respawn: %d, Spawn protect: %d", client, respawn, protect);
 }

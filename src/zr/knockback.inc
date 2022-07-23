@@ -154,10 +154,10 @@ public void KnockbackOnClientHurt(int victim, int attacker, int inflictor, const
     }
 
     // Get zombie knockback value.
-    new Float:knockback = ClassGetKnockback(victim);
+    float knockback = ClassGetKnockback(victim);
 
-    new Float:clientloc[3];
-    new Float:attackerloc[3];
+    float clientloc[3];
+    float attackerloc[3];
 
     GetClientAbsOrigin(victim, clientloc);
 
@@ -177,7 +177,7 @@ public void KnockbackOnClientHurt(int victim, int attacker, int inflictor, const
         GetClientEyePosition(attacker, attackerloc);
 
         // Get attackers eye angles.
-        new Float:attackerang[3];
+        float attackerang[3];
         GetClientEyeAngles(attacker, attackerang);
 
         // Calculate knockback end-vector.
@@ -185,10 +185,10 @@ public void KnockbackOnClientHurt(int victim, int attacker, int inflictor, const
         TR_GetEndPosition(clientloc);
     }
 
-    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
+    bool weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (weapons)
     {
-        new weaponindex = WeaponsNameToIndex(weaponname);
+        int weaponindex = WeaponsNameToIndex(weaponname);
         if (weaponindex != -1)
         {
             // Apply weapon knockback multiplier.
@@ -204,10 +204,10 @@ public void KnockbackOnClientHurt(int victim, int attacker, int inflictor, const
     if (custom)
         ToolsSetClientLastHitGroup(victim, HITGROUP_GENERIC);
 
-    new bool:hitgroups = GetConVarBool(g_hCvarsList.CVAR_HITGROUPS);
+    bool hitgroups = GetConVarBool(g_hCvarsList.CVAR_HITGROUPS);
     if (hitgroups)
     {
-        new hitgroupindex = HitgroupToIndex(hitgroup);
+        int hitgroupindex = HitgroupToIndex(hitgroup);
         if (hitgroupindex != -1)
         {
             // Apply hitgroup knockback multiplier.
@@ -235,10 +235,10 @@ public void KnockbackOnClientHurt(int victim, int attacker, int inflictor, const
  * @param endpoint      The ending coordinate to push towards.
  * @param magnitude     Magnitude of the push.
  */
-KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3], Float:magnitude, bool limitforce, bool limitvel)
+void KnockbackSetVelocity(int client, const float startpoint[3], const float endpoint[3], float magnitude, bool limitforce, bool limitvel)
 {
     // Create vector from the given starting and ending points.
-    new Float:vector[3];
+    float vector[3];
     MakeVectorFromPoints(startpoint, endpoint, vector);
 
     // Normalize the vector (equal magnitude at varying distances).
@@ -260,11 +260,11 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
 
 void KnockbackApplyVector(int client, float vector[3], bool limitvel)
 {
-    // CS: GO workaround. Apply knock back boost if enabled.
+    // CS GO workaround. Apply knock back boost if enabled.
     if (g_Game == Game_CSGO && GetConVarBool(g_hCvarsList.CVAR_CLASSES_CSGO_KNOCKBACK_BOOST))
     {
-        new flags = GetEntityFlags(client);
-        new Float:velocity[3];
+        int flags = GetEntityFlags(client);
+        float velocity[3];
         ToolsGetClientVelocity(client, velocity);
 
         // Remove boost if current velocity is too high.
@@ -321,9 +321,9 @@ void KnockbackApplyVector(int client, float vector[3], bool limitvel)
  *
  * @param entity        The entity index.
  * @param contentsMask  The contents mask.
- * @return              True to allow hit, false to continue tracing.
+ * @return              True to allow hit, false to continue tracing. 
  */
-public bool:KnockbackTRFilter(entity, contentsMask)
+public bool KnockbackTRFilter(int entity, int contentsMask)
 {
     // If entity is a player, continue tracing.
     if (entity > 0 && entity < MAXPLAYERS)
@@ -341,13 +341,13 @@ public bool:KnockbackTRFilter(entity, contentsMask)
  * @param heLoc     The location of the exploding grenade.
  * @return          The entity index of the grenade.
  */
-KnockbackFindExplodingGrenade(Float:heLoc[3])
+int KnockbackFindExplodingGrenade(float heLoc[3])
 {
-    decl String:classname[64];
+    char classname[64];
 
     // Find max entities and loop through all of them.
-    new maxentities = GetMaxEntities();
-    for (new x = MaxClients; x <= maxentities; x++)
+    int maxentities = GetMaxEntities();
+    for (int x = MaxClients; x <= maxentities; x++)
     {
         // If entity is invalid, then stop.
         if (!IsValidEdict(x))
@@ -363,7 +363,7 @@ KnockbackFindExplodingGrenade(Float:heLoc[3])
         }
 
         // If m_takedamage is set to 0, we found our grenade.
-        new takedamage = GetEntProp(x, Prop_Data, "m_takedamage");
+        int takedamage = GetEntProp(x, Prop_Data, "m_takedamage");
         if (takedamage == 0)
         {
             // Return its location.

@@ -87,7 +87,7 @@ VolTypeClassEdit VolClassEditData[ZR_VOLUMES_MAX];
 /**
  * The player's selected class index. Used by volumes in "name" mode.
  */
-new VolClassEditSelectedClass[MAXPLAYERS + 1];
+int VolClassEditSelectedClass[MAXPLAYERS + 1];
 
 /**
  * Checks if the specified index is in use.
@@ -95,7 +95,7 @@ new VolClassEditSelectedClass[MAXPLAYERS + 1];
  * @param dataIndex     Index to check.
  * @return              True if in use, false otherwise.
  */
-bool:VolClassEditInUse(dataIndex)
+bool VolClassEditInUse(int dataIndex)
 {
     return VolClassEditData[dataIndex].VolClassEdit_InUse;
 }
@@ -105,10 +105,10 @@ bool:VolClassEditInUse(dataIndex)
  *
  * @return  Data index or -1 if failed.
  */
-VolClassEditGetFreeIndex()
+int VolClassEditGetFreeIndex()
 {
     // Loop through all indexes.
-    for (new dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
+    for (int dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
     {
         // Check if unused.
         if (!VolClassEditInUse(dataindex))
@@ -125,7 +125,7 @@ VolClassEditGetFreeIndex()
     return -1;
 }
 
-VolClassEditReset(dataIndex)
+void VolClassEditReset(int dataIndex)
 {
     VolClassEditData[dataIndex].VolClassEdit_InUse = false;
     VolClassEditData[dataIndex].VolClassEdit_Mode = ClassEditMode_Attributes;
@@ -137,9 +137,9 @@ VolClassEditReset(dataIndex)
 /**
  * Initialize class editor.
  */
-VolClassEditInit()
+void VolClassEditInit()
 {
-    for (new dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
+    for (int dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
     {
         VolClassEditReset(dataindex);
     }
@@ -153,7 +153,7 @@ VolClassEditInit()
  * @param attribVlue    Attribute value to set.
  * @return              True if successfully set, false otherwise.
  */
-VolClassEditSetAttribute(dataIndex, const String:attribName[], const String:attribValue[])
+int VolClassEditSetAttribute(int dataIndex, const char[] attribName, const char[] attribValue)
 {
     // Validate index.
     if (!VolIsValidIndex(dataIndex))
@@ -337,14 +337,14 @@ VolClassEditSetAttribute(dataIndex, const String:attribName[], const String:attr
  * @param maxlen        Size of destination buffer.
  * @return              Number of cells written.
  */
-VolClassEditDumpData(dataIndex, String:buffer[], maxlen)
+int VolClassEditDumpData(int dataIndex, char[] buffer, int maxlen)
 {
     #define CLASSEDIT_DUMP_FORMAT "%-19s %s\n"
 
-    decl String:linebuffer[128];
-    decl String:valuebuffer[256];
+    char linebuffer[128];
+    char valuebuffer[256];
     VolTypeClassEdit cache;
-    new cellswritten;
+    int cellswritten;
 
     // Validate index.
     if (!VolIsValidIndex(dataIndex))
@@ -469,14 +469,14 @@ VolClassEditDumpData(dataIndex, String:buffer[], maxlen)
  * @param client        The client index.
  * @param dataIndex     Local data index.
  */
-VolClassEditApply(client, dataIndex)
+void VolClassEditApply(int client, int dataIndex)
 {
     switch (VolClassEditData[dataIndex].VolClassEdit_Mode)
     {
         case ClassEditMode_Name:
         {
             // Cache volume attributes.
-            new classindex = ClassGetIndexByName(VolClassEditData[dataIndex].VolClassEdit_ClassName);
+            int classindex = ClassGetIndexByName(VolClassEditData[dataIndex].VolClassEdit_ClassName);
 
             // Save player's selected class.
             VolClassEditSelectedClass[client] = ClassGetActiveIndex(client);
@@ -503,9 +503,9 @@ VolClassEditApply(client, dataIndex)
  *
  * @param client        The client index.
  */
-VolClassEditRestore(int client, int dataIndex)
+void VolClassEditRestore(int client, int dataIndex)
 {
-    new classindex = ClassGetActiveIndex(client);
+    int classindex = ClassGetActiveIndex(client);
 
     switch (VolClassEditData[dataIndex].VolClassEdit_Mode)
     {
@@ -535,7 +535,7 @@ VolClassEditRestore(int client, int dataIndex)
  * @param client        The client index.
  * @param volumeIndex   The volume index.
  */
-VolClassEditOnPlayerEnter(client, volumeIndex)
+void VolClassEditOnPlayerEnter(int client, int volumeIndex)
 {
     VolClassEditApply(client, Volumes[volumeIndex].Vol_DataIndex);
 }
@@ -546,7 +546,7 @@ VolClassEditOnPlayerEnter(client, volumeIndex)
  * @param client        The client index.
  * @param volumeIndex   The volume index.
  */
-VolClassEditOnPlayerLeave(client, volumeIndex)
+void VolClassEditOnPlayerLeave(int client, int volumeIndex)
 {
     VolClassEditRestore(client, Volumes[volumeIndex].Vol_DataIndex);
 }
@@ -566,9 +566,9 @@ VolClassEditOnPlayerLeave(client, volumeIndex)
  *
  * @param volumeIndex   The volume index.
  */
-VolClassEditOnDisabled(volumeIndex)
+void VolClassEditOnDisabled(int volumeIndex)
 {
-    for (new client = 1; client < MaxClients; client++)
+    for (int client = 1; client < MaxClients; client++)
     {
         if (IsClientConnected(client) && IsClientInGame(client))
         {
@@ -596,7 +596,7 @@ VolClassEditOnDisabled(volumeIndex)
  * @param maxlen    Size of buffer.
  * @return          Number of cells written.
  */
-VolClassEditModeToString(VolClassEditMode:mode, String:buffer[], maxlen)
+int VolClassEditModeToString(VolClassEditMode mode, char[] buffer, int maxlen)
 {
     switch (mode)
     {
@@ -622,20 +622,17 @@ VolClassEditModeToString(VolClassEditMode:mode, String:buffer[], maxlen)
  * @param buffer        Destination string buffer.
  * @param maxlen        Size of destination buffer.
  */
-VolClassEditIntToString(int intVal, char[] buffer, int maxlen)
+int VolClassEditIntToString(int intVal, char[] buffer, int maxlen)
 {
-    new String:strVal[8];
+    char strVal[8];
 
     // Check if the attribute is marked as ignored.
     if (intVal == -1)
     {
         return strcopy(buffer, maxlen, "(no change)");
     }
-    else
-    {
-        IntToString(intVal, strVal, sizeof(strVal));
-        return strcopy(buffer, maxlen, strVal);
-    }
+    IntToString(intVal, strVal, sizeof(strVal));
+    return strcopy(buffer, maxlen, strVal);
 }
 
 /**
@@ -647,20 +644,17 @@ VolClassEditIntToString(int intVal, char[] buffer, int maxlen)
  * @param buffer        Destination string buffer.
  * @param maxlen        Size of destination buffer.
  */
-VolClassEditFloatToString(float floatVal, char[] buffer, int maxlen, float minval = -1.0)
+int VolClassEditFloatToString(float floatVal, char[] buffer, int maxlen, float minval = -1.0)
 {
-    new String:strVal[8];
+    char strVal[8];
 
     // Check if the attribute is marked as ignored.
     if (floatVal == minval)
     {
         return strcopy(buffer, maxlen, "(no change)");
     }
-    else
-    {
-        FloatToString(floatVal, strVal, sizeof(strVal));
-        return strcopy(buffer, maxlen, strVal);
-    }
+    FloatToString(floatVal, strVal, sizeof(strVal));
+    return strcopy(buffer, maxlen, strVal);
 }
 
 /**
@@ -672,17 +666,14 @@ VolClassEditFloatToString(float floatVal, char[] buffer, int maxlen, float minva
  * @param buffer        Destination string buffer.
  * @param maxlen        Size of destination buffer.
  */
-VolClassEditStringToHumanStr(char strVal[PLATFORM_MAX_PATH], char[] buffer, int maxlen)
+int VolClassEditStringToHumanStr(char strVal[PLATFORM_MAX_PATH], char[] buffer, int maxlen)
 {
     // Check if the attribute is marked as ignored.
     if (StrEqual(strVal, "nochange", false))
     {
         return strcopy(buffer, maxlen, "(no change)");
     }
-    else
-    {
-        return strcopy(buffer, maxlen, strVal);
-    }
+    return strcopy(buffer, maxlen, strVal);
 }
 
 /**
@@ -693,7 +684,7 @@ VolClassEditStringToHumanStr(char strVal[PLATFORM_MAX_PATH], char[] buffer, int 
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetMode(dataIndex, const String:value[])
+bool VolClassEditSetMode(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -723,7 +714,7 @@ bool:VolClassEditSetMode(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetName(dataIndex, const String:value[])
+bool VolClassEditSetName(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -747,7 +738,7 @@ bool:VolClassEditSetName(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetAlphaInitial(dataIndex, const String:value[])
+bool VolClassEditSetAlphaInitial(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -768,7 +759,7 @@ bool:VolClassEditSetAlphaInitial(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetAlphaDamaged(dataIndex, const String:value[])
+bool VolClassEditSetAlphaDamaged(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -789,7 +780,7 @@ bool:VolClassEditSetAlphaDamaged(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetAlphaDamage(dataIndex, const String:value[])
+bool VolClassEditSetAlphaDamage(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -810,7 +801,7 @@ bool:VolClassEditSetAlphaDamage(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetOverlayPath(dataIndex, const String:value[])
+bool VolClassEditSetOverlayPath(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -831,7 +822,7 @@ bool:VolClassEditSetOverlayPath(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetNvgs(dataIndex, const String:value[])
+bool VolClassEditSetNvgs(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -852,7 +843,7 @@ bool:VolClassEditSetNvgs(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetFov(dataIndex, const String:value[])
+bool VolClassEditSetFov(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -873,7 +864,7 @@ bool:VolClassEditSetFov(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetHasNapalm(dataIndex, const String:value[])
+bool VolClassEditSetHasNapalm(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -894,7 +885,7 @@ bool:VolClassEditSetHasNapalm(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetNapalmTime(dataIndex, const String:value[])
+bool VolClassEditSetNapalmTime(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -915,14 +906,14 @@ bool:VolClassEditSetNapalmTime(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetImmunityMode(dataIndex, const String:value[])
+bool VolClassEditSetImmunityMode(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
         return false;
     }
 
-    new ImmunityMode:mode = ImmunityStringToMode(value);
+    ImmunityMode mode = ImmunityStringToMode(value);
     VolClassEditData[dataIndex].VolClassEdit_ClassData.ClassEdit_ImmunityMode = mode;
     return true;
 }
@@ -937,7 +928,7 @@ bool:VolClassEditSetImmunityMode(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetImmunityAmount(dataIndex, const String:value[])
+bool VolClassEditSetImmunityAmount(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -958,7 +949,7 @@ bool:VolClassEditSetImmunityAmount(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetImmunityCooldown(dataIndex, const String:value[])
+bool VolClassEditSetImmunityCooldown(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -979,7 +970,7 @@ bool:VolClassEditSetImmunityCooldown(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetNoFallDamage(dataIndex, const String:value[])
+bool VolClassEditSetNoFallDamage(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1000,7 +991,7 @@ bool:VolClassEditSetNoFallDamage(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetRegenInterval(dataIndex, const String:value[])
+bool VolClassEditSetRegenInterval(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1021,7 +1012,7 @@ bool:VolClassEditSetRegenInterval(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetRegenAmount(dataIndex, const String:value[])
+bool VolClassEditSetRegenAmount(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1042,7 +1033,7 @@ bool:VolClassEditSetRegenAmount(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetInfectGain(dataIndex, const String:value[])
+bool VolClassEditSetInfectGain(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1063,7 +1054,7 @@ bool:VolClassEditSetInfectGain(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetKillBonus(dataIndex, const String:value[])
+bool VolClassEditSetKillBonus(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1084,7 +1075,7 @@ bool:VolClassEditSetKillBonus(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetSpeed(dataIndex, const String:value[])
+bool VolClassEditSetSpeed(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1105,7 +1096,7 @@ bool:VolClassEditSetSpeed(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetKnockBack(dataIndex, const String:value[])
+bool VolClassEditSetKnockBack(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1126,7 +1117,7 @@ bool:VolClassEditSetKnockBack(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetJumpHeight(dataIndex, const String:value[])
+bool VolClassEditSetJumpHeight(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1147,7 +1138,7 @@ bool:VolClassEditSetJumpHeight(dataIndex, const String:value[])
  *                      function).
  * @return              True if set, false if empty.
  */
-bool:VolClassEditSetJumpDistance(dataIndex, const String:value[])
+bool VolClassEditSetJumpDistance(int dataIndex, const char[] value)
 {
     if (strlen(value) == 0)
     {
@@ -1168,9 +1159,9 @@ bool:VolClassEditSetJumpDistance(dataIndex, const String:value[])
  * @param attributes    Attribute set to apply (ClassEditableAttributes)
  * @return              Number of attributes changed.
  */
-VolClassEditUpdateAttributes(int client, const ClassEditableAttributes attributes)
+int VolClassEditUpdateAttributes(int client, const ClassEditableAttributes attributes)
 {
-    new numChanges;
+    int numChanges;
 
     // Alpha initial.
     if (attributes.ClassEdit_AlphaInitial > -1)
@@ -1203,7 +1194,7 @@ VolClassEditUpdateAttributes(int client, const ClassEditableAttributes attribute
     // Nvgs.
     if (attributes.ClassEdit_Nvgs > -1)
     {
-        ClassPlayerCache[client].Class_Nvgs = bool:attributes.ClassEdit_Nvgs;
+        ClassPlayerCache[client].Class_Nvgs = view_as<bool>(attributes.ClassEdit_Nvgs);
         numChanges++;
     }
 
@@ -1238,7 +1229,7 @@ VolClassEditUpdateAttributes(int client, const ClassEditableAttributes attribute
     // No fall damage.
     if (attributes.ClassEdit_NoFallDamage > -1)
     {
-        ClassPlayerCache[client].Class_NoFallDamage = bool:attributes.ClassEdit_NoFallDamage;
+        ClassPlayerCache[client].Class_NoFallDamage = view_as<bool>(attributes.ClassEdit_NoFallDamage);
         numChanges++;
     }
 
@@ -1311,9 +1302,9 @@ VolClassEditUpdateAttributes(int client, const ClassEditableAttributes attribute
  * @param attributes    Attribute mask (ClassEditableAttributes).
  * @return              Number of attributes changed.
  */
-VolClassEditRestoreAttributes(int client, int classindex, const ClassEditableAttributes attributes)
+int VolClassEditRestoreAttributes(int client, int classindex, const ClassEditableAttributes attributes)
 {
-    new numChanges;
+    int numChanges;
 
     // Alpha initial.
     if (attributes.ClassEdit_AlphaInitial > -1)
@@ -1339,7 +1330,7 @@ VolClassEditRestoreAttributes(int client, int classindex, const ClassEditableAtt
     // Overlay path.
     if (!StrEqual(attributes.ClassEdit_OverlayPath, "nochange"))
     {
-        decl String:path[PLATFORM_MAX_PATH];
+        char path[PLATFORM_MAX_PATH];
         ClassGetOverlayPath(classindex, path, sizeof(path), ZR_CLASS_CACHE_MODIFIED);
         strcopy(ClassPlayerCache[client].Class_OverlayPath, PLATFORM_MAX_PATH, path);
         numChanges++;

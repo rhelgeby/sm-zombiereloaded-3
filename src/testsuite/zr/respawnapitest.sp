@@ -29,7 +29,7 @@
 #include <sourcemod>
 #include <zombiereloaded>
 
-public Plugin:myinfo =
+public Plugin myinfo =
 {
     name = "Zombie:Reloaded Respawn API Test",
     author = "Greyscale | Richard Helgeby",
@@ -38,10 +38,10 @@ public Plugin:myinfo =
     url = "http://code.google.com/p/zombiereloaded/"
 };
 
-new Handle:cvarBlockRespawn;
-new Handle:cvarAllSuicide;
+Handle cvarBlockRespawn;
+Handle cvarAllSuicide;
 
-public OnPluginStart()
+public void OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
@@ -52,10 +52,10 @@ public OnPluginStart()
     cvarAllSuicide = CreateConVar("zrtest_all_suicide", "0", "Treat all deaths as suicide.");
 }
 
-public Action:KilledByWorldCommand(client, argc)
+public Action KilledByWorldCommand(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -73,7 +73,7 @@ public Action:KilledByWorldCommand(client, argc)
     {
         // Set value.
         GetCmdArg(2, valueString, sizeof(valueString));
-        ZR_SetKilledByWorld(target, bool:StringToInt(valueString));
+        ZR_SetKilledByWorld(target, view_as<bool>(StringToInt(valueString)));
     }
     else
     {
@@ -84,10 +84,10 @@ public Action:KilledByWorldCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:RespawnClientCommand(client, argc)
+public Action RespawnClientCommand(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -106,7 +106,7 @@ public Action:RespawnClientCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:ZR_OnClientRespawn(&client, &ZR_RespawnCondition:condition)
+public Action ZR_OnClientRespawn(int &client, ZR_RespawnCondition &condition)
 {
     if (GetConVarBool(cvarBlockRespawn))
     {
@@ -126,7 +126,7 @@ public Action:ZR_OnClientRespawn(&client, &ZR_RespawnCondition:condition)
     return Plugin_Continue;
 }
 
-public ZR_OnClientRespawned(client, ZR_RespawnCondition:condition)
+public void ZR_OnClientRespawned(int client, ZR_RespawnCondition condition)
 {
     PrintToChatAll("Client %d respawned.", client);
 }

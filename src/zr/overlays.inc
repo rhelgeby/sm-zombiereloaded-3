@@ -43,33 +43,33 @@ enum OverlaysChannel
 
 /**
  * Global variable to store a convar query cookie
- */
-new QueryCookie:mat_dxlevel;
+ */ 
+QueryCookie mat_dxlevel;
 
 /**
  * The DirectX level of a client.
  */
-new g_iOverlaysDXL[MAXPLAYERS + 1];
+int g_iOverlaysDXL[MAXPLAYERS + 1];
 
 /**
  * Array to track overlay channel state on each client.
  */
-new bool:g_bOverlayChannel[MAXPLAYERS + 1][OVERLAYS_CHANNEL_MAXSIZE];
+bool g_bOverlayChannel[MAXPLAYERS + 1][OVERLAYS_CHANNEL_MAXSIZE];
 
 /**
  * Array to store overlay path for each channel.
  */
-new String:g_strOverlayPath[MAXPLAYERS + 1][OVERLAYS_CHANNEL_MAXSIZE][PLATFORM_MAX_PATH];
+char g_strOverlayPath[MAXPLAYERS + 1][OVERLAYS_CHANNEL_MAXSIZE][PLATFORM_MAX_PATH];
 
 /**
  * Create variable to store global timer handle.
  */
-new Handle:tOverlays = INVALID_HANDLE;
+Handle tOverlays = INVALID_HANDLE;
 
 /**
  * Map is starting.
  */
-OverlaysOnMapStart()
+void OverlaysOnMapStart()
 {
     // Reset timer handle.
     tOverlays = INVALID_HANDLE;
@@ -80,13 +80,13 @@ OverlaysOnMapStart()
  *
  * @param client    The client index.
  */
-OverlaysClientInit(client)
+void OverlaysClientInit(int client)
 {
     // x = channel index.
-    for (new x = 0; x < OVERLAYS_CHANNEL_MAX; x++)
+    for (int x = 0; x < OVERLAYS_CHANNEL_MAX; x++)
     {
         // Disable all channels, and reset.
-        OverlaysClientSetChannelState(client, OverlaysChannel:x, false, false, false, true);
+        OverlaysClientSetChannelState(client, view_as<OverlaysChannel>(x), false, false, false, true);
     }
 
     // Get client's DX level.
@@ -98,7 +98,7 @@ OverlaysClientInit(client)
  *
  * @param client    The client index.
  */
-OverlaysGetClientDXLevel(client)
+void OverlaysGetClientDXLevel(int client)
 {
     // If client is fake (or bot), then stop.
     if (IsFakeClient(client))
@@ -118,8 +118,8 @@ OverlaysGetClientDXLevel(client)
  * @param result    The result of the query (see console.inc enum ConVarQueryResult)
  * @param cvarName  Name of the cvar.
  * @param cvarValue Value of the cvar.
- */
-public OverlaysQueryClientDXLevel(QueryCookie:cookie, client, ConVarQueryResult:result, const String:cvarName[], const String:cvarValue[])
+ */	   
+public void OverlaysQueryClientDXLevel(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {
     // If query cookie does not match cookie given by mat_dxlevel query, then stop, this isn't our query.
     if (cookie != mat_dxlevel)
@@ -143,7 +143,7 @@ public OverlaysQueryClientDXLevel(QueryCookie:cookie, client, ConVarQueryResult:
 /**
  * The round is starting.
  */
-OverlaysOnRoundStart()
+void OverlaysOnRoundStart()
 {
     // If timer is running, kill it.
     if (tOverlays != INVALID_HANDLE)
@@ -153,7 +153,7 @@ OverlaysOnRoundStart()
     }
 
     // If antistick is disabled, then stop.
-    new Float:overlaysupdate = GetConVarFloat(g_hCvarsList.CVAR_OVERLAYS_UPDATE_TIME);
+    float overlaysupdate = GetConVarFloat(g_hCvarsList.CVAR_OVERLAYS_UPDATE_TIME);
     if (overlaysupdate <= 0.0)
     {
         return;
@@ -169,7 +169,7 @@ OverlaysOnRoundStart()
  * @param client        The client index.
  * @param channel       (Optional) The channel overlay to update.
  */
-OverlaysClientUpdateOverlay(client, OverlaysChannel:channel = OVERLAYS_CHANNEL_NONE)
+void OverlaysClientUpdateOverlay(int client, OverlaysChannel channel = OVERLAYS_CHANNEL_NONE)
 {
     // Find highest priority, enabled, overlay channel of client.
     if (channel == OVERLAYS_CHANNEL_NONE)
@@ -200,7 +200,7 @@ OverlaysClientUpdateOverlay(client, OverlaysChannel:channel = OVERLAYS_CHANNEL_N
     }
 
     // If client doesn't meet DXLevel requirement, then tell client and stop.
-    new minDxLevel = GetConVarInt(g_hCvarsList.CVAR_OVERLAYS_MIN_DXLEVEL);
+    int minDxLevel = GetConVarInt(g_hCvarsList.CVAR_OVERLAYS_MIN_DXLEVEL);
     if (g_iOverlaysDXL[client] < minDxLevel)
     {
         TranslationPrintCenterText(client, "Overlays not supported", g_iOverlaysDXL[client], minDxLevel);
@@ -211,13 +211,13 @@ OverlaysClientUpdateOverlay(client, OverlaysChannel:channel = OVERLAYS_CHANNEL_N
     ClientCommand(client, "r_screenoverlay \"%s\"", g_strOverlayPath[client][channel]);
 }
 
-OverlaysChannel:OverlaysClientFindChannel(client)
+OverlaysChannel OverlaysClientFindChannel(int client)
 {
     // x = channel index.
-    for (new x = 0; x < OVERLAYS_CHANNEL_MAX; x++)
+    for (int x = 0; x < OVERLAYS_CHANNEL_MAX; x++)
     {
         // Convert to OverlaysChannel datatype.
-        new OverlaysChannel:channel = OverlaysChannel:x;
+        OverlaysChannel channel = view_as<OverlaysChannel>(x);
 
         if (OverlaysClientGetChannelState(client, channel))
         {
@@ -235,7 +235,7 @@ OverlaysChannel:OverlaysClientFindChannel(client)
  * @param client    The client index.
  * @param channel   The channel to get state of.
  */
-bool:OverlaysClientGetChannelState(client, OverlaysChannel:channel)
+bool OverlaysClientGetChannelState(int client, OverlaysChannel channel)
 {
     // Return current value.
     return g_bOverlayChannel[client][channel];
@@ -252,7 +252,7 @@ bool:OverlaysClientGetChannelState(client, OverlaysChannel:channel)
  * @param reset     (Optional) Resets the channel path.
  * @return          The overlay's new state.
  */
-bool:OverlaysClientSetChannelState(client, OverlaysChannel:channel, bool:update = false, bool:toggle = true, bool:value = false, bool:reset = false)
+bool OverlaysClientSetChannelState(int client, OverlaysChannel channel, bool update = false, bool toggle = true, bool value = false, bool reset = false)
 {
     // Toggle or set new state to channel of a client.
     g_bOverlayChannel[client][channel] = toggle ? !g_bOverlayChannel[client][channel] : value;
@@ -279,7 +279,7 @@ bool:OverlaysClientSetChannelState(client, OverlaysChannel:channel, bool:update 
  * @param channel   The channel to set path on.
  * @param path      Path to overlay.
  */
-OverlaysClientSetChannelPath(client, OverlaysChannel:channel, const String:path[])
+void OverlaysClientSetChannelPath(int client, OverlaysChannel channel, const char[] path)
 {
     // Copy path to the overlay channel's path string.
     strcopy(g_strOverlayPath[client][channel], PLATFORM_MAX_PATH, path);
@@ -290,10 +290,10 @@ OverlaysClientSetChannelPath(client, OverlaysChannel:channel, const String:path[
  *
  * @param timer     The timer handle.
  */
-public Action:OverlaysTimer(Handle:timer)
+public Action OverlaysTimer(Handle timer)
 {
     // x = client index
-    for (new x = 1; x <= MaxClients; x++)
+    for (int x = 1; x <= MaxClients; x++)
     {
         // If client isn't in game, then stop.
         if (!IsClientInGame(x))
@@ -310,4 +310,5 @@ public Action:OverlaysTimer(Handle:timer)
         // Update client's overlay.
         OverlaysClientUpdateOverlay(x);
     }
+    return Plugin_Continue;
 }

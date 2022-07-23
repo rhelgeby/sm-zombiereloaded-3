@@ -39,17 +39,17 @@ enum RespawnCondition
 /**
  * Array for storing respawn timer handles per client.
  */
-new Handle:tRespawn[MAXPLAYERS + 1];
+Handle tRespawn[MAXPLAYERS + 1];
 
 /**
  * Array for flagging zombies who were killed by world.
- */
-new bool:bKilledByWorld[MAXPLAYERS + 1];
+ */ 
+bool bKilledByWorld[MAXPLAYERS + 1];
 
 /**
  * Client is joining the server.
- */
-RespawnClientInit(client)
+ */ 
+void RespawnClientInit(int client)
 {
     // Reset timer handle.
     tRespawn[client] = INVALID_HANDLE;
@@ -63,7 +63,7 @@ RespawnClientInit(client)
  *
  * @param client    The client index.
  */
-RespawnOnClientSpawn(client)
+void RespawnOnClientSpawn(int client)
 {
     // If timer is running, kill it.
     if (tRespawn[client] != INVALID_HANDLE)
@@ -84,7 +84,7 @@ RespawnOnClientSpawn(client)
  *
  * @param client    The client index.
  */
-RespawnOnClientDeath(client, attacker, const String:weapon[])
+void RespawnOnClientDeath(int client, int attacker, const char[] weapon)
 {
     // If client is a zombie, check if they were killed by world.
     if (InfectIsClientInfected(client))
@@ -107,24 +107,24 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
     }
 
     // If respawn is disabled, stop here.
-    new bool:respawn = GetConVarBool(g_hCvarsList.CVAR_RESPAWN);
+    bool respawn = GetConVarBool(g_hCvarsList.CVAR_RESPAWN);
     if (!respawn)
     {
         return;
     }
 
     // Start respawn timer.
-    new Float:delay = GetConVarFloat(g_hCvarsList.CVAR_RESPAWN_DELAY);
+    float delay = GetConVarFloat(g_hCvarsList.CVAR_RESPAWN_DELAY);
     tRespawn[client] = CreateTimer(delay, RespawnTimer, client, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 /**
  * The round is ending.
  */
-RespawnOnRoundEnd()
+void RespawnOnRoundEnd()
 {
     // x = client index.
-    for (new x = 1; x <= MaxClients; x++)
+    for (int x = 1; x <= MaxClients; x++)
     {
         // If client isn't in-game, then stop.
         if (!IsClientInGame(x))
@@ -155,7 +155,7 @@ RespawnOnRoundEnd()
  *
  * @return      True if the player was spawned, false otherwise.
  */
-bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = false)
+bool RespawnSpawnClient(int client, bool zombie = false, bool zombieIfSuicide = false)
 {
     // If client isn't in-game, then stop.
     if (!IsClientInGame(client))
@@ -164,10 +164,10 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
     }
 
     // Get respawn condition.
-    new RespawnCondition:condition = RespawnToCondition(zombie, zombieIfSuicide);
+    RespawnCondition condition = RespawnToCondition(zombie, zombieIfSuicide);
 
     // Trigger API forward.
-    new Action:result = APIOnClientRespawn(client, condition);
+    Action result = APIOnClientRespawn(client, condition);
 
     // Check if respawn should be stopped.
     if (result == Plugin_Handled)
@@ -178,7 +178,7 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
     // Restore respawn condition.
     RespawnRestoreCondition(condition, zombie, zombieIfSuicide);
 
-    new bool:ragdollremove = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_RAGDOLL_REMOVE);
+    bool ragdollremove = GetConVarBool(g_hCvarsList.CVAR_VEFFECTS_RAGDOLL_REMOVE);
     if (!ragdollremove)
     {
         // Detatch ragdoll so it's not removed on respawn.
@@ -216,7 +216,7 @@ bool:RespawnSpawnClient(client, bool:zombie = false, bool:zombieIfSuicide = fals
  * @param timer     The timer handle.
  * @param client    The client index.
  */
-public Action:RespawnTimer(Handle:timer, any:client)
+public Action RespawnTimer(Handle timer, any client)
 {
     // Reset timer handle.
     tRespawn[client] = INVALID_HANDLE;
@@ -224,38 +224,39 @@ public Action:RespawnTimer(Handle:timer, any:client)
     // If client isn't in-game, then stop.
     if (!IsClientInGame(client))
     {
-        return;
+        return Plugin_Continue;
     }
 
     // If player already is alive, then stop.
     if (IsPlayerAlive(client))
     {
-        return;
+        return Plugin_Continue;
     }
 
     // Get client team.
-    new team = GetClientTeam(client);
+    int team = GetClientTeam(client);
 
     // If player isn't on a team, then stop.
     if (team != CS_TEAM_T && team != CS_TEAM_CT)
     {
-        return;
+        return Plugin_Continue;
     }
 
     // Get whether player should respawn as zombie.
-    new bool:zombie = GetConVarBool(g_hCvarsList.CVAR_RESPAWN_TEAM_ZOMBIE);
+    bool zombie = GetConVarBool(g_hCvarsList.CVAR_RESPAWN_TEAM_ZOMBIE);
 
     // Get whether zombies died by suicide should respawn as zombies.
-    new bool:zombieIfSuicide = GetConVarBool(g_hCvarsList.CVAR_RESPAWN_TEAM_ZOMBIE_WORLD);
+    bool zombieIfSuicide = GetConVarBool(g_hCvarsList.CVAR_RESPAWN_TEAM_ZOMBIE_WORLD);
 
     // Spawn player.
     RespawnSpawnClient(client, zombie, zombieIfSuicide);
+    return Plugin_Continue;
 }
 
 /**
  * Converts separate conditions into a single condition value.
  */
-RespawnCondition:RespawnToCondition(bool:zombie, bool:zombieIfSuicide)
+RespawnCondition RespawnToCondition(bool zombie, bool zombieIfSuicide)
 {
     if (zombie)
     {
@@ -277,7 +278,7 @@ RespawnCondition:RespawnToCondition(bool:zombie, bool:zombieIfSuicide)
  * @param zombie            Output.
  * @param zombieIfSucidie   Output.
  */
-RespawnRestoreCondition(RespawnCondition:condition, &bool:zombie, &bool:zombieIfSuicide)
+void RespawnRestoreCondition(RespawnCondition condition, bool &zombie, bool &zombieIfSuicide)
 {
     switch (condition)
     {

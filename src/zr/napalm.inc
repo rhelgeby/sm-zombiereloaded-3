@@ -44,12 +44,12 @@
 /**
  * Variable to store water-level offset value.
  */
-new g_iToolsWaterLevel;
+int g_iToolsWaterLevel;
 
 /**
  * Find napalm-specific offsets here.
  */
-NapalmOnOffsetsFound()
+void NapalmOnOffsetsFound()
 {
     // If offset "m_bInBuyZone" can't be found, then stop the plugin.
     g_iToolsWaterLevel = FindSendPropInfo("CBasePlayer", "m_nWaterLevel");
@@ -69,14 +69,14 @@ NapalmOnOffsetsFound()
  *                      Plugin_Continue to allow damage to client.
  *                      Return -1 to not return anything and let the damage module continue as usual.
  */
-NapalmOnTakeDamage(client, damagetype)
+int NapalmOnTakeDamage(int client, int damagetype)
 {
     // Client was damaged by fire.
     // TODO: Is damage type different in CS:S and CS:GO (it was checking only DMG_DIRECT for some reason). Checking both.
     if (damagetype & DMG_BURN || damagetype & DMG_DIRECT)
     {
         // Only take action if it isn't disabled, or the option is valid.
-        new douse = GetConVarInt(g_hCvarsList.CVAR_NAPALM_DOUSE);
+        int douse = GetConVarInt(g_hCvarsList.CVAR_NAPALM_DOUSE);
 
         if (douse > NAPALM_WLEVEL_DRY && douse <= NAPALM_WLEVEL_FULL)
         {
@@ -86,7 +86,7 @@ NapalmOnTakeDamage(client, damagetype)
                 // Put the fire out.
                 NapalmExtinguishEntity(client);
 
-                return _:Plugin_Continue;
+                return view_as<int>(Plugin_Continue);
             }
         }
     }
@@ -102,7 +102,7 @@ NapalmOnTakeDamage(client, damagetype)
  * @param attacker  The attacker index.
  * @param weapon    The weapon name.
  */
-NapalmOnClientHurt(client, attacker, const String:weapon[], dmg_health)
+void NapalmOnClientHurt(int client, int attacker, const char[] weapon, int dmg_health)
 {
     // If there's no attacker, then stop.
     if (!attacker)
@@ -117,7 +117,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[], dmg_health)
     }
 
     // If napalm time is invalid or 0, then stop.
-    new Float:napalm_time = ClassGetNapalmTime(client);
+    float napalm_time = ClassGetNapalmTime(client);
     if (napalm_time <= 0.0)
     {
         return;
@@ -132,12 +132,12 @@ NapalmOnClientHurt(client, attacker, const String:weapon[], dmg_health)
     // If weapon is a grenade, then ignite player.
     if (StrEqual(weapon, "hegrenade", false) || StrEqual(weapon, "inferno", false))
     {
-        new bool:reset = GetConVarBool(g_hCvarsList.CVAR_NAPALM_TIME_RESET);
-        new flags = GetEntityFlags(client);
+        bool reset = GetConVarBool(g_hCvarsList.CVAR_NAPALM_TIME_RESET);
+        int flags = GetEntityFlags(client);
 
         if (reset || !(flags & FL_ONFIRE))
         {
-            new Float:timescale = GetConVarFloat(g_hCvarsList.CVAR_NAPALM_TIME_SCALE);
+            float timescale = GetConVarFloat(g_hCvarsList.CVAR_NAPALM_TIME_SCALE);
             if (timescale > 0.0)
             {
                 // Figure out our scale value.
@@ -166,7 +166,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[], dmg_health)
  *
  * @param client    The client index.
  */
-NapalmOnClientDeath(client)
+void NapalmOnClientDeath(int client)
 {
     // Extinguish any flames to stop burning sounds.
     NapalmExtinguishEntity(client);
@@ -178,7 +178,7 @@ NapalmOnClientDeath(client)
  * @param entity      Entity index
  * @param classname   Class name
  */
-NapalmOnEntitySpawned(entity, const String:classname[])
+void NapalmOnEntitySpawned(int entity, const char[] classname)
 {
     // Not a grenade.
     if (strcmp(classname, "hegrenade_projectile", false))
@@ -187,14 +187,14 @@ NapalmOnEntitySpawned(entity, const String:classname[])
     }
 
     // If grenade fire is disabled, then stop.
-    new bool:napalmignite = GetConVarBool(g_hCvarsList.CVAR_NAPALM_IGNITE);
+    bool napalmignite = GetConVarBool(g_hCvarsList.CVAR_NAPALM_IGNITE);
     if (!napalmignite)
     {
         return;
     }
 
     // Get client who threw this grenade.
-    new client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+    int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 
     // Invalid client.
     if (client > MaxClients || client <= 0)
@@ -218,7 +218,7 @@ NapalmOnEntitySpawned(entity, const String:classname[])
  * @param client    The client index.
  * @return          A NAPALM_WLEVEL_ define.
  */
-stock NapalmGetClientWaterLevel(client)
+stock int NapalmGetClientWaterLevel(int client)
 {
     // Return client's water-level.
     return GetEntData(client, g_iToolsWaterLevel);
@@ -229,16 +229,16 @@ stock NapalmGetClientWaterLevel(client)
  *
  * @param client    The client index.
  */
-stock NapalmExtinguishEntity(client)
+stock void NapalmExtinguishEntity(int client)
 {
     //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
 
     // This works.
-    new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+    int fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
     if (IsValidEntity(fire))
     {
         // Make sure the entity is a flame, so we can extinguish it.
-        decl String:classname[64];
+        char classname[64];
         GetEdictClassname(fire, classname, sizeof(classname));
         if (StrEqual(classname, "entityflame", false))
         {
@@ -258,20 +258,20 @@ stock NapalmExtinguishEntity(client)
  * @param client    The client index.
  * @param time      Number of seconds to set on fire.
  */
-stock NapalmIgniteEntity(client, Float:time)
+stock void NapalmIgniteEntity(int client, float time)
 {
-    new Action:result = APIOnClientIgnite(client, time);
+    Action result = APIOnClientIgnite(client, time);
     // Check if infection should be blocked.
     if (result == Plugin_Handled)
     {
         return;
     }
 
-    new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+    int fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
     if (IsValidEntity(fire))
     {
         // Make sure the entity is a flame.
-        decl String:classname[64];
+        char classname[64];
         GetEdictClassname(fire, classname, sizeof(classname));
         if (StrEqual(classname, "entityflame", false))
         {

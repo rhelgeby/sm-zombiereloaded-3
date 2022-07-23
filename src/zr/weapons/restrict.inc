@@ -41,12 +41,12 @@ enum RestrictData
 /**
  * Array to block any client from picking up weapons.
  */
-new bool:g_bRestrictBlockWeapon[MAXPLAYERS + 1];
+bool g_bRestrictBlockWeapon[MAXPLAYERS + 1];
 
 /**
  * Array to store a list of different weapon groups
  */
-new Handle:arrayWeaponTypes = INVALID_HANDLE;
+Handle arrayWeaponTypes = INVALID_HANDLE;
 
 /**
  * Query results returned when (un)restricting a weapon.
@@ -62,7 +62,7 @@ enum RestrictQuery
 /**
  * Initialize data and hook commands.
  */
-RestrictInit()
+void RestrictInit()
 {
     // Hook buy command.
     RegConsoleCmd("buy", RestrictBuyCommand);
@@ -73,7 +73,7 @@ RestrictInit()
 /**
  * Auto-create a list of types loaded by weapons module.
  */
-RestrictLoad()
+void RestrictLoad()
 {
     // If array exists, then destroy it.
     if (arrayWeaponTypes != INVALID_HANDLE)
@@ -84,17 +84,17 @@ RestrictLoad()
     // Initialize array.
     arrayWeaponTypes = CreateArray(WEAPONS_MAX_LENGTH);
 
-    decl String:weapontype[WEAPONS_MAX_LENGTH];
-    new String:weapontypes[WEAPONS_RESTRICT_MAX_TYPES][WEAPONS_MAX_LENGTH];
+    char weapontype[WEAPONS_MAX_LENGTH];
+    char weapontypes[WEAPONS_RESTRICT_MAX_TYPES][WEAPONS_MAX_LENGTH];
 
     // x = Array index.
-    new size = GetArraySize(arrayWeapons);
-    for (new x = 0; x < size; x++)
+    int size = GetArraySize(arrayWeapons);
+    for (int x = 0; x < size; x++)
     {
         WeaponsGetType(x, weapontype, sizeof(weapontype));
 
         ExplodeString(weapontype, ",", weapontypes, sizeof(weapontypes), sizeof(weapontypes[]));
-        for (new y = 0; y < WEAPONS_RESTRICT_MAX_TYPES; y++)
+        for (int y = 0; y < WEAPONS_RESTRICT_MAX_TYPES; y++)
         {
             // Cut off whitespace.
             TrimString(weapontypes[y]);
@@ -118,7 +118,7 @@ RestrictLoad()
 /**
  * Hook commands related to restrict here.
  */
-RestrictOnCommandsCreate()
+void RestrictOnCommandsCreate()
 {
     // Create weapon admin commands.
     RegConsoleCmd("zr_restrict", RestrictCommand, "Restricts a weapon or a weapon type. Usage: zr_restrict <weapon|weapon type> [weapon2|weapontype2] ...");
@@ -130,7 +130,7 @@ RestrictOnCommandsCreate()
  *
  * @param client    The client index.
  */
-RestrictClientInit(client)
+void RestrictClientInit(int client)
 {
     SDKHook(client, SDKHook_WeaponCanUse, RestrictCanUse);
     g_bRestrictBlockWeapon[client] = false;
@@ -141,7 +141,7 @@ RestrictClientInit(client)
  *
  * @param client    The client index.
  */
-RestrictOnClientDisconnect(client)
+void RestrictOnClientDisconnect(int client)
 {
     SDKUnhook(client, SDKHook_WeaponCanUse, RestrictCanUse);
 }
@@ -151,7 +151,7 @@ RestrictOnClientDisconnect(client)
  *
  * @param client    The client index.
  */
-RestrictOnClientSpawn(client)
+void RestrictOnClientSpawn(int client)
 {
     // Re-hook "canuse" on client.
     SDKUnhook(client, SDKHook_WeaponCanUse, RestrictCanUse);
@@ -188,16 +188,16 @@ RestrictOnClientSpawn(client)
 /**
  * The round is ending.
  */
-RestrictOnRoundEnd()
+void RestrictOnRoundEnd()
 {
-    new bool:restrictzombieequip = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT_ENDEQUIP);
+    bool restrictzombieequip = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT_ENDEQUIP);
     if (!restrictzombieequip)
     {
         return;
     }
 
     // x = Client index.
-    for (new x = 1; x <= MaxClients; x++)
+    for (int x = 1; x <= MaxClients; x++)
     {
         // If client isn't in-game, then stop.
         if (!IsClientInGame(x))
@@ -223,7 +223,7 @@ RestrictOnRoundEnd()
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action:RestrictBuyCommand(client, argc)
+public Action RestrictBuyCommand(int client, int argc)
 {
     // If client isn't valid, then stop.
     if (!ZRIsClientValid(client) || !IsClientInGame(client))
@@ -246,12 +246,12 @@ public Action:RestrictBuyCommand(client, argc)
         return Plugin_Handled;
     }
 
-    decl String:weapon[WEAPONS_MAX_LENGTH];
+    char weapon[WEAPONS_MAX_LENGTH];
     GetCmdArg(1, weapon, sizeof(weapon));
 
     // If the weapon is restricted, then prevent pickup.
-    decl String:weaponname[WEAPONS_MAX_LENGTH];
-    new weaponindex = WeaponsEntityToDisplay(weapon, weaponname, sizeof(weaponname), true);
+    char weaponname[WEAPONS_MAX_LENGTH];
+    int weaponindex = WeaponsEntityToDisplay(weapon, weaponname, sizeof(weaponname), true);
 
     // If weapon isn't configged, then allow pickup.
     if (weaponindex == -1)
@@ -283,20 +283,20 @@ public Action:RestrictBuyCommand(client, argc)
  * @param maxlen        The maximum length of param 'returntarget.'
  * @return              Query result. (See enum RestrictQuery)
  */
-RestrictQuery:RestrictWeapon(bool:restrict, const String:target[], &bool:single = true, String:returntarget[], maxlen)
+RestrictQuery RestrictWeapon(bool restrict, const char[] target, bool &single = true, char[] returntarget, int maxlen)
 {
     // Copy 'target' to 'returntarget' to be possibly changed later.
     strcopy(returntarget, maxlen, target);
 
     // Find index of the given weapon type.
-    new typeindex = RestrictTypeToIndex(returntarget);
+    int typeindex = RestrictTypeToIndex(returntarget);
 
     // Single weapon.
     if (typeindex == -1)
     {
         single = true;
 
-        new weaponindex = WeaponsNameToIndex(returntarget);
+        int weaponindex = WeaponsNameToIndex(returntarget);
 
         // If weapon index is invalid, then return invalid.
         if (weaponindex == -1)
@@ -331,8 +331,8 @@ RestrictQuery:RestrictWeapon(bool:restrict, const String:target[], &bool:single 
         single = false;
 
         // Get all weapons in the given type.
-        new Handle:arrayTypeWeapons;
-        new count = RestrictGetTypeWeapons(typeindex, arrayTypeWeapons);
+        Handle arrayTypeWeapons;
+        int count = RestrictGetTypeWeapons(typeindex, arrayTypeWeapons);
 
         // Return proper weapon name.
         RestrictWeaponTypeGetName(typeindex, returntarget, maxlen);
@@ -343,10 +343,10 @@ RestrictQuery:RestrictWeapon(bool:restrict, const String:target[], &bool:single 
             return Query_Stopped;
         }
 
-        for (new x = 0; x < count; x++)
+        for (int x = 0; x < count; x++)
         {
             // Get weapon index.
-            new weaponindex = GetArrayCell(arrayTypeWeapons, x);
+            int weaponindex = GetArrayCell(arrayTypeWeapons, x);
 
             // If weapon is untoggleable, then stop.
             if (!WeaponsGetToggleable(weaponindex))
@@ -371,7 +371,7 @@ RestrictQuery:RestrictWeapon(bool:restrict, const String:target[], &bool:single 
  * @param restrict  True if the query was to restrict/unrestrict a weapon.
  * @param target    The target to be restricted/unrestricted.
  */
-RestrictPrintQueryResponse(client, RestrictQuery:query, bool:single, bool:restrict, const String:target[])
+void RestrictPrintQueryResponse(int client, RestrictQuery query, bool single, bool restrict, const char[] target)
 {
     switch(query)
     {
@@ -440,13 +440,13 @@ RestrictPrintQueryResponse(client, RestrictQuery:query, bool:single, bool:restri
     }
 }
 
-stock RestrictTypeToIndex(const String:type[])
+stock int RestrictTypeToIndex(const char[] type)
 {
-    decl String:typename[WEAPONS_MAX_LENGTH];
+    char typename[WEAPONS_MAX_LENGTH];
 
     // x = Array index.
-    new size = GetArraySize(arrayWeaponTypes);
-    for (new x = 0; x < size; x++)
+    int size = GetArraySize(arrayWeaponTypes);
+    for (int x = 0; x < size; x++)
     {
         RestrictWeaponTypeGetName(x, typename, sizeof(typename));
 
@@ -467,7 +467,7 @@ stock RestrictTypeToIndex(const String:type[])
  * @param weapon    The string to return name in.
  * @param maxlen    The max length of the string.
  */
-stock RestrictWeaponTypeGetName(index, String:weapontype[], maxlen)
+stock void RestrictWeaponTypeGetName(int index, char[] weapontype, int maxlen)
 {
     // Get weapon type name at given index.
     GetArrayString(arrayWeaponTypes, index, weapontype, maxlen);
@@ -480,27 +480,27 @@ stock RestrictWeaponTypeGetName(index, String:weapontype[], maxlen)
  * @param arrayTypeWeapons  A handle to store array containing matching weapons.
  *                          Don't forget to close this!
  */
-stock RestrictGetTypeWeapons(index, &Handle:arrayTypeWeapons)
+stock int RestrictGetTypeWeapons(int index, Handle &arrayTypeWeapons)
 {
     // Create array to hold weapons of the given type.
     arrayTypeWeapons = CreateArray();
 
     // Get name of the weapon type at given index.
-    decl String:typename[WEAPONS_MAX_LENGTH];
+    char typename[WEAPONS_MAX_LENGTH];
     RestrictWeaponTypeGetName(index, typename, sizeof(typename));
 
-    new count;
-    decl String:weapontype[WEAPONS_MAX_LENGTH];
-    new String:weapontypes[WEAPONS_RESTRICT_MAX_TYPES][WEAPONS_MAX_LENGTH];
+    int count;
+    char weapontype[WEAPONS_MAX_LENGTH];
+    char weapontypes[WEAPONS_RESTRICT_MAX_TYPES][WEAPONS_MAX_LENGTH];
 
     // x = Array index.
-    new size = GetArraySize(arrayWeapons);
-    for (new x = 0; x < size; x++)
+    int size = GetArraySize(arrayWeapons);
+    for (int x = 0; x < size; x++)
     {
         WeaponsGetType(x, weapontype, sizeof(weapontype));
 
         ExplodeString(weapontype, ",", weapontypes, sizeof(weapontypes), sizeof(weapontypes[]));
-        for (new y = 0; y < WEAPONS_RESTRICT_MAX_TYPES; y++)
+        for (int y = 0; y < WEAPONS_RESTRICT_MAX_TYPES; y++)
         {
             // Cut off whitespace.
             TrimString(weapontypes[y]);
@@ -531,14 +531,14 @@ stock RestrictGetTypeWeapons(index, &Handle:arrayTypeWeapons)
  * @param toggle    If true, the value is toggled, otherwise 'restrict' param is used.
  * @param restrict  (Only if 'toggle' is 'false') Restricted status of the weapon.
  */
-stock RestrictSetWeaponRestricted(index, bool:toggle, bool:restrict = false)
+stock void RestrictSetWeaponRestricted(int index, bool toggle, bool restrict = false)
 {
     // Get array handle of weapon at given index.
-    new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
+    Handle arrayWeapon = GetArrayCell(arrayWeapons, index);
 
     // Set restricted status.
-    new bool:value = toggle ? !RestrictIsWeaponRestricted(index) : restrict;
-    SetArrayCell(arrayWeapon, _:WEAPONS_DATA_RESTRICTED, value);
+    bool value = toggle ? !RestrictIsWeaponRestricted(index) : restrict;
+    SetArrayCell(arrayWeapon, view_as<int>(WEAPONS_DATA_RESTRICTED), value);
 }
 
 /**
@@ -547,13 +547,13 @@ stock RestrictSetWeaponRestricted(index, bool:toggle, bool:restrict = false)
  * @param index     The weapon index.
  * @return          True if weapon is restricted, false if not.
  */
-stock bool:RestrictIsWeaponRestricted(index)
+stock bool RestrictIsWeaponRestricted(int index)
 {
     // Get array handle of weapon at given index.
-    new Handle:arrayWeapon = GetArrayCell(arrayWeapons, index);
+    Handle arrayWeapon = GetArrayCell(arrayWeapons, index);
 
     // Return restricted status.
-    return bool:GetArrayCell(arrayWeapon, _:WEAPONS_DATA_RESTRICTED);
+    return view_as<bool>(GetArrayCell(arrayWeapon, view_as<int>(WEAPONS_DATA_RESTRICTED)));
 }
 
 /**
@@ -563,16 +563,16 @@ stock bool:RestrictIsWeaponRestricted(index)
  * @param index         The weapon type index.
  * @return              True if all weapons of the given type are restricted or not, false if not.
  */
-stock bool:RestrictIsTypeUniform(bool:restricted, index)
+stock bool RestrictIsTypeUniform(bool restricted, int index)
 {
-    new Handle:arrayTypeWeapons;
-    new count = RestrictGetTypeWeapons(index, arrayTypeWeapons);
+    Handle arrayTypeWeapons;
+    int count = RestrictGetTypeWeapons(index, arrayTypeWeapons);
 
     // x = array index
-    for (new x = 0; x < count; x++)
+    for (int x = 0; x < count; x++)
     {
         // Get weapon index to check restricted status of.
-        new weaponindex = GetArrayCell(arrayTypeWeapons, x);
+        int weaponindex = GetArrayCell(arrayTypeWeapons, x);
 
         // If weapon is toggleable and it's not uniform with the given status, then return false.
         if (WeaponsGetToggleable(weaponindex) && RestrictIsWeaponRestricted(weaponindex) != restricted)
@@ -592,12 +592,12 @@ stock bool:RestrictIsTypeUniform(bool:restricted, index)
  * @return          Return Plugin_Handled to stop weapon pickup.
  *                  Plugin_Continue to allow weapon pickup.
  */
-public Action:RestrictCanUse(client, weapon)
+public Action RestrictCanUse(int client, int weapon)
 {
     // WARNING: This function is called _frequently_. Every game tick per
     //          player, I think. Make sure any code here is optimized.
 
-    decl String:weaponentity[WEAPONS_MAX_LENGTH];
+    char weaponentity[WEAPONS_MAX_LENGTH];
     GetEdictClassname(weapon, weaponentity, sizeof(weaponentity));
 
     // If weapon is a knife, then allow pickup.
@@ -619,22 +619,22 @@ public Action:RestrictCanUse(client, weapon)
     }
 
     // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
+    bool weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         return Plugin_Continue;
     }
 
     // If restrict module is disabled, then stop.
-    new bool:restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
+    bool restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
     if (!restrict)
     {
         return Plugin_Continue;
     }
 
     // If the weapon is restricted, then prevent pickup.
-    decl String:weaponname[WEAPONS_MAX_LENGTH];
-    new weaponindex = WeaponsEntityToDisplay(weaponentity, weaponname, sizeof(weaponname));
+    char weaponname[WEAPONS_MAX_LENGTH];
+    int weaponindex = WeaponsEntityToDisplay(weaponentity, weaponname, sizeof(weaponname));
 
     // If weapon isn't configged, then allow pickup.
     if (weaponindex == -1)
@@ -667,7 +667,7 @@ public Action:RestrictCanUse(client, weapon)
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action:RestrictCommand(client, argc)
+public Action RestrictCommand(int client, int argc)
 {
     // Check if privileged.
     if (!ZRIsClientPrivileged(client, OperationType_Generic))
@@ -677,7 +677,7 @@ public Action:RestrictCommand(client, argc)
     }
 
     // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
+    bool weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         // Tell client command is disabled.
@@ -686,7 +686,7 @@ public Action:RestrictCommand(client, argc)
     }
 
     // If restrict module is disabled, then stop.
-    new bool:restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
+    bool restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
     if (!restrict)
     {
         // Tell client command is disabled.
@@ -701,18 +701,18 @@ public Action:RestrictCommand(client, argc)
         return Plugin_Handled;
     }
 
-    decl String:target[WEAPONS_MAX_LENGTH];
+    char target[WEAPONS_MAX_LENGTH];
 
-    new args = GetCmdArgs();
-    for (new x = 1; x <= args; x++)
+    int args = GetCmdArgs();
+    for (int x = 1; x <= args; x++)
     {
         // Get target to restrict.
         GetCmdArg(x, target, sizeof(target));
 
         // Query restrict on this target, and get a result back.
-        new bool:single;
-        decl String:returntarget[WEAPONS_MAX_LENGTH];
-        new RestrictQuery:query = RestrictWeapon(true, target, single, returntarget, sizeof(returntarget));
+        bool single;
+        char returntarget[WEAPONS_MAX_LENGTH];
+        RestrictQuery query = RestrictWeapon(true, target, single, returntarget, sizeof(returntarget));
 
         // Print response to client(s).
         RestrictPrintQueryResponse(client, query, single, true, returntarget);
@@ -728,7 +728,7 @@ public Action:RestrictCommand(client, argc)
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action:UnrestrictCommand(client, argc)
+public Action UnrestrictCommand(int client, int argc)
 {
     // Check if privileged.
     if (!ZRIsClientPrivileged(client, OperationType_Generic))
@@ -738,7 +738,7 @@ public Action:UnrestrictCommand(client, argc)
     }
 
     // If weapons module is disabled, then stop.
-    new bool:weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
+    bool weapons = GetConVarBool(g_hCvarsList.CVAR_WEAPONS);
     if (!weapons)
     {
         // Tell client command is disabled.
@@ -747,7 +747,7 @@ public Action:UnrestrictCommand(client, argc)
     }
 
     // If restrict module is disabled, then stop.
-    new bool:restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
+    bool restrict = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_RESTRICT);
     if (!restrict)
     {
         // Tell client command is disabled.
@@ -763,18 +763,18 @@ public Action:UnrestrictCommand(client, argc)
     }
 
     // arg1 = weapon being restricted
-    decl String:target[WEAPONS_MAX_LENGTH];
+    char target[WEAPONS_MAX_LENGTH];
 
-    new args = GetCmdArgs();
-    for (new x = 1; x <= args; x++)
+    int args = GetCmdArgs();
+    for (int x = 1; x <= args; x++)
     {
         // Get target to restrict.
         GetCmdArg(x, target, sizeof(target));
 
         // Query unrestrict on this target, and get a result back.
-        new bool:single;
-        decl String:returntarget[WEAPONS_MAX_LENGTH];
-        new RestrictQuery:query = RestrictWeapon(false, target, single, returntarget, sizeof(returntarget));
+        bool single;
+        char returntarget[WEAPONS_MAX_LENGTH];
+        RestrictQuery query = RestrictWeapon(false, target, single, returntarget, sizeof(returntarget));
 
         // Print response to client(s).
         RestrictPrintQueryResponse(client, query, single, false, returntarget);

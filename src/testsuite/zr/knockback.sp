@@ -30,7 +30,7 @@
 #include <sdktools>
 #include <sdkhooks-2.2>
 
-public Plugin:myinfo =
+public Plugin myinfo =
 {
     name = "Knock back",
     author = "Greyscale | Richard Helgeby",
@@ -39,11 +39,11 @@ public Plugin:myinfo =
     url = "http://code.google.com/p/zombiereloaded/"
 };
 
-new Handle:hKnockBackMultiplier;
-new g_iToolsVelocity;
-new bool:VelocityMonitor[MAXPLAYERS];
+Handle hKnockBackMultiplier;
+int g_iToolsVelocity;
+bool VelocityMonitor[MAXPLAYERS];
 
-public OnPluginStart()
+public void OnPluginStart()
 {
     hKnockBackMultiplier = CreateConVar("zrtest_knockback", "4.0", "Knock back multiplier.");
 
@@ -65,7 +65,7 @@ public OnPluginStart()
     RegConsoleCmd("zrtest_maxspeed", Command_MaxSpeed, "Prints your max speed.");
 }
 
-public Action:Command_PushPlayer(client, argc)
+public Action Command_PushPlayer(int client, int argc)
 {
     if (argc < 3)
     {
@@ -73,11 +73,11 @@ public Action:Command_PushPlayer(client, argc)
         return Plugin_Handled;
     }
 
-    new Float:velocity[3];
-    new String:buffer[32];
-    new bool:baseVelocity = false;
+    float velocity[3];
+    char buffer[32];
+    bool baseVelocity = false;
 
-    for (new i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
         GetCmdArg(i + 1, buffer, sizeof(buffer));
         velocity[i] = StringToFloat(buffer);
@@ -86,7 +86,7 @@ public Action:Command_PushPlayer(client, argc)
     if (argc > 3)
     {
         GetCmdArg(4, buffer, sizeof(buffer));
-        baseVelocity = bool:StringToInt(buffer);
+        baseVelocity = view_as<bool>(StringToInt(buffer));
     }
 
     PrintToChatAll("Applying velocity on client %d (base: %d): %0.2f | %0.2f | %0.2f", client, baseVelocity, velocity[0], velocity[1], velocity[2]);
@@ -104,31 +104,31 @@ public Action:Command_PushPlayer(client, argc)
     return Plugin_Handled;
 }
 
-public Action:Command_Parent(client, argc)
+public Action Command_Parent(int client, int argc)
 {
-    new parent = GetParent(client);
+    int parent = GetParent(client);
     ReplyToCommand(client, "Parent index: %d", parent);
 
     return Plugin_Handled;
 }
 
-public Action:Command_Friction(client, argc)
+public Action Command_Friction(int client, int argc)
 {
-    new Float:friction = GetFriction(client);
+    float friction = GetFriction(client);
     ReplyToCommand(client, "Friction: %0.2f", friction);
 
     return Plugin_Handled;
 }
 
-public Action:Command_MaxSpeed(client, argc)
+public Action Command_MaxSpeed(int client, int argc)
 {
-    new Float:maxSpeed = GetMaxSpeed(client);
+    float maxSpeed = GetMaxSpeed(client);
     ReplyToCommand(client, "Max speed: %0.2f", maxSpeed);
 
     return Plugin_Handled;
 }
 
-public OnClientPutInServer(client)
+public void OnClientPutInServer(int client)
 {
     //SDKHook(client, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
     //SDKHook(client, SDKHook_PreThink, PreThink);
@@ -137,7 +137,7 @@ public OnClientPutInServer(client)
     //SDKHook(client, SDKHook_PostThinkPost, PostThinkPost);
 }
 
-public OnClientDisconnect(client)
+public void OnClientDisconnect(int client)
 {
     //SDKUnhook(client, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
     //SDKUnhook(client, SDKHook_PreThink, PreThink);
@@ -146,15 +146,16 @@ public OnClientDisconnect(client)
     //SDKUnhook(client, SDKHook_PostThinkPost, PostThinkPost);
 }
 
-public Action:Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
+public Action Event_PlayerHurt(Handle event, const char[] name, bool dontBroadcast)
 {
-    new victim = GetClientOfUserId(GetEventInt(event, "userid"));
-    new damage = GetEventInt(event, "dmg_health");
-    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+    int damage = GetEventInt(event, "dmg_health");
+    int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     KnockbackOnClientHurt(victim, attacker, float(damage));
+    return Plugin_Continue;
 }
 
-/*public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damagetype, &weapon, Float:damageForce[3], Float:damagePosition[3])
+/*public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
     KnockbackOnClientHurt(victim, attacker, Float:damage);
 
@@ -162,7 +163,7 @@ public Action:Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroad
     return Plugin_Continue;
 }
 
-public OnTakeDamagePost(victim, attacker, inflictor, Float:damage, damagetype, weapon, const Float:damageForce[3], const Float:damagePosition[3])
+public void OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
     if (attacker > 0 && attacker < MaxClients)
     {
@@ -170,7 +171,7 @@ public OnTakeDamagePost(victim, attacker, inflictor, Float:damage, damagetype, w
     }
 }*/
 
-/*public PreThink(client)
+/*public void PreThink(int client)
 {
     //if (VelocityMonitor[client])
     {
@@ -178,7 +179,7 @@ public OnTakeDamagePost(victim, attacker, inflictor, Float:damage, damagetype, w
     }
 }*/
 
-/*public PreThinkPost(client)
+/*public void PreThinkPost(int client)
 {
     //if (VelocityMonitor[client])
     {
@@ -186,7 +187,7 @@ public OnTakeDamagePost(victim, attacker, inflictor, Float:damage, damagetype, w
     }
 }*/
 
-public PostThink(client)
+public void PostThink(int client)
 {
     //if (VelocityMonitor[client])
     /*{
@@ -196,7 +197,7 @@ public PostThink(client)
     SetMaxSpeed(client, 1000.0);
 }
 
-/*public PostThinkPost(client)
+/*public void PostThinkPost(int client)
 {
     //if (VelocityMonitor[client])
     {
@@ -205,9 +206,9 @@ public PostThink(client)
     }
 }*/
 
-stock PrintVelocity(client, const String:prefix[])
+stock void PrintVelocity(int client, const char[] prefix)
 {
-    new Float:velocity[3];
+    float velocity[3];
     GetVelocity(client, velocity);
     PrintToChatAll("%s | client: %d | %0.2f | %0.2f | %0.2f", prefix, client, velocity[0], velocity[1], velocity[2]);
 }
@@ -220,7 +221,7 @@ stock PrintVelocity(client, const String:prefix[])
  * @param hitgroup      Hitgroup attacker has damaged.
  * @param dmg_health    Damage done.
  */
-KnockbackOnClientHurt(client, attacker, Float:dmg_health)
+void KnockbackOnClientHurt(int client, int attacker, float dmg_health)
 {
     // If attacker is invalid, then stop.
     if (!(attacker > 0 && attacker < MaxClients))
@@ -229,10 +230,10 @@ KnockbackOnClientHurt(client, attacker, Float:dmg_health)
     }
 
     // Get zombie knockback value.
-    new Float:knockback = GetConVarFloat(hKnockBackMultiplier);
+    float knockback = GetConVarFloat(hKnockBackMultiplier);
 
-    new Float:clientloc[3];
-    new Float:attackerloc[3];
+    float clientloc[3];
+    float attackerloc[3];
 
     GetClientAbsOrigin(client, clientloc);
 
@@ -240,7 +241,7 @@ KnockbackOnClientHurt(client, attacker, Float:dmg_health)
     GetClientEyePosition(attacker, attackerloc);
 
     // Get attackers eye angles.
-    new Float:attackerang[3];
+    float attackerang[3];
     GetClientEyeAngles(attacker, attackerang);
 
     // Calculate knockback end-vector.
@@ -264,17 +265,17 @@ KnockbackOnClientHurt(client, attacker, Float:dmg_health)
  * @param endpoint      The ending coordinate to push towards.
  * @param magnitude     Magnitude of the push.
  */
-KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3], Float:magnitude)
+void KnockbackSetVelocity(int client, const float startpoint[3], const float endpoint[3], float magnitude)
 {
     // Create vector from the given starting and ending points.
-    new Float:vector[3];
+    float vector[3];
     MakeVectorFromPoints(startpoint, endpoint, vector);
 
     // Normalize the vector (equal magnitude at varying distances).
     NormalizeVector(vector, vector);
 
     // Changes by zephyrus:
-    //new flags = GetEntityFlags(client);
+    //int flags = GetEntityFlags(client);
     //if(flags & FL_ONGROUND)
     //    vector[2]=0.5;
 
@@ -286,7 +287,7 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
     //    if(vector[2]>350.0)
     //        vector[2]=350.0;
 
-    new flags = GetEntityFlags(client);
+    int flags = GetEntityFlags(client);
     if (flags & FL_ONGROUND)
     {
         if (vector[2] < 251.0)
@@ -308,13 +309,13 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
  * @param stack         If modifying velocity, then true will stack new velocity onto the client's
  *                      current velocity, false will reset it.
  */
-stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:stack = true)
+stock void ToolsClientVelocity(int client, float vecVelocity[3], bool apply = true, bool stack = true)
 {
     // If retrieve if true, then get client's velocity.
     if (!apply)
     {
         // x = vector component.
-        for (new x = 0; x < 3; x++)
+        for (int x = 0; x < 3; x++)
         {
             vecVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
         }
@@ -327,10 +328,10 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
     if (stack)
     {
         // Get client's velocity.
-        new Float:vecClientVelocity[3];
+        float vecClientVelocity[3];
 
         // x = vector component.
-        for (new x = 0; x < 3; x++)
+        for (int x = 0; x < 3; x++)
         {
             vecClientVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
         }
@@ -349,7 +350,7 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
  * @param contentsMask  The contents mask.
  * @return              True to allow hit, false to continue tracing.
  */
-public bool:KnockbackTRFilter(entity, contentsMask)
+public bool KnockbackTRFilter(int entity, int contentsMask)
 {
     // If entity is a player, continue tracing.
     if (entity > 0 && entity < MAXPLAYERS)
@@ -361,46 +362,46 @@ public bool:KnockbackTRFilter(entity, contentsMask)
     return true;
 }
 
-stock GetVelocity(client, Float:velocity[3])
+stock void GetVelocity(int client, float velocity[3])
 {
     velocity[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
     velocity[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
     velocity[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
 }
 
-stock SetVelocity(client, const Float:velocity[3])
+stock void SetVelocity(client, const float velocity[3])
 {
     SetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]", velocity[0]);
     SetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]", velocity[1]);
     SetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]", velocity[2]);
 }
 
-stock GetBaseVelocity(client, Float:velocity[3])
+stock void GetBaseVelocity(int client, float velocity[3])
 {
     GetEntPropVector(client, Prop_Send, "m_vecBaseVelocity", velocity);
 }
 
-stock SetBaseVelocity(client, const Float:velocity[3])
+stock void SetBaseVelocity(int client, const float velocity[3])
 {
     SetEntPropVector(client, Prop_Send, "m_vecBaseVelocity", velocity);
 }
 
-stock GetParent(client)
+stock int GetParent(int client)
 {
     return GetEntProp(client, Prop_Send, "moveparent");
 }
 
-stock Float:GetFriction(client)
+stock float GetFriction(int client)
 {
     return GetEntPropFloat(client, Prop_Send, "m_flFriction");
 }
 
-stock Float:GetMaxSpeed(client)
+stock float GetMaxSpeed(int client)
 {
     return GetEntPropFloat(client, Prop_Send, "m_flMaxspeed");
 }
 
-stock SetMaxSpeed(client, Float:maxSpeed = 250.0)
+stock void SetMaxSpeed(int client, float maxSpeed = 250.0)
 {
     SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", maxSpeed);
 }

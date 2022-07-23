@@ -29,7 +29,7 @@
 #include <sourcemod>
 #include <sdktools>
 
-public Plugin:myinfo =
+public Plugin myinfo =
 {
     name = "Weapon information",
     author = "Greyscale | Richard Helgeby",
@@ -38,10 +38,10 @@ public Plugin:myinfo =
     url = "http://code.google.com/p/zombiereloaded/"
 };
 
-new m_hActiveWeapon;
-new m_hMyWeapons;
+int m_hActiveWeapon;
+int m_hMyWeapons;
 
-public OnPluginStart()
+public void OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
@@ -63,10 +63,10 @@ public OnPluginStart()
     RegConsoleCmd("zrtest_removeweapons", Command_RemoveWeapons, "Removes all weapons. Usage: zrtest_removeweapons [target]");
 }
 
-public Action:Command_ListWeaponSlots(client, argc)
+public Action Command_ListWeaponSlots(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -92,10 +92,10 @@ public Action:Command_ListWeaponSlots(client, argc)
     return Plugin_Handled;
 }
 
-public Action:Command_ListWeapons(client, argc)
+public Action Command_ListWeapons(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -121,10 +121,10 @@ public Action:Command_ListWeapons(client, argc)
     return Plugin_Handled;
 }
 
-public Action:Command_Knife(client, argc)
+public Action Command_Knife(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -150,10 +150,10 @@ public Action:Command_Knife(client, argc)
     return Plugin_Handled;
 }
 
-public Action:Command_RemoveWeapons(client, argc)
+public Action Command_RemoveWeapons(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -186,14 +186,14 @@ public Action:Command_RemoveWeapons(client, argc)
  * @param observer      Client that will receive output.
  * @param count         Optional. Number of slots to check.
  **/
-ListWeaponSlots(client, observer, count = 10)
+void ListWeaponSlots(int client, int observer, int count = 10)
 {
     ReplyToCommand(observer, "Slot:\tEntity:\tClassname:");
 
     // Loop through slots.
-    for (new slot = 0; slot < count; slot++)
+    for (int slot = 0; slot < count; slot++)
     {
-        new weapon = GetPlayerWeaponSlot(client, slot);
+        int weapon = GetPlayerWeaponSlot(client, slot);
 
         if (weapon < 0)
         {
@@ -201,7 +201,7 @@ ListWeaponSlots(client, observer, count = 10)
             continue;
         }
 
-        new String:classname[64];
+        char classname[64];
         GetEntityClassname(weapon, classname, sizeof(classname));
 
         ReplyToCommand(observer, "%d\t%d\t%s", slot, weapon, classname);
@@ -214,14 +214,14 @@ ListWeaponSlots(client, observer, count = 10)
  * @param client        Source client.
  * @param observer      Client that will receive output.
  */
-ListWeapons(client, observer)
+void ListWeapons(int client, int observer)
 {
     ReplyToCommand(observer, "Offset:\tEntity:\tClassname:");
 
     // Loop through entries in m_hMyWeapons.
-    for(new offset = 0; offset < 128; offset += 4)     // +4 to skip to next entry in array.
+    for(int offset = 0; offset < 128; offset += 4)     // +4 to skip to next entry in array.
     {
-        new weapon = GetEntDataEnt2(client, m_hMyWeapons + offset);
+        int weapon = GetEntDataEnt2(client, m_hMyWeapons + offset);
 
         if (weapon < 0)
         {
@@ -229,7 +229,7 @@ ListWeapons(client, observer)
             continue;
         }
 
-        new String:classname[64];
+        char classname[64];
         GetEntityClassname(weapon, classname, sizeof(classname));
 
         ReplyToCommand(observer, "%d\t%d\t%s", offset, weapon, classname);
@@ -243,12 +243,12 @@ ListWeapons(client, observer)
  * @param observer      Client that will receive output.
  * @param count         Optional. Number of slots to list.
  */
-RemoveAllClientWeapons(client, observer, count = 5)
+void RemoveAllClientWeapons(int client, int observer, int count = 5)
 {
     // Loop through weapon slots.
-    for (new slot = 0; slot < count; slot++)
+    for (int slot = 0; slot < count; slot++)
     {
-        new weapon = GetPlayerWeaponSlot(client, slot);
+        int weapon = GetPlayerWeaponSlot(client, slot);
 
         // Remove all weapons in this slot.
         while (weapon > 0)
@@ -265,7 +265,7 @@ RemoveAllClientWeapons(client, observer, count = 5)
     }
 }
 
-GiveKnife(client)
+void GiveKnife(int client)
 {
     GivePlayerItem(client, "weapon_knife");
 }

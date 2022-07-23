@@ -28,8 +28,8 @@
 /**
  * @section Global forward handles.
  */
-new Handle:g_hAPIFwdOnClientRespawn = INVALID_HANDLE;
-new Handle:g_hAPIFwdOnClientRespawned = INVALID_HANDLE;
+Handle g_hAPIFwdOnClientRespawn = INVALID_HANDLE;
+Handle g_hAPIFwdOnClientRespawned = INVALID_HANDLE;
 /**
  * @endsection
  */
@@ -37,7 +37,7 @@ new Handle:g_hAPIFwdOnClientRespawned = INVALID_HANDLE;
 /**
  * Initializes all natives and forwards related to respawn.
  */
-APIRespawnInit()
+void APIRespawnInit()
 {
     // Respawn module natives/forwards (respawn.zr.inc)
 
@@ -55,23 +55,24 @@ APIRespawnInit()
  * Native call function (ZR_RespawnClient)
  * Spawns a player into the round following rules set by cvars.
  *
- * RespawnSpawnClient(client, bool:zombie = false, bool:zombie_if_suicide = false)
+ * bool RespawnSpawnClient(int client, bool zombie = false, bool zombie_if_suicide = false)
  */
-public APIRespawnClient(Handle:plugin, numParams)
+public int APIRespawnClient(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
-
-    // Validate index and that player isn't alive.
-    APIValidateClientIndex(client, Condition_False);
-
-    // Restore respawn condition.
-    new RespawnCondition:condition = RespawnCondition:GetNativeCell(2);
-    new bool:zombie;
-    new bool:zombieIfSuicide;
-    RespawnRestoreCondition(condition, zombie, zombieIfSuicide);
-
-    // Respawn the client.
-    RespawnSpawnClient(client, zombie, zombieIfSuicide);
+	int client = GetNativeCell(1);
+	
+	// Validate index and that player isn't alive.
+	APIValidateClientIndex(client, Condition_False);
+	
+	// Restore respawn condition.
+	RespawnCondition condition = view_as<RespawnCondition>(GetNativeCell(2));
+	bool zombie;
+	bool zombieIfSuicide;
+	RespawnRestoreCondition(condition, zombie, zombieIfSuicide);
+	
+	// Respawn the client.
+	RespawnSpawnClient(client, zombie, zombieIfSuicide);
+	return -1;
 }
 
 /**
@@ -81,19 +82,19 @@ public APIRespawnClient(Handle:plugin, numParams)
  * @param condition         Respawn condition. See RespawnCondition for
  *                          details.
  */
-Action:APIOnClientRespawn(&client, &RespawnCondition:condition)
+Action APIOnClientRespawn(int &client, RespawnCondition &condition)
 {
-    // Start forward call.
-    Call_StartForward(g_hAPIFwdOnClientRespawn);
-
-    // Push the parameters.
-    Call_PushCellRef(client);
-    Call_PushCellRef(condition);
-
-    // Get what they returned.
-    new Action:result;
-    Call_Finish(result);
-    return result;
+	// Start forward call.
+	Call_StartForward(g_hAPIFwdOnClientRespawn);
+	
+	// Push the parameters.
+	Call_PushCellRef(client);
+	Call_PushCellRef(condition);
+	
+	// Get what they returned.
+	Action result;
+	Call_Finish(result);
+	return result;
 }
 
 /**
@@ -103,7 +104,7 @@ Action:APIOnClientRespawn(&client, &RespawnCondition:condition)
  * @param condition         Current condition of the respawned player. See
  *                          RespawnCondition for details.
  */
-Action:APIOnClientRespawned(client, RespawnCondition:condition)
+Action APIOnClientRespawned(int client, RespawnCondition condition)
 {
     // Start forward call.
     Call_StartForward(g_hAPIFwdOnClientRespawned);
@@ -114,36 +115,38 @@ Action:APIOnClientRespawned(client, RespawnCondition:condition)
 
     // Finish the call.
     Call_Finish();
+    return Plugin_Continue;
 }
 
 /**
  * Native call function (ZR_SetKilledByWorld)
  * Override if the client died by a suicide.
  */
-public APISetKilledByWorld(Handle:plugin, numParams)
+public int APISetKilledByWorld(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
-
-    // Validate the client index.
-    APIValidateClientIndex(client, Condition_Either);
-
-    new bool:suicide = bool:GetNativeCell(2);
-
-    // Override the old value.
-    bKilledByWorld[client] = suicide;
+	int client = GetNativeCell(1);
+	
+	// Validate the client index.
+	APIValidateClientIndex(client, Condition_Either);
+	
+	bool suicide = view_as<bool>(GetNativeCell(2));
+	
+	// Override the old value.
+	bKilledByWorld[client] = suicide;
+	return -1;
 }
 
 /**
  * Native call function (ZR_GetKilledByWorld)
  * Read the value of if the client died by a suicide.
  */
-public APIGetKilledByWorld(Handle:plugin, numParams)
+public int APIGetKilledByWorld(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
-
-    // Validate the client index.
-    APIValidateClientIndex(client, Condition_Either);
-
-    // Return the value.
-    return _:bKilledByWorld[client];
+	int client = GetNativeCell(1);
+	
+	// Validate the client index.
+	APIValidateClientIndex(client, Condition_Either);
+	
+	// Return the value.
+	return view_as<int>(bKilledByWorld[client]);
 }

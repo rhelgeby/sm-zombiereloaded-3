@@ -51,6 +51,7 @@ public int APISetClientKnockbackScale(Handle plugin, int numParams)
     APIValidateClientIndex(client);
 
     KnockbackSetClientScale(client, fScale);
+    return -1;
 }
 
 /**
@@ -66,6 +67,7 @@ public int APISetClientKnockbackMaxForce(Handle plugin, int numParams)
     APIValidateClientIndex(client);
 
     KnockbackSetClientMaxForce(client, fForce);
+    return -1;
 }
 
 /**
@@ -81,4 +83,5 @@ public int APISetClientKnockbackMaxVelocity(Handle plugin, int numParams)
     APIValidateClientIndex(client);
 
     KnockbackSetClientMaxVelocity(client, fVelocity);
+    return -1;
 }

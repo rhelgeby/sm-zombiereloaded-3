@@ -37,14 +37,14 @@
 /**
  * Array to keep track of normal/mother zombies.
  */
-new bool:g_bDamageMotherZombie[MAXPLAYERS + 1];
+bool g_bDamageMotherZombie[MAXPLAYERS + 1];
 
 /**
  * Hook commands related to damage here.
  * Note: This isn't OnCommandsHook because this depends on cvars.
  */
-new bool:g_bSuicideCmdsHooked = false;
-DamageLoad()
+bool g_bSuicideCmdsHooked = false;
+void DamageLoad()
 {
     if (g_bSuicideCmdsHooked)
     {
@@ -52,18 +52,18 @@ DamageLoad()
     }
 
     // Create command callbacks (intercepts) for listed suicide commands.
-    decl String:suicidecmds[DAMAGE_SUICIDE_MAX_CMDS * DAMAGE_SUICIDE_MAX_LENGTH];
+    char suicidecmds[DAMAGE_SUICIDE_MAX_CMDS * DAMAGE_SUICIDE_MAX_LENGTH];
     GetConVarString(g_hCvarsList.CVAR_DAMAGE_SUICIDE_CMDS, suicidecmds, sizeof(suicidecmds));
 
     // Create array to store cmds
-    new String:arrayCmds[DAMAGE_SUICIDE_MAX_CMDS][DAMAGE_SUICIDE_MAX_LENGTH];
+    char arrayCmds[DAMAGE_SUICIDE_MAX_CMDS][DAMAGE_SUICIDE_MAX_LENGTH];
 
     // Explode string into array indexes.
-    new cmdcount = ExplodeString(suicidecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
+    int cmdcount = ExplodeString(suicidecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
 
     // x = Array index.
     // arrayCmds[x] = suicide command.
-    for (new x = 0; x <= cmdcount - 1; x++)
+    for (int x = 0; x <= cmdcount - 1; x++)
     {
         // Trim whitespace.
         TrimString(arrayCmds[x]);
@@ -81,7 +81,7 @@ DamageLoad()
  *
  * @param client    The client index.
  */
-DamageClientInit(client)
+void DamageClientInit(int client)
 {
     // Hook damage callbacks.
     SDKHook(client, SDKHook_TraceAttack, DamageTraceAttack);
@@ -94,7 +94,7 @@ DamageClientInit(client)
  *
  * @param client    The client index.
  */
-DamageOnClientDisconnect(client)
+void DamageOnClientDisconnect(int client)
 {
     SDKUnhook(client, SDKHook_TraceAttack, DamageTraceAttack);
     SDKUnhook(client, SDKHook_OnTakeDamage, DamageOnTakeDamage);
@@ -107,7 +107,7 @@ DamageOnClientDisconnect(client)
  * @param client        The client index.
  * @param motherinfect  True if the zombie is mother, false if not.
  */
-DamageOnClientInfected(client, bool:motherinfect)
+void DamageOnClientInfected(int client, bool motherinfect)
 {
     // Update if client is a mother zombie or not.
     g_bDamageMotherZombie[client] = motherinfect;
@@ -141,14 +141,14 @@ public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float
     }
 
     // Get zombie flag for each client.
-    new bool:clientzombie = InfectIsClientInfected(client);
-    new bool:attackerzombie = InfectIsClientInfected(attacker);
+    bool clientzombie = InfectIsClientInfected(client);
+    bool attackerzombie = InfectIsClientInfected(attacker);
 
     // If the flags are the same on both clients, then stop.
     if (clientzombie == attackerzombie)
     {
         // If friendly fire is blocked, then allow damage.
-        new bool:damageblockff = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_BLOCK_FF);
+        bool damageblockff = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_BLOCK_FF);
         if (!damageblockff)
         {
             return Plugin_Continue;
@@ -177,7 +177,7 @@ public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float
     // If damage hitgroups cvar is disabled, then allow damage.
     // TODO: There are two cvars: zr_hitgroups and zr_damage_hitgroups. Maybe
     //       just use zr_hitgroups?
-    new bool:damagehitgroups = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_HITGROUPS);
+    bool damagehitgroups = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_HITGROUPS);
     if (!damagehitgroups)
     {
         // Allow damage.
@@ -185,7 +185,7 @@ public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float
     }
 
     // If damage is disabled for this hitgroup, then stop.
-    new index = HitgroupToIndex(hitgroup);
+    int index = HitgroupToIndex(hitgroup);
 
     // If index can't be found, then allow damage.
     if (index == -1)
@@ -194,7 +194,7 @@ public Action DamageTraceAttack(int client, int &attacker, int &inflictor, float
         return Plugin_Continue;
     }
 
-    new bool:candamage = HitgroupsCanDamage(index);
+    bool candamage = HitgroupsCanDamage(index);
     if (!candamage)
     {
         // Stop bullet from hurting client.
@@ -226,11 +226,11 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
         return Plugin_Continue;
 
     // Get classname of the inflictor.
-    decl String:classname[64];
+    char classname[64];
     GetEdictClassname(inflictor, classname, sizeof(classname));
 
     // Get the attacker weapon name.
-    new String:weaponname[64];
+    char weaponname[64];
     if(attacker >= 1 && attacker <= MAXPLAYERS)
         GetClientWeapon(attacker, weaponname, sizeof(weaponname));
 
@@ -241,12 +241,12 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
     }
 
     // Forward this hook to another module an return (or not) what it wants.
-    new Action:action = Action:NapalmOnTakeDamage(client, damagetype);
+    int action = NapalmOnTakeDamage(client, damagetype);
 
     // If the napalm module wants to return here, then return the int casted into the action type.
-    if (action > Action:-1)
+    if (action > -1)
     {
-        return action;
+        return view_as<Action>(action);
     }
 
     // Client was shot or knifed.
@@ -259,8 +259,8 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
         }
 
         // Get zombie flag for each client.
-        new bool:clientzombie = InfectIsClientInfected(client);
-        new bool:attackerzombie = InfectIsClientInfected(attacker);
+        bool clientzombie = InfectIsClientInfected(client);
+        bool attackerzombie = InfectIsClientInfected(attacker);
 
         // If client and attacker are on the same team, then let CS:S handle the rest.
         if (clientzombie == attackerzombie)
@@ -283,7 +283,7 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
         }
 
         // Check if immunity module blocked or modified the damage.
-        new Action:immunityAction = ImmunityOnClientDamage(client, attacker, damage);
+        Action immunityAction = ImmunityOnClientDamage(client, attacker, damage);
         if (immunityAction != Plugin_Continue)
         {
             // Damage was blocked or modified.
@@ -291,11 +291,11 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
         }
 
         // Check if distance between clients is too high. (Anti lagcompensation / longknife)
-        new Float:maxDistance = GetConVarFloat(g_hCvarsList.CVAR_INFECT_MAX_DISTANCE);
+        float maxDistance = GetConVarFloat(g_hCvarsList.CVAR_INFECT_MAX_DISTANCE);
         if (maxDistance != 0.0)
         {
-            new Float:clientPosition[3];
-            new Float:attackerPosition[3];
+            float clientPosition[3];
+            float attackerPosition[3];
 
             GetClientAbsOrigin(client, clientPosition);
             GetClientAbsOrigin(attacker, attackerPosition);
@@ -304,7 +304,7 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
             clientPosition[2] = 0.0;
             attackerPosition[2] = 0.0;
 
-            new Float:distance = GetVectorDistance(clientPosition, attackerPosition);
+            float distance = GetVectorDistance(clientPosition, attackerPosition);
 
             // Block infection if distance is higher than allowed.
             if (distance > maxDistance)
@@ -317,7 +317,7 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
         // knife. But only do this when immunity mode is disabled.
         if (ClassGetImmunityMode(client) == Immunity_None)
         {
-            new health = GetClientHealth(client);
+            int health = GetClientHealth(client);
             SetEntityHealth(client, health + RoundToNearest(damage));
 
             // Allow damage.
@@ -328,7 +328,7 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
     else if (damagetype & DMG_BLAST)
     {
         // If blast damage is blocked, then stop.
-        new bool:damageblockblast = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_BLOCK_BLAST);
+        bool damageblockblast = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_BLOCK_BLAST);
         if (!damageblockblast)
         {
             return Plugin_Continue;
@@ -377,7 +377,7 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
     else if (damagetype & DMG_FALL)
     {
         // If class has "nofalldamage" disabled, then allow damage.
-        new bool:blockfalldamage = ClassGetNoFallDamage(client);
+        bool blockfalldamage = ClassGetNoFallDamage(client);
         if (!blockfalldamage)
         {
             return Plugin_Continue;
@@ -398,13 +398,13 @@ public Action DamageOnTakeDamage(int client, int &attacker, int &inflictor, floa
  * @param client    The client index.
  * @param argc      The number of arguments in command string.
  */
-public Action:DamageSuicideIntercept(int client, const char[] command, int argc)
+public Action DamageSuicideIntercept(int client, const char[] command, int argc)
 {
     // Get suicide interception settings.
-    new bool:suicideAfterInfect = GetConVarBool(g_hCvarsList.CVAR_SUICIDE_AFTER_INFECT);
-    new bool:suicideZombie = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_ZOMBIE);
-    new bool:suicideZombieMother = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_MZOMBIE);
-    new bool:suicideHuman = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_HUMAN);
+    bool suicideAfterInfect = GetConVarBool(g_hCvarsList.CVAR_SUICIDE_AFTER_INFECT);
+    bool suicideZombie = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_ZOMBIE);
+    bool suicideZombieMother = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_MZOMBIE);
+    bool suicideHuman = GetConVarBool(g_hCvarsList.CVAR_DAMAGE_SUICIDE_HUMAN);
 
     // Check various criterias that will _allow_ the command. If no criterias
     // match, block it.

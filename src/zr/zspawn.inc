@@ -38,20 +38,20 @@ enum ZSpawnCondition
 /**
  * Global variable to store infect timer handle.
  */
-new Handle:tZSpawn = INVALID_HANDLE;
+Handle tZSpawn = INVALID_HANDLE;
 
 /**
  * Global variable to store SteamID cache handle.
  */
-new Handle:g_hZSpawnSteamIDCache = INVALID_HANDLE;
-new Handle:g_hZspawnInfectedSteamIDCache = INVALID_HANDLE;
+Handle g_hZSpawnSteamIDCache = INVALID_HANDLE;
+Handle g_hZspawnInfectedSteamIDCache = INVALID_HANDLE;
 
-new bool:g_bZSpawnClientInfected[MAXPLAYERS + 1] = {false, ...};
+bool g_bZSpawnClientInfected[MAXPLAYERS + 1] = {false, ...};
 
 /**
  * Create commands specific to ZSpawn.
  */
-ZSpawnOnCommandsCreate()
+void ZSpawnOnCommandsCreate()
 {
     // Register ZSpawn command.
     RegConsoleCmd(SAYHOOKS_KEYWORD_ZSPAWN, ZSpawnCommand, "Spawn into the game after joining late.");
@@ -63,7 +63,7 @@ ZSpawnOnCommandsCreate()
 /**
  * Map is starting.
  */
-ZSpawnOnMapStart()
+void ZSpawnOnMapStart()
 {
     // Reset timer handle.
     tZSpawn = INVALID_HANDLE;
@@ -82,7 +82,7 @@ ZSpawnOnMapStart()
     SteamidCacheReset(g_hZSpawnSteamIDCache);
     SteamidCacheReset(g_hZspawnInfectedSteamIDCache);
 
-    for(new client = 1; client <= MAXPLAYERS; client++)
+    for(int client = 1; client <= MAXPLAYERS; client++)
         g_bZSpawnClientInfected[client] = false;
 }
 
@@ -91,7 +91,7 @@ ZSpawnOnMapStart()
  *
  * @param client    The client index.
  */
-ZSpawnOnClientPutInServer(client)
+void ZSpawnOnClientPutInServer(int client)
 {
     g_bZSpawnClientInfected[client] = SteamidCacheRemoveClient(g_hZspawnInfectedSteamIDCache, client);
 }
@@ -101,7 +101,7 @@ ZSpawnOnClientPutInServer(client)
  *
  * @param client    The client index.
  */
-ZSpawnOnClientDisconnect(client)
+void ZSpawnOnClientDisconnect(int client)
 {
     // So people who are connecting that click "cancel" aren't added to the list.
     if (!IsClientInGame(client))
@@ -130,7 +130,7 @@ ZSpawnOnClientDisconnect(client)
  *
  * @param client    The client index.
  */
-ZSpawnOnClientDeath(client)
+void ZSpawnOnClientDeath(int client)
 {
     // Add client to the SteamID cache.
     SteamidCacheAddClient(g_hZSpawnSteamIDCache, client);
@@ -140,7 +140,7 @@ ZSpawnOnClientDeath(client)
  *
  * @param client    The client index.
  */
-ZSpawnOnClientClassPost(client)
+void ZSpawnOnClientClassPost(int client)
 {
     // If client isn't on a team, then stop.
     if (!ZRIsClientOnTeam(client))
@@ -149,14 +149,14 @@ ZSpawnOnClientClassPost(client)
     }
 
     // If zspawn is disabled, then stop.
-    new bool:zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
+    bool zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
     if (!zspawn)
     {
         return;
     }
 
     // If auto zspawn is disabled, then stop.
-    new bool:autozspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_AUTO);
+    bool autozspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_AUTO);
     if (!autozspawn)
     {
         return;
@@ -166,7 +166,7 @@ ZSpawnOnClientClassPost(client)
     if (!IsPlayerAlive(client) && !IsClientSourceTV(client))
     {
         // Get our zspawn condition.
-        new ZSpawnCondition:condition = GetZSpawnCondition(client);
+        ZSpawnCondition condition = GetZSpawnCondition(client);
 
         switch(condition)
         {
@@ -184,13 +184,13 @@ ZSpawnOnClientClassPost(client)
  *
  * @param client    The client index.
  */
-ZSpawnOnClientSpawn(client)
+void ZSpawnOnClientSpawn(int client)
 {
     // Check if client is spawning on a team.
     if (ZRIsClientOnTeam(client) && InfectHasZombieSpawned())
     {
         // Get our zspawn condition.
-        new ZSpawnCondition:condition = GetZSpawnCondition(client);
+        ZSpawnCondition condition = GetZSpawnCondition(client);
 
         switch(condition)
         {
@@ -208,7 +208,7 @@ ZSpawnOnClientSpawn(client)
  *
  * @param client    The client index.
  */
-ZSpawnOnClientInfected(client)
+void ZSpawnOnClientInfected(int client)
 {
     g_bZSpawnClientInfected[client] = true;
 }
@@ -218,7 +218,7 @@ ZSpawnOnClientInfected(client)
  *
  * @param client    The client index.
  */
-ZSpawnOnClientHuman(client)
+void ZSpawnOnClientHuman(int client)
 {
     g_bZSpawnClientInfected[client] = false;
 }
@@ -226,13 +226,13 @@ ZSpawnOnClientHuman(client)
 /**
  * The round is starting.
  */
-ZSpawnOnRoundStart()
+void ZSpawnOnRoundStart()
 {
     // Reset the SteamID cache.
     SteamidCacheReset(g_hZSpawnSteamIDCache);
     SteamidCacheReset(g_hZspawnInfectedSteamIDCache);
 
-    for(new client = 1; client <= MAXPLAYERS; client++)
+    for(int client = 1; client <= MAXPLAYERS; client++)
         g_bZSpawnClientInfected[client] = false;
 
     // If zspawn timer is running, then kill it.
@@ -249,7 +249,7 @@ ZSpawnOnRoundStart()
 /**
  * The freeze time is ending.
  */
-ZSpawnOnRoundFreezeEnd()
+void ZSpawnOnRoundFreezeEnd()
 {
     // If infect timer is running, then kill it.
     if (tZSpawn != INVALID_HANDLE)
@@ -259,21 +259,21 @@ ZSpawnOnRoundFreezeEnd()
     }
 
     // If zspawn is disabled, then stop.
-    new bool:zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
+    bool zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
     if (!zspawn)
     {
         return;
     }
 
     // If timelimit is disabled, then stop.
-    new bool:zspawntimelimit = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT);
+    bool zspawntimelimit = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT);
     if (!zspawntimelimit)
     {
         return;
     }
 
     // Get timelimit
-    new Float:zspawntime = GetConVarFloat(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT_TIME);
+    float zspawntime = GetConVarFloat(g_hCvarsList.CVAR_ZSPAWN_TIMELIMIT_TIME);
 
     // Start timer.
     tZSpawn = CreateTimer(zspawntime, ZSpawnTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -282,7 +282,7 @@ ZSpawnOnRoundFreezeEnd()
 /**
  * The round is ending.
  */
-ZSpawnOnRoundEnd()
+void ZSpawnOnRoundEnd()
 {
     // If zspawn timer is running, then kill it.
     if (tZSpawn != INVALID_HANDLE)
@@ -303,10 +303,10 @@ ZSpawnOnRoundEnd()
  * @param zombie    (Optional) If you are forcing spawn, you must override the team here.
  * @return          True if successful, false otherwise.
  */
-bool:ZSpawnClient(client, bool:force = false, bool:zombie = false, bool error = true)
+bool ZSpawnClient(int client, bool force = false, bool zombie = false, bool error = true)
 {
     // If zspawn is disabled, then stop.
-    new bool:zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
+    bool zspawn = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN);
     if (!force && !zspawn)
     {
         if (error)
@@ -342,7 +342,7 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false, bool error = 
     }
 
     // Block if client has already played during this round.
-    new blockrejoin = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_BLOCK_REJOIN);
+    int blockrejoin = GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_BLOCK_REJOIN);
     if (!force && SteamidCacheClientExists(g_hZSpawnSteamIDCache, client) && blockrejoin)
     {
         if (error)
@@ -406,13 +406,13 @@ bool:ZSpawnClient(client, bool:force = false, bool:zombie = false, bool error = 
  * @param client    The client index.
  * @param slot      The menu slot selected. (starting from 0)
  */
-public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, slot)
+public int ZSpawnForceHandle(Handle menu_zspawn_force, MenuAction action, int client, int slot)
 {
     // Client selected an option.
     if (action == MenuAction_Select)
     {
         // Get the client index of the selected client.
-        new target = MenuGetClientIndex(menu_zspawn_force, slot);
+        int target = MenuGetClientIndex(menu_zspawn_force, slot);
 
         // If the target is 0, then the client left before being selected from the menu.
         if (target == 0)
@@ -420,11 +420,11 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
             // Re-send the menu.
             MenuClientList(client, ZSpawnForceHandle, true, true, false, "ZSpawn clients title");
 
-            return;
+            return -1;
         }
 
         // Get the target's name for future use.
-        decl String:targetname[MAX_NAME_LENGTH], String:adminname[MAX_NAME_LENGTH];
+        char targetname[MAX_NAME_LENGTH], adminname[MAX_NAME_LENGTH];
         GetClientName(target, targetname, sizeof(targetname));
 
         // Get admin's name for future use.
@@ -434,7 +434,7 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
             strcopy(adminname, sizeof(adminname), "Console");
 
         // Force ZSpawn on the target.
-        new bool:success = ZSpawnClient(target, true);
+        bool success = ZSpawnClient(target, true);
 
         // Tell admin the outcome of the action.
         if (success)
@@ -468,6 +468,7 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
     {
         CloseHandle(menu_zspawn_force);
     }
+    return -1;
 }
 
 /**
@@ -477,7 +478,7 @@ public ZSpawnForceHandle(Handle:menu_zspawn_force, MenuAction:action, client, sl
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action:ZSpawnCommand(client, argc)
+public Action ZSpawnCommand(int client, int argc)
 {
     // If client is console, then stop and tell them this feature is for players only.
     if (ZRIsConsole(client))
@@ -500,7 +501,7 @@ public Action:ZSpawnCommand(client, argc)
  * @param client    The client index.
  * @param argc      Argument count.
  */
-public Action:ZSpawnForceCommand(client, argc)
+public Action ZSpawnForceCommand(int client, int argc)
 {
     // Check if privileged.
     if (!ZRIsClientPrivileged(client, OperationType_Generic))
@@ -516,8 +517,9 @@ public Action:ZSpawnForceCommand(client, argc)
         return Plugin_Handled;
     }
 
-    decl String:target[MAX_NAME_LENGTH], String:targetname[MAX_NAME_LENGTH], String:adminname[MAX_NAME_LENGTH];
-    new targets[MAXPLAYERS], bool:tn_is_ml, result;
+    char target[MAX_NAME_LENGTH], targetname[MAX_NAME_LENGTH], adminname[MAX_NAME_LENGTH];
+    int targets[MAXPLAYERS], result;
+    bool tn_is_ml;
 
     // Get targetname.
     GetCmdArg(1, target, sizeof(target));
@@ -539,16 +541,16 @@ public Action:ZSpawnForceCommand(client, argc)
     }
 
     // Get item to give to client.
-    decl String:strZombie[4];
+    char strZombie[4];
     GetCmdArg(2, strZombie, sizeof(strZombie));
 
     // Copy value of second (optional) parameter to 'zombie'.
     // It will be false if the parameter wasn't specified.
-    new bool:zombie = bool:StringToInt(strZombie);
-    new bool:success = false;
+    bool zombie = view_as<bool>(StringToInt(strZombie));
+    bool success = false;
 
     // x = Client index.
-    for (new x = 0; x < result; x++)
+    for (int x = 0; x < result; x++)
     {
         // Spawn client
         if (ZSpawnClient(targets[x], true, zombie))
@@ -579,18 +581,19 @@ public Action:ZSpawnForceCommand(client, argc)
  *
  * @param timer     The timer handle.
  */
-public Action:ZSpawnTimer(Handle:timer)
+public Action ZSpawnTimer(Handle timer)
 {
     // Reset timer handle.
     tZSpawn = INVALID_HANDLE;
+    return Plugin_Continue;
 }
 
 /**
  * Get ZSpawn condition.
  */
-ZSpawnCondition:GetZSpawnCondition(int client)
+ZSpawnCondition GetZSpawnCondition(int client)
 {
-    new ZSpawnCondition:condition;
+    ZSpawnCondition condition;
 
     // Check if zspawn override is enabled, and if so use overriden value.
     if (GetConVarBool(g_hCvarsList.CVAR_ZSPAWN_TEAM_OVERRIDE))

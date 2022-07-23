@@ -29,7 +29,7 @@
 #include <sourcemod>
 #include <sdkhooks-2.2>
 
-public Plugin:myinfo =
+public Plugin myinfo =
 {
     name = "Damage information",
     author = "Greyscale | Richard Helgeby",
@@ -38,10 +38,10 @@ public Plugin:myinfo =
     url = "http://code.google.com/p/zombiereloaded/"
 };
 
-new Handle:hBlockOnTakeDamage;
-new Handle:hBlockTraceAttack;
+Handle hBlockOnTakeDamage = INVALID_HANDLE;
+Handle hBlockTraceAttack = INVALID_HANDLE;
 
-public OnPluginStart()
+public void OnPluginStart()
 {
     hBlockOnTakeDamage = CreateConVar("zrtest_blockontakedamage", "0", "Block OnTakeDamage.");
     hBlockTraceAttack = CreateConVar("zrtest_blocktraceattack", "0", "Block TraceAttack.");
@@ -52,30 +52,30 @@ public OnPluginStart()
     }
 }
 
-public OnClientPutInServer(client)
+public void OnClientPutInServer(int client)
 {
     SDKHook(client, SDKHook_TraceAttack, TraceAttack);
     SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 }
 
-public OnClientDisconnect(client)
+public void OnClientDisconnect(int client)
 {
     SDKUnhook(client, SDKHook_TraceAttack, TraceAttack);
     SDKUnhook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 }
 
-public Action:Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
+public Action Event_PlayerHurt(Handle event, const char[] name, bool dontBroadcast)
 {
-    new victim = GetClientOfUserId(GetEventInt(event, "userid"));
-    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-    new hitgroup = GetEventInt(event, "hitgroup");
-    new damage = GetEventInt(event, "dmg_health");
-    new damageArmor = GetEventInt(event, "dmg_armor");
-    decl String:weapon[64];
+    int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+    int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    int hitgroup = GetEventInt(event, "hitgroup");
+    int damage = GetEventInt(event, "dmg_health");
+    int damageArmor = GetEventInt(event, "dmg_armor");
+    char weapon[64];
     weapon[0] = 0;
     GetEventString(event, "weapon", weapon, sizeof(weapon));
 
-    decl String:msg[128];
+    char msg[128];
     msg[0] = 0;
 
     Format(msg, sizeof(msg), "victim:%d | attacker:%d | hitgroup:%d | dmg:%d | dmg armor:%d | weapon:%s", victim, attacker, hitgroup, damage, damageArmor, weapon);
@@ -88,9 +88,10 @@ public Action:Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroad
         PrintToChat(attacker, "Send hurt event -- %s", msg);
         PrintToConsole(attacker, "Send hurt event -- %s", msg);
     }
+    return Plugin_Continue;
 }
 
-public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damagetype, &weapon, Float:damageForce[3], Float:damagePosition[3])
+public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
     /*
         Here we can control whether bullets or other damage that hits the
@@ -104,7 +105,7 @@ public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damage
         trace, for example healing the victim instead of damaging him.
     */
 
-    decl String:msg[128];
+    char msg[128];
     msg[0] = 0;
 
     Format(msg, sizeof(msg), "victim:%d | attacker:%d | inflictor:%d | dmg:%0.2f | dmg type:%d | weapon ent:%d | force:%0.2f | dmg pos:%0.2f", victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
@@ -122,13 +123,10 @@ public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damage
     {
         return Plugin_Handled;
     }
-    else
-    {
-        return Plugin_Continue;
-    }
+    return Plugin_Continue;
 }
 
-public Action:TraceAttack(victim, &attacker, &inflictor, &Float:damage, &damagetype, &ammotype, hitbox, hitgroup)
+public Action TraceAttack(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype, int hitbox, int hitgroup)
 {
     /*
         Here we can control whether bullets or other damage is allowed to hit
@@ -139,7 +137,7 @@ public Action:TraceAttack(victim, &attacker, &inflictor, &Float:damage, &damaget
         OnTakeDamage decides whether damage is actually allowed.
     */
 
-    decl String:msg[128];
+    char msg[128];
     msg[0] = 0;
 
     Format(msg, sizeof(msg), "victim:%d | attacker:%d | inflictor:%d | dmg:%0.2f | dmg type:%d | ammo type:%d | hitbox:%d | hitgroup: %d", victim, attacker, inflictor, damage, damagetype, ammotype, hitbox, hitgroup);
@@ -157,8 +155,5 @@ public Action:TraceAttack(victim, &attacker, &inflictor, &Float:damage, &damaget
     {
         return Plugin_Handled;
     }
-    else
-    {
-        return Plugin_Continue;
-    }
+    return Plugin_Continue;
 }

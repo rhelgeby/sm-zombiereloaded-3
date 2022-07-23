@@ -42,7 +42,7 @@
 /**
  * Load sound effects data.
  */
-SEffectsLoad()
+void SEffectsLoad()
 {
     // Load ambient sound cvars.
     AmbientSoundsLoad();
@@ -51,7 +51,7 @@ SEffectsLoad()
 /**
  * Map is starting.
  */
-SEffectsOnMapStart()
+void SEffectsOnMapStart()
 {
     // Forward event to sub-modules.
     AmbientSoundsOnMapStart();
@@ -62,7 +62,7 @@ SEffectsOnMapStart()
  *
  * @param client    The client index.
  */
-SEffectsClientInit(client)
+void SEffectsClientInit(int client)
 {
     // Forward event to sub-modules.
     AmbientSoundsClientInit(client);
@@ -72,7 +72,7 @@ SEffectsClientInit(client)
 /**
  * The round is starting.
  */
-SEffectsOnRoundStart()
+void SEffectsOnRoundStart()
 {
     // Forward event to sub-modules.
     VoiceOnRoundStart();
@@ -82,7 +82,7 @@ SEffectsOnRoundStart()
 /**
  * The round is ending.
  */
-SEffectsOnRoundEnd()
+void SEffectsOnRoundEnd()
 {
     // Forward event to sub-modules.
     VoiceOnRoundEnd();
@@ -95,7 +95,7 @@ SEffectsOnRoundEnd()
  *
  * @param client    The client index.
  */
-SEffectsOnClientSpawn(client)
+void SEffectsOnClientSpawn(int client)
 {
     // Forward event to sub-modules.
     VoiceOnClientSpawn(client);
@@ -107,7 +107,7 @@ SEffectsOnClientSpawn(client)
  *
  * @param client    The client index.
  */
-SEffectsOnClientSpawnPost(client)
+void SEffectsOnClientSpawnPost(int client)
 {
     // Forward event to sub-modules.
     AmbientSoundsOnClientSpawnPost(client);
@@ -118,7 +118,7 @@ SEffectsOnClientSpawnPost(client)
  *
  * @param client    The client index.
  */
-SEffectsOnClientDeath(client)
+void SEffectsOnClientDeath(int client)
 {
     // Forward event to sub-modules.
     ZombieSoundsOnClientDeath(client);
@@ -129,7 +129,7 @@ SEffectsOnClientDeath(client)
  *
  * @param client    The client index.
  */
-SEffectsOnClientHurt(client)
+void SEffectsOnClientHurt(int client)
 {
     // Forward event to sub-modules.
     ZombieSoundsOnClientHurt(client);
@@ -140,7 +140,7 @@ SEffectsOnClientHurt(client)
  *
  * @param client    The client index.
  */
-SEffectsOnClientInfected(client)
+void SEffectsOnClientInfected(int client)
 {
     // Forward event to sub-modules.
     VoiceOnClientInfected(client);
@@ -152,7 +152,7 @@ SEffectsOnClientInfected(client)
  *
  * @param client    The client index.
  */
-SEffectsOnClientHuman(client)
+void SEffectsOnClientHuman(int client)
 {
     // Forward event to sub-modules.
     VoiceOnClientHuman(client);
@@ -165,7 +165,7 @@ SEffectsOnClientHuman(client)
  * @param soundvolume   The volume of the sound (0.0 - 1.0)
  * @param client        (Optional) Client index to play sound to.
  */
-SEffectsEmitAmbientSound(const String:sound[], client = -1)
+void SEffectsEmitAmbientSound(const char[] sound, int client = -1)
 {
     // Precache sound before playing.
     PrecacheSound(sound);
@@ -188,7 +188,7 @@ SEffectsEmitAmbientSound(const String:sound[], client = -1)
     }
     else
     {
-        for (new x = 1; x <= MaxClients; x++)
+        for (int x = 1; x <= MaxClients; x++)
         {
             // If client isn't in-game, then stop.
             if (!IsClientInGame(x))
@@ -208,10 +208,10 @@ SEffectsEmitAmbientSound(const String:sound[], client = -1)
  *
  * @param sound     The path to the sound file (relative to sounds/)
  */
-SEffectsStopAmbientSound(const String:sound[])
+void SEffectsStopAmbientSound(const char[] sound)
 {
     // x = client index.
-    for (new x = 1; x <= MaxClients; x++)
+    for (int x = 1; x <= MaxClients; x++)
     {
         // If client isn't in-game, then stop.
         if (!IsClientInGame(x))
@@ -238,7 +238,7 @@ SEffectsStopAmbientSound(const String:sound[])
  * @param sound     The sound file relative to the sound/ directory.
  * @param level     The attenuation of the sound.
  */
-SEffectsEmitSoundFromClient(client, const String:sound[], level = SNDLEVEL_NORMAL)
+void SEffectsEmitSoundFromClient(int client, const char[] sound, int level = SNDLEVEL_NORMAL)
 {
     // Precache sound before playing.
     PrecacheSound(sound);

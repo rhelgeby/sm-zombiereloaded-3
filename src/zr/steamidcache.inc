@@ -30,7 +30,7 @@
  *
  * @return  Handle to SteamID cache.
  */
-stock Handle:SteamidCacheCreate()
+stock Handle SteamidCacheCreate()
 {
     // Return steamid cache handle.
     return CreateArray(1);
@@ -43,7 +43,7 @@ stock Handle:SteamidCacheCreate()
  * @param client        The client index.
  * @return              True if the client was added successfully, false if the client already exists.
  */
-stock bool:SteamidCacheAddClient(Handle:steamidcache, client)
+stock bool SteamidCacheAddClient(Handle steamidcache, int client)
 {
     // Check if client is in the cache.
     if (SteamidCacheClientExists(steamidcache, client))
@@ -52,7 +52,7 @@ stock bool:SteamidCacheAddClient(Handle:steamidcache, client)
     }
 
     // Get client's SteamID.
-    new steamid = GetSteamAccountID(client);
+    int steamid = GetSteamAccountID(client);
     if (!steamid)
         return false;
 
@@ -70,10 +70,10 @@ stock bool:SteamidCacheAddClient(Handle:steamidcache, client)
  * @param client        The client index.
  * @return              True if the client was removed successfully, false if the client doesn't exist.
  */
-stock bool:SteamidCacheRemoveClient(Handle:steamidcache, client)
+stock bool SteamidCacheRemoveClient(Handle steamidcache, int client)
 {
     // Get client's SteamID.
-    new steamid = GetSteamAccountID(client);
+    int steamid = GetSteamAccountID(client);
     if (!steamid)
         return false;
 
@@ -96,10 +96,10 @@ stock bool:SteamidCacheRemoveClient(Handle:steamidcache, client)
  * @param client        The client index.
  * @return              True if the client exists, false otherwise.
  */
-stock bool:SteamidCacheClientExists(Handle:steamidcache, client)
+stock bool SteamidCacheClientExists(Handle steamidcache, int client)
 {
     // Get client's SteamID.
-    new steamid = GetSteamAccountID(client);
+    int steamid = GetSteamAccountID(client);
     if (!steamid)
         return false;
 
@@ -112,7 +112,7 @@ stock bool:SteamidCacheClientExists(Handle:steamidcache, client)
  *
  * @param steamidcache  The SteamID cache to reset.
  */
-stock SteamidCacheReset(Handle:steamidcache)
+stock void SteamidCacheReset(Handle steamidcache)
 {
     if (steamidcache == INVALID_HANDLE)
         return;

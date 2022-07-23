@@ -27,8 +27,8 @@
 
 /**
  * Cookies module init function.
- */
-CookiesInit()
+ */ 
+void CookiesInit()
 {
     // Forward "OnCookiesCreate" event to modules.
     ClassOnCookiesCreate();
@@ -43,14 +43,14 @@ CookiesInit()
  * @param client    The client index.
  * @param cookie    The handle to the cookie.
  */
-stock bool:CookiesGetClientCookieBool(client, Handle:cookie)
+stock bool CookiesGetClientCookieBool(int client, Handle cookie)
 {
     // Get cookie string.
-    decl String:cookievalue[8];
+    char cookievalue[8];
     GetClientCookie(client, cookie, cookievalue, sizeof(cookievalue));
 
     // Return string casted into an int, then to bool.
-    return bool:StringToInt(cookievalue);
+    return view_as<bool>(StringToInt(cookievalue));
 }
 
 /**
@@ -60,10 +60,10 @@ stock bool:CookiesGetClientCookieBool(client, Handle:cookie)
  * @param cookie        The handle to the cookie.
  * @param cookievalue   The bool value to set cookie as.
  */
-stock CookiesSetClientCookieBool(client, Handle:cookie, bool:cookievalue)
+stock void CookiesSetClientCookieBool(int client, Handle cookie, bool cookievalue)
 {
     // Convert bool to string.
-    decl String:strCookievalue[8];
+    char strCookievalue[8];
     ZRBoolToString(cookievalue, strCookievalue, sizeof(strCookievalue));
 
     // Set the converted string to the cookie.
@@ -76,9 +76,9 @@ stock CookiesSetClientCookieBool(client, Handle:cookie, bool:cookievalue)
  * @param client    The client index.
  * @param cookie    The handle to the cookie.
  */
-stock CookiesGetInt(client, Handle:cookie)
+stock int CookiesGetInt(int client, Handle cookie)
 {
-    decl String:strValue[16];
+    char strValue[16];
     strValue[0] = 0;
     GetClientCookie(client, cookie, strValue, sizeof(strValue));
 
@@ -92,10 +92,10 @@ stock CookiesGetInt(client, Handle:cookie)
  * @param cookie    The handle to the cookie.
  * @param value     The value to set.
  */
-stock CookiesSetInt(client, Handle:cookie, value)
+stock void CookiesSetInt(int client, Handle cookie, int value)
 {
     // Convert value to string.
-    decl String:strValue[16];
+    char strValue[16];
     IntToString(value, strValue, sizeof(strValue));
 
     // Set string value.

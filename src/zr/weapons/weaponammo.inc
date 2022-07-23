@@ -51,14 +51,14 @@
 /**
  * Variable to store if Grenade Pack is loaded and running.
  */
-new bool:g_bGrenadePack;
+bool g_bGrenadePack;
 
 /**
  * @section Variables to store ammo offset values.
  */
-new g_iToolsClip1;
-new g_iToolsClip2;
-new g_iToolsAmmo;
+int g_iToolsClip1;
+int g_iToolsClip2;
+int g_iToolsAmmo;
 /**
  * @endsection
  */
@@ -83,7 +83,7 @@ enum WeaponAmmoGrenadeType
 /**
  * All plugins have finished loading.
  */
-WeaponAmmoOnAllPluginsLoaded()
+void WeaponAmmoOnAllPluginsLoaded()
 {
     // Check if "Grenade Pack" is loaded
     g_bGrenadePack = ZMarketIsGPLoaded();
@@ -92,7 +92,7 @@ WeaponAmmoOnAllPluginsLoaded()
 /**
  * Find ammo-reserve-specific offsets here.
  */
-WeaponAmmoOnOffsetsFound()
+void WeaponAmmoOnOffsetsFound()
 {
     // If offset "m_iClip1" can't be found, then stop the plugin.
     g_iToolsClip1 = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
@@ -122,10 +122,10 @@ WeaponAmmoOnOffsetsFound()
  * @param weapon    The weapon index.
  * @param clip      True gets clip ammo, false gets reserve.
  */
-stock WeaponAmmoGetAmmo(weapon, bool:clip)
+stock int WeaponAmmoGetAmmo(int weapon, bool clip)
 {
     // Set variable to offset we are changing.
-    new ammooffset = clip ? g_iToolsClip1 : g_iToolsClip2;
+    int ammooffset = clip ? g_iToolsClip1 : g_iToolsClip2;
 
     // Return ammo offset value.
     return GetEntData(weapon, ammooffset);
@@ -139,13 +139,13 @@ stock WeaponAmmoGetAmmo(weapon, bool:clip)
  * @param value     The amount of ammo to set to.
  * @param add       (Optional) If true, the value is added to the weapon's current ammo count.
  */
-stock WeaponAmmoSetAmmo(weapon, bool:clip, value, bool:add = false)
+stock void WeaponAmmoSetAmmo(int weapon, bool clip, int value, bool add = false)
 {
     // Set variable to offset we are changing.
-    new ammooffset = clip ? g_iToolsClip1 : g_iToolsClip2;
+    int ammooffset = clip ? g_iToolsClip1 : g_iToolsClip2;
 
     // Initialize variable (value is 0)
-    new ammovalue;
+    int ammovalue;
 
     // If we are adding, then update variable with current ammo value.
     if (add)
@@ -163,9 +163,9 @@ stock WeaponAmmoSetAmmo(weapon, bool:clip, value, bool:add = false)
  * @param client    The client index.
  * @param slot      The type of
  */
-stock WeaponAmmoGetGrenadeCount(client, WeaponAmmoGrenadeType:type)
+stock int WeaponAmmoGetGrenadeCount(int client, WeaponAmmoGrenadeType type)
 {
-    return GetEntData(client, g_iToolsAmmo + (_:type * 4));
+    return GetEntData(client, g_iToolsAmmo + (view_as<int>(type) * 4));
 }
 
 /**
@@ -176,10 +176,10 @@ stock WeaponAmmoGetGrenadeCount(client, WeaponAmmoGrenadeType:type)
  * @param value     The amount of ammo to set to.
  * @param add       (Optional) If true, the value is added to the grenades' current ammo count.
  */
-stock WeaponAmmoSetGrenadeCount(client, WeaponAmmoGrenadeType:type, value, bool:add)
+stock void WeaponAmmoSetGrenadeCount(int client, WeaponAmmoGrenadeType type, int value, bool add)
 {
     // Initialize variable (value is 0)
-    new ammovalue;
+    int ammovalue;
 
     // If we are adding, then update variable with current ammo value.
     if (add)
@@ -187,7 +187,7 @@ stock WeaponAmmoSetGrenadeCount(client, WeaponAmmoGrenadeType:type, value, bool:
         ammovalue = WeaponAmmoGetGrenadeCount(client, type);
     }
 
-    SetEntData(client, g_iToolsAmmo + (_:type * 4), ammovalue + value, _, true);
+    SetEntData(client, g_iToolsAmmo + (view_as<int>(type) * 4), ammovalue + value, _, true);
 }
 
 /**
@@ -196,7 +196,7 @@ stock WeaponAmmoSetGrenadeCount(client, WeaponAmmoGrenadeType:type, value, bool:
  * @param weaponentity  The weapon entity to find entry for.
  * @return              An entry in WeaponAmmoGrenadeType.
  */
-stock WeaponAmmoGrenadeType:WeaponAmmoEntityToGrenadeType(const String:weaponentity[])
+stock WeaponAmmoGrenadeType WeaponAmmoEntityToGrenadeType(const char[] weaponentity)
 {
     if (StrEqual(weaponentity, "weapon_hegrenade"))
     {
@@ -245,14 +245,14 @@ stock WeaponAmmoGrenadeType:WeaponAmmoEntityToGrenadeType(const String:weaponent
  * @param weaponentity  The weapon entity to get the limit for.
  * @return              The grenade limit, -1 if an unhandled grenade entity was given.
  */
- stock WeaponAmmoGetGrenadeLimit(WeaponAmmoGrenadeType:grenadetype)
- {
+stock int WeaponAmmoGetGrenadeLimit(WeaponAmmoGrenadeType grenadetype)
+{
     switch(grenadetype)
     {
         case GrenadeType_HEGrenade, GrenadeType_HEGrenadeCSGO:
         {
             // Attempt to find a cvar provided by an outside plugin.
-            new Handle:gplimit = FindConVar(GRENADE_PACK_CVAR_LIMIT);
+            Handle gplimit = FindConVar(GRENADE_PACK_CVAR_LIMIT);
 
             // If Grenade Pack is loaded and the cvar was found, then get the value of the outside cvar, if not return CS:S default.
             return (g_bGrenadePack && gplimit != INVALID_HANDLE) ? GetConVarInt(gplimit) : WEAPONAMMO_HEGRENADE_LIMIT;
@@ -285,11 +285,11 @@ stock WeaponAmmoGrenadeType:WeaponAmmoEntityToGrenadeType(const String:weaponent
 /**
  * Returns true if plugin "Grenade Pack" is found and running.
  */
-stock bool:ZMarketIsGPLoaded()
+stock bool ZMarketIsGPLoaded()
 {
-    new Handle:hPlugins = GetPluginIterator();
-    new Handle:hPlugin;
-    decl String:strPlugin[PLATFORM_MAX_PATH];
+    Handle hPlugins = GetPluginIterator();
+    Handle hPlugin;
+    char strPlugin[PLATFORM_MAX_PATH];
 
     while (MorePlugins(hPlugins))
     {

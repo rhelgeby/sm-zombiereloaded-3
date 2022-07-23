@@ -29,7 +29,7 @@
 #include <sourcemod>
 #include <zombiereloaded>
 
-public Plugin:myinfo =
+public Plugin myinfo =
 {
     name = "Zombie:Reloaded Class API Test",
     author = "Greyscale | Richard Helgeby",
@@ -38,7 +38,7 @@ public Plugin:myinfo =
     url = "http://code.google.com/p/zombiereloaded/"
 };
 
-public OnPluginStart()
+public void OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
@@ -49,10 +49,10 @@ public OnPluginStart()
     RegConsoleCmd("zrtest_get_class_display_name", GetNameCommand, "Gets class display name. Usage: zrtest_get_class_display_name <class index>");
 }
 
-public Action:IsValidClassCommand(client, argc)
+public Action IsValidClassCommand(int client, int argc)
 {
-    new classIndex = -1;
-    new String:valueString[64];
+    int classIndex = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -70,10 +70,10 @@ public Action:IsValidClassCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:GetActiveClassCommand(client, argc)
+public Action GetActiveClassCommand(int client, int argc)
 {
-    new target = -1;
-    new String:valueString[64];
+    int target = -1;
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -91,14 +91,14 @@ public Action:GetActiveClassCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:SelectClassCommand(client, argc)
+public Action SelectClassCommand(int client, int argc)
 {
-    new target = -1;
-    new classIndex = -1;
-    new bool:applyIfPossible = true;
-    new bool:saveIfEnabled = true;
+    int target = -1;
+    int classIndex = -1;
+    bool applyIfPossible = true;
+    bool saveIfEnabled = true;
 
-    new String:valueString[64];
+    char valueString[64];
 
     if (argc >= 1)
     {
@@ -111,10 +111,10 @@ public Action:SelectClassCommand(client, argc)
         if (argc >= 4)
         {
             GetCmdArg(3, valueString, sizeof(valueString));
-            applyIfPossible = bool:StringToInt(valueString);
+            applyIfPossible = view_as<int>(StringToInt(valueString));
 
             GetCmdArg(4, valueString, sizeof(valueString));
-            saveIfEnabled = bool:StringToInt(valueString);
+            saveIfEnabled = view_as<int>(StringToInt(valueString));
         }
     }
     else
@@ -128,9 +128,9 @@ public Action:SelectClassCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:GetClassCommand(client, argc)
+public Action GetClassCommand(int client, int argc)
 {
-    new String:className[64];
+    char className[64];
 
     if (argc >= 1)
     {
@@ -147,11 +147,11 @@ public Action:GetClassCommand(client, argc)
     return Plugin_Handled;
 }
 
-public Action:GetNameCommand(client, argc)
+public Action GetNameCommand(int client, int argc)
 {
-    new classIndex = -1;
-    new String:valueString[64];
-    new String:displayName[64];
+    int classIndex = -1;
+    char valueString[64];
+    char displayName[64];
 
     if (argc >= 1)
     {

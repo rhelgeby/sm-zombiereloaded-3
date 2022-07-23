@@ -28,18 +28,18 @@
 /**
  * Init function for event module.
  */
-EventInit()
+void EventInit()
 {
     // Hook all events used by plugin.
-    EventHook();
+    EventsHook();
 }
 
 /**
  * Hook events used by plugin.
- *
- * @param unhook    If true, then unhook all events, if false, then hook.
- */
-EventHook(bool:unhook = false)
+ * 
+ * @param unhook	If true, then unhook all events, if false, then hook.
+ */ 
+void EventsHook(bool unhook = false)
 {
     // If unhook is true, then continue.
     if (unhook)
@@ -81,7 +81,7 @@ EventHook(bool:unhook = false)
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventRoundStart(Handle event, const char[] name, bool dontBroadcast)
 {
     // Forward event to sub-modules.
     OverlaysOnRoundStart();
@@ -92,6 +92,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
     ZSpawnOnRoundStart();
     VolOnRoundStart();
     ZTeleOnRoundStart();
+    return Plugin_Continue;
 }
 
 /**
@@ -102,12 +103,13 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventRoundFreezeEnd(Handle event, const char[] name, bool dontBroadcast)
 {
     // Forward events to modules.
     RoundEndOnRoundFreezeEnd();
     InfectOnRoundFreezeEnd();
     ZSpawnOnRoundFreezeEnd();
+    return Plugin_Continue;
 }
 
 /**
@@ -118,10 +120,10 @@ public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBr
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventRoundEnd(Handle event, const char[] name, bool dontBroadcast)
 {
     // Get all required event info.
-    new reason = GetEventInt(event, "reason");
+    int reason = GetEventInt(event, "reason");
 
     // Forward event to modules.
     WeaponsOnRoundEnd();
@@ -132,6 +134,7 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
     ZSpawnOnRoundEnd();
     VolOnRoundEnd();
     ImmunityOnRoundEnd();
+    return Plugin_Continue;
 }
 
 /**
@@ -142,11 +145,11 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerTeam(Handle event, const char[] name, bool dontBroadcast)
 {
     // Get all required event info.
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    new team = GetEventInt(event, "team");
+    int index = GetClientOfUserId(GetEventInt(event, "userid"));
+    int team = GetEventInt(event, "team");
 
     // Forward event to modules.
     InfectOnClientTeam(index, team);
@@ -167,10 +170,10 @@ public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadc
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerSpawn(Handle event, const char[] name, bool dontBroadcast)
 {
     // Get all required event info.
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
+    int index = GetClientOfUserId(GetEventInt(event, "userid"));
 
     // Forward event to modules.
     InfectOnClientSpawn(index);     // Some modules depend on this to finish first.
@@ -187,6 +190,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
 
     // Fire post player_spawn event.
     CreateTimer(0.1, EventPlayerSpawnPost, index);
+    return Plugin_Continue;
 }
 
 /**
@@ -197,12 +201,12 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerSpawnPost(Handle:timer, any:client)
+public Action EventPlayerSpawnPost(Handle timer, any client)
 {
     // If client isn't in-game, then stop.
-    if (!IsClientInGame(client))
+    if (client <= 0 || client > MaxClients || !IsClientConnected(client) || !IsClientInGame(client))
     {
-        return;
+        return Plugin_Continue;
     }
 
     // Forward event to modules.
@@ -210,6 +214,7 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:client)
     SEffectsOnClientSpawnPost(client);
     ClassOnClientSpawnPost(client);
     SpawnProtectOnClientSpawnPost(client);  // Must be executed after class attributes are applied.
+    return Plugin_Continue;
 }
 
 /**
@@ -220,28 +225,28 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:client)
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerDeath(Handle event, const char[] name, bool dontBroadcast)
 {
     // Get the weapon name.
-    decl String:weapon[WEAPONS_MAX_LENGTH];
+    char weapon[WEAPONS_MAX_LENGTH];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
 
     // If client is being infected, then stop.
     if (StrEqual(weapon, "zombie_claws_of_death", false))
     {
-        return;
+        return Plugin_Continue;
     }
 
     // Get all required event info.
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
-    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    int index = GetClientOfUserId(GetEventInt(event, "userid"));
+    int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 
     // Validate client.
     if (!ZRIsClientValid(index))
     {
         // If the client isn't a player, a player really didn't die now. Some
         // other mods might sent this event with bad data.
-        return;
+        return Plugin_Continue;
     }
 
     // Forward event to modules.
@@ -259,6 +264,7 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
     RoundEndOnClientDeath();
     ImmunityOnClientDeath(index);
     KnockbackOnClientDeath(index);
+    return Plugin_Continue;
 }
 
 /**
@@ -269,13 +275,14 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerJump(Handle event, const char[] name, bool dontBroadcast)
 {
     // Get all required event info.
-    new index = GetClientOfUserId(GetEventInt(event, "userid"));
+    int index = GetClientOfUserId(GetEventInt(event, "userid"));
 
     // Fire post player_jump event.
     CreateTimer(0.0, EventPlayerJumpPost, index);
+    return Plugin_Continue;
 }
 
 /**
@@ -286,16 +293,17 @@ public Action:EventPlayerJump(Handle:event, const String:name[], bool:dontBroadc
  * @param name      Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerJumpPost(Handle:timer, any:client)
+public Action EventPlayerJumpPost(Handle timer, any client)
 {
     // If client isn't in-game, then stop.
     if (!IsClientInGame(client))
     {
-        return;
+        return Plugin_Continue;
     }
 
     // Forward event to modules.
     JumpBoostOnClientJumpPost(client);
+    return Plugin_Continue;
 }
 
 /**
@@ -306,10 +314,11 @@ public Action:EventPlayerJumpPost(Handle:timer, any:client)
  * @param command   The command performed.
  * @param argc      The amount of arguments.
  */
-public Action:CommandPlayerClass(int client, const char[] command, int argc)
+public Action CommandPlayerClass(int client, const char[] command, int argc)
 {
     // Fire post joinclass command.
     CreateTimer(0.1, CommandPlayerClassPost, client);
+    return Plugin_Continue;
 }
 
 /**
@@ -320,13 +329,14 @@ public Action:CommandPlayerClass(int client, const char[] command, int argc)
  * @param command   The command performed.
  * @param argc      The amount of arguments.
  */
-public Action:CommandPlayerClassPost(Handle:timer, any:client)
+public Action CommandPlayerClassPost(Handle timer, any client)
 {
     // If client isn't in-game, then stop.
     if (!IsClientInGame(client))
     {
-        return;
+        return Plugin_Continue;
     }
 
     ZSpawnOnClientClassPost(client);
+    return Plugin_Continue;
 }

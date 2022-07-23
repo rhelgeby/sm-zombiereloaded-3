@@ -28,7 +28,7 @@
 /**
  * Initializes all natives and forwards related to infection.
  */
-APIClassInit()
+void APIClassInit()
 {
     // Class module natives/forwards (class.zr.inc)
 
@@ -47,23 +47,23 @@ APIClassInit()
 /**
  * Native call function (ZR_IsValidClassIndex)
  *
- * bool:ZR_IsValidClassIndex(classIndex);
+ * bool ZR_IsValidClassIndex(int classIndex);
  */
-public APIIsValidClassIndex(Handle:plugin, numParams)
+public int APIIsValidClassIndex(Handle plugin, int numParams)
 {
-    new classIndex = GetNativeCell(1);
-
-    return ClassValidateIndex(classIndex);
+	int classIndex = GetNativeCell(1);
+	
+	return ClassValidateIndex(classIndex);
 }
 
 /**
  * Native call function (ZR_GetActiveClass)
  *
- * native bool:ZR_GetActiveClass(client);
+ * native bool ZR_GetActiveClass(int client);
  */
-public APIGetActiveClass(Handle:plugin, numParams)
+public int APIGetActiveClass(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
+    int client = GetNativeCell(1);
 
     // Validate the client index. Player must be alive.
     APIValidateClientIndex(client, Condition_True);
@@ -74,11 +74,11 @@ public APIGetActiveClass(Handle:plugin, numParams)
 /**
  * Native call function (ZR_GetHumanClass)
  *
- * native bool:ZR_GetHumanClass(client);
+ * native bool ZR_GetHumanClass(int client);
  */
-public APIGetHumanClass(Handle:plugin, numParams)
+public int APIGetHumanClass(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
+    int client = GetNativeCell(1);
 
     // Validate the client index. Player must be alive.
     APIValidateClientIndex(client, Condition_True);
@@ -89,11 +89,11 @@ public APIGetHumanClass(Handle:plugin, numParams)
 /**
  * Native call function (ZR_GetZombieClass)
  *
- * native bool:ZR_GetZombieClass(client);
+ * native bool ZR_GetZombieClass(int client);
  */
-public APIGetZombieClass(Handle:plugin, numParams)
+public int APIGetZombieClass(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
+    int client = GetNativeCell(1);
 
     // Validate the client index. Player must be alive.
     APIValidateClientIndex(client, Condition_True);
@@ -104,14 +104,14 @@ public APIGetZombieClass(Handle:plugin, numParams)
 /**
  * Native call function (ZR_SelectClientClass)
  *
- * native ClassSelectResult:ZR_SelectClientClass(client, classIndex, bool:applyIfPossible = true, bool:saveIfEnabled = true)
+ * native ClassSelectResult ZR_SelectClientClass(int client, int classIndex, bool applyIfPossible = true, bool saveIfEnabled = true)
  */
-public APISelectClientClass(Handle:plugin, numParams)
+public int APISelectClientClass(Handle plugin, int numParams)
 {
-    new client = GetNativeCell(1);
-    new classIndex = GetNativeCell(2);
-    new bool:applyIfPossible = bool:GetNativeCell(3);
-    new bool:saveIfEnabled = bool:GetNativeCell(4);
+    int client = GetNativeCell(1);
+    int classIndex = GetNativeCell(2);
+    bool applyIfPossible = view_as<bool>(GetNativeCell(3));
+    bool saveIfEnabled = view_as<bool>(GetNativeCell(4));
 
     // Validate the client index.
     APIValidateClientIndex(client, Condition_Either);
@@ -123,17 +123,17 @@ public APISelectClientClass(Handle:plugin, numParams)
         return -1;
     }
 
-    return _:ClassSelectClientClass(client, classIndex, applyIfPossible, saveIfEnabled);
+    return view_as<int>(ClassSelectClientClass(client, classIndex, applyIfPossible, saveIfEnabled));
 }
 
 /**
  * Native call function (ZR_GetClassByName)
  *
- * native ZR_GetClassByName(const String:className[], cacheType = ZR_CLASS_CACHE_MODIFIED);
+ * native int ZR_GetClassByName(const char[] className, int cacheType = ZR_CLASS_CACHE_MODIFIED);
  */
-public APIGetClassByName(Handle:plugin, numParams)
+public int APIGetClassByName(Handle plugin, int numParams)
 {
-    decl String:className[64];
+    char className[64];
     className[0] = 0;
 
     // Get class name.
@@ -143,7 +143,7 @@ public APIGetClassByName(Handle:plugin, numParams)
         return -1;
     }
 
-    new cacheType = GetNativeCell(2);
+    int cacheType = GetNativeCell(2);
     if (cacheType == ZR_CLASS_CACHE_PLAYER)
     {
         ThrowNativeError(SP_ERROR_NATIVE, "Invalid cache type. Player cache is not allowed in this function.");
@@ -156,11 +156,11 @@ public APIGetClassByName(Handle:plugin, numParams)
 /**
  * Native call function (ZR_GetClassByIdentifier)
  *
- * native ZR_GetClassByIdentifier(const String:classIdent[], cacheType = ZR_CLASS_CACHE_MODIFIED);
+ * native int ZR_GetClassByIdentifier(const char[] classIdent, int cacheType = ZR_CLASS_CACHE_MODIFIED);
  */
-public APIGetClassByIdentifier(Handle:plugin, numParams)
+public int APIGetClassByIdentifier(Handle plugin, int numParams)
 {
-    decl String:classIdent[64];
+    char classIdent[64];
     classIdent[0] = 0;
 
     // Get class name.
@@ -170,7 +170,7 @@ public APIGetClassByIdentifier(Handle:plugin, numParams)
         return -1;
     }
 
-    new cacheType = GetNativeCell(2);
+    int cacheType = GetNativeCell(2);
     if (cacheType == ZR_CLASS_CACHE_PLAYER)
     {
         ThrowNativeError(SP_ERROR_NATIVE, "Invalid cache type. Player cache is not allowed in this function.");
@@ -183,13 +183,13 @@ public APIGetClassByIdentifier(Handle:plugin, numParams)
 /**
  * Native call function (ZR_GetClassDisplayName)
  *
- * native ZR_GetClassDisplayName(classIndex, String:buffer[], maxlen, cacheType = ZR_CLASS_CACHE_MODIFIED);
+ * native int ZR_GetClassDisplayName(int classIndex, char[] buffer, int maxlen, int cacheType = ZR_CLASS_CACHE_MODIFIED);
  */
-public APIGetClassDisplayName(Handle:plugin, numParams)
+public int APIGetClassDisplayName(Handle plugin, int numParams)
 {
-    new index = GetNativeCell(1);
-    new maxlen = GetNativeCell(3);
-    new cacheType = GetNativeCell(4);
+    int index = GetNativeCell(1);
+    int maxlen = GetNativeCell(3);
+    int cacheType = GetNativeCell(4);
 
     if (maxlen <= 0)
     {
@@ -213,9 +213,9 @@ public APIGetClassDisplayName(Handle:plugin, numParams)
         }
     }
 
-    decl String:displayName[maxlen];
+    char[] displayName = new char[maxlen];
 
-    new bytes = ClassGetName(index, displayName, maxlen, cacheType);
+    int bytes = ClassGetName(index, displayName, maxlen, cacheType);
     if (bytes <= 0)
     {
         // The class doesn't have a name for some reason. Make sure the buffer is empty.
@@ -230,13 +230,13 @@ public APIGetClassDisplayName(Handle:plugin, numParams)
 /**
  * Native call function (ZR_GetClassIdentifier)
  *
- * native ZR_GetClassIdentifier(classIndex, String:buffer[], maxlen, cacheType = ZR_CLASS_CACHE_MODIFIED);
+ * native int ZR_GetClassIdentifier(int classIndex, char[] buffer, int maxlen, int cacheType = ZR_CLASS_CACHE_MODIFIED);
  */
-public APIGetClassIdentifier(Handle:plugin, numParams)
+public int APIGetClassIdentifier(Handle plugin, int numParams)
 {
-    new index = GetNativeCell(1);
-    new maxlen = GetNativeCell(3);
-    new cacheType = GetNativeCell(4);
+    int index = GetNativeCell(1);
+    int maxlen = GetNativeCell(3);
+    int cacheType = GetNativeCell(4);
 
     if (maxlen <= 0)
     {
@@ -260,9 +260,9 @@ public APIGetClassIdentifier(Handle:plugin, numParams)
         }
     }
 
-    decl String:classIdent[maxlen];
+    char[] classIdent = new char[maxlen];
 
-    new bytes = ClassGetIdentifier(index, classIdent, maxlen, cacheType);
+    int bytes = ClassGetIdentifier(index, classIdent, maxlen, cacheType);
     if (bytes <= 0)
     {
         // The class doesn't have a name for some reason. Make sure the buffer is empty.
