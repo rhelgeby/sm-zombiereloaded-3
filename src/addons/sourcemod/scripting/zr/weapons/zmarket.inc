@@ -251,7 +251,10 @@ void ZMarketOnClientSpawnPost(int client)
     ZMarketResetPurchaseCount(client);
 
     // Rebuy if auto-rebuy is enabled.
-    ZMarketCheckRebuy(client);
+    bool rebuy = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_REBUY);
+
+    if(rebuy)
+        ZMarketCheckRebuy(client);
 }
 
 /**
