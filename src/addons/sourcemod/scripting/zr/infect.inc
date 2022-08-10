@@ -1444,6 +1444,7 @@ stock void InfectManualInfect(int client, int[] targets, int count, bool respawn
 
             // Log action to game events.
             LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Infect, "Manual Infect", "\"%L\" turned \"%L\" into a mother zombie", client, targets[x]);
+            LogAction(client, -1, "[ZR] \"%L\" turned \"%L\" into a mother zombie.", client, targets[x]);
 
             success = true;
             continue;
@@ -1454,6 +1455,7 @@ stock void InfectManualInfect(int client, int[] targets, int count, bool respawn
 
         // Log action to game events.
         LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Infect, "Manual Infect", "\"%L\" turned \"%L\" into a zombie", client, targets[x]);
+        LogAction(client, -1, "[ZR] \"%L\" turned \"%L\" into a zombie.", client, targets[x]);
 
         success = true;
     }
@@ -1515,6 +1517,7 @@ stock void InfectManualHuman(int client, int[] targets, int count, bool respawn 
 
             // Log action to game events.
             LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Infect, "Manual Human", "\"%L\" turned \"%L\" into a human", client, targets[x]);
+            LogAction(client, -1, "[ZR] \"%L\" turned \"%L\" into a human.", client, targets[x]);
 
             success = true;
         }

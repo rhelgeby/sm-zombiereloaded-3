@@ -441,6 +441,7 @@ public int ZSpawnForceHandle(Handle menu_zspawn_force, MenuAction action, int cl
         {
             // Log action to game events.
             LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "\"%L\" force zspawned \"%L\" as human", client, target);
+            LogAction(client, -1, "[ZR] \"%L\" force zspawned \"%L\" as human.", client, target);
 
             TranslationReplyToCommand(client, "ZSpawn command force successful", targetname);
             TranslationPrintToChatAllExcept(false, false, client, "ZSpawn command force successful public", adminname, targetname, "human");
@@ -557,6 +558,7 @@ public Action ZSpawnForceCommand(int client, int argc)
         {
             // Log action to game events.
             LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZSpawn, "Force ZSpawn", "\"%L\" force zspawned \"%L\" as %s", client, targets[x], zombie ? "zombie" : "human");
+            LogAction(client, -1, "[ZR] \"%L\" force zspawned \"%L\" as %s.", client, targets[x], zombie ? "zombie" : "human");
 
             success = true;
         }

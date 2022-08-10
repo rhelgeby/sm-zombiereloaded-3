@@ -292,12 +292,14 @@ public int WeaponsMenuTypeWeaponsHandle(Handle menu_weapons_typeweapons, MenuAct
                 // Restrict all weapons of this type.
                 restrict = true;
                 query = RestrictWeapon(true, typename, single, returntarget, sizeof(returntarget));
+                LogAction(client, -1, "[ZR] %L Restricted weapon type : %s.", client, typename);
             }
             case 1:
             {
                 // Unrestrict all weapons of this type.
                 restrict = false;
                 query = RestrictWeapon(false, typename, single, returntarget, sizeof(returntarget));
+                LogAction(client, -1, "[ZR] %L Unrestricted weapon type : %s.", client, typename);
             }
             default:
             {
@@ -321,12 +323,14 @@ public int WeaponsMenuTypeWeaponsHandle(Handle menu_weapons_typeweapons, MenuAct
                     // Restrict this weapon.
                     restrict = true;
                     query = RestrictWeapon(true, typeweapon, single, returntarget, sizeof(returntarget));
+                    LogAction(client, -1, "[ZR] %L Restricted weapon type : %s.", client, typeweapon);
                 }
                 else
                 {
                     // Unrestrict this weapon.
                     restrict = false;
                     query = RestrictWeapon(false, typeweapon, single, returntarget, sizeof(returntarget));
+                    LogAction(client, -1, "[ZR] %L Unrestricted weapon type : %s.", client, typeweapon);
                 }
             }
         }
@@ -408,6 +412,14 @@ public int WeaponsMenuZMarketHandle(Handle menu_weapons_market, MenuAction actio
                 // Toggle cvar.
                 bool zmarketbuyzone = GetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_BUYZONE);
                 SetConVarBool(g_hCvarsList.CVAR_WEAPONS_ZMARKET_BUYZONE, !zmarketbuyzone);
+                if(zmarketbuyzone == false)
+                {
+                    LogAction(client, -1, "[ZR] \"%L\" Requires player to be inside a buyzone to use ZMarket.", client);
+                }
+                else
+                {
+                    LogAction(client, -1, "[ZR] \"%L\" Does not requires player to be inside a buyzone to use ZMarket.", client);
+                }
             }
         }
 

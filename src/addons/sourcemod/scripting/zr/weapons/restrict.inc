@@ -383,10 +383,12 @@ void RestrictPrintQueryResponse(int client, RestrictQuery query, bool single, bo
                 if (restrict)
                 {
                     TranslationPrintToChatAll(true, false, "Restrict weapon", target);
+                    LogAction(client, -1, "[ZR] \"%L\" Restricted weapon : %s.", client, target);
                 }
                 else
                 {
                     TranslationPrintToChatAll(true, false, "Unrestrict weapon", target);
+                    LogAction(client, -1, "[ZR] \"%L\" Unrestricted weapon : %s.", client, target);
                 }
             }
             else
@@ -394,10 +396,12 @@ void RestrictPrintQueryResponse(int client, RestrictQuery query, bool single, bo
                 if (restrict)
                 {
                     TranslationPrintToChatAll(true, false, "Restrict weapon type", target);
+                    LogAction(client, -1, "[ZR] \"%L\" Restricted weapon type : %s.", client, target);
                 }
                 else
                 {
                     TranslationPrintToChatAll(true, false, "Unrestrict weapon type", target);
+                    LogAction(client, -1, "[ZR] \"%L\" Unrestricted weapon type : %s.", client, target);
                 }
             }
         }

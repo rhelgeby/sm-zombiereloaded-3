@@ -294,6 +294,7 @@ public int ZTele_ForceHandle(Handle menu_ztele_force, MenuAction action, int cli
         if (success)
         {
             TranslationReplyToCommand(client, "ZTele command force successful", targetname);
+            LogAction(client, -1, "[ZR] \"%L\" Forced ZTele on \"%L\" to spawn.", client, target);
         }
         else
         {
@@ -384,6 +385,7 @@ public Action ZTele_ForceCommand(int client, int argc)
 
         // Log action to game events.
         LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_ZTele, "Force ZTele", "\"%L\" teleported \"%L\" to spawn.", client, targets[x]);
+        LogAction(client, -1, "[ZR] \"%L\" Forced ZTele on \"%L\" to spawn.", client, targets[x]);
     }
 
     return Plugin_Handled;
